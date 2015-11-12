@@ -33,13 +33,7 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   unFocus () {
-    const
-      $panel          =     React.findDOMNode(this.refs.panel),
-      $items          =     $panel.querySelectorAll(':scope > .syn-panel-body > .item-hidden');
-
-    for ( let i = 0; i < $items.length; i ++ ) {
-      $items[i].classList.remove('item-hidden');
-    }
+    window.Dispatcher.emit('set panel', this.props.panel);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

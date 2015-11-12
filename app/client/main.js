@@ -98,6 +98,11 @@ window.Dispatcher
     window.Dispatcher.emit('refresh');
   })
 
+  .on('set panel', panel => {
+    // props.item = item;
+    window.Dispatcher.emit('refresh');
+  })
+
   .on('set active', (panel, section) => {
     INCOMING('set active', panel, section);
 

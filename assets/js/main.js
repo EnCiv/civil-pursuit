@@ -121,6 +121,9 @@ window.Dispatcher.on('refresh', function () {
 }).on('set item', function (item) {
   props.item = item;
   window.Dispatcher.emit('refresh');
+}).on('set panel', function (panel) {
+  // props.item = item;
+  window.Dispatcher.emit('refresh');
 }).on('set active', function (panel, section) {
   INCOMING('set active', panel, section);
 
@@ -673,6 +676,11 @@ var App = (function (_React$Component) {
           };
 
           page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: panel }));
+          break;
+
+        case 'items':
+          var panelId = Object.keys(this.props.panels)[0];
+          page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[panelId] }));
           break;
       }
 
@@ -3129,17 +3137,6 @@ var Item = (function (_React$Component) {
 
     value: function selectItem() {
       window.Dispatcher.emit('set item', this.props.item);
-      // const
-      //   { item }      =   this.props,
-      //   $item         =   React.findDOMNode(this.refs.item),
-      //   $panel        =   $item.closest('.syn-panel'),
-      //   $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
-      //
-      // $panel.classList.add('focused');
-      //
-      // for ( let i = 0; i < $otherItems.length; i ++ ) {
-      //   $otherItems[i].classList.add('item-hidden');
-      // }
     }
   }, {
     key: 'render',
@@ -4588,12 +4585,7 @@ var PanelItems = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function unFocus() {
-      var $panel = _react2['default'].findDOMNode(this.refs.panel),
-          $items = $panel.querySelectorAll(':scope > .syn-panel-body > .item-hidden');
-
-      for (var i = 0; i < $items.length; i++) {
-        $items[i].classList.remove('item-hidden');
-      }
+      window.Dispatcher.emit('set panel', this.props.panel);
     }
   }, {
     key: 'render',

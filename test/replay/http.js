@@ -4,6 +4,7 @@ import Server             from '../../app/server';
 import superagent         from 'superagent';
 import Type               from '../../app/models/type';
 import Item               from '../../app/models/item';
+import Config             from '../../app/models/config';
 
 process.env.PORT = 13012;
 
@@ -271,6 +272,50 @@ describe ( 'HTTP server' , function () {
       superagent
         .post('http://localhost:13012/sign/in')
         .send({ email : 'signup@foo.com' , 'password' : '1234' })
+        .end((error, res) => {
+          try {
+            if ( error ) {
+              throw error;
+            }
+            res.status.should.be.exactly(200);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+  });
+
+  describe ( 'Item page', function () {
+
+    const props = {};
+
+    it ( 'should get a random item from a top-level type' , function (done) {
+
+      Config.get('top level type').then(
+        type => {
+          Item.findOneRandom({ type }).then(
+            item => {
+              props.item = item;
+              done();
+            },
+            done
+          );
+        },
+        done
+      );
+
+    });
+
+    it ( 'should got to item page' , function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .get(`http://localhost:13012/item/${props.item.id}/${props.item.link}`)
         .end((error, res) => {
           try {
             if ( error ) {

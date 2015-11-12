@@ -272,18 +272,6 @@ class Item extends React.Component {
 
   selectItem () {
     window.Dispatcher.emit('set item', this.props.item);
-    // const
-    //   { item }      =   this.props,
-    //   $item         =   React.findDOMNode(this.refs.item),
-    //   $panel        =   $item.closest('.syn-panel'),
-    //   $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
-    //
-    // $panel.classList.add('focused');
-    //
-    // for ( let i = 0; i < $otherItems.length; i ++ ) {
-    //   $otherItems[i].classList.add('item-hidden');
-    // }
-
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

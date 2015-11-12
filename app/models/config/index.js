@@ -19,6 +19,10 @@ class Config extends Mungo.Model {
   static findValueByName (...args) {
     return findValueByName.apply(this, args);
   }
+
+  static get (...args) {
+    return findValueByName.apply(this, args);
+  }
 }
 
 Config.version = 1;

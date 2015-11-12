@@ -3,6 +3,7 @@
 import Model            from '../../lib/app/model';
 import isUrl            from '../../lib/util/is/url';
 import isLesserThan     from '../../lib/util/is/lesser-than';
+import toSlug           from '../../lib/util/to-slug';
 import User             from '../user';
 import Type             from '../type';
 import getPopularity    from './methods/get-popularity';

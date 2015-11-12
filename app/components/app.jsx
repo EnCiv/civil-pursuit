@@ -77,6 +77,13 @@ class App extends React.Component {
           <PanelItems { ...this.props } panel={ panel } />
         );
         break;
+
+      case 'items':
+        const panelId = Object.keys(this.props.panels)[0];
+        page = (
+          <PanelItems { ...this.props } panel={ this.props.panels[panelId] } />
+        );
+        break;
     }
 
     return (
