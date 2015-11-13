@@ -1,12 +1,14 @@
 'use strict';
 
-import WebDriver            from '../../app/webdriver';
-import sequencer            from '../../util/sequencer';
-import config               from '../../../../public.json';
 import should               from 'should';
-import Item                 from '../../../models/item';
 import Mungo                from 'mungo';
+import WebDriver            from '../../app/webdriver';
+import makePanelId          from '../../app/make-panel-id';
+import sequencer            from '../../util/sequencer';
 import isItem               from '../../assertions/item';
+import ConfigModel          from '../../../models/config';
+import ItemModel            from '../../../models/item';
+import TypeModel            from '../../../models/type';
 import Join                 from './join';
 import Training             from './training';
 
@@ -31,6 +33,69 @@ class CreateItem {
     });
   }
 
+  static getType (props) {
+    return new Promise((ok, ko) => {
+      if ( props.options.type ) {
+        TypeModel.findOne({ name : props.options.type }).then(
+          type => {
+            if  ( ! type ) {
+              return ko(new Error('No such type'));
+            }
+            props.type = type;
+            ok();
+          },
+          ko
+        );
+      }
+      else {
+        ConfigModel.get('top level type').then(
+          topLevelType => {
+            TypeModel.findById(topLevelType).then(
+              type => {
+                props.type = type;
+                ok();
+              },
+              ko
+            );
+          },
+          ko
+        );
+      }
+    });
+  }
+
+  static getParent (props) {
+    return new Promise((ok, ko) => {
+      if ( props.options.parent ) {
+        ItemModel.findById(props.option.parent).then(
+          item => {
+            if ( ! item ) {
+              return ko(new Error('No such parent'));
+            }
+            props.parent = item;
+            ok();
+          },
+          ko
+        );
+      }
+      else if ( props.type.parent ) {
+        ItemModel.findOneRandom({ type : props.type.parent }).then(
+          item => {
+            if ( ! item ) {
+              return ko(new Error('No such parent'));
+            }
+            props.parent = item;
+            ok();
+          },
+          ko
+        );
+      }
+      else {
+        ok();
+      }
+    });
+  }
+
   static join (props) {
     return new Promise((ok,ko) => {
       if ( props.options.join === false ) {
@@ -50,22 +115,48 @@ class CreateItem {
   }
 
   static goHome (props) {
-    return props.driver.client.url(`http://localhost:${props.options.port || 3012}`);
+    let url = `http://localhost:${props.options.port || 3012}`;
+
+    return props.driver.client.url(url);
+  }
+
+  static goRightPage (props) {
+    let url = `http://localhost:${props.options.port || 3012}`;
+
+    if ( props.parent ) {
+      url += props.parent.link;
+    }
+
+    return props.driver.client.url(url);
   }
 
   static clickToggle (props) {
 
-    let toggler;
+    let panelId;
 
-    toggler = '#top-level-panel > .syn-panel > .syn-panel-heading > .toggle-creator';
+    if ( props.parent ) {
+      panelId = makePanelId(props.parent);
+    }
+    else {
+      panelId = makePanelId({ type : props.type });
+    }
+
+    const toggler = `.syn-panel-${panelId} > .syn-panel-heading > .toggle-creator`;
 
     return props.driver.client.click(toggler);
   }
 
   static setSubject (props) {
-    let subject;
+    let panelId;
 
-    subject = '#top-level-panel > .syn-panel > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] input[name="subject"]';
+    if ( props.parent ) {
+      panelId = makePanelId(props.parent);
+    }
+    else {
+      panelId = makePanelId({ type : props.type });
+    }
+
+    const subject = `.syn-panel-${panelId} > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] input[name="subject"]`;
 
     return new Promise((ok, ko) => {
       props.driver.client.waitForVisible(subject, 5000).then(
@@ -78,17 +169,31 @@ class CreateItem {
   }
 
   static setDescription (props) {
-    let description;
+    let panelId;
 
-    description = '#top-level-panel > .syn-panel > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] textarea[name="description"]';
+    if ( props.parent ) {
+      panelId = makePanelId(props.parent);
+    }
+    else {
+      panelId = makePanelId({ type : props.type });
+    }
+
+    const description = `.syn-panel-${panelId} > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] textarea[name="description"]`;
 
     return props.driver.client.setValue(description, 'Hey! This is a test top level item\'s description');
   }
 
   static submit (props) {
-    let submit;
+    let panelId;
 
-    submit = '#top-level-panel > .syn-panel > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] [type="submit"]';
+    if ( props.parent ) {
+      panelId = makePanelId(props.parent);
+    }
+    else {
+      panelId = makePanelId({ type : props.type });
+    }
+
+    const submit = `.syn-panel-${panelId} > .syn-panel-body > .syn-accordion > .syn-accordion-wrapper > .syn-accordion-content > form[name="creator"] [type="submit"]`;
 
     return props.driver.client.click(submit);
   }
@@ -96,7 +201,7 @@ class CreateItem {
   static findItemDocument (props) {
     return new Promise((ok, ko) => {
 
-      Item.findLastOne().then(
+      ItemModel.findLastOne().then(
         item => {
           props.item = item;
           try {
@@ -143,13 +248,17 @@ class CreateItem {
 
           this.startDriver,
 
+          this.getType,
+
+          this.getParent,
+
           this.join,
 
           this.goHome,
 
           this.train,
 
-          this.goHome,
+          this.goRightPage,
 
           this.clickToggle,
 

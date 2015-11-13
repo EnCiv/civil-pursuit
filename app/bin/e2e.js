@@ -51,11 +51,18 @@ process.argv.forEach((argv, index) => {
       name = argv;
     }
   }
+  else if ( index > 2 ) {
+    const bits = argv.split('=');
+    options[bits[0]] = bits[1];
+  }
 });
 
 if ( name ) {
   const E2E = require(path.join(__dirname, `../lib/test/e2e/${name}`));
   Mungo.connect(process.env.MONGOHQ_URL).on('connected', () => {
+
+    console.log('e2e', name, options);
+
     E2E.run(options).then(
       props => {
         console.log(props);

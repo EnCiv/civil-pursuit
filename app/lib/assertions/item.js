@@ -104,7 +104,7 @@ should.Assertion.add('item', function (candidate = {}) {
   }
 
   if ( 'parent' in this.obj ) {
-    this.obj.parent.should.be.an.instanceof(mongodb.ObjectID);
+    this.obj.parent.should.be.an.instanceof(Mungo.ObjectID);
   }
 
   if ( 'parent' in candidate ) {
@@ -112,7 +112,7 @@ should.Assertion.add('item', function (candidate = {}) {
   }
 
   if ( 'from' in this.obj ) {
-    this.obj.from.should.be.an.instanceof(mongodb.ObjectID);
+    this.obj.from.should.be.an.instanceof(Mungo.ObjectID);
   }
 
   if ( 'from' in candidate ) {
