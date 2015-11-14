@@ -93,10 +93,20 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes  =   {
-    item            :   React.PropTypes.oneOfType([panelItemType, itemType]),
-    panels          :   React.PropTypes.object,
-    user            :   userType
+  static propTypes          =   {
+    item                    :   React.PropTypes.oneOfType([
+      panelItemType,
+      itemType
+    ]),
+    panels                  :   React.PropTypes.object,
+    user                    :   userType,
+    intro                   :   React.PropTypes.bool,
+    buttons                 :   React.PropTypes.bool,
+    promote                 :   React.PropTypes.bool,
+    details                 :   React.PropTypes.bool,
+    subtype                 :   React.PropTypes.bool,
+    harmony                 :   React.PropTypes.bool,
+    'edit-and-go-again'     :   React.PropTypes.bool
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,7 +116,9 @@ class Item extends React.Component {
 
     const { item, panels } = this.props;
 
-    if ( item ) {
+    const isIntro = this.props['is-intro'];
+
+    if ( item && ! isIntro ) {
 
       this.panelId = makePanelId(item);
 
@@ -285,216 +297,246 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    console.log('//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    console.log('//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    console.log(this.props)
+    console.log('//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    console.log('//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
     const { item } = this.props;
 
-    let buttons,
-      referenceLink,
-      referenceTitle,
-      textSpan = 50,
-      promote,
-      details,
-      subtype,
-      harmony,
-      editAndGoAgain;
+    try {
+      let buttons,
+        referenceLink,
+        referenceTitle,
+        textSpan = 50,
+        promote,
+        details,
+        subtype,
+        harmony,
+        editAndGoAgain;
 
-    if ( this.props.buttons !== false ) {
+      if ( this.props.buttons !== false ) {
 
-      let subtypeGroup, harmonyGroup;
+        let subtypeGroup, harmonyGroup;
 
-      if ( this.props.item.subtype ) {
-        subtypeGroup = <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-          <span>{ item.children } </span>
-          <Icon icon="fire" />
-        </Button>;
+        if ( this.props.item.subtype ) {
+          subtypeGroup = <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
+            <span>{ item.children } </span>
+            <Icon icon="fire" />
+          </Button>;
+        }
+
+        if ( this.props.item.type.harmony.length ) {
+          harmonyGroup = <Button small shy onClick={ this.toggle.bind(this, 'harmony') } className="harmony-button">
+            <span>{ item.harmony.harmony } </span>
+            <Icon icon="music" />
+          </Button>;
+        }
+
+        let childrenGroup = <ButtonGroup>
+          { subtypeGroup }
+          { harmonyGroup }
+        </ButtonGroup>;
+
+        buttons = (
+          <section className="item-buttons">
+            <ButtonGroup>
+              <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+                <span>{ item.promotions } </span>
+                <Icon icon="bullhorn" />
+              </Button>
+            </ButtonGroup>
+
+            <ButtonGroup>
+              <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+                <span>{ item.popularity.number + '%' } </span>
+                <Icon icon="signal" />
+              </Button>
+            </ButtonGroup>
+
+            { childrenGroup }
+          </section>
+        );
+      }
+      else {
+        textSpan = 75;
       }
 
-      if ( this.props.item.type.harmony.length ) {
-        harmonyGroup = <Button small shy onClick={ this.toggle.bind(this, 'harmony') } className="harmony-button">
-          <span>{ item.harmony.harmony } </span>
-          <Icon icon="music" />
-        </Button>;
-      }
+      if ( this.props.promote !== false && this.panelId ) {
+        let promoteIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-promote`;
 
-      let childrenGroup = <ButtonGroup>
-        { subtypeGroup }
-        { harmonyGroup }
-      </ButtonGroup>;
-
-      buttons = (
-        <section className="item-buttons">
-          <ButtonGroup>
-            <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-              <span>{ item.promotions } </span>
-              <Icon icon="bullhorn" />
-            </Button>
-          </ButtonGroup>
-
-          <ButtonGroup>
-            <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-              <span>{ item.popularity.number + '%' } </span>
-              <Icon icon="signal" />
-            </Button>
-          </ButtonGroup>
-
-          { childrenGroup }
-        </section>
-      );
-    }
-    else {
-      textSpan = 75;
-    }
-
-    if ( this.props.promote !== false && this.panelId ) {
-      let promoteIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-promote`;
-
-      promote = (
-        <div className="toggler promote">
-          <Accordion
-            { ...this.props }
-            poa     = { this.refs.item }
-            active  = { promoteIsActive }
-            name    = "promote"
-            >
-            <Promote
-              item      =   { this.props.item }
+        promote = (
+          <div className="toggler promote">
+            <Accordion
               { ...this.props }
-              active    =   { promoteIsActive }
-              ref       =   "promote"
-              panel-id  =   { this.panelId }
-              />
-          </Accordion>
-        </div>
-      );
-    }
+              poa     = { this.refs.item }
+              active  = { promoteIsActive }
+              name    = "promote"
+              >
+              <Promote
+                item      =   { this.props.item }
+                { ...this.props }
+                active    =   { promoteIsActive }
+                ref       =   "promote"
+                panel-id  =   { this.panelId }
+                />
+            </Accordion>
+          </div>
+        );
+      }
 
-    if ( this.props.details !== false && this.panelId ) {
-      let detailsIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-details`;
+      if ( this.props.details !== false && this.panelId ) {
+        let detailsIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-details`;
 
-      details =(
-        <div className="toggler details">
+        details =(
+          <div className="toggler details">
+            <Accordion
+              { ...this.props }
+              poa       =   { this.refs.item }
+              active    =   { detailsIsActive }
+              name      =   "details"
+              >
+              <Details
+                item    = { this.props.item }
+                { ...this.props }
+                active  = { detailsIsActive }
+                ref     = "details" />
+            </Accordion>
+          </div>
+        );
+      }
+
+      if ( this.props.subtype !== false && this.panelId && this.props.item.subtype ) {
+        let subtypeIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-subtype`;
+
+        subtype = (
+          <div className="toggler subtype">
           <Accordion
             { ...this.props }
             poa       =   { this.refs.item }
-            active    =   { detailsIsActive }
-            name      =   "details"
+            active    =   { subtypeIsActive }
+            name      =   "subtype"
             >
-            <Details
+            <Subtype
               item    = { this.props.item }
               { ...this.props }
-              active  = { detailsIsActive }
-              ref     = "details" />
+              active  = { subtypeIsActive }
+              ref     = "subtype" />
           </Accordion>
-        </div>
-      );
-    }
-
-    if ( this.props.subtype !== false && this.panelId && this.props.item.subtype ) {
-      let subtypeIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-subtype`;
-
-      subtype = (
-        <div className="toggler subtype">
-        <Accordion
-          { ...this.props }
-          poa       =   { this.refs.item }
-          active    =   { subtypeIsActive }
-          name      =   "subtype"
-          >
-          <Subtype
-            item    = { this.props.item }
-            { ...this.props }
-            active  = { subtypeIsActive }
-            ref     = "subtype" />
-        </Accordion>
-        </div>
-      );
-    }
-
-    if ( this.props.harmony !== false ) {
-      let harmonyIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-harmony`;
-
-      harmony = (
-        <div className="toggler harmony">
-          <Accordion
-            { ...this.props }
-            active    =   { harmonyIsActive }
-            name      =   "harmony"
-            poa       =   { this.refs.item }>
-            <Harmony
-              { ...this.props }
-              item    =   { this.props.item }
-              active  =   { harmonyIsActive } />
-          </Accordion>
-        </div>
-      );
-    }
-
-    if ( this.props['edit-and-go-again'] !== false ) {
-      let editAndGoAgainIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-edit-and-go-again`;
-
-      editAndGoAgain = (
-        <div className="toggler editAndGoAgain">
-          <Accordion
-            { ...this.props }
-            active    =   { editAndGoAgainIsActive }
-            name      =   "editAndGoAgain"
-            poa       =   { this.refs.item }>
-            <EditAndGoAgain
-              { ...this.props }
-              item    =   { this.props.item }
-              active  =   { editAndGoAgainIsActive } />
-          </Accordion>
-        </div>
-      );
-    }
-
-    if ( item.references && item.references.length ) {
-      referenceLink = item.references[0].url;
-      referenceTitle = item.references[0].title;
-    }
-
-    return (
-      <article
-        id          =   { `item-${item._id}` }
-        className   =   "item"
-        ref         =   "item"
-        >
-        <ItemMedia
-          item      =   { item }
-          ref       =   "media"
-          />
-
-        { buttons }
-
-        <section className="item-text">
-          <div className="item-truncatable">
-            <h4 className="item-subject">
-              <Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link>
-            </h4>
-            <h5 className="item-reference">
-              <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
-            </h5>
-            <div className="item-description pre-text">{ item.description }</div>
-            <div className="item-read-more" ref="more">
-              <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
-            </div>
           </div>
-        </section>
+        );
+      }
 
-        <section style={ { clear : 'both' }}></section>
+      if ( this.props.harmony !== false ) {
+        let harmonyIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-harmony`;
 
-        <section style={{ marginRight : '-10px' }}>
-          { promote }
+        harmony = (
+          <div className="toggler harmony">
+            <Accordion
+              { ...this.props }
+              active    =   { harmonyIsActive }
+              name      =   "harmony"
+              poa       =   { this.refs.item }>
+              <Harmony
+                { ...this.props }
+                item    =   { this.props.item }
+                active  =   { harmonyIsActive } />
+            </Accordion>
+          </div>
+        );
+      }
 
-          { details }
+      if ( this.props['edit-and-go-again'] !== false ) {
+        let editAndGoAgainIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-edit-and-go-again`;
 
-          { subtype }
+        editAndGoAgain = (
+          <div className="toggler editAndGoAgain">
+            <Accordion
+              { ...this.props }
+              active    =   { editAndGoAgainIsActive }
+              name      =   "editAndGoAgain"
+              poa       =   { this.refs.item }>
+              <EditAndGoAgain
+                { ...this.props }
+                item    =   { this.props.item }
+                active  =   { editAndGoAgainIsActive } />
+            </Accordion>
+          </div>
+        );
+      }
 
-          { harmony }
+      if ( item.references && item.references.length ) {
+        referenceLink = item.references[0].url;
+        referenceTitle = item.references[0].title;
+      }
 
-          { editAndGoAgain }
-        </section>
-      </article>
-    );
+      return (
+        <article
+          id          =   { `item-${item._id}` }
+          className   =   "item"
+          ref         =   "item"
+          >
+          <ItemMedia
+            item      =   { item }
+            ref       =   "media"
+            />
+
+          { buttons }
+
+          <section className="item-text">
+            <div className="item-truncatable">
+              <h4 className="item-subject">
+                <Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link>
+              </h4>
+              <h5 className="item-reference">
+                <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
+              </h5>
+              <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-read-more" ref="more">
+                <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
+              </div>
+            </div>
+          </section>
+
+          <section style={ { clear : 'both' }}></section>
+
+          <section style={{ marginRight : '-10px' }}>
+            { promote }
+
+            { details }
+
+            { subtype }
+
+            { harmony }
+
+            { editAndGoAgain }
+          </section>
+        </article>
+      );
+    }
+    catch ( error ) {
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+      console.error(`Could not render item`);
+
+      console.log(require('util').inspect({
+        item, panelId : this.panelId, props: this.props
+      }, { depth: 15 }));
+
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+
+      console.log(error.stack);
+
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+      return (
+        <article className="item">
+          <h2>An error occurred</h2>
+        </article>
+      );
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

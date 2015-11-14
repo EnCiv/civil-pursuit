@@ -28,7 +28,7 @@ class ItemPage {
   static createItem (props) {
     return new Promise((ok, ko) => {
 
-      CreateItem.run({ driver : props.driver })
+      CreateItem.run({ driver : props.driver, type : props.options.type, parent : props.options.parent })
         .then(
           $props => {
             props.item = $props.item;
@@ -37,6 +37,18 @@ class ItemPage {
           ko
         );
 
+    });
+  }
+
+  static panelifyItem (props) {
+    return new Promise((ok, ko) => {
+      props.item.toPanelItem().then(
+        item => {
+          props.panelItem = item;
+          ok();
+        },
+        ko
+      );
     });
   }
 
@@ -75,6 +87,31 @@ class ItemPage {
     });
   }
 
+  static countPanels (props) {
+    return new Promise((ok, ko) => {
+      try {
+        props.driver.client.getAttribute('.syn-panel', 'class').then(
+          occurrences => {
+            try {
+
+              occurrences.should.be.an.Array()
+                .and.have.length(props.panelItem.lineage.length + 2);
+
+              ok();
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
   static run (options = {}) {
     return new Promise((ok, ko) => {
       try {
@@ -87,6 +124,8 @@ class ItemPage {
 
           this.createItem,
 
+          this.panelifyItem,
+
           this.pause.bind(this, 2.5),
 
           this.clickOnItemTitle,
@@ -95,7 +134,11 @@ class ItemPage {
 
           this.urlIsItemPage,
 
-          this.pause.bind(this, 30),
+          () => props.driver.client.refresh(),
+
+          this.countPanels,
+
+          this.pause.bind(this, 10),
 
           props => props.driver.client.end()
 

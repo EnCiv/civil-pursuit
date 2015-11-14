@@ -80,7 +80,7 @@ class HttpServer extends EventEmitter {
 
           this.api();
 
-          this.static();
+          this.cdn();
 
           this.notFound();
 
@@ -331,7 +331,7 @@ class HttpServer extends EventEmitter {
 
                 req.panels[panelId].items = results.items;
 
-                console.log('?????????????????????????????????????????????????');
+                console.log(require('util').inspect(req.panels, { depth: null }));
 
                 next();
 
@@ -348,7 +348,7 @@ class HttpServer extends EventEmitter {
     }, Routes.homePage.bind(this));
   }
 
-  static () {
+  cdn () {
     this.app.use('/assets/',      express.static('assets'));
   }
 
