@@ -27,13 +27,7 @@ function makeProps (options = {}) {
   if ( options.panel ) {
     props.panels = Object.assign(props.panels, options.panel);
   }
-
-  console.log('--------------------------------------------------------------');
-  console.log()
-  console.log({ props })
-  console.log()
-  console.log('--------------------------------------------------------------');
-
+  
   return props;
 }
 

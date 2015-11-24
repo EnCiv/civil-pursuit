@@ -975,6 +975,8 @@ describe ( '<Item>' , function () {
 
     let topLevelType;
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     describe ( 'Get top level panel items', function () {
 
       let topLevelPanelItems;
@@ -1089,6 +1091,8 @@ describe ( '<Item>' , function () {
       });
 
     });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     describe ( 'from a parent item > ' , function () {
 

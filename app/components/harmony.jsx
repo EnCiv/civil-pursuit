@@ -17,8 +17,6 @@ class Harmony extends React.Component {
 
     let { harmony } = type;
 
-    console.info({ harmony })
-
     this.leftId = null;
     this.rightId = null;
 

@@ -4,7 +4,7 @@ import Item from '../models/item';
 
 function getItems (event, panel, item) {
   try {
-    let id      =   'panel-' + panel.type._id || panel.type;
+    let id        =   'panel-' + panel.type._id || panel.type;
     const query   =   { type : panel.type._id || panel.type};
 
     if ( panel.parent ) {
