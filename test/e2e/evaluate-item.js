@@ -1,33 +1,48 @@
 'use strict';
 
-import EvaluateItem from '../../app/lib/test/e2e/evaluate-item';
-import CreateItem from '../../app/lib/test/e2e/create-item';
+import EvaluateItem         from '../../app/lib/test/e2e/evaluate-item';
+import CreateItem           from '../../app/lib/test/e2e/create-item';
 
 describe ( 'Evaluate item' , function () {
 
   const props = {};
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  function createIssue (done, options = {}) {
+    this.timeout(1000 * 30);
+
+    const _props = Object.assign(
+      props,
+      { join : false, train : false },
+      options
+    );
+
+    CreateItem.run(_props).then(
+      results => {
+        props.item = results.item;
+        done();
+      },
+      done
+    );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   it ( 'should get driver' , function () {
     props.driver = global.driver;
     props.port = 13012;
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   describe ( 'Issue #1', function () {
-    it ( 'should create issue', function (done) {
 
-      this.timeout(1000 * 30);
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      const _props = Object.assign(props, { join : false, train : false });
+    it ( 'should create issue', createIssue );
 
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it ( 'should have an evaluation cycle', function (done) {
 
@@ -35,7 +50,9 @@ describe ( 'Evaluate item' , function () {
 
     });
 
-    describe ('Cursor', function () {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    describe ( 'Cursor', function () {
 
       it ( 'should be 1', function (done) {
 
@@ -45,7 +62,9 @@ describe ( 'Evaluate item' , function () {
 
     });
 
-    describe ('Limit', function () {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    describe ( 'Limit', function () {
 
       it ( 'should be 1', function (done) {
 
@@ -54,24 +73,30 @@ describe ( 'Evaluate item' , function () {
       });
 
     });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    describe ( 'Create problem' , function () {
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it (
+        'should create a problem',
+        function (done) {
+          createIssue.apply(this, [done, { parent : props.item, type : 'Problem' }]);
+        }
+      );
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   });
 
   describe ( 'Issue #2' , function () {
-    it ( 'should create another issue', function (done) {
 
-      this.timeout(1000 * 30);
-
-      const _props = Object.assign(props, { join : false, train : false });
-
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    it ( 'should create another issue', createIssue );
 
     it ( 'should have an evaluation cycle', function (done) {
 
@@ -101,21 +126,7 @@ describe ( 'Evaluate item' , function () {
   });
 
   describe ( 'Issue #3' , function () {
-    it ( 'should create another issue', function (done) {
-
-      this.timeout(1000 * 30);
-
-      const _props = Object.assign(props, { join : false, train : false });
-
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    it ( 'should create another issue', createIssue );
 
     it ( 'should have an evaluation cycle', function (done) {
 
@@ -145,21 +156,7 @@ describe ( 'Evaluate item' , function () {
   });
 
   describe ( 'Issue #4' , function () {
-    it ( 'should create another issue', function (done) {
-
-      this.timeout(1000 * 30);
-
-      const _props = Object.assign(props, { join : false, train : false });
-
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    it ( 'should create another issue', createIssue );
 
     it ( 'should wait 2 seconds', function (done) {
 
@@ -197,21 +194,7 @@ describe ( 'Evaluate item' , function () {
   });
 
   describe ( 'Issue #5' , function () {
-    it ( 'should create another issue', function (done) {
-
-      this.timeout(1000 * 30);
-
-      const _props = Object.assign(props, { join : false, train : false });
-
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    it ( 'should create another issue', createIssue );
 
     it ( 'should have an evaluation cycle', function (done) {
 
@@ -241,21 +224,7 @@ describe ( 'Evaluate item' , function () {
   });
 
   describe ( 'Issue #6' , function () {
-    it ( 'should create another issue', function (done) {
-
-      this.timeout(1000 * 30);
-
-      const _props = Object.assign(props, { join : false, train : false });
-
-      CreateItem.run(_props).then(
-        results => {
-          props.item = results.item;
-          done();
-        },
-        done
-      );
-
-    });
+    it ( 'should create another issue', createIssue );
 
     it ( 'should have an evaluation cycle', function (done) {
 

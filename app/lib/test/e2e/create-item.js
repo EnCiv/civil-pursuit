@@ -17,6 +17,8 @@ class CreateItem {
     //
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static startDriver (props) {
     return new Promise((ok, ko) => {
 
@@ -32,6 +34,8 @@ class CreateItem {
 
     });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static getType (props) {
     return new Promise((ok, ko) => {
@@ -64,10 +68,26 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static isTypeHarmony (props) {
+    return new Promise((ok, ko) => {
+      props.type.isHarmony().then(
+        isHarmony => {
+          props.isHarmony = isHarmony;
+          ok();
+        },
+        ko
+      );
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static getParent (props) {
     return new Promise((ok, ko) => {
       if ( props.options.parent ) {
-        ItemModel.findById(props.option.parent).then(
+        ItemModel.findById(props.options.parent).then(
           item => {
             if ( ! item ) {
               return ko(new Error('No such parent'));
@@ -96,6 +116,8 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static join (props) {
     return new Promise((ok,ko) => {
       if ( props.options.join === false ) {
@@ -104,6 +126,8 @@ class CreateItem {
       Join.run(props).then(ok, ko);
     });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static train (props) {
     return new Promise((ok, ko) => {
@@ -114,11 +138,15 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static goHome (props) {
     let url = `http://localhost:${props.options.port || 3012}`;
 
     return props.driver.client.url(url);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static goRightPage (props) {
     let url = `http://localhost:${props.options.port || 3012}`;
@@ -130,27 +158,60 @@ class CreateItem {
     return props.driver.client.url(url);
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static clickToggle (props) {
+    return new Promise((ok, ko) => {
+      let panelId;
 
-    let panelId;
+      if ( props.parent ) {
+        // click on button to appear panel
 
-    if ( props.parent ) {
-      panelId = makePanelId(props.parent);
-    }
-    else {
-      panelId = makePanelId({ type : props.type });
-    }
+        let button;
 
-    const toggler = `.syn-panel-${panelId} > .syn-panel-heading > .toggle-creator`;
+        if ( props.isHarmony ) {
+          button = 'harmony-button';
+        }
+        else {
+          button = 'subtype-button';
+        }
 
-    return props.driver.client.click(toggler);
+        props.driver.client.click(`#item-${props.parent._id} > .item-buttons .${button}`).then(
+          () => {
+            panelId = `${props.type._id}-${props.parent._id}`;
+
+            const toggler = `.syn-panel-${panelId} > .syn-panel-heading > .toggle-creator`;
+
+            props.driver.client.pause(2500).then(
+              () => {
+                console.log('done here')
+                props.driver.client.click(toggler).then(ok, ko);
+              },
+              ko
+            );
+          },
+          ko
+        );
+      }
+      else {
+        panelId = makePanelId({ type : props.type });
+
+        const toggler = `.syn-panel-${panelId} > .syn-panel-heading > .toggle-creator`;
+
+        console.log({ panelId, toggler });
+
+        props.driver.client.click(toggler).then(ok, ko);
+      }
+    });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static setSubject (props) {
     let panelId;
 
     if ( props.parent ) {
-      panelId = makePanelId(props.parent);
+      panelId = `${props.type._id}-${props.parent._id}`;
     }
     else {
       panelId = makePanelId({ type : props.type });
@@ -168,11 +229,13 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static setDescription (props) {
     let panelId;
 
     if ( props.parent ) {
-      panelId = makePanelId(props.parent);
+      panelId = `${props.type._id}-${props.parent._id}`;
     }
     else {
       panelId = makePanelId({ type : props.type });
@@ -187,7 +250,7 @@ class CreateItem {
     let panelId;
 
     if ( props.parent ) {
-      panelId = makePanelId(props.parent);
+      panelId = `${props.type._id}-${props.parent._id}`;
     }
     else {
       panelId = makePanelId({ type : props.type });
@@ -197,6 +260,8 @@ class CreateItem {
 
     return props.driver.client.click(submit);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static findItemDocument (props) {
     return new Promise((ok, ko) => {
@@ -218,6 +283,8 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static leave (props) {
     return new Promise((ok, ko) => {
 
@@ -238,17 +305,23 @@ class CreateItem {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static run (options = {}) {
     return new Promise((ok, ko) => {
       try {
 
         const props = { options };
 
+        console.log(require('util').inspect({ props }, { depth: null }));
+
         sequencer([
 
           this.startDriver,
 
           this.getType,
+
+          this.isTypeHarmony,
 
           this.getParent,
 

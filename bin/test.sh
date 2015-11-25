@@ -14,5 +14,6 @@ mocha --compilers js:babel/register \
   test/e2e/join \
   test/e2e/training-in \
   test/e2e/evaluate-item \
+  test/e2e/nav \
   test/e2e/item-page \
   test/e2e/stop

@@ -67,13 +67,20 @@ function toPanelItem () {
                             item.children   =   results[3];
                             item.harmony    =   results[4];
 
-                            const harmony = this.__populated.type.__populated.harmony;
+                            // const { harmony } = this.__populated.type.__populated;
+                            //
+                            // if ( harmony ) {
+                            //   this.__populated.type.set('harmony', harmony);
+                            // }
 
                             item.type       =   this.__populated.type;
 
-                            if ( harmony ) {
-                              item.type.set('harmony', harmony);
-                            }
+                            item.harmony.types = this.__populated.type.__populated.harmony;
+
+                            // if ( harmony ) {
+                            //   delete item.type.harmony;
+                            //   item.type.harmony = harmony;
+                            // }
 
                             item.user       =   this.__populated.user;
 

@@ -13,21 +13,19 @@ class Harmony extends React.Component {
 
     this.status = 'iddle';
 
-    let { type } = this.props.item;
-
-    let { harmony } = type;
+    const { harmony } = this.props.item;
 
     this.leftId = null;
     this.rightId = null;
 
-    if ( harmony.length ) {
-      this.leftId = makePanelId( { type : harmony[0], parent : this.props.item._id });
+    if ( harmony.types.length ) {
+      this.leftId = makePanelId( { type : harmony.types[0], parent : this.props.item._id });
 
-      this.rightId = makePanelId( { type : harmony[1], parent : this.props.item._id });
-
-      console.log(this.leftId)
+      this.rightId = makePanelId( { type : harmony.types[1], parent : this.props.item._id });
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
@@ -35,14 +33,14 @@ class Harmony extends React.Component {
 
       if ( ! props.panels[this.leftId] ) {
         window.Dispatcher.emit('get items', {
-          type        :   props.item.type.harmony[0],
+          type        :   props.item.harmony.types[0],
           parent      :   props.item._id
         });
       }
 
       if ( ! props.panels[this.rightId] ) {
         window.Dispatcher.emit('get items', {
-          type        :   props.item.type.harmony[1],
+          type        :   props.item.harmony.types[1],
           parent      :   props.item._id
         });
       }

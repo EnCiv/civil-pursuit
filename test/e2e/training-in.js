@@ -11,6 +11,7 @@ describe ( 'Training' , function () {
   });
 
   it ( 'should go home', function (done) {
+    this.timeout(3000);
     props.driver.client.url('http://localhost:13012').then(
       () => done(), done
     );
