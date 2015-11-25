@@ -18,7 +18,7 @@ class Harmony extends React.Component {
     this.leftId = null;
     this.rightId = null;
 
-    if ( harmony.types.length ) {
+    if ( harmony.types && harmony.types.length ) {
       this.leftId = makePanelId( { type : harmony.types[0], parent : this.props.item._id });
 
       this.rightId = makePanelId( { type : harmony.types[1], parent : this.props.item._id });
