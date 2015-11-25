@@ -36918,7 +36918,7 @@ module.exports = function(arr, fn, initial){
   return curr;
 };
 },{}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
