@@ -1,7 +1,9 @@
 'use strict';
 
+import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from '../../lib/util/describe';
+import isType               from '../../lib/assertions/type';
 import Type                 from '../../models/type';
 
 function test () {
@@ -28,6 +30,26 @@ function test () {
               );
 
           }
+        },
+
+        {
+          'Error' : [
+
+            {
+              'should be a Mungo Error' : (ok, ko) => {
+
+                try {
+                  locals.dbError.should.be.an.instanceof(Mungo.Error);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+
+              }
+            }
+
+          ]
         }
 
       ]
