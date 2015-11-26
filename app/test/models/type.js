@@ -47,6 +47,54 @@ function test () {
                 }
 
               }
+            },
+
+            {
+              'should have a code' : (ok, ko) => {
+
+                try {
+                  locals.dbError.should.have.property('code');
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+
+              }
+            },
+
+            {
+              'code' : [
+
+                {
+                  [`should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`] : (ok, ko) => {
+
+                    try {
+                      locals.dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                }
+
+              ]
+            },
+
+            {
+              'should have a message' : (ok, ko) => {
+
+                try {
+                  locals.dbError.should.have.property('originalMessage');
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+
+              }
             }
 
           ]
