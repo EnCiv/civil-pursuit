@@ -23,10 +23,7 @@ function reset () {
               try {
                 let model = require(path.resolve(__dirname, `../models/${file}`));
 
-                console.log('Removing', model.name);
-
                 model.remove({}, { limit  : false }).then(() => {
-                  console.log('Removed', model.name);
                   ok();
                 }, ko);
               }

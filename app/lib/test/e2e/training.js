@@ -1,14 +1,15 @@
 'use strict';
 
+import colors               from 'colors';
 import should               from 'should';
 import sequencer            from '../../util/sequencer';
 import WebDriver            from '../../app/webdriver';
 import Training             from '../../../models/training';
+import describe             from '../../util/describe';
 
 class E2E_Training {
   static startDriver (props) {
     return new Promise((ok, ko) => {
-
       if ( props.options.driver ) {
         props.driver = props.options.driver;
         return ok();
@@ -18,7 +19,6 @@ class E2E_Training {
         props.driver = new WebDriver();
         props.driver.on('ready', ok);
       }
-
     });
   }
 
@@ -27,7 +27,7 @@ class E2E_Training {
   }
 
   static iGetTraining (props) {
-    return new Promise((ok, ko) => {
+    return it('should get instructions from DB', (ok, ko) => {
       Training.find({}, { sort : { step : 1 } }).then(
         instructions => {
           props.instructions = instructions;
@@ -39,10 +39,11 @@ class E2E_Training {
   }
 
   static findOutIfUserIsSignedIn (props) {
-    return new Promise((ok, ko) => {
+    return it('should find out if user is signed in by checking if cookie is here', (ok, ko) => {
       props.driver.client.getCookie('synuser').then(
         cookie => {
           props.isSignedIn = !! cookie;
+          it.inspect('Is user signed in?', !! props.isSignedIn);
           ok();
         },
         ko
@@ -51,7 +52,7 @@ class E2E_Training {
   }
 
   static reduceInstructions (props) {
-    return new Promise((ok, ko) => {
+    return it('should exclude instructions that require to be signed-in if user is not signed in', (ok, ko) => {
 
       if ( ! props.isSignedIn ) {
         props.instructions = props.instructions.filter(instruction => ! instruction.in);
@@ -63,7 +64,7 @@ class E2E_Training {
   }
 
   static iSeeTraining (props) {
-    return new Promise((ok, ko) => {
+    return it('Training tooltip should be visible', (ok, ko) => {
       const interval = setInterval(() => {
         props.driver.client.isVisible('#syn-training').then(
           visible => {
@@ -81,8 +82,6 @@ class E2E_Training {
     });
   }
 
-
-
   static allInstructionsAreCorrect (props) {
     return new Promise((ok, ko) => {
 
@@ -93,11 +92,12 @@ class E2E_Training {
       sequencer(props.instructions.map(instruction =>
         () => sequencer([
 
-          () => new Promise((ok, ko) => {
+          () => it('check if there is a current instruction at cursor ' + props.cursor, (ok, ko) => {
 
             props.driver.client.isExisting(props.instructions[props.cursor].element).then(
               exists => {
                 props.elementsNotPresent[props.cursor] = exists;
+                it.inspect('Is there currently an instruction at cursor ' + props.cursor + '?', exists);
                 ok();
               },
               ko
@@ -105,7 +105,7 @@ class E2E_Training {
 
           }),
 
-          () => new Promise((ok, ko) => {
+          () => it('verify title is correct if there is currently an instruction at cursor -- skip otherwise', (ok, ko) => {
             if ( ! props.elementsNotPresent[props.cursor] ) {
               return ok();
             }
@@ -178,39 +178,71 @@ class E2E_Training {
   }
 
   static run (options = {}) {
+    const props = { options };
+
+    const serie = [
+      {
+        'it should set driver' : (ok, ko) => this.startDriver(props).then(ok, ko)
+      },
+
+      {
+        'it should go home' : (ok, ko) => this.goHome(props).then(ok, ko)
+      }
+    ];
+
     return new Promise((ok, ko) => {
-      try {
-
-        const props = { options };
-
-        sequencer([
-
-          this.startDriver,
-
-          this.goHome,
-
-          this.iGetTraining,
-
-          this.findOutIfUserIsSignedIn,
-
-          this.reduceInstructions,
-
-          this.iSeeTraining,
-
-          this.allInstructionsAreCorrect,
-
-          this.doNotShowNextTime,
-
-          this.leave
-
-
-        ], props).then(ok, ko);
-      }
-      catch ( error ) {
-        ko(error);
-      }
+      describe('E2E Training', serie).then(() => ok(props));
     });
   }
+
+  // static run (options = {}) {
+  //   return new Promise((ok, ko) => {
+  //     try {
+  //
+  //       const props = { options };
+  //
+  //       describe ( 'Training', () => {
+  //
+  //         describe ( 'Driver', () => {
+  //
+  //           it ( 'should set driver' , () => {
+  //
+  //
+  //
+  //           } );
+  //
+  //         } );
+  //
+  //       });
+  //
+  //       sequencer([
+  //
+  //         this.startDriver,
+  //
+  //         this.goHome,
+  //
+  //         this.iGetTraining,
+  //
+  //         this.findOutIfUserIsSignedIn,
+  //
+  //         this.reduceInstructions,
+  //
+  //         this.iSeeTraining,
+  //
+  //         this.allInstructionsAreCorrect,
+  //
+  //         this.doNotShowNextTime,
+  //
+  //         this.leave
+  //
+  //
+  //       ], props).then(ok, ko);
+  //     }
+  //     catch ( error ) {
+  //       ko(error);
+  //     }
+  //   });
+  // }
 
   static leave (props) {
     return new Promise((ok, ko) => {

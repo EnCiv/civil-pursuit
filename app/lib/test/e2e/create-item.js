@@ -184,7 +184,6 @@ class CreateItem {
 
             props.driver.client.pause(2500).then(
               () => {
-                console.log('done here')
                 props.driver.client.click(toggler).then(ok, ko);
               },
               ko
@@ -197,8 +196,6 @@ class CreateItem {
         panelId = makePanelId({ type : props.type });
 
         const toggler = `.syn-panel-${panelId} > .syn-panel-heading > .toggle-creator`;
-
-        console.log({ panelId, toggler });
 
         props.driver.client.click(toggler).then(ok, ko);
       }
@@ -305,15 +302,16 @@ class CreateItem {
     });
   }
 
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static run (options = {}) {
     return new Promise((ok, ko) => {
       try {
 
-        const props = { options };
+        console.log(require('util').inspect(options, { depth: null }));
 
-        console.log(require('util').inspect({ props }, { depth: null }));
+        const props = { options };
 
         sequencer([
 

@@ -2,7 +2,7 @@
 
 import Training from '../../app/lib/test/e2e/training';
 
-describe ( 'Training' , function () {
+describe ( 'Training (Signed in)' , function () {
 
   const props = {};
 
@@ -36,6 +36,8 @@ describe ( 'Training' , function () {
   });
 
   it ( 'should see training', function (done) {
+
+    this.timeout(3500);
 
     Training.iSeeTraining(props).then(done, done);
 

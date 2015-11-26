@@ -4,7 +4,7 @@
   "description": "Synapp",
   "main": "index.js",
   "scripts": {
-    "test": "bin/test.sh",
+    "test": "node dist/bin/test",
     "start": "node dist/bin/start.js",
     "magic-start": "npm install && npm start",
     "postinstall": "./post-install.sh",
@@ -29,6 +29,7 @@
   "dependencies": {
     "async": "~0.9.0",
     "babel": "^5.4.7",
+    "babel-polyfill": "^6.2.0",
     "babel-runtime": "^5.8.25",
     "bcrypt": "~0.8.0",
     "bcryptjs": "^2.3.0",

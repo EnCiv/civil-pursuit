@@ -2,7 +2,7 @@
 
 import Training from '../../app/lib/test/e2e/training';
 
-describe ( 'Training' , function () {
+describe ( 'Training (Visitor)' , function () {
 
   const props = {};
 

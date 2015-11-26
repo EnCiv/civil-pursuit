@@ -146,8 +146,8 @@
 
 ,
 {
-        "element" : ".syn-panel-body .syn-panel-body .harmony-button",
-    "click" : ".syn-panel-body .syn-panel-body .subtype-button",
+        "element" : ".syn-panel-body .harmony-button",
+    "click" : ".syn-panel-body .subtype-button",
     "description" : "Click here (go ahead) to see a two sided deliberative investigation into how people agree or disagree with that as a problem for this issues.",
     "step" : 180,
     "title" : "Harmony",
@@ -156,8 +156,8 @@
 
 ,
 {
-        "element" : ".syn-panel-body .syn-panel-body .subtype-button",
-    "click" : ".syn-panel-body .syn-panel-body .syn-panel-body .harmony-button",
+        "element" : ".syn-panel-body .subtype-button",
+    "click" : ".syn-panel-body .harmony-button",
     "description" : "Click here to dig into solutions for this problem. ",
     "step" : 190,
     "title" : "Solutions",
@@ -166,7 +166,7 @@
 
 ,
 {
-        "element" : ".syn-panel-body .syn-panel-body .syn-panel-body .harmony-button",
+        "element" : ".syn-panel-body .harmony-button",
     "description" : "Click here to participate in the Pro/Con deliberation about this solution. As in all cases, you are allowed to add to both sides of the discussion because the purpose to fully consider the solution and make the best decision.",
     "step" : 200,
     "title" : "Pro/Cons"
