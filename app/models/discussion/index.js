@@ -1,5 +1,6 @@
 'use strict';
 
+import colors from 'colors';
 import Mungo from 'mungo';
 import User from '../user';
 import findCurrent from './statics/find-current';
@@ -29,10 +30,10 @@ class Discussion extends Mungo.Model {
         "type"        :   Number,
         "required"    :   true
       },
-      "registered"    :   [{
-        "type"        :   User,
+      "registered"    :   {
+        "type"        :   [User],
         "required"    :   true
-      }]
+      }
     };
   }
 
