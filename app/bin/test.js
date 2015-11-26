@@ -4,6 +4,7 @@ import sequencer                from '../lib/util/sequencer';
 import getUrlTitle              from '../test/lib/app/get-url-title';
 import db                       from '../test/db';
 import user                     from '../test/models/user';
+import type                     from '../test/models/type';
 
 let tests = 0, passed = 0, failed = 0;
 const begin = Date.now();
@@ -14,7 +15,8 @@ sequencer(
   [
     getUrlTitle,
     db,
-    user
+    user,
+    type
   ]
   .map(test => () => new Promise((ok, ko) => {
     test().then(results => {
