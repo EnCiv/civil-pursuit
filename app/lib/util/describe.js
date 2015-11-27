@@ -57,7 +57,7 @@ function describe ( descriptor, stories, options = {} ) {
               let time;
 
               if ( end < 50 ) {
-                time = `(${end.toString()} ms)`.grey;
+                time = `(${end.toString()} ms)`.white;
               }
 
               else if ( end < 250 ) {
@@ -68,7 +68,7 @@ function describe ( descriptor, stories, options = {} ) {
                 time = `(${end.toString()} ms)`.red;
               }
 
-              console.log('  ' + tab + '|_'.grey + '✔'.green.bold + ' ' + storyDescriptor + ' ' + time);
+              console.log('  ' + tab + '|_'.grey + '✔'.green.bold + ' ' + storyDescriptor.grey + ' ' + time);
             }
 
             else {

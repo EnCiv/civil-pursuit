@@ -6,6 +6,8 @@ import db                       from '../test/db';
 import user                     from '../test/models/user';
 import type                     from '../test/models/type';
 import item                     from '../test/models/item';
+import http                     from '../test/http';
+import socket                   from '../test/socket';
 
 let tests = 0, passed = 0, failed = 0;
 const begin = Date.now();
@@ -18,7 +20,9 @@ sequencer(
     db,
     user,
     type,
-    item
+    item,
+    http,
+    socket
   ]
   .map(test => () => new Promise((ok, ko) => {
     test().then(results => {

@@ -1,7 +1,7 @@
 'use strict';
 
 import should from 'should';
-import Country from '../../../app/models/country';
+import Country from '../../models/country';
 import Mungo from 'mungo';
 
 should.Assertion.add('country', function (candidate = {}, extra = {}, serialized = false) {
