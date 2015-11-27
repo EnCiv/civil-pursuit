@@ -3,24 +3,24 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from '../../lib/util/describe';
-import isType               from '../../lib/assertions/type';
-import Type                 from '../../models/type';
+import isItem               from '../../lib/assertions/item';
+import Item                 from '../../models/item';
 
 function test () {
   const locals = {};
 
-  return describe ( 'Models/Type', [
+  return describe ( 'Models/Item', [
 
     {
       'Create' : [
 
         {
-          'Empty type' : [
+          'Empty item' : [
 
             {
               'should query DB and throw an error' : (ok, ko) => {
 
-                Type
+                Item
                   .create({})
                   .then(
                     user => {
@@ -104,10 +104,10 @@ function test () {
                   'message' : [
 
                     {
-                      'should be "Missing field name"' : (ok, ko) => {
+                      'should be "Missing field subject"' : (ok, ko) => {
 
                         try {
-                          locals.dbError.originalMessage.should.be.exactly('Missing field name');
+                          locals.dbError.originalMessage.should.be.exactly('Missing field subject');
                           ok();
                         }
                         catch ( error ) {
@@ -124,46 +124,7 @@ function test () {
             }
 
           ]
-        },
-
-        {
-          'Valid type' : [
-
-            {
-              'should insert into the DB' : (ok, ko) => {
-
-                locals.name = 'Test';
-
-                Type
-                  .create({ name : locals.name })
-                  .then(
-                    document => {
-                      locals.type = document;
-                      ok();
-                    },
-                    ko
-                  );
-
-              }
-            },
-
-            {
-              'should be a valid type' : (ok, ko) => {
-
-                try {
-                  locals.type.should.be.a.typeDocument({ name : locals.name });
-                  ok();
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-
-              }
-            }
-
-          ]
         }
-
       ]
     }
 
