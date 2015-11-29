@@ -124,6 +124,120 @@ function test () {
             }
 
           ]
+        },
+
+        {
+          'Missing description' : [
+
+            {
+              'should query DB and throw an error' : (ok, ko) => {
+
+                locals.subject = 'foo';
+
+                Item
+                  .create({ subject : locals.subject })
+                  .then(
+                    user => {
+                      ko(new Error('Should have thrown error'));
+                    },
+                    error => {
+                      locals.dbError = error;
+                      ok();
+                    }
+                  );
+
+              }
+            },
+
+            {
+              'Error' : [
+
+                {
+                  'should be a Mungo Error' : (ok, ko) => {
+
+                    try {
+                      locals.dbError.should.be.an.instanceof(Mungo.Error);
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'should have a code' : (ok, ko) => {
+
+                    try {
+                      locals.dbError.should.have.property('code');
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'code' : [
+
+                    {
+                      [`should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`] : (ok, ko) => {
+
+                        try {
+                          locals.dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
+                          ok();
+                        }
+                        catch ( error ) {
+                          ko(error);
+                        }
+
+                      }
+                    }
+
+                  ]
+                },
+
+                {
+                  'should have a message' : (ok, ko) => {
+
+                    try {
+                      locals.dbError.should.have.property('originalMessage');
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'message' : [
+
+                    {
+                      'should be "Missing field description"' : (ok, ko) => {
+
+                        try {
+                          locals.dbError.originalMessage.should.be.exactly('Missing field description');
+                          ok();
+                        }
+                        catch ( error ) {
+                          ko(error);
+                        }
+
+                      }
+                    }
+
+                  ]
+                }
+
+              ]
+            }
+
+          ]
         }
       ]
     }

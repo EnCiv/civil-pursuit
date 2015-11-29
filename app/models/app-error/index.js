@@ -5,24 +5,39 @@ import Mungo from 'mungo';
 class AppError extends Mungo.Model {
   static schema () {
     return {
-      name        :   String,
-      message     :   String,
+      name        :   {
+        type      :   String,
+        required  :   true
+      },
+      message     :   {
+        type      :   String,
+        required  :   true
+      },
       code        :   String,
-      stack       :   String,
+      stack       :   {
+        type      :   String,
+        required  :   true
+      },
       debug       :   Object,
       repair      :   [Mungo.Mixed]
     };
   }
 
   static throwError (error) {
-    return this.create({
+    const err = {
       name      :   error.name,
       message   :   error.message,
-      code      :   error.code,
-      stack     :   error.stack,
-      debug     :   error.debug,
-      repair    :   error.repair
-    });
+      stack     :   error.stack
+    };
+
+    for ( let optional of ['code', 'debug', 'repair'] ) {
+      if ( optional in error ) {
+        err[optional] = error[optional];
+      }
+    }
+
+
+    return this.create(err);
   }
 }
 

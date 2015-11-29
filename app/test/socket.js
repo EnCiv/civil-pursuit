@@ -23,6 +23,34 @@ import getTraining                from '../api/get-training';
 import Country                    from '../models/country';
 import Config                     from '../models/config';
 
+function Socket () {
+
+  if ( ! Socket.socket ) {
+    Socket.socket = new EventEmitter();
+
+    // socket.handshake.headers.host
+
+    Socket.socket.request = {
+      headers: {
+        host  : 'localhost:13012',
+        cookie : 'synapp=j%3A%7B%22training%22%3Atrue%7D'
+      }
+    };
+
+    Socket.socket.error = function (error) {
+      Socket.socket.emit('error', error);
+    };
+
+    Socket.socket.ok = (event, ...responses) => {
+      Socket.socket.emit('OK ' + event, ...responses);
+    };
+  }
+
+  return Socket.socket;
+}
+
+const client2 = Socket();
+
 
 function test () {
   const locals = {
@@ -55,6 +83,31 @@ function test () {
           ]
         }
 
+      ]
+    },
+    {
+      'Identify' : [
+        {
+          'should set synuser' : (ok, ko) => {
+            User
+              .findOne()
+              .then(
+                user => {
+                  try {
+                    const json = user.toJSON();
+                    client2.synuser = {
+                      id : json._id
+                    };
+                    ok();
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          }
+        }
       ]
     }
 

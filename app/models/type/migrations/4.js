@@ -32,7 +32,7 @@ class V4 {
           .then(
             issue => {
               try {
-                if ( issue.harmony.length ) {
+                if ( issue && issue.harmony.length ) {
                   return ok();
                 }
 

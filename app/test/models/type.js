@@ -162,6 +162,77 @@ function test () {
             }
 
           ]
+        },
+
+        {
+          'Name is unique' : [
+            {
+              'should throw' : (ok, ko) => {
+                Type
+                  .create({ name : locals.name })
+                  .then(
+                    () => ko(new Error('Should have thrown error')),
+                    error => {
+                      locals.dbError = error;
+                      ok();
+                    }
+                  );
+              }
+            },
+            {
+              'Error' : [
+
+                {
+                  'should be a MongoDB Error' : (ok, ko) => {
+
+                    try {
+                      locals.dbError.name.should.be.exactly('MongoError');
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'should have a code' : (ok, ko) => {
+
+                    try {
+                      locals.dbError.should.have.property('code');
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'code' : [
+
+                    {
+                      'should be 11000' : (ok, ko) => {
+
+                        try {
+                          locals.dbError.code.should.be.exactly(11000);
+                          ok();
+                        }
+                        catch ( error ) {
+                          ko(error);
+                        }
+
+                      }
+                    }
+
+                  ]
+                }
+
+              ]
+            }
+          ]
         }
 
       ]

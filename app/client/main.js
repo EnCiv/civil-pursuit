@@ -545,3 +545,8 @@ window.socket
     render();
   })
 ;
+
+window.onpopstate = function (event) {
+  props.path = location.pathname;
+  render();
+};

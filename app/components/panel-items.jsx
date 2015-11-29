@@ -14,7 +14,6 @@ class PanelItems extends React.Component {
     panel           :   panelType
   }
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   loadMore (e) {

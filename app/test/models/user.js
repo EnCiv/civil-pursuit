@@ -1047,6 +1047,120 @@ function test () {
             }
 
           ]
+        },
+
+        {
+          'Add another race' : [
+
+            {
+              'should find another race' : (ok, ko) => {
+
+                Race
+                  .findOneRandom({ _id : { $ne : locals.race._id } })
+                  .then(
+                    document => {
+                      locals.race = document;
+                      ok();
+                    },
+                    ko
+                  );
+
+              }
+            },
+
+            {
+              'Race' : [
+
+                {
+                  'should be a race' : (ok, ko) => {
+
+                    try {
+                      locals.race.should.be.an.instanceof(Race);
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                }
+
+              ]
+            },
+
+            {
+              'Add race to user' : [
+
+                {
+                  'should add race to user' : (ok, ko) => {
+
+                    try {
+                      locals.user.addRace(locals.race);
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                },
+
+                {
+                  'should save' : (ok, ko) => {
+
+                    locals.user.save().then(ok, ko);
+
+                  }
+                }
+
+              ]
+            },
+
+            {
+              'Find user again' : [
+
+                {
+                  'should be found' : (ok, ko) => {
+
+                    User
+                      .findOne({ email : locals.email })
+                      .then(
+                        document => {
+                          locals.user = document;
+                          ok();
+                        },
+                        ko
+                      );
+
+                  }
+                },
+
+                {
+                  'should have two races now' : (ok, ko) => {
+
+                    try {
+                      locals.user.should.have.property('race')
+                        .which.is.an.Array();
+
+                      locals.user.race.should.have.length(2);
+
+                      locals.user.race[1].should.be.an.instanceof(Mungo.ObjectID);
+
+                      locals.user.race[1].equals(locals.race._id).should.be.true;
+
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+
+                  }
+                }
+
+              ]
+            }
+
+          ]
         }
 
       ]

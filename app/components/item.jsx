@@ -283,15 +283,15 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   selectItem () {
-    const ancestors = this.props.item.lineage.map(ancestor => ancestor._id);
-
-    for ( let panel in this.props.panels ) {
-      this.props.panels[panel].items.forEach(item => {
-        if ( item._id !== this.props.item._id && ancestors.indexOf(item._id) === -1 ) {
-          document.querySelector(`#item-${item._id}`).classList.add('item-hidden');
-        }
-      });
-    }
+    // const ancestors = this.props.item.lineage.map(ancestor => ancestor._id);
+    //
+    // for ( let panel in this.props.panels ) {
+    //   this.props.panels[panel].items.forEach(item => {
+    //     if ( item._id !== this.props.item._id && ancestors.indexOf(item._id) === -1 ) {
+    //       document.querySelector(`#item-${item._id}`).classList.add('item-hidden');
+    //     }
+    //   });
+    // }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

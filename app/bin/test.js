@@ -4,10 +4,13 @@ import sequencer                from '../lib/util/sequencer';
 import getUrlTitle              from '../test/lib/app/get-url-title';
 import db                       from '../test/db';
 import user                     from '../test/models/user';
+import appError                 from '../test/models/app-error';
 import type                     from '../test/models/type';
 import item                     from '../test/models/item';
 import http                     from '../test/http';
 import socket                   from '../test/socket';
+import e2e                      from '../test/e2e';
+import stopE2e                  from '../test/e2e-stop';
 
 let tests = 0, passed = 0, failed = 0;
 const begin = Date.now();
@@ -16,16 +19,19 @@ console.log();
 
 sequencer(
   [
-    getUrlTitle,
+    // getUrlTitle,
     db,
+    appError,
     user,
     type,
     item,
     http,
-    socket
+    socket,
+    e2e,
+    stopE2e
   ]
-  .map(test => () => new Promise((ok, ko) => {
-    test().then(results => {
+  .map(test => props => new Promise((ok, ko) => {
+    test(props).then(results => {
       tests += results.tests;
       passed += results.passed;
       failed += results.failed;

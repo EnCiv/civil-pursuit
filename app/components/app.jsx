@@ -1,16 +1,16 @@
 'use strict';
 
-import React              from 'react';
-import Layout             from './layout';
-import Stories            from './stories';
-import Profile            from './profile';
-import KitchenSink        from './kitchen-sink';
-import TermsOfService     from './terms-of-service';
-import Home               from './home';
-import ResetPassword      from './reset-password';
-import PanelItems         from './panel-items';
-import panelItemType      from '../lib/proptypes/panel-item';
-import panelType          from '../lib/proptypes/panel';
+import React                            from 'react';
+import Layout                           from './layout';
+import Stories                          from './stories';
+import Profile                          from './profile';
+import KitchenSink                      from './kitchen-sink';
+import TermsOfService                   from './terms-of-service';
+import Home                             from './home';
+import ResetPassword                    from './reset-password';
+import PanelItems                       from './panel-items';
+import panelItemType                    from '../lib/proptypes/panel-item';
+import panelType                        from '../lib/proptypes/panel';
 
 class App extends React.Component {
 

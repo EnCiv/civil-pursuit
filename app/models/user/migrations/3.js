@@ -1,7 +1,15 @@
 'use strict';
 
-import Mungo from 'mungo';
-import mongodb from 'mungo/node_modules/mongodb';
+import Mungo          from 'mungo';
+import mongodb        from 'mungo/node_modules/mongodb';
+import Race                             from '../../race';
+import MaritalStatus                    from '../../marital-status';
+import Employment                       from '../../employment';
+import Education                        from '../../education';
+import PoliticalParty                   from '../../political-party';
+import Country                          from '../../country';
+import State                            from '../../state';
+
 
 const collection = 'users';
 
