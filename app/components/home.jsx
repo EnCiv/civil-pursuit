@@ -45,7 +45,6 @@ class Home extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-
     let content = (
       <Loading message="Loading issues..." />
     );
@@ -57,20 +56,20 @@ class Home extends React.Component {
       if ( now < deadline ) {
         content = ( <Countdown discussion={ this.state.discussion } { ...this.props } /> );
       }
+    }
 
-      else if ( this.props.topLevelType ) {
-        const panel = this.props.panels[this.props.topLevelType];
+    else if ( this.props.topLevelType ) {
+      const panel = this.props.panels[this.props.topLevelType];
 
-        content = (
-          <div>
-            <div id="top-level-panel">
-              <PanelItems panel={ panel } { ...this.props } />
-            </div>
-
-            <Training { ...this.props } />
+      content = (
+        <div>
+          <div id="top-level-panel">
+            <PanelItems panel={ panel } { ...this.props } />
           </div>
-        );
-      }
+
+          <Training { ...this.props } />
+        </div>
+      );
     }
 
     return content;

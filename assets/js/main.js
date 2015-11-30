@@ -633,7 +633,6 @@ var App = (function (_React$Component) {
           break;
 
         case 'items':
-          console.log('items focus');
 
           var panelId2 = Object.keys(this.props.panels)[0];
 
@@ -2375,7 +2374,6 @@ var Home = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-
       var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading issues...' });
 
       if (this.state.discussion) {
@@ -2387,20 +2385,20 @@ var Home = (function (_React$Component) {
 
         if (now < deadline) {
           content = _react2['default'].createElement(_countdown2['default'], _extends({ discussion: this.state.discussion }, this.props));
-        } else if (this.props.topLevelType) {
-          var panel = this.props.panels[this.props.topLevelType];
-
-          content = _react2['default'].createElement(
-            'div',
-            null,
-            _react2['default'].createElement(
-              'div',
-              { id: 'top-level-panel' },
-              _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props))
-            ),
-            _react2['default'].createElement(_training2['default'], this.props)
-          );
         }
+      } else if (this.props.topLevelType) {
+        var panel = this.props.panels[this.props.topLevelType];
+
+        content = _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            'div',
+            { id: 'top-level-panel' },
+            _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props))
+          ),
+          _react2['default'].createElement(_training2['default'], this.props)
+        );
       }
 
       return content;
