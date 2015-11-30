@@ -4,10 +4,16 @@ import React from 'react';
 import Image from './image';
 
 class CloudinaryImage extends React.Component {
-  render () {
-    let url = ['http:/', 'res.cloudinary.com', 'hscbexf6a', 'image', 'upload'];
+  static propTypes    =   {
+    transparent       :   React.PropTypes.bool,
+    version           :   React.PropTypes.string,
+    id                :   React.PropTypes.string
+  }
 
-    let filters = [];
+  render () {
+    const url = ['http:/', 'res.cloudinary.com', 'hscbexf6a', 'image', 'upload'];
+
+    const filters = [];
 
     if ( this.props.transparent ) {
       filters.push('e_make_transparent');

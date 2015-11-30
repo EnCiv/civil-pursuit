@@ -1,17 +1,17 @@
 'use strict';
 
-function addRace (race) {
+function addRace (raceId) {
   if ( ! this.race ) {
-    this.set('race', [race]);
+    this.set('race', [raceId]);
   }
 
   else if ( ! this.race.length ) {
-    this.push('race', race);
+    this.push('race', raceId);
   }
 
   else {
     const reduce = (hasRace, _race) => {
-      if ( _race.toString() === race.toString() ) {
+      if ( _race.toString() === raceId.toString() ) {
         hasRace = true;
       }
 
@@ -24,7 +24,7 @@ function addRace (race) {
       throw new Error('Already has race');
     }
 
-    this.push('race', race);
+    this.push('race', raceId);
   }
 
   return this;

@@ -1,18 +1,22 @@
 'use strict';
 
-import React                from 'react';
-import superagent           from 'superagent';
-import Button               from './util/button';
-import Icon                 from './util/icon';
-import __instructions       from '../lib/proptypes/instructions';
-import __user               from '../lib/proptypes/user';
+import React                        from 'react';
+import superagent                   from 'superagent';
+import Button                       from './util/button';
+import Icon                         from './util/icon';
+import instructionType              from '../lib/proptypes/instruction';
+import userType                     from '../lib/proptypes/user';
 
 class Training extends React.Component {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static propTypes    =   {
-    instructions      :   __instructions,
-    user              :   __user
+    instructions      :  React.PropTypes.arrayOf(instructionType),
+    user              :   userType
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   state               =   {
     cursor            :   0,
@@ -20,7 +24,11 @@ class Training extends React.Component {
     dontShowNextTime  :   false
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   ready = false
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   cursor = -1
 

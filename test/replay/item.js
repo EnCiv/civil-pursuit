@@ -1,20 +1,20 @@
 'use strict';
 
-import should             from 'should';
-import Mungo              from 'mungo';
-import isItem             from '../../app/lib/assertions/item';
-import isPanelItem        from '../../app/lib/assertions/panel-item';
-import isEvaluation       from '../../app/lib/assertions/evaluation';
-import Item               from '../../app/models/item';
-import Type               from '../../app/models/type';
-import User               from '../../app/models/user';
-import Vote               from '../../app/models/vote';
-import Config             from '../../app/models/config';
-import config             from '../../secret.json';
-import publicConfig       from '../../public.json';
-import getUrlTitle        from '../../app/lib/app/get-url-title';
-import emitter            from '../../app/lib/app/emitter';
-import Agent              from '../../app/lib/app/agent';
+import should                     from 'should';
+import Mungo                      from 'mungo';
+import isItem                     from '../../app/lib/assertions/item';
+import isPanelItem                from '../../app/lib/assertions/panel-item';
+import isEvaluation               from '../../app/lib/assertions/evaluation';
+import Item                       from '../../app/models/item';
+import Type                       from '../../app/models/type';
+import User                       from '../../app/models/user';
+import Vote                       from '../../app/models/vote';
+import Config                     from '../../app/models/config';
+import config                     from '../../secret.json';
+import publicConfig               from '../../public.json';
+import getUrlTitle                from '../../app/lib/app/get-url-title';
+import emitter                    from '../../app/lib/app/emitter';
+import Agent                      from '../../app/lib/app/agent';
 
 describe ( '<Item>' , function () {
 

@@ -15,12 +15,14 @@ function group (parent, child, pro, con) {
 
           Promise.all([
             this.updateById($child._id, { parent : $parent._id }),
-            this.updateById($parent._id, { $push : { harmony : [$pro._id, $con._id] }})
+            this.updateById($parent._id, { $push : { harmony : [$pro._id, $con._id] }}),
+            this.updateById($pro._id, { parent : $parent._id }),
+            this.updateById($con._id, { parent : $parent._id })
           ])
           .then(
             results => {
-              const [ $$child, $$parent ] = results;
-              ok({ parent : $$parent, subtype : $$child, pro : $pro, con : $con });
+              const [ $$child, $$parent, $$pro, $$con ] = results;
+              ok({ parent : $$parent, subtype : $$child, pro : $$pro, con : $$con });
             },
             ko
           );

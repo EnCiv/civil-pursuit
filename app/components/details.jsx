@@ -1,63 +1,21 @@
 'use strict';
 
-import React            from 'react';
-import Loading          from './util/loading';
-import Votes            from './votes';
-
-class Popularity extends React.Component {
-  animate () {
-    let { number } = this.props;
-
-    let bar = React.findDOMNode(this.refs.bar);
-    bar.style.width = `${number}%`;
-  }
-
-  render () {
-    let { number } = this.props;
-
-    setTimeout(this.animate.bind(this), 1000);
-
-    return (
-      <div className="syn-popularity">
-        <div className="syn-popularity-bar" style={{ width : 0 }} ref="bar">{ `${number}%` }</div>
-      </div>
-    );
-  }
-}
-
-class Feedback extends React.Component {
-  render () {
-    let { entries } = this.props;
-
-    console.log({ entries });
-
-    if ( ! entries.length ) {
-      return (<div></div>);
-    }
-
-    let comments = entries.map(entry => (
-      <div key={ entry._id }>
-        { entry.feedback }
-      </div>
-    ));
-
-    return (
-      <div>
-        <h4>{ entries.length } feedback</h4>
-        { comments }
-      </div>
-    );
-  }
-}
+import React                          from 'react';
+import Loading                        from './util/loading';
+import Votes                          from './votes';
+import Popularity                     from './popularity';
+import Feedback                       from './feedback';
+import itemType                       from '../lib/proptypes/item';
 
 class Details extends React.Component {
-  constructor (props) {
-    super(props);
-
-    this.status = 'iddle';
-
-    this.state = {};
+  static propTypes = {
+    active : React.PropTypes.bool,
+    item : itemType
   }
+
+  state = {}
+
+  status = 'iddle'
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {

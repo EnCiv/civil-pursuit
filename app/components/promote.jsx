@@ -1,18 +1,25 @@
 'use strict';
 
-import React            from 'react';
-import Row              from './util/row';
-import Column           from './util/column';
-import ItemMedia        from './item-media';
-import Loading          from './util/loading';
-import Sliders          from './sliders';
-import TextArea         from './util/text-area';
-import Button           from './util/button';
-import Component        from '../lib/app/component';
+import React                          from 'react';
+import Row                            from './util/row';
+import Column                         from './util/column';
+import ItemMedia                      from './item-media';
+import Loading                        from './util/loading';
+import Sliders                        from './sliders';
+import TextArea                       from './util/text-area';
+import Button                         from './util/button';
+import Component                      from '../lib/app/component';
+import evaluationType                 from '../lib/proptypes/evaluation';
+import itemType                       from '../lib/proptypes/item';
+import criteriaType                   from '../lib/proptypes/criteria';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Header extends React.Component {
+  static propTypes = {
+    evaluation : evaluationType
+  }
+
   render () {
     let { evaluation } = this.props;
 
@@ -32,6 +39,10 @@ class Header extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Subject extends React.Component {
+  static propTypes = {
+    subject : React.PropTypes.string
+  }
+
   render () {
     return (
       <h4>{ this.props.subject }</h4>
@@ -42,6 +53,10 @@ class Subject extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Description extends React.Component {
+  static propTypes = {
+    description : React.PropTypes.string
+  }
+
   render () {
     return (
       <section className="promote-description">{ this.props.description }</section>
@@ -52,6 +67,11 @@ class Description extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Reference extends React.Component {
+  static propTypes = {
+    title : React.PropTypes.string,
+    url : React.PropTypes.string.isRequired
+  }
+
   render () {
     return (
       <h5>
@@ -76,6 +96,10 @@ class Feedback extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class PromoteButton extends React.Component {
+  static propTypes = {
+    subject : React.PropTypes.string
+  }
+
   render () {
     return (
       <Button block { ...this.props }>{ this.props.subject }</Button>
@@ -86,6 +110,12 @@ class PromoteButton extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class EditAndGoAgain extends React.Component {
+  static propTypes = {
+    items : React.PropTypes.arrayOf(itemType),
+    'panel-id' : React.PropTypes.string,
+    item : itemType
+  }
+
   editAndGoAgain (e) {
     if ( this.props.items[this.props.item._id] ) {
       window.Dispatcher.emit('set active', this.props['panel-id'], `${this.props.item._id}-edit-and-go-again`);
@@ -105,8 +135,12 @@ class EditAndGoAgain extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Finish extends React.Component {
+  static propTypes = {
+    evaluated : React.PropTypes.bool
+  }
+
   next () {
-    let { position, evaluated } = this.props;
+    let { evaluated } = this.props;
 
     let view = React.findDOMNode(this.refs.view);
 
@@ -135,6 +169,11 @@ class Finish extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ColumnItem extends React.Component {
+  static propTypes = {
+    item : itemType,
+    position : React.PropTypes.string
+  }
+
   render () {
     let { item, position } = this.props;
 
@@ -156,6 +195,11 @@ class ColumnItem extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ColumnFeedback extends React.Component {
+  static propTypes = {
+    item : itemType,
+    position : React.PropTypes.string
+  }
+
   render () {
     let { item, position } = this.props;
 
@@ -174,6 +218,12 @@ class ColumnFeedback extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ColumnSliders extends React.Component {
+  static propTypes = {
+    item : itemType,
+    position : React.PropTypes.string,
+    criterias : React.PropTypes.arrayOf(criteriaType)
+  }
+
   render () {
     let { item, position, criterias } = this.props;
 
@@ -192,6 +242,11 @@ class ColumnSliders extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ColumnButtons extends React.Component {
+  static propTypes = {
+    item : itemType,
+    position : React.PropTypes.string
+  }
+
   next () {
     let { item, position, evaluated } = this.props;
 
@@ -203,6 +258,7 @@ class ColumnButtons extends React.Component {
   }
 
   render () {
+
     let { item, position } = this.props;
 
     if ( ! item ) {
@@ -221,6 +277,14 @@ class ColumnButtons extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class SideColumn extends React.Component {
+  static propTypes = {
+    item : itemType,
+    position : React.PropTypes.string,
+    evaluated : React.PropTypes.bool,
+    criterias : React.PropTypes.arrayOf(criteriaType),
+    other : itemType
+  }
+
   next () {
     let { item, position, evaluated } = this.props;
 
@@ -269,6 +333,13 @@ class SideColumn extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Promote extends React.Component {
+
+  static propTypes = {
+    active : React.PropTypes.bool,
+    item : itemType,
+    items : React.PropTypes.arrayOf(itemType),
+    'panel-id' : React.PropTypes.string
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -8,16 +8,17 @@ import Education                        from '../education';
 import PoliticalParty                   from '../political-party';
 import Country                          from '../country';
 import State                            from '../state';
+import validateGPS                      from './hooks/validate-gps';
 import encryptPassword                  from './statics/encrypt-password';
 import lowerEmail                       from './statics/lower-email';
 import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
 import saveImage                        from './statics/save-image';
-import validateGPS                      from './statics/validate-gps';
 import resetPassword                    from './statics/reset-password';
 import lambda                           from './statics/lambda';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
+import removeRace                       from './methods/remove-race';
 import setCitizenship                   from './methods/set-citizenship';
 import V2                               from './migrations/2';
 import V3                               from './migrations/3';
@@ -134,6 +135,10 @@ class User extends Mungo.Model {
 
   addRace (...args) {
     return addRace.apply(this, args);
+  }
+
+  removeRace (...args) {
+    return removeRace.apply(this, args);
   }
 
   setCitizenship (...args) {

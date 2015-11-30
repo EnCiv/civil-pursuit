@@ -1,22 +1,35 @@
 'use strict';
 
-import React from 'react';
-import moment from 'moment';
-import Panel from './panel';
-import Button from './util/button';
+import React              from 'react';
+import moment             from 'moment';
+import Panel              from './panel';
+import Button             from './util/button';
+import userType           from '../lib/proptypes/user';
+import discussionType     from '../lib/proptypes/discussion';
 
 class Countdown extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static propTypes    =   {
+    discussion        :   discussionType,
+    user              :   userType
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  timer = null
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentDidMount () {
-    let remainingSeconds = React.findDOMNode(this.refs.remainingSeconds);
-    let remainingMinutes = React.findDOMNode(this.refs.remainingMinutes);
-    let remainingHours = React.findDOMNode(this.refs.remainingHours);
-    let remainingDays = React.findDOMNode(this.refs.remainingDays);
+    const remainingSeconds  =   React.findDOMNode(this.refs.remainingSeconds);
+    const remainingMinutes  =   React.findDOMNode(this.refs.remainingMinutes);
+    const remainingHours    =   React.findDOMNode(this.refs.remainingHours);
+    const remainingDays     =   React.findDOMNode(this.refs.remainingDays);
 
     this.timer = setInterval(() => {
-      let remainingTime = this.countRemainingTime();
+      const remainingTime = this.countRemainingTime();
 
       if ( remainingTime.days ) {
         remainingDays.querySelector('span').innerText = remainingTime.days;
@@ -37,23 +50,15 @@ class Countdown extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   countRemainingTime () {
-    let now = Date.now();
-
-    let interval = new Date(this.props.discussion.deadline ) - now;
-
-    let days = Math.floor(interval / ( 1000 * 60 * 60 * 24));
-
-    let daysRemainder = interval % ( 1000 * 60 * 60 * 24);
-
-    let hours = Math.floor(daysRemainder / ( 1000 * 60 * 60 ));
-
-    let hoursRemainder = daysRemainder % ( 1000 * 60 * 60 );
-
-    let minutes = Math.floor(hoursRemainder / ( 1000 * 60 ));
-
-    let minutesRemainder = hoursRemainder % ( 1000 * 60 );
-
-    let seconds = Math.floor(minutesRemainder / 1000);
+    const now             =   Date.now(),
+      interval            =   new Date(this.props.discussion.deadline ) - now,
+      days                =   Math.floor(interval / ( 1000 * 60 * 60 * 24)),
+      daysRemainder       =   interval % ( 1000 * 60 * 60 * 24),
+      hours               =   Math.floor(daysRemainder / ( 1000 * 60 * 60 )),
+      hoursRemainder      =   daysRemainder % ( 1000 * 60 * 60 ),
+      minutes             =   Math.floor(hoursRemainder / ( 1000 * 60 )),
+      minutesRemainder    =   hoursRemainder % ( 1000 * 60 ),
+      seconds             =   Math.floor(minutesRemainder / 1000);
 
     return { interval, days, hours, minutes, seconds };
   }
@@ -61,9 +66,16 @@ class Countdown extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   inlineEmail () {
-    let { discussion } = this.props;
+    const { discussion } = this.props;
 
-    return `mailto:?Subject=${encodeURIComponent(discussion.subject)}&Body=${encodeURIComponent(discussion.description.replace(/\{hostname\}/g, location.hostname))}`;
+    const subject = encodeURIComponent(discussion.subject);
+
+    const description = encodeURIComponent(
+      discussion.description
+        .replace(/\{hostname\}/g, location.hostname)
+    );
+
+    return `mailto:?Subject=${subject}&Body=${description}`;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,22 +87,19 @@ class Countdown extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let now = moment();
-    let { discussion } = this.props;
-    let { user } = this.props;
+    const now = moment();
+    const { discussion, user } = this.props;
 
     let { deadline } = discussion;
 
-    console.log({ discussion, user });
-
     deadline = moment(new Date(deadline));
 
-    let month = deadline.format('MMM');
-    let day = deadline.format('D');
-    let year = deadline.format('YYYY');
-    let hour = deadline.format('h');
-    let minute = deadline.format('mm');
-    let meridian = deadline.format('a');
+    const month     =   deadline.format('MMM');
+    const day       =   deadline.format('D');
+    const year      =   deadline.format('YYYY');
+    const hour      =   deadline.format('h');
+    const minute    =   deadline.format('mm');
+    const meridian  =   deadline.format('a');
 
     let button = (
       <Button block primary medium onClick={ this.register.bind(this) }>Register</Button>
@@ -106,7 +115,7 @@ class Countdown extends React.Component {
       );
     }
 
-    let openings = discussion.goal - discussion.registered.length;
+    const openings = discussion.goal - discussion.registered.length;
 
     return (
       <Panel title="Countdown" className="text-center">

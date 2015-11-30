@@ -1,11 +1,16 @@
 'use strict';
 
-import React                from 'react';
-import Image                from './util/image';
-import YouTube              from './youtube';
-import publicConfig         from '../../public.json';
+import React                          from 'react';
+import Image                          from './util/image';
+import YouTube                        from './youtube';
+import publicConfig                   from '../../public.json';
+import itemType                       from '../lib/proptypes/item';
 
 class ItemMedia extends React.Component {
+  static propTypes = {
+    item : itemType
+  }
+
   render () {
     let { item } = this.props;
 

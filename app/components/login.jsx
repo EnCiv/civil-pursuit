@@ -20,6 +20,14 @@ class Login extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static propTypes      =   {
+    join                :   React.PropTypes.func,
+    'forgot-password'   :   React.PropTypes.func,
+    show                :   React.PropTypes.bool
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 

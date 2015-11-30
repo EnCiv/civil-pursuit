@@ -5,16 +5,18 @@ import React from 'react';
 class Accordion extends React.Component {
   // C(losed) O(pen) B(usy)
 
-  constructor ( props ) {
-    super(props);
-    this.counter = 0;
-    this.height = null;
-    this.visibility = false;
-    this.id = null;
-
-    this.state = { attr : 'hide' };
+  static propTypes  =   {
+    active          :   React.PropTypes.bool
   }
 
+  counter           =   0
+  height            =   null
+  visibility        =   false
+  id                =   null
+
+  state             =   {
+    attr            :   'hide'
+  }
 
   componentWillReceiveProps (props = {}) {
     if ( props.active === true ) {

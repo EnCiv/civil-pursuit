@@ -1,9 +1,9 @@
 'use strict';
 
-import Mungo from 'mungo';
-import Item from '../item';
-import User from '../user';
-import V1 from './migrations/1';
+import Mungo                          from 'mungo';
+import Item                           from '../item';
+import User                           from '../user';
+import V1                             from './migrations/1';
 
 class Feedback extends Mungo.Model {
   static schema () {

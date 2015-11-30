@@ -1,16 +1,25 @@
 'use strict';
 
-import React            from 'react';
-import Row              from './util/row';
-import Column           from './util/column';
-import Image            from './util/image';
-import Icon             from './util/icon';
-import Button           from './util/button';
-import InputGroup       from './util/input-group';
-import TextInput        from './util/text-input';
-import Select           from './util/select';
+import React                          from 'react';
+import Row                            from './util/row';
+import Column                         from './util/column';
+import Image                          from './util/image';
+import Icon                           from './util/icon';
+import Button                         from './util/button';
+import InputGroup                     from './util/input-group';
+import TextInput                      from './util/text-input';
+import Select                         from './util/select';
+import userType                       from '../lib/proptypes/user';
+import politicalPartyType             from '../lib/proptypes/political-party';
 
 class Voter extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static propTypes = {
+    user : userType,
+    politicalParties : React.PropTypes.arrayOf(politicalPartyType)
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -1,24 +1,27 @@
 'use strict';
 
-import path         from 'path';
-import cloudinary   from '../../../lib/app/cloudinary';
-import config       from '../../../../secret.json';
+import path                   from 'path';
+import cloudinary             from '../../../lib/app/cloudinary';
+import config                 from '../../../../secret.json';
+import Mungo                  from 'mungo';
 
-function saveImage (userId, image) {
+function saveImage (query, image) {
   return new Promise((ok, ko) => {
     try {
-      console.log('//////////////////////////////////////////////////////////////', userId, image, config.tmp)
+
+      if ( query instanceof Mungo.ObjectID || typeof query === 'string' || query instanceof Mungo.Model ) {
+        query = { _id : query };
+      }
+
       const pathToImage = path.join(config.tmp, image);
 
       cloudinary.uploader.upload(pathToImage, result => {
         try {
           if ( result instanceof Error ) {
-            console.log(error);
             throw error;
           }
-          console.log(result)
           this
-            .updateById(userId, { image : result.url })
+            .updateOne(query, { image : result.url })
             .then(ok, ko);
         }
         catch ( error ) {

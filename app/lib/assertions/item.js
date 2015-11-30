@@ -6,22 +6,38 @@ import Item             from '../../models/item';
 import Type             from '../../models/type';
 import User             from '../../models/user';
 
-should.Assertion.add('item', function (candidate = {}) {
+should.Assertion.add('item', function (candidate = {}, serialized = false) {
   this.params = { operator: 'to be an Item', expected: Item };
 
   this.obj.should.be.an.Object();
 
-  this.obj.should.be.an.instanceof(Item);
+  if ( serialized ) {
+    this.obj.should.be.an.Object();
+  }
+  else {
+    this.obj.should.be.an.instanceof(Item);
+  }
 
   this.obj.should.have.property('_id')
     .which.is.an.instanceof(Mungo.ObjectID);
 
-  this.obj.should.have.property('type')
-    .which.is.an.instanceof(Mungo.ObjectID);
+  this.obj.should.have.property('type');
+
+  try {
+    this.obj.type.should.be.an.instanceof(Mungo.ObjectID);
+  }
+  catch ( error ) {
+    this.obj.type.should.be.an.instanceof(Type);
+  }
 
   if ( 'type' in candidate ) {
     if ( candidate.type instanceof Type ) {
-      candidate.type._id.equals(this.obj.type).should.be.true;
+      try {
+        candidate.type._id.equals(this.obj.type).should.be.true;
+      }
+      catch ( error ) {
+        candidate.type._id.equals(this.obj.type._id).should.be.true;
+      }
     }
     else if ( candidate.type instanceof Mungo.ObjectID ) {
       this.obj.type.equals(candidate.type).should.be.true;
@@ -52,12 +68,39 @@ should.Assertion.add('item', function (candidate = {}) {
     this.obj.description.should.be.exactly(candidate.description);
   }
 
-  this.obj.should.have.property('user')
-    .which.is.an.instanceof(Mungo.ObjectID);
+  this.obj.should.have.property('user');
+
+  try {
+    this.obj.user.should.be.an.instanceof(Mungo.ObjectID);
+  }
+  catch ( error ) {
+    this.obj.user.should.be.an.instanceof(User);
+  }
 
   if ( 'user' in candidate ) {
     if ( candidate.user instanceof User ) {
-      this.obj.user.equals(candidate.user._id).should.be.true;
+      if ( this.obj.user instanceof User) {
+        this.obj.user._id.equals(candidate.user._id).should.be.true();
+      }
+      else if ( this.obj.user instanceof Mungo.ObjectID ) {
+        this.obj.user.equals(candidate.user._id).should.be.true();
+      }
+    }
+    else if ( candidate.user instanceof Mungo.ObjectID ) {
+      if ( this.obj.user instanceof User) {
+        this.obj.user._id.equals(candidate.user).should.be.true();
+      }
+      else if ( this.obj.user instanceof Mungo.ObjectID ) {
+        this.obj.user.equals(candidate.user).should.be.true();
+      }
+    }
+    else if ( typeof candidate.user === 'string' ) {
+      if ( this.obj.user instanceof User) {
+        this.obj.user._id.toString().should.be.exactly(candidate.user);
+      }
+      else if ( this.obj.user instanceof Mungo.ObjectID ) {
+        this.obj.user.toString().should.be.exactly(candidate.user);
+      }
     }
     else {
       throw new Error("Item's candidate user is different from item document's user");
@@ -103,7 +146,7 @@ should.Assertion.add('item', function (candidate = {}) {
     this.obj.references[0].url.should.be.exactly(candidate.references[0].url);
   }
 
-  if ( 'parent' in this.obj ) {
+  if ( ('parent' in this.obj) ) {
     this.obj.parent.should.be.an.instanceof(Mungo.ObjectID);
   }
 

@@ -7,7 +7,7 @@ import Config from '../models/config';
 function getTopLevelType (event) {
   try {
     Config
-      .findValueByName('top level type')
+      .get('top level type')
       .then(
         value => {
           try {

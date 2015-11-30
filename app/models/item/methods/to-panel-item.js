@@ -84,6 +84,10 @@ function toPanelItem () {
 
                             item.user       =   this.__populated.user;
 
+                            if ( typeof item.parent === 'undefined' ) {
+                              delete item.parent;
+                            }
+
                             ok(item);
                           }
                           catch ( error ) {

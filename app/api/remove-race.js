@@ -1,7 +1,6 @@
 'use strict';
 
 import User from '../models/user';
-import Mungo from 'mungo';
 
 function removeRace (event, raceId) {
   try {
@@ -10,19 +9,19 @@ function removeRace (event, raceId) {
       .then(
         user => {
           try {
+            if ( ! user ) {
+              throw new Error(`No such user with id ${this.synuser.id}`);
+            }
             user
-              .filter('race', race => ! race.equals(Mungo.ObjectID(raceId)))
+              .removeRace(raceId)
               .save()
-              .then(
-                this.ok.bind(this, event),
-                this.error.bind(this)
-              );
+              .then(ok, ko);
           }
           catch ( error ) {
-            this.error(error);
+            ko(error);
           }
         },
-        this.error.bind(this)
+        ko
       );
   }
   catch ( error ) {

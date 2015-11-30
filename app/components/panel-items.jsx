@@ -33,12 +33,13 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   unFocus () {
-    const panelId = makePanelId(this.props.panel.panel);
-    const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
-
-    for ( let i = 0; i < hidden.length; i++ ) {
-      hidden[i].classList.remove('item-hidden');
-    }
+    // window.Dispatcher.emit('refresh');
+    // const panelId = makePanelId(this.props.panel.panel);
+    // const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
+    //
+    // for ( let i = 0; i < hidden.length; i++ ) {
+    //   hidden[i].classList.remove('item-hidden');
+    // }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +74,8 @@ class PanelItems extends React.Component {
           { panel.panel.type.name }
         </Link>
       );
+
+      title = panel.panel.type.name;
 
       loaded            =     true;
 

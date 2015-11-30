@@ -4,7 +4,7 @@ import should         from 'should';
 import User           from '../../models/user';
 import Mungo          from 'mungo';
 
-should.Assertion.add('user', function (candidate) {
+should.Assertion.add('user', function (candidate = {}) {
   this.params = { operator: 'to be a User', expected: User };
 
   this.obj.should.be.an.Object();
@@ -111,5 +111,13 @@ should.Assertion.add('user', function (candidate) {
 
   if ( 'race' in candidate ) {
     this.obj.should.have.property('race').which.is.exactly(candidate.race);
+  }
+
+  if ( 'gps validated' in this.obj ) {
+    this.obj['gps validated'].should.be.an.instanceof(Date);
+  }
+
+  if ( 'gps validated' in candidate ) {
+    (+(this.obj['gps validated'])).should.be.exactly(+(candidate['gps validated']));
   }
 });

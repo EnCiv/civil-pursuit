@@ -1,10 +1,10 @@
 'use strict';
 
-import WebDriver from '../../app/webdriver';
-import sequencer from '../../util/sequencer';
-import generateRandomString from '../../util/random-string';
-import config from '../../../../public.json';
-import should from 'should';
+import WebDriver                  from '../../app/webdriver';
+import sequencer                  from '../../util/sequencer';
+import generateRandomString       from '../../util/random-string';
+import config                     from '../../../../public.json';
+import should                     from 'should';
 
 class Join {
 
@@ -60,11 +60,11 @@ class Join {
   }
 
   static fillPassword (props) {
-    return props.driver.client.setValue(config.selectors['join form']['password'], '1234!!aaBB');
+    return props.driver.client.setValue(config.selectors['join form']['password'], props.password || '1234!!aaBB');
   }
 
   static fillConfirm (props) {
-    return props.driver.client.setValue(config.selectors['join form']['confirm'], '1234!!aaBB');
+    return props.driver.client.setValue(config.selectors['join form']['confirm'], props.confirm || '1234!!aaBB');
   }
 
   static agreeToTerms (props) {
@@ -73,6 +73,30 @@ class Join {
 
   static submit (props) {
     return props.driver.client.click(config.selectors['join form'].submit);
+  }
+
+  static hasErrorMessage ( props) {
+    return props.driver.client.waitForVisible(config.selectors['join form'].form + ' .syn-flash--error', 1000);
+  }
+
+  static errorMessage (props, message) {
+    return new Promise((ok, ko) => {
+      props.driver.client.getText(config.selectors['join form'].form + ' .syn-flash--error').then(
+        text => {
+          text.should.be.exactly(message);
+          ok();
+        },
+        ko
+      );
+    });
+  }
+
+  static submitEmptyForm (props) {
+    return sequencer([
+      this.submit,
+      this.hasErrorMessage,
+      this.errorMessage.bind(this, props, 'Email can not be left empty')
+    ], props);
   }
 
   static movedToProfile (props) {
@@ -131,6 +155,8 @@ class Join {
           this.clickJoinButton,
 
           this.pause.bind(this, 2),
+
+          this.submitEmptyForm.bind(this),
 
           this.fillEmail,
 

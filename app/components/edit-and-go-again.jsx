@@ -3,10 +3,15 @@
 import React              from 'react';
 import Creator            from './creator';
 import Youtube            from './youtube';
+import itemType           from '../lib/proptypes/item';
 
 class EditAndGoAgain extends React.Component {
+  static propTypes = {
+    item : itemType
+  }
+
   render () {
-    let { item } = this.props;
+    const { item } = this.props;
 
     let video;
 

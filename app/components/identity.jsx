@@ -8,9 +8,17 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import DateInput                      from './util/date-input';
 import Uploader                       from './uploader';
-
+import userType                       from '../lib/proptypes/user';
+import countryType                       from '../lib/proptypes/country';
 
 class Identity extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static propTypes = {
+    user : userType,
+    countries : React.PropTypes.arrayOf(countryType)
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

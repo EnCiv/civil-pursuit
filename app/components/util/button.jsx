@@ -3,25 +3,26 @@
 import React from 'react';
 
 class Button extends React.Component {
+
+  static propTypes    =   {
+    block             :   React.PropTypes.bool,
+    primary           :   React.PropTypes.bool,
+    info              :   React.PropTypes.bool,
+    large             :   React.PropTypes.bool,
+    medium            :   React.PropTypes.bool,
+    radius            :   React.PropTypes.bool,
+    'cursor-pointer'  :   React.PropTypes.bool,
+    shy               :   React.PropTypes.bool,
+    success           :   React.PropTypes.bool,
+    error             :   React.PropTypes.bool,
+    warning           :   React.PropTypes.bool,
+    small             :   React.PropTypes.bool
+  }
+
   render () {
-    let classes = [this.props.className || ''];
+    const classes = [this.props.className || ''];
 
-    let props = [
-      'block',
-      'primary',
-      'info',
-      'large',
-      'medium',
-      'radius',
-      'cursor-pointer',
-      'shy',
-      'success',
-      'error',
-      'warning',
-      'small'
-    ];
-
-    for ( let prop of props ) {
+    for ( let prop in this.constructor.propTypes ) {
       if ( this.props[prop] ) {
         classes.push(prop);
       }

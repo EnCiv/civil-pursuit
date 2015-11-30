@@ -10,8 +10,21 @@ import Loading                      from './util/loading';
 import Button                       from './util/button'
 import InputGroup                   from './util/input-group';
 import Login                        from './login';
+import userType                     from '../lib/proptypes/user';
 
 class ResetPassword extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static propTypes = {
+    userToReset : userType,
+    urlParams : React.PropTypes.shape({
+      token : React.PropTypes.string
+    })
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
@@ -25,11 +38,15 @@ class ResetPassword extends React.Component {
     this.get();
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   get () {
     if ( typeof window !== 'undefined' && ! this.props.userToReset ) {
       window.Dispatcher.emit('get user', { activation_token : this.props.urlParams.token });
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   save () {
     let password = React.findDOMNode(this.refs.password);
@@ -64,6 +81,8 @@ class ResetPassword extends React.Component {
         );
     });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let content = ( <Loading message="Getting user info" /> );

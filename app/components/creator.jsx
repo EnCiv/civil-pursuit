@@ -1,36 +1,45 @@
 'use strict';
 
-import React            from 'react';
-import Uploader         from './uploader';
-import TextInput        from './util/text-input';
-import TextArea         from './util/text-area';
-import Submit           from './util/submit';
-import Icon             from './util/icon';
-import Form             from './util/form';
-import Row              from './util/row';
-import YouTube          from './youtube';
+import React                            from 'react';
+import Uploader                         from './uploader';
+import TextInput                        from './util/text-input';
+import TextArea                         from './util/text-area';
+import Submit                           from './util/submit';
+import Icon                             from './util/icon';
+import Form                             from './util/form';
+import Row                              from './util/row';
+import YouTube                          from './youtube';
+import itemType                         from '../lib/proptypes/item';
+import typeType                         from '../lib/proptypes/type';
 
 class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
-
-    this.state = {};
+  static propTypes  =   {
+    // created         :   itemType,
+    'panel-id'      :   React.PropTypes.string,
+    type            :   typeType,
+    parent          :   React.PropTypes.oneOfType([itemType, React.PropTypes.string]),
+    item            :   itemType,
+    video           :   React.PropTypes.bool
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentDidMount () {
-    let subject       =   React.findDOMNode(this.refs.subject);
-    let reference     =   React.findDOMNode(this.refs.reference);
-    let description   =   React.findDOMNode(this.refs.description);
-    let media         =   React.findDOMNode(this.refs.uploader).querySelector('.syn-uploader-dropbox');
-    let creator       =   React.findDOMNode(this.refs.creator);
+  state = {}
 
-    let mediaHeight = media.offsetHeight;
-    let inputHeight = subject.offsetHeight + reference.offsetHeight;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentDidMount () {
+    const subject   =   React.findDOMNode(this.refs.subject),
+      reference     =   React.findDOMNode(this.refs.reference),
+      description   =   React.findDOMNode(this.refs.description),
+      media         =   React.findDOMNode(this.refs.uploader)
+                          .querySelector('.syn-uploader-dropbox'),
+      creator       =   React.findDOMNode(this.refs.creator),
+      mediaHeight   =   media.offsetHeight,
+      inputHeight   =   subject.offsetHeight + reference.offsetHeight;
 
     // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
@@ -48,7 +57,7 @@ class Creator extends React.Component {
     }, false);
 
     if ( reference.value && this.props.item ) {
-      let { references } = this.props.item;
+      const { references } = this.props.item;
 
       this.applyTitle(references[0].title, references[0].url);
     }
@@ -58,10 +67,10 @@ class Creator extends React.Component {
 
   componentWillReceiveProps (props) {
     if ( props.created && props.created.panel === this.props['panel-id'] ) {
-      React.findDOMNode(this.refs.subject).value = '';
-      React.findDOMNode(this.refs.description).value = '';
-      React.findDOMNode(this.refs.reference).value = '';
-      React.findDOMNode(this.refs.title).value = '';
+      React.findDOMNode(this.refs.subject).value        =   '';
+      React.findDOMNode(this.refs.description).value    =   '';
+      React.findDOMNode(this.refs.reference).value      =   '';
+      React.findDOMNode(this.refs.title).value          =   '';
 
       setTimeout(() => {
         window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
@@ -72,12 +81,12 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    let subject       =   React.findDOMNode(this.refs.subject).value;
-    let description   =   React.findDOMNode(this.refs.description).value;
-    let url           =   React.findDOMNode(this.refs.reference).value;
-    let title         =   React.findDOMNode(this.refs.title).value;
+    const subject       =   React.findDOMNode(this.refs.subject).value;
+    const description   =   React.findDOMNode(this.refs.description).value;
+    const url           =   React.findDOMNode(this.refs.reference).value;
+    const title         =   React.findDOMNode(this.refs.title).value;
 
-    let item = { subject, description, type: this.props.type };
+    const item = { subject, description, type: this.props.type };
 
     if ( this.props.parent ) {
       item.parent = this.props.parent._id || this.props.parent;

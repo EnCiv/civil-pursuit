@@ -1,25 +1,34 @@
 'use strict';
 
-import React                    from 'react';
-import Component                from '../lib/app/component';
-import CloudinaryImage          from './util/cloudinary-image';
-import Button                   from './util/button';
-import Icon                     from './util/icon';
-import Login                    from './login';
-import Join                     from './join';
-import ForgotPassword           from './forgot-password';
+import React                          from 'react';
+import Component                      from '../lib/app/component';
+import CloudinaryImage                from './util/cloudinary-image';
+import Button                         from './util/button';
+import Icon                           from './util/icon';
+import Login                          from './login';
+import Join                           from './join';
+import ForgotPassword                 from './forgot-password';
+import userType                       from '../lib/proptypes/user';
 
 class TopBar extends React.Component {
 
-  constructor (props) {
-    super(props);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    this.state = {
-      showLogin           :   false,
-      showJoin            :   false,
-      showForgotPassword  :   false
-    };
+  static propTypes = {
+    user        :   userType,
+    ready       :   React.PropTypes.bool,
+    online      :   React.PropTypes.number
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  state = {
+    showLogin           :   false,
+    showJoin            :   false,
+    showForgotPassword  :   false
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleLogin (e) {
     if ( e ) {
@@ -37,6 +46,8 @@ class TopBar extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   toggleJoin (e) {
     if ( e ) {
       e.preventDefault();
@@ -52,6 +63,8 @@ class TopBar extends React.Component {
       this.setState({ showForgotPassword : false });
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleForgotPassword (e) {
     if ( e ) {
@@ -69,13 +82,19 @@ class TopBar extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   signOut () {
     location.href = '/sign/out';
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   goToProfile () {
     location.href = '/page/profile';
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let { user, ready } = this.props;

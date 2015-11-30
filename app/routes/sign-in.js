@@ -9,61 +9,73 @@ function signIn (req, res, next) {
 
     let { email, password } = req.body;
 
-    User
-      .identify(email, password)
-      .then(
-        user => {
-          req.user = user;
+    if ( ! email ) {
+      res.statusCode = 400;
+      res.json({ error: 'Missing email' });
+    }
 
-          Discussion
-            .findCurrent()
-            .then(
-              discussion => {
-                try {
-                  if ( discussion ) {
-                    const alreadyRegistered = discussion.registered.some(registered => registered.equals(user._id))
+    else if ( ! password ) {
+      res.statusCode = 400;
+      res.json({ error: 'Missing password' });
+    }
 
-                    if ( alreadyRegistered ) {
-                      return next();
+    else {
+      User
+        .identify(email, password)
+        .then(
+          user => {
+            req.user = user;
+
+            Discussion
+              .findCurrent()
+              .then(
+                discussion => {
+                  try {
+                    if ( discussion ) {
+                      const alreadyRegistered = discussion.registered.some(registered => registered.equals(user._id))
+
+                      if ( alreadyRegistered ) {
+                        return next();
+                      }
+
+                      discussion
+                        .push('registered', user._id)
+                        .save()
+                        .then(
+                          () => next(),
+                          next
+                        );
                     }
-
-                    discussion
-                      .push('registered', user._id)
-                      .save()
-                      .then(
-                        () => next(),
-                        next
-                      );
+                    else {
+                      next();
+                    }
                   }
-                  else {
-                    next();
+                  catch (error) {
+                    next(error);
                   }
-                }
-                catch (error) {
-                  next(error);
-                }
-              },
-              next
-            );
+                },
+                next
+              );
 
-          next();
-        },
-        error => {
-          console.log('error', error)
+            next();
+          },
+          error => {
+            console.log('error', error)
 
-          if ( /^User not found/.test(error.message) ) {
-            res.statusCode = 404;
-            res.json({ 'user not found': email });
+            if ( /^User not found/.test(error.message) ) {
+              res.statusCode = 404;
+              res.json({ 'user not found': email });
+            }
+            else if ( /^Wrong password/.test(error.message) ) {
+              res.statusCode = 401;
+              res.json({ 'user not found': email });
+            }
+            else {
+              next(error);
+            }
           }
-          else if ( /^Wrong password/.test(error.message) ) {
-            res.statusCode = 401;
-            res.json({ 'user not found': email });
-          }
-          else {
-            next(error);
-          }
-        }
-      );
+        );
+    }
   }
 
   catch ( error ) {

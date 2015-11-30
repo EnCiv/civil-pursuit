@@ -2,20 +2,10 @@
 
 import Discussion from '../models/discussion';
 
-function getDiscussion (event, name, id) {
+function getDiscussion (event) {
   try {
-    let query = {};
-
-    if ( name ) {
-      query.name = name;
-    }
-
-    else if ( id ) {
-      query._id = id;
-    }
-
     Discussion
-      .findOne(query)
+      .findCurrent()
       .then(
         discussion => this.ok(event, discussion),
         error => this.emit('error', error)

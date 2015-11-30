@@ -1,13 +1,26 @@
 'use strict';
 
-import React          from 'react';
-import Loading        from './util/loading';
-import Row            from './util/row';
-import Column         from './util/column';
-import PanelItems     from './panel-items';
-import makePanelId    from '../lib/app/make-panel-id';
+import React                        from 'react';
+import Loading                      from './util/loading';
+import Row                          from './util/row';
+import Column                       from './util/column';
+import PanelItems                   from './panel-items';
+import makePanelId                  from '../lib/app/make-panel-id';
+import itemType                     from '../lib/proptypes/item';
+import panelType                    from '../lib/proptypes/panel';
 
 class Harmony extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static propTypes = {
+    item : itemType,
+    active : React.PropTypes.bool,
+    panels : React.PropTypes.arrayOf(panelType)
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 

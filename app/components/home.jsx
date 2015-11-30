@@ -1,7 +1,6 @@
 'use strict';
 
 import React                        from 'react';
-import Component                    from '../lib/app/component';
 import Icon                         from './util/icon';
 import Loading                      from './util/loading';
 import Countdown                    from './countdown';
@@ -11,20 +10,28 @@ import panelType                    from '../lib/proptypes/panel';
 
 class Home extends React.Component {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static propTypes  =   {
     topLevelType    :   React.PropTypes.string,
     panels          :   React.PropTypes.object
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   state = {
     discussion : null
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
     super(props);
 
     this.get();
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   get () {
     if ( typeof window !== 'undefined' ) {
@@ -34,6 +41,8 @@ class Home extends React.Component {
       window.socket.emit('get top level type');
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
 

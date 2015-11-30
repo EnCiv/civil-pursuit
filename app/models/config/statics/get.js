@@ -1,6 +1,6 @@
 'use strict';
 
-function findValueByName (name) {
+function get (name) {
   return new Promise((ok, ko) => {
     try {
       this.findOne({ name }).then(
@@ -24,4 +24,4 @@ function findValueByName (name) {
   });
 }
 
-export default findValueByName;
+export default get;

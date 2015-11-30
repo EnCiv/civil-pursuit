@@ -17,7 +17,7 @@ function isHarmony () {
               if ( ! parent.harmony.length ) {
                 return ok(false);
               }
-              ok(parent.harmony.indexOf(this._id) > -1);
+              ok(parent.harmony.map(id => id.toString()).indexOf(this._id.toString()) > -1);
             }
             catch ( error ) {
               ko(error);

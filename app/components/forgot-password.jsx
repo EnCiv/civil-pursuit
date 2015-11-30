@@ -20,10 +20,10 @@ class ForgotPassword extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
-
-    this.state = { validationError : null, successMessage : null, info : null };
+  state = {
+    validationError : null,
+    successMessage : null,
+    info : null
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

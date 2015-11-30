@@ -141,22 +141,27 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = 
   }
 
   if ( 'type' in item ) {
-    this.obj.type._id.equals(item.type).should.be.true;
+    if ( item.type instanceof Type && this.obj.type instanceof Type ) {
+      this.obj.type._id.equals(item.type._id).should.be.true();
+    }
+    else {
+      this.obj.type._id.equals(item.type).should.be.true();
+    }
   }
 
   if ( 'type' in extra ) {
-    this.obj.type._id.equals(extra.type._id).should.be.true;
+    this.obj.type._id.equals(extra.type._id).should.be.true();
   }
 
   this.obj.should.have.property('user')
     .which.is.an.Object();
 
   if ( 'user' in item ) {
-    this.obj.user._id.equals(item.user).should.be.true;
+    this.obj.user._id.equals(item.user).should.be.true();
   }
 
   if ( 'user' in extra ) {
-    this.obj.user._id.equals(extra.user._id).should.be.true;
+    this.obj.user._id.equals(extra.user._id).should.be.true();
   }
 
   if ( this.obj.subtype ) {

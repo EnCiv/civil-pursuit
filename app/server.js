@@ -31,6 +31,7 @@ import Type                     from './models/type';
 
 import API                      from './api';
 
+
 class HttpServer extends EventEmitter {
 
   constructor (props) {

@@ -6,7 +6,7 @@ import Row                  from './row';
 
 class ButtonGroup extends React.Component {
   render () {
-    let classes = ['syn-button-group'];
+    const classes = ['syn-button-group'];
 
     if ( this.props.block ) {
       classes.push('syn--block');

@@ -283,6 +283,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   selectItem () {
+    window.Dispatcher.emit('refresh');
     // const ancestors = this.props.item.lineage.map(ancestor => ancestor._id);
     //
     // for ( let panel in this.props.panels ) {
@@ -481,7 +482,8 @@ class Item extends React.Component {
           <section className="item-text">
             <div className="item-truncatable">
               <h4 className="item-subject">
-                <Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link>
+                { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
+                { item.subject }
               </h4>
               <h5 className="item-reference">
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>

@@ -11,6 +11,17 @@ import Image            from './util/image';
 import Youtube          from './youtube';
 
 class Uploader extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static propTypes = {
+    handler : React.PropTypes.func,
+    image : React.PropTypes.string,
+    video : React.PropTypes.string
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentDidMount () {
     let dropbox = React.findDOMNode(this.refs.dropbox),
       input = React.findDOMNode(this.refs.typeFile),
@@ -24,6 +35,8 @@ class Uploader extends React.Component {
 
     this.upload.on('uploaded', this.stream.bind(this));
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   stream (file) {
     let stream = ss.createStream();
@@ -42,6 +55,8 @@ class Uploader extends React.Component {
 
     });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   chooseFile () {
     let input = React.findDOMNode(this.refs.typeFile);
@@ -68,6 +83,8 @@ class Uploader extends React.Component {
 
     input.click();
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     let { image, video } = this.props;

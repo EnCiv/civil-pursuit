@@ -21,6 +21,11 @@ function test(props) {
           .on('error', ko)
           .on('ready', ok);
       }
+    },
+    {
+      'should go home' : (ok, ko) => {
+        props.driver.client.url('http://localhost:13012').then(ok, ko);
+      }
     }
   ]);
 }

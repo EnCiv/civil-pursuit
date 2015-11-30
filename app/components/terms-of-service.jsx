@@ -5,6 +5,9 @@ import marked from 'marked';
 import superagent from 'superagent';
 
 class TermsOfService extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
@@ -12,6 +15,8 @@ class TermsOfService extends React.Component {
 
     this.get();
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   get () {
     if ( typeof window !== 'undefined' ) {
@@ -25,6 +30,8 @@ class TermsOfService extends React.Component {
         });
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     return (

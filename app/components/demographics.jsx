@@ -1,23 +1,30 @@
 'use strict';
 
-import React            from 'react';
-import Row              from './util/row';
-import Column           from './util/column';
-import Image            from './util/image';
-import Icon             from './util/icon';
-import Button           from './util/button';
-import InputGroup       from './util/input-group';
-import TextInput        from './util/text-input';
-import Select           from './util/select';
+import React                        from 'react';
+import Row                          from './util/row';
+import Column                       from './util/column';
+import Image                        from './util/image';
+import Icon                         from './util/icon';
+import Button                       from './util/button';
+import InputGroup                   from './util/input-group';
+import TextInput                    from './util/text-input';
+import Select                       from './util/select';
+import userType                     from '../lib/proptypes/user';
+import raceType                     from '../lib/proptypes/race';
+import educationType                from '../lib/proptypes/education';
+import maritalStatusType            from '../lib/proptypes/marital-status';
+import employmentType               from '../lib/proptypes/marital-status';
 
 class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
-
-    this.state = { user : this.props.user };
+  static propTypes            =   {
+    user                      :   userType,
+    races                     :   React.PropTypes.arrayOf(raceType),
+    educations                :   React.PropTypes.arrayOf(educationType),
+    maritalStatuses           :   React.PropTypes.arrayOf(maritalStatusType),
+    employments               :   React.PropTypes.arrayOf(employmentType)
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
