@@ -77,7 +77,6 @@ class App extends React.Component {
         break;
 
       case 'items':
-        console.log('items focus');
 
         const panelId2 = Object.keys(this.props.panels)[0];
 

@@ -3143,7 +3143,8 @@ var Item = (function (_React$Component) {
           var more = _react2['default'].findDOMNode(_this.refs.more);
 
           var truncatable = item.querySelector('.item-truncatable');
-          var subject = item.querySelector('.item-subject a');
+          // let subject       =   item.querySelector('.item-subject a');
+          var subject = item.querySelector('.item-subject');
           var description = item.querySelector('.item-description');
           var reference = item.querySelector('.item-reference a');
           var buttons = item.querySelector('.item-buttons');
@@ -3599,6 +3600,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function paint(container, limit) {
+
       var lines = Item.wordify(container.textContent);
       container.innerHTML = '';
 

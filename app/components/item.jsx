@@ -55,6 +55,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static paint (container, limit) {
+
     const lines           =   Item.wordify(container.textContent);
     container.innerHTML   =   '';
 
@@ -178,7 +179,8 @@ class Item extends React.Component {
       const more = React.findDOMNode(this.refs.more);
 
       let truncatable   =   item.querySelector('.item-truncatable');
-      let subject       =   item.querySelector('.item-subject a');
+      // let subject       =   item.querySelector('.item-subject a');
+      let subject       =   item.querySelector('.item-subject');
       let description   =   item.querySelector('.item-description');
       let reference     =   item.querySelector('.item-reference a');
       let buttons       =   item.querySelector('.item-buttons');
