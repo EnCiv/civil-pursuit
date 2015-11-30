@@ -9398,6 +9398,14 @@ var _libProptypesItem = require('../lib/proptypes/item');
 
 var _libProptypesItem2 = _interopRequireDefault(_libProptypesItem);
 
+var _utilRow = require('./util/row');
+
+var _utilRow2 = _interopRequireDefault(_utilRow);
+
+var _utilColumn = require('./util/column');
+
+var _utilColumn2 = _interopRequireDefault(_utilColumn);
+
 var Vote = (function (_React$Component) {
   function Vote() {
     _classCallCheck(this, Vote);
@@ -9504,10 +9512,10 @@ var Vote = (function (_React$Component) {
         'div',
         { className: 'syn-sliders-criteria' },
         _react2['default'].createElement(
-          Row,
+          _utilRow2['default'],
           null,
           _react2['default'].createElement(
-            Column,
+            _utilColumn2['default'],
             { span: '40' },
             _react2['default'].createElement(
               'h4',
@@ -9521,7 +9529,7 @@ var Vote = (function (_React$Component) {
             )
           ),
           _react2['default'].createElement(
-            Column,
+            _utilColumn2['default'],
             { span: '60' },
             _react2['default'].createElement('svg', { className: 'chart', ref: 'svg' })
           )
@@ -9548,7 +9556,7 @@ exports['default'] = Vote;
 module.exports = exports['default'];
 
 // width       :   $(window).width() / 5
-},{"../lib/proptypes/criteria":65,"../lib/proptypes/item":71,"../lib/proptypes/vote":80,"react":244}],58:[function(require,module,exports){
+},{"../lib/proptypes/criteria":65,"../lib/proptypes/item":71,"../lib/proptypes/vote":80,"./util/column":38,"./util/row":52,"react":244}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
