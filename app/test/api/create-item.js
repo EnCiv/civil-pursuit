@@ -10,7 +10,9 @@ import isItem                     from '../../lib/assertions/item';
 import Item                       from '../../models/item';
 import Type                       from '../../models/type';
 import isType                     from '../../lib/assertions/type';
-import isPanelItem                from '../../lib/assertions/panel-item';
+import isPanelItem                from '../util/is-panel-item';
+
+const { Describer } = describe;
 
 function test (props) {
   const locals = {};
@@ -56,10 +58,9 @@ function test (props) {
       }
     },
     {
-      'should be an item' : (ok, ko) => {
-        locals.item.should.be.a.panelItem(locals.candidate, {}, true);
-        ok();
-      }
+      'should be an item' : new Describer(() => {
+        return isPanelItem(locals.candidate);
+      })
     },
     {
       'Verify in DB' : [

@@ -8,6 +8,9 @@ import Item                       from '../../models/item';
 import Type                       from '../../models/type';
 import User                       from '../../models/user';
 import emitter                    from '../../lib/app/emitter';
+import isPanelItem                from '../util/is-panel-item';
+
+const { Describer } = describe;
 
 function test () {
   const locals = {};
@@ -604,6 +607,103 @@ function test () {
 
                 ok();
               }
+            }
+          ]
+        },
+        {
+          'Item with images' : [
+            {
+              'should create item' : (ok, ko) => {
+                Item.lambda({ image : 'favicon.png' }).then(
+                  item => {
+                    locals.item = item;
+                    ok();
+                  },
+                  ko
+                );
+              }
+            },
+            {
+              'should emit updated event' : (ok, ko) => {
+                const onItemUpdated = (collection, item) => {
+                  if ( collection === 'items' && item._id.equals(locals.item._id) ) {
+                    try {
+                      emitter.removeListener('update', onItemUpdated);
+                      locals.item = item;
+                      ok();
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  }
+                };
+
+                emitter.on('update', onItemUpdated);
+              }
+            },
+            {
+              'should have image' : (ok, ko) => {
+                locals.item.should.have.property('image').which.is.a.String();
+                ok();
+              }
+            },
+            {
+              'should be a cloudinary image' : (ok, ko) => {
+                locals.item.image.should.startWith('http://res.cloudinary.com');
+
+                ok();
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      'Panelify' : [
+        {
+          'Group' : [
+            {
+              'should create group' : (ok, ko) => {
+                Type.group('Panel parent', 'Panel subtype', 'Panel pro', 'Panel con').then(
+                  group => {
+                    locals.group = group;
+                    ok();
+                  },
+                  ko
+                );
+              }
+            }
+          ]
+        },
+        {
+          'Parent' : [
+            {
+              'should create parent item' : (ok, ko) => {
+                Item.lambda({ type : locals.group.parent }).then(
+                  item => {
+                    locals.parent = item;
+                    ok();
+                  },
+                  ko
+                );
+              }
+            },
+            {
+              'should panelify item' : (ok, ko) => {
+                locals.parent.toPanelItem().then(
+                  panelifiedItem => {
+                    locals.panelifiedParent = panelifiedItem;
+                    ok();
+                  },
+                  ko
+                );
+              }
+            },
+            {
+              'should be a panel item' : new Describer(() => {
+                return isPanelItem(locals.panelifiedParent);
+              })
             }
           ]
         }

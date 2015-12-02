@@ -65,7 +65,7 @@ class Panel extends React.Component {
               { ...this.props }
               active    =   { this.props.panels[this.id].active === 'creator' } poa       =   { this.refs.panel }
               >
-              <Creator { ...this.props } panel-id={ this.id } />
+              <Creator { ...this.props } item={ false } panel-id={ this.id } />
             </Accordion>
           );
 

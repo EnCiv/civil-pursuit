@@ -4715,7 +4715,7 @@ var Panel = (function (_React$Component) {
               _extends({}, this.props, {
                 active: this.props.panels[this.id].active === 'creator', poa: this.refs.panel
               }),
-              _react2['default'].createElement(_creator2['default'], _extends({}, this.props, { 'panel-id': this.id }))
+              _react2['default'].createElement(_creator2['default'], _extends({}, this.props, { item: false, 'panel-id': this.id }))
             );
 
             creatorIcon = _react2['default'].createElement(_utilIcon2['default'], {

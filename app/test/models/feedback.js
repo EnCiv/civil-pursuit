@@ -373,7 +373,7 @@ function test () {
           ]
         },
         {
-          'Valide feedback' : [
+          'Valid feedback' : [
 
             {
               'should insert feedback in DB' : (ok, ko) => {

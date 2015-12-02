@@ -19,6 +19,7 @@ import addView                  from '../test/api/add-view';
 import createItem               from '../test/api/create-item';
 import getCountries             from '../test/api/get-countries';
 import getDiscussion            from '../test/api/get-discussion';
+import getEducations            from '../test/api/get-educations';
 import e2e                      from '../test/e2e';
 import join                     from '../test/e2e/join';
 import stopE2e                  from '../test/e2e-stop';
@@ -48,6 +49,7 @@ sequencer(
     createItem,
     getCountries,
     // getDiscussion,
+    getEducations,
     e2e,
     join,
     stopE2e

@@ -10,7 +10,9 @@ import Item                   from '../models/item';
 import Config                 from '../models/config';
 import isType                 from '../lib/assertions/type';
 import isItem                 from '../lib/assertions/item';
-import isPanelItem            from '../lib/assertions/panel-item';
+import isPanelItem            from './util/is-panel-item';
+
+const { Describer } = describe;
 
 process.env.PORT = 13012;
 
@@ -84,14 +86,14 @@ function test () {
                   }
                 },
                 {
-                  'it should be panelified' : (ok, ko) => {
-                    locals.intro.should.be.a.panelItem();
-                    ok();
-                  }
+                  'it should be panelified' : new Describer(() => {
+                    return isPanelItem(locals.intro);
+                  })
                 }
               ]
             }
           ]
+
         },
         {
           'HTTP Server' : [{
@@ -355,6 +357,56 @@ function test () {
                       res.status.should.be.exactly(404);
                       ok();
 
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  });
+              }
+            }
+          ]
+        },
+        {
+          'Wrong password' : [
+            {
+              'should throw a 401 error' : (ok, ko) => {
+
+                superagent
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.email, password : locals.fakePassword })
+                  .end((error, res) => {
+                    try {
+                      if ( ! error ) {
+                        throw new Error('It should have thrown error');
+                      }
+                      error.message.should.be.exactly('Unauthorized');
+                      res.status.should.be.exactly(401);
+                      ok();
+
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  });
+              }
+            }
+          ]
+        },
+        {
+          'Valid credentials' : [
+            {
+              'should be OK' : (ok, ko) => {
+
+                superagent
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.email, password : locals.password })
+                  .end((error, res) => {
+                    try {
+                      if ( error ) {
+                        throw error;
+                      }
+                      res.status.should.be.exactly(200);
+                      ok();
                     }
                     catch ( error ) {
                       ko(error);

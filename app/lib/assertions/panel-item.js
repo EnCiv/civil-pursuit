@@ -1,33 +1,111 @@
 'use strict';
 
-import should             from 'should';
-import Mungo              from 'mungo';
-import toSlug             from '../util/to-slug';
-import Item               from '../../models/item';
-import { Popularity }     from '../../models/item/methods/get-popularity';
-import Type               from '../../models/type';
-import User               from '../../models/user';
+import should                   from 'should';
+import Mungo                    from 'mungo';
+import toSlug                   from '../util/to-slug';
+import Item                     from '../../models/item';
+import { Popularity }           from '../../models/item/methods/get-popularity';
+import Type                     from '../../models/type';
+import User                     from '../../models/user';
+import describe                 from '../util/describe';
 
 should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = false) {
   this.params = { operator: 'to be a panel Item', expected: Object };
 
-  this.obj.should.be.an.Object();
-
-  this.obj.should.have.property('_id');
+  const tests = [];
 
   if ( serialized ) {
-    Mungo.ObjectID.convert(this.obj._id).should.be.an.instanceof(Mungo.ObjectID);
+    tests.push(
+      {
+        'should be an object' : (ok, ko) => {
+          this.obj.should.be.an.Object();
+          ok();
+        }
+      },
+      {
+        'should have _id which is a string of an ObjectID' : (ok, ko) => {
+          this.obj.should.have.property('_id').which.is.a.String();
+          Mungo.ObjectID.convert(this.obj._id).should.be.an.instanceof(Mungo.ObjectID);
+          ok();
+        }
+      },
+      {
+        'should have id which is a string' : (ok, ko) => {
+          this.obj.should.have.property('id').which.is.a.String();
+          ok();
+        }
+      }
+    );
+
+    if ( '_id' in item ) {
+      tests.push(
+        {
+          'should have the same _id than item' : (ok, ko) => {
+            this.obj._id.should.be.exactly(item._id.toString());
+            ok();
+          }
+        }
+      );
+    }
+
+    if ( 'id' in item ) {
+      tests.push(
+        {
+          'should have the same _id than item' : (ok, ko) => {
+            this.obj.id.should.be.exactly(item.id);
+            ok();
+          }
+        }
+      );
+    }
+
+    describe('Panel item (serialized)', tests);
   }
   else {
-    this.obj._id.should.be.an.instanceof(Mungo.ObjectID);
-    this.obj._id.equals(item._id).should.be.true;
-  }
+    tests.push(
+      {
+        'should be an object' : (ok, ko) => {
+          this.obj.should.be.an.Object();
+          ok();
+        }
+      },
+      {
+        'should have _id which is an ObjectID' : (ok, ko) => {
+          this.obj.should.have.property('_id').which.is.an.instanceof(Mungo.ObjObjectID);
+          ok();
+        }
+      },
+      {
+        'should have id which is a string' : (ok, ko) => {
+          this.obj.should.have.property('id').which.is.a.String();
+          ok();
+        }
+      }
+    );
 
-  this.obj.should.have.property('id')
-    .which.is.a.String();
+    if ( '_id' in item ) {
+      tests.push(
+        {
+          'should have the same _id than item' : (ok, ko) => {
+            this.obj._id.toString().should.be.exactly(item._id.toString());
+            ok();
+          }
+        }
+      );
+    }
 
-  if ( 'id' in item ) {
-    this.obj.id.should.be.exactly(item.id);
+    if ( 'id' in item ) {
+      tests.push(
+        {
+          'should have the same _id than item' : (ok, ko) => {
+            this.obj.id.should.be.exactly(item.id);
+            ok();
+          }
+        }
+      );
+    }
+
+    describe('Panel item (unserialized)', tests);
   }
 
   this.obj.should.have.property('subject')
