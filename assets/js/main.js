@@ -1213,7 +1213,7 @@ var Creator = (function (_React$Component) {
         description = item.description;
         image = item.image;
 
-        if (item.references.length) {
+        if (item.references && item.references.length) {
           url = item.references[0].url;
           title = item.references[0].title;
         }

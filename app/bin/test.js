@@ -20,6 +20,7 @@ import createItem               from '../test/api/create-item';
 import getCountries             from '../test/api/get-countries';
 import getDiscussion            from '../test/api/get-discussion';
 import getEducations            from '../test/api/get-educations';
+import getEmployments           from '../test/api/get-employments';
 import e2e                      from '../test/e2e';
 import join                     from '../test/e2e/join';
 import stopE2e                  from '../test/e2e-stop';
@@ -50,6 +51,7 @@ sequencer(
     getCountries,
     // getDiscussion,
     getEducations,
+    getEmployments,
     e2e,
     join,
     stopE2e
@@ -98,7 +100,7 @@ sequencer(
 
     else {
       console.log('  ', '                                                          '.bgGreen);
-      console.log('  ', `                       ALL TESTS PASSED                   `.bgGreen.bold);
+      console.log('  ', `                     ALL TESTS PASSED                     `.bgGreen.bold);
       console.log('  ', '                                                          '.bgGreen);
     }
 
