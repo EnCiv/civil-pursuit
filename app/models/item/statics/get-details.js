@@ -7,7 +7,7 @@ import CriteriaModel      from '../../criteria';
 function getItemDetails (itemId) {
   return new Promise((ok, ko) => {
     try {
-      let promises = [
+      const promises = [
         VoteModel.getAccumulation(itemId),
         FeedbackModel.find({ item : itemId}),
         CriteriaModel.find({}, { limit : 4 })
@@ -18,7 +18,7 @@ function getItemDetails (itemId) {
         .then(
           results => {
             try {
-              let [ votes, feedback, criterias ] = results;
+              const [ votes, feedback, criterias ] = results;
 
               this
                 .findById(itemId)

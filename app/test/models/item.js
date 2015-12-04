@@ -702,7 +702,7 @@ function test () {
             },
             {
               'should be a panel item' : new Describer(() => {
-                return isPanelItem(locals.panelifiedParent);
+                return isPanelItem(locals.panelifiedParent, locals.parent);
               })
             }
           ]

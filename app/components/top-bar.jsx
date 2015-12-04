@@ -116,7 +116,7 @@ class TopBar extends React.Component {
         );
 
         right2 = (
-          <section className={ `${comp}-join_button` }>
+          <section className={ `${comp}-sign-out-button` }>
             <Button onClick={ this.signOut.bind(this) }>
               <Icon icon="sign-out" />
             </Button>

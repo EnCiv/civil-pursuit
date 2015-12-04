@@ -58,8 +58,8 @@ function test (props) {
       }
     },
     {
-      'should be an item' : new Describer(() => {
-        return isPanelItem(locals.candidate);
+      'should be a panel item' : new Describer(() => {
+        return isPanelItem(locals.item);
       })
     },
     {

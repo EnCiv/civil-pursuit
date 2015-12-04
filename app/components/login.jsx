@@ -43,12 +43,12 @@ class Login extends React.Component {
           .post('/sign/in')
           .send({ email, password })
           .end((err, res) => {
-            if ( err ) {
-              return ko(err);
-            }
+            // if ( err ) {
+            //   return ko(err);
+            // }
             switch ( res.status ) {
               case 404:
-                ko(new Error('Wrong email'));
+                ko(new Error('Email not found'));
                 break;
 
                 case 401:
@@ -88,7 +88,9 @@ class Login extends React.Component {
           this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
           setTimeout(() => location.href = '/page/profile', 800);
         },
-        ko => this.setState({ validationError : 'Wrong email', info: null })
+        error => {
+          this.setState({ validationError : error.message, info: null })
+        }
       );
   }
 

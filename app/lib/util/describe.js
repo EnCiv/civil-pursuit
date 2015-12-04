@@ -121,6 +121,9 @@ function describe ( descriptor, stories, options = {} ) {
                   if ( error.stack ) {
                     console.log(error.stack.yellow);
                   }
+                  else {
+                    console.log(error);
+                  }
 
                   cursor ++;
                   run();

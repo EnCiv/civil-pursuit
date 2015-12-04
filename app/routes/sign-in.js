@@ -7,7 +7,7 @@ function signIn (req, res, next) {
 
   try {
 
-    let { email, password } = req.body;
+    const { email, password } = req.body;
 
     if ( ! email ) {
       res.statusCode = 400;

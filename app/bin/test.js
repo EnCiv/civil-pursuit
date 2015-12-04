@@ -21,8 +21,11 @@ import getCountries             from '../test/api/get-countries';
 import getDiscussion            from '../test/api/get-discussion';
 import getEducations            from '../test/api/get-educations';
 import getEmployments           from '../test/api/get-employments';
+import getEvaluation            from '../test/api/get-evaluation';
 import e2e                      from '../test/e2e';
 import join                     from '../test/e2e/join';
+import signOut                  from '../test/e2e/sign-out';
+import login                    from '../test/e2e/login';
 import stopE2e                  from '../test/e2e-stop';
 
 let tests = 0, passed = 0, failed = 0;
@@ -52,8 +55,11 @@ sequencer(
     // getDiscussion,
     getEducations,
     getEmployments,
+    getEvaluation,
     e2e,
     join,
+    signOut,
+    login,
     stopE2e
   ]
   .map(test => props => new Promise((ok, ko) => {

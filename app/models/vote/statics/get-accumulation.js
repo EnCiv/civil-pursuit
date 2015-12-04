@@ -24,15 +24,15 @@ function getAccumulation (itemId) {
 
                 let value;
 
-                if ( vote.value === 0 ) {
+                if ( vote.value === -1 ) {
                   value = '-1';
                 }
 
-                else if ( vote.value === 1 ) {
+                else if ( vote.value === 0 ) {
                   value = '+0';
                 }
 
-                else if ( vote.value === 2 ) {
+                else if ( vote.value === 1 ) {
                   value = '+1';
                 }
 

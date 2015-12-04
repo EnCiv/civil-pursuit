@@ -4181,8 +4181,8 @@ var Login = (function (_React$Component) {
         setTimeout(function () {
           return location.href = '/page/profile';
         }, 800);
-      }, function (ko) {
-        return _this.setState({ validationError: 'Wrong email', info: null });
+      }, function (error) {
+        _this.setState({ validationError: error.message, info: null });
       });
     }
   }, {
@@ -4351,12 +4351,12 @@ var Login = (function (_React$Component) {
       return new Promise(function (ok, ko) {
         try {
           _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
-            if (err) {
-              return ko(err);
-            }
+            // if ( err ) {
+            //   return ko(err);
+            // }
             switch (res.status) {
               case 404:
-                ko(new Error('Wrong email'));
+                ko(new Error('Email not found'));
                 break;
 
               case 401:
@@ -6877,7 +6877,7 @@ var TopBar = (function (_React$Component) {
 
           right2 = _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-join_button' },
+            { className: '' + comp + '-sign-out-button' },
             _react2['default'].createElement(
               _utilButton2['default'],
               { onClick: this.signOut.bind(this) },
