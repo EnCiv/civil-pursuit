@@ -1,9 +1,15 @@
 'use strict';
 
 import describe                   from 'redtea';
+import config                     from '../../../public.json';
 import Item                       from '../../models/item';
+import Type                       from '../../models/type';
+import User                       from '../../models/user';
 import isPopularity               from './is-popularity';
 import isObjectID                 from './is-object-id';
+import isItem                     from './is-item';
+import isType                     from './is-type';
+import isUser                     from './is-user';
 
 function isPanelItem (panelItem, item = {}, serialized = false) {
 
@@ -21,6 +27,70 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           if ( ! item ) {
             return ko(new Error(`No such item ${panelItem._id}`));
           }
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get user', (ok, ko) => {
+      User.findById(locals.item.user).then(
+        user => {
+          locals.user = user;
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get type', (ok, ko) => {
+      Type.findById(locals.item.type).then(
+        type => {
+          locals.type = type;
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get harmony types', (ok, ko) => {
+      Promise.all(
+        locals.type.harmony.map(harmony => Type.findById(harmony))
+      ).then(
+        results => {
+          locals.pro = results[0];
+          locals.con = results[1];
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get number of votes', (ok, ko) => {
+      locals.item.countVotes().then(
+        votes => {
+          locals.votes = votes;
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get number of children', (ok, ko) => {
+      locals.item.countChildren().then(
+        children => {
+          locals.children = children;
+          ok();
+        },
+        ko
+      );
+    });
+
+    it('should get number of harmony', (ok, ko) => {
+      locals.item.countHarmony().then(
+        harmony => {
+          console.log({ harmony });
+          locals.harmony = harmony;
           ok();
         },
         ko
@@ -109,31 +179,35 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
       }
     }]);
 
-    if ( 'image' in panelItem ) {
-      it('image', [ it => {
-        it('should have image which is a string', (ok, ko) => {
+    it('image', [ it => {
+      it('should have image which is a string', (ok, ko) => {
+        try {
+          panelItem.should.have.property('image').which.is.a.String();
+          ok();
+        }
+        catch ( error ) {
+          ko(error);
+        }
+      });
+
+      if ( 'image' in item ) {
+        it('should have the same image than item', (ok, ko) => {
           try {
-            panelItem.should.have.property('image').which.is.a.String();
+            panelItem.image.should.be.exactly(item.image);
             ok();
           }
           catch ( error ) {
             ko(error);
           }
         });
-
-        if ( 'image' in item ) {
-          it('should have the same image than item', (ok, ko) => {
-            try {
-              panelItem.image.should.be.exactly(item.image);
-              ok();
-            }
-            catch ( error ) {
-              ko(error);
-            }
-          });
-        }
-      }]);
-    }
+      }
+      else {
+        it('should have default image', (ok, ko) => {
+          panelItem.image.should.be.exactly(config['default item image']);
+          ok();
+        });
+      }
+    }]);
 
     if ( 'references' in panelItem ) {
       it('references', [ it => {
@@ -257,6 +331,175 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
       });
       it('should be a Popularity', describe.use(() => isPopularity(panelItem.popularity, locals.item.views, locals.item.promotions)));
     }]);
+
+    if ( 'parent' in panelItem ) {
+      it('Parent', [ it => {
+        it('should have property parent', (ok, ko) => {
+          panelItem.should.have.property('parent');
+          ok();
+        });
+        it('should be an item', describe.use(() => isItem(panelItem.parent, item.parent, serialized)));
+      }]);
+    }
+
+    it('Lineage', [ it => {
+      it('should have lineage', (ok, ko) => {
+        panelItem.should.have.property('lineage');
+        ok();
+      });
+      it('should be an array', (ok, ko) => {
+        panelItem.lineage.should.be.an.Array();
+        ok();
+      });
+
+      it('should be object ids', [ it => {
+        panelItem.lineage.forEach(item => it('should be an object id', describe.use(() => isObjectID(item, null, serialized))));
+      }]);
+
+      it('get lineage', (ok, ko) => {
+        locals.item.getLineage().then(
+          lineage => {
+            locals.lineage = lineage;
+            ok();
+          },
+          ko
+        );
+      });
+      it('should have same length', (ok, ko) => {
+        panelItem.lineage.length.should.be.exactly(locals.lineage.length);
+        ok();
+      });
+      it('should match', (ok, ko) => {
+        locals.lineage.forEach((lineage, index) => {
+          panelItem.lineage[index].toString().should.be.exactly(lineage.toString());
+        });
+        ok();
+      });
+    }]);
+
+    it('Subtype', [ it => {
+      it('should have subtype', (ok, ko) => {
+        panelItem.should.have.property('subtype');
+        ok();
+      });
+      it('should get subtype', (ok, ko) => {
+        locals.type.getSubtype().then(
+          subtype => {
+            locals.subtype = subtype;
+            ok();
+          },
+          ko
+        );
+      });
+      it('should be a type', describe.use(() => isType(panelItem.subtype, locals.subtype)));
+    }]);
+
+    it('Votes', [ it => {
+      it('should have votes', (ok, ko) => {
+        panelItem.should.have.property('votes');
+        ok();
+      });
+      it('should be a number', (ok, ko) => {
+        panelItem.votes.should.be.a.Number();
+        ok();
+      });
+      it('should match votes', (ok, ko) => {
+        panelItem.votes.should.be.exactly(locals.votes);
+        ok();
+      })
+    }]);
+
+    it('Children', [ it => {
+      it('should have children', (ok, ko) => {
+        panelItem.should.have.property('children');
+        ok();
+      });
+      it('should be a number', (ok, ko) => {
+        panelItem.children.should.be.a.Number();
+        ok();
+      });
+      it('should match children', (ok, ko) => {
+        panelItem.children.should.be.exactly(locals.children);
+        ok();
+      })
+    }]);
+
+    it('Harmony', [ it => {
+      it('should have harmony', (ok, ko) => {
+        panelItem.should.have.property('harmony');
+        ok();
+      });
+      it('should be an object', (ok, ko) => {
+        panelItem.harmony.should.be.an.Object();
+        ok();
+      });
+      it('pro', [ it => {
+        it('should have pro', (ok, ko) => {
+          panelItem.harmony.should.have.property('pro');
+          ok();
+        });
+        it('should be a number', (ok, ko) => {
+          panelItem.harmony.pro.should.be.a.Number();
+          ok();
+        });
+        it('should match', (ok, ko) => {
+          panelItem.harmony.pro.should.be.exactly(locals.harmony.pro);
+          ok();
+        });
+      }]);
+      it('harmony', [ it => {
+        it('should have harmony', (ok, ko) => {
+          panelItem.harmony.should.have.property('harmony');
+          ok();
+        });
+        it('should be a number', (ok, ko) => {
+          panelItem.harmony.harmony.should.be.a.Number();
+          ok();
+        });
+        it('should match', (ok, ko) => {
+          panelItem.harmony.harmony.should.be.exactly(locals.harmony.harmony);
+          ok();
+        });
+      }]);
+      it('con', [ it => {
+        it('should have con', (ok, ko) => {
+          panelItem.harmony.should.have.property('con');
+          ok();
+        });
+        it('should be a number', (ok, ko) => {
+          panelItem.harmony.con.should.be.a.Number();
+          ok();
+        });
+        it('should match', (ok, ko) => {
+          panelItem.harmony.con.should.be.exactly(locals.harmony.con);
+          ok();
+        });
+      }]);
+      it('types', [ it => {
+        it('should have types', (ok, ko) => {
+          panelItem.harmony.should.have.property('types');
+          ok();
+        });
+        it('should be an array', (ok, ko) => {
+          panelItem.harmony.types.should.be.an.Array();
+          ok();
+        });
+        it('should be types', [ it => {
+          it('should be pro', describe.use(() => isType(panelItem.harmony.types[0], locals.pro, serialized)));
+
+          it('should be con', describe.use(() => isType(panelItem.harmony.types[1], locals.con, serialized)));
+        }]);
+      }]);
+    }]);
+
+    it('user', [ it => {
+      it('should have user', (ok, ko) => {
+        panelItem.should.have.property('user');
+        ok();
+      });
+      it('should be a user', describe.use(() => isUser(panelItem.user, locals.user, serialized)));
+    }]);
+
   };
 }
 

@@ -13,6 +13,13 @@ function isType (type, compare = {}, serialized = false) {
 
     it('should be a document', describe.use(() => isDocument(type, compare, serialized)));
 
+    if ( ! serialized ) {
+      it('should be a type', (ok, ko) => {
+        type.should.be.an.instanceof(Type);
+        ok();
+      });
+    }
+
     it('should have a name', (ok, ko) => {
       type.should.have.property('name').which.is.a.String();
       ok();
