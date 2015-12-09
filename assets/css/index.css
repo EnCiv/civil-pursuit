@@ -113,22 +113,22 @@ button,
 }
 /** Text colors **/
 .muted {
-  color: #999999;
+  color: #999;
 }
 .success {
-  color: #5cb85c;
+  color: #5CB85C;
 }
 .info {
-  color: #5bc0de;
+  color: #5BC0DE;
 }
 .primary {
   color: #337ab7;
 }
 .warning {
-  color: #f0ad4e;
+  color: #F0AD4E;
 }
 .error {
-  color: #cd3232;
+  color: #CD3232;
 }
 .left {
   text-align: left;
@@ -250,37 +250,37 @@ a:hover {
  *  Background
  */
 .muted-bg {
-  background: #999999;
-  border-color: #999999;
-  color: #ffffff;
+  background: #999;
+  border-color: #999;
+  color: #fff;
 }
 .info-bg {
-  background: #5bc0de;
-  border-color: #5bc0de;
-  color: #ffffff;
+  background: #5BC0DE;
+  border-color: #5BC0DE;
+  color: #fff;
 }
 .text-info {
-  color: #5bc0de;
+  color: #5BC0DE;
 }
 .success-bg {
-  background: #5cb85c;
-  border-color: #5cb85c;
-  color: #ffffff;
+  background: #5CB85C;
+  border-color: #5CB85C;
+  color: #fff;
 }
 .error-bg {
-  background: #cd3232;
-  border-color: #cd3232;
-  color: #ffffff;
+  background: #CD3232;
+  border-color: #CD3232;
+  color: #fff;
 }
 .primary-bg {
   background: #337ab7;
   border-color: #337ab7;
-  color: #ffffff;
+  color: #fff;
 }
 .warning-bg {
-  background: #f0ad4e;
-  border-color: #f0ad4e;
-  color: #ffffff;
+  background: #F0AD4E;
+  border-color: #F0AD4E;
+  color: #fff;
 }
 /*
  *  Text
@@ -405,7 +405,7 @@ button.shy,
 }
 button.shy:hover:not(.very),
 .button.shy:hover:not(.very) {
-  background: #dddddd !important;
+  background: #ddd !important;
 }
 button.shy.very,
 .button.shy.very {
@@ -413,9 +413,9 @@ button.shy.very,
 }
 button.error,
 .button.error {
-  background: #cd3232;
-  border-color: #cd3232;
-  color: #ffffff;
+  background: #CD3232;
+  border-color: #CD3232;
+  color: #fff;
 }
 button.error:hover,
 .button.error:hover {
@@ -423,9 +423,9 @@ button.error:hover,
 }
 button.warning,
 .button.warning {
-  background: #f0ad4e;
-  border-color: #f0ad4e;
-  color: #ffffff;
+  background: #F0AD4E;
+  border-color: #F0AD4E;
+  color: #fff;
 }
 button.warning:hover,
 .button.warning:hover {
@@ -433,9 +433,9 @@ button.warning:hover,
 }
 button.info,
 .button.info {
-  background: #5bc0de;
-  border-color: #5bc0de;
-  color: #ffffff;
+  background: #5BC0DE;
+  border-color: #5BC0DE;
+  color: #fff;
 }
 button.info:hover,
 .button.info:hover {
@@ -443,9 +443,9 @@ button.info:hover,
 }
 button.success,
 .button.success {
-  background: #5cb85c;
-  border-color: #5cb85c;
-  color: #ffffff;
+  background: #5CB85C;
+  border-color: #5CB85C;
+  color: #fff;
 }
 button.success:hover,
 .button.success:hover {
@@ -455,7 +455,7 @@ button.primary,
 .button.primary {
   background: #337ab7;
   border-color: #337ab7;
-  color: #ffffff;
+  color: #fff;
 }
 button.primary:hover,
 .button.primary:hover {
@@ -491,7 +491,7 @@ button.block,
 }
 a.button {
   text-decoration: none;
-  color: #333333;
+  color: #333;
 }
 .syn-button-group button:first-child {
   border-radius: 6px 0 0 6px;
@@ -764,34 +764,34 @@ form h2:empty {
  *  Background
  */
 .syn--muted-bg {
-  background: #999999;
-  border-color: #999999;
-  color: #ffffff;
+  background: #999;
+  border-color: #999;
+  color: #fff;
 }
 .syn--info-bg {
-  background: #5bc0de;
-  border-color: #5bc0de;
-  color: #ffffff;
+  background: #5BC0DE;
+  border-color: #5BC0DE;
+  color: #fff;
 }
 .syn--success-bg {
-  background: #5cb85c;
-  border-color: #5cb85c;
-  color: #ffffff;
+  background: #5CB85C;
+  border-color: #5CB85C;
+  color: #fff;
 }
 .syn--error-bg {
-  background: #cd3232;
-  border-color: #cd3232;
-  color: #ffffff;
+  background: #CD3232;
+  border-color: #CD3232;
+  color: #fff;
 }
 .syn--primary-bg {
   background: #337ab7;
   border-color: #337ab7;
-  color: #ffffff;
+  color: #fff;
 }
 .syn--warning-bg {
-  background: #f0ad4e;
-  border-color: #f0ad4e;
-  color: #ffffff;
+  background: #F0AD4E;
+  border-color: #F0AD4E;
+  color: #fff;
 }
 .syn-flash {
   border: 4px solid #ccc;
@@ -801,19 +801,19 @@ form h2:empty {
   font-weight: bold;
 }
 .syn-flash.syn-flash--error {
-  color: #cd3232;
+  color: #CD3232;
   background: yellow;
   border-color: orange;
 }
 .syn-flash.syn-flash--success {
-  color: #5cb85c;
+  color: #5CB85C;
   background: yellow;
-  border-color: #5cb85c;
+  border-color: #5CB85C;
 }
 .syn-flash.syn-flash--info {
-  color: #5bc0de;
+  color: #5BC0DE;
   background: yellow;
-  border-color: #5bc0de;
+  border-color: #5BC0DE;
 }
 .syn-flash:empty {
   margin: 0;
@@ -956,7 +956,7 @@ body {
   border-left: 1px solid #ccc;
 }
 .syn-top_bar-right button:hover:not(.very) {
-  background: #dddddd !important;
+  background: #ddd !important;
 }
 .syn-top_bar-right button.very {
   cursor: default;
@@ -991,39 +991,39 @@ body {
   border-color: transparent;
 }
 .syn-top_bar-beta.shy:hover:not(.very) {
-  background: #dddddd !important;
+  background: #ddd !important;
 }
 .syn-top_bar-beta.shy.very {
   cursor: default;
 }
 .syn-top_bar-beta.error {
-  background: #cd3232;
-  border-color: #cd3232;
-  color: #ffffff;
+  background: #CD3232;
+  border-color: #CD3232;
+  color: #fff;
 }
 .syn-top_bar-beta.error:hover {
   background: #7b1e1e;
 }
 .syn-top_bar-beta.warning {
-  background: #f0ad4e;
-  border-color: #f0ad4e;
-  color: #ffffff;
+  background: #F0AD4E;
+  border-color: #F0AD4E;
+  color: #fff;
 }
 .syn-top_bar-beta.warning:hover {
   background: #c77c11;
 }
 .syn-top_bar-beta.info {
-  background: #5bc0de;
-  border-color: #5bc0de;
-  color: #ffffff;
+  background: #5BC0DE;
+  border-color: #5BC0DE;
+  color: #fff;
 }
 .syn-top_bar-beta.info:hover {
   background: #2390b0;
 }
 .syn-top_bar-beta.success {
-  background: #5cb85c;
-  border-color: #5cb85c;
-  color: #ffffff;
+  background: #5CB85C;
+  border-color: #5CB85C;
+  color: #fff;
 }
 .syn-top_bar-beta.success:hover {
   background: #357935;
@@ -1031,7 +1031,7 @@ body {
 .syn-top_bar-beta.primary {
   background: #337ab7;
   border-color: #337ab7;
-  color: #ffffff;
+  color: #fff;
 }
 .syn-top_bar-beta.primary:hover {
   background: #1d4567;
@@ -1170,7 +1170,7 @@ body {
 }
 .syn-modal-container footer a:active {
   border-color: #999;
-  background: #eeeeee;
+  background: #eee;
 }
 /**-------------------------------------------------------------// modal      */
 /** ____________________________________________________________________________
@@ -1192,7 +1192,7 @@ body {
     ____________________________________________________________________________
 **/
 .syn-panel {
-  border: 1px solid #666666;
+  border: 1px solid #666;
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   border-radius: 6px;
   margin-bottom: 10px;
@@ -1202,7 +1202,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: #39683c;
+  background: #39683C;
   background-color: rgba(0, 0, 0, 0.6);
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.6)), to(#000000));
   background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);

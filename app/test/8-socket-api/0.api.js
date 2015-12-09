@@ -10,7 +10,9 @@ function test (props) {
     url : `http://localhost:${props.port}`
   };
 
-  props.socket = Socket();
+  props.socket = Socket({
+    port : props.port
+  });
 
   return describe ( 'API', [
 

@@ -2,7 +2,7 @@
 
 import { EventEmitter }           from 'events';
 
-function Socket () {
+function Socket (options = {}) {
 
   if ( ! Socket.socket ) {
     Socket.socket = new EventEmitter();
@@ -11,7 +11,7 @@ function Socket () {
 
     Socket.socket.request = {
       headers: {
-        host  : 'localhost:13012',
+        host  : `localhost:${options.port}`,
         cookie : 'synapp=j%3A%7B%22training%22%3Atrue%7D'
       }
     };
