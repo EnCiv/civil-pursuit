@@ -9,9 +9,6 @@ import isType                           from './is-type';
 import isDocument                       from './is-document';
 
 function isItem (item, compare = {}, serialized = false, populated = []) {
-
-  console.log({ item : item.toJSON() });
-
   return it => {
     it(serialized ? 'should be serialized' : 'should not be serialized', ok => ok());
 

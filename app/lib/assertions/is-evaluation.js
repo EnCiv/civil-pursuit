@@ -4,7 +4,7 @@ import describe             from 'redtea';
 import { Evaluation }       from '../app/evaluate';
 import isType               from './is-type';
 import isObjectID           from './is-object-id';
-// import isItem               from './is-item';
+import isPanelItem          from './is-panel-item';
 
 function isEvaluation (evaluation, user, item, type, serialized = false) {
   return it => {
@@ -69,8 +69,11 @@ function isEvaluation (evaluation, user, item, type, serialized = false) {
         ok();
       });
       it('should not have more than 6 items', (ok, ko) => {
-
+        evaluation.items.length.should.be.below(7);
+        ok();
       });
+
+      evaluation.items.forEach(item => it('should be a panel item', describe.use(() => isPanelItem(item))));
     }]);
   };
 }
