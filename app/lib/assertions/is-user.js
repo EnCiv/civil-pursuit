@@ -55,9 +55,42 @@ function isUser (user, compare = {}, serialized = false) {
             preference.should.be.an.Object();
             ok();
           });
+          it('should have name', (ok, ko) => {
+            preference.should.have.property('name');
+            ok();
+          });
+          it('name should be a string', (ok, ko) => {
+            preference.name.should.be.a.String();
+            ok();
+          });
+          it('should have value', (ok, ko) => {
+            preference.should.have.property('value');
+            ok();
+          });
         }]));
       }]);
     }
+
+    if ( 'twitter' in user ) {
+      it('twitter', [ it => {
+        it('should have twitter', (ok, ko) => {
+          user.should.have.property('twitter');
+          ok();
+        });
+        it('should be a string', (ok, ko) => {
+          user.twitter.should.be.a.String();
+          ok();
+        });
+
+        if ( 'twitter' in compare ) {
+          it('should match compare', (ok, ko) => {
+            user.twitter.should.be.exactly(compare.twitter);
+            ok();
+          });
+        }
+      }]);
+    }
+
   };
 
 }
