@@ -19,11 +19,11 @@ import makePanel                from './lib/app/make-panel';
 
 import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
-import renderPage               from './routes/render-page';
-import itemRoute                from './routes/item';
+import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
-import * as Routes              from './routes';
+import setUserCookie            from './routes/set-user-cookie';
+import homePage                 from './routes/home';
 
 import User                     from './models/user';
 import Item                     from './models/item';
@@ -136,8 +136,8 @@ class HttpServer extends EventEmitter {
 
   signers () {
     this.app.post('/sign/in',
-      Routes.signIn,
-      Routes.setUserCookie,
+      signInRoute,
+      setUserCookie,
       function (req, res) {
         console.log(req.user);
         res.send({
@@ -148,7 +148,7 @@ class HttpServer extends EventEmitter {
 
     this.app.all('/sign/up',
       signUpRoute,
-      Routes.setUserCookie,
+      setUserCookie,
       function (req, res) {
         res.json({
           up: true,
@@ -220,9 +220,9 @@ class HttpServer extends EventEmitter {
           // }
           next();
         },
-        Routes.homePage.bind(this));
+        homePage.bind(this));
 
-      this.app.get('/page/:page', Routes.homePage.bind(this));
+      this.app.get('/page/:page', homePage.bind(this));
     }
     catch ( error ) {
       this.emit('error', error);
@@ -312,7 +312,7 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, Routes.homePage.bind(this));
+    }, homePage.bind(this));
   }
 
   getPanelPage () {
@@ -346,7 +346,7 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, Routes.homePage.bind(this));
+    }, homePage.bind(this));
   }
 
   cdn () {
@@ -409,8 +409,5 @@ class HttpServer extends EventEmitter {
   }
 
 }
-
-HttpServer.prototype.renderPage = renderPage;
-HttpServer.prototype.itemRoute = itemRoute;
 
 export default HttpServer;

@@ -24,13 +24,11 @@ class Passport {
       this.user = null;
       this.service = service;
 
-      let { routes } = config;
-
       let env = process.env.SYNAPP_ENV;
 
       this.CALLBACK_URL   =   secret[service][env]['callback url'];
-      this.SIGNIN_ROUTE   =   routes['sign in with ' + service];
-      this.OK_ROUTE       =   routes['sign in with ' + service + ' OK'];
+      this.SIGNIN_ROUTE   =   `/sign/in/${service}`;
+      this.OK_ROUTE       =   `/sign/in/${service}/ok`;
 
       this.app.get(this.SIGNIN_ROUTE,
         this.serviceStrategy.bind(this),
