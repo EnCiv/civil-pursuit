@@ -5,6 +5,7 @@ import config                     from '../../../public.json';
 import CriteriaModel              from '../../models/criteria';
 import TypeModel                  from '../../models/type';
 import ItemModel                  from '../../models/item';
+import UserModel                  from '../../models/user';
 
 const OTHERS = 5;
 
@@ -22,6 +23,14 @@ class Evaluator extends EventEmitter {
 
   constructor (userId, itemId) {
     super();
+
+    if ( userId instanceof UserModel || '_id' in userId ) {
+      userId = userId._id;
+    }
+
+    if ( itemId instanceof ItemModel || '_id' in itemId ) {
+      itemId = itemId._id;
+    }
 
     this.itemId     =   itemId;
     this.userId     =   userId;

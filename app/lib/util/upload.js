@@ -4,6 +4,8 @@ import { EventEmitter } from 'events';
 
 class Upload extends EventEmitter {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (dropzone, fileInput, thumbnail, replace) {
     super();
 
@@ -12,6 +14,8 @@ class Upload extends EventEmitter {
     this.thumbnail    =   thumbnail;
     this.replace      =   replace;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   init () {
     if ( window.File ) {
@@ -33,6 +37,8 @@ class Upload extends EventEmitter {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   destroy () {
     if ( window.File ) {
       if ( this.dropzone ) {
@@ -49,10 +55,14 @@ class Upload extends EventEmitter {
     return this;
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   hover (e) {
     e.stopPropagation();
     e.preventDefault();
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   handler (e) {
     this.hover(e);
@@ -63,6 +73,8 @@ class Upload extends EventEmitter {
       this.preview(f, e.target);
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   preview (file, target) {
 

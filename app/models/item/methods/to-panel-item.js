@@ -1,7 +1,6 @@
 'use strict';
 
 import config             from '../../../../public.json';
-import toSlug             from '../../../lib/util/to-slug';
 
 function toPanelItem () {
   return new Promise((ok, ko) => {
@@ -46,7 +45,7 @@ function toPanelItem () {
 
                     item.image        =   item.image || config['default item image'];
                     item.popularity   =   this.getPopularity();
-                    item.link         =   `/item/${id}/${toSlug(subject)}`;
+                    // item.link         =   `/item/${id}/${toSlug(subject)}`;
 
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

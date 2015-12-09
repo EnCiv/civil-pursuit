@@ -7,10 +7,6 @@ function makePanelId (panel) {
     id += `-${(panel.parent._id || panel.parent)}`;
   }
 
-  // else if ( panel.item && ! panel.backEnd ) {
-  //   id += `-${panel.item._id}`;
-  // }
-
   return id;
 };
 

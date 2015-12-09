@@ -1,19 +1,31 @@
 'use strict';
 
-// import bcrypt       from 'bcrypt';
 import bcrypt       from 'bcryptjs';
-import { Domain }   from 'domain';
 
-function encrypt (str) {
+function encrypt (str, num = 10) {
   return new Promise((ok, ko) => {
     try {
-      let d = new Domain().on('error', ko);
-
-      bcrypt.genSalt(10, d.intercept(salt => {
-        bcrypt.hash(str, salt, d.intercept(hash => {
-          ok(hash);
-        }));
-      }));
+      bcrypt.genSalt(num, (error, salt) => {
+        try {
+          if ( error ) {
+            throw error;
+          }
+          bcrypt.hash(str, salt, (error, hash) => {
+            try {
+              if ( error ) {
+                throw error;
+              }
+              ok(hash);
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          });
+        }
+        catch ( error ) {
+          ko(error);
+        }
+      });
     }
     catch ( error ) {
       ko(error);

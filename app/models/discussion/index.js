@@ -31,7 +31,7 @@ class Discussion extends Mungo.Model {
       },
       "registered"    :   {
         "type"        :   [User],
-        "required"    :   true
+        "default"     :   []
       }
     };
   }

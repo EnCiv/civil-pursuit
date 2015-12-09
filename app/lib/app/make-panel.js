@@ -1,10 +1,12 @@
 'use strict';
 
+import config from '../../../public.json';
+
 function makePanel (panel) {
   const p       =   {
     panel       :   {
       skip      :   0,
-      limit     :   6
+      limit     :   config['navigator batch size']
     },
     items       :   [],
     active      :   null
@@ -29,6 +31,11 @@ function makePanel (panel) {
       p.panel.parent = bits[1];
     }
   }
+
+  if ( ! p.panel.type ) {
+    throw new Error('Could not determine panel type');
+  }
+
 
   return p;
 }

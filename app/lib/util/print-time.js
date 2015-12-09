@@ -1,37 +1,21 @@
-! function () {
-  
-  'use strict';
+'use strict' ;
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+function printTime () {
+  const d = new Date();
 
-  function time () {
-    var d = new Date();
+  let
+    hours   =   d.getHours(),
+    minutes =   d.getMinutes(),
+    seconds =   d.getSeconds();
 
-    var hours = d.getHours();
+  return [hours, minutes, seconds]
+    .map(t => {
+      if ( t < 10 ) {
+        t = `0${t}`;
+      }
+      return t;
+    })
+    .map(t => t.toString());
+}
 
-    if ( hours < 10 ) {
-      hours = '0' + hours;
-    }
-
-    var minutes = d.getMinutes();
-
-    if ( minutes < 10 ) {
-      minutes = '0' + minutes;
-    }
-
-    var seconds = d.getSeconds();
-
-    if ( seconds < 10 ) {
-      seconds = '0' + seconds;
-    }
-
-    return [hours, minutes, seconds];
-  }
-
-  module.exports = time;
-
-} ();
+export default printTime;

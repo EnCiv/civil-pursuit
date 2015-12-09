@@ -1,9 +1,8 @@
 'use strict';
 
+import S                from 'string';
 import Model            from '../../lib/app/model';
-import isUrl            from '../../lib/util/is/url';
-import isLesserThan     from '../../lib/util/is/lesser-than';
-import toSlug           from '../../lib/util/to-slug';
+import Is               from '../../lib/util/is';
 import User             from '../user';
 import Type             from '../type';
 import getPopularity    from './methods/get-popularity';
@@ -37,7 +36,7 @@ class Item extends Model {
         "type"            :   [{
           "url"           :   {
             "type"        :   String,
-            "validate"    :   isUrl
+            "validate"    :   Is.url()
           },
           "title"         :   String
         }],
@@ -47,13 +46,13 @@ class Item extends Model {
       "subject"           :   {
         "type"            :   String,
         "required"        :   true,
-        "validate"        :   isLesserThan(255)
+        "validate"        :   Is.lesserThan(255)
       },
 
       "description"       :   {
         "type"            :   String,
         "required"        :   true,
-        "validate"        :   isLesserThan(5000)
+        "validate"        :   Is.lesserThan(5000)
       },
 
       "type"              :   {
@@ -122,7 +121,7 @@ class Item extends Model {
   }
 
   get link () {
-    return `/item/${this.id}/${toSlug(this.subject)}`;
+    return `/item/${this.id}/${S(this.subject).slugify().s}`;
   }
 
   static inserting () {

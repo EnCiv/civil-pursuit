@@ -31,7 +31,6 @@ class WebDriver extends EventEmitter {
               if ( error ) {
                 return this.emit('error', error);
               }
-              console.log('starting webdriver'.green);
               this.init();
             });
         });
@@ -44,8 +43,6 @@ class WebDriver extends EventEmitter {
 
   init () {
     try {
-      console.log('resizing webdriver'.grey);
-
       this.client.setViewportSize({ width : 700, height : 900 })
         .then(
           () => {

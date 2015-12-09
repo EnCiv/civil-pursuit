@@ -1,7 +1,7 @@
 'use strict';
 
 import sequencer          from '../../../lib/util/sequencer';
-import calcHarmony        from '../../../lib/get-harmony';
+import calcHarmony        from '../../../lib/app/get-harmony';
 
 function countHarmony () {
   return new Promise((ok, ko) => {

@@ -1,7 +1,7 @@
 'use strict';
 
 import S              from 'string';
-import getProps       from '../lib/app/props';
+import getProps       from '../lib/app/make-props';
 
 var cache = {}
 
