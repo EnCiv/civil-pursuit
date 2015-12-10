@@ -1,47 +1,30 @@
 'use strict';
 
-import describe from 'redtea';
-import superagent from 'superagent';
+import describe             from 'redtea';
+import superagent           from 'superagent';
+import User                 from '../../models/user';
 
 function test(props) {
-  const locals = {};
+  const locals = {
+    email : 'sign-in-http@synapp.com',
+    password : '1234'
+  };
 
-  return describe ('Sign Up Route', [
+  return describe ('Sign in page', [
     {
-      'Sign up' : [
+      'Sign in' : [
         {
-          'Empty sign up' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-                superagent
-                  .post(`http://localhost:${props.port}/sign/up`)
-                  .send({})
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        console.log(res);
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
+          'get user' : (ok, ko) => {
+            User.create(locals).then(ok, ko);
+          }
         },
         {
-          'Missing email' : [
+          'Empty sign in' : [
             {
               'should throw a 400 error' : (ok, ko) => {
                 superagent
-                  .post(`http://localhost:${props.port}/sign/up`)
-                  .send({ password : '1234' })
+                  .post('http://localhost:13012/sign/in')
+                  .send({})
                   .end((error, res) => {
                     try {
                       if ( ! error ) {
@@ -64,9 +47,12 @@ function test(props) {
           'Missing password' : [
             {
               'should throw a 400 error' : (ok, ko) => {
+
+                locals.fakeEmail = 'foo@aaaaaaaaaaa.com';
+
                 superagent
-                  .post(`http://localhost:${props.port}/sign/up`)
-                  .send({ email : '1234' })
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.fakeEmail })
                   .end((error, res) => {
                     try {
                       if ( ! error ) {
@@ -86,23 +72,24 @@ function test(props) {
           ]
         },
         {
-          'Valid credentials' : [
+          'No such email' : [
             {
-              'should post sign up' : (ok, ko) => {
-                locals.email  = 'signup@foo.com';
-                locals.password = '1234';
+              'should throw a 404 error' : (ok, ko) => {
+
+                locals.fakePassword = 'boom';
 
                 superagent
-                  .post(`http://localhost:${props.port}/sign/up`)
-                  .send({ email : locals.email , 'password' : locals.password })
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.fakeEmail, password : locals.fakePassword })
                   .end((error, res) => {
                     try {
-                      if ( error ) {
-                        console.log(res.res.text);
-                        throw error;
+                      if ( ! error ) {
+                        throw new Error('It should have thrown error');
                       }
-                      res.status.should.be.exactly(200);
+                      error.message.should.be.exactly('Not Found');
+                      res.status.should.be.exactly(404);
                       ok();
+
                     }
                     catch ( error ) {
                       ko(error);
@@ -113,12 +100,13 @@ function test(props) {
           ]
         },
         {
-          'Sign up as an existing user' : [
+          'Wrong password' : [
             {
               'should throw a 401 error' : (ok, ko) => {
+
                 superagent
-                  .post(`http://localhost:${props.port}/sign/up`)
-                  .send({ email : 'signup@foo.com' , 'password' : '1234' })
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.email, password : locals.fakePassword })
                   .end((error, res) => {
                     try {
                       if ( ! error ) {
@@ -126,6 +114,31 @@ function test(props) {
                       }
                       error.message.should.be.exactly('Unauthorized');
                       res.status.should.be.exactly(401);
+                      ok();
+
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  });
+              }
+            }
+          ]
+        },
+        {
+          'Valid credentials' : [
+            {
+              'should be OK' : (ok, ko) => {
+
+                superagent
+                  .post('http://localhost:13012/sign/in')
+                  .send({ email : locals.email, password : locals.password })
+                  .end((error, res) => {
+                    try {
+                      if ( error ) {
+                        throw error;
+                      }
+                      res.status.should.be.exactly(200);
                       ok();
                     }
                     catch ( error ) {

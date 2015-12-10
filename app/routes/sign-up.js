@@ -58,7 +58,7 @@ function signUp (req, res, next) {
           error => {
             if ( /duplicate key/.test(error.message) ) {
               res.statusCode = 401;
-              res.json({ error: 'username exists' });
+              res.json({ error: `Email ${email} already in use`, message : error.message });
             }
             else {
               next(error);

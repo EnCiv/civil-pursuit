@@ -50,15 +50,17 @@ function isItem (item, compare = {}, serialized = false, populated = []) {
     }]);
 
     it('image', [ it => {
-      it('should have image which is a string', (ok, ko) => {
-        try {
-          item.should.have.property('image').which.is.a.String();
-          ok();
-        }
-        catch ( error ) {
-          ko(error);
-        }
-      });
+      if ( 'image' in item ) {
+        it('should have image which is a string', (ok, ko) => {
+          try {
+            item.should.have.property('image').which.is.a.String();
+            ok();
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
+      }
 
       if ( 'image' in compare ) {
         it('should have the same image than item', (ok, ko) => {

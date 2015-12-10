@@ -1,6 +1,7 @@
 'use strict';
 
 import describe                   from 'redtea';
+import should                     from 'should';
 import config                     from '../../../public.json';
 import Item                       from '../../models/item';
 import Type                       from '../../models/type';
@@ -11,12 +12,47 @@ import isItem                     from './is-item';
 import isType                     from './is-type';
 import isUser                     from './is-user';
 
+function checkTypes (pro, con, types, serialized) {
+  return it => {
+    if ( pro && con ) {
+      it('should be an array', (ok, ko) => {
+        types.should.be.an.Array();
+        ok();
+      });
+      it('should be types', [ it => {
+        it('should be pro', describe.use(() => isType(types[0], pro, serialized)));
+
+        it('should be con', describe.use(() => isType(types[1], con, serialized)));
+      }]);
+    }
+    else {
+      it('type has no harmony', [ it => {
+        it('should be undefined', (ok, ko) => {
+          console.log(pro, con);
+          should(types).be.undefined();
+          ok();
+        });
+      }]);
+    }
+  }
+}
+
 function isPanelItem (panelItem, item = {}, serialized = false) {
 
   const locals = {};
 
   return it => {
     it(serialized ? 'should be serialized' : 'should not be serialized', ok => ok());
+
+    it('panel item should be an object', (ok, ko) => {
+      try {
+        panelItem.should.be.an.Object();
+        ok();
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
 
     it('_id', describe.use(() => isObjectID(panelItem._id, item._id, serialized)));
 
@@ -89,22 +125,11 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
     it('should get number of harmony', (ok, ko) => {
       locals.item.countHarmony().then(
         harmony => {
-          console.log({ harmony });
           locals.harmony = harmony;
           ok();
         },
         ko
       );
-    });
-
-    it('panel item should be an object', (ok, ko) => {
-      try {
-        panelItem.should.be.an.Object();
-        ok();
-      }
-      catch ( error ) {
-        ko(error);
-      }
     });
 
     it('id', [ it => {
@@ -391,7 +416,15 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           ko
         );
       });
-      it('should be a type', describe.use(() => isType(panelItem.subtype, locals.subtype)));
+      if ( ! panelItem.subtype ) {
+        it('should be null', (ok, ko) => {
+          should(locals.subtype).be.null();
+          ok();
+        });
+      }
+      else {
+        it('should be a type', describe.use(() => isType(panelItem.subtype, locals.subtype)));
+      }
     }]);
 
     it('Votes', [ it => {
@@ -424,6 +457,16 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
       })
     }]);
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /*  {
+     *    "pro"       :   undefined || Number
+     *    "con"       :   undefined || Number
+     *    "harmony"   :   undefined || Number
+     *    "types"     :   undefined || [Type]
+     *  }
+     */
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     it('Harmony', [ it => {
       it('should have harmony', (ok, ko) => {
         panelItem.should.have.property('harmony');
@@ -438,12 +481,14 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           panelItem.harmony.should.have.property('pro');
           ok();
         });
-        it('should be a number', (ok, ko) => {
-          panelItem.harmony.pro.should.be.a.Number();
-          ok();
-        });
+        if ( locals.pro ) {
+          it('should be a number', (ok, ko) => {
+            panelItem.harmony.pro.should.be.a.Number();
+            ok();
+          });
+        }
         it('should match', (ok, ko) => {
-          panelItem.harmony.pro.should.be.exactly(locals.harmony.pro);
+          should(panelItem.harmony.pro).be.exactly(locals.harmony.pro);
           ok();
         });
       }]);
@@ -452,12 +497,14 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           panelItem.harmony.should.have.property('harmony');
           ok();
         });
-        it('should be a number', (ok, ko) => {
-          panelItem.harmony.harmony.should.be.a.Number();
-          ok();
-        });
+        if ( locals.pro && locals.con ) {
+          it('should be a number', (ok, ko) => {
+            panelItem.harmony.harmony.should.be.a.Number();
+            ok();
+          });
+        }
         it('should match', (ok, ko) => {
-          panelItem.harmony.harmony.should.be.exactly(locals.harmony.harmony);
+          should(panelItem.harmony.harmony).be.exactly(locals.harmony.harmony);
           ok();
         });
       }]);
@@ -466,12 +513,14 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           panelItem.harmony.should.have.property('con');
           ok();
         });
-        it('should be a number', (ok, ko) => {
-          panelItem.harmony.con.should.be.a.Number();
-          ok();
-        });
+        if ( locals.con ) {
+          it('should be a number', (ok, ko) => {
+            panelItem.harmony.con.should.be.a.Number();
+            ok();
+          });
+        }
         it('should match', (ok, ko) => {
-          panelItem.harmony.con.should.be.exactly(locals.harmony.con);
+          should(panelItem.harmony.con).be.exactly(locals.harmony.con);
           ok();
         });
       }]);
@@ -480,15 +529,7 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           panelItem.harmony.should.have.property('types');
           ok();
         });
-        it('should be an array', (ok, ko) => {
-          panelItem.harmony.types.should.be.an.Array();
-          ok();
-        });
-        it('should be types', [ it => {
-          it('should be pro', describe.use(() => isType(panelItem.harmony.types[0], locals.pro, serialized)));
-
-          it('should be con', describe.use(() => isType(panelItem.harmony.types[1], locals.con, serialized)));
-        }]);
+        it('should be the correct types', describe.use(() => checkTypes(locals.pro, locals.con, panelItem.harmony.types, serialized)))
       }]);
     }]);
 
