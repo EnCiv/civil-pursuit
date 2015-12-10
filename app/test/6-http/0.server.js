@@ -81,270 +81,141 @@ function test (props) {
         }
       ]
     },
-    {
-      'Sign up' : [
-        {
-          'Empty sign up' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-                superagent
-                  .post('http://localhost:13012/sign/up')
-                  .send({})
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Missing email' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-                superagent
-                  .post('http://localhost:13012/sign/up')
-                  .send({ password : '1234' })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Missing password' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-                superagent
-                  .post('http://localhost:13012/sign/up')
-                  .send({ email : '1234' })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Valid credentials' : [
-            {
-              'should post sign up' : (ok, ko) => {
-                locals.email  = 'signup@foo.com';
-                locals.password = '1234';
-
-                superagent
-                  .post('http://localhost:13012/sign/up')
-                  .send({ email : locals.email , 'password' : locals.password })
-                  .end((error, res) => {
-                    try {
-                      if ( error ) {
-                        throw error;
-                      }
-                      res.status.should.be.exactly(200);
-                      ok();
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            },
-          ]
-        },
-        {
-          'Sign up as an existing user' : [
-            {
-              'should throw a 401 error' : (ok, ko) => {
-                superagent
-                  .post('http://localhost:13012/sign/up')
-                  .send({ email : 'signup@foo.com' , 'password' : '1234' })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Unauthorized');
-                      res.status.should.be.exactly(401);
-                      ok();
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      'Sign in' : [
-        {
-          'Empty sign in' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-                superagent
-                  .post('http://localhost:13012/sign/in')
-                  .send({})
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Missing password' : [
-            {
-              'should throw a 400 error' : (ok, ko) => {
-
-                locals.fakeEmail = 'foo@aaaaaaaaaaa.com';
-
-                superagent
-                  .post('http://localhost:13012/sign/in')
-                  .send({ email : locals.fakeEmail })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Bad Request');
-                      res.status.should.be.exactly(400);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'No such email' : [
-            {
-              'should throw a 404 error' : (ok, ko) => {
-
-                locals.fakePassword = 'boom';
-
-                superagent
-                  .post('http://localhost:13012/sign/in')
-                  .send({ email : locals.fakeEmail, password : locals.fakePassword })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Not Found');
-                      res.status.should.be.exactly(404);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Wrong password' : [
-            {
-              'should throw a 401 error' : (ok, ko) => {
-
-                superagent
-                  .post('http://localhost:13012/sign/in')
-                  .send({ email : locals.email, password : locals.fakePassword })
-                  .end((error, res) => {
-                    try {
-                      if ( ! error ) {
-                        throw new Error('It should have thrown error');
-                      }
-                      error.message.should.be.exactly('Unauthorized');
-                      res.status.should.be.exactly(401);
-                      ok();
-
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        },
-        {
-          'Valid credentials' : [
-            {
-              'should be OK' : (ok, ko) => {
-
-                superagent
-                  .post('http://localhost:13012/sign/in')
-                  .send({ email : locals.email, password : locals.password })
-                  .end((error, res) => {
-                    try {
-                      if ( error ) {
-                        throw error;
-                      }
-                      res.status.should.be.exactly(200);
-                      ok();
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  });
-              }
-            }
-          ]
-        }
-      ]
-    }
+    // {
+    //   'Sign in' : [
+    //     {
+    //       'Empty sign in' : [
+    //         {
+    //           'should throw a 400 error' : (ok, ko) => {
+    //             superagent
+    //               .post('http://localhost:13012/sign/in')
+    //               .send({})
+    //               .end((error, res) => {
+    //                 try {
+    //                   if ( ! error ) {
+    //                     throw new Error('It should have thrown error');
+    //                   }
+    //                   error.message.should.be.exactly('Bad Request');
+    //                   res.status.should.be.exactly(400);
+    //                   ok();
+    //
+    //                 }
+    //                 catch ( error ) {
+    //                   ko(error);
+    //                 }
+    //               });
+    //           }
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       'Missing password' : [
+    //         {
+    //           'should throw a 400 error' : (ok, ko) => {
+    //
+    //             locals.fakeEmail = 'foo@aaaaaaaaaaa.com';
+    //
+    //             superagent
+    //               .post('http://localhost:13012/sign/in')
+    //               .send({ email : locals.fakeEmail })
+    //               .end((error, res) => {
+    //                 try {
+    //                   if ( ! error ) {
+    //                     throw new Error('It should have thrown error');
+    //                   }
+    //                   error.message.should.be.exactly('Bad Request');
+    //                   res.status.should.be.exactly(400);
+    //                   ok();
+    //
+    //                 }
+    //                 catch ( error ) {
+    //                   ko(error);
+    //                 }
+    //               });
+    //           }
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       'No such email' : [
+    //         {
+    //           'should throw a 404 error' : (ok, ko) => {
+    //
+    //             locals.fakePassword = 'boom';
+    //
+    //             superagent
+    //               .post('http://localhost:13012/sign/in')
+    //               .send({ email : locals.fakeEmail, password : locals.fakePassword })
+    //               .end((error, res) => {
+    //                 try {
+    //                   if ( ! error ) {
+    //                     throw new Error('It should have thrown error');
+    //                   }
+    //                   error.message.should.be.exactly('Not Found');
+    //                   res.status.should.be.exactly(404);
+    //                   ok();
+    //
+    //                 }
+    //                 catch ( error ) {
+    //                   ko(error);
+    //                 }
+    //               });
+    //           }
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       'Wrong password' : [
+    //         {
+    //           'should throw a 401 error' : (ok, ko) => {
+    //
+    //             superagent
+    //               .post('http://localhost:13012/sign/in')
+    //               .send({ email : locals.email, password : locals.fakePassword })
+    //               .end((error, res) => {
+    //                 try {
+    //                   if ( ! error ) {
+    //                     throw new Error('It should have thrown error');
+    //                   }
+    //                   error.message.should.be.exactly('Unauthorized');
+    //                   res.status.should.be.exactly(401);
+    //                   ok();
+    //
+    //                 }
+    //                 catch ( error ) {
+    //                   ko(error);
+    //                 }
+    //               });
+    //           }
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       'Valid credentials' : [
+    //         {
+    //           'should be OK' : (ok, ko) => {
+    //
+    //             superagent
+    //               .post('http://localhost:13012/sign/in')
+    //               .send({ email : locals.email, password : locals.password })
+    //               .end((error, res) => {
+    //                 try {
+    //                   if ( error ) {
+    //                     throw error;
+    //                   }
+    //                   res.status.should.be.exactly(200);
+    //                   ok();
+    //                 }
+    //                 catch ( error ) {
+    //                   ko(error);
+    //                 }
+    //               });
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // }
   ]);
 }
 

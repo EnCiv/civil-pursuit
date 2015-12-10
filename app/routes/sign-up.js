@@ -9,6 +9,8 @@ function signUp (req, res, next) {
 
     const { email, password } = req.body;
 
+    console.log({ email, password });
+
     if ( ! email ) {
       res.statusCode = 400;
       res.json({ error: 'Missing email' });

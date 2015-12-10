@@ -73,7 +73,7 @@ class User extends Mungo.Model {
 
       "gender"            :     {
         "type"            :     String,
-        "validate"        :     value => ['M', 'F', 'O'].indexOf(value) > -1
+        "validate"        :     value => User.gender.indexOf(value) > -1
       },
 
       "married"           :     MaritalStatus,
@@ -157,5 +157,7 @@ User.migrations = {
   2 : V2,
   3 : V3
 };
+
+User.gender = ['M', 'F', 'O'];
 
 export default User;
