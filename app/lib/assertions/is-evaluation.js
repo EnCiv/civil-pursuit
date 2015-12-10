@@ -5,6 +5,7 @@ import { Evaluation }       from '../app/evaluate';
 import isType               from './is-type';
 import isObjectID           from './is-object-id';
 import isPanelItem          from './is-panel-item';
+import isCriteria           from './is-criteria';
 
 function isEvaluation (evaluation, user, item, type, serialized = false) {
   return it => {
@@ -74,6 +75,18 @@ function isEvaluation (evaluation, user, item, type, serialized = false) {
       });
 
       evaluation.items.forEach(item => it('should be a panel item', describe.use(() => isPanelItem(item))));
+    }]);
+
+    it('criterias', [ it => {
+      it('should have property criterias', (ok, ko) => {
+        evaluation.should.have.property('criterias');
+        ok();
+      });
+      it('should be an array', (ok, ko) => {
+        evaluation.criterias.should.be.an.Array();
+        ok();
+      });
+      evaluation.criterias.forEach(criteria => it('should be a criteria', describe.use(() => isCriteria(criteria))));
     }]);
   };
 }
