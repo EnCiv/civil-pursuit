@@ -6,23 +6,96 @@ echo '*************************************************************************'
 echo POSTINSTALL
 echo '*************************************************************************'
 
+echo '*************************************************************************'
+echo NPM LS
+echo '*************************************************************************'
+
 npm ls
 
-cd assets &&
-bower install &&
-cd .. &&
+echo '*************************************************************************'
+echo BOWER
+echo '*************************************************************************'
+
+cd assets || {
+  echo Could not cd assets;
+  exit 1
+}
+bower install  || {
+  echo Could not bower install;
+  exit 1
+}
+cd ..  || {
+  echo Could not cd back to root;
+  exit 1
+}
 echo "bower ok"
-npm run transpile &&
+
+echo '*************************************************************************'
+echo TRANSPILE
+echo '*************************************************************************'
+
+npm run transpile  || {
+  echo Could not transpile;
+  exit 1
+}
 echo "transpile ok"
-npm run build &&
-echo "build ok"
-npm run less &&
+
+echo '*************************************************************************'
+echo BROWSERIFY
+echo '*************************************************************************'
+
+npm run build  || {
+  echo Could not browserify;
+  exit 1
+}
+echo "browserify ok"
+
+echo '*************************************************************************'
+echo LESS TO CSS
+echo '*************************************************************************'
+
+npm run less  || {
+  echo Could not convert less to css;
+  exit 1
+}
 echo "less ok"
-npm run min-css &&
+
+echo '*************************************************************************'
+echo MINIFY CSS
+echo '*************************************************************************'
+
+npm run min-css  || {
+  echo Could not minify css;
+  exit 1
+}
 echo "min-css ok"
-npm run uglify &&
+
+echo '*************************************************************************'
+echo UGLIFY JS
+echo '*************************************************************************'
+
+npm run uglify  || {
+  echo Could not ulify js;
+  exit 1
+}
 echo "uglify ok"
-npm run uglify-assets &&
+
+echo '*************************************************************************'
+echo UGLIFY ASSETS
+echo '*************************************************************************'
+
+npm run uglify-assets  || {
+  echo Could not uglify js;
+  exit 1
+}
 echo "uglify-assets ok"
-node dist/bin/migrate &&
+
+echo '*************************************************************************'
+echo MIGRATE DB
+echo '*************************************************************************'
+
+node dist/bin/migrate  || {
+  echo Could not migrate;
+  exit 1
+}
 echo "migrate ok"
