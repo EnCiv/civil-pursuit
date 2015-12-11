@@ -3,6 +3,7 @@
 import should                         from 'should';
 import describe                       from 'redtea';
 import { EventEmitter }               from 'events';
+import config                         from '../../../public.json';
 import { Evaluation, Evaluator }      from '../../lib/app/evaluate';
 import User                           from '../../models/user';
 import Type                           from '../../models/type';
@@ -76,7 +77,6 @@ function evaluate (evaluation, user, item, type) {
         locals.evaluate.then(
           results => {
             locals.results = results;
-            console.log(require('util').inspect(results, { depth: null }));
             ok();
           },
           ko
@@ -92,56 +92,162 @@ function test () {
 
   const locals = {};
 
-  return describe ( 'Lib / App / Evaluate' , [
-    {
-      'should Evaluator be a function' : (ok, ko) => {
-        Evaluator.should.be.a.Function();
-        ok();
+  return describe ( 'Lib / App / Evaluate' , it => {
+    it('should Evaluator be a function', (ok, ko) => {
+      Evaluator.should.be.a.Function();
+      ok();
+    });
+    it('should Evaluation be a function', (ok, ko) => {
+      Evaluation.should.be.a.Function();
+      ok();
+    });
+    it('should get random user', (ok, ko) => {
+      User.findOneRandom().then(
+        user => {
+          locals.user = user;
+          ok();
+        },
+        ko
+      );
+    });
+    it('should create a group of types', (ok, ko) => {
+      Type.group('Evaluation parent', 'Evaluation subtype', 'Evaluation pro', 'Evaluation con').then(
+        group => {
+          locals.group = group;
+          ok();
+        },
+        ko
+      );
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Parent item', [ it => {
+      for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+        it(`Parent item #${i}`, [ it => {
+          it('should create a parent item', (ok, ko) => {
+            Item.lambda({ type : locals.group.parent }).then(
+              item => {
+                locals.parent = item;
+                locals.evaluation = new Evaluator(locals.user, locals.parent);
+                ok();
+              },
+              ko
+            );
+          });
+
+          it('Evaluate parent item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.parent, locals.group.parent)));
+
+          let itemsLength = (i + 1);
+
+          if ( i >= config["navigator batch size"] ) {
+            itemsLength = config["navigator batch size"];
+          }
+
+          it(`should have ${itemsLength} items`, (ok, ko) => {
+            locals.evaluation.evaluate().then(
+              evaluation => {
+                try {
+                  evaluation.items.should.have.length(itemsLength);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          });
+        }]);
       }
-    },
-    {
-      'should Evaluation be a function' : (ok, ko) => {
-        Evaluation.should.be.a.Function();
-        ok();
+    }]);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Subtype item', [ it => {
+      for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+        it(`Subtype item #${i}`, [ it => {
+          it('should create a subtype item', (ok, ko) => {
+            Item.lambda({ type : locals.group.subtype }).then(
+              item => {
+                locals.subtype = item;
+                locals.evaluation = new Evaluator(locals.user, locals.subtype);
+                ok();
+              },
+              ko
+            );
+          });
+
+          it('Evaluate subtype item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.subtype, locals.group.subtype)));
+
+          let itemsLength = (i + 1);
+
+          if ( i >= config["navigator batch size"] ) {
+            itemsLength = config["navigator batch size"];
+          }
+
+          it(`should have ${itemsLength} items`, (ok, ko) => {
+            locals.evaluation.evaluate().then(
+              evaluation => {
+                try {
+                  evaluation.items.should.have.length(itemsLength);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          });
+        }]);
       }
-    },
-    {
-      'should get random user' : (ok, ko) => {
-        User.findOneRandom().then(
-          user => {
-            locals.user = user;
-            ok();
-          },
-          ko
-        );
+    }]);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Pro item', [ it => {
+      for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+        it(`Pro item #${i}`, [ it => {
+          it('should create a pro item', (ok, ko) => {
+            Item.lambda({ type : locals.group.pro }).then(
+              item => {
+                locals.pro = item;
+                locals.evaluation = new Evaluator(locals.user, locals.pro);
+                ok();
+              },
+              ko
+            );
+          });
+
+          it('Evaluate pro item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.pro, locals.group.pro)));
+
+          let itemsLength = (i + 1);
+
+          if ( i >= config["navigator batch size"] ) {
+            itemsLength = config["navigator batch size"];
+          }
+
+          it(`should have ${itemsLength} items`, (ok, ko) => {
+            locals.evaluation.evaluate().then(
+              evaluation => {
+                try {
+                  evaluation.items.should.have.length(itemsLength);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          });
+        }]);
       }
-    },
-    {
-      'should create a group of types' : (ok, ko) => {
-        Type.group('Evaluation parent', 'Evaluation subtype', 'Evaluation pro', 'Evaluation con').then(
-          group => {
-            locals.group = group;
-            ok();
-          },
-          ko
-        );
-      }
-    },
-    {
-      'should create a parent item' : (ok, ko) => {
-        Item.lambda({ type : locals.group.parent }).then(
-          item => {
-            locals.parent = item;
-            ok();
-          },
-          ko
-        );
-      }
-    },
-    {
-      'Evaluate parent item' : describe.use(() => evaluate(new Evaluator(locals.user, locals.parent), locals.user, locals.parent, locals.group.parent))
-    }
-  ] );
+    }]);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  });
 
 }
 

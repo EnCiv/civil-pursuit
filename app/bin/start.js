@@ -42,7 +42,7 @@ function start (emitter = false) {
     if ( ! process.env.SYNAPP_ENV ) {
       throw new Error('Missing SYNAPP_ENV');
     }
-
+    
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     const connectToDB = props => new Promise((ok, ko) => {

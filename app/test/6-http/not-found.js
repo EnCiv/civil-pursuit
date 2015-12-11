@@ -6,17 +6,14 @@ import superagent from 'superagent';
 function test(props) {
   const locals = {};
 
-  return describe ('Terms of service page', [
+  return describe ('Not found page', [
     {
-      'should get terms of service page' : (ok, ko) => {
+      'should not be found' : (ok, ko) => {
         superagent
-          .get(`http://localhost:${props.port}/page/terms-of-service`)
+          .get(`http://localhost:${props.port}/1111111111111`)
           .end((error, res) => {
             try {
-              if ( error ) {
-                throw error;
-              }
-              res.status.should.be.exactly(200);
+              res.status.should.be.exactly(404);
               ok();
             }
             catch ( error ) {

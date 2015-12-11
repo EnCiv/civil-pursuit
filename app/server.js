@@ -354,7 +354,10 @@ class HttpServer extends EventEmitter {
   }
 
   notFound () {
-    this.app.use((req, res, next) => res.send('Page not found'));
+    this.app.use((req, res, next) => {
+      res.statusCode = 404;
+      res.send('Page not found');
+    });
   }
 
   error () {

@@ -9,6 +9,8 @@ import UserModel                  from '../../models/user';
 
 const OTHERS = 5;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Evaluation {
 
   constructor (props) {
@@ -19,7 +21,11 @@ class Evaluation {
 
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Evaluator extends EventEmitter {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (userId, itemId) {
     super();
@@ -37,7 +43,7 @@ class Evaluator extends EventEmitter {
     this.type       =   'regular';
   }
 
-  // Get model item from DB and panelify it
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   getItem () {
     return new Promise((ok, ko) => {
@@ -77,6 +83,8 @@ class Evaluator extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   evaluate () {
     return new Promise((ok, ko) => {
       try {
@@ -113,9 +121,13 @@ class Evaluator extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   findType (typeId) {
     return TypeModel.findOne(typeId);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   make () {
     return new Promise((ok, ko) => {
@@ -128,7 +140,7 @@ class Evaluator extends EventEmitter {
         .then(
           results => {
             try {
-              let [ items, criterias ] = results;
+              const [ items, criterias ] = results;
 
               this
                 .packAndGo({ items, criterias })
@@ -148,6 +160,8 @@ class Evaluator extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   makeSplit () {
     return new Promise((ok, ko) => {
       try {
@@ -156,7 +170,7 @@ class Evaluator extends EventEmitter {
           .then(
             right => {
               try {
-                let promises = [
+                const promises = [
                   this.findOthers(5),
                   this.findOthers(6, right),
                   CriteriaModel.find()
@@ -165,7 +179,7 @@ class Evaluator extends EventEmitter {
                 Promise.all(promises).then(
                   results => {
                     try {
-                      let [ left, right, criterias ] = results;
+                      const [ left, right, criterias ] = results;
                       this
                         .packAndGo({ left, right, criterias })
                         .then(ok, ko);
@@ -190,12 +204,13 @@ class Evaluator extends EventEmitter {
     });
   }
 
-  findOthers (limit, type) {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  findOthers (limit, type) {
     return new Promise((ok, ko) => {
       try {
 
-        let query = {};
+        const query = {};
 
         if ( type ) {
           query.type = type._id;
@@ -248,8 +263,13 @@ class Evaluator extends EventEmitter {
 
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   packAndGo (results) {
     return new Promise((ok, ko) => {
+
+      //Split (Harmony)
+      
       if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
         results.items = [];
 
@@ -294,7 +314,7 @@ class Evaluator extends EventEmitter {
         split     :   this.type === 'split',
         type      :   this.item.type,
         item      :   this.itemId,
-        items     :   results.items/*.map(this.map, this)*/,
+        items     :   results.items,
         criterias :   results.criterias,
         position  :   config["evaluation context item position"]
       });
@@ -304,11 +324,7 @@ class Evaluator extends EventEmitter {
     });
   }
 
-  map (item) {
-
-    return item.toJSON();
-
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 }
 

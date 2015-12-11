@@ -54,7 +54,8 @@ function OUTCOMING(message) {
 var props = (0, _props2['default'])({
   path: location.pathname,
   intro: JSON.parse(window.synapp.intro),
-  panels: JSON.parse(window.synapp.panels) });
+  panels: JSON.parse(window.synapp.panels)
+});
 
 window.location.search.replace(/([^?=&]+)(=([^&]*))?/g, function ($0, $1, $2, $3) {
   props.urlParams[$1] = $3;
@@ -493,7 +494,7 @@ window.socket.on('welcome', function (user) {
 
     window.scrollTo(0, pageYOffset + top - 60);
 
-    props.panels[panelId].active = '' + item._id + '-edit-and-go-again';
+    props.panels[panelId].active = item._id + '-edit-and-go-again';
 
     render();
   }, 500);
@@ -514,7 +515,7 @@ window.onpopstate = function (event) {
   props.path = location.pathname;
   render();
 };
-},{"../components/app":"/home/francois/Dev/syn/dist/components/app.js","../lib/app/make-panel":"/home/francois/Dev/syn/dist/lib/app/make-panel.js","../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../props":"/home/francois/Dev/syn/dist/props.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/app.js":[function(require,module,exports){
+},{"../components/app":"/home/francois/Dev/syn/dist/components/app.js","../lib/app/make-panel":"/home/francois/Dev/syn/dist/lib/app/make-panel.js","../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../props":"/home/francois/Dev/syn/dist/props.js","events":"/home/francois/Dev/syn/node_modules/events/events.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/app.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -525,11 +526,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -564,15 +567,13 @@ var _libProptypesPanelItem = require('../lib/proptypes/panel-item');
 var _libProptypesPanelItem2 = _interopRequireDefault(_libProptypesPanelItem);
 
 var App = (function (_React$Component) {
+  _inherits(App, _React$Component);
+
   function App() {
     _classCallCheck(this, App);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(App, _React$Component);
 
   _createClass(App, [{
     key: 'render',
@@ -673,11 +674,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -704,17 +707,15 @@ var _libProptypesDiscussion = require('../lib/proptypes/discussion');
 var _libProptypesDiscussion2 = _interopRequireDefault(_libProptypesDiscussion);
 
 var Countdown = (function (_React$Component) {
+  _inherits(Countdown, _React$Component);
+
   function Countdown() {
     _classCallCheck(this, Countdown);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Countdown.prototype), 'constructor', this).apply(this, arguments);
 
     this.timer = null;
   }
-
-  _inherits(Countdown, _React$Component);
 
   _createClass(Countdown, [{
     key: 'componentDidMount',
@@ -747,11 +748,11 @@ var Countdown = (function (_React$Component) {
         remainingSeconds.innerText = remainingTime.seconds;
       }, 1000);
     }
-  }, {
-    key: 'countRemainingTime',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'countRemainingTime',
     value: function countRemainingTime() {
       var now = Date.now(),
           interval = new Date(this.props.discussion.deadline) - now,
@@ -765,11 +766,11 @@ var Countdown = (function (_React$Component) {
 
       return { interval: interval, days: days, hours: hours, minutes: minutes, seconds: seconds };
     }
-  }, {
-    key: 'inlineEmail',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'inlineEmail',
     value: function inlineEmail() {
       var discussion = this.props.discussion;
 
@@ -779,19 +780,19 @@ var Countdown = (function (_React$Component) {
 
       return 'mailto:?Subject=' + subject + '&Body=' + description;
     }
-  }, {
-    key: 'register',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'register',
     value: function register() {
       document.querySelector('.syn-top_bar-join_button button').click();
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var now = (0, _moment2['default'])();
       var _props = this.props;
@@ -921,7 +922,6 @@ var Countdown = (function (_React$Component) {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   }], [{
     key: 'propTypes',
 
@@ -931,6 +931,9 @@ var Countdown = (function (_React$Component) {
       discussion: _libProptypesDiscussion2['default'],
       user: _libProptypesUser2['default']
     },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     enumerable: true
   }]);
 
@@ -939,8 +942,6 @@ var Countdown = (function (_React$Component) {
 
 exports['default'] = Countdown;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/proptypes/discussion":"/home/francois/Dev/syn/dist/lib/proptypes/discussion.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./panel":"/home/francois/Dev/syn/dist/components/panel.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","moment":"/home/francois/Dev/syn/node_modules/moment/moment.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/creator.js":[function(require,module,exports){
 'use strict';
 
@@ -950,11 +951,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1001,17 +1004,15 @@ var _libProptypesType = require('../lib/proptypes/type');
 var _libProptypesType2 = _interopRequireDefault(_libProptypesType);
 
 var Creator = (function (_React$Component) {
+  _inherits(Creator, _React$Component);
+
   function Creator() {
     _classCallCheck(this, Creator);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).apply(this, arguments);
 
     this.state = {};
   }
-
-  _inherits(Creator, _React$Component);
 
   _createClass(Creator, [{
     key: 'componentDidMount',
@@ -1050,11 +1051,11 @@ var Creator = (function (_React$Component) {
         this.applyTitle(references[0].title, references[0].url);
       }
     }
-  }, {
-    key: 'componentWillReceiveProps',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
       var _this2 = this;
 
@@ -1065,15 +1066,15 @@ var Creator = (function (_React$Component) {
         _react2['default'].findDOMNode(this.refs.title).value = '';
 
         setTimeout(function () {
-          window.Dispatcher.emit('set active', _this2.props['panel-id'], '' + props.created.item + '-promote');
+          window.Dispatcher.emit('set active', _this2.props['panel-id'], props.created.item + '-promote');
         });
       }
     }
-  }, {
-    key: 'create',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'create',
     value: function create() {
       var _this3 = this;
 
@@ -1120,11 +1121,11 @@ var Creator = (function (_React$Component) {
         insert();
       }
     }
-  }, {
-    key: 'getUrlTitle',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'getUrlTitle',
     value: function getUrlTitle() {
       var _this4 = this;
 
@@ -1142,11 +1143,11 @@ var Creator = (function (_React$Component) {
         });
       }
     }
-  }, {
-    key: 'applyTitle',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'applyTitle',
     value: function applyTitle(title, url) {
       var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
       var error = _react2['default'].findDOMNode(this.refs.errorLookingUp);
@@ -1171,11 +1172,11 @@ var Creator = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'editURL',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'editURL',
     value: function editURL() {
       var reference = _react2['default'].findDOMNode(this.refs.reference);
       var editURL = _react2['default'].findDOMNode(this.refs.editURL);
@@ -1186,19 +1187,19 @@ var Creator = (function (_React$Component) {
       titleHolder.classList.remove('visible');
       editURL.classList.remove('visible');
     }
-  }, {
-    key: 'saveImage',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveImage',
     value: function saveImage(file) {
       this.file = file;
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var item = this.props.item;
 
@@ -1283,6 +1284,9 @@ var Creator = (function (_React$Component) {
       item: _libProptypesItem2['default'],
       video: _react2['default'].PropTypes.bool
     },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     enumerable: true
   }]);
 
@@ -1291,8 +1295,6 @@ var Creator = (function (_React$Component) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/proptypes/item":"/home/francois/Dev/syn/dist/lib/proptypes/item.js","../lib/proptypes/type":"/home/francois/Dev/syn/dist/lib/proptypes/type.js","./uploader":"/home/francois/Dev/syn/dist/components/uploader.js","./util/form":"/home/francois/Dev/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/syn/dist/components/util/submit.js","./util/text-area":"/home/francois/Dev/syn/dist/components/util/text-area.js","./util/text-input":"/home/francois/Dev/syn/dist/components/util/text-input.js","./youtube":"/home/francois/Dev/syn/dist/components/youtube.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/demographics.js":[function(require,module,exports){
 'use strict';
 
@@ -1302,11 +1304,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1363,15 +1367,13 @@ var _libProptypesMaritalStatus2 = _interopRequireDefault(_libProptypesMaritalSta
 var _libProptypesMaritalStatus3 = _interopRequireDefault(_libProptypesMaritalStatus);
 
 var Demographics = (function (_React$Component) {
+  _inherits(Demographics, _React$Component);
+
   function Demographics() {
     _classCallCheck(this, Demographics);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Demographics.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Demographics, _React$Component);
 
   _createClass(Demographics, [{
     key: 'setEducation',
@@ -1385,11 +1387,11 @@ var Demographics = (function (_React$Component) {
         window.socket.emit('set user info', { education: education });
       }
     }
-  }, {
-    key: 'setRelationship',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setRelationship',
     value: function setRelationship() {
       var relationship = _react2['default'].findDOMNode(this.refs.relationship).value;
 
@@ -1397,11 +1399,11 @@ var Demographics = (function (_React$Component) {
         window.socket.emit('set user info', { married: relationship });
       }
     }
-  }, {
-    key: 'setEmployment',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setEmployment',
     value: function setEmployment() {
       var employment = _react2['default'].findDOMNode(this.refs.employment).value;
 
@@ -1409,11 +1411,11 @@ var Demographics = (function (_React$Component) {
         window.socket.emit('set user info', { employment: employment });
       }
     }
-  }, {
-    key: 'checkRace',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'checkRace',
     value: function checkRace(e) {
       var checkbox = e.target;
 
@@ -1423,11 +1425,11 @@ var Demographics = (function (_React$Component) {
         window.socket.emit('remove race', checkbox.value);
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _this = this;
 
@@ -1621,11 +1623,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1652,18 +1656,16 @@ var _libProptypesItem = require('../lib/proptypes/item');
 var _libProptypesItem2 = _interopRequireDefault(_libProptypesItem);
 
 var Details = (function (_React$Component) {
+  _inherits(Details, _React$Component);
+
   function Details() {
     _classCallCheck(this, Details);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).apply(this, arguments);
 
     this.state = {};
     this.status = 'iddle';
   }
-
-  _inherits(Details, _React$Component);
 
   _createClass(Details, [{
     key: 'componentWillReceiveProps',
@@ -1715,11 +1717,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1738,15 +1742,13 @@ var _libProptypesItem = require('../lib/proptypes/item');
 var _libProptypesItem2 = _interopRequireDefault(_libProptypesItem);
 
 var EditAndGoAgain = (function (_React$Component) {
+  _inherits(EditAndGoAgain, _React$Component);
+
   function EditAndGoAgain() {
     _classCallCheck(this, EditAndGoAgain);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(EditAndGoAgain.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(EditAndGoAgain, _React$Component);
 
   _createClass(EditAndGoAgain, [{
     key: 'render',
@@ -1787,11 +1789,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1802,15 +1806,13 @@ var _libProptypesFeedback = require('../lib/proptypes/feedback');
 var _libProptypesFeedback2 = _interopRequireDefault(_libProptypesFeedback);
 
 var Feedback = (function (_React$Component) {
+  _inherits(Feedback, _React$Component);
+
   function Feedback() {
     _classCallCheck(this, Feedback);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Feedback.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Feedback, _React$Component);
 
   _createClass(Feedback, [{
     key: 'render',
@@ -1863,26 +1865,26 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Footer = (function (_React$Component) {
+  _inherits(Footer, _React$Component);
+
   function Footer() {
     _classCallCheck(this, Footer);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Footer.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Footer, _React$Component);
 
   _createClass(Footer, [{
     key: 'render',
@@ -1924,11 +1926,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1991,12 +1995,12 @@ var _utilLoading = require('./util/loading');
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
 var ForgotPassword = (function (_React$Component) {
+  _inherits(ForgotPassword, _React$Component);
+
   function ForgotPassword() {
     _classCallCheck(this, ForgotPassword);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ForgotPassword.prototype), 'constructor', this).apply(this, arguments);
 
     this.state = {
       validationError: null,
@@ -2004,8 +2008,6 @@ var ForgotPassword = (function (_React$Component) {
       info: null
     };
   }
-
-  _inherits(ForgotPassword, _React$Component);
 
   _createClass(ForgotPassword, [{
     key: 'sendResetPassword',
@@ -2022,31 +2024,31 @@ var ForgotPassword = (function (_React$Component) {
 
       this.setState({ info: null, successMessage: 'Message sent! Please check your inbox' });
     }
-  }, {
-    key: 'signUp',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'signUp',
     value: function signUp(e) {
       e.preventDefault();
 
       this.props.join();
     }
-  }, {
-    key: 'signIn',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'signIn',
     value: function signIn(e) {
       e.preventDefault();
 
       this.props.login();
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var classes = ['syn-login'];
 
@@ -2136,13 +2138,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -2177,8 +2179,23 @@ var _libProptypesPanel = require('../lib/proptypes/panel');
 var _libProptypesPanel2 = _interopRequireDefault(_libProptypesPanel);
 
 var Harmony = (function (_React$Component) {
+  _inherits(Harmony, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Harmony, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      item: _libProptypesItem2['default'],
+      active: _react2['default'].PropTypes.bool,
+      panels: _react2['default'].PropTypes.arrayOf(_libProptypesPanel2['default'])
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Harmony(props) {
     _classCallCheck(this, Harmony);
@@ -2199,13 +2216,10 @@ var Harmony = (function (_React$Component) {
     }
   }
 
-  _inherits(Harmony, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Harmony, [{
     key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function componentWillReceiveProps(props) {
       if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
@@ -2225,11 +2239,11 @@ var Harmony = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var contentLeft = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading' });
 
@@ -2270,17 +2284,6 @@ var Harmony = (function (_React$Component) {
         )
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      item: _libProptypesItem2['default'],
-      active: _react2['default'].PropTypes.bool,
-      panels: _react2['default'].PropTypes.arrayOf(_libProptypesPanel2['default'])
-    },
-    enumerable: true
   }]);
 
   return Harmony;
@@ -2299,13 +2302,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -2336,6 +2339,22 @@ var _libProptypesPanel = require('../lib/proptypes/panel');
 var _libProptypesPanel2 = _interopRequireDefault(_libProptypesPanel);
 
 var Home = (function (_React$Component) {
+  _inherits(Home, _React$Component);
+
+  _createClass(Home, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      topLevelType: _react2['default'].PropTypes.string,
+      panels: _react2['default'].PropTypes.object
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2350,13 +2369,10 @@ var Home = (function (_React$Component) {
     this.get();
   }
 
-  _inherits(Home, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Home, [{
     key: 'get',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function get() {
       var _this = this;
 
@@ -2368,11 +2384,11 @@ var Home = (function (_React$Component) {
         window.socket.emit('get top level type');
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading issues...' });
 
@@ -2403,16 +2419,6 @@ var Home = (function (_React$Component) {
 
       return content;
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      topLevelType: _react2['default'].PropTypes.string,
-      panels: _react2['default'].PropTypes.object
-    },
-    enumerable: true
   }]);
 
   return Home;
@@ -2420,8 +2426,6 @@ var Home = (function (_React$Component) {
 
 exports['default'] = Home;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/proptypes/panel":"/home/francois/Dev/syn/dist/lib/proptypes/panel.js","./countdown":"/home/francois/Dev/syn/dist/components/countdown.js","./panel-items":"/home/francois/Dev/syn/dist/components/panel-items.js","./training":"/home/francois/Dev/syn/dist/components/training.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/identity.js":[function(require,module,exports){
 'use strict';
 
@@ -2431,13 +2435,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -2480,8 +2484,22 @@ var _libProptypesCountry = require('../lib/proptypes/country');
 var _libProptypesCountry2 = _interopRequireDefault(_libProptypesCountry);
 
 var Identity = (function (_React$Component) {
+  _inherits(Identity, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Identity, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      user: _libProptypesUser2['default'],
+      countries: _react2['default'].PropTypes.arrayOf(_libProptypesCountry2['default'])
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Identity(props) {
     _classCallCheck(this, Identity);
@@ -2495,21 +2513,18 @@ var Identity = (function (_React$Component) {
     this.state = { user: user, countries: countries };
   }
 
-  _inherits(Identity, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Identity, [{
     key: 'saveImage',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function saveImage(file) {
       window.socket.emit('save user image', file.name);
     }
-  }, {
-    key: 'saveFirstName',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveFirstName',
     value: function saveFirstName() {
       var firstName = _react2['default'].findDOMNode(this.refs.firstName).value;
 
@@ -2517,11 +2532,11 @@ var Identity = (function (_React$Component) {
         window.socket.emit('set user info', { first_name: firstName });
       }
     }
-  }, {
-    key: 'saveMiddleName',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveMiddleName',
     value: function saveMiddleName() {
       var middleName = _react2['default'].findDOMNode(this.refs.middleName).value;
 
@@ -2529,11 +2544,11 @@ var Identity = (function (_React$Component) {
         window.socket.emit('set user info', { middle_name: middleName });
       }
     }
-  }, {
-    key: 'saveLastName',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveLastName',
     value: function saveLastName() {
       var lastName = _react2['default'].findDOMNode(this.refs.lastName).value;
 
@@ -2541,11 +2556,11 @@ var Identity = (function (_React$Component) {
         window.socket.emit('set user info', { last_name: lastName });
       }
     }
-  }, {
-    key: 'saveGender',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveGender',
     value: function saveGender() {
       var gender = _react2['default'].findDOMNode(this.refs.gender).value;
 
@@ -2553,11 +2568,11 @@ var Identity = (function (_React$Component) {
         window.socket.emit('set user info', { gender: gender });
       }
     }
-  }, {
-    key: 'saveBirthdate',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveBirthdate',
     value: function saveBirthdate() {
       var birthdate = _react2['default'].findDOMNode(this.refs.birthdate).value;
 
@@ -2570,11 +2585,11 @@ var Identity = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'saveCitizenship',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveCitizenship',
     value: function saveCitizenship(e) {
       var _this = this;
 
@@ -2586,11 +2601,11 @@ var Identity = (function (_React$Component) {
         });
       }
     }
-  }, {
-    key: 'saveDualCitizenship',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'saveDualCitizenship',
     value: function saveDualCitizenship(e) {
       var _this2 = this;
 
@@ -2602,11 +2617,11 @@ var Identity = (function (_React$Component) {
         });
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _state = this.state;
       var user = _state.user;
@@ -2656,11 +2671,11 @@ var Identity = (function (_React$Component) {
         var dob_day = dob.getDate() + 1;
 
         if (dob_month < 10) {
-          dob_month = '0' + dob_month;
+          dob_month = "0" + dob_month;
         }
 
         if (dob_day < 10) {
-          dob_day = '0' + dob_day;
+          dob_day = "0" + dob_day;
         }
 
         dobValue = [dob_year, dob_month, dob_day].join('-');
@@ -2804,17 +2819,6 @@ var Identity = (function (_React$Component) {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      user: _libProptypesUser2['default'],
-      countries: _react2['default'].PropTypes.arrayOf(_libProptypesCountry2['default'])
-    },
-    enumerable: true
   }]);
 
   return Identity;
@@ -2831,11 +2835,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -2854,15 +2860,13 @@ var _libProptypesPanelItem = require('../lib/proptypes/panel-item');
 var _libProptypesPanelItem2 = _interopRequireDefault(_libProptypesPanelItem);
 
 var Intro = (function (_React$Component) {
+  _inherits(Intro, _React$Component);
+
   function Intro() {
     _classCallCheck(this, Intro);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Intro.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Intro, _React$Component);
 
   _createClass(Intro, [{
     key: 'render',
@@ -2910,11 +2914,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -2937,15 +2943,13 @@ var _libProptypesItem = require('../lib/proptypes/item');
 var _libProptypesItem2 = _interopRequireDefault(_libProptypesItem);
 
 var ItemMedia = (function (_React$Component) {
+  _inherits(ItemMedia, _React$Component);
+
   function ItemMedia() {
     _classCallCheck(this, ItemMedia);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ItemMedia.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(ItemMedia, _React$Component);
 
   _createClass(ItemMedia, [{
     key: 'render',
@@ -2996,13 +3000,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -3081,8 +3085,106 @@ var _libAppMakePanelId = require('../lib/app/make-panel-id');
 var _libAppMakePanelId2 = _interopRequireDefault(_libAppMakePanelId);
 
 var Item = (function (_React$Component) {
+  _inherits(Item, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Item, null, [{
+    key: 'wordify',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /**
+     *  @description      Break a given text into lines, themselves into words
+     *  @arg              {String} text
+     *  @return           [[String]]
+    */
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function wordify(text) {
+      var lines = [];
+
+      text.split(/\n/).forEach(function (line) {
+        return lines.push(line.split(/\s+/));
+      });
+
+      lines = lines.map(function (line) {
+        if (line.length === 1 && !line[0]) {
+          return [];
+        }
+        return line;
+      });
+
+      return lines;
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /**
+     *  @description      Put all words into spans, hidding the ones who are below limit
+     *  @arg              {HTMLElement} container
+     *  @arg              {Number} limit
+     *  @return           null
+    */
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  }, {
+    key: 'paint',
+    value: function paint(container, limit) {
+
+      var lines = Item.wordify(container.textContent);
+      container.innerHTML = '';
+
+      var whiteSpace = function whiteSpace() {
+        var span = document.createElement('span');
+
+        span.appendChild(document.createTextNode(' '));
+
+        return span;
+      };
+
+      lines.forEach(function (line) {
+        var div = document.createElement('div');
+
+        container.appendChild(div);
+
+        line.forEach(function (word) {
+          var span = document.createElement('span');
+
+          span.appendChild(document.createTextNode(word));
+
+          span.classList.add('word');
+
+          div.appendChild(span);
+
+          div.appendChild(whiteSpace());
+
+          var offset = span.offsetTop;
+
+          if (offset > limit) {
+            span.classList.add('hide');
+          }
+        });
+      });
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  }, {
+    key: 'propTypes',
+    value: {
+      item: _react2['default'].PropTypes.oneOfType([_libProptypesPanelItem2['default'], _libProptypesItem2['default']]),
+      panels: _react2['default'].PropTypes.object,
+      user: _libProptypesUser2['default'],
+      intro: _react2['default'].PropTypes.bool,
+      buttons: _react2['default'].PropTypes.bool,
+      promote: _react2['default'].PropTypes.bool,
+      details: _react2['default'].PropTypes.bool,
+      subtype: _react2['default'].PropTypes.bool,
+      harmony: _react2['default'].PropTypes.bool,
+      'edit-and-go-again': _react2['default'].PropTypes.bool
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Item(props) {
     _classCallCheck(this, Item);
@@ -3112,7 +3214,7 @@ var Item = (function (_React$Component) {
     }
   }
 
-  _inherits(Item, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Item, [{
     key: 'componentDidMount',
@@ -3187,11 +3289,11 @@ var Item = (function (_React$Component) {
         })();
       }
     }
-  }, {
-    key: 'listeners',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'listeners',
     value: function listeners() {
       if (typeof window !== 'undefined') {
         if (this.state.item) {
@@ -3201,19 +3303,19 @@ var Item = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'updateItem',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'updateItem',
     value: function updateItem(item) {
       this.setState({ item: item });
     }
-  }, {
-    key: 'toggle',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'toggle',
     value: function toggle(toggler) {
       if (toggler === 'promote' && !this.props.user) {
         _join2['default'].click();
@@ -3222,14 +3324,14 @@ var Item = (function (_React$Component) {
       }
 
       if (this.props.item) {
-        window.Dispatcher.emit('set active', this.panelId, '' + this.props.item._id + '-' + toggler);
+        window.Dispatcher.emit('set active', this.panelId, this.props.item._id + '-' + toggler);
       }
     }
-  }, {
-    key: 'readMore',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'readMore',
     value: function readMore() {
       var truncatable = _react2['default'].findDOMNode(this.refs.item).querySelector('.item-truncatable');
 
@@ -3245,11 +3347,11 @@ var Item = (function (_React$Component) {
         text.innerText = 'more';
       }
     }
-  }, {
-    key: 'selectItem',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'selectItem',
     value: function selectItem() {
       window.Dispatcher.emit('refresh');
       // const ancestors = this.props.item.lineage.map(ancestor => ancestor._id);
@@ -3262,11 +3364,11 @@ var Item = (function (_React$Component) {
       //   });
       // }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var item = this.props.item;
 
@@ -3361,7 +3463,7 @@ var Item = (function (_React$Component) {
         }
 
         if (this.props.promote !== false && this.panelId) {
-          var promoteIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-promote';
+          var promoteIsActive = this.props.panels[this.panelId].active === this.props.item._id + '-promote';
 
           promote = _react2['default'].createElement(
             'div',
@@ -3385,7 +3487,7 @@ var Item = (function (_React$Component) {
         }
 
         if (this.props.details !== false && this.panelId) {
-          var detailsIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-details';
+          var detailsIsActive = this.props.panels[this.panelId].active === this.props.item._id + '-details';
 
           details = _react2['default'].createElement(
             'div',
@@ -3407,7 +3509,7 @@ var Item = (function (_React$Component) {
         }
 
         if (this.props.subtype !== false && this.panelId && this.props.item.subtype) {
-          var subtypeIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-subtype';
+          var subtypeIsActive = this.props.panels[this.panelId].active === this.props.item._id + '-subtype';
 
           subtype = _react2['default'].createElement(
             'div',
@@ -3429,7 +3531,7 @@ var Item = (function (_React$Component) {
         }
 
         if (this.props.harmony !== false) {
-          var harmonyIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-harmony';
+          var harmonyIsActive = this.props.panels[this.panelId].active === this.props.item._id + '-harmony';
 
           harmony = _react2['default'].createElement(
             'div',
@@ -3448,7 +3550,7 @@ var Item = (function (_React$Component) {
         }
 
         if (this.props['edit-and-go-again'] !== false) {
-          var editAndGoAgainIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-edit-and-go-again';
+          var editAndGoAgainIsActive = this.props.panels[this.panelId].active === this.props.item._id + '-edit-and-go-again';
 
           editAndGoAgain = _react2['default'].createElement(
             'div',
@@ -3557,101 +3659,6 @@ var Item = (function (_React$Component) {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  }], [{
-    key: 'wordify',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    /**
-     *  @description      Break a given text into lines, themselves into words
-     *  @arg              {String} text
-     *  @return           [[String]]
-    */
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function wordify(text) {
-      var lines = [];
-
-      text.split(/\n/).forEach(function (line) {
-        return lines.push(line.split(/\s+/));
-      });
-
-      lines = lines.map(function (line) {
-        if (line.length === 1 && !line[0]) {
-          return [];
-        }
-        return line;
-      });
-
-      return lines;
-    }
-  }, {
-    key: 'paint',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    /**
-     *  @description      Put all words into spans, hidding the ones who are below limit
-     *  @arg              {HTMLElement} container
-     *  @arg              {Number} limit
-     *  @return           null
-    */
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function paint(container, limit) {
-
-      var lines = Item.wordify(container.textContent);
-      container.innerHTML = '';
-
-      var whiteSpace = function whiteSpace() {
-        var span = document.createElement('span');
-
-        span.appendChild(document.createTextNode(' '));
-
-        return span;
-      };
-
-      lines.forEach(function (line) {
-        var div = document.createElement('div');
-
-        container.appendChild(div);
-
-        line.forEach(function (word) {
-          var span = document.createElement('span');
-
-          span.appendChild(document.createTextNode(word));
-
-          span.classList.add('word');
-
-          div.appendChild(span);
-
-          div.appendChild(whiteSpace());
-
-          var offset = span.offsetTop;
-
-          if (offset > limit) {
-            span.classList.add('hide');
-          }
-        });
-      });
-    }
-  }, {
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      item: _react2['default'].PropTypes.oneOfType([_libProptypesPanelItem2['default'], _libProptypesItem2['default']]),
-      panels: _react2['default'].PropTypes.object,
-      user: _libProptypesUser2['default'],
-      intro: _react2['default'].PropTypes.bool,
-      buttons: _react2['default'].PropTypes.bool,
-      promote: _react2['default'].PropTypes.bool,
-      details: _react2['default'].PropTypes.bool,
-      subtype: _react2['default'].PropTypes.bool,
-      harmony: _react2['default'].PropTypes.bool,
-      'edit-and-go-again': _react2['default'].PropTypes.bool
-    },
-    enumerable: true
   }]);
 
   return Item;
@@ -3662,8 +3669,6 @@ module.exports = exports['default'];
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 // Whether or not truncated text has been expanded
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3671,7 +3676,7 @@ module.exports = exports['default'];
 // Whether or not text is truncated
 
 /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */
-},{"../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../lib/proptypes/item":"/home/francois/Dev/syn/dist/lib/proptypes/item.js","../lib/proptypes/panel-item":"/home/francois/Dev/syn/dist/lib/proptypes/panel-item.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./details":"/home/francois/Dev/syn/dist/components/details.js","./edit-and-go-again":"/home/francois/Dev/syn/dist/components/edit-and-go-again.js","./harmony":"/home/francois/Dev/syn/dist/components/harmony.js","./item-media":"/home/francois/Dev/syn/dist/components/item-media.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./promote":"/home/francois/Dev/syn/dist/components/promote.js","./subtype":"/home/francois/Dev/syn/dist/components/subtype.js","./util/accordion":"/home/francois/Dev/syn/dist/components/util/accordion.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/syn/dist/components/util/link.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","react":"/home/francois/Dev/syn/node_modules/react/react.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/dist/components/join.js":[function(require,module,exports){
+},{"../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../lib/proptypes/item":"/home/francois/Dev/syn/dist/lib/proptypes/item.js","../lib/proptypes/panel-item":"/home/francois/Dev/syn/dist/lib/proptypes/panel-item.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./details":"/home/francois/Dev/syn/dist/components/details.js","./edit-and-go-again":"/home/francois/Dev/syn/dist/components/edit-and-go-again.js","./harmony":"/home/francois/Dev/syn/dist/components/harmony.js","./item-media":"/home/francois/Dev/syn/dist/components/item-media.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./promote":"/home/francois/Dev/syn/dist/components/promote.js","./subtype":"/home/francois/Dev/syn/dist/components/subtype.js","./util/accordion":"/home/francois/Dev/syn/dist/components/util/accordion.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/syn/dist/components/util/link.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","react":"/home/francois/Dev/syn/node_modules/react/react.js","util":"/home/francois/Dev/syn/node_modules/util/util.js"}],"/home/francois/Dev/syn/dist/components/join.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3680,13 +3685,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -3753,6 +3758,17 @@ var _utilLoading = require('./util/loading');
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
 var Join = (function (_React$Component) {
+  _inherits(Join, _React$Component);
+
+  _createClass(Join, null, [{
+    key: 'proptypes',
+    value: {
+      login: _react2['default'].PropTypes.func,
+      show: _react2['default'].PropTypes.bool
+    },
+    enumerable: true
+  }]);
+
   function Join(props) {
     _classCallCheck(this, Join);
 
@@ -3760,8 +3776,6 @@ var Join = (function (_React$Component) {
 
     this.state = { validationError: null, successMessage: null, info: null };
   }
-
-  _inherits(Join, _React$Component);
 
   _createClass(Join, [{
     key: 'signup',
@@ -3971,13 +3985,6 @@ var Join = (function (_React$Component) {
       );
     }
   }], [{
-    key: 'proptypes',
-    value: {
-      login: _react2['default'].PropTypes.func,
-      show: _react2['default'].PropTypes.bool
-    },
-    enumerable: true
-  }, {
     key: 'click',
     value: function click() {
       document.querySelector('.syn-top_bar-join_button button').click();
@@ -3998,11 +4005,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -4025,15 +4034,13 @@ var _intro = require('./intro');
 var _intro2 = _interopRequireDefault(_intro);
 
 var Layout = (function (_React$Component) {
+  _inherits(Layout, _React$Component);
+
   function Layout() {
     _classCallCheck(this, Layout);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Layout.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Layout, _React$Component);
 
   _createClass(Layout, [{
     key: 'render',
@@ -4081,13 +4088,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -4150,8 +4157,23 @@ var _utilLoading = require('./util/loading');
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
 var Login = (function (_React$Component) {
+  _inherits(Login, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Login, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      join: _react2['default'].PropTypes.func,
+      'forgot-password': _react2['default'].PropTypes.func,
+      show: _react2['default'].PropTypes.bool
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Login(props) {
     _classCallCheck(this, Login);
@@ -4161,7 +4183,7 @@ var Login = (function (_React$Component) {
     this.state = { validationError: null, successMessage: null, info: null };
   }
 
-  _inherits(Login, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Login, [{
     key: 'login',
@@ -4185,47 +4207,47 @@ var Login = (function (_React$Component) {
         _this.setState({ validationError: error.message, info: null });
       });
     }
-  }, {
-    key: 'signUp',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'signUp',
     value: function signUp(e) {
       e.preventDefault();
 
       this.props.join();
     }
-  }, {
-    key: 'forgotPassword',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'forgotPassword',
     value: function forgotPassword(e) {
       e.preventDefault();
 
       this.props['forgot-password']();
     }
-  }, {
-    key: 'loginWithFacebook',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'loginWithFacebook',
     value: function loginWithFacebook() {
       location.href = '/sign/facebook';
     }
-  }, {
-    key: 'loginWithTwitter',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'loginWithTwitter',
     value: function loginWithTwitter() {
       location.href = '/sign/twitter';
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var classes = ['syn-login'];
 
@@ -4332,21 +4354,7 @@ var Login = (function (_React$Component) {
       );
     }
   }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      join: _react2['default'].PropTypes.func,
-      'forgot-password': _react2['default'].PropTypes.func,
-      show: _react2['default'].PropTypes.bool
-    },
-    enumerable: true
-  }, {
     key: 'signIn',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function signIn(email, password) {
       return new Promise(function (ok, ko) {
         try {
@@ -4396,11 +4404,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -4435,15 +4445,13 @@ var _item = require('./item');
 var _item2 = _interopRequireDefault(_item);
 
 var PanelItems = (function (_React$Component) {
+  _inherits(PanelItems, _React$Component);
+
   function PanelItems() {
     _classCallCheck(this, PanelItems);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(PanelItems.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(PanelItems, _React$Component);
 
   _createClass(PanelItems, [{
     key: 'loadMore',
@@ -4455,27 +4463,34 @@ var PanelItems = (function (_React$Component) {
 
       window.Dispatcher.emit('get more items', this.props.panel.panel);
     }
-  }, {
-    key: 'toggleCreator',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'toggleCreator',
     value: function toggleCreator(e) {
       e.preventDefault();
 
       window.Dispatcher.emit('set active', this.props.panel.panel, 'creator');
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   }, {
     key: 'unFocus',
+    value: function unFocus() {}
+    // window.Dispatcher.emit('refresh');
+    // const panelId = makePanelId(this.props.panel.panel);
+    // const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
+    //
+    // for ( let i = 0; i < hidden.length; i++ ) {
+    //   hidden[i].classList.remove('item-hidden');
+    // }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function unFocus() {}
   }, {
     key: 'render',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function render() {
       var _this = this;
 
@@ -4501,7 +4516,7 @@ var PanelItems = (function (_React$Component) {
         title = _react2['default'].createElement(
           _utilLink2['default'],
           {
-            href: '/items/' + type.id + '/' + (panel.panel.parent || ''),
+            href: '/items/' + type.id + '/' + (panel.panel.parent || ""),
             then: this.unFocus.bind(this)
           },
           _react2['default'].createElement(_utilIcon2['default'], { icon: 'angle-double-left' }),
@@ -4595,14 +4610,6 @@ var PanelItems = (function (_React$Component) {
 
 exports['default'] = PanelItems;
 module.exports = exports['default'];
-
-// window.Dispatcher.emit('refresh');
-// const panelId = makePanelId(this.props.panel.panel);
-// const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
-//
-// for ( let i = 0; i < hidden.length; i++ ) {
-//   hidden[i].classList.remove('item-hidden');
-// }
 },{"../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../lib/proptypes/panel":"/home/francois/Dev/syn/dist/lib/proptypes/panel.js","./item":"/home/francois/Dev/syn/dist/components/item.js","./panel":"/home/francois/Dev/syn/dist/components/panel.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/panel.js":[function(require,module,exports){
 'use strict';
 
@@ -4614,11 +4621,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -4665,20 +4674,18 @@ var _item = require('./item');
 var _item2 = _interopRequireDefault(_item);
 
 var Panel = (function (_React$Component) {
+  _inherits(Panel, _React$Component);
+
   function Panel() {
     _classCallCheck(this, Panel);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).apply(this, arguments);
 
     this.state = {
       showCreator: 0,
       active: false
     };
   }
-
-  _inherits(Panel, _React$Component);
 
   _createClass(Panel, [{
     key: 'toggleCreator',
@@ -4692,11 +4699,11 @@ var Panel = (function (_React$Component) {
         _join2['default'].click();
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
 
       var creator = undefined,
@@ -4729,7 +4736,7 @@ var Panel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: _libAppComponent2['default'].classList(this, 'syn-panel'), ref: 'panel' },
+        { className: _libAppComponent2['default'].classList(this, "syn-panel"), ref: 'panel' },
         _react2['default'].createElement(
           'section',
           { className: 'syn-panel-heading' },
@@ -4762,6 +4769,9 @@ var Panel = (function (_React$Component) {
       title: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.string, _react2['default'].PropTypes.element]),
       parent: _react2['default'].PropTypes.string
     },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     enumerable: true
   }]);
 
@@ -4770,8 +4780,6 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","../lib/app/make-panel-id":"/home/francois/Dev/syn/dist/lib/app/make-panel-id.js","../lib/proptypes/panel":"/home/francois/Dev/syn/dist/lib/proptypes/panel.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./creator":"/home/francois/Dev/syn/dist/components/creator.js","./item":"/home/francois/Dev/syn/dist/components/item.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./util/accordion":"/home/francois/Dev/syn/dist/components/util/accordion.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/popularity.js":[function(require,module,exports){
 'use strict';
 
@@ -4781,26 +4789,26 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Popularity = (function (_React$Component) {
+  _inherits(Popularity, _React$Component);
+
   function Popularity() {
     _classCallCheck(this, Popularity);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Popularity.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Popularity, _React$Component);
 
   _createClass(Popularity, [{
     key: 'animate',
@@ -4809,7 +4817,7 @@ var Popularity = (function (_React$Component) {
 
       var bar = _react2['default'].findDOMNode(this.refs.bar);
 
-      bar.style.width = '' + number + '%';
+      bar.style.width = number + '%';
     }
   }, {
     key: 'render',
@@ -4824,7 +4832,7 @@ var Popularity = (function (_React$Component) {
         _react2['default'].createElement(
           'div',
           { className: 'syn-popularity-bar', style: { width: 0 }, ref: 'bar' },
-          '' + number + '%'
+          number + '%'
         )
       );
     }
@@ -4848,17 +4856,17 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -4905,6 +4913,8 @@ var _voter = require('./voter');
 var _voter2 = _interopRequireDefault(_voter);
 
 var Profile = (function (_React$Component) {
+  _inherits(Profile, _React$Component);
+
   function Profile(props) {
     _classCallCheck(this, Profile);
 
@@ -4914,8 +4924,6 @@ var Profile = (function (_React$Component) {
 
     this.get();
   }
-
-  _inherits(Profile, _React$Component);
 
   _createClass(Profile, [{
     key: 'done',
@@ -5043,15 +5051,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -5104,15 +5112,15 @@ var _libProptypesCriteria2 = _interopRequireDefault(_libProptypesCriteria);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Header = (function (_React$Component) {
+  _inherits(Header, _React$Component);
+
   function Header() {
     _classCallCheck(this, Header);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Header.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Header, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Header, [{
     key: 'render',
@@ -5159,18 +5167,16 @@ var Header = (function (_React$Component) {
   return Header;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Subject = (function (_React$Component2) {
+  _inherits(Subject, _React$Component2);
+
   function Subject() {
     _classCallCheck(this, Subject);
 
-    if (_React$Component2 != null) {
-      _React$Component2.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Subject.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Subject, _React$Component2);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Subject, [{
     key: 'render',
@@ -5192,18 +5198,16 @@ var Subject = (function (_React$Component2) {
   return Subject;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Description = (function (_React$Component3) {
+  _inherits(Description, _React$Component3);
+
   function Description() {
     _classCallCheck(this, Description);
 
-    if (_React$Component3 != null) {
-      _React$Component3.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Description.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Description, _React$Component3);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Description, [{
     key: 'render',
@@ -5225,18 +5229,16 @@ var Description = (function (_React$Component3) {
   return Description;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Reference = (function (_React$Component4) {
+  _inherits(Reference, _React$Component4);
+
   function Reference() {
     _classCallCheck(this, Reference);
 
-    if (_React$Component4 != null) {
-      _React$Component4.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Reference.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Reference, _React$Component4);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Reference, [{
     key: 'render',
@@ -5263,18 +5265,16 @@ var Reference = (function (_React$Component4) {
   return Reference;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Feedback = (function (_React$Component5) {
+  _inherits(Feedback, _React$Component5);
+
   function Feedback() {
     _classCallCheck(this, Feedback);
 
-    if (_React$Component5 != null) {
-      _React$Component5.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Feedback.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Feedback, _React$Component5);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Feedback, [{
     key: 'render',
@@ -5290,18 +5290,16 @@ var Feedback = (function (_React$Component5) {
   return Feedback;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var PromoteButton = (function (_React$Component6) {
+  _inherits(PromoteButton, _React$Component6);
+
   function PromoteButton() {
     _classCallCheck(this, PromoteButton);
 
-    if (_React$Component6 != null) {
-      _React$Component6.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(PromoteButton.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(PromoteButton, _React$Component6);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(PromoteButton, [{
     key: 'render',
@@ -5323,24 +5321,22 @@ var PromoteButton = (function (_React$Component6) {
   return PromoteButton;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var EditAndGoAgain = (function (_React$Component7) {
+  _inherits(EditAndGoAgain, _React$Component7);
+
   function EditAndGoAgain() {
     _classCallCheck(this, EditAndGoAgain);
 
-    if (_React$Component7 != null) {
-      _React$Component7.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(EditAndGoAgain.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(EditAndGoAgain, _React$Component7);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(EditAndGoAgain, [{
     key: 'editAndGoAgain',
     value: function editAndGoAgain(e) {
       if (this.props.items[this.props.item._id]) {
-        window.Dispatcher.emit('set active', this.props['panel-id'], '' + this.props.item._id + '-edit-and-go-again');
+        window.Dispatcher.emit('set active', this.props['panel-id'], this.props.item._id + '-edit-and-go-again');
       } else {
         window.Dispatcher.emit('get item', this.props.item._id);
       }
@@ -5371,18 +5367,16 @@ var EditAndGoAgain = (function (_React$Component7) {
   return EditAndGoAgain;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Finish = (function (_React$Component8) {
+  _inherits(Finish, _React$Component8);
+
   function Finish() {
     _classCallCheck(this, Finish);
 
-    if (_React$Component8 != null) {
-      _React$Component8.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Finish.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(Finish, _React$Component8);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Finish, [{
     key: 'next',
@@ -5429,18 +5423,16 @@ var Finish = (function (_React$Component8) {
   return Finish;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var ColumnItem = (function (_React$Component9) {
+  _inherits(ColumnItem, _React$Component9);
+
   function ColumnItem() {
     _classCallCheck(this, ColumnItem);
 
-    if (_React$Component9 != null) {
-      _React$Component9.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ColumnItem.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(ColumnItem, _React$Component9);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(ColumnItem, [{
     key: 'render',
@@ -5474,18 +5466,16 @@ var ColumnItem = (function (_React$Component9) {
   return ColumnItem;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var ColumnFeedback = (function (_React$Component10) {
+  _inherits(ColumnFeedback, _React$Component10);
+
   function ColumnFeedback() {
     _classCallCheck(this, ColumnFeedback);
 
-    if (_React$Component10 != null) {
-      _React$Component10.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ColumnFeedback.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(ColumnFeedback, _React$Component10);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(ColumnFeedback, [{
     key: 'render',
@@ -5516,18 +5506,16 @@ var ColumnFeedback = (function (_React$Component10) {
   return ColumnFeedback;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var ColumnSliders = (function (_React$Component11) {
+  _inherits(ColumnSliders, _React$Component11);
+
   function ColumnSliders() {
     _classCallCheck(this, ColumnSliders);
 
-    if (_React$Component11 != null) {
-      _React$Component11.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ColumnSliders.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(ColumnSliders, _React$Component11);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(ColumnSliders, [{
     key: 'render',
@@ -5560,18 +5548,16 @@ var ColumnSliders = (function (_React$Component11) {
   return ColumnSliders;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var ColumnButtons = (function (_React$Component12) {
+  _inherits(ColumnButtons, _React$Component12);
+
   function ColumnButtons() {
     _classCallCheck(this, ColumnButtons);
 
-    if (_React$Component12 != null) {
-      _React$Component12.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ColumnButtons.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(ColumnButtons, _React$Component12);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(ColumnButtons, [{
     key: 'next',
@@ -5617,18 +5603,16 @@ var ColumnButtons = (function (_React$Component12) {
   return ColumnButtons;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var SideColumn = (function (_React$Component13) {
+  _inherits(SideColumn, _React$Component13);
+
   function SideColumn() {
     _classCallCheck(this, SideColumn);
 
-    if (_React$Component13 != null) {
-      _React$Component13.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(SideColumn.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _inherits(SideColumn, _React$Component13);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(SideColumn, [{
     key: 'next',
@@ -5700,11 +5684,22 @@ var SideColumn = (function (_React$Component13) {
   return SideColumn;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 var Promote = (function (_React$Component14) {
+  _inherits(Promote, _React$Component14);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Promote, null, [{
+    key: 'propTypes',
+    value: {
+      active: _react2['default'].PropTypes.bool,
+      item: _libProptypesItem2['default'],
+      items: _react2['default'].PropTypes.arrayOf(_libProptypesItem2['default']),
+      'panel-id': _react2['default'].PropTypes.string
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Promote(props) {
     _classCallCheck(this, Promote);
@@ -5714,27 +5709,26 @@ var Promote = (function (_React$Component14) {
     this.status = 'iddle';
   }
 
-  _inherits(Promote, _React$Component14);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function componentWillReceiveProps(props) {
       if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
         window.Dispatcher.emit('get evaluation', this.props.item);
       } else if (this.props.items[this.props.item._id] && !this.props.items[this.props.item._id].evaluation && this.status === 'ready') {
         this.status = 'iddle';
-        window.Dispatcher.emit('set active', props['panel-id'], '' + this.props.item._id + '-details');
+        window.Dispatcher.emit('set active', props['panel-id'], this.props.item._id + '-details');
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
 
       var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading evaluation' });
@@ -5764,7 +5758,11 @@ var Promote = (function (_React$Component14) {
           promoteMe = _react2['default'].createElement('div', null);
         }
 
-        content.push(_react2['default'].createElement(Header, { evaluation: evaluation }), _react2['default'].createElement(
+        content.push(_react2['default'].createElement(Header, { evaluation: evaluation }),
+
+        // big screens
+
+        _react2['default'].createElement(
           'div',
           { 'data-screen': 'phone-and-up' },
           _react2['default'].createElement(
@@ -5792,7 +5790,11 @@ var Promote = (function (_React$Component14) {
             promoteMe,
             _react2['default'].createElement(ColumnButtons, _extends({}, this.props, { key: 'right-buttons', item: right, position: 'right', evaluated: item, 'panel-id': this.props['panel-id'] }))
           )
-        ), _react2['default'].createElement(
+        ),
+
+        // SMALL SCREENS
+
+        _react2['default'].createElement(
           'div',
           { 'data-screen': 'up-to-phone' },
           _react2['default'].createElement(
@@ -5833,28 +5835,13 @@ var Promote = (function (_React$Component14) {
         content
       );
     }
-  }], [{
-    key: 'propTypes',
-    value: {
-      active: _react2['default'].PropTypes.bool,
-      item: _libProptypesItem2['default'],
-      items: _react2['default'].PropTypes.arrayOf(_libProptypesItem2['default']),
-      'panel-id': _react2['default'].PropTypes.string
-    },
-    enumerable: true
   }]);
 
   return Promote;
 })(_react2['default'].Component);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 exports['default'] = Promote;
 module.exports = exports['default'];
-
-// big screens
-
-// SMALL SCREENS
 },{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","../lib/proptypes/criteria":"/home/francois/Dev/syn/dist/lib/proptypes/criteria.js","../lib/proptypes/evaluation":"/home/francois/Dev/syn/dist/lib/proptypes/evaluation.js","../lib/proptypes/item":"/home/francois/Dev/syn/dist/lib/proptypes/item.js","./item-media":"/home/francois/Dev/syn/dist/components/item-media.js","./sliders":"/home/francois/Dev/syn/dist/components/sliders.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","./util/text-area":"/home/francois/Dev/syn/dist/components/util/text-area.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/reset-password.js":[function(require,module,exports){
 'use strict';
 
@@ -5864,13 +5851,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -5917,8 +5904,24 @@ var _libProptypesUser = require('../lib/proptypes/user');
 var _libProptypesUser2 = _interopRequireDefault(_libProptypesUser);
 
 var ResetPassword = (function (_React$Component) {
+  _inherits(ResetPassword, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(ResetPassword, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      userToReset: _libProptypesUser2['default'],
+      urlParams: _react2['default'].PropTypes.shape({
+        token: _react2['default'].PropTypes.string
+      })
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function ResetPassword(props) {
     _classCallCheck(this, ResetPassword);
@@ -5935,23 +5938,20 @@ var ResetPassword = (function (_React$Component) {
     this.get();
   }
 
-  _inherits(ResetPassword, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(ResetPassword, [{
     key: 'get',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function get() {
       if (typeof window !== 'undefined' && !this.props.userToReset) {
         window.Dispatcher.emit('get user', { activation_token: this.props.urlParams.token });
       }
     }
-  }, {
-    key: 'save',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'save',
     value: function save() {
       var _this = this;
 
@@ -5986,11 +5986,11 @@ var ResetPassword = (function (_React$Component) {
         });
       });
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Getting user info' });
 
@@ -6053,18 +6053,6 @@ var ResetPassword = (function (_React$Component) {
         content
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      userToReset: _libProptypesUser2['default'],
-      urlParams: _react2['default'].PropTypes.shape({
-        token: _react2['default'].PropTypes.string
-      })
-    },
-    enumerable: true
   }]);
 
   return ResetPassword;
@@ -6081,13 +6069,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6134,8 +6122,22 @@ var _libProptypesState = require('../lib/proptypes/state');
 var _libProptypesState2 = _interopRequireDefault(_libProptypesState);
 
 var Residence = (function (_React$Component) {
+  _inherits(Residence, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Residence, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      user: _libProptypesUser2['default'],
+      states: _react2['default'].PropTypes.arrayOf(_libProptypesState2['default'])
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Residence(props) {
     _classCallCheck(this, Residence);
@@ -6145,13 +6147,10 @@ var Residence = (function (_React$Component) {
     this.state = { user: this.props.user };
   }
 
-  _inherits(Residence, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Residence, [{
     key: 'validateGPS',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function validateGPS() {
       var _this = this;
 
@@ -6165,11 +6164,11 @@ var Residence = (function (_React$Component) {
         });
       });
     }
-  }, {
-    key: 'setCity',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setCity',
     value: function setCity() {
       var city = _react2['default'].findDOMNode(this.refs.city).value;
 
@@ -6177,11 +6176,11 @@ var Residence = (function (_React$Component) {
         window.socket.emit('set user info', { city: city });
       }
     }
-  }, {
-    key: 'setState',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setState',
     value: function setState() {
       var state = _react2['default'].findDOMNode(this.refs.state).value;
 
@@ -6189,11 +6188,11 @@ var Residence = (function (_React$Component) {
         window.socket.emit('set user info', { state: state });
       }
     }
-  }, {
-    key: 'setZip',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setZip',
     value: function setZip() {
       var zip = _react2['default'].findDOMNode(this.refs.zip).value;
 
@@ -6201,11 +6200,11 @@ var Residence = (function (_React$Component) {
         window.socket.emit('set user info', { zip: zip });
       }
     }
-  }, {
-    key: 'setZip4',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setZip4',
     value: function setZip4() {
       var zip4 = _react2['default'].findDOMNode(this.refs.zip4).value;
 
@@ -6213,11 +6212,11 @@ var Residence = (function (_React$Component) {
         window.socket.emit('set user info', { zip4: zip4 });
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var user = this.props.user;
 
@@ -6311,16 +6310,6 @@ var Residence = (function (_React$Component) {
         )
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      user: _libProptypesUser2['default'],
-      states: _react2['default'].PropTypes.arrayOf(_libProptypesState2['default'])
-    },
-    enumerable: true
   }]);
 
   return Residence;
@@ -6337,11 +6326,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6368,15 +6359,13 @@ var _libProptypesCriteria = require('../lib/proptypes/criteria');
 var _libProptypesCriteria2 = _interopRequireDefault(_libProptypesCriteria);
 
 var Slider = (function (_React$Component) {
+  _inherits(Slider, _React$Component);
+
   function Slider() {
     _classCallCheck(this, Slider);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Slider.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Slider, _React$Component);
 
   _createClass(Slider, [{
     key: 'toggleDescription',
@@ -6439,11 +6428,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6474,15 +6465,13 @@ var _libProptypesCriteria = require('../lib/proptypes/criteria');
 var _libProptypesCriteria2 = _interopRequireDefault(_libProptypesCriteria);
 
 var Sliders = (function (_React$Component) {
+  _inherits(Sliders, _React$Component);
+
   function Sliders() {
     _classCallCheck(this, Sliders);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Sliders.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Sliders, _React$Component);
 
   _createClass(Sliders, [{
     key: 'render',
@@ -6523,13 +6512,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6556,8 +6545,23 @@ var _libProptypesPanel = require('../lib/proptypes/panel');
 var _libProptypesPanel2 = _interopRequireDefault(_libProptypesPanel);
 
 var Subtype = (function (_React$Component) {
+  _inherits(Subtype, _React$Component);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  _createClass(Subtype, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      item: _libProptypesItem2['default'],
+      active: _react2['default'].PropTypes.bool,
+      panels: _react2['default'].PropTypes.arrayOf(_libProptypesPanel2['default'])
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   function Subtype(props) {
     _classCallCheck(this, Subtype);
@@ -6569,13 +6573,10 @@ var Subtype = (function (_React$Component) {
     this.id = (0, _libAppMakePanelId2['default'])({ type: this.props.item.subtype, parent: this.props.item._id });
   }
 
-  _inherits(Subtype, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Subtype, [{
     key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function componentWillReceiveProps(props) {
       if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
@@ -6585,11 +6586,11 @@ var Subtype = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading related' });
 
@@ -6607,17 +6608,6 @@ var Subtype = (function (_React$Component) {
         content
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      item: _libProptypesItem2['default'],
-      active: _react2['default'].PropTypes.bool,
-      panels: _react2['default'].PropTypes.arrayOf(_libProptypesPanel2['default'])
-    },
-    enumerable: true
   }]);
 
   return Subtype;
@@ -6634,13 +6624,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6655,6 +6645,7 @@ var _superagent = require('superagent');
 var _superagent2 = _interopRequireDefault(_superagent);
 
 var TermsOfService = (function (_React$Component) {
+  _inherits(TermsOfService, _React$Component);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -6668,13 +6659,10 @@ var TermsOfService = (function (_React$Component) {
     this.get();
   }
 
-  _inherits(TermsOfService, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(TermsOfService, [{
     key: 'get',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function get() {
       var _this = this;
 
@@ -6687,11 +6675,11 @@ var TermsOfService = (function (_React$Component) {
         });
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       return _react2['default'].createElement('section', { dangerouslySetInnerHTML: { __html: this.state.text } });
     }
@@ -6711,11 +6699,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -6754,12 +6744,12 @@ var _libProptypesUser = require('../lib/proptypes/user');
 var _libProptypesUser2 = _interopRequireDefault(_libProptypesUser);
 
 var TopBar = (function (_React$Component) {
+  _inherits(TopBar, _React$Component);
+
   function TopBar() {
     _classCallCheck(this, TopBar);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(TopBar.prototype), 'constructor', this).apply(this, arguments);
 
     this.state = {
       showLogin: false,
@@ -6767,8 +6757,6 @@ var TopBar = (function (_React$Component) {
       showForgotPassword: false
     };
   }
-
-  _inherits(TopBar, _React$Component);
 
   _createClass(TopBar, [{
     key: 'toggleLogin',
@@ -6790,11 +6778,11 @@ var TopBar = (function (_React$Component) {
         this.setState({ showForgotPassword: false });
       }
     }
-  }, {
-    key: 'toggleJoin',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'toggleJoin',
     value: function toggleJoin(e) {
       if (e) {
         e.preventDefault();
@@ -6810,11 +6798,11 @@ var TopBar = (function (_React$Component) {
         this.setState({ showForgotPassword: false });
       }
     }
-  }, {
-    key: 'toggleForgotPassword',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'toggleForgotPassword',
     value: function toggleForgotPassword(e) {
       if (e) {
         e.preventDefault();
@@ -6830,27 +6818,27 @@ var TopBar = (function (_React$Component) {
         this.setState({ showLogin: false });
       }
     }
-  }, {
-    key: 'signOut',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'signOut',
     value: function signOut() {
       location.href = '/sign/out';
     }
-  }, {
-    key: 'goToProfile',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'goToProfile',
     value: function goToProfile() {
       location.href = '/page/profile';
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _props = this.props;
       var user = _props.user;
@@ -6867,7 +6855,7 @@ var TopBar = (function (_React$Component) {
         if (user) {
           right1 = _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-profile-button' },
+            { className: comp + '-profile-button' },
             _react2['default'].createElement(
               _utilButton2['default'],
               { onClick: this.goToProfile.bind(this) },
@@ -6877,7 +6865,7 @@ var TopBar = (function (_React$Component) {
 
           right2 = _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-sign-out-button' },
+            { className: comp + '-sign-out-button' },
             _react2['default'].createElement(
               _utilButton2['default'],
               { onClick: this.signOut.bind(this) },
@@ -6887,7 +6875,7 @@ var TopBar = (function (_React$Component) {
         } else {
           right1 = _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-login_button' },
+            { className: comp + '-login_button' },
             _react2['default'].createElement(
               _utilButton2['default'],
               { onClick: this.toggleLogin.bind(this) },
@@ -6897,7 +6885,7 @@ var TopBar = (function (_React$Component) {
 
           right2 = _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-join_button' },
+            { className: comp + '-join_button' },
             _react2['default'].createElement(
               _utilButton2['default'],
               { onClick: this.toggleJoin.bind(this) },
@@ -6915,10 +6903,10 @@ var TopBar = (function (_React$Component) {
           { role: 'banner', className: 'syn-top_bar' },
           _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-left' },
+            { className: comp + '-left' },
             _react2['default'].createElement(
               'section',
-              { className: '' + comp + '-image' },
+              { className: comp + '-image' },
               _react2['default'].createElement(
                 'a',
                 { href: '/' },
@@ -6928,16 +6916,16 @@ var TopBar = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               'section',
-              { className: '' + comp + '-beta' },
+              { className: comp + '-beta' },
               'beta'
             )
           ),
           _react2['default'].createElement(
             'section',
-            { className: '' + comp + '-right' },
+            { className: comp + '-right' },
             _react2['default'].createElement(
               'section',
-              { className: _libAppComponent2['default'].classList(this, '' + comp + '-online_now', 'syn-screen-phone_and_up') },
+              { className: _libAppComponent2['default'].classList(this, comp + '-online_now', 'syn-screen-phone_and_up') },
               'Online now: ',
               onlineNow
             ),
@@ -6960,6 +6948,9 @@ var TopBar = (function (_React$Component) {
       ready: _react2['default'].PropTypes.bool,
       online: _react2['default'].PropTypes.number
     },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     enumerable: true
   }]);
 
@@ -6968,8 +6959,6 @@ var TopBar = (function (_React$Component) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./forgot-password":"/home/francois/Dev/syn/dist/components/forgot-password.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./login":"/home/francois/Dev/syn/dist/components/login.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/cloudinary-image":"/home/francois/Dev/syn/dist/components/util/cloudinary-image.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/training.js":[function(require,module,exports){
 'use strict';
 
@@ -6979,13 +6968,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -7012,6 +7001,22 @@ var _libProptypesUser = require('../lib/proptypes/user');
 var _libProptypesUser2 = _interopRequireDefault(_libProptypesUser);
 
 var Training = (function (_React$Component) {
+  _inherits(Training, _React$Component);
+
+  _createClass(Training, null, [{
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      instructions: _react2['default'].PropTypes.arrayOf(_libProptypesInstruction2['default']),
+      user: _libProptypesUser2['default']
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    enumerable: true
+  }]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -7030,13 +7035,10 @@ var Training = (function (_React$Component) {
     window.Dispatcher.emit('get instructions');
   }
 
-  _inherits(Training, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Training, [{
     key: 'go',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function go() {
       var _this = this;
 
@@ -7166,11 +7168,11 @@ var Training = (function (_React$Component) {
           break;
       }
     }
-  }, {
-    key: 'next',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'next',
     value: function next() {
       var _this2 = this;
 
@@ -7215,11 +7217,11 @@ var Training = (function (_React$Component) {
         this.setState({ cursor: this.state.cursor + 1 });
       }
     }
-  }, {
-    key: 'init',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'init',
     value: function init() {
       var _this3 = this;
 
@@ -7257,11 +7259,11 @@ var Training = (function (_React$Component) {
         video.addEventListener('load', onLoad);
       }
     }
-  }, {
-    key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'componentDidMount',
     value: function componentDidMount() {
       if (typeof window !== 'undefined') {
         var view = _react2['default'].findDOMNode(this.refs.view);
@@ -7271,11 +7273,11 @@ var Training = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'componentDidUpdate',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       var _this4 = this;
 
@@ -7306,11 +7308,11 @@ var Training = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'close',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'close',
     value: function close() {
       var view = _react2['default'].findDOMNode(this.refs.view);
       view.classList.remove('show');
@@ -7330,11 +7332,11 @@ var Training = (function (_React$Component) {
       //   superagent.get('/settings?showtraining=0').end((err, res) => {});
       // }
     }
-  }, {
-    key: 'showNextTime',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'showNextTime',
     value: function showNextTime(e) {
       this.setState({ dontShowNextTime: e.target.value });
 
@@ -7342,11 +7344,11 @@ var Training = (function (_React$Component) {
         _superagent2['default'].get('/settings?showtraining=0').end(function (err, res) {});
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _this5 = this;
 
@@ -7441,16 +7443,6 @@ var Training = (function (_React$Component) {
         _react2['default'].createElement('img', { src: '/assets/images/caret-bottom-white.png', id: 'syn-training-arrow' })
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      instructions: _react2['default'].PropTypes.arrayOf(_libProptypesInstruction2['default']),
-      user: _libProptypesUser2['default']
-    },
-    enumerable: true
   }]);
 
   return Training;
@@ -7458,8 +7450,6 @@ var Training = (function (_React$Component) {
 
 exports['default'] = Training;
 module.exports = exports['default'];
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -7473,11 +7463,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -7516,15 +7508,13 @@ var _youtube = require('./youtube');
 var _youtube2 = _interopRequireDefault(_youtube);
 
 var Uploader = (function (_React$Component) {
+  _inherits(Uploader, _React$Component);
+
   function Uploader() {
     _classCallCheck(this, Uploader);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Uploader.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Uploader, _React$Component);
 
   _createClass(Uploader, [{
     key: 'componentDidMount',
@@ -7543,11 +7533,11 @@ var Uploader = (function (_React$Component) {
 
       this.upload.on('uploaded', this.stream.bind(this));
     }
-  }, {
-    key: 'stream',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'stream',
     value: function stream(file) {
       var _this = this;
 
@@ -7564,11 +7554,11 @@ var Uploader = (function (_React$Component) {
         }
       });
     }
-  }, {
-    key: 'chooseFile',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'chooseFile',
     value: function chooseFile() {
       var input = _react2['default'].findDOMNode(this.refs.typeFile);
       input.click();
@@ -7593,11 +7583,11 @@ var Uploader = (function (_React$Component) {
 
       input.click();
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _props = this.props;
       var image = _props.image;
@@ -7734,23 +7724,25 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Accordion = (function (_React$Component) {
+  _inherits(Accordion, _React$Component);
+
   function Accordion() {
     _classCallCheck(this, Accordion);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).apply(this, arguments);
 
     this.counter = 0;
     this.height = null;
@@ -7761,12 +7753,10 @@ var Accordion = (function (_React$Component) {
     };
   }
 
-  _inherits(Accordion, _React$Component);
-
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps() {
-      var props = arguments[0] === undefined ? {} : arguments[0];
+      var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
       if (props.active === true) {
         this.setState({ attr: 'show' });
@@ -7816,11 +7806,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -7835,15 +7827,13 @@ var _row = require('./row');
 var _row2 = _interopRequireDefault(_row);
 
 var ButtonGroup = (function (_React$Component) {
+  _inherits(ButtonGroup, _React$Component);
+
   function ButtonGroup() {
     _classCallCheck(this, ButtonGroup);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(ButtonGroup.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(ButtonGroup, _React$Component);
 
   _createClass(ButtonGroup, [{
     key: 'render',
@@ -7878,26 +7868,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Button = (function (_React$Component) {
+  _inherits(Button, _React$Component);
+
   function Button() {
     _classCallCheck(this, Button);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Button.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Button, _React$Component);
 
   _createClass(Button, [{
     key: 'render',
@@ -7912,7 +7902,7 @@ var Button = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'button',
-        _extends({}, this.props, { type: this.props.type || 'button', className: classes.join(' ') }),
+        _extends({}, this.props, { type: this.props.type || "button", className: classes.join(' ') }),
         this.props.children
       );
     }
@@ -7951,11 +7941,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -7966,15 +7958,13 @@ var _image = require('./image');
 var _image2 = _interopRequireDefault(_image);
 
 var CloudinaryImage = (function (_React$Component) {
+  _inherits(CloudinaryImage, _React$Component);
+
   function CloudinaryImage() {
     _classCallCheck(this, CloudinaryImage);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(CloudinaryImage.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(CloudinaryImage, _React$Component);
 
   _createClass(CloudinaryImage, [{
     key: 'render',
@@ -8023,11 +8013,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8038,15 +8030,13 @@ var _libAppComponent = require('../../lib/app/component');
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Column = (function (_React$Component) {
+  _inherits(Column, _React$Component);
+
   function Column() {
     _classCallCheck(this, Column);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Column.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Column, _React$Component);
 
   _createClass(Column, [{
     key: 'style',
@@ -8054,7 +8044,7 @@ var Column = (function (_React$Component) {
       var style = this.props.style || {};
 
       if (this.props.span) {
-        style.flexBasis = '' + this.props.span + '%';
+        style.flexBasis = this.props.span + '%';
       }
 
       return style;
@@ -8064,7 +8054,7 @@ var Column = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         'section',
-        { className: _libAppComponent2['default'].classList(this, 'syn-column'), style: this.style() },
+        { className: _libAppComponent2['default'].classList(this, "syn-column"), style: this.style() },
         this.props.children
       );
     }
@@ -8093,11 +8083,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8108,15 +8100,13 @@ var _input = require('./input');
 var _input2 = _interopRequireDefault(_input);
 
 var DateInput = (function (_React$Component) {
+  _inherits(DateInput, _React$Component);
+
   function DateInput() {
     _classCallCheck(this, DateInput);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(DateInput.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(DateInput, _React$Component);
 
   _createClass(DateInput, [{
     key: 'render',
@@ -8141,11 +8131,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8156,15 +8148,13 @@ var _input = require('./input');
 var _input2 = _interopRequireDefault(_input);
 
 var EmailInput = (function (_React$Component) {
+  _inherits(EmailInput, _React$Component);
+
   function EmailInput() {
     _classCallCheck(this, EmailInput);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(EmailInput.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(EmailInput, _React$Component);
 
   _createClass(EmailInput, [{
     key: 'render',
@@ -8187,26 +8177,26 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Flash = (function (_React$Component) {
+  _inherits(Flash, _React$Component);
+
   function Flash() {
     _classCallCheck(this, Flash);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Flash.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Flash, _React$Component);
 
   _createClass(Flash, [{
     key: 'render',
@@ -8249,13 +8239,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8270,6 +8260,7 @@ var _libAppComponent = require('../../lib/app/component');
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Form = (function (_React$Component) {
+  _inherits(Form, _React$Component);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -8288,13 +8279,10 @@ var Form = (function (_React$Component) {
     };
   }
 
-  _inherits(Form, _React$Component);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Form, [{
     key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function componentWillReceiveProps(props) {
       if ('flash' in props && props.flash) {
         if ('validationError' in props.flash) {
@@ -8306,11 +8294,11 @@ var Form = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'validateRequired',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'validateRequired',
     value: function validateRequired() {
       var form = _react2['default'].findDOMNode(this.refs.form);
 
@@ -8327,7 +8315,7 @@ var Form = (function (_React$Component) {
       }
 
       if (empty.length) {
-        this.setState({ validationError: '' + empty[0].placeholder + ' ' + Form.REQUIRED_MESSAGE });
+        this.setState({ validationError: empty[0].placeholder + ' ' + Form.REQUIRED_MESSAGE });
 
         empty[0].select();
 
@@ -8336,11 +8324,11 @@ var Form = (function (_React$Component) {
 
       return true;
     }
-  }, {
-    key: 'validateEmail',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'validateEmail',
     value: function validateEmail() {
       var form = _react2['default'].findDOMNode(this.refs.form);
 
@@ -8357,7 +8345,7 @@ var Form = (function (_React$Component) {
       }
 
       if (invalid.length) {
-        this.setState({ validationError: '' + invalid[0].placeholder + ' must be a valid email address' });
+        this.setState({ validationError: invalid[0].placeholder + ' must be a valid email address' });
 
         invalid[0].select();
 
@@ -8366,11 +8354,11 @@ var Form = (function (_React$Component) {
 
       return true;
     }
-  }, {
-    key: 'submitHandler',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'submitHandler',
     value: function submitHandler(e) {
       e.preventDefault();
 
@@ -8383,11 +8371,11 @@ var Form = (function (_React$Component) {
         }
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
 
       var flash = undefined;
@@ -8420,7 +8408,6 @@ var Form = (function (_React$Component) {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   }]);
 
   return Form;
@@ -8441,26 +8428,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Icon = (function (_React$Component) {
+  _inherits(Icon, _React$Component);
+
   function Icon() {
     _classCallCheck(this, Icon);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Icon.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Icon, _React$Component);
 
   _createClass(Icon, [{
     key: 'render',
@@ -8538,11 +8525,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8553,15 +8542,13 @@ var _libAppComponent = require('../../lib/app/component');
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Image = (function (_React$Component) {
+  _inherits(Image, _React$Component);
+
   function Image() {
     _classCallCheck(this, Image);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Image.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Image, _React$Component);
 
   _createClass(Image, [{
     key: 'render',
@@ -8591,11 +8578,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8610,15 +8599,13 @@ var _row = require('./row');
 var _row2 = _interopRequireDefault(_row);
 
 var InputGroup = (function (_React$Component) {
+  _inherits(InputGroup, _React$Component);
+
   function InputGroup() {
     _classCallCheck(this, InputGroup);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(InputGroup.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(InputGroup, _React$Component);
 
   _createClass(InputGroup, [{
     key: 'render',
@@ -8653,26 +8640,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Input = (function (_React$Component) {
+  _inherits(Input, _React$Component);
+
   function Input() {
     _classCallCheck(this, Input);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Input.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Input, _React$Component);
 
   _createClass(Input, [{
     key: 'render',
@@ -8711,26 +8698,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Link = (function (_React$Component) {
+  _inherits(Link, _React$Component);
+
   function Link() {
     _classCallCheck(this, Link);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Link.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Link, _React$Component);
 
   _createClass(Link, [{
     key: 'go',
@@ -8759,14 +8746,6 @@ var Link = (function (_React$Component) {
       );
     }
   }], [{
-    key: 'propTypes',
-    value: {
-      go: _react2['default'].PropTypes.string,
-      href: _react2['default'].PropTypes.string,
-      then: _react2['default'].PropTypes.func
-    },
-    enumerable: true
-  }, {
     key: 'go',
     value: function go(target) {
       return new Promise(function (ok, ko) {
@@ -8778,6 +8757,14 @@ var Link = (function (_React$Component) {
         }
       });
     }
+  }, {
+    key: 'propTypes',
+    value: {
+      go: _react2['default'].PropTypes.string,
+      href: _react2['default'].PropTypes.string,
+      then: _react2['default'].PropTypes.func
+    },
+    enumerable: true
   }]);
 
   return Link;
@@ -8794,11 +8781,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8813,15 +8802,13 @@ var _icon = require('./icon');
 var _icon2 = _interopRequireDefault(_icon);
 
 var Loading = (function (_React$Component) {
+  _inherits(Loading, _React$Component);
+
   function Loading() {
     _classCallCheck(this, Loading);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Loading.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Loading, _React$Component);
 
   _createClass(Loading, [{
     key: 'render',
@@ -8853,11 +8840,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8868,15 +8857,13 @@ var _libAppComponent = require('../../lib/app/component');
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Modal = (function (_React$Component) {
+  _inherits(Modal, _React$Component);
+
   function Modal() {
     _classCallCheck(this, Modal);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Modal.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Modal, _React$Component);
 
   _createClass(Modal, [{
     key: 'hide',
@@ -8953,11 +8940,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -8968,15 +8957,13 @@ var _input = require('./input');
 var _input2 = _interopRequireDefault(_input);
 
 var Password = (function (_React$Component) {
+  _inherits(Password, _React$Component);
+
   function Password() {
     _classCallCheck(this, Password);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Password.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Password, _React$Component);
 
   _createClass(Password, [{
     key: 'render',
@@ -9001,11 +8988,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9016,15 +9005,13 @@ var _input = require('./input');
 var _input2 = _interopRequireDefault(_input);
 
 var Range = (function (_React$Component) {
+  _inherits(Range, _React$Component);
+
   function Range() {
     _classCallCheck(this, Range);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Range.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Range, _React$Component);
 
   _createClass(Range, [{
     key: 'render',
@@ -9049,11 +9036,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9064,15 +9053,13 @@ var _libAppComponent = require('../../lib/app/component');
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Row = (function (_React$Component) {
+  _inherits(Row, _React$Component);
+
   function Row() {
     _classCallCheck(this, Row);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Row.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Row, _React$Component);
 
   _createClass(Row, [{
     key: 'render',
@@ -9120,26 +9107,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Select = (function (_React$Component) {
+  _inherits(Select, _React$Component);
+
   function Select() {
     _classCallCheck(this, Select);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Select.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Select, _React$Component);
 
   _createClass(Select, [{
     key: 'render',
@@ -9199,11 +9186,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9214,15 +9203,13 @@ var _button = require('./button');
 var _button2 = _interopRequireDefault(_button);
 
 var Submit = (function (_React$Component) {
+  _inherits(Submit, _React$Component);
+
   function Submit() {
     _classCallCheck(this, Submit);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Submit.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Submit, _React$Component);
 
   _createClass(Submit, [{
     key: 'render',
@@ -9251,26 +9238,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var Textarea = (function (_React$Component) {
+  _inherits(Textarea, _React$Component);
+
   function Textarea() {
     _classCallCheck(this, Textarea);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Textarea.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Textarea, _React$Component);
 
   _createClass(Textarea, [{
     key: 'render',
@@ -9330,11 +9317,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9345,15 +9334,13 @@ var _input = require('./input');
 var _input2 = _interopRequireDefault(_input);
 
 var TextInput = (function (_React$Component) {
+  _inherits(TextInput, _React$Component);
+
   function TextInput() {
     _classCallCheck(this, TextInput);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(TextInput.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(TextInput, _React$Component);
 
   _createClass(TextInput, [{
     key: 'render',
@@ -9376,11 +9363,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9407,15 +9396,13 @@ var _utilColumn = require('./util/column');
 var _utilColumn2 = _interopRequireDefault(_utilColumn);
 
 var Vote = (function (_React$Component) {
+  _inherits(Vote, _React$Component);
+
   function Vote() {
     _classCallCheck(this, Vote);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Vote.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Vote, _React$Component);
 
   _createClass(Vote, [{
     key: 'toggleDescription',
@@ -9426,11 +9413,11 @@ var Vote = (function (_React$Component) {
       var description = _react2['default'].findDOMNode(this.refs.description);
       description.classList.toggle('syn-visible');
     }
-  }, {
-    key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'componentDidMount',
     value: function componentDidMount() {
       var _props = this.props;
       var criteria = _props.criteria;
@@ -9461,7 +9448,7 @@ var Vote = (function (_React$Component) {
         });
       }
 
-      var columns = ['' + vote.total + ' vote(s)'];
+      var columns = [vote.total + ' vote(s)'];
 
       data.forEach(function (d) {
         columns.push(d.value);
@@ -9495,14 +9482,16 @@ var Vote = (function (_React$Component) {
         size: {
           height: 80
         },
-        bar: {}
+        bar: {
+          // width       :   $(window).width() / 5
+        }
       });
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _props2 = this.props;
       var criteria = _props2.criteria;
@@ -9554,8 +9543,6 @@ var Vote = (function (_React$Component) {
 
 exports['default'] = Vote;
 module.exports = exports['default'];
-
-// width       :   $(window).width() / 5
 },{"../lib/proptypes/criteria":"/home/francois/Dev/syn/dist/lib/proptypes/criteria.js","../lib/proptypes/item":"/home/francois/Dev/syn/dist/lib/proptypes/item.js","../lib/proptypes/vote":"/home/francois/Dev/syn/dist/lib/proptypes/vote.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/voter.js":[function(require,module,exports){
 'use strict';
 
@@ -9565,11 +9552,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9616,15 +9605,13 @@ var _libProptypesPoliticalParty = require('../lib/proptypes/political-party');
 var _libProptypesPoliticalParty2 = _interopRequireDefault(_libProptypesPoliticalParty);
 
 var Voter = (function (_React$Component) {
+  _inherits(Voter, _React$Component);
+
   function Voter() {
     _classCallCheck(this, Voter);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Voter.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Voter, _React$Component);
 
   _createClass(Voter, [{
     key: 'setRegisteredVoter',
@@ -9638,11 +9625,11 @@ var Voter = (function (_React$Component) {
         window.socket.emit('set user info', { registered_voter: registered_voter });
       }
     }
-  }, {
-    key: 'setParty',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'setParty',
     value: function setParty() {
       var party = _react2['default'].findDOMNode(this.refs.party).value;
 
@@ -9650,11 +9637,11 @@ var Voter = (function (_React$Component) {
         window.socket.emit('set user info', { party: party });
       }
     }
-  }, {
-    key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'render',
     value: function render() {
       var _props = this.props;
       var user = _props.user;
@@ -9773,11 +9760,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9808,15 +9797,13 @@ var _vote = require('./vote');
 var _vote2 = _interopRequireDefault(_vote);
 
 var Votes = (function (_React$Component) {
+  _inherits(Votes, _React$Component);
+
   function Votes() {
     _classCallCheck(this, Votes);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Votes.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(Votes, _React$Component);
 
   _createClass(Votes, [{
     key: 'render',
@@ -9860,11 +9847,13 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -9875,15 +9864,13 @@ var _libProptypesItem = require('../lib/proptypes/item');
 var _libProptypesItem2 = _interopRequireDefault(_libProptypesItem);
 
 var YouTube = (function (_React$Component) {
+  _inherits(YouTube, _React$Component);
+
   function YouTube() {
     _classCallCheck(this, YouTube);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(YouTube.prototype), 'constructor', this).apply(this, arguments);
   }
-
-  _inherits(YouTube, _React$Component);
 
   _createClass(YouTube, [{
     key: 'render',
@@ -9904,17 +9891,7 @@ var YouTube = (function (_React$Component) {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      item: _libProptypesItem2['default']
-    },
-    enumerable: true
-  }, {
     key: 'isYouTube',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -9934,11 +9911,11 @@ var YouTube = (function (_React$Component) {
 
       return is;
     }
-  }, {
-    key: 'getId',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'getId',
     value: function getId(url) {
       var youTubeId = undefined;
 
@@ -9948,6 +9925,15 @@ var YouTube = (function (_React$Component) {
 
       return youTubeId;
     }
+  }, {
+    key: 'propTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: {
+      item: _libProptypesItem2['default']
+    },
+    enumerable: true
   }]);
 
   return YouTube;
@@ -9976,16 +9962,16 @@ var Component = (function () {
   _createClass(Component, null, [{
     key: 'classList',
     value: function classList(component) {
-      for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        classes[_key - 1] = arguments[_key];
-      }
-
       var classList = [];
 
       if (component.props.className) {
         component.props.className.split(/\s+/).forEach(function (cls) {
           return classList.push(cls);
         });
+      }
+
+      for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        classes[_key - 1] = arguments[_key];
       }
 
       classList.push.apply(classList, classes);
@@ -10512,7 +10498,8 @@ var panelItem = shape({
   children: number.isRequired,
   harmony: shape({
     harmony: number
-  }).isRequired });
+  }).isRequired
+});
 
 exports['default'] = panelItem;
 module.exports = exports['default'];
@@ -10801,15 +10788,16 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _events = require('events');
 
 var Upload = (function (_EventEmitter) {
+  _inherits(Upload, _EventEmitter);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -10824,13 +10812,10 @@ var Upload = (function (_EventEmitter) {
     this.replace = replace;
   }
 
-  _inherits(Upload, _EventEmitter);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _createClass(Upload, [{
     key: 'init',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     value: function init() {
       if (window.File) {
         if (this.dropzone) {
@@ -10848,11 +10833,11 @@ var Upload = (function (_EventEmitter) {
         }
       }
     }
-  }, {
-    key: 'destroy',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'destroy',
     value: function destroy() {
       if (window.File) {
         if (this.dropzone) {
@@ -10868,20 +10853,20 @@ var Upload = (function (_EventEmitter) {
 
       return this;
     }
-  }, {
-    key: 'hover',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'hover',
     value: function hover(e) {
       e.stopPropagation();
       e.preventDefault();
     }
-  }, {
-    key: 'handler',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'handler',
     value: function handler(e) {
       this.hover(e);
 
@@ -10891,18 +10876,18 @@ var Upload = (function (_EventEmitter) {
         this.preview(f, e.target);
       }
     }
-  }, {
-    key: 'preview',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  }, {
+    key: 'preview',
     value: function preview(file, target) {
       var _this = this;
 
       var img = new Image();
 
-      img.classList.add('syn-img-responsive');
-      img.classList.add('preview-image');
+      img.classList.add("syn-img-responsive");
+      img.classList.add("preview-image");
 
       img.addEventListener('load', function () {
 
@@ -10930,14 +10915,14 @@ var Upload = (function (_EventEmitter) {
 
 exports['default'] = Upload;
 module.exports = exports['default'];
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/props.js":[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/props.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 function makeProps() {
-  var options = arguments[0] === undefined ? {} : arguments[0];
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
   var props = {
     close: false,
@@ -10971,7 +10956,173 @@ function makeProps() {
 
 exports['default'] = makeProps;
 module.exports = exports['default'];
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/component-emitter/index.js":[function(require,module,exports){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks[event] = this._callbacks[event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
+  function on() {
+    self.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks[event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks[event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks[event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks[event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+},{}],"/home/francois/Dev/syn/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11274,7 +11425,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -11299,692 +11450,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canMutationObserver = typeof window !== 'undefined'
-    && window.MutationObserver;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    var queue = [];
-
-    if (canMutationObserver) {
-        var hiddenDiv = document.createElement("div");
-        var observer = new MutationObserver(function () {
-            var queueList = queue.slice();
-            queue.length = 0;
-            queueList.forEach(function (fn) {
-                fn();
-            });
-        });
-
-        observer.observe(hiddenDiv, { attributes: true });
-
-        return function nextTick(fn) {
-            if (!queue.length) {
-                hiddenDiv.setAttribute('yes', 'no');
-            }
-            queue.push(fn);
-        };
-    }
-
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
-(function (process,global){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = require('inherits');
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/node_modules/marked/lib/marked.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/marked/lib/marked.js":[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -12063,8 +11529,9 @@ block.normal = merge({}, block);
  */
 
 block.gfm = merge({}, block.normal, {
-  fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)/,
-  paragraph: /^/
+  fences: /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/,
+  paragraph: /^/,
+  heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
 });
 
 block.gfm.paragraph = replace(block.paragraph)
@@ -12176,7 +11643,7 @@ Lexer.prototype.token = function(src, top, bq) {
       this.tokens.push({
         type: 'code',
         lang: cap[2],
-        text: cap[3]
+        text: cap[3] || ''
       });
       continue;
     }
@@ -12347,7 +11814,8 @@ Lexer.prototype.token = function(src, top, bq) {
         type: this.options.sanitize
           ? 'paragraph'
           : 'html',
-        pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
+        pre: !this.options.sanitizer
+          && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
         text: cap[0]
       });
       continue;
@@ -12442,7 +11910,7 @@ var inline = {
   reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
   nolink: /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,
   strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
-  em: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
+  em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
   code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
   br: /^ {2,}\n(?!\s*$)/,
   del: noop,
@@ -12594,8 +12062,10 @@ InlineLexer.prototype.output = function(src) {
       }
       src = src.substring(cap[0].length);
       out += this.options.sanitize
-        ? escape(cap[0])
-        : cap[0];
+        ? this.options.sanitizer
+          ? this.options.sanitizer(cap[0])
+          : escape(cap[0])
+        : cap[0]
       continue;
     }
 
@@ -12666,7 +12136,7 @@ InlineLexer.prototype.output = function(src) {
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
-      out += escape(this.smartypants(cap[0]));
+      out += this.renderer.text(escape(this.smartypants(cap[0])));
       continue;
     }
 
@@ -12700,7 +12170,9 @@ InlineLexer.prototype.smartypants = function(text) {
   if (!this.options.smartypants) return text;
   return text
     // em-dashes
-    .replace(/--/g, '\u2014')
+    .replace(/---/g, '\u2014')
+    // en-dashes
+    .replace(/--/g, '\u2013')
     // opening singles
     .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
     // closing singles & apostrophes
@@ -12718,6 +12190,7 @@ InlineLexer.prototype.smartypants = function(text) {
  */
 
 InlineLexer.prototype.mangle = function(text) {
+  if (!this.options.mangle) return text;
   var out = ''
     , l = text.length
     , i = 0
@@ -12875,6 +12348,10 @@ Renderer.prototype.image = function(href, title, text) {
   }
   out += this.options.xhtml ? '/>' : '>';
   return out;
+};
+
+Renderer.prototype.text = function(text) {
+  return text;
 };
 
 /**
@@ -13220,6 +12697,8 @@ marked.defaults = {
   breaks: false,
   pedantic: false,
   sanitize: false,
+  sanitizer: null,
+  mangle: true,
   smartLists: false,
   silent: false,
   highlight: null,
@@ -16456,6 +15935,94 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
     return _moment;
 
 }));
+},{}],"/home/francois/Dev/syn/node_modules/process/browser.js":[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canMutationObserver = typeof window !== 'undefined'
+    && window.MutationObserver;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    var queue = [];
+
+    if (canMutationObserver) {
+        var hiddenDiv = document.createElement("div");
+        var observer = new MutationObserver(function () {
+            var queueList = queue.slice();
+            queue.length = 0;
+            queueList.forEach(function (fn) {
+                fn();
+            });
+        });
+
+        observer.observe(hiddenDiv, { attributes: true });
+
+        return function nextTick(fn) {
+            if (!queue.length) {
+                hiddenDiv.setAttribute('yes', 'no');
+            }
+            queue.push(fn);
+        };
+    }
+
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
 },{}],"/home/francois/Dev/syn/node_modules/react/lib/AutoFocusMixin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17285,7 +16852,7 @@ var CSSPropertyOperations = {
 module.exports = CSSPropertyOperations;
 
 }).call(this,require('_process'))
-},{"./CSSProperty":"/home/francois/Dev/syn/node_modules/react/lib/CSSProperty.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./camelizeStyleName":"/home/francois/Dev/syn/node_modules/react/lib/camelizeStyleName.js","./dangerousStyleValue":"/home/francois/Dev/syn/node_modules/react/lib/dangerousStyleValue.js","./hyphenateStyleName":"/home/francois/Dev/syn/node_modules/react/lib/hyphenateStyleName.js","./memoizeStringOnly":"/home/francois/Dev/syn/node_modules/react/lib/memoizeStringOnly.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/CallbackQueue.js":[function(require,module,exports){
+},{"./CSSProperty":"/home/francois/Dev/syn/node_modules/react/lib/CSSProperty.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./camelizeStyleName":"/home/francois/Dev/syn/node_modules/react/lib/camelizeStyleName.js","./dangerousStyleValue":"/home/francois/Dev/syn/node_modules/react/lib/dangerousStyleValue.js","./hyphenateStyleName":"/home/francois/Dev/syn/node_modules/react/lib/hyphenateStyleName.js","./memoizeStringOnly":"/home/francois/Dev/syn/node_modules/react/lib/memoizeStringOnly.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/CallbackQueue.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17385,7 +16952,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 module.exports = CallbackQueue;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ChangeEventPlugin.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ChangeEventPlugin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -17930,7 +17497,7 @@ var DOMChildrenOperations = {
 module.exports = DOMChildrenOperations;
 
 }).call(this,require('_process'))
-},{"./Danger":"/home/francois/Dev/syn/node_modules/react/lib/Danger.js","./ReactMultiChildUpdateTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChildUpdateTypes.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setTextContent":"/home/francois/Dev/syn/node_modules/react/lib/setTextContent.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js":[function(require,module,exports){
+},{"./Danger":"/home/francois/Dev/syn/node_modules/react/lib/Danger.js","./ReactMultiChildUpdateTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChildUpdateTypes.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setTextContent":"/home/francois/Dev/syn/node_modules/react/lib/setTextContent.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18229,7 +17796,7 @@ var DOMProperty = {
 module.exports = DOMProperty;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18421,7 +17988,7 @@ var DOMPropertyOperations = {
 module.exports = DOMPropertyOperations;
 
 }).call(this,require('_process'))
-},{"./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./quoteAttributeValueForBrowser":"/home/francois/Dev/syn/node_modules/react/lib/quoteAttributeValueForBrowser.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/Danger.js":[function(require,module,exports){
+},{"./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./quoteAttributeValueForBrowser":"/home/francois/Dev/syn/node_modules/react/lib/quoteAttributeValueForBrowser.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/Danger.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18608,7 +18175,7 @@ var Danger = {
 module.exports = Danger;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./createNodesFromMarkup":"/home/francois/Dev/syn/node_modules/react/lib/createNodesFromMarkup.js","./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","./getMarkupWrap":"/home/francois/Dev/syn/node_modules/react/lib/getMarkupWrap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DefaultEventPluginOrder.js":[function(require,module,exports){
+},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./createNodesFromMarkup":"/home/francois/Dev/syn/node_modules/react/lib/createNodesFromMarkup.js","./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","./getMarkupWrap":"/home/francois/Dev/syn/node_modules/react/lib/getMarkupWrap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/DefaultEventPluginOrder.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18949,7 +18516,7 @@ var EventListener = {
 module.exports = EventListener;
 
 }).call(this,require('_process'))
-},{"./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginHub.js":[function(require,module,exports){
+},{"./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginHub.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19227,7 +18794,7 @@ var EventPluginHub = {
 module.exports = EventPluginHub;
 
 }).call(this,require('_process'))
-},{"./EventPluginRegistry":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginRegistry.js","./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginRegistry.js":[function(require,module,exports){
+},{"./EventPluginRegistry":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginRegistry.js","./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginRegistry.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19507,7 +19074,7 @@ var EventPluginRegistry = {
 module.exports = EventPluginRegistry;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19728,7 +19295,7 @@ var EventPluginUtils = {
 module.exports = EventPluginUtils;
 
 }).call(this,require('_process'))
-},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPropagators.js":[function(require,module,exports){
+},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/EventPropagators.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19870,7 +19437,7 @@ var EventPropagators = {
 module.exports = EventPropagators;
 
 }).call(this,require('_process'))
-},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./EventPluginHub":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginHub.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js":[function(require,module,exports){
+},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./EventPluginHub":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginHub.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20372,7 +19939,7 @@ var LinkedValueUtils = {
 module.exports = LinkedValueUtils;
 
 }).call(this,require('_process'))
-},{"./ReactPropTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypes.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/LocalEventTrapMixin.js":[function(require,module,exports){
+},{"./ReactPropTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypes.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/LocalEventTrapMixin.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -20429,7 +19996,7 @@ var LocalEventTrapMixin = {
 module.exports = LocalEventTrapMixin;
 
 }).call(this,require('_process'))
-},{"./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/MobileSafariClickEventPlugin.js":[function(require,module,exports){
+},{"./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./accumulateInto":"/home/francois/Dev/syn/node_modules/react/lib/accumulateInto.js","./forEachAccumulated":"/home/francois/Dev/syn/node_modules/react/lib/forEachAccumulated.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/MobileSafariClickEventPlugin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20652,7 +20219,7 @@ var PooledClass = {
 module.exports = PooledClass;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/React.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/React.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -20804,7 +20371,7 @@ React.version = '0.13.3';
 module.exports = React;
 
 }).call(this,require('_process'))
-},{"./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactChildren":"/home/francois/Dev/syn/node_modules/react/lib/ReactChildren.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactDOM":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOM.js","./ReactDOMTextComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextComponent.js","./ReactDefaultInjection":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultInjection.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactPropTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypes.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactServerRendering":"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRendering.js","./findDOMNode":"/home/francois/Dev/syn/node_modules/react/lib/findDOMNode.js","./onlyChild":"/home/francois/Dev/syn/node_modules/react/lib/onlyChild.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js":[function(require,module,exports){
+},{"./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactChildren":"/home/francois/Dev/syn/node_modules/react/lib/ReactChildren.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactDOM":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOM.js","./ReactDOMTextComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextComponent.js","./ReactDefaultInjection":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultInjection.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactPropTypes":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypes.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactServerRendering":"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRendering.js","./findDOMNode":"/home/francois/Dev/syn/node_modules/react/lib/findDOMNode.js","./onlyChild":"/home/francois/Dev/syn/node_modules/react/lib/onlyChild.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21468,7 +21035,7 @@ var ReactChildren = {
 module.exports = ReactChildren;
 
 }).call(this,require('_process'))
-},{"./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./traverseAllChildren":"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js":[function(require,module,exports){
+},{"./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./traverseAllChildren":"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22414,7 +21981,7 @@ var ReactClass = {
 module.exports = ReactClass;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactErrorUtils":"/home/francois/Dev/syn/node_modules/react/lib/ReactErrorUtils.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./keyMirror":"/home/francois/Dev/syn/node_modules/react/lib/keyMirror.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactErrorUtils":"/home/francois/Dev/syn/node_modules/react/lib/ReactErrorUtils.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./keyMirror":"/home/francois/Dev/syn/node_modules/react/lib/keyMirror.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactComponent.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22568,7 +22135,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = ReactComponent;
 
 }).call(this,require('_process'))
-},{"./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js":[function(require,module,exports){
+},{"./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22676,7 +22243,7 @@ var ReactComponentEnvironment = {
 module.exports = ReactComponentEnvironment;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactCompositeComponent.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactCompositeComponent.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23589,7 +23156,7 @@ var ReactCompositeComponent = {
 module.exports = ReactCompositeComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactComponentEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentEnvironment.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./shouldUpdateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/shouldUpdateReactComponent.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactComponentEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentEnvironment.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./shouldUpdateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/shouldUpdateReactComponent.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23667,7 +23234,7 @@ var ReactContext = {
 module.exports = ReactContext;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23880,7 +23447,7 @@ var ReactDOM = mapObject({
 module.exports = ReactDOM;
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./mapObject":"/home/francois/Dev/syn/node_modules/react/lib/mapObject.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMButton.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./mapObject":"/home/francois/Dev/syn/node_modules/react/lib/mapObject.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMButton.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24454,7 +24021,7 @@ ReactDOMComponent.injection = {
 module.exports = ReactDOMComponent;
 
 }).call(this,require('_process'))
-},{"./CSSPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/CSSPropertyOperations.js","./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./ReactComponentBrowserEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactMultiChild":"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChild.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./escapeTextContentForBrowser":"/home/francois/Dev/syn/node_modules/react/lib/escapeTextContentForBrowser.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./isEventSupported":"/home/francois/Dev/syn/node_modules/react/lib/isEventSupported.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMForm.js":[function(require,module,exports){
+},{"./CSSPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/CSSPropertyOperations.js","./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./ReactComponentBrowserEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactMultiChild":"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChild.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./escapeTextContentForBrowser":"/home/francois/Dev/syn/node_modules/react/lib/escapeTextContentForBrowser.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./isEventSupported":"/home/francois/Dev/syn/node_modules/react/lib/isEventSupported.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMForm.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24671,7 +24238,7 @@ ReactPerf.measureMethods(ReactDOMIDOperations, 'ReactDOMIDOperations', {
 module.exports = ReactDOMIDOperations;
 
 }).call(this,require('_process'))
-},{"./CSSPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/CSSPropertyOperations.js","./DOMChildrenOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMChildrenOperations.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setInnerHTML":"/home/francois/Dev/syn/node_modules/react/lib/setInnerHTML.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIframe.js":[function(require,module,exports){
+},{"./CSSPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/CSSPropertyOperations.js","./DOMChildrenOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMChildrenOperations.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setInnerHTML":"/home/francois/Dev/syn/node_modules/react/lib/setInnerHTML.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIframe.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24939,7 +24506,7 @@ var ReactDOMInput = ReactClass.createClass({
 module.exports = ReactDOMInput;
 
 }).call(this,require('_process'))
-},{"./AutoFocusMixin":"/home/francois/Dev/syn/node_modules/react/lib/AutoFocusMixin.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./LinkedValueUtils":"/home/francois/Dev/syn/node_modules/react/lib/LinkedValueUtils.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMOption.js":[function(require,module,exports){
+},{"./AutoFocusMixin":"/home/francois/Dev/syn/node_modules/react/lib/AutoFocusMixin.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./LinkedValueUtils":"/home/francois/Dev/syn/node_modules/react/lib/LinkedValueUtils.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMOption.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -24991,7 +24558,7 @@ var ReactDOMOption = ReactClass.createClass({
 module.exports = ReactDOMOption;
 
 }).call(this,require('_process'))
-},{"./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMSelect.js":[function(require,module,exports){
+},{"./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMSelect.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25639,7 +25206,7 @@ var ReactDOMTextarea = ReactClass.createClass({
 module.exports = ReactDOMTextarea;
 
 }).call(this,require('_process'))
-},{"./AutoFocusMixin":"/home/francois/Dev/syn/node_modules/react/lib/AutoFocusMixin.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./LinkedValueUtils":"/home/francois/Dev/syn/node_modules/react/lib/LinkedValueUtils.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultBatchingStrategy.js":[function(require,module,exports){
+},{"./AutoFocusMixin":"/home/francois/Dev/syn/node_modules/react/lib/AutoFocusMixin.js","./DOMPropertyOperations":"/home/francois/Dev/syn/node_modules/react/lib/DOMPropertyOperations.js","./LinkedValueUtils":"/home/francois/Dev/syn/node_modules/react/lib/LinkedValueUtils.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultBatchingStrategy.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25871,7 +25438,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./BeforeInputEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/BeforeInputEventPlugin.js","./ChangeEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/ChangeEventPlugin.js","./ClientReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ClientReactRootIndex.js","./DefaultEventPluginOrder":"/home/francois/Dev/syn/node_modules/react/lib/DefaultEventPluginOrder.js","./EnterLeaveEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/EnterLeaveEventPlugin.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./HTMLDOMPropertyConfig":"/home/francois/Dev/syn/node_modules/react/lib/HTMLDOMPropertyConfig.js","./MobileSafariClickEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/MobileSafariClickEventPlugin.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactComponentBrowserEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js","./ReactDOMButton":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMButton.js","./ReactDOMComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMComponent.js","./ReactDOMForm":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMForm.js","./ReactDOMIDOperations":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIDOperations.js","./ReactDOMIframe":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIframe.js","./ReactDOMImg":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMImg.js","./ReactDOMInput":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMInput.js","./ReactDOMOption":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMOption.js","./ReactDOMSelect":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMSelect.js","./ReactDOMTextComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextComponent.js","./ReactDOMTextarea":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextarea.js","./ReactDefaultBatchingStrategy":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultBatchingStrategy.js","./ReactDefaultPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultPerf.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactEventListener":"/home/francois/Dev/syn/node_modules/react/lib/ReactEventListener.js","./ReactInjection":"/home/francois/Dev/syn/node_modules/react/lib/ReactInjection.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactReconcileTransaction":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconcileTransaction.js","./SVGDOMPropertyConfig":"/home/francois/Dev/syn/node_modules/react/lib/SVGDOMPropertyConfig.js","./SelectEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/SelectEventPlugin.js","./ServerReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ServerReactRootIndex.js","./SimpleEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/SimpleEventPlugin.js","./createFullPageComponent":"/home/francois/Dev/syn/node_modules/react/lib/createFullPageComponent.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultPerf.js":[function(require,module,exports){
+},{"./BeforeInputEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/BeforeInputEventPlugin.js","./ChangeEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/ChangeEventPlugin.js","./ClientReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ClientReactRootIndex.js","./DefaultEventPluginOrder":"/home/francois/Dev/syn/node_modules/react/lib/DefaultEventPluginOrder.js","./EnterLeaveEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/EnterLeaveEventPlugin.js","./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./HTMLDOMPropertyConfig":"/home/francois/Dev/syn/node_modules/react/lib/HTMLDOMPropertyConfig.js","./MobileSafariClickEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/MobileSafariClickEventPlugin.js","./ReactBrowserComponentMixin":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserComponentMixin.js","./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactComponentBrowserEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ReactComponentBrowserEnvironment.js","./ReactDOMButton":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMButton.js","./ReactDOMComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMComponent.js","./ReactDOMForm":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMForm.js","./ReactDOMIDOperations":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIDOperations.js","./ReactDOMIframe":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMIframe.js","./ReactDOMImg":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMImg.js","./ReactDOMInput":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMInput.js","./ReactDOMOption":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMOption.js","./ReactDOMSelect":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMSelect.js","./ReactDOMTextComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextComponent.js","./ReactDOMTextarea":"/home/francois/Dev/syn/node_modules/react/lib/ReactDOMTextarea.js","./ReactDefaultBatchingStrategy":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultBatchingStrategy.js","./ReactDefaultPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultPerf.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactEventListener":"/home/francois/Dev/syn/node_modules/react/lib/ReactEventListener.js","./ReactInjection":"/home/francois/Dev/syn/node_modules/react/lib/ReactInjection.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./ReactReconcileTransaction":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconcileTransaction.js","./SVGDOMPropertyConfig":"/home/francois/Dev/syn/node_modules/react/lib/SVGDOMPropertyConfig.js","./SelectEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/SelectEventPlugin.js","./ServerReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ServerReactRootIndex.js","./SimpleEventPlugin":"/home/francois/Dev/syn/node_modules/react/lib/SimpleEventPlugin.js","./createFullPageComponent":"/home/francois/Dev/syn/node_modules/react/lib/createFullPageComponent.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactDefaultPerf.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26651,7 +26218,7 @@ ReactElement.isValidElement = function(object) {
 module.exports = ReactElement;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactContext":"/home/francois/Dev/syn/node_modules/react/lib/ReactContext.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -27116,7 +26683,7 @@ var ReactElementValidator = {
 module.exports = ReactElementValidator;
 
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./getIteratorFn":"/home/francois/Dev/syn/node_modules/react/lib/getIteratorFn.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js":[function(require,module,exports){
+},{"./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./ReactPropTypeLocationNames":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js","./ReactPropTypeLocations":"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js","./getIteratorFn":"/home/francois/Dev/syn/node_modules/react/lib/getIteratorFn.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -27211,7 +26778,7 @@ var ReactEmptyComponent = {
 module.exports = ReactEmptyComponent;
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactErrorUtils.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactErrorUtils.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27661,7 +27228,7 @@ var ReactFragment = {
 module.exports = ReactFragment;
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactInjection.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactInjection.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28174,7 +27741,7 @@ var ReactInstanceHandles = {
 module.exports = ReactInstanceHandles;
 
 }).call(this,require('_process'))
-},{"./ReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ReactRootIndex.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js":[function(require,module,exports){
+},{"./ReactRootIndex":"/home/francois/Dev/syn/node_modules/react/lib/ReactRootIndex.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29199,7 +28766,7 @@ ReactPerf.measureMethods(ReactMount, 'ReactMount', {
 module.exports = ReactMount;
 
 }).call(this,require('_process'))
-},{"./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactEmptyComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactMarkupChecksum":"/home/francois/Dev/syn/node_modules/react/lib/ReactMarkupChecksum.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./containsNode":"/home/francois/Dev/syn/node_modules/react/lib/containsNode.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./getReactRootElementInContainer":"/home/francois/Dev/syn/node_modules/react/lib/getReactRootElementInContainer.js","./instantiateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/instantiateReactComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setInnerHTML":"/home/francois/Dev/syn/node_modules/react/lib/setInnerHTML.js","./shouldUpdateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/shouldUpdateReactComponent.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChild.js":[function(require,module,exports){
+},{"./DOMProperty":"/home/francois/Dev/syn/node_modules/react/lib/DOMProperty.js","./ReactBrowserEventEmitter":"/home/francois/Dev/syn/node_modules/react/lib/ReactBrowserEventEmitter.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactEmptyComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactMarkupChecksum":"/home/francois/Dev/syn/node_modules/react/lib/ReactMarkupChecksum.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./ReactUpdateQueue":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdateQueue.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./containsNode":"/home/francois/Dev/syn/node_modules/react/lib/containsNode.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./getReactRootElementInContainer":"/home/francois/Dev/syn/node_modules/react/lib/getReactRootElementInContainer.js","./instantiateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/instantiateReactComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./setInnerHTML":"/home/francois/Dev/syn/node_modules/react/lib/setInnerHTML.js","./shouldUpdateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/shouldUpdateReactComponent.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactMultiChild.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29769,7 +29336,7 @@ var ReactNativeComponent = {
 module.exports = ReactNativeComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactOwner.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactOwner.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -29881,7 +29448,7 @@ var ReactOwner = {
 module.exports = ReactOwner;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -29985,7 +29552,7 @@ function _noMeasure(objName, fnName, func) {
 module.exports = ReactPerf;
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocationNames.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -30013,7 +29580,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = ReactPropTypeLocationNames;
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactPropTypeLocations.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30742,7 +30309,7 @@ var ReactReconciler = {
 module.exports = ReactReconciler;
 
 }).call(this,require('_process'))
-},{"./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactRef":"/home/francois/Dev/syn/node_modules/react/lib/ReactRef.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactRef.js":[function(require,module,exports){
+},{"./ReactElementValidator":"/home/francois/Dev/syn/node_modules/react/lib/ReactElementValidator.js","./ReactRef":"/home/francois/Dev/syn/node_modules/react/lib/ReactRef.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactRef.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30926,7 +30493,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMarkupChecksum":"/home/francois/Dev/syn/node_modules/react/lib/ReactMarkupChecksum.js","./ReactServerRenderingTransaction":"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRenderingTransaction.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./instantiateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/instantiateReactComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRenderingTransaction.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./ReactMarkupChecksum":"/home/francois/Dev/syn/node_modules/react/lib/ReactMarkupChecksum.js","./ReactServerRenderingTransaction":"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRenderingTransaction.js","./emptyObject":"/home/francois/Dev/syn/node_modules/react/lib/emptyObject.js","./instantiateReactComponent":"/home/francois/Dev/syn/node_modules/react/lib/instantiateReactComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactServerRenderingTransaction.js":[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -31338,7 +30905,7 @@ var ReactUpdateQueue = {
 module.exports = ReactUpdateQueue;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactLifeCycle":"/home/francois/Dev/syn/node_modules/react/lib/ReactLifeCycle.js","./ReactUpdates":"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ReactUpdates.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -31620,7 +31187,7 @@ var ReactUpdates = {
 module.exports = ReactUpdates;
 
 }).call(this,require('_process'))
-},{"./CallbackQueue":"/home/francois/Dev/syn/node_modules/react/lib/CallbackQueue.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./Transaction":"/home/francois/Dev/syn/node_modules/react/lib/Transaction.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/SVGDOMPropertyConfig.js":[function(require,module,exports){
+},{"./CallbackQueue":"/home/francois/Dev/syn/node_modules/react/lib/CallbackQueue.js","./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./PooledClass":"/home/francois/Dev/syn/node_modules/react/lib/PooledClass.js","./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactPerf":"/home/francois/Dev/syn/node_modules/react/lib/ReactPerf.js","./ReactReconciler":"/home/francois/Dev/syn/node_modules/react/lib/ReactReconciler.js","./Transaction":"/home/francois/Dev/syn/node_modules/react/lib/Transaction.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/SVGDOMPropertyConfig.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32368,7 +31935,7 @@ var SimpleEventPlugin = {
 module.exports = SimpleEventPlugin;
 
 }).call(this,require('_process'))
-},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./EventPropagators":"/home/francois/Dev/syn/node_modules/react/lib/EventPropagators.js","./SyntheticClipboardEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticClipboardEvent.js","./SyntheticDragEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticDragEvent.js","./SyntheticEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticEvent.js","./SyntheticFocusEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticFocusEvent.js","./SyntheticKeyboardEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticKeyboardEvent.js","./SyntheticMouseEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticMouseEvent.js","./SyntheticTouchEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticTouchEvent.js","./SyntheticUIEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticUIEvent.js","./SyntheticWheelEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticWheelEvent.js","./getEventCharCode":"/home/francois/Dev/syn/node_modules/react/lib/getEventCharCode.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/SyntheticClipboardEvent.js":[function(require,module,exports){
+},{"./EventConstants":"/home/francois/Dev/syn/node_modules/react/lib/EventConstants.js","./EventPluginUtils":"/home/francois/Dev/syn/node_modules/react/lib/EventPluginUtils.js","./EventPropagators":"/home/francois/Dev/syn/node_modules/react/lib/EventPropagators.js","./SyntheticClipboardEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticClipboardEvent.js","./SyntheticDragEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticDragEvent.js","./SyntheticEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticEvent.js","./SyntheticFocusEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticFocusEvent.js","./SyntheticKeyboardEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticKeyboardEvent.js","./SyntheticMouseEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticMouseEvent.js","./SyntheticTouchEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticTouchEvent.js","./SyntheticUIEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticUIEvent.js","./SyntheticWheelEvent":"/home/francois/Dev/syn/node_modules/react/lib/SyntheticWheelEvent.js","./getEventCharCode":"/home/francois/Dev/syn/node_modules/react/lib/getEventCharCode.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./keyOf":"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/SyntheticClipboardEvent.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33328,7 +32895,7 @@ var Transaction = {
 module.exports = Transaction;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ViewportMetrics.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/ViewportMetrics.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33423,7 +32990,7 @@ function accumulateInto(current, next) {
 module.exports = accumulateInto;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/adler32.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/adler32.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33723,7 +33290,7 @@ function createFullPageComponent(tag) {
 module.exports = createFullPageComponent;
 
 }).call(this,require('_process'))
-},{"./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/createNodesFromMarkup.js":[function(require,module,exports){
+},{"./ReactClass":"/home/francois/Dev/syn/node_modules/react/lib/ReactClass.js","./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/createNodesFromMarkup.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33813,7 +33380,7 @@ function createNodesFromMarkup(markup, handleScript) {
 module.exports = createNodesFromMarkup;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./createArrayFromMixed":"/home/francois/Dev/syn/node_modules/react/lib/createArrayFromMixed.js","./getMarkupWrap":"/home/francois/Dev/syn/node_modules/react/lib/getMarkupWrap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/dangerousStyleValue.js":[function(require,module,exports){
+},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./createArrayFromMixed":"/home/francois/Dev/syn/node_modules/react/lib/createArrayFromMixed.js","./getMarkupWrap":"/home/francois/Dev/syn/node_modules/react/lib/getMarkupWrap.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/dangerousStyleValue.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33929,7 +33496,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = emptyObject;
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/escapeTextContentForBrowser.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/escapeTextContentForBrowser.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34042,7 +33609,7 @@ function findDOMNode(componentOrElement) {
 module.exports = findDOMNode;
 
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./isNode":"/home/francois/Dev/syn/node_modules/react/lib/isNode.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/flattenChildren.js":[function(require,module,exports){
+},{"./ReactCurrentOwner":"/home/francois/Dev/syn/node_modules/react/lib/ReactCurrentOwner.js","./ReactInstanceMap":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceMap.js","./ReactMount":"/home/francois/Dev/syn/node_modules/react/lib/ReactMount.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./isNode":"/home/francois/Dev/syn/node_modules/react/lib/isNode.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/flattenChildren.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -34100,7 +33667,7 @@ function flattenChildren(children) {
 module.exports = flattenChildren;
 
 }).call(this,require('_process'))
-},{"./traverseAllChildren":"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/focusNode.js":[function(require,module,exports){
+},{"./traverseAllChildren":"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/focusNode.js":[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -34587,7 +34154,7 @@ function getMarkupWrap(nodeName) {
 module.exports = getMarkupWrap;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/getNodeForCharacterOffset.js":[function(require,module,exports){
+},{"./ExecutionEnvironment":"/home/francois/Dev/syn/node_modules/react/lib/ExecutionEnvironment.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/getNodeForCharacterOffset.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34986,7 +34553,7 @@ function instantiateReactComponent(node, parentCompositeType) {
 module.exports = instantiateReactComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactCompositeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactCompositeComponent.js","./ReactEmptyComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/invariant.js":[function(require,module,exports){
+},{"./Object.assign":"/home/francois/Dev/syn/node_modules/react/lib/Object.assign.js","./ReactCompositeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactCompositeComponent.js","./ReactEmptyComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactEmptyComponent.js","./ReactNativeComponent":"/home/francois/Dev/syn/node_modules/react/lib/ReactNativeComponent.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/invariant.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -35043,7 +34610,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/isEventSupported.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/isEventSupported.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35258,7 +34825,7 @@ var keyMirror = function(obj) {
 module.exports = keyMirror;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/keyOf.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35420,7 +34987,7 @@ function onlyChild(children) {
 module.exports = onlyChild;
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/performance.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/performance.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35783,7 +35350,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 module.exports = shouldUpdateReactComponent;
 
 }).call(this,require('_process'))
-},{"./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/toArray.js":[function(require,module,exports){
+},{"./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/toArray.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -35855,7 +35422,7 @@ function toArray(obj) {
 module.exports = toArray;
 
 }).call(this,require('_process'))
-},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js":[function(require,module,exports){
+},{"./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/traverseAllChildren.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36108,7 +35675,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 module.exports = traverseAllChildren;
 
 }).call(this,require('_process'))
-},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./getIteratorFn":"/home/francois/Dev/syn/node_modules/react/lib/getIteratorFn.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/warning.js":[function(require,module,exports){
+},{"./ReactElement":"/home/francois/Dev/syn/node_modules/react/lib/ReactElement.js","./ReactFragment":"/home/francois/Dev/syn/node_modules/react/lib/ReactFragment.js","./ReactInstanceHandles":"/home/francois/Dev/syn/node_modules/react/lib/ReactInstanceHandles.js","./getIteratorFn":"/home/francois/Dev/syn/node_modules/react/lib/getIteratorFn.js","./invariant":"/home/francois/Dev/syn/node_modules/react/lib/invariant.js","./warning":"/home/francois/Dev/syn/node_modules/react/lib/warning.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/lib/warning.js":[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -36171,10 +35738,35 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/react.js":[function(require,module,exports){
+},{"./emptyFunction":"/home/francois/Dev/syn/node_modules/react/lib/emptyFunction.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js"}],"/home/francois/Dev/syn/node_modules/react/react.js":[function(require,module,exports){
 module.exports = require('./lib/React');
 
-},{"./lib/React":"/home/francois/Dev/syn/node_modules/react/lib/React.js"}],"/home/francois/Dev/syn/node_modules/superagent/lib/client.js":[function(require,module,exports){
+},{"./lib/React":"/home/francois/Dev/syn/node_modules/react/lib/React.js"}],"/home/francois/Dev/syn/node_modules/reduce-component/index.js":[function(require,module,exports){
+
+/**
+ * Reduce `arr` with `fn`.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Mixed} initial
+ *
+ * TODO: combatible error handling?
+ */
+
+module.exports = function(arr, fn, initial){  
+  var idx = 0;
+  var len = arr.length;
+  var curr = arguments.length == 3
+    ? initial
+    : arr[idx++];
+
+  while (idx < len) {
+    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  }
+  
+  return curr;
+};
+},{}],"/home/francois/Dev/syn/node_modules/superagent/lib/client.js":[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -36186,9 +35778,14 @@ var reduce = require('reduce');
  * Root reference for iframes.
  */
 
-var root = 'undefined' == typeof window
-  ? (this || self)
-  : window;
+var root;
+if (typeof window !== 'undefined') { // Browser window
+  root = window;
+} else if (typeof self !== 'undefined') { // Web Worker
+  root = self;
+} else { // Other environments
+  root = this;
+}
 
 /**
  * Noop.
@@ -36275,11 +35872,29 @@ function serialize(obj) {
   var pairs = [];
   for (var key in obj) {
     if (null != obj[key]) {
-      pairs.push(encodeURIComponent(key)
-        + '=' + encodeURIComponent(obj[key]));
-    }
-  }
+      pushEncodedKeyValuePair(pairs, key, obj[key]);
+        }
+      }
   return pairs.join('&');
+}
+
+/**
+ * Helps 'serialize' with serializing arrays.
+ * Mutates the pairs array.
+ *
+ * @param {Array} pairs
+ * @param {String} key
+ * @param {Mixed} val
+ */
+
+function pushEncodedKeyValuePair(pairs, key, val) {
+  if (Array.isArray(val)) {
+    return val.forEach(function(v) {
+      pushEncodedKeyValuePair(pairs, key, v);
+    });
+  }
+  pairs.push(encodeURIComponent(key)
+    + '=' + encodeURIComponent(val));
 }
 
 /**
@@ -36571,7 +36186,7 @@ Response.prototype.setStatusProperties = function(status){
   var type = status / 100 | 0;
 
   // status / class
-  this.status = status;
+  this.status = this.statusCode = status;
   this.statusType = type;
 
   // basics
@@ -36817,6 +36432,20 @@ Request.prototype.type = function(type){
 };
 
 /**
+ * Force given parser
+ *
+ * Sets the body parser no matter type.
+ *
+ * @param {Function}
+ * @api public
+ */
+
+Request.prototype.parse = function(fn){
+  this._parser = fn;
+  return this;
+};
+
+/**
  * Set Accept to `type`, mapping values from `request.types`.
  *
  * Examples:
@@ -36941,7 +36570,7 @@ Request.prototype.attach = function(field, file, filename){
  *       // manual json
  *       request.post('/user')
  *         .type('json')
- *         .send('{"name":"tj"})
+ *         .send('{"name":"tj"}')
  *         .end(callback)
  *
  *       // auto json
@@ -37138,7 +36767,7 @@ Request.prototype.end = function(fn){
   if ('GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !isHost(data)) {
     // serialize stuff
     var contentType = this.getHeader('Content-Type');
-    var serialize = request.serialize[contentType ? contentType.split(';')[0] : ''];
+    var serialize = this._parser || request.serialize[contentType ? contentType.split(';')[0] : ''];
     if (serialize) data = serialize(data);
   }
 
@@ -37150,7 +36779,10 @@ Request.prototype.end = function(fn){
 
   // send stuff
   this.emit('request', this);
-  xhr.send(data);
+
+  // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
+  // We need null here if data is undefined
+  xhr.send(typeof data !== 'undefined' ? data : null);
   return this;
 };
 
@@ -37248,11 +36880,14 @@ request.head = function(url, data, fn){
  * @api public
  */
 
-request.del = function(url, fn){
+function del(url, fn){
   var req = request('DELETE', url);
   if (fn) req.end(fn);
   return req;
 };
+
+request.del = del;
+request.delete = del;
 
 /**
  * PATCH `url` with optional `data` and callback `fn(res)`.
@@ -37314,199 +36949,605 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":"/home/francois/Dev/syn/node_modules/superagent/node_modules/component-emitter/index.js","reduce":"/home/francois/Dev/syn/node_modules/superagent/node_modules/reduce-component/index.js"}],"/home/francois/Dev/syn/node_modules/superagent/node_modules/component-emitter/index.js":[function(require,module,exports){
+},{"emitter":"/home/francois/Dev/syn/node_modules/component-emitter/index.js","reduce":"/home/francois/Dev/syn/node_modules/reduce-component/index.js"}],"/home/francois/Dev/syn/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],"/home/francois/Dev/syn/node_modules/util/util.js":[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-/**
- * Expose `Emitter`.
- */
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
 
-module.exports = Emitter;
-
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
 };
 
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
 
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
   }
-  return obj;
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
 }
 
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
 
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks[event] = this._callbacks[event] || [])
-    .push(fn);
-  return this;
-};
+function stylizeNoColor(str, styleType) {
+  return str;
+}
 
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
 
-Emitter.prototype.once = function(event, fn){
-  var self = this;
-  this._callbacks = this._callbacks || {};
+function arrayToHash(array) {
+  var hash = {};
 
-  function on() {
-    self.off(event, on);
-    fn.apply(this, arguments);
-  }
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
 
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
+  return hash;
+}
 
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
 
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks[event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks[event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
     }
+    return ret;
   }
-  return this;
-};
 
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
 
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks[event];
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
 
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
     }
   }
 
-  return this;
-};
+  var base = '', array = false, braces = ['{', '}'];
 
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks[event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-
-},{}],"/home/francois/Dev/syn/node_modules/superagent/node_modules/reduce-component/index.js":[function(require,module,exports){
-
-/**
- * Reduce `arr` with `fn`.
- *
- * @param {Array} arr
- * @param {Function} fn
- * @param {Mixed} initial
- *
- * TODO: combatible error handling?
- */
-
-module.exports = function(arr, fn, initial){  
-  var idx = 0;
-  var len = arr.length;
-  var curr = arguments.length == 3
-    ? initial
-    : arr[idx++];
-
-  while (idx < len) {
-    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
   }
-  
-  return curr;
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
 };
-},{}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
+module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"

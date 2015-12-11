@@ -1,15 +1,16 @@
 'use strict';
 
-import Mungo        from 'mungo';
-import isHarmony    from './methods/is-harmony';
-import getSubtype   from './methods/get-subtype';
-import group        from './statics/group';
-import generateId   from '../item/statics/id';
-import V1           from './migrations/1';
-import V2           from './migrations/2';
-import V3           from './migrations/3';
-import V4           from './migrations/4';
-import V5           from './migrations/5';
+import Mungo                            from 'mungo';
+import isHarmony                        from './methods/is-harmony';
+import getSubtype                       from './methods/get-subtype';
+import getOpposite                      from './methods/get-subtype';
+import group                            from './statics/group';
+import generateId                       from '../item/statics/id';
+import V1                               from './migrations/1';
+import V2                               from './migrations/2';
+import V3                               from './migrations/3';
+import V4                               from './migrations/4';
+import V5                               from './migrations/5';
 
 class Type extends Mungo.Model {
   static schema () {
@@ -31,14 +32,6 @@ class Type extends Mungo.Model {
     };
   }
 
-  isHarmony (...args) {
-    return isHarmony.apply(this, args);
-  }
-
-  getSubtype (...args) {
-    return getSubtype.apply(this, args);
-  }
-
   static inserting () {
     return [
       this.generateId.bind(this)
@@ -51,6 +44,18 @@ class Type extends Mungo.Model {
 
   static generateId (...args) {
     return generateId.apply(this, args);
+  }
+
+  isHarmony (...args) {
+    return isHarmony.apply(this, args);
+  }
+
+  getSubtype (...args) {
+    return getSubtype.apply(this, args);
+  }
+
+  getOpposite (...args) {
+    return getOpposite.apply(this, args);
   }
 }
 

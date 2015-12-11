@@ -13,7 +13,7 @@ function isObjectID(_id, compare = null, serialized = false) {
       });
 
       it('_id should be convertible to Object ID', (ok, ko) => {
-        Mungo.ObjectId(_id);
+        Mungo.ObjectID(_id);
         ok();
       });
     }
