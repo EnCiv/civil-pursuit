@@ -37547,7 +37547,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
