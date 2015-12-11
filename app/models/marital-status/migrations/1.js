@@ -1,7 +1,8 @@
 'use strict';
 
-import mongodb from 'mungo/node_modules/mongodb';
 import Mungo from 'mungo';
+
+const { mongodb } = Mungo;
 
 const collection = 'marital_statuses';
 

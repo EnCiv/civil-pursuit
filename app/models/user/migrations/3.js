@@ -1,7 +1,6 @@
 'use strict';
 
-import Mungo          from 'mungo';
-import mongodb        from 'mungo/node_modules/mongodb';
+import Mungo                            from 'mungo';
 import Race                             from '../../race';
 import MaritalStatus                    from '../../marital-status';
 import Employment                       from '../../employment';
@@ -10,6 +9,7 @@ import PoliticalParty                   from '../../political-party';
 import Country                          from '../../country';
 import State                            from '../../state';
 
+const { mongodb } = Mungo;
 
 const collection = 'users';
 
