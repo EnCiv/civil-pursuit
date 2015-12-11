@@ -26,7 +26,7 @@
   "engines": {
     "node": "5.x.x"
   },
-  "dependencies" : {
+  "dependencies": {
     "async": "~0.9.0",
     "babel": "^5.4.7",
     "babel-polyfill": "^6.2.0",
@@ -46,6 +46,7 @@
     "express-redis-cache": "^0.1.8",
     "express-session": "~1.10.1",
     "firefox-profile": "^0.3.11",
+    "kerberos": "0.0.17",
     "less": "^2.5.0",
     "marked": "^0.3.3",
     "mocha": "^2.3.3",
