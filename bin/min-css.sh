@@ -1,13 +1,13 @@
 #!/bin/bash
 
-node dist/lib/app/minify-css.js \
+node dist/lib/util/minify-css.js \
   assets/css/index.css \
   assets/css/index.min.css || {
   echo Could not minfiy index;
   exit 1
 }
 
-node dist/lib/app/minify-css.js \
+node dist/lib/util/minify-css.js \
   assets/css/training.css \
   assets/css/training.min.css || {
   echo Could not minfiy training;
