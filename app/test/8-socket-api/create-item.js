@@ -4,13 +4,13 @@ import describe                   from 'redtea';
 import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
 import createItem                 from '../../api/create-item';
-import isUser                     from '../../lib/assertions/is-user';
+import isUser                     from '../.test/assertions/is-user';
 import User                       from '../../models/user';
-import isItem                     from '../../lib/assertions/is-item';
+import isItem                     from '../.test/assertions/is-item';
 import Item                       from '../../models/item';
 import Type                       from '../../models/type';
-import isType                     from '../../lib/assertions/is-type';
-import isPanelItem                from '../../lib/assertions/is-panel-item';
+import isType                     from '../.test/assertions/is-type';
+import isPanelItem                from '../.test/assertions/is-panel-item';
 
 function test (props) {
   const locals = {};

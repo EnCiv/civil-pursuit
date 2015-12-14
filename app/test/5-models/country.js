@@ -3,7 +3,7 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import isCountry            from '../../lib/assertions/is-country';
+import isCountry            from '../.test/assertions/is-country';
 import Country              from '../../models/country';
 
 function test () {

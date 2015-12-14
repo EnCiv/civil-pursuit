@@ -8,9 +8,9 @@ import Server                 from '../../server';
 import Type                   from '../../models/type';
 import Item                   from '../../models/item';
 import Config                 from '../../models/config';
-import isType                 from '../../lib/assertions/is-type';
-import isItem                 from '../../lib/assertions/is-item';
-import isPanelItem            from '../../lib/assertions/is-panel-item';
+import isType                 from '../.test/assertions/is-type';
+import isItem                 from '../.test/assertions/is-item';
+import isPanelItem            from '../.test/assertions/is-panel-item';
 
 process.env.PORT = 13012;
 

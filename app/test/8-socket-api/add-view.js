@@ -5,7 +5,7 @@ import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
 import addView                    from '../../api/add-view';
 import User                       from '../../models/user';
-import isItem                     from '../../lib/assertions/is-item';
+import isItem                     from '../.test/assertions/is-item';
 import Item                       from '../../models/item';
 
 function test (props) {

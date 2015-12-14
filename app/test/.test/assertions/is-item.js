@@ -3,8 +3,7 @@
 import should                           from 'should';
 import Mungo                            from 'mungo';
 import describe                         from 'redtea';
-import Type                             from '../../models/item';
-import Item                             from '../../models/item';
+import Item                             from '../../../models/item';
 import isObjectID                       from './is-object-id';
 import isDocument                       from './is-document';
 

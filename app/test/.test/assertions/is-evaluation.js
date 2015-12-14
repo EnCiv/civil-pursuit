@@ -1,8 +1,8 @@
 'use strict';
 
 import describe             from 'redtea';
-import config               from '../../../public.json';
-import { Evaluation }       from '../app/evaluate';
+import config               from '../../../../public.json';
+import { Evaluation }       from '../../../lib/app/evaluate';
 import isType               from './is-type';
 import isObjectID           from './is-object-id';
 import isPanelItem          from './is-panel-item';
@@ -85,6 +85,35 @@ function isEvaluation (evaluation, user, item, type, serialized = false) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    it('Position', [ it => {
+      it('should have a position', (ok, ko) => {
+        evaluation.should.have.property('position');
+        ok();
+      });
+      it('should be the same than in config', (ok, ko) => {
+        evaluation.position.should.be.exactly(config["evaluation context item position"]);
+        ok();
+      });
+      if ( evaluation.position === 'first' ) {
+        it('evaluee should be the first item', (ok, ko) => {
+          evaluation.items[0]._id.toString().should.be.exactly(evaluation.item);
+          ok();
+        });
+      }
+      if ( evaluation.position === 'last' ) {
+        it('evaluee should be the last item', (ok, ko) => {
+          const lastItem = evaluation.items.reduce((last, item) => {
+            last = item;
+            return last;
+          }, null);
+          lastItem._id.toString().should.be.exactly(evaluation.item.toString());
+          ok();
+        });
+      }
+    }]);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     it('split', [ it => {
       it('should have property split', (ok, ko) => {
         evaluation.should.have.property('split');
@@ -118,30 +147,32 @@ function isEvaluation (evaluation, user, item, type, serialized = false) {
           }]);
 
           it('Should be a split of two harmonies', [ it => {
-            for ( let i = 0; i < evaluation.items.length ; i ++ ) {
-              it('item should be the right type', (ok, ko) => {
-                evaluation.items[i].type._id.toString().should.be.exactly(
-                  i % 2 ? type._id.toString() : locals.opposite._id.toString()
-                );
+            if ( evaluation.items.length === 1 ) {
+              it('should be the right type', (ok, ko) => {
+                evaluation.items[0].type._id.toString()
+                  .should.be.exactly(type._id.toString());
+
                 ok();
-              })
+              });
+            }
+
+            else {
+              for ( let i = 0; i < evaluation.items.length ; i ++ ) {
+                const pos = config["evaluation context item position"] === 'first' ? ! i % 2 : i % 2;
+
+                it(`item #${i} should be of expected type`, (ok, ko) => {
+                  const rightType = pos ? type : locals.opposite;
+
+                  evaluation.items[i].type._id.toString()
+                    .should.be.exactly(rightType._id.toString());
+
+                  ok();
+                });
+              }
             }
           }]);
         }]);
       }
-    }]);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    it('Position', [ it => {
-      it('should have a position', (ok, ko) => {
-        evaluation.should.have.property('position');
-        ok();
-      });
-      it('should be the same than in config', (ok, ko) => {
-        evaluation.position.should.be.exactly(config["evaluation context item position"]);
-        ok();
-      });
     }]);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

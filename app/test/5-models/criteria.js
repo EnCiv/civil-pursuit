@@ -3,7 +3,7 @@
 import Mungo                          from 'mungo';
 import should                         from 'should';
 import describe                       from 'redtea';
-import isCriteria                     from '../../lib/assertions/is-criteria';
+import isCriteria                     from '../.test/assertions/is-criteria';
 import Criteria                        from '../../models/criteria';
 
 const { Describer } = describe;

@@ -3,7 +3,7 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import isAppError           from '../../lib/assertions/is-app-error';
+import isAppError           from '../.test/assertions/is-app-error';
 import AppError             from '../../models/app-error';
 
 function test () {

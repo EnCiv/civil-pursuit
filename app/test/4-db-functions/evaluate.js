@@ -8,7 +8,8 @@ import { Evaluation, Evaluator }      from '../../lib/app/evaluate';
 import User                           from '../../models/user';
 import Type                           from '../../models/type';
 import Item                           from '../../models/item';
-import isEvaluation                   from '../../lib/assertions/is-evaluation';
+import isEvaluation                   from '../.test/assertions/is-evaluation';
+import isItem                         from '../.test/assertions/is-item';
 
 function evaluate (evaluation, user, item, type) {
   const locals = {};
@@ -77,11 +78,12 @@ function evaluate (evaluation, user, item, type) {
         locals.evaluate.then(
           results => {
             locals.results = results;
+            console.log(require('util').inspect(results, { depth: null }));
             ok();
           },
           ko
         );
-      });
+      }, { timeout : 1000 * 10 });
 
       it('Results', describe.use(() => isEvaluation(locals.results, user, item, type)));
     }]);
@@ -207,7 +209,10 @@ function test () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Pro item', [ it => {
+
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+        it('pause 1 seconds', ok => setTimeout(ok, 1000));
+
         it(`Pro item #${i}`, [ it => {
           it('should create a pro item', (ok, ko) => {
             Item.lambda({ type : locals.group.pro }).then(
@@ -220,11 +225,54 @@ function test () {
             );
           });
 
+          it('should be an item', describe.use(() => isItem(locals.pro)));
+
           it('Evaluate pro item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.pro, locals.group.pro)));
 
-          let itemsLength = (i + 1);
+          it(`should have 1 item`, (ok, ko) => {
+            locals.evaluation.evaluate().then(
+              evaluation => {
+                try {
+                  evaluation.items.should.have.length(1);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          });
+        }]);
+      }
+    }]);
 
-          if ( i >= config["navigator batch size"] ) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Con item', [ it => {
+
+      for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+        it('pause 1 seconds', ok => setTimeout(ok, 1000));
+
+        it(`Con item #${i}`, [ it => {
+          it('should create a con item', (ok, ko) => {
+            Item.lambda({ type : locals.group.con }).then(
+              item => {
+                locals.con = item;
+                locals.evaluation = new Evaluator(locals.user, locals.con);
+                ok();
+              },
+              ko
+            );
+          });
+
+          it('should be an item', describe.use(() => isItem(locals.con)));
+
+          it('Evaluate con item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.con, locals.group.con)));
+
+          let itemsLength = ((i + 1) * 2);
+
+          if ( itemsLength >= config["navigator batch size"] ) {
             itemsLength = config["navigator batch size"];
           }
 
@@ -247,6 +295,7 @@ function test () {
     }]);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   });
 
 }

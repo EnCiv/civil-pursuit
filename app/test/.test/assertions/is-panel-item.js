@@ -2,10 +2,10 @@
 
 import describe                   from 'redtea';
 import should                     from 'should';
-import config                     from '../../../public.json';
-import Item                       from '../../models/item';
-import Type                       from '../../models/type';
-import User                       from '../../models/user';
+import config                     from '../../../../public.json';
+import Item                       from '../../../models/item';
+import Type                       from '../../../models/type';
+import User                       from '../../../models/user';
 import isPopularity               from './is-popularity';
 import isObjectID                 from './is-object-id';
 import isItem                     from './is-item';
@@ -28,7 +28,6 @@ function checkTypes (pro, con, types, serialized) {
     else {
       it('type has no harmony', [ it => {
         it('should be undefined', (ok, ko) => {
-          console.log(pro, con);
           should(types).be.undefined();
           ok();
         });

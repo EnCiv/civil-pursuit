@@ -1,7 +1,7 @@
 'use strict';
 
 import should from 'should';
-import Popularity from '../app/popularity';
+import Popularity from '../../../lib/app/popularity';
 
 function isPopularity (popularity, views, promotions, number, isOK, string) {
 

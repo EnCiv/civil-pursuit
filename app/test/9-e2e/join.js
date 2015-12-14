@@ -4,7 +4,7 @@ import describe                           from 'redtea';
 import should                             from 'should';
 import User                               from '../../models/user';
 import generateRandomString               from '../../lib/util/random-string';
-import signOut                            from '../../lib/test/e2e-sign-out';
+import signOut                            from '../.test/util/e2e-sign-out';
 
 function test (props) {
   const locals      =   {

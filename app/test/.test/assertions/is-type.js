@@ -3,31 +3,31 @@
 import should         from 'should';
 import Mungo          from 'mungo';
 import describe       from 'redtea';
-import Country        from '../../models/country';
+import Type           from '../../../models/type';
 import isDocument     from './is-document';
 
-function isCountry (country, compare = {}, serialized = false) {
+function isType (type, compare = {}, serialized = false) {
 
   return it => {
     it(serialized ? 'should be serialized' : 'should not be serialized', ok => ok());
 
-    it('should be a document', describe.use(() => isDocument(country, compare, serialized)));
+    it('should be a document', describe.use(() => isDocument(type, compare, serialized)));
 
     if ( ! serialized ) {
-      it('should be a country', (ok, ko) => {
-        country.should.be.an.instanceof(Country);
+      it('should be a type', (ok, ko) => {
+        type.should.be.an.instanceof(Type);
         ok();
       });
     }
 
     it('should have a name', (ok, ko) => {
-      country.should.have.property('name').which.is.a.String();
+      type.should.have.property('name').which.is.a.String();
       ok();
     });
 
     if ( 'name' in compare ) {
       it('name should match compare', (ok, ko) => {
-        country.name.should.be.exactly(compare.name);
+        type.name.should.be.exactly(compare.name);
         ok();
       });
     }
@@ -35,4 +35,4 @@ function isCountry (country, compare = {}, serialized = false) {
 
 }
 
-export default isCountry;
+export default isType;

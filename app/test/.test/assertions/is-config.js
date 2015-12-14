@@ -3,7 +3,7 @@
 import should         from 'should';
 import Mungo          from 'mungo';
 import describe       from 'redtea';
-import Config         from '../../models/config';
+import Config         from '../../../models/config';
 import isDocument     from './is-document';
 
 function isConfig (config, compare = {}, serialized = false) {

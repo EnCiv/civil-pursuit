@@ -2,8 +2,8 @@
 
 import should         from 'should';
 import describe       from 'redtea';
-import AppError       from '../../models/app-error';
 import Mungo          from 'mungo';
+import AppError       from '../../../models/app-error';
 import isDocument     from './is-document';
 
 function isAppError(appError, compare = {}, serialized = false) {

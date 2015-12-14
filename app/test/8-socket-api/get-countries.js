@@ -4,7 +4,7 @@ import describe                   from 'redtea';
 import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
 import getCountries               from '../../api/get-countries';
-import isCountry                  from '../../lib/assertions/is-country';
+import isCountry                  from '../.test/assertions/is-country';
 import Country                    from '../../models/country';
 
 function areCountries(countries) {

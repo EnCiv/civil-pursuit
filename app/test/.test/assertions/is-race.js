@@ -3,31 +3,31 @@
 import should         from 'should';
 import Mungo          from 'mungo';
 import describe       from 'redtea';
-import Type           from '../../models/type';
+import Race           from '../../../models/race';
 import isDocument     from './is-document';
 
-function isType (type, compare = {}, serialized = false) {
+function isRace (race, compare = {}, serialized = false) {
 
   return it => {
     it(serialized ? 'should be serialized' : 'should not be serialized', ok => ok());
 
-    it('should be a document', describe.use(() => isDocument(type, compare, serialized)));
+    it('should be a document', describe.use(() => isDocument(race, compare, serialized)));
 
     if ( ! serialized ) {
-      it('should be a type', (ok, ko) => {
-        type.should.be.an.instanceof(Type);
+      it('should be a race', (ok, ko) => {
+        race.should.be.an.instanceof(Race);
         ok();
       });
     }
 
     it('should have a name', (ok, ko) => {
-      type.should.have.property('name').which.is.a.String();
+      race.should.have.property('name').which.is.a.String();
       ok();
     });
 
     if ( 'name' in compare ) {
       it('name should match compare', (ok, ko) => {
-        type.name.should.be.exactly(compare.name);
+        race.name.should.be.exactly(compare.name);
         ok();
       });
     }
@@ -35,4 +35,4 @@ function isType (type, compare = {}, serialized = false) {
 
 }
 
-export default isType;
+export default isRace;

@@ -4,10 +4,10 @@ import describe                   from 'redtea';
 import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
 import addRace                    from '../../api/add-race';
-import isUser                     from '../../lib/assertions/is-user';
+import isUser                     from '../.test/assertions/is-user';
 import User                       from '../../models/user';
 import Race                       from '../../models/race';
-import isRace                     from '../../lib/assertions/is-race';
+import isRace                     from '../.test/assertions/is-race';
 
 function test (props) {
   const locals = {};

@@ -3,7 +3,7 @@
 import should         from 'should';
 import Mungo          from 'mungo';
 import describe       from 'redtea';
-import Criteria       from '../../models/criteria';
+import Criteria       from '../../../models/criteria';
 import isDocument     from './is-document';
 
 function isCriteria (criteria, compare = {}, serialized = false) {

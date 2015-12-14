@@ -1,13 +1,14 @@
 'use strict';
 
-import { EventEmitter }           from 'events';
-import config                     from '../../../public.json';
-import CriteriaModel              from '../../models/criteria';
-import TypeModel                  from '../../models/type';
-import ItemModel                  from '../../models/item';
-import UserModel                  from '../../models/user';
+import { EventEmitter }                 from 'events';
+import config                           from '../../../public.json';
+import CriteriaModel                    from '../../models/criteria';
+import TypeModel                        from '../../models/type';
+import ItemModel                        from '../../models/item';
+import UserModel                        from '../../models/user';
 
 const OTHERS = 5;
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -54,7 +55,6 @@ class Evaluator extends EventEmitter {
               if ( ! item ) {
                 throw new Error('Item not found');
               }
-
               item
                 .toPanelItem()
                 .then(
@@ -64,17 +64,17 @@ class Evaluator extends EventEmitter {
                       ok();
                     }
                     catch ( error ) {
-                      this.emit('error', error);
+                      ko(error);
                     }
                   },
                   ko
                 );
             }
             catch ( error ) {
-              this.emit('error', error);
+              ko(error);
             }
           },
-          error => this.emit('error', error)
+          ko
         );
       }
       catch ( error ) {
@@ -106,7 +106,7 @@ class Evaluator extends EventEmitter {
                       }
                     }
                     catch ( error ) {
-                      this.emit('error', error);
+                      ko(error);
                     }
                   },
                   ko
@@ -116,7 +116,7 @@ class Evaluator extends EventEmitter {
           );
       }
       catch ( error ) {
-        this.emit('error', error);
+        ko(error);
       }
     });
   }
@@ -168,13 +168,24 @@ class Evaluator extends EventEmitter {
         this.item.type
           .getOpposite()
           .then(
-            right => {
+            opposite => {
               try {
-                const promises = [
-                  this.findOthers(5),
-                  this.findOthers(6, right),
-                  CriteriaModel.find()
-                ]
+                const promises = [];
+
+                if ( config['evaluation context item position'] === 'first' ) {
+                  promises.push(
+                    this.findOthers(5),
+                    this.findOthers(6, opposite),
+                    CriteriaModel.find()
+                  );
+                }
+                else {
+                  promises.push(
+                    this.findOthers(6, opposite),
+                    this.findOthers(5),
+                    CriteriaModel.find()
+                  );
+                }
 
                 Promise.all(promises).then(
                   results => {
@@ -209,39 +220,37 @@ class Evaluator extends EventEmitter {
   findOthers (limit, type) {
     return new Promise((ok, ko) => {
       try {
-
-        const query = {};
-
-        if ( type ) {
-          query.type = type._id;
-        }
-        else {
-          query.type = this.item.type._id;
-        }
+        const query =   {
+          type      :   type || this.item.type
+        };
 
         if ( this.item.lineage.length ) {
           let parent;
+
           for ( let ancestor of this.item.lineage ) {
             parent = ancestor;
           }
+
           query.parent    = parent._id;
         }
 
         query._id = { $ne : this.item._id };
 
+
         ItemModel
-
           .count(query)
-
           // .where('user').ne(this.userId)
-
           .then(number => {
+            const start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
-            let start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
             ItemModel
 
-              .find(query, { skip : start, limit, sort : { views: 1, created: 1 } })
+              .find(query, {
+                skip      :   start,
+                sort      : { views: 1, created: 1 },
+                limit
+              })
 
               .then(
                 items => {
@@ -268,45 +277,95 @@ class Evaluator extends EventEmitter {
   packAndGo (results) {
     return new Promise((ok, ko) => {
 
-      //Split (Harmony)
-      
+
+      // Split (Harmony)
+
       if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
+        const evaluateeFirst = ( config["evaluation context item position"] === 'first' );
+
+        if ( evaluateeFirst ) {
+          if ( results.left.length === 1 && ! results.right.length ) {
+            results.left = [this.item];
+          }
+          else {
+            results.left.unshift(this.item);
+          }
+        }
+        else {
+          if ( results.right.length === 1 && ! results.left.length ) {
+            results.right = [this.item];
+          }
+          else {
+            results.right.push(this.item);
+          }
+        }
+
         results.items = [];
 
-        if ( config["evaluation context item position"] === 'first' ) {
-          results.left.unshift(this.item);
-        }
-        else if ( config["evaluation context item position"] === 'last' ) {
-          results.left.push(this.item);
-        }
+        let fill = true;
 
-        let max = 6;
+        while ( fill ) {
+          if ( evaluateeFirst ) {
+            if ( results.left.length ) {
+              results.items.push(results.left.shift());
+            }
+            else {
+              fill = false;
+            }
 
-        if ( results.left.length < max ) {
-          max = results.left.length;
-        }
+            if ( results.right.length ) {
+              results.items.push(results.right.shift());
+            }
+            else {
+              fill = false;
+            }
+          }
+          else {
+            if ( results.left.length ) {
+              results.items.push(results.left.shift());
+            }
+            else {
+              fill = false;
+            }
 
-        if ( results.right.length < max ) {
-          max = results.right.length;
-        }
-
-        for ( var i = 0; i < max; i ++ ) {
-          if ( results.left[i] ) {
-            results.items.push(results.left[i]);
+            if ( results.right.length ) {
+              results.items.push(results.right.shift());
+            }
+            else {
+              fill = false;
+            }
           }
 
-          if ( results.right[i] ) {
-            results.items.push(results.right[i]);
+          if ( results.items.length === config['navigator batch size'] ) {
+            fill = false;
           }
+        }
+
+        if ( ! evaluateeFirst ) {
+
+          if ( results.items.length > 1 && results.items.length % 2 ) {
+            results.items.pop();
+          }
+
+          let lastItem = results.items[(results.items.length - 1)];
+
+          if ( lastItem.type._id.equals(this.item.type._id) ) {
+            lastItem = this.item;
+          }
+          else {
+            results.items.push(this.item);
+          }
+
+          results.items[(results.items.length - 1)] = this.item;
         }
       }
 
       else {
         if ( config["evaluation context item position"] === 'first' ) {
-            results.items.unshift(this.item);
+          results.items.unshift(this.item);
         }
         else if ( config["evaluation context item position"] === 'last' ) {
-            results.items.push(this.item);
+          results.items.push(this.item);
         }
       }
 
