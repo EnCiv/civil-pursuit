@@ -3,6 +3,7 @@
 import describe             from 'redtea';
 import config               from '../../../../public.json';
 import { Evaluation }       from '../../../lib/app/evaluate';
+import Type                 from '../../../models/type';
 import isType               from './is-type';
 import isObjectID           from './is-object-id';
 import isPanelItem          from './is-panel-item';
@@ -29,6 +30,23 @@ function isEvaluation (evaluation, user, item, type, serialized = false) {
         ok();
       });
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Type', [ it => {
+      it('convert to type if not a Type', (ok, ko) => {
+        if ( type instanceof Type ) {
+          return ok();
+        }
+        Type.findById(type).then(
+          document => {
+            type = document;
+            ok();
+          },
+          ko
+        );
+      });
+    }]);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

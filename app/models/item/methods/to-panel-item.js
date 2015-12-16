@@ -44,6 +44,7 @@ function toPanelItem () {
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                     item.image        =   item.image || config['default item image'];
+
                     item.popularity   =   this.getPopularity();
                     // item.link         =   `/item/${id}/${toSlug(subject)}`;
 

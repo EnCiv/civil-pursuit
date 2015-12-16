@@ -31,8 +31,10 @@ class Evaluator extends EventEmitter {
   constructor (userId, itemId) {
     super();
 
-    if ( userId instanceof UserModel || '_id' in userId ) {
-      userId = userId._id;
+    if ( typeof userId !== 'string' ) {
+      if ( userId instanceof UserModel || '_id' in userId ) {
+        userId = userId._id;
+      }
     }
 
     if ( itemId instanceof ItemModel || '_id' in itemId ) {

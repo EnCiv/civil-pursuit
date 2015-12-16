@@ -225,12 +225,12 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
           }
         });
       }
-      else {
-        it('should have default image', (ok, ko) => {
-          panelItem.image.should.be.exactly(config['default item image']);
-          ok();
-        });
-      }
+      // else {
+      //   it('should have default image', (ok, ko) => {
+      //     panelItem.image.should.be.exactly(config['default item image']);
+      //     ok();
+      //   });
+      // }
     }]);
 
     if ( 'references' in panelItem ) {
