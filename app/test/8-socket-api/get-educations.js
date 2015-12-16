@@ -3,13 +3,13 @@
 import describe                   from 'redtea';
 import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
-import getCountries               from '../../api/get-countries';
-import isCountry                  from '../.test/assertions/is-country';
-import Country                    from '../../models/country';
+import getEducations              from '../../api/get-educations';
+import isEducation                from '../.test/assertions/is-education';
+import Education                  from '../../models/education';
 
-function areCountries(countries) {
+function areEducations(educations) {
   return it => {
-    countries.forEach(country => it('should be a country', describe.use(() => isCountry(country))));
+    educations.forEach(education => it('should be a education', describe.use(() => isEducation(education))));
   };
 }
 
@@ -17,11 +17,11 @@ function test (props) {
   const locals = {};
 
   return describe ( ' API / Get Countries', it => {
-    it('Get countries from DB', [ it => {
-      it('should get countries',(ok, ko) => {
-        Country.find({}, { limit : false }).then(
-          countries => {
-            locals.dbCountries = countries;
+    it('Get educations from DB', [ it => {
+      it('should get educations',(ok, ko) => {
+        Education.find({}, { limit : false }).then(
+          educations => {
+            locals.dbCountries = educations;
             ok();
           },
           ko
@@ -29,12 +29,12 @@ function test (props) {
       });
     }]);
 
-    it('Get countries from socket', [ it => {
-      it('Get countries', (ok, ko) => {
-        mock(props.socket, getCountries, 'get countries')
+    it('Get educations from socket', [ it => {
+      it('Get educations', (ok, ko) => {
+        mock(props.socket, getEducations, 'get educations')
           .then(
-            countries => {
-              locals.countries = countries;
+            educations => {
+              locals.educations = educations;
               ok();
             },
             ko
@@ -42,12 +42,13 @@ function test (props) {
       });
     }]);
 
-    it('should all be countries', describe.use(() => areCountries(locals.countries)));
-
     it('should be the same number than DB', (ok, ko) => {
-      locals.dbCountries.length.should.be.exactly(locals.countries.length);
+      locals.dbCountries.length.should.be.exactly(locals.educations.length);
       ok();
     });
+
+    it('should all be educations', describe.use(() => areEducations(locals.educations)));
+
   });
 }
 

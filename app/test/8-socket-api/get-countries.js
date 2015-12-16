@@ -42,12 +42,13 @@ function test (props) {
       });
     }]);
 
-    it('should all be countries', describe.use(() => areCountries(locals.countries)));
-
     it('should be the same number than DB', (ok, ko) => {
       locals.dbCountries.length.should.be.exactly(locals.countries.length);
       ok();
     });
+
+    it('should all be countries', describe.use(() => areCountries(locals.countries)));
+
   });
 }
 

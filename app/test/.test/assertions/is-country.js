@@ -9,6 +9,7 @@ import isDocument     from './is-document';
 function isCountry (country, compare = {}, serialized = false) {
 
   return it => {
+
     it(serialized ? 'should be serialized' : 'should not be serialized', ok => ok());
 
     it('should be a document', describe.use(() => isDocument(country, compare, serialized)));
