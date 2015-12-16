@@ -5,6 +5,7 @@ import should                             from 'should';
 import User                               from '../../models/user';
 import generateRandomString               from '../../lib/util/random-string';
 import signOut                            from '../.test/util/e2e-sign-out';
+import isHomePage                         from '../.test/util/e2e-is-home-page';                        
 
 function test (props) {
   const locals      =   {

@@ -41,7 +41,7 @@ options
 
 const ERROR = error => {
   if ( error.stack ) {
-    console.log(error.stack);
+    console.log(error.stack.red);
   }
   else {
     console.log(error);
@@ -121,15 +121,26 @@ const httpOptions = {};
 if ( name ) {
   const [ a, b, number, file ] = process.argv;
 
-  console.log({ number, file });
-
   list().then(
     results => {
       results.forEach(result => {
         if ( result.number === number ) {
           result.files.forEach(resultFile => {
             if ( resultFile.name === file ) {
-              const test = require(resultFile.path);
+              console.log(resultFile.path);
+
+              let test;
+
+              try {
+                test = require(resultFile.path);
+              }
+              catch ( error ) {
+                return ERROR(error);
+              }
+
+              if ( typeof test !== 'function' ) {
+                return ERROR(new Error(resultFile.name + ' is not a function'));
+              }
 
               const run = () => {
                 test(options)

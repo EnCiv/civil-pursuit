@@ -13,7 +13,7 @@ function reset (...models) {
       const promises = [];
 
       if ( ! Mungo.connections.length ) {
-        promise.push(new Promise((ok, ko) => {
+        promises.push(new Promise((ok, ko) => {
           Mungo.connect(process.env.MONGOHQ_URL)
             .on('error', ko)
             .on('connected', ok);
