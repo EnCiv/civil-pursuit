@@ -12,7 +12,7 @@ function lambda (options = {}) {
           string => {
             user.email = `${string}@syn-test.com`;
 
-            user.password = '.1234abcDEF?-@*';
+            user.password = options.password || '.1234abcDEF?-@*';
 
             this.create(user).then(ok, ko);
           },
