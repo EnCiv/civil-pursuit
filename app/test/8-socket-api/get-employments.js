@@ -7,9 +7,9 @@ import getEmployments             from '../../api/get-employments';
 import isEmployment               from '../.test/assertions/is-employment';
 import Employment                 from '../../models/employment';
 
-function areEmployment(employment) {
+function areEmployments(employments) {
   return it => {
-    employment.forEach(employment => it('should be a employment', describe.use(() => isEmployment(employment))));
+    employments.forEach(employment => it('should be a employment', describe.use(() => isEmployment(employment))));
   };
 }
 
@@ -17,11 +17,11 @@ function test (props) {
   const locals = {};
 
   return describe ( ' API / Get Countries', it => {
-    it('Get employment from DB', [ it => {
-      it('should get employment',(ok, ko) => {
+    it('Get employments from DB', [ it => {
+      it('should get employments',(ok, ko) => {
         Employment.find({}, { limit : false }).then(
-          employment => {
-            locals.dbCountries = employment;
+          employments => {
+            locals.dbCountries = employments;
             ok();
           },
           ko
@@ -29,12 +29,12 @@ function test (props) {
       });
     }]);
 
-    it('Get employment from socket', [ it => {
-      it('Get employment', (ok, ko) => {
-        mock(props.socket, getEmployments, 'get employment')
+    it('Get employments from socket', [ it => {
+      it('Get employments', (ok, ko) => {
+        mock(props.socket, getEmployments, 'get employments')
           .then(
-            employment => {
-              locals.employment = employment;
+            employments => {
+              locals.employments = employments;
               ok();
             },
             ko
@@ -43,11 +43,11 @@ function test (props) {
     }]);
 
     it('should be the same number than DB', (ok, ko) => {
-      locals.dbCountries.length.should.be.exactly(locals.employment.length);
+      locals.dbCountries.length.should.be.exactly(locals.employments.length);
       ok();
     });
 
-    it('should all be employment', describe.use(() => areEmployment(locals.employment)));
+    it('should all be employments', describe.use(() => areEmployments(locals.employments)));
 
   });
 }
