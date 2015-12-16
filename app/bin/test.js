@@ -6,9 +6,12 @@ import Mungo        from 'mungo';
 import WebDriver    from '../lib/app/webdriver';
 import db           from '../test/3-db/0.connect';
 import reset        from '../test/3-db/1.reset';
+import http         from '../test/6-http/0.server';
+import api          from '../test/8-socket-api/0.api';
+import sequencer    from '../lib/util/sequencer';
 
 if ( process.title === 'node' ) {
-  process.title = 'syn-e2e';
+  process.title = 'syntest';
 }
 
 const usage = `syntest <name>|<special> <options...>
@@ -113,71 +116,106 @@ function list () {
   });
 }
 
+const httpOptions = {};
+
 if ( name ) {
-  // const E2E = require(path.join(__dirname, `${base}/${name}`));
-  Mungo.connect(process.env.MONGOHQ_URL).on('connected', () => {
+  const [ a, b, number, file ] = process.argv;
 
-    const [ a, b, number, file ] = process.argv;
+  console.log({ number, file });
 
-    console.log({ number, file });
+  list().then(
+    results => {
+      results.forEach(result => {
+        if ( result.number === number ) {
+          result.files.forEach(resultFile => {
+            if ( resultFile.name === file ) {
+              const test = require(resultFile.path);
 
-    list().then(
-      results => {
-        results.forEach(result => {
-          if ( result.number === number ) {
-            result.files.forEach(resultFile => {
-              if ( resultFile.name === file ) {
-                const test = require(resultFile.path);
+              const run = () => {
+                test(options)
+                  .then(
+                    props => {
+                      console.log(props);
 
-                const run = () => {
-                  test(options)
-                    .then(
-                      props => {
-                        console.log(props);
-                        Mungo.disconnect();
-                      },
-                      ERROR
-                    );
-                };
+                      const promises = [];
 
-                const promises = [];
+                      if ( Mungo.connections.length ) {
+                        promises.push(Mungo.disconnect());
+                      }
 
-                if ( +(result.number) > 3 ) {
-                  promises.push(
-                    new Promise((ok, ko) => {
-                      db().then(ok, ko);
-                    }),
+                      if ( httpOptions.server ) {
+                        promises.push(new Promise((ok, ko) => {
+                          httpOptions.server.server.close();
+                          ok();
+                        }))
+                      }
 
-                    new Promise((ok, ko) => {
-                      reset().then(ok, ko);
-                    })
+                      if ( options.driver ) {
+                        promises.push(new Promise((ok, ko) => {
+                          options.driver.client.end(error => {
+                            if ( error ) {
+                              ko(error);
+                            }
+                            else {
+                              ok();
+                            }
+                          });
+                        }));
+                      }
+
+
+                      Promise.all(promises).then(
+                        () => {
+                          process.exit(0);
+                        },
+                        error => {
+                          ERROR(error);
+                          process.exit(1);
+                        }
+                      );
+                    },
+                    ERROR
                   );
-                }
+              };
 
-                if ( result.number === '9' ) {
-                  promises.push(new Promise((ok, ko) => {
-                    options.driver = new WebDriver()
-                      .on('error', ko)
-                      .on('ready', ok);
-                  }));
-                }
+              const stackOfPromises = [];
 
-                Promise.all(promises).then(run, ERROR);
-
+              if ( +(result.number) > 3 ) {
+                stackOfPromises.push(
+                  () => db(),
+                  () => reset()
+                );
               }
-            });
-          }
-        });
-      },
-      ERROR
-    );
 
-    // console.log('e2e', name, options);
-    //
-    // E2E.run(options).then(
+              if ( +(result.number) > 5 ) {
+                stackOfPromises.push(
+                  () => http(httpOptions)
+                );
+              }
 
-    // );
-  });
+              if ( +(result.number) > 6 ) {
+                stackOfPromises.push(
+                  () => api(options)
+                );
+              }
+
+              if ( result.number === '9' ) {
+                stackOfPromises.push(() => new Promise((ok, ko) => {
+                  options.driver = new WebDriver()
+                    .on('error', ko)
+                    .on('ready', ok);
+                }));
+              }
+
+              sequencer(stackOfPromises).then(run, ERROR);
+
+            }
+          });
+        }
+      });
+    },
+    ERROR
+  );
 }
 else if ( special ) {
   switch ( special ) {

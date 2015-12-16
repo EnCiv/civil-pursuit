@@ -72,6 +72,8 @@ function test (props = {}) {
         it('it should start', (ok, ko) => {
           locals.server = new Server({ intro : locals.intro });
 
+          props.server = locals.server;
+
           locals.server
             .on('error', error => {
               console.log(error);
@@ -81,14 +83,6 @@ function test (props = {}) {
             .on('listening', ok);
         });
       }]);
-
-      if ( props.broadcast ) {
-        it('should broadcast 1', ok => ok());
-        it('should broadcast', ok => setTimeout(() => {
-          console.log('Bye!');
-          ok();
-        }, props.broadcast || 1000 * 60 * 5));
-      }
     }]);
   });
 }
