@@ -71,6 +71,12 @@ function test (props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    it('should go to home page', (ok, ko) => {
+      client.url(`http://localhost:${props.port}`).then(ok, ko);
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     it('Click Join button', (ok, ko) => {
       client.click(locals.joinButton).then(ok, ko);
     });

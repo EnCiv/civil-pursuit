@@ -78,12 +78,12 @@ function evaluate (evaluation, user, item, type) {
         locals.evaluate.then(
           results => {
             locals.results = results;
-            console.log(require('util').inspect(results, { depth: null }));
+            // console.log(require('util').inspect(results, { depth: null }));
             ok();
           },
           ko
         );
-      }, { timeout : 1000 * 10 });
+      });
 
       it('Results', describe.use(() => isEvaluation(locals.results, user, item, type)));
     }]);
@@ -211,8 +211,6 @@ function test () {
     it('Pro item', [ it => {
 
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
-        it('pause 1 seconds', ok => setTimeout(ok, 1000));
-
         it(`Pro item #${i}`, [ it => {
           it('should create a pro item', (ok, ko) => {
             Item.lambda({ type : locals.group.pro }).then(
@@ -252,7 +250,6 @@ function test () {
     it('Con item', [ it => {
 
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
-        it('pause 1 seconds', ok => setTimeout(ok, 1000));
 
         it(`Con item #${i}`, [ it => {
           it('should create a con item', (ok, ko) => {

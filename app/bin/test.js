@@ -4,6 +4,8 @@ import path         from 'path';
 import fs           from 'fs';
 import Mungo        from 'mungo';
 import WebDriver    from '../lib/app/webdriver';
+import db           from '../test/3-db/0.connect';
+import reset        from '../test/3-db/1.reset';
 
 if ( process.title === 'node' ) {
   process.title = 'syn-e2e';
@@ -138,14 +140,30 @@ if ( name ) {
                     );
                 };
 
+                const promises = [];
+
+                if ( +(result.number) > 3 ) {
+                  promises.push(
+                    new Promise((ok, ko) => {
+                      db().then(ok, ko);
+                    }),
+
+                    new Promise((ok, ko) => {
+                      reset().then(ok, ko);
+                    })
+                  );
+                }
+
                 if ( result.number === '9' ) {
-                  options.driver = new WebDriver()
-                    .on('error', ERROR)
-                    .on('ready', run);
+                  promises.push(new Promise((ok, ko) => {
+                    options.driver = new WebDriver()
+                      .on('error', ko)
+                      .on('ready', ok);
+                  }));
                 }
-                else {
-                  run();
-                }
+
+                Promise.all(promises).then(run, ERROR);
+
               }
             });
           }
