@@ -10030,14 +10030,20 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-function makePanelId(panel) {
+function makePanelId() {
+  var panel = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  if (!panel.type) {
+    throw new Error('Missing type - can not make panel id');
+  }
+
   var id = panel.type._id || panel.type;
 
   if (panel.parent) {
     id += '-' + (panel.parent._id || panel.parent);
   }
 
-  return id;
+  return id.toString();
 };
 
 exports['default'] = makePanelId;
