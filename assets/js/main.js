@@ -361,7 +361,11 @@ window.socket.on('welcome', function (user) {
     window.Dispatcher.emit('add view', evaluation.items[1]);
   }
 
-  props.items[evaluation.item._id].evaluation = evaluation;
+  if (!(evaluation.item in props.items)) {
+    props.items[evaluation.item] = {};
+  }
+
+  props.items[evaluation.item].evaluation = evaluation;
 
   render();
 

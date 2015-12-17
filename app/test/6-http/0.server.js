@@ -79,7 +79,7 @@ function test (props = {}) {
               console.log(error);
               ko(error);
             })
-            .on('message', console.log.bind(console, 'message'))
+            // .on('message', console.log.bind(console, 'message'))
             .on('listening', ok);
         });
       }]);

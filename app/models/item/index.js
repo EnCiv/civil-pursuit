@@ -121,7 +121,11 @@ class Item extends Model {
   }
 
   get link () {
-    return `/item/${this.id}/${S(this.subject).slugify().s}`;
+    return `/item/${this.id}/${this.slug}`;
+  }
+
+  get slug () {
+    return S(this.subject).slugify().s;
   }
 
   static inserting () {

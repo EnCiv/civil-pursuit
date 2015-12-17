@@ -130,9 +130,13 @@ class API extends EventEmitter {
 
       cookieParser()(req, null, () => {});
 
-      const cookie = req.cookies.synuser;
+      let cookie = req.cookies.synuser;
 
       if ( cookie ) {
+
+        if ( typeof cookie === 'string' ) {
+          cookie = JSON.parse(cookie);
+        }
 
         if ( ! this.findUserById(cookie.id) ) {
           this.pushUser(cookie);
@@ -162,6 +166,8 @@ class API extends EventEmitter {
 
   connected (socket) {
     try {
+
+      this.emit('message', { socket });
 
       this.sockets.push(socket);
 
