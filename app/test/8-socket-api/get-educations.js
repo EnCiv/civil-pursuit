@@ -16,7 +16,7 @@ function areEducations(educations) {
 function test (props) {
   const locals = {};
 
-  return describe ( ' API / Get Countries', it => {
+  return describe ( ' API / Get Education', it => {
     it('Get educations from DB', [ it => {
       it('should get educations',(ok, ko) => {
         Education.find({}, { limit : false }).then(

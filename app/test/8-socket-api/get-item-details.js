@@ -16,7 +16,7 @@ function areEmployments(employments) {
 function test (props) {
   const locals = {};
 
-  return describe ( ' API / Get Employment', it => {
+  return describe ( ' API / Get Item Details', it => {
     it('Get employments from DB', [ it => {
       it('should get employments',(ok, ko) => {
         Employment.find({}, { limit : false }).then(
