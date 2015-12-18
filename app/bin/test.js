@@ -163,7 +163,17 @@ if ( name ) {
                   test(options)
                     .then(
                       props => {
-                        console.log(props);
+                        try {
+                          if ( props.passed === props.tests ) {
+                            console.log(JSON.stringify(props).bgGreen.bold);
+                          }
+                          else {
+                            console.log(JSON.stringify(props).bgRed.bold);
+                          }
+                        }
+                        catch ( error ) {
+                          console.log(props);
+                        }
 
                         const promises = [];
 
@@ -191,7 +201,7 @@ if ( name ) {
                           }));
                         }
 
-                        
+
                         Promise.all(promises).then(
                           () => {
                             process.exit(0);
