@@ -14,7 +14,7 @@ function test () {
     {
       'set' : [
         {
-          'should create a lambda config' : (ok, ko) => {
+          'should create a lambda config' : () => new Promise((ok, ko) => {
             Config.set('lambda', true).then(
               document => {
                 locals.lambda = document;
@@ -22,7 +22,7 @@ function test () {
               },
               ko
             );
-          }
+          })
         },
         {
           'should be a config' : describe.use(() => isConfig(locals.lambda))
@@ -32,7 +32,7 @@ function test () {
     {
       'get' : [
         {
-          'should get lambda' : (ok, ko) => {
+          'should get lambda' : () => new Promise((ok, ko) => {
             Config.get('lambda').then(
               lambda => {
                 lambda.should.be.true();
@@ -40,7 +40,7 @@ function test () {
               },
               ko
             );
-          }
+          })
         }
       ]
     }

@@ -19,20 +19,20 @@ function test (props = {}) {
   }
 
   return describe('DB client', it => {
-    it(`should connect to ${props.mongoUrl}`, (ok, ko) => {
+    it(`should connect to ${props.mongoUrl}`, () => new Promise((ok, ko) => {
       Mungo.connect(props.mongoUrl)
         .on('error', ko)
         .on('connected', ok);
-    });
+    }));
 
     if ( props.pause ) {
-      it(`should pause ${props.pause} milliseconds`, ok => {
+      it(`should pause ${props.pause} milliseconds`, () => new Promise(ok => {
         console.log('Pausing DB client', props.pause);
         setTimeout(() => {
           console.log('bye');
           ok();
         }, props.pause);
-      });
+      }));
     }
   });
 }

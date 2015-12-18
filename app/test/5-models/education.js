@@ -10,7 +10,7 @@ function test () {
   const locals = {};
 
   return describe ( 'Education Model', it => {
-    it('should get random education', (ok, ko) => {
+    it('should get random education', () => new Promise((ok, ko) => {
       Education.findOneRandom().then(
         education => {
           locals.education = education;
@@ -18,7 +18,7 @@ function test () {
         },
         ko
       );
-    });
+    }));
 
     it('should be a education', describe.use(() => isEducation(locals.education)));
   });

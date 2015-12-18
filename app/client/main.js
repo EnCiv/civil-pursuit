@@ -151,7 +151,7 @@ window.Dispatcher
       window.socket.emit('promote', item);
     }
 
-    let { evaluation } = props.items[evaluatedItem._id];
+    let { evaluation } = props.items[evaluatedItem];
 
     let isEnd = evaluation.cursor === evaluation.limit;
 
@@ -207,7 +207,7 @@ window.Dispatcher
     }
 
     if ( isEnd ) {
-      delete props.items[evaluatedItem._id].evaluation;
+      delete props.items[evaluatedItem].evaluation;
     }
 
     // scroll to top
@@ -450,7 +450,7 @@ window.socket
         }
 
         props.items[id].evaluation.items = props.items[id].evaluation.items.map(evaluatedItem => {
-          if ( evaluatedItem._id === item._id ) {
+          if ( evaluatedItem === item._id ) {
             return item;
           }
 

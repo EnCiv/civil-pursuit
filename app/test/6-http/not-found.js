@@ -8,7 +8,7 @@ function test(props) {
 
   return describe ('Not found page', [
     {
-      'should not be found' : (ok, ko) => {
+      'should not be found' : () => new Promise((ok, ko) => {
         superagent
           .get(`http://localhost:${props.port}/1111111111111`)
           .end((error, res) => {
@@ -20,7 +20,7 @@ function test(props) {
               ko(error);
             }
           });
-      }
+      })
     }
   ]);
 }

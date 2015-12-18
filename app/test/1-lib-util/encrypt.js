@@ -10,29 +10,27 @@ function test () {
 
   return describe ( 'Lib / Util / Encrypt' , [
     {
-      'should be a function' : (ok, ko) => {
-        encrypt.should.be.a.Function();
-        ok();
-      }
+      'should be a function' : () =>
+        encrypt.should.be.a.Function()
     },
     {
-      'should be a promise' : (ok, ko) => {
+      'should be a promise' : () => {
         locals.promise = encrypt('test');
         locals.promise.should.be.an.instanceof(Promise);
-        ok();
       }
     },
     {
-      'should return encrypted string' : (ok, ko) => {
+      'should return encrypted string' : () => new Promise((ok, ko) => {
         locals.promise.then(
           hash => {
             hash.should.be.a.String()
               .and.not.be.exactly('secret');
+
             ok();
           },
           ko
         );
-      }
+      })
     }
   ] );
 

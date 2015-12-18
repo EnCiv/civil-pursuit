@@ -12,13 +12,11 @@ function test () {
     {
       'should be a class' : (ok, ko) => {
         Component.should.be.a.Function();
-        ok();
       }
     },
     {
       'should have a classList method' : (ok, ko) => {
         Component.should.have.property('classList').which.is.a.Function();
-        ok();
       }
     },
     {
@@ -29,7 +27,6 @@ function test () {
           }
         }, 'foo3', 'foo4');
         locals.classes.should.be.exactly('foo1 foo2 foo3 foo4');
-        ok();
       }
     }
   ] );

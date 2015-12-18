@@ -16,7 +16,7 @@ function test () {
 
   return describe ( 'Item Model', it => {
     it('Test assertion', [ it => {
-      it('should get random item', (ok, ko) => {
+      it('should get random item', () => new Promise((ok, ko) => {
         Item.findOneRandom().then(
           item => {
             locals.item = item;
@@ -24,14 +24,14 @@ function test () {
           },
           ko
         );
-      });
+      }));
 
       it('should be a item', describe.use(() => isItem(locals.item)));
     }]);
 
     it('Create', [ it => {
       it('Missing subject', [it => {
-        it('should query DB and throw an error', (ok, ko) => {
+        it('should query DB and throw an error', () => new Promise((ok, ko) => {
           Item
             .create(locals.candidate)
             .then(
@@ -43,13 +43,13 @@ function test () {
                 ok();
               }
             );
-        });
+        }));
 
         it('should be a Mungo error', describe.use(() => isMungoError(locals.error, Mungo.Error.MISSING_REQUIRED_FIELD, 'Missing field subject')));
       }]);
 
       it('Missing description', [it => {
-        it('should query DB and throw an error', (ok, ko) => {
+        it('should query DB and throw an error', () => new Promise((ok, ko) => {
           locals.candidate.subject = 'Item model - test create';
 
           Item
@@ -63,13 +63,13 @@ function test () {
                 ok();
               }
             );
-        });
+        }));
 
         it('should be a Mungo error', describe.use(() => isMungoError(locals.error, Mungo.Error.MISSING_REQUIRED_FIELD, 'Missing field description')));
       }]);
 
       it('Missing type', [it => {
-        it('should query DB and throw an error', (ok, ko) => {
+        it('should query DB and throw an error', () => new Promise((ok, ko) => {
           locals.candidate.description = 'Item model - test create - description';
 
           Item
@@ -83,13 +83,13 @@ function test () {
                 ok();
               }
             );
-        });
+        }));
 
         it('should be a Mungo error', describe.use(() => isMungoError(locals.error, Mungo.Error.MISSING_REQUIRED_FIELD, 'Missing field type')));
       }]);
 
       it('Missing user', [it => {
-        it('should get create type', (ok, ko) => {
+        it('should get create type', () => new Promise((ok, ko) => {
           Type.create({ name : 'Item Model - test type - create'}).then(
             type => {
               locals.candidate.type = type;
@@ -97,9 +97,9 @@ function test () {
             },
             ko
           );
-        });
+        }));
 
-        it('should query DB and throw an error', (ok, ko) => {
+        it('should query DB and throw an error', () => new Promise((ok, ko) => {
           Item
             .create(locals.candidate)
             .then(
@@ -111,13 +111,13 @@ function test () {
                 ok();
               }
             );
-        });
+        }));
 
         it('should be a Mungo error', describe.use(() => isMungoError(locals.error, Mungo.Error.MISSING_REQUIRED_FIELD, 'Missing field user')));
       }]);
 
       it('Valid item', [it => {
-        it('should get create user', (ok, ko) => {
+        it('should get create user', () => new Promise((ok, ko) => {
           Type.create({ name : 'Item Model - test user - create'}).then(
             user => {
               locals.candidate.user = user;
@@ -125,9 +125,9 @@ function test () {
             },
             ko
           );
-        });
+        }));
 
-        it('should create item', (ok, ko) => {
+        it('should create item', () => new Promise((ok, ko) => {
           Item
             .create(locals.candidate)
             .then(
@@ -137,7 +137,7 @@ function test () {
               },
               ko
             );
-        });
+        }));
 
         it('should be an item', describe.use(() => isItem(locals.item)));
       }]);

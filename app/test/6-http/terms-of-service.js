@@ -8,7 +8,7 @@ function test(props) {
 
   return describe ('Terms of service page', [
     {
-      'should get terms of service page' : (ok, ko) => {
+      'should get terms of service page' : () => new Promise((ok, ko) => {
         superagent
           .get(`http://localhost:${props.port}/page/terms-of-service`)
           .end((error, res) => {
@@ -23,7 +23,7 @@ function test(props) {
               ko(error);
             }
           });
-      }
+      })
     }
   ]);
 }

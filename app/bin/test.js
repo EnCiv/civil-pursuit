@@ -14,11 +14,11 @@ if ( process.title === 'node' ) {
   process.title = 'syntest';
 }
 
-const usage = `syntest <name>|<special> <options...>
+const usage = `syntest
 
 # Show all available tests
 
-syntest --list
+syntest ls
 
 # Run a specific test
 
@@ -30,7 +30,7 @@ name
 
 special
 
-- --list show all commands
+- ls show all commands
 
 options
 
@@ -119,137 +119,135 @@ function list () {
 const httpOptions = {};
 
 if ( name ) {
-  const [ a, b, number, file ] = process.argv;
 
-  list().then(
-    results => {
-      results.forEach(result => {
-        if ( result.number === number ) {
-          result.files.forEach(resultFile => {
-            if ( resultFile.name === file ) {
-              console.log(resultFile.path);
+  if ( name === 'ls') {
+    list().then(
+      results => {
+        results.forEach(result => {
+          console.log();
+          console.log(result.name.yellow.bold);
+          console.log();
 
-              let test;
+          result.files.forEach(file => console.log('  ', `#${result.number}`.bold.blue, '    ', file.name));
+        });
+      },
+      ERROR
+    );
+  }
 
-              try {
-                test = require(resultFile.path);
-              }
-              catch ( error ) {
-                return ERROR(error);
-              }
+  else {
+    const [ a, b, number, file ] = process.argv;
 
-              if ( typeof test !== 'function' ) {
-                return ERROR(new Error(resultFile.name + ' is not a function'));
-              }
+    list().then(
+      results => {
+        results.forEach(result => {
+          if ( result.number === number ) {
+            result.files.forEach(resultFile => {
+              if ( resultFile.name === file ) {
+                console.log(resultFile.path);
 
-              const run = () => {
-                test(options)
-                  .then(
-                    props => {
-                      console.log(props);
+                let test;
 
-                      const promises = [];
+                try {
+                  test = require(resultFile.path);
+                }
+                catch ( error ) {
+                  return ERROR(error);
+                }
 
-                      if ( Mungo.connections.length ) {
-                        promises.push(Mungo.disconnect());
-                      }
+                if ( typeof test !== 'function' ) {
+                  return ERROR(new Error(resultFile.name + ' is not a function'));
+                }
 
-                      if ( httpOptions.server ) {
-                        promises.push(new Promise((ok, ko) => {
-                          httpOptions.server.server.close();
-                          ok();
-                        }))
-                      }
+                const run = () => {
+                  test(options)
+                    .then(
+                      props => {
+                        console.log(props);
 
-                      if ( options.driver ) {
-                        promises.push(new Promise((ok, ko) => {
-                          options.driver.client.end(error => {
-                            if ( error ) {
-                              ko(error);
-                            }
-                            else {
-                              ok();
-                            }
-                          });
-                        }));
-                      }
+                        const promises = [];
 
-
-                      Promise.all(promises).then(
-                        () => {
-                          process.exit(0);
-                        },
-                        error => {
-                          ERROR(error);
-                          process.exit(1);
+                        if ( Mungo.connections.length ) {
+                          promises.push(Mungo.disconnect());
                         }
-                      );
-                    },
-                    ERROR
+
+                        if ( httpOptions.server ) {
+                          promises.push(new Promise((ok, ko) => {
+                            httpOptions.server.server.close();
+                            ok();
+                          }))
+                        }
+
+                        if ( options.driver ) {
+                          promises.push(new Promise((ok, ko) => {
+                            options.driver.client.end(error => {
+                              if ( error ) {
+                                ko(error);
+                              }
+                              else {
+                                ok();
+                              }
+                            });
+                          }));
+                        }
+
+                        
+                        Promise.all(promises).then(
+                          () => {
+                            process.exit(0);
+                          },
+                          error => {
+                            ERROR(error);
+                            process.exit(1);
+                          }
+                        );
+                      },
+                      ERROR
+                    );
+                };
+
+                const stackOfPromises = [];
+
+                if ( +(result.number) > 3 ) {
+                  stackOfPromises.push(
+                    () => db(),
+                    () => reset()
                   );
-              };
+                }
 
-              const stackOfPromises = [];
+                if ( +(result.number) > 5 ) {
+                  stackOfPromises.push(
+                    () => http(httpOptions)
+                  );
+                }
 
-              if ( +(result.number) > 3 ) {
-                stackOfPromises.push(
-                  () => db(),
-                  () => reset()
-                );
+                if ( +(result.number) > 6 ) {
+                  stackOfPromises.push(
+                    () => api(options)
+                  );
+                }
+
+                if ( result.number === '9' ) {
+                  stackOfPromises.push(() => new Promise((ok, ko) => {
+                    options.driver = new WebDriver()
+                      .on('error', ko)
+                      .on('ready', ok);
+                  }));
+                }
+
+                sequencer(stackOfPromises).then(run, ERROR);
+
               }
+            });
+          }
+        });
+      },
+      ERROR
+    );
 
-              if ( +(result.number) > 5 ) {
-                stackOfPromises.push(
-                  () => http(httpOptions)
-                );
-              }
-
-              if ( +(result.number) > 6 ) {
-                stackOfPromises.push(
-                  () => api(options)
-                );
-              }
-
-              if ( result.number === '9' ) {
-                stackOfPromises.push(() => new Promise((ok, ko) => {
-                  options.driver = new WebDriver()
-                    .on('error', ko)
-                    .on('ready', ok);
-                }));
-              }
-
-              sequencer(stackOfPromises).then(run, ERROR);
-
-            }
-          });
-        }
-      });
-    },
-    ERROR
-  );
-}
-else if ( special ) {
-  switch ( special ) {
-    default :
-      console.log(usage);
-      break;
-
-    case 'list' :
-      list().then(
-        results => {
-          results.forEach(result => {
-            console.log();
-            console.log(result.name.yellow.bold);
-            console.log();
-
-            result.files.forEach(file => console.log('  ', `#${result.number}`.bold.blue, '    ', file.name));
-          });
-        },
-        ERROR
-      );
-      break;
   }
 }
+
 else {
   console.log(usage);
 }

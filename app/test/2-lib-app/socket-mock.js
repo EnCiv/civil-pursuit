@@ -20,10 +20,9 @@ function test(props) {
 
     it('should be a function', (ok, ko) => {
       mock.should.be.a.Function();
-      ok();
     });
 
-    it('should return a promise', (ok, ko) => {
+    it('should return a promise', () => new Promise((ok, ko) => {
       locals.promise = mock(
         locals.Socket,
         APIMethod.bind(locals.Socket),
@@ -32,9 +31,9 @@ function test(props) {
       );
       locals.promise.should.be.an.instanceOf(Promise);
       ok();
-    });
+    }));
 
-    it('should listen', (ok, ko) => {
+    it('should listen', () => new Promise((ok, ko) => {
       try {
         locals.promise.then(
           (...messages) => {
@@ -47,7 +46,7 @@ function test(props) {
       catch ( error ) {
         ko(error);
       }
-    });
+    }));
 
   });
 }

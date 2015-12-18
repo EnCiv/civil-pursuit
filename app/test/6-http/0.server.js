@@ -25,13 +25,13 @@ function test (props = {}) {
   const locals = {};
 
   return describe ( 'HTTP Server', it => {
-    it('reset database', (ok, ko) => {
+    it('reset database', () => new Promise((ok, ko) => {
       reset().then(ok, ko);
-    });
+    }));
 
     it('Start', [ it => {
       it('Intro', [ it => {
-        it('it should get intro type from DB', (ok, ko) => {
+        it('it should get intro type from DB', () => new Promise((ok, ko) => {
           Type
             .findOne({ name : 'Intro' })
             .then(
@@ -41,9 +41,9 @@ function test (props = {}) {
               },
               ko
             );
-        });
+        }));
 
-        it('it should get intro item from DB', (ok, ko) => {
+        it('it should get intro item from DB', () => new Promise((ok, ko) => {
           Item
             .findOne({ type : locals.introType })
             .then(
@@ -53,9 +53,9 @@ function test (props = {}) {
               },
               ko
             );
-        });
+        }));
 
-        it('it should panelify', (ok, ko) => {
+        it('it should panelify', () => new Promise((ok, ko) => {
           locals.intro
             .toPanelItem()
             .then(
@@ -65,11 +65,11 @@ function test (props = {}) {
               },
               ko
             );
-        });
+        }));
       }]);
 
       it('Server', [ it => {
-        it('it should start', (ok, ko) => {
+        it('it should start', () => new Promise((ok, ko) => {
           locals.server = new Server({ intro : locals.intro });
 
           props.server = locals.server;
@@ -81,7 +81,7 @@ function test (props = {}) {
             })
             // .on('message', console.log.bind(console, 'message'))
             .on('listening', ok);
-        });
+        }));
       }]);
     }]);
   });

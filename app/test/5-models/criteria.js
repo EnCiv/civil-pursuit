@@ -14,7 +14,7 @@ function test () {
   return describe ( 'Models/Criteria', [
 
     {
-      'should get random criteria' : (ok, ko) => {
+      'should get random criteria' : () => new Promise((ok, ko) => {
         Criteria.findOneRandom().then(
           criteria => {
             locals.criteria = criteria;
@@ -22,7 +22,7 @@ function test () {
           },
           ko
         );
-      }
+      })
     },
 
     {

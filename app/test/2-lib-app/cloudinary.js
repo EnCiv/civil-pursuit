@@ -13,14 +13,12 @@ function test () {
     {
       'should be an object' : (ok, ko) => {
         cloudinary.should.be.an.Object();
-        ok();
       }
     },
     {
       'should have a config function' : (ok, ko) => {
         cloudinary.should.have.property('config')
           .which.is.a.Function();
-        ok();
       }
     }
   ] );

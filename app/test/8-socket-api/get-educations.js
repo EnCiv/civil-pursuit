@@ -3,6 +3,7 @@
 import describe                   from 'redtea';
 import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
+import email                      from '../../lib/app/send-email';
 import getEducations              from '../../api/get-educations';
 import isEducation                from '../.test/assertions/is-education';
 import Education                  from '../../models/education';
@@ -18,7 +19,7 @@ function test (props) {
 
   return describe ( ' API / Get Education', it => {
     it('Get educations from DB', [ it => {
-      it('should get educations',(ok, ko) => {
+      it('should get educations', () => new Promise((ok, ko) => {
         Education.find({}, { limit : false }).then(
           educations => {
             locals.dbCountries = educations;
@@ -26,11 +27,11 @@ function test (props) {
           },
           ko
         );
-      });
+      }));
     }]);
 
     it('Get educations from socket', [ it => {
-      it('Get educations', (ok, ko) => {
+      it('Get educations', () => new Promise((ok, ko) => {
         mock(props.socket, getEducations, 'get educations')
           .then(
             educations => {
@@ -39,12 +40,11 @@ function test (props) {
             },
             ko
           );
-      });
+      }));
     }]);
 
     it('should be the same number than DB', (ok, ko) => {
       locals.dbCountries.length.should.be.exactly(locals.educations.length);
-      ok();
     });
 
     it('should all be educations', describe.use(() => areEducations(locals.educations)));

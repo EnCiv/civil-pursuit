@@ -18,7 +18,7 @@ function test (props) {
 
   return describe ( ' API / Get Employment', it => {
     it('Get employments from DB', [ it => {
-      it('should get employments',(ok, ko) => {
+      it('should get employments',() => new Promise((ok, ko) => {
         Employment.find({}, { limit : false }).then(
           employments => {
             locals.dbCountries = employments;
@@ -26,11 +26,11 @@ function test (props) {
           },
           ko
         );
-      });
+      }));
     }]);
 
     it('Get employments from socket', [ it => {
-      it('Get employments', (ok, ko) => {
+      it('Get employments', () => new Promise((ok, ko) => {
         mock(props.socket, getEmployments, 'get employments')
           .then(
             employments => {
@@ -39,12 +39,11 @@ function test (props) {
             },
             ko
           );
-      });
+      }));
     }]);
 
     it('should be the same number than DB', (ok, ko) => {
       locals.dbCountries.length.should.be.exactly(locals.employments.length);
-      ok();
     });
 
     it('should all be employments', describe.use(() => areEmployments(locals.employments)));

@@ -16,7 +16,6 @@ function test () {
     {
       'should be a class' : (ok, ko) => {
         Agent.should.be.a.Function();
-        ok();
       }
     },
     {
@@ -25,7 +24,6 @@ function test () {
           'should have a request method' : (ok, ko) => {
             Agent.should.have.property('request')
               .which.is.a.Function();
-            ok();
           }
         },
         {
@@ -33,8 +31,6 @@ function test () {
             locals.request = Agent.request('http://example.com');
 
             locals.request.should.be.an.instanceof(superagent.Request);
-
-            ok();
           }
         },
         {
@@ -45,8 +41,6 @@ function test () {
               .which.is.an.Object()
               .and.have.property('user-agent')
               .which.is.exactly(config['user agent']);
-
-            ok();
           }
         }
       ]
@@ -57,11 +51,10 @@ function test () {
           'should be a promise' : (ok, ko) => {
             locals.promise = Agent.promise(locals.request);
             locals.promise.should.be.an.instanceof(Promise);
-            ok();
           }
         },
         {
-          'should then response' : (ok, ko) => {
+          'should then response' : () => new Promise((ok, ko) => {
             locals.promise.then(
               response => {
                 locals.response = response;
@@ -69,7 +62,7 @@ function test () {
               },
               ko
             );
-          }
+          })
         }
       ]
     },
@@ -78,14 +71,12 @@ function test () {
         {
           'should be an incoming message' : (ok, ko) => {
             locals.response.should.be.an.instanceof(IncomingMessage);
-            ok();
           }
         },
         {
           'should be a 200' : (ok, ko) => {
             locals.response.should.have.property('statusCode')
               .which.is.exactly(200);
-            ok();
           }
         }
       ]
@@ -96,11 +87,10 @@ function test () {
           'should be a promise' : (ok, ko) => {
             locals.promise = Agent.get('http://example.com');
             locals.promise.should.be.an.instanceof(Promise);
-            ok();
           }
         },
         {
-          'should then response' : (ok, ko) => {
+          'should then response' : () => new Promise((ok, ko) => {
             locals.promise.then(
               response => {
                 locals.response = response;
@@ -108,19 +98,16 @@ function test () {
               },
               ko
             );
-          }
+          })
         },
         {
           'should be an incoming message' : (ok, ko) => {
             locals.response.should.be.an.instanceof(IncomingMessage);
-            ok();
           }
         },
         {
           'should be a 200' : (ok, ko) => {
             locals.response.should.have.property('statusCode')
-              .which.is.exactly(200);
-            ok();
           }
         }
       ]
@@ -131,11 +118,10 @@ function test () {
           'should be a promise' : (ok, ko) => {
             locals.promise = Agent.download('http://example.com', '/tmp/example.com');
             locals.promise.should.be.an.instanceof(Promise);
-            ok();
           }
         },
         {
-          'should then response' : (ok, ko) => {
+          'should then response' : () => new Promise((ok, ko) => {
             locals.promise.then(
               response => {
                 locals.response = response;
@@ -143,22 +129,21 @@ function test () {
               },
               ko
             );
-          }
+          })
         },
         {
-          'should have copied file' : (ok, ko) => {
+          'should have copied file' : () => new Promise((ok, ko) => {
             locals.data = '';
 
             fs.createReadStream('/tmp/example.com')
               .on('data', data => locals.data += data.toString())
               .on('end', ok)
               .on('error', ko);
-          }
+          })
         },
         {
           'should be a HTTP response' : (ok, ko) => {
             /<title>Example Domain<\/title>/.test(locals.data).should.be.true();
-            ok();
           }
         }
       ]

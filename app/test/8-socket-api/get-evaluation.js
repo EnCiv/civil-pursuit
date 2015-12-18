@@ -14,10 +14,9 @@ function test (props) {
     it('Item', [ it => {
       it('should be a function', (ok, ko) => {
         getEvaluation.should.be.a.Function();
-        ok();
       });
 
-      it('should create item',(ok, ko) => {
+      it('should create item',() => new Promise((ok, ko) => {
         Item.lambda().then(
           item => {
             locals.item = item;
@@ -25,11 +24,11 @@ function test (props) {
           },
           ko
         );
-      });
+      }));
     }]);
 
     it('Get Evaluation from socket', [ it => {
-      it('Get Evaluation', (ok, ko) => {
+      it('Get Evaluation', () => new Promise((ok, ko) => {
         mock(props.socket, getEvaluation, 'get evaluation', locals.item)
           .then(
             evaluation => {
@@ -38,7 +37,7 @@ function test (props) {
             },
             ko
           );
-      });
+      }));
     }]);
 
     it('should be an evaluation', describe.use(() => isEvaluation(locals.evaluation, locals.item.user, locals.item, locals.item.type)));

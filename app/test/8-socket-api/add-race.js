@@ -16,7 +16,7 @@ function test (props) {
     {
       'Race' : [
         {
-          'should get race' : (ok, ko) => {
+          'should get race' : () => new Promise((ok, ko) => {
             Race.findOneRandom().then(
               race => {
                 locals.race = race;
@@ -24,7 +24,7 @@ function test (props) {
               },
               ko
             );
-          }
+          })
         },
         {
           'should be a race' : describe.use(() => isRace(locals.race))
@@ -32,7 +32,7 @@ function test (props) {
       ]
     },
     {
-      'Add race as a document' : (ok, ko) => {
+      'Add race as a document' : () => new Promise((ok, ko) => {
         mock(props.socket, addRace, 'add race', locals.race)
           .then(
             user => {
@@ -41,7 +41,7 @@ function test (props) {
             },
             ko
           );
-      }
+      })
     },
     {
       'User' : [
@@ -49,13 +49,13 @@ function test (props) {
           'is a user' : describe.use(() => isUser(locals.user))
         },
         {
-          'has race' : (ok, ko) => {
+          'has race' : () => new Promise((ok, ko) => {
             locals.user.should.have.property('race').which.is.an.Array().and.have.length(1);
 
             locals.user.race.some(race => race.equals(locals.race._id)).should.be.true();
 
             ok();
-          }
+          })
         }
       ]
     }

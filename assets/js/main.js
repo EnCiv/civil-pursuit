@@ -163,7 +163,7 @@ window.Dispatcher.on('refresh', function () {
     window.socket.emit('promote', item);
   }
 
-  var evaluation = props.items[evaluatedItem._id].evaluation;
+  var evaluation = props.items[evaluatedItem].evaluation;
 
   var isEnd = evaluation.cursor === evaluation.limit;
 
@@ -215,7 +215,7 @@ window.Dispatcher.on('refresh', function () {
   }
 
   if (isEnd) {
-    delete props.items[evaluatedItem._id].evaluation;
+    delete props.items[evaluatedItem].evaluation;
   }
 
   // scroll to top
@@ -431,7 +431,7 @@ window.socket.on('welcome', function (user) {
       }
 
       props.items[_id].evaluation.items = props.items[_id].evaluation.items.map(function (evaluatedItem) {
-        if (evaluatedItem._id === item._id) {
+        if (evaluatedItem === item._id) {
           return item;
         }
 
@@ -1694,7 +1694,7 @@ var Details = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'item-details ' + this.props.className },
+        { className: 'item-details ' + this.props.className, id: 'item-details-' + this.props.item._id },
         content
       );
     }

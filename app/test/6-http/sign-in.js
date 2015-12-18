@@ -14,14 +14,14 @@ function test(props) {
     {
       'Sign in' : [
         {
-          'get user' : (ok, ko) => {
+          'get user' : () => new Promise((ok, ko) => {
             User.create(locals).then(ok, ko);
-          }
+          })
         },
         {
           'Empty sign in' : [
             {
-              'should throw a 400 error' : (ok, ko) => {
+              'should throw a 400 error' : () => new Promise((ok, ko) => {
                 superagent
                   .post('http://localhost:13012/sign/in')
                   .send({})
@@ -39,14 +39,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Missing password' : [
             {
-              'should throw a 400 error' : (ok, ko) => {
+              'should throw a 400 error' : () => new Promise((ok, ko) => {
 
                 locals.fakeEmail = 'foo@aaaaaaaaaaa.com';
 
@@ -67,14 +67,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'No such email' : [
             {
-              'should throw a 404 error' : (ok, ko) => {
+              'should throw a 404 error' : () => new Promise((ok, ko) => {
 
                 locals.fakePassword = 'boom';
 
@@ -95,14 +95,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Wrong password' : [
             {
-              'should throw a 401 error' : (ok, ko) => {
+              'should throw a 401 error' : () => new Promise((ok, ko) => {
 
                 superagent
                   .post('http://localhost:13012/sign/in')
@@ -121,14 +121,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Valid credentials' : [
             {
-              'should be OK' : (ok, ko) => {
+              'should be OK' : () => new Promise((ok, ko) => {
 
                 superagent
                   .post('http://localhost:13012/sign/in')
@@ -145,7 +145,7 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         }

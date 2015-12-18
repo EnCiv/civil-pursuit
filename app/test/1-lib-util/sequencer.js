@@ -14,11 +14,10 @@ function test () {
     {
       'should be a function' : (ok, ko) => {
         sequencer.should.be.a.Function();
-        ok();
       }
     },
     {
-      'should return a promise' : (ok, ko) => {
+      'should return a promise' : () => new Promise((ok, ko) => {
         locals.promise = sequencer([
           props => new Promise((ok, ko) => {
             props.foo = true;
@@ -31,10 +30,10 @@ function test () {
         ], locals.props);
         locals.promise.should.be.an.instanceof(Promise);
         ok();
-      }
+      })
     },
     {
-      'should fulfill' : (ok, ko) => {
+      'should fulfill' : () => new Promise((ok, ko) => {
         locals.promise.then(
           results => {
             locals.results = results;
@@ -42,7 +41,7 @@ function test () {
           },
           ko
         );
-      }
+      })
     },
     {
       'should have results' : (ok, ko) => {
@@ -53,8 +52,6 @@ function test () {
 
         locals.props.should.have.property('foo').which.is.true();
         locals.props.should.have.property('bar').which.is.false();
-
-        ok();
       }
     }
   ] );

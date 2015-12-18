@@ -17,14 +17,12 @@ function test(props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should reset items', (ok, ko) => {
-      reset('item').then(ok, ko);
-    });
+    it('should reset items', () => reset('item'));
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Types Group', [ it => {
-      it('should create group of types', (ok, ko) => {
+      it('should create group of types', () => new Promise((ok, ko) => {
         Type.group(
           'e2e create item parent',
           'e2e create item subtype',
@@ -37,19 +35,19 @@ function test(props) {
           },
           ko
         );
-      });
+      }));
     }]);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should go to panel page', (ok, ko) => {
+    it('should go to panel page', () => new Promise((ok, ko) => {
       props.driver.client.isVisible('header[role="banner"].syn-top_bar').then(
         ok,
         error => {
           props.driver.client.url(`http://localhost:${props.port}`).then(ok, ko);
         }
       );
-    });
+    }));
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -57,17 +55,18 @@ function test(props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should click create item button', (ok, ko) => {
-      props.driver.client.click('#top-level-panel > .syn-panel > .syn-panel-heading .toggle-creator').then(ok, ko);
-    });
+    it('should click create item button', () => props.driver.client.click('#top-level-panel > .syn-panel > .syn-panel-heading .toggle-creator'));
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Leave', [ it => {
-      it('should print client foo', (ok, ko) => {
-        console.log(props);
-        ok();
+      it('test 2', () => {
+        const { click } = props.driver.client;
+        const is = click.apply(props.driver.client, ['#top-level-panel > .syn-panel > .syn-panel-heading .toggle-creator']);
+
+        console.log(is.constructor.name);
       });
+
       it('should sign out', describe.use(() => signOut(props.driver.client)));
     }]);
 

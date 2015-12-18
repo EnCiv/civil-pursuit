@@ -10,7 +10,7 @@ function test () {
   const locals = {};
 
   return describe ( 'Employment Model', it => {
-    it('should get random employment', (ok, ko) => {
+    it('should get random employment', () => new Promise((ok, ko) => {
       Employment.findOneRandom().then(
         employment => {
           locals.employment = employment;
@@ -18,7 +18,7 @@ function test () {
         },
         ko
       );
-    });
+    }));
 
     it('should be a employment', describe.use(() => isEmployment(locals.employment)));
   });

@@ -13,18 +13,16 @@ function test () {
     {
       'should be a function' : (ok, ko) => {
         generateShortId.should.be.a.Function();
-        ok();
       }
     },
     {
       'should be a promise' : (ok, ko) => {
         locals.promise = generateShortId(Item);
         locals.promise.should.be.an.instanceof(Promise);
-        ok();
       }
     },
     {
-      'should then a short id' : (ok, ko) => {
+      'should then a short id' : () => new Promise((ok, ko) => {
         locals.promise.then(
           id => {
             locals.id = id;
@@ -33,10 +31,10 @@ function test () {
           },
           ko
         );
-      }
+      })
     },
     {
-      'should not exist in model' : (ok, ko) => {
+      'should not exist in model' : () => new Promise((ok, ko) => {
         Item.findOne({ id : locals.id }).then(
           item => {
             should(item).be.null();
@@ -44,7 +42,7 @@ function test () {
           },
           ko
         );
-      }
+      })
     }
   ] );
 

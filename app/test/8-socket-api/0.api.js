@@ -17,7 +17,7 @@ function test (props) {
   return describe ( 'API', it => {
 
     it(`Connect to ${locals.url}`, [ it => {
-      it('it should connect', (ok, ko) => {
+      it('it should connect', () => new Promise((ok, ko) => {
 
         try {
           locals.client1 = socketClient.connect(locals.url, {
@@ -33,9 +33,9 @@ function test (props) {
           ko(error);
         }
 
-      });
+      }));
 
-      it('should set synuser', (ok, ko) => {
+      it('should set synuser', () => new Promise((ok, ko) => {
         User
           .findOne()
           .then(
@@ -53,7 +53,7 @@ function test (props) {
             },
             ko
           );
-      });
+      }));
     }]);
 
   });

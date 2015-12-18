@@ -31,6 +31,26 @@ class Vote extends Mungo.Model {
   static getAccumulation (...args) {
     return getAccumulation.apply(this, args);
   }
+
+  static lambda (options = {}) {
+    const vote = {};
+
+    const promises = [
+
+      new Promise((ok, ko) => {
+        if ( 'item' in options ) {
+          if ( options.item instanceof Item ) {
+            return ok(item);
+          }
+        }
+      })
+
+    ];
+
+    return Promise.all(promises).then(results => {
+      const [ item ] = results;
+    }, ko);
+  }
 }
 
 export default Vote;

@@ -41,7 +41,7 @@ class Details extends React.Component {
     }
 
     return (
-      <section className={`item-details ${this.props.className}`}>
+      <section className={`item-details ${this.props.className}`} id={ `item-details-${this.props.item._id}`}>
         { content }
       </section>
     );

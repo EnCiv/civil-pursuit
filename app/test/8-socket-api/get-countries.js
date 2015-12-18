@@ -18,7 +18,7 @@ function test (props) {
 
   return describe ( ' API / Get Countries', it => {
     it('Get countries from DB', [ it => {
-      it('should get countries',(ok, ko) => {
+      it('should get countries', () => new Promise((ok, ko) => {
         Country.find({}, { limit : false }).then(
           countries => {
             locals.dbCountries = countries;
@@ -26,11 +26,12 @@ function test (props) {
           },
           ko
         );
-      });
+      }));
     }]);
 
+
     it('Get countries from socket', [ it => {
-      it('Get countries', (ok, ko) => {
+      it('Get countries', () => new Promise((ok, ko) => {
         mock(props.socket, getCountries, 'get countries')
           .then(
             countries => {
@@ -39,12 +40,11 @@ function test (props) {
             },
             ko
           );
-      });
+      }));
     }]);
 
     it('should be the same number than DB', (ok, ko) => {
       locals.dbCountries.length.should.be.exactly(locals.countries.length);
-      ok();
     });
 
     it('should all be countries', describe.use(() => areCountries(locals.countries)));

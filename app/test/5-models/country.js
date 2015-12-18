@@ -12,7 +12,7 @@ function test () {
   return describe ( 'Models/Country', [
 
     {
-      'should get random country' : (ok, ko) => {
+      'should get random country' : () => new Promise((ok, ko) => {
         Country.findOneRandom().then(
           country => {
             locals.country = country;
@@ -20,7 +20,7 @@ function test () {
           },
           ko
         );
-      }
+      })
     },
 
     {

@@ -12,7 +12,6 @@ function test () {
     {
       'should be a function' : (ok, ko) => {
         Upload.should.be.a.Function();
-        ok();
       }
     }
   ] );

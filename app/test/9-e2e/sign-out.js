@@ -13,45 +13,42 @@ function test(props) {
   };
 
   return describe('E2E Sign Out', it => {
-    it('should go to home page if no top bar found', (ok, ko) => {
+    it('should go to home page if no top bar found', () => new Promise((ok, ko) => {
       props.driver.client.isVisible('header[role="banner"].syn-top_bar').then(
         ok,
         error => {
           props.driver.client.url(`http://localhost:${props.port}`).then(ok, ko);
         }
       );
-    });
+    }));
 
-    it('should create a User to sign in with', (ok, ko) => {
+    it('should create a User to sign in with', () => new Promise((ok, ko) => {
       User.lambda().then(
         user => {
           locals.user = user;
+          console.log({ user });
           ok();
         },
         ko
       );
-    });
+    }));
 
-    it('should set cookie', (ok, ko) => {
+    it('should set cookie', () => new Promise((ok, ko) => {
       props.driver.client.setCookie({
         name : 'synuser',
         value :  JSON.stringify({
           id : locals.user._id
         })
       }).then(ok, ko);
-    });
+    }));
 
-    it('should refresh', (ok, ko) => {
-      props.driver.client.refresh().then(ok, ko);
-    });
+    it('should refresh', () => props.driver.client.refresh());
 
     it('should sign out', describe.use(() => signOut(props.driver.client)));
 
-    it('should pause 2 seconds', (ok, ko) => {
-      props.driver.client.pause(1000 * 2).then(ok, ko);
-    });
+    it('should pause 2 seconds', () => props.driver.client.pause(1000 * 2));
 
-    it('should be at home page', (ok, ko) => {
+    it('should be at home page', () => new Promise((ok, ko) => {
       props.driver.client.url().then(
         url => {
           url.should.be.an.Object()
@@ -61,9 +58,9 @@ function test(props) {
         },
         ko
       );
-    });
+    }));
 
-    it('should not have cookie', (ok, ko) => {
+    it('should not have cookie', () => new Promise((ok, ko) => {
       props.driver.client.getCookie('synuser').then(cookie => {
         try {
           should(cookie).be.null();
@@ -74,9 +71,9 @@ function test(props) {
           ko(error);
         }
       }, ko);
-    });
+    }));
 
-    it('should not have a sign out button anymore', (ok, ko) => {
+    it('should not have a sign out button anymore', () => new Promise((ok, ko) => {
       props.driver.client.isVisible(locals.signOutButton).then(
         isVisible => {
           isVisible.should.be.false();
@@ -84,7 +81,7 @@ function test(props) {
         },
         ok
       );
-    });
+    }));
 
   });
 }

@@ -15,18 +15,16 @@ function test(props) {
       }
     },
     {
-      'should start driver 1' : (ok, ko) => {
+      'should start driver 1' : () => new Promise((ok, ko) => {
         props.driver = new WebDriver();
 
         props.driver
           .on('error', ko)
           .on('ready', ok);
-      }
+      })
     },
     {
-      'driver 1 should go home' : (ok, ko) => {
-        props.driver.client.url(`http://localhost:${props.port}`).then(ok, ko);
-      }
+      'driver 1 should go home' : () =>   props.driver.client.url(`http://localhost:${props.port}`)
     }
   ]);
 }
