@@ -3,11 +3,12 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import isItem               from '../.test/assertions/is-item';
 import User                 from '../../models/user';
 import Item                 from '../../models/item';
 import Type                 from '../../models/type';
 import isMungoError         from '../.test/assertions/is-mungo-error';
+import isItem               from '../.test/assertions/is-item';
+import isEvaluation         from '../.test/assertions/is-evaluation';
 
 function test () {
   const locals = {
@@ -142,6 +143,30 @@ function test () {
         it('should be an item', describe.use(() => isItem(locals.item)));
       }]);
 
+    }]);
+
+    it('Item evaluate', [ it => {
+      it('Create random item', () => new Promise((ok, ko) => {
+        Item.lambda().then(
+          item => {
+            locals.item = item;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should evaluate', () => new Promise((ok, ko) => {
+        Item.evaluate(locals.item.user, locals.item).then(
+          evaluation => {
+            locals.evaluation = evaluation;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should be an evaluation', describe.use(() => isEvaluation(locals.evaluation, locals.item.user, locals.item, locals.item.type)));
     }]);
 
   });

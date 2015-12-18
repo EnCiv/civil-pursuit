@@ -17,14 +17,17 @@ function test () {
 
   return describe ( 'Lib / App / Make Panel' , it => {
 
-    it('should be a function', (ok, ko) => {
-      makePanel.should.be.a.Function();
-    });
+    it('should be a function', () => makePanel.should.be.a.Function());
 
     it('should throw an error if no type passed', [ it => {
-      it('as an object', (ok, ko) => {
-        makePanel({});
-        ko(new Error('Should have thrown'));
+      it('as an object', () => {
+        try {
+          makePanel({});
+          throw new Error('Should have thrown');
+        }
+        catch ( error ) {
+          error.message.should.be.exactly('Could not determine panel type');
+        }
       });
     }]);
 
