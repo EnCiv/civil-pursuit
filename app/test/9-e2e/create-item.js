@@ -59,6 +59,64 @@ function test(props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    it('Invalid form', [ it => {
+
+      it('No subject', [ it => {
+        it('should submit form', () => props.driver.client.submitForm('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"]'));
+
+        it('should see error message', () => new Promise((ok, ko) => {
+          props.driver.client
+            .waitForVisible('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error', 1500).then(
+              isVisible => {
+                isVisible.should.be.true();
+                ok();
+              },
+              ko
+            );
+        }));
+
+        it('error message should say "Subject can not be left empty"', () => new Promise((ok, ko) => {
+          props.driver.client.getText('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error').then(
+            text => {
+              text.should.be.exactly('Subject can not be left empty');
+              ok();
+            },
+            ko
+          );
+        }));
+      }]);
+
+      it('No description', [ it => {
+        it('should fill subject', () => props.driver.client.setValue('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] input[name="subject"]', 'Hey there!'));
+
+        it('should submit form', () => props.driver.client.submitForm('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"]'));
+
+        it('should see error message', () => new Promise((ok, ko) => {
+          props.driver.client
+            .waitForVisible('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error', 1500).then(
+              isVisible => {
+                isVisible.should.be.true();
+                ok();
+              },
+              ko
+            );
+        }));
+
+        it('error message should say "Description can not be left empty"', () => new Promise((ok, ko) => {
+          props.driver.client.getText('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error').then(
+            text => {
+              text.should.be.exactly('Description can not be left empty');
+              ok();
+            },
+            ko
+          );
+        }));
+      }]);
+
+    }]);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     it('Leave', [ it => {
       it('test 2', () => {
         const { click } = props.driver.client;
