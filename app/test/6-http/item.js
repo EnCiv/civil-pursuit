@@ -8,7 +8,7 @@ function test(props) {
   const locals = {};
 
   return describe ('Item page', it => {
-    it('should get a random item', (ok, ko) => {
+    it('should get a random item', () => new Promise((ok, ko) => {
       Item.findOneRandom().then(
         item => {
           locals.item = item;
@@ -16,8 +16,9 @@ function test(props) {
         },
         ko
       );
-    });
-    it('should get item page', (ok, ko) => {
+    }));
+
+    it('should get item page', () => new Promise((ok, ko) => {
       superagent
         .get(`http://localhost:${props.port}/item/${locals.item.id}/${locals.item.slug}`)
         .end((error, res) => {
@@ -32,7 +33,7 @@ function test(props) {
             ko(error);
           }
         });
-    });
+    }));
   });
 }
 

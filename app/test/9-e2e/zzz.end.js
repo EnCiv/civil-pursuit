@@ -6,7 +6,7 @@ import describe               from 'redtea';
 
 function test(props) {
   return describe('E2E STOP', it => {
-    it(`should stop driver`, (ok, ko) => {
+    it(`should stop driver`, () => new Promise((ok, ko) => {
       props.driver.client.end(error => {
         if ( error ) {
           ko(error);
@@ -15,7 +15,7 @@ function test(props) {
           ok();
         }
       });
-    });
+    }));
   });
 }
 

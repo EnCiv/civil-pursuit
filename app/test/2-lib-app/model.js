@@ -14,13 +14,11 @@ function test () {
     {
       'should be a class' : (ok, ko) => {
         Model.should.be.a.Function();
-        ok();
       }
     },
     {
       'should extend Mungo Model' : (ok, ko) => {
         new Model().should.be.an.instanceof(Mungo.Model);
-        ok();
       }
     },
     {
@@ -28,11 +26,10 @@ function test () {
         {
           'should have emit property' : (ok, ko) => {
             Model.should.have.property('emit').which.is.a.Function();
-            ok();
           }
         },
         {
-          'should return a promise and emit' : (ok, ko) => {
+          'should return a promise and emit' : () => new Promise((ok, ko) => {
             emitter.on('created', (collection, document) => {
               collection.should.be.exactly('models');
               document.should.be.an.Object();
@@ -41,7 +38,7 @@ function test () {
             });
             locals.promise = Model.emit('created', {});
             locals.promise.should.be.an.instanceof(Promise);
-          }
+          })
         }
       ]
     }

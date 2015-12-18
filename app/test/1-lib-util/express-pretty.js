@@ -10,10 +10,8 @@ function test () {
 
   return describe ( 'Lib / Util / Express Pretty' , [
     {
-      'must be a function' : (ok, ko) => {
-        printRequest.should.be.a.Function();
-        ok();
-      }
+      'must be a function' : () =>
+        printRequest.should.be.a.Function()
     },
     {
       'Request' : [
@@ -22,120 +20,96 @@ function test () {
             {
               'GET' : [
                 {
-                  'should return an object' : (ok, ko) => {
+                  'should return an object' : () => {
                     locals.pretty = printRequest({
                       method : 'GET',
                       url : '/'
                     });
+
                     locals.pretty.should.be.an.Object();
-                    ok();
                   }
                 },
                 {
                   'Time' : [
                     {
-                      'should have property time' : (ok, ko) => {
-                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                        ok();
-                      }
+                      'should have property time' : () =>
+                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                     },
                     {
-                      'should have property hours' : (ok, ko) => {
-                        locals.pretty.time[0].should.be.a.String();
-                        ok();
-                      }
+                      'should have property hours' : () =>
+                        locals.pretty.time[0].should.be.a.String()
                     },
                     {
-                      'should have property minutes' : (ok, ko) => {
-                        locals.pretty.time[1].should.be.a.String();
-                        ok();
-                      }
+                      'should have property minutes' : () =>
+                        locals.pretty.time[1].should.be.a.String()
                     },
                     {
-                      'should have property seconds' : (ok, ko) => {
-                        locals.pretty.time[2].should.be.a.String();
-                        ok();
-                      }
+                      'should have property seconds' : () =>
+                        locals.pretty.time[2].should.be.a.String()
                     }
                   ]
                 },
                 {
                   'User' : [
                     {
-                      'should have property user' : (ok, ko) => {
+                      'should have property user' : () =>
                         locals.pretty.should.have.property('user')
-                          .which.is.an.Object();
-                        ok();
-                      }
+                          .which.is.an.Object()
                     },
                     {
-                      'should have a name which is visitor' : (ok, ko) => {
+                      'should have a name which is visitor' : () =>
                         locals.pretty.user.should.have.property('name')
-                          .which.is.exactly('visitor');
-                        ok();
-                      }
+                          .which.is.exactly('visitor')
                     },
                     {
-                      'should be in magenta' : (ok, ko) => {
+                      'should be in magenta' : () =>
                         locals.pretty.user.should.have.property('color')
-                          .which.is.exactly('magenta');
-                        ok();
-                      }
+                          .which.is.exactly('magenta')
                     }
                   ]
                 },
                 {
                   'Status' : [
                     {
-                      'should be hellipsis' : (ok, ko) => {
+                      'should be hellipsis' : () =>
                         locals.pretty.should.have.property('status')
-                          .which.is.exactly('...');
-                        ok();
-                      }
+                          .which.is.exactly('...')
                     }
                   ]
                 },
                 {
                   'Method' : [
                     {
-                      'should be GET' : (ok, ko) => {
+                      'should be GET' : () =>
                         locals.pretty.should.have.property('method')
-                          .which.is.exactly('GET');
-                        ok();
-                      }
+                          .which.is.exactly('GET')
                     }
                   ]
                 },
                 {
                   'URL' : [
                     {
-                      'should be /' : (ok, ko) => {
+                      'should be /' : () =>
                         locals.pretty.should.have.property('url')
-                          .which.is.exactly('/');
-                        ok();
-                      }
+                          .which.is.exactly('/')
                     }
                   ]
                 },
                 {
                   'Color' : [
                     {
-                      'should be grey' : (ok, ko) => {
+                      'should be grey' : () =>
                         locals.pretty.should.have.property('color')
-                          .which.is.exactly('grey');
-                        ok();
-                      }
+                          .which.is.exactly('grey')
                     }
                   ]
                 },
                 {
                   'String' : [
                     {
-                      'should be an array' : (ok, ko) => {
+                      'should be an array' : () =>
                         locals.pretty.should.have.property('pretty')
-                          .which.is.an.Array();
-                        ok();
-                      }
+                          .which.is.an.Array()
                     }
                   ]
                 }
@@ -144,120 +118,95 @@ function test () {
             {
               'POST' : [
                 {
-                  'should return an object' : (ok, ko) => {
+                  'should return an object' : () => {
                     locals.pretty = printRequest({
                       method : 'POST',
                       url : '/'
                     });
                     locals.pretty.should.be.an.Object();
-                    ok();
                   }
                 },
                 {
                   'Time' : [
                     {
-                      'should have property time' : (ok, ko) => {
-                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                        ok();
-                      }
+                      'should have property time' : () =>
+                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                     },
                     {
-                      'should have property hours' : (ok, ko) => {
-                        locals.pretty.time[0].should.be.a.String();
-                        ok();
-                      }
+                      'should have property hours' : () =>
+                        locals.pretty.time[0].should.be.a.String()
                     },
                     {
-                      'should have property minutes' : (ok, ko) => {
-                        locals.pretty.time[1].should.be.a.String();
-                        ok();
-                      }
+                      'should have property minutes' : () =>
+                        locals.pretty.time[1].should.be.a.String()
                     },
                     {
-                      'should have property seconds' : (ok, ko) => {
-                        locals.pretty.time[2].should.be.a.String();
-                        ok();
-                      }
+                      'should have property seconds' : () =>
+                        locals.pretty.time[2].should.be.a.String()
                     }
                   ]
                 },
                 {
                   'User' : [
                     {
-                      'should have property user' : (ok, ko) => {
+                      'should have property user' : () =>
                         locals.pretty.should.have.property('user')
-                          .which.is.an.Object();
-                        ok();
-                      }
+                          .which.is.an.Object()
                     },
                     {
-                      'should have a name which is visitor' : (ok, ko) => {
+                      'should have a name which is visitor' : () =>
                         locals.pretty.user.should.have.property('name')
-                          .which.is.exactly('visitor');
-                        ok();
-                      }
+                          .which.is.exactly('visitor')
                     },
                     {
-                      'should be in magenta' : (ok, ko) => {
+                      'should be in magenta' : () =>
                         locals.pretty.user.should.have.property('color')
-                          .which.is.exactly('magenta');
-                        ok();
-                      }
+                          .which.is.exactly('magenta')
                     }
                   ]
                 },
                 {
                   'Status' : [
                     {
-                      'should be hellipsis' : (ok, ko) => {
+                      'should be hellipsis' : () =>
                         locals.pretty.should.have.property('status')
-                          .which.is.exactly('...');
-                        ok();
-                      }
+                          .which.is.exactly('...')
                     }
                   ]
                 },
                 {
                   'Method' : [
                     {
-                      'should be POST' : (ok, ko) => {
+                      'should be POST' : () =>
                         locals.pretty.should.have.property('method')
-                          .which.is.exactly('POST');
-                        ok();
-                      }
+                          .which.is.exactly('POST')
                     }
                   ]
                 },
                 {
                   'URL' : [
                     {
-                      'should be /' : (ok, ko) => {
+                      'should be /' : () =>
                         locals.pretty.should.have.property('url')
-                          .which.is.exactly('/');
-                        ok();
-                      }
+                          .which.is.exactly('/')
                     }
                   ]
                 },
                 {
                   'Color' : [
                     {
-                      'should be grey' : (ok, ko) => {
+                      'should be grey' : () =>
                         locals.pretty.should.have.property('color')
-                          .which.is.exactly('grey');
-                        ok();
-                      }
+                          .which.is.exactly('grey')
                     }
                   ]
                 },
                 {
                   'String' : [
                     {
-                      'should be an array' : (ok, ko) => {
+                      'should be an array' : () =>
                         locals.pretty.should.have.property('pretty')
-                          .which.is.an.Array();
-                        ok();
-                      }
+                          .which.is.an.Array()
                     }
                   ]
                 }
@@ -270,7 +219,7 @@ function test () {
             {
               'GET' : [
                 {
-                  'should return an object' : (ok, ko) => {
+                  'should return an object' : () => {
                     locals.pretty = printRequest({
                       method : 'GET',
                       url : '/',
@@ -281,114 +230,89 @@ function test () {
                       }
                     });
                     locals.pretty.should.be.an.Object();
-                    ok();
                   }
                 },
                 {
                   'Time' : [
                     {
-                      'should have property time' : (ok, ko) => {
-                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                        ok();
-                      }
+                      'should have property time' : () =>
+                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                     },
                     {
-                      'should have property hours' : (ok, ko) => {
-                        locals.pretty.time[0].should.be.a.String();
-                        ok();
-                      }
+                      'should have property hours' : () =>
+                        locals.pretty.time[0].should.be.a.String()
                     },
                     {
-                      'should have property minutes' : (ok, ko) => {
-                        locals.pretty.time[1].should.be.a.String();
-                        ok();
-                      }
+                      'should have property minutes' : () =>
+                        locals.pretty.time[1].should.be.a.String()
                     },
                     {
-                      'should have property seconds' : (ok, ko) => {
-                        locals.pretty.time[2].should.be.a.String();
-                        ok();
-                      }
+                      'should have property seconds' : () =>
+                        locals.pretty.time[2].should.be.a.String()
                     }
                   ]
                 },
                 {
                   'User' : [
                     {
-                      'should have property user' : (ok, ko) => {
+                      'should have property user' : () =>
                         locals.pretty.should.have.property('user')
-                          .which.is.an.Object();
-                        ok();
-                      }
+                          .which.is.an.Object()
                     },
                     {
-                      'should have a name which is signedin@synapp.com' : (ok, ko) => {
+                      'should have a name which is signedin@synapp.com' : () =>
                         locals.pretty.user.should.have.property('name')
-                          .which.is.exactly('signedin@synapp.com');
-                        ok();
-                      }
+                          .which.is.exactly('signedin@synapp.com')
                     },
                     {
-                      'should be in magenta' : (ok, ko) => {
+                      'should be in magenta' : () =>
                         locals.pretty.user.should.have.property('color')
-                          .which.is.exactly('blue');
-                        ok();
-                      }
+                          .which.is.exactly('blue')
                     }
                   ]
                 },
                 {
                   'Status' : [
                     {
-                      'should be hellipsis' : (ok, ko) => {
+                      'should be hellipsis' : () =>
                         locals.pretty.should.have.property('status')
-                          .which.is.exactly('...');
-                        ok();
-                      }
+                          .which.is.exactly('...')
                     }
                   ]
                 },
                 {
                   'Method' : [
                     {
-                      'should be GET' : (ok, ko) => {
+                      'should be GET' : () =>
                         locals.pretty.should.have.property('method')
-                          .which.is.exactly('GET');
-                        ok();
-                      }
+                          .which.is.exactly('GET')
                     }
                   ]
                 },
                 {
                   'URL' : [
                     {
-                      'should be /' : (ok, ko) => {
+                      'should be /' : () =>
                         locals.pretty.should.have.property('url')
-                          .which.is.exactly('/');
-                        ok();
-                      }
+                          .which.is.exactly('/')
                     }
                   ]
                 },
                 {
                   'Color' : [
                     {
-                      'should be grey' : (ok, ko) => {
+                      'should be grey' : () =>
                         locals.pretty.should.have.property('color')
-                          .which.is.exactly('grey');
-                        ok();
-                      }
+                          .which.is.exactly('grey')
                     }
                   ]
                 },
                 {
                   'String' : [
                     {
-                      'should be an array' : (ok, ko) => {
+                      'should be an array' : () =>
                         locals.pretty.should.have.property('pretty')
-                          .which.is.an.Array();
-                        ok();
-                      }
+                          .which.is.an.Array()
                     }
                   ]
                 }
@@ -397,7 +321,7 @@ function test () {
             {
               'POST' : [
                 {
-                  'should return an object' : (ok, ko) => {
+                  'should return an object' : () => {
                     locals.pretty = printRequest({
                       method : 'POST',
                       url : '/',
@@ -408,114 +332,89 @@ function test () {
                       }
                     });
                     locals.pretty.should.be.an.Object();
-                    ok();
                   }
                 },
                 {
                   'Time' : [
                     {
-                      'should have property time' : (ok, ko) => {
-                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                        ok();
-                      }
+                      'should have property time' : () =>
+                        locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                     },
                     {
-                      'should have property hours' : (ok, ko) => {
-                        locals.pretty.time[0].should.be.a.String();
-                        ok();
-                      }
+                      'should have property hours' : () =>
+                        locals.pretty.time[0].should.be.a.String()
                     },
                     {
-                      'should have property minutes' : (ok, ko) => {
-                        locals.pretty.time[1].should.be.a.String();
-                        ok();
-                      }
+                      'should have property minutes' : () =>
+                        locals.pretty.time[1].should.be.a.String()
                     },
                     {
-                      'should have property seconds' : (ok, ko) => {
-                        locals.pretty.time[2].should.be.a.String();
-                        ok();
-                      }
+                      'should have property seconds' : () =>
+                        locals.pretty.time[2].should.be.a.String()
                     }
                   ]
                 },
                 {
                   'User' : [
                     {
-                      'should have property user' : (ok, ko) => {
+                      'should have property user' : () =>
                         locals.pretty.should.have.property('user')
-                          .which.is.an.Object();
-                        ok();
-                      }
+                          .which.is.an.Object()
                     },
                     {
-                      'should have a name which is signedin@synapp.com' : (ok, ko) => {
+                      'should have a name which is signedin@synapp.com' : () =>
                         locals.pretty.user.should.have.property('name')
-                          .which.is.exactly('signedin@synapp.com');
-                        ok();
-                      }
+                          .which.is.exactly('signedin@synapp.com')
                     },
                     {
-                      'should be in magenta' : (ok, ko) => {
+                      'should be in magenta' : () =>
                         locals.pretty.user.should.have.property('color')
-                          .which.is.exactly('blue');
-                        ok();
-                      }
+                          .which.is.exactly('blue')
                     }
                   ]
                 },
                 {
                   'Status' : [
                     {
-                      'should be hellipsis' : (ok, ko) => {
+                      'should be hellipsis' : () =>
                         locals.pretty.should.have.property('status')
-                          .which.is.exactly('...');
-                        ok();
-                      }
+                          .which.is.exactly('...')
                     }
                   ]
                 },
                 {
                   'Method' : [
                     {
-                      'should be POST' : (ok, ko) => {
+                      'should be POST' : () =>
                         locals.pretty.should.have.property('method')
-                          .which.is.exactly('POST');
-                        ok();
-                      }
+                          .which.is.exactly('POST')
                     }
                   ]
                 },
                 {
                   'URL' : [
                     {
-                      'should be /' : (ok, ko) => {
+                      'should be /' : () =>
                         locals.pretty.should.have.property('url')
-                          .which.is.exactly('/');
-                        ok();
-                      }
+                          .which.is.exactly('/')
                     }
                   ]
                 },
                 {
                   'Color' : [
                     {
-                      'should be grey' : (ok, ko) => {
+                      'should be grey' : () =>
                         locals.pretty.should.have.property('color')
-                          .which.is.exactly('grey');
-                        ok();
-                      }
+                          .which.is.exactly('grey')
                     }
                   ]
                 },
                 {
                   'String' : [
                     {
-                      'should be an array' : (ok, ko) => {
+                      'should be an array' : () =>
                         locals.pretty.should.have.property('pretty')
-                          .which.is.an.Array();
-                        ok();
-                      }
+                          .which.is.an.Array()
                     }
                   ]
                 }
@@ -534,120 +433,95 @@ function test () {
                 {
                   '200' : [
                     {
-                      'should return an object' : (ok, ko) => {
+                      'should return an object' : () => {
                         locals.pretty = printRequest({
                           method : 'GET',
                           url : '/'
                         }, { statusCode : 200 });
                         locals.pretty.should.be.an.Object();
-                        ok();
                       }
                     },
                     {
                       'Time' : [
                         {
-                          'should have property time' : (ok, ko) => {
-                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                            ok();
-                          }
+                          'should have property time' : () =>
+                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                         },
                         {
-                          'should have property hours' : (ok, ko) => {
-                            locals.pretty.time[0].should.be.a.String();
-                            ok();
-                          }
+                          'should have property hours' : () =>
+                            locals.pretty.time[0].should.be.a.String()
                         },
                         {
-                          'should have property minutes' : (ok, ko) => {
-                            locals.pretty.time[1].should.be.a.String();
-                            ok();
-                          }
+                          'should have property minutes' : () =>
+                            locals.pretty.time[1].should.be.a.String()
                         },
                         {
-                          'should have property seconds' : (ok, ko) => {
-                            locals.pretty.time[2].should.be.a.String();
-                            ok();
-                          }
+                          'should have property seconds' : () =>
+                            locals.pretty.time[2].should.be.a.String()
                         }
                       ]
                     },
                     {
                       'User' : [
                         {
-                          'should have property user' : (ok, ko) => {
+                          'should have property user' : () =>
                             locals.pretty.should.have.property('user')
-                              .which.is.an.Object();
-                            ok();
-                          }
+                              .which.is.an.Object()
                         },
                         {
-                          'should have a name which is visitor' : (ok, ko) => {
+                          'should have a name which is visitor' : () =>
                             locals.pretty.user.should.have.property('name')
-                              .which.is.exactly('visitor');
-                            ok();
-                          }
+                              .which.is.exactly('visitor')
                         },
                         {
-                          'should be in magenta' : (ok, ko) => {
+                          'should be in magenta' : () =>
                             locals.pretty.user.should.have.property('color')
-                              .which.is.exactly('magenta');
-                            ok();
-                          }
+                              .which.is.exactly('magenta')
                         }
                       ]
                     },
                     {
                       'Status' : [
                         {
-                          'should be hellipsis' : (ok, ko) => {
+                          'should be hellipsis' : () =>
                             locals.pretty.should.have.property('status')
-                              .which.is.exactly('200');
-                            ok();
-                          }
+                              .which.is.exactly('200')
                         }
                       ]
                     },
                     {
                       'Method' : [
                         {
-                          'should be GET' : (ok, ko) => {
+                          'should be GET' : () =>
                             locals.pretty.should.have.property('method')
-                              .which.is.exactly('GET');
-                            ok();
-                          }
+                              .which.is.exactly('GET')
                         }
                       ]
                     },
                     {
                       'URL' : [
                         {
-                          'should be /' : (ok, ko) => {
+                          'should be /' : () =>
                             locals.pretty.should.have.property('url')
-                              .which.is.exactly('/');
-                            ok();
-                          }
+                              .which.is.exactly('/')
                         }
                       ]
                     },
                     {
                       'Color' : [
                         {
-                          'should be green' : (ok, ko) => {
+                          'should be green' : () =>
                             locals.pretty.should.have.property('color')
-                              .which.is.exactly('green');
-                            ok();
-                          }
+                              .which.is.exactly('green')
                         }
                       ]
                     },
                     {
                       'String' : [
                         {
-                          'should be an array' : (ok, ko) => {
+                          'should be an array' : () =>
                             locals.pretty.should.have.property('pretty')
-                              .which.is.an.Array();
-                            ok();
-                          }
+                              .which.is.an.Array()
                         }
                       ]
                     }
@@ -656,120 +530,95 @@ function test () {
                 {
                   '300' : [
                     {
-                      'should return an object' : (ok, ko) => {
+                      'should return an object' : () => {
                         locals.pretty = printRequest({
                           method : 'GET',
                           url : '/'
                         }, { statusCode : 300 });
                         locals.pretty.should.be.an.Object();
-                        ok();
                       }
                     },
                     {
                       'Time' : [
                         {
-                          'should have property time' : (ok, ko) => {
-                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                            ok();
-                          }
+                          'should have property time' : () =>
+                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                         },
                         {
-                          'should have property hours' : (ok, ko) => {
-                            locals.pretty.time[0].should.be.a.String();
-                            ok();
-                          }
+                          'should have property hours' : () =>
+                            locals.pretty.time[0].should.be.a.String()
                         },
                         {
-                          'should have property minutes' : (ok, ko) => {
-                            locals.pretty.time[1].should.be.a.String();
-                            ok();
-                          }
+                          'should have property minutes' : () =>
+                            locals.pretty.time[1].should.be.a.String()
                         },
                         {
-                          'should have property seconds' : (ok, ko) => {
-                            locals.pretty.time[2].should.be.a.String();
-                            ok();
-                          }
+                          'should have property seconds' : () =>
+                            locals.pretty.time[2].should.be.a.String()
                         }
                       ]
                     },
                     {
                       'User' : [
                         {
-                          'should have property user' : (ok, ko) => {
+                          'should have property user' : () =>
                             locals.pretty.should.have.property('user')
-                              .which.is.an.Object();
-                            ok();
-                          }
+                              .which.is.an.Object()
                         },
                         {
-                          'should have a name which is visitor' : (ok, ko) => {
+                          'should have a name which is visitor' : () =>
                             locals.pretty.user.should.have.property('name')
-                              .which.is.exactly('visitor');
-                            ok();
-                          }
+                              .which.is.exactly('visitor')
                         },
                         {
-                          'should be in magenta' : (ok, ko) => {
+                          'should be in magenta' : () =>
                             locals.pretty.user.should.have.property('color')
-                              .which.is.exactly('magenta');
-                            ok();
-                          }
+                              .which.is.exactly('magenta')
                         }
                       ]
                     },
                     {
                       'Status' : [
                         {
-                          'should be hellipsis' : (ok, ko) => {
+                          'should be hellipsis' : () =>
                             locals.pretty.should.have.property('status')
-                              .which.is.exactly('300');
-                            ok();
-                          }
+                              .which.is.exactly('300')
                         }
                       ]
                     },
                     {
                       'Method' : [
                         {
-                          'should be GET' : (ok, ko) => {
+                          'should be GET' : () =>
                             locals.pretty.should.have.property('method')
-                              .which.is.exactly('GET');
-                            ok();
-                          }
+                              .which.is.exactly('GET')
                         }
                       ]
                     },
                     {
                       'URL' : [
                         {
-                          'should be /' : (ok, ko) => {
+                          'should be /' : () =>
                             locals.pretty.should.have.property('url')
-                              .which.is.exactly('/');
-                            ok();
-                          }
+                              .which.is.exactly('/')
                         }
                       ]
                     },
                     {
                       'Color' : [
                         {
-                          'should be cyan' : (ok, ko) => {
+                          'should be cyan' : () =>
                             locals.pretty.should.have.property('color')
-                              .which.is.exactly('cyan');
-                            ok();
-                          }
+                              .which.is.exactly('cyan')
                         }
                       ]
                     },
                     {
                       'String' : [
                         {
-                          'should be an array' : (ok, ko) => {
+                          'should be an array' : () =>
                             locals.pretty.should.have.property('pretty')
-                              .which.is.an.Array();
-                            ok();
-                          }
+                              .which.is.an.Array()
                         }
                       ]
                     }
@@ -778,120 +627,95 @@ function test () {
                 {
                   '400' : [
                     {
-                      'should return an object' : (ok, ko) => {
+                      'should return an object' : () => {
                         locals.pretty = printRequest({
                           method : 'GET',
                           url : '/'
                         }, { statusCode : 400 });
                         locals.pretty.should.be.an.Object();
-                        ok();
                       }
                     },
                     {
                       'Time' : [
                         {
-                          'should have property time' : (ok, ko) => {
-                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                            ok();
-                          }
+                          'should have property time' : () =>
+                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                         },
                         {
-                          'should have property hours' : (ok, ko) => {
-                            locals.pretty.time[0].should.be.a.String();
-                            ok();
-                          }
+                          'should have property hours' : () =>
+                            locals.pretty.time[0].should.be.a.String()
                         },
                         {
-                          'should have property minutes' : (ok, ko) => {
-                            locals.pretty.time[1].should.be.a.String();
-                            ok();
-                          }
+                          'should have property minutes' : () =>
+                            locals.pretty.time[1].should.be.a.String()
                         },
                         {
-                          'should have property seconds' : (ok, ko) => {
-                            locals.pretty.time[2].should.be.a.String();
-                            ok();
-                          }
+                          'should have property seconds' : () =>
+                            locals.pretty.time[2].should.be.a.String()
                         }
                       ]
                     },
                     {
                       'User' : [
                         {
-                          'should have property user' : (ok, ko) => {
+                          'should have property user' : () =>
                             locals.pretty.should.have.property('user')
-                              .which.is.an.Object();
-                            ok();
-                          }
+                              .which.is.an.Object()
                         },
                         {
-                          'should have a name which is visitor' : (ok, ko) => {
+                          'should have a name which is visitor' : () =>
                             locals.pretty.user.should.have.property('name')
-                              .which.is.exactly('visitor');
-                            ok();
-                          }
+                              .which.is.exactly('visitor')
                         },
                         {
-                          'should be in magenta' : (ok, ko) => {
+                          'should be in magenta' : () =>
                             locals.pretty.user.should.have.property('color')
-                              .which.is.exactly('magenta');
-                            ok();
-                          }
+                              .which.is.exactly('magenta')
                         }
                       ]
                     },
                     {
                       'Status' : [
                         {
-                          'should be hellipsis' : (ok, ko) => {
+                          'should be hellipsis' : () =>
                             locals.pretty.should.have.property('status')
-                              .which.is.exactly('400');
-                            ok();
-                          }
+                              .which.is.exactly('400')
                         }
                       ]
                     },
                     {
                       'Method' : [
                         {
-                          'should be GET' : (ok, ko) => {
+                          'should be GET' : () =>
                             locals.pretty.should.have.property('method')
-                              .which.is.exactly('GET');
-                            ok();
-                          }
+                              .which.is.exactly('GET')
                         }
                       ]
                     },
                     {
                       'URL' : [
                         {
-                          'should be /' : (ok, ko) => {
+                          'should be /' : () =>
                             locals.pretty.should.have.property('url')
-                              .which.is.exactly('/');
-                            ok();
-                          }
+                              .which.is.exactly('/')
                         }
                       ]
                     },
                     {
                       'Color' : [
                         {
-                          'should be yellow' : (ok, ko) => {
+                          'should be yellow' : () =>
                             locals.pretty.should.have.property('color')
-                              .which.is.exactly('yellow');
-                            ok();
-                          }
+                              .which.is.exactly('yellow')
                         }
                       ]
                     },
                     {
                       'String' : [
                         {
-                          'should be an array' : (ok, ko) => {
+                          'should be an array' : () =>
                             locals.pretty.should.have.property('pretty')
-                              .which.is.an.Array();
-                            ok();
-                          }
+                              .which.is.an.Array()
                         }
                       ]
                     }
@@ -900,120 +724,95 @@ function test () {
                 {
                   '500' : [
                     {
-                      'should return an object' : (ok, ko) => {
+                      'should return an object' : () => {
                         locals.pretty = printRequest({
                           method : 'GET',
                           url : '/'
                         }, { statusCode : 500 });
                         locals.pretty.should.be.an.Object();
-                        ok();
                       }
                     },
                     {
                       'Time' : [
                         {
-                          'should have property time' : (ok, ko) => {
-                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3);
-                            ok();
-                          }
+                          'should have property time' : () =>
+                            locals.pretty.should.have.property('time').which.is.an.Array().and.have.length(3)
                         },
                         {
-                          'should have property hours' : (ok, ko) => {
-                            locals.pretty.time[0].should.be.a.String();
-                            ok();
-                          }
+                          'should have property hours' : () =>
+                            locals.pretty.time[0].should.be.a.String()
                         },
                         {
-                          'should have property minutes' : (ok, ko) => {
-                            locals.pretty.time[1].should.be.a.String();
-                            ok();
-                          }
+                          'should have property minutes' : () =>
+                            locals.pretty.time[1].should.be.a.String()
                         },
                         {
-                          'should have property seconds' : (ok, ko) => {
-                            locals.pretty.time[2].should.be.a.String();
-                            ok();
-                          }
+                          'should have property seconds' : () =>
+                            locals.pretty.time[2].should.be.a.String()
                         }
                       ]
                     },
                     {
                       'User' : [
                         {
-                          'should have property user' : (ok, ko) => {
+                          'should have property user' : () =>
                             locals.pretty.should.have.property('user')
-                              .which.is.an.Object();
-                            ok();
-                          }
+                              .which.is.an.Object()
                         },
                         {
-                          'should have a name which is visitor' : (ok, ko) => {
+                          'should have a name which is visitor' : () =>
                             locals.pretty.user.should.have.property('name')
-                              .which.is.exactly('visitor');
-                            ok();
-                          }
+                              .which.is.exactly('visitor')
                         },
                         {
-                          'should be in magenta' : (ok, ko) => {
+                          'should be in magenta' : () =>
                             locals.pretty.user.should.have.property('color')
-                              .which.is.exactly('magenta');
-                            ok();
-                          }
+                              .which.is.exactly('magenta')
                         }
                       ]
                     },
                     {
                       'Status' : [
                         {
-                          'should be hellipsis' : (ok, ko) => {
+                          'should be hellipsis' : () =>
                             locals.pretty.should.have.property('status')
-                              .which.is.exactly('500');
-                            ok();
-                          }
+                              .which.is.exactly('500')
                         }
                       ]
                     },
                     {
                       'Method' : [
                         {
-                          'should be GET' : (ok, ko) => {
+                          'should be GET' : () =>
                             locals.pretty.should.have.property('method')
-                              .which.is.exactly('GET');
-                            ok();
-                          }
+                              .which.is.exactly('GET')
                         }
                       ]
                     },
                     {
                       'URL' : [
                         {
-                          'should be /' : (ok, ko) => {
+                          'should be /' : () =>
                             locals.pretty.should.have.property('url')
-                              .which.is.exactly('/');
-                            ok();
-                          }
+                              .which.is.exactly('/')
                         }
                       ]
                     },
                     {
                       'Color' : [
                         {
-                          'should be red' : (ok, ko) => {
+                          'should be red' : () =>
                             locals.pretty.should.have.property('color')
-                              .which.is.exactly('red');
-                            ok();
-                          }
+                              .which.is.exactly('red')
                         }
                       ]
                     },
                     {
                       'String' : [
                         {
-                          'should be an array' : (ok, ko) => {
+                          'should be an array' : () =>
                             locals.pretty.should.have.property('pretty')
-                              .which.is.an.Array();
-                            ok();
-                          }
+                              .which.is.an.Array()
                         }
                       ]
                     }

@@ -10,76 +10,56 @@ function test () {
 
   return describe ( 'Lib / Util / Is' , [
     {
-      'should be a function' : (ok, ko) => {
-        Is.should.be.a.Function();
-        ok();
-      }
+      'should be a function' : () =>
+        Is.should.be.a.Function()
     },
     {
       'Lesser than' : [
         {
-          'should be a function' : (ok, ko) => {
+          'should be a function' : () =>
             Is.should.have.property('lesserThan')
-              .which.is.a.Function();
-
-            ok();
-          }
+              .which.is.a.Function()
         },
         {
-          'should return a function' : (ok, ko) => {
+          'should return a function' : () => {
             locals.isLesserThan10 = Is.lesserThan(10);
-            locals.isLesserThan10.should.be.a.Function();
-            ok();
+            locals.isLesserThan10.should.be.a.Function()
           }
         },
         {
-          'should return true if lesser than' : (ok, ko) => {
-            locals.isLesserThan10(5).should.be.true();
-            ok();
-          }
+          'should return true if lesser than' : () =>
+            locals.isLesserThan10(5).should.be.true()
         },
         {
-          'should return false if not lesser than' : (ok, ko) => {
-            locals.isLesserThan10(15).should.be.false();
-            ok();
-          }
+          'should return false if not lesser than' : () =>
+            locals.isLesserThan10(15).should.be.false()
         },
         {
-          'should return false if equal' : (ok, ko) => {
-            locals.isLesserThan10(10).should.be.false();
-            ok();
-          }
+          'should return false if equal' : () =>
+            locals.isLesserThan10(10).should.be.false()
         }
       ]
     },
     {
       'Is URL' : [
         {
-          'should be a function' : (ok, ko) => {
+          'should be a function' : () =>
             Is.should.have.property('url')
-              .which.is.a.Function();
-
-            ok();
-          }
+              .which.is.a.Function()
         },
         {
-          'should return a function' : (ok, ko) => {
+          'should return a function' : () => {
             locals.isUrl = Is.lesserThan(10);
             locals.isUrl.should.be.a.Function();
-            ok();
           }
         },
         {
-          'should return true if url' : (ok, ko) => {
-            locals.isUrl('http://').should.be.true();
-            ok();
-          }
+          'should return true if url' : () =>
+            locals.isUrl('http://').should.be.true()
         },
         {
-          'should return false if not url' : (ok, ko) => {
-            locals.isUrl('hello').should.be.true();
-            ok();
-          }
+          'should return false if not url' : () =>
+            locals.isUrl('hello').should.be.true()
         }
       ]
     }

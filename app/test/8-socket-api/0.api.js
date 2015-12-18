@@ -14,66 +14,49 @@ function test (props) {
     port : props.port
   });
 
-  return describe ( 'API', [
+  return describe ( 'API', it => {
 
-    {
-      'Connect' : [
+    it(`Connect to ${locals.url}`, [ it => {
+      it('it should connect', () => new Promise((ok, ko) => {
 
-        {
-          'Socket Client' : [
+        try {
+          locals.client1 = socketClient.connect(locals.url, {
+            transports: ['websocket'],
+            'force new connection': true
+          });
 
-            {
-              'it should connect' : (ok, ko) => {
+          locals.client1
+            .on('error', ko)
+            .on('connect', ok);
+        }
+        catch ( error ) {
+          ko(error);
+        }
 
-                try {
-                  locals.client1 = socketClient.connect(locals.url, {
-                    transports: ['websocket'],
-                    'force new connection': true
-                  });
+      }));
 
-                  locals.client1
-                    .on('error', ko)
-                    .on('connect', ok);
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-
+      it('should set synuser', () => new Promise((ok, ko) => {
+        User
+          .findOne()
+          .then(
+            user => {
+              try {
+                const json = user.toJSON();
+                props.socket.synuser = {
+                  id : json._id
+                };
+                ok();
               }
-            }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }));
+    }]);
 
-          ]
-        }
-
-      ]
-    },
-    {
-      'Identify' : [
-        {
-          'should set synuser' : (ok, ko) => {
-            User
-              .findOne()
-              .then(
-                user => {
-                  try {
-                    const json = user.toJSON();
-                    props.socket.synuser = {
-                      id : json._id
-                    };
-                    ok();
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
-          }
-        }
-      ]
-    }
-
-  ]);
+  });
 }
 
 export default test;

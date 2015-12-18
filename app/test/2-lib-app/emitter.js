@@ -13,7 +13,6 @@ function test () {
     {
       'should be an instance of EventEmitter' : (ok, ko) => {
         emitter.should.be.an.instanceof(EventEmitter);
-        ok();
       }
     }
   ] );

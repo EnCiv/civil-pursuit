@@ -13,23 +13,21 @@ function test () {
     {
       'should be a function' : (ok, ko) => {
         WebDriver.should.be.a.Function();
-        ok();
       }
     },
     {
       'should be an instance of EventEmitter' : (ok, ko) => {
         locals.driver = new WebDriver();
         locals.driver.should.be.an.instanceof(EventEmitter);
-        ok();
       }
     },
     {
-      'should emit ready' : (ok, ko) => {
+      'should emit ready' : () => new Promise((ok, ko) => {
         locals.driver.on('ready', ok).on('error', ko);
-      }
+      })
     },
     {
-      'should end' : (ok, ko) => {
+      'should end' : () => new Promise((ok, ko) => {
         locals.driver.client.end(error => {
           if ( error ) {
             ko(error);
@@ -38,7 +36,7 @@ function test () {
             ok();
           }
         });
-      }
+      })
     }
   ] );
 

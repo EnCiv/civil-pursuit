@@ -10,70 +10,49 @@ function test () {
 
   return describe ( 'Secret config' , [
     {
-      'should be an object' : (ok, ko) => {
-        config.should.be.an.Object();
-        ok();
-      }
+      'should be an object' : () =>
+        config.should.be.an.Object()
     },
     {
-      'should have tmp' : (ok, ko) => {
-        config.should.have.property('tmp').which.is.a.String();
-        ok();
-      }
+      'should have tmp' : () =>
+        config.should.have.property('tmp').which.is.a.String()
     },
     {
       'Cloudinary' : [
         {
-          'should have cloudinary' : (ok, ko) => {
+          'should have cloudinary' : () =>
             config.should.have.property('cloudinary')
-              .which.is.an.Object();
-            ok();
-          }
+              .which.is.an.Object()
         },
         {
-          'should have a cloud name' : (ok, ko) => {
+          'should have a cloud name' : () =>
             config.cloudinary.should.have.property('cloud')
               .which.is.an.Object()
               .and.have.property('name')
-              .which.is.a.String();
-
-            ok();
-          }
+              .which.is.a.String()
         },
         {
-          'should have url' : (ok, ko) => {
+          'should have url' : () =>
             config.cloudinary.should.have.property('url')
               .which.is.a.String()
-              .and.startWith('cloudinary://');
-
-            ok();
-          }
+              .and.startWith('cloudinary://')
         },
         {
           'API' : [
             {
-              'should have API' : (ok, ko) => {
+              'should have API' : () =>
                 config.cloudinary.should.have.property('API')
-                  .which.is.an.Object();
-
-                ok();
-              }
+                  .which.is.an.Object()
             },
             {
-              'should have key' : (ok, ko) => {
+              'should have key' : () =>
                 config.cloudinary.API.should.have.property('key')
-                  .which.is.a.String();
-
-                ok();
-              }
+                  .which.is.a.String()
             },
             {
-              'should have secret' : (ok, ko) => {
+              'should have secret' : () =>
                 config.cloudinary.API.should.have.property('secret')
-                  .which.is.a.String();
-
-                ok();
-              }
+                  .which.is.a.String()
             }
           ]
         }
@@ -82,199 +61,143 @@ function test () {
     {
       'Cookie' : [
         {
-          'should have a cookie' : (ok, ko) => {
-            config.should.have.property('cookie').which.is.an.Object();
-            ok();
-          }
+          'should have a cookie' : () =>
+            config.should.have.property('cookie').which.is.an.Object()
         },
         {
-          'should have path' : (ok, ko) => {
+          'should have path' : () =>
             config.cookie.should.have.property('path')
-              .which.is.a.String();
-
-            ok();
-          }
+              .which.is.a.String()
         },
         {
-          'should have signed' : (ok, ko) => {
+          'should have signed' : () =>
             config.cookie.should.have.property('signed')
-              .which.is.a.Boolean();
-
-            ok();
-          }
+              .which.is.a.Boolean()
         },
         {
-          'should have maxAge' : (ok, ko) => {
+          'should have maxAge' : () =>
             config.cookie.should.have.property('maxAge')
-              .which.is.a.Number();
-
-            ok();
-          }
+              .which.is.a.Number()
         },
         {
-          'should have httpOnly' : (ok, ko) => {
+          'should have httpOnly' : () =>
             config.cookie.should.have.property('httpOnly')
-              .which.is.a.Boolean();
-
-            ok();
-          }
+              .which.is.a.Boolean()
         }
       ]
     },
     {
       'instances' : [
         {
-          'should be an array' : (ok, ko) => {
-            config.should.have.property('instances').which.is.an.Array();
-            ok();
-          }
+          'should be an array' : () =>
+            config.should.have.property('instances').which.is.an.Array()
         },
         {
-          'should be strings' : (ok, ko) => {
-            config.instances.forEach(instance => instance.should.be.a.String());
-            ok();
-          }
+          'should be strings' : () =>
+            config.instances.forEach(instance => instance.should.be.a.String())
         }
       ]
     },
     {
       'Facebook' : [
         {
-          'should have property facebook' : (ok, ko) => {
+          'should have property facebook' : () =>
             config.should.have.property('facebook')
-              .which.is.an.Object();
-            ok();
-          }
+              .which.is.an.Object()
         },
         {
-          'should have property for each env' : (ok, ko) => {
-            try {
-              config.instances.forEach(instance =>
-                config.facebook.should.have.property(instance)
-                  .which.is.an.Object()
-              );
-              ok();
-            }
-            catch ( error ) {
-              ko(error);
-            }
-          }
+          'should have property for each env' : () => config.instances.forEach(instance =>
+            config.facebook.should.have.property(instance)
+              .which.is.an.Object()
+            )
         },
         {
-          'should have app id' : (ok, ko) => {
+          'should have app id' : () =>
             config.instances.forEach(instance =>
               config.facebook[instance].should.have.property('app id')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         },
         {
-          'should have app secret' : (ok, ko) => {
+          'should have app secret' : () =>
             config.instances.forEach(instance =>
               config.facebook[instance].should.have.property('app secret')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         },
         {
-          'should have callback url' : (ok, ko) => {
+          'should have callback url' : () =>
             config.instances.forEach(instance =>
               config.facebook[instance].should.have.property('callback url')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         }
       ]
     },
     {
       'Twitter' : [
         {
-          'should have property twitter' : (ok, ko) => {
+          'should have property twitter' : () =>
             config.should.have.property('twitter')
-              .which.is.an.Object();
-            ok();
-          }
+              .which.is.an.Object()
         },
         {
-          'should have property for each env' : (ok, ko) => {
+          'should have property for each env' : () =>
             config.instances.forEach(instance =>
               config.twitter.should.have.property(instance)
                 .which.is.an.Object()
-            );
-            ok();
-          }
+            )
         },
         {
-          'should have key' : (ok, ko) => {
+          'should have key' : () =>
             config.instances.forEach(instance =>
               config.twitter[instance].should.have.property('key')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         },
         {
-          'should have secret' : (ok, ko) => {
+          'should have secret' : () =>
             config.instances.forEach(instance =>
               config.twitter[instance].should.have.property('secret')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         },
         {
-          'should have callback url' : (ok, ko) => {
+          'should have callback url' : () =>
             config.instances.forEach(instance =>
               config.twitter[instance].should.have.property('callback url')
                 .which.is.a.String()
-            );
-            ok();
-          }
+            )
         }
       ]
     },
     {
-      'User agent' : (ok, ko) => {
-        config.should.have.property('user agent').which.is.a.String();
-        ok();
-      }
+      'User agent' : () =>
+        config.should.have.property('user agent').which.is.a.String()
     },
     {
       'Email' : [
         {
-          'should be an object' : (ok, ko) => {
-            config.should.have.property('email').which.is.an.Object();
-            ok();
-          }
+          'should be an object' : () =>
+            config.should.have.property('email').which.is.an.Object()
         },
         {
-          'should have user' : (ok, ko) => {
-            config.email.should.have.property('user').which.is.a.String();
-            ok();
-          }
+          'should have user' : () =>
+            config.email.should.have.property('user').which.is.a.String()
         },
         {
-          'should have password' : (ok, ko) => {
-            config.email.should.have.property('password').which.is.a.String();
-            ok();
-          }
+          'should have password' : () =>
+            config.email.should.have.property('password').which.is.a.String()
         }
       ]
     },
     {
-      'should have forgot password email text' : (ok, ko) => {
-        config.should.have.property('forgot password email').which.is.a.String();
-        ok();
-      }
+      'should have forgot password email text' : () =>
+        config.should.have.property('forgot password email').which.is.a.String()
     },
     {
-      'should have default user' : (ok, ko) => {
-        config.should.have.property('default user').which.is.a.String();
-        ok();
-      }
+      'should have default user' : () =>
+        config.should.have.property('default user').which.is.a.String()
     }
   ] );
 

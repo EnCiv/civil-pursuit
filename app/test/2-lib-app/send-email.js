@@ -12,14 +12,12 @@ function test () {
     {
       'should be a function' : (ok, ko) => {
         sendEmail.should.be.a.Function();
-        ok();
       }
     },
 
     {
       'should return a promise' : (ok, ko) => {
         sendEmail().should.be.an.instanceof(Promise);
-        ok();
       }
     }
   ] );

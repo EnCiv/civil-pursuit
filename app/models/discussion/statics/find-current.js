@@ -2,8 +2,8 @@
 
 function findCurrent () {
   return this.findOne({
-    starts    :   { $gte : new Date() },
-    deadline  :   { $lte : new Date() }
+    starts    :   { $lte : new Date() },
+    deadline  :   { $gte : new Date() }
   });
 }
 

@@ -8,80 +8,74 @@ import { Evaluation, Evaluator }      from '../../lib/app/evaluate';
 import User                           from '../../models/user';
 import Type                           from '../../models/type';
 import Item                           from '../../models/item';
-import isEvaluation                   from '../../lib/assertions/is-evaluation';
+import isEvaluation                   from '../.test/assertions/is-evaluation';
+import isItem                         from '../.test/assertions/is-item';
 
 function evaluate (evaluation, user, item, type) {
   const locals = {};
 
+  console.log({ evaluation })
+
   return it => {
     it('should be an instance of Evaluator', (ok, ko) => {
       evaluation.should.be.an.instanceof(Evaluator);
-      ok();
     });
 
     it('should be an instance of EventEmitter', (ok, ko) => {
       evaluation.should.be.an.instanceof(EventEmitter);
-      ok();
     });
 
     it('itemId', [ it => {
       it('should have itemId', (ok, ko) => {
         evaluation.should.have.property('itemId');
-        ok();
       });
 
       it('should be the same than item', (ok, ko) => {
         evaluation.itemId.equals(item._id).should.be.true();
-        ok();
       });
     }]);
 
     it('userId', [ it => {
       it('should have userId', (ok, ko) => {
         evaluation.should.have.property('userId');
-        ok();
       });
 
       it('should be the same than user', (ok, ko) => {
         evaluation.userId.equals(user._id).should.be.true();
-        ok();
       });
     }]);
 
     it('type', [ it => {
       it('should have type', (ok, ko) => {
         evaluation.should.have.property('type');
-        ok();
       });
 
 
       it('should be regular', (ok, ko) => {
         evaluation.type.should.be.exactly('regular');
-        ok();
       });
     }]);
 
     it('evaluate', [ it => {
       it('should have an evaluate method', (ok, ko) => {
         evaluation.should.have.property('evaluate').which.is.a.Function();
-        ok();
       });
 
       it('should be a promise', (ok, ko) => {
         locals.evaluate = evaluation.evaluate();
         locals.evaluate.should.be.an.instanceof(Promise);
-        ok();
       });
 
-      it('should fulfill', (ok, ko) => {
+      it('should fulfill', () => new Promise((ok, ko) => {
         locals.evaluate.then(
           results => {
             locals.results = results;
+            // console.log(require('util').inspect(results, { depth: null }));
             ok();
           },
           ko
         );
-      });
+      }));
 
       it('Results', describe.use(() => isEvaluation(locals.results, user, item, type)));
     }]);
@@ -95,13 +89,11 @@ function test () {
   return describe ( 'Lib / App / Evaluate' , it => {
     it('should Evaluator be a function', (ok, ko) => {
       Evaluator.should.be.a.Function();
-      ok();
     });
     it('should Evaluation be a function', (ok, ko) => {
       Evaluation.should.be.a.Function();
-      ok();
     });
-    it('should get random user', (ok, ko) => {
+    it('should get random user', () => new Promise((ok, ko) => {
       User.findOneRandom().then(
         user => {
           locals.user = user;
@@ -109,8 +101,8 @@ function test () {
         },
         ko
       );
-    });
-    it('should create a group of types', (ok, ko) => {
+    }));
+    it('should create a group of types', () => new Promise((ok, ko) => {
       Type.group('Evaluation parent', 'Evaluation subtype', 'Evaluation pro', 'Evaluation con').then(
         group => {
           locals.group = group;
@@ -118,14 +110,14 @@ function test () {
         },
         ko
       );
-    });
+    }));
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Parent item', [ it => {
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
         it(`Parent item #${i}`, [ it => {
-          it('should create a parent item', (ok, ko) => {
+          it('should create a parent item', () => new Promise((ok, ko) => {
             Item.lambda({ type : locals.group.parent }).then(
               item => {
                 locals.parent = item;
@@ -134,7 +126,7 @@ function test () {
               },
               ko
             );
-          });
+          }));
 
           it('Evaluate parent item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.parent, locals.group.parent)));
 
@@ -144,7 +136,7 @@ function test () {
             itemsLength = config["navigator batch size"];
           }
 
-          it(`should have ${itemsLength} items`, (ok, ko) => {
+          it(`should have ${itemsLength} items`, () => new Promise((ok, ko) => {
             locals.evaluation.evaluate().then(
               evaluation => {
                 try {
@@ -157,7 +149,7 @@ function test () {
               },
               ko
             );
-          });
+          }));
         }]);
       }
     }]);
@@ -167,7 +159,7 @@ function test () {
     it('Subtype item', [ it => {
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
         it(`Subtype item #${i}`, [ it => {
-          it('should create a subtype item', (ok, ko) => {
+          it('should create a subtype item', () => new Promise((ok, ko) => {
             Item.lambda({ type : locals.group.subtype }).then(
               item => {
                 locals.subtype = item;
@@ -176,7 +168,7 @@ function test () {
               },
               ko
             );
-          });
+          }));
 
           it('Evaluate subtype item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.subtype, locals.group.subtype)));
 
@@ -186,7 +178,7 @@ function test () {
             itemsLength = config["navigator batch size"];
           }
 
-          it(`should have ${itemsLength} items`, (ok, ko) => {
+          it(`should have ${itemsLength} items`, () => new Promise((ok, ko) => {
             locals.evaluation.evaluate().then(
               evaluation => {
                 try {
@@ -199,7 +191,7 @@ function test () {
               },
               ko
             );
-          });
+          }));
         }]);
       }
     }]);
@@ -207,9 +199,10 @@ function test () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Pro item', [ it => {
+
       for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
         it(`Pro item #${i}`, [ it => {
-          it('should create a pro item', (ok, ko) => {
+          it('should create a pro item', () => new Promise((ok, ko) => {
             Item.lambda({ type : locals.group.pro }).then(
               item => {
                 locals.pro = item;
@@ -218,17 +211,59 @@ function test () {
               },
               ko
             );
-          });
+          }));
+
+          it('should be an item', describe.use(() => isItem(locals.pro)));
 
           it('Evaluate pro item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.pro, locals.group.pro)));
 
-          let itemsLength = (i + 1);
+          it(`should have 1 item`, () => new Promise((ok, ko) => {
+            locals.evaluation.evaluate().then(
+              evaluation => {
+                try {
+                  evaluation.items.should.have.length(1);
+                  ok();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          }));
+        }]);
+      }
+    }]);
 
-          if ( i >= config["navigator batch size"] ) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('Con item', [ it => {
+
+      for ( let i = 0; i < (config["navigator batch size"] + 1) ; i ++ ) {
+
+        it(`Con item #${i}`, [ it => {
+          it('should create a con item', () => new Promise((ok, ko) => {
+            Item.lambda({ type : locals.group.con }).then(
+              item => {
+                locals.con = item;
+                locals.evaluation = new Evaluator(locals.user, locals.con);
+                ok();
+              },
+              ko
+            );
+          }));
+
+          it('should be an item', describe.use(() => isItem(locals.con)));
+
+          it('Evaluate con item', describe.use(() => evaluate(locals.evaluation, locals.user, locals.con, locals.group.con)));
+
+          let itemsLength = ((i + 1) * 2);
+
+          if ( itemsLength >= config["navigator batch size"] ) {
             itemsLength = config["navigator batch size"];
           }
 
-          it(`should have ${itemsLength} items`, (ok, ko) => {
+          it(`should have ${itemsLength} items`, () => new Promise((ok, ko) => {
             locals.evaluation.evaluate().then(
               evaluation => {
                 try {
@@ -241,12 +276,13 @@ function test () {
               },
               ko
             );
-          });
+          }));
         }]);
       }
     }]);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   });
 
 }

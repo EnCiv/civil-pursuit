@@ -3,7 +3,7 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import isAppError           from '../../lib/assertions/is-app-error';
+import isAppError           from '../.test/assertions/is-app-error';
 import AppError             from '../../models/app-error';
 
 function test () {
@@ -14,7 +14,7 @@ function test () {
     {
       'Throw error' : [
         {
-          'should create a new error in DB' : (ok, ko) => {
+          'should create a new error in DB' : () => new Promise((ok, ko) => {
             try {
               throwError();
             }
@@ -27,7 +27,7 @@ function test () {
                 ko
               );
             }
-          }
+          })
         },
         {
           'should be an error' : describe.use(() => isAppError(locals.error))

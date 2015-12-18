@@ -12,7 +12,7 @@ function test(props) {
         {
           'Empty sign up' : [
             {
-              'should throw a 400 error' : (ok, ko) => {
+              'should throw a 400 error' : () => new Promise((ok, ko) => {
                 superagent
                   .post(`http://localhost:${props.port}/sign/up`)
                   .send({})
@@ -31,14 +31,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Missing email' : [
             {
-              'should throw a 400 error' : (ok, ko) => {
+              'should throw a 400 error' : () => new Promise((ok, ko) => {
                 superagent
                   .post(`http://localhost:${props.port}/sign/up`)
                   .send({ password : '1234' })
@@ -56,14 +56,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Missing password' : [
             {
-              'should throw a 400 error' : (ok, ko) => {
+              'should throw a 400 error' : () => new Promise((ok, ko) => {
                 superagent
                   .post(`http://localhost:${props.port}/sign/up`)
                   .send({ email : '1234' })
@@ -81,14 +81,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Valid credentials' : [
             {
-              'should post sign up' : (ok, ko) => {
+              'should post sign up' : () => new Promise((ok, ko) => {
                 locals.email  = 'signup@foo.com';
                 locals.password = '1234';
 
@@ -108,14 +108,14 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         },
         {
           'Sign up as an existing user' : [
             {
-              'should throw a 401 error' : (ok, ko) => {
+              'should throw a 401 error' : () => new Promise((ok, ko) => {
                 superagent
                   .post(`http://localhost:${props.port}/sign/up`)
                   .send({ email : 'signup@foo.com' , 'password' : '1234' })
@@ -132,7 +132,7 @@ function test(props) {
                       ko(error);
                     }
                   });
-              }
+              })
             }
           ]
         }

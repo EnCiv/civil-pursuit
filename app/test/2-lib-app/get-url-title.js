@@ -11,7 +11,7 @@ function test () {
   return describe ( 'Lib / App / Get URL Title' , [
 
     {
-      'should get title' : (ok, ko) => {
+      'should get title' : () => new Promise((ok, ko) => {
 
         getUrlTitle('http://example.com')
           .then(
@@ -22,19 +22,13 @@ function test () {
             ko
           );
 
-      }
+      })
     },
 
     {
       'should be the right title' : (ok, ko) => {
 
-        try {
-          locals.title.should.be.exactly('Example Domain');
-          ok();
-        }
-        catch ( error ) {
-          ko(error);
-        }
+        locals.title.should.be.exactly('Example Domain');
 
       }
     }

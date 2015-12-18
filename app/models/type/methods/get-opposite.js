@@ -2,30 +2,41 @@
 
 function getOpposite () {
   return new Promise((ok, ko) => {
-    console.log('get opposite', this._id);
-    this.isHarmony().then(
-      isHarmony => {
-        if ( ! isHarmony ) {
-          console.log('get opposite', this._id, 'is not hamrony');
-          return ko(new Error('Get not get opposite of a type which is not part of an harmony'));
-        }
-        console.log('get opposite', this._id, 'is hamrony');
-        this.findOne({ harmony : this._id }).then(
-          parent => {
-            if ( ! parent ) {
-              return ko(new Error('Could not find parent of harmony'));
+    try {
+      this.isHarmony().then(
+        isHarmony => {
+          try {
+            if ( ! isHarmony ) {
+              return ko(new Error('Get not get opposite of a type which is not part of an harmony'));
             }
-            const opposite = parent.harmony
-              .filter(_id => ! _id.equals(this._id))
-              [0];
-            console.log('opposite', this._id, opposite);
-            this.findById(opposite).then(ok, ko);
-          },
-          ko
-        );
-      },
-      ko
-    );
+            this.constructor.findById(this.parent).then(
+              parent => {
+                try {
+                  if ( ! parent ) {
+                    return ko(new Error('Could not find parent of harmony'));
+                  }
+                  const opposite = parent.harmony
+                    .filter(_id => ! _id.equals(this._id))
+                    [0];
+                  this.constructor.findById(opposite).then(ok, ko);
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+    }
+    catch ( error ) {
+      ko(error);
+    }
   });
 }
 

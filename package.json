@@ -10,8 +10,8 @@
     "postinstall": "./post-install.sh",
     "build": "bash bin/bundle.sh",
     "watchify": "bash bin/watchify.sh",
-    "transpile": "rm -rf dist && babel app/ --modules common --stage 0 --ignore app/lib/mung/node_modules --out-dir dist/",
-    "hot-transpile": "rm -rf dist && babel app/ --watch --modules common --stage 0 --ignore app/lib/mung/node_modules --out-dir dist/",
+    "transpile": "rm -rf dist && babel app/ --modules common --stage 0 --out-dir dist/ && babel app/test/.test/ --modules common --stage 0 --out-dir dist/test/.test",
+    "hot-transpile": "rm -rf dist && babel app/ --watch --modules common --stage 0 --out-dir dist/ & babel --watch app/test/.test/ --modules common --stage 0 --out-dir dist/test/.test",
     "less": "lessc assets/less/index.less assets/css/index.css; lessc assets/less/training.less assets/css/training.css",
     "watch-less": "npm run less && node dist/bin/watch-less",
     "min-css": "bash bin/min-css.sh",
@@ -69,5 +69,8 @@
     "vinyl-source-stream": "~1.0.0",
     "watchify": "~2.1.1",
     "webdriverio": "^2.4.5"
+  },
+  "devDependencies": {
+    "redtea": "^1.0.13"
   }
 }

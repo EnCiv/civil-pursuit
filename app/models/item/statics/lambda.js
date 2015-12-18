@@ -52,6 +52,11 @@ function lambda (options = {}) {
           try {
             if ( options.type ) {
               item.type = options.type;
+
+              if ( ! options.subject ) {
+                item.subject += ' of type ' + ( item.type.name || item.type );
+              }
+
               return ok();
             }
             Type.findOneRandom().then(

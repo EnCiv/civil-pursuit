@@ -3,7 +3,7 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import isCountry            from '../../lib/assertions/is-country';
+import isCountry            from '../.test/assertions/is-country';
 import Country              from '../../models/country';
 
 function test () {
@@ -12,7 +12,7 @@ function test () {
   return describe ( 'Models/Country', [
 
     {
-      'should get random country' : (ok, ko) => {
+      'should get random country' : () => new Promise((ok, ko) => {
         Country.findOneRandom().then(
           country => {
             locals.country = country;
@@ -20,7 +20,7 @@ function test () {
           },
           ko
         );
-      }
+      })
     },
 
     {

@@ -8,7 +8,7 @@ function test(props) {
 
   return describe ('Home page', [
     {
-      'should get home page' : (ok, ko) => {
+      'should get home page' : () => new Promise((ok, ko) => {
         superagent
           .get(`http://localhost:${props.port}/`)
           .end((error, res) => {
@@ -23,7 +23,7 @@ function test(props) {
               ko(error);
             }
           });
-      }
+      })
     }
   ]);
 }

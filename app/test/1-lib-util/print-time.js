@@ -10,28 +10,24 @@ function test () {
 
   return describe ( 'Lib / Util / Print time' , [
     {
-      'should be a function' : (ok, ko) => {
+      'should be a function' : () => {
         printTime.should.be.a.Function();
-        ok();
       }
     },
     {
-      'should return array of 3' : (ok, ko) => {
+      'should return array of 3' : () => {
         locals.time = printTime();
         locals.time.should.be.an.Array().and.have.length(3);
-        ok();
       }
     },
     {
-      'should be strings' : (ok, ko) => {
+      'should be strings' : () => {
         locals.time.forEach(time => time.should.be.a.String());
-        ok();
       }
     },
     {
-      'should be numeric strings' : (ok, ko) => {
+      'should be numeric strings' : () => {
         locals.time.forEach(time => (+time).should.be.a.Number());
-        ok();
       }
     }
   ] );

@@ -11,43 +11,55 @@ function migrate (...models) {
   return new Promise((ok, ko) => {
     try {
 
-      Mungo.connect(process.env.MONGOHQ_URL).on('connected', () => {
+      const promises = [];
 
-        fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
-          if ( error ) {
-            throw error;
-          }
+      if ( ! Mungo.connections.length ) {
+        promises.push(new Promise((ok, ko) => {
+          Mungo.connect(process.env.MONGOHQ_URL)
+            .on('error', ko)
+            .on('connected', ok);
+        }));
+      }
 
-          if ( models.length ) {
-            files = files.filter(file => models.indexOf(file) > -1);
-          }
+      Promise.all(promises).then(
+        () => {
+          fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
+            if ( error ) {
+              throw error;
+            }
 
-          let promises = files
-            .map(file => () => new Promise((ok, ko) => {
-              try {
-                let model = require(path.resolve(__dirname, `../models/${file}`));
+            if ( models.length ) {
+              files = files.filter(file => models.indexOf(file) > -1);
+            }
 
-                model.migrate().then(() => {
-                  ok();
-                }, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
-          }));
+            let promises = files
+              .map(file => () => new Promise((ok, ko) => {
+                try {
+                  let model = require(path.resolve(__dirname, `../models/${file}`));
 
-          sequencer(promises)
-            .then(
-              results => {
+                  model.migrate().then(() => {
+                    ok();
+                  }, ko);
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+            }));
 
-                 ok();
-              },
-              ko
-            );
+            sequencer(promises)
+              .then(
+                results => {
 
-        });
+                   ok();
+                },
+                ko
+              );
 
-      });
+          });
+        },
+        ko
+      );
+
     }
     catch ( error ) {
       ko(error);

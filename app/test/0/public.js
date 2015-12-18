@@ -10,57 +10,45 @@ function test () {
 
   return describe ( 'Public config' , [
     {
-      'should be an object' : (ok, ko) => {
-        config.should.be.an.Object();
-        ok();
-      }
+      'should be an object' : () =>
+        config.should.be.an.Object()
     },
     {
       'Profile' : [
         {
-          'should have a property Profile' : (ok, ko) => {
-            config.should.have.property('profile').which.is.an.Object();
-            ok();
-          }
+          'should have a property Profile' : () =>
+            config.should.have.property('profile').which.is.an.Object()
         },
         {
           'identity' : [
             {
-              'should have a property identity' : (ok, ko) => {
-                config.profile.should.have.a.property('identity').which.is.an.Object();
-                ok();
-              }
+              'should have a property identity' : () =>
+                config.profile.should.have.a.property('identity').which.is.an.Object()
             },
             {
-              'should have a property description' : (ok, ko) => {
+              'should have a property description' : () =>
                 config.profile.identity.should.have.property('description')
-                  .which.is.a.String();
-                ok();
-              }
+                  .which.is.a.String()
             }
           ]
         },
         {
           'residence' : [
             {
-              'should have a property residence' : (ok, ko) => {
-                config.profile.should.have.a.property('residence').which.is.an.Object();
-                ok();
-              }
+              'should have a property residence' : () =>
+                config.profile.should.have.a.property('residence').which.is.an.Object()
             },
             {
-              'should have a property description' : (ok, ko) => {
+              'should have a property description' : () =>
                 config.profile.residence.should.have.property('description')
-                  .which.is.a.String();
-                ok();
-              }
+                  .which.is.a.String()
             },
             {
-              'should have a property image' : (ok, ko) => {
+              'should have a property image' : () => {
                 config.profile.residence.should.have.property('image')
                   .which.is.a.String();
-                /https?:\/\//.test(config.profile.residence.image).should.be.true();
-                ok();
+
+                /https?:\/\//.test(config.profile.residence.image).should.be.true()
               }
             }
           ]
@@ -68,24 +56,20 @@ function test () {
         {
           'demographics' : [
             {
-              'should have a property demographics' : (ok, ko) => {
-                config.profile.should.have.a.property('demographics').which.is.an.Object();
-                ok();
-              }
+              'should have a property demographics' : () =>
+                config.profile.should.have.a.property('demographics').which.is.an.Object()
             },
             {
-              'should have a property description' : (ok, ko) => {
+              'should have a property description' : () =>
                 config.profile.demographics.should.have.property('description')
-                  .which.is.a.String();
-                ok();
-              }
+                  .which.is.a.String()
             },
             {
-              'should have a property image' : (ok, ko) => {
+              'should have a property image' : () => {
                 config.profile.demographics.should.have.property('image')
                   .which.is.a.String();
-                /https?:\/\//.test(config.profile.demographics.image).should.be.true();
-                ok();
+
+                /https?:\/\//.test(config.profile.demographics.image).should.be.true()
               }
             }
           ]
@@ -93,24 +77,20 @@ function test () {
         {
           'voter' : [
             {
-              'should have a property voter' : (ok, ko) => {
-                config.profile.should.have.a.property('voter').which.is.an.Object();
-                ok();
-              }
+              'should have a property voter' : () =>
+                config.profile.should.have.a.property('voter').which.is.an.Object()
             },
             {
-              'should have a property description' : (ok, ko) => {
+              'should have a property description' : () =>
                 config.profile.voter.should.have.property('description')
-                  .which.is.a.String();
-                ok();
-              }
+                  .which.is.a.String()
             },
             {
-              'should have a property image' : (ok, ko) => {
+              'should have a property image' : () => {
                 config.profile.voter.should.have.property('image')
                   .which.is.a.String();
-                /https?:\/\//.test(config.profile.voter.image).should.be.true();
-                ok();
+
+                /https?:\/\//.test(config.profile.voter.image).should.be.true()
               }
             }
           ]
@@ -118,24 +98,21 @@ function test () {
         {
           'public persona' : [
             {
-              'should have a property public persona' : (ok, ko) => {
-                config.profile.should.have.a.property('public persona').which.is.an.Object();
-                ok();
-              }
+              'should have a property public persona' : () =>
+                config.profile.should.have.a.property('public persona').which.is.an.Object()
             },
             {
-              'should have a property description' : (ok, ko) => {
+              'should have a property description' : () =>
                 config.profile['public persona'].should.have.property('description')
-                  .which.is.a.String();
-                ok();
-              }
+                  .which.is.a.String()
             },
+
             {
-              'should have a property image' : (ok, ko) => {
+              'should have a property image' : () => {
                 config.profile['public persona'].should.have.property('image')
                   .which.is.a.String();
-                /https?:\/\//.test(config.profile['public persona'].image).should.be.true();
-                ok();
+
+                /https?:\/\//.test(config.profile['public persona'].image).should.be.true()
               }
             }
           ]
@@ -145,62 +122,50 @@ function test () {
     {
       'Navigator batch size' : [
         {
-          'should have a batch size' : (ok, ko) => {
-            config.should.have.property('navigator batch size').which.is.a.Number();
-            ok();
-          }
+          'should have a batch size' : () =>
+            config.should.have.property('navigator batch size').which.is.a.Number()
         }
       ]
     },
     {
       'Google Analytcis key' : [
         {
-          'should have a google analytics key' : (ok, ko) => {
+          'should have a google analytics key' : () =>
             config.should.have.property('google analytics')
               .which.is.a.Object()
-              .and.have.property('key').which.is.a.String();
-            ok();
-          }
+              .and.have.property('key').which.is.a.String()
         }
       ]
     },
     {
       'Default item image' : [
         {
-          'should have a default item image' : (ok, ko) => {
-            config.should.have.property('default item image').which.is.a.String().and.startWith('http');
-            ok();
-          }
+          'should have a default item image' : () =>
+            config.should.have.property('default item image').which.is.a.String().and.startWith('http')
         }
       ]
     },
     {
       'Font awesome CDN' : [
         {
-          'should have Font Awesome CDN' : (ok, ko) => {
+          'should have Font Awesome CDN' : () =>
             config.should.have.property('font awesome')
               .which.is.a.Object()
               .and.have.property('cdn')
               .which.is.a.String()
-              .and.startWith('http');
-            ok();
-          }
+              .and.startWith('http')
         }
       ]
     },
     {
       'Evaluated item postion' : [
         {
-          'should have evaluated item default position' : (ok, ko) => {
-            config.should.have.property('evaluation context item position').which.is.a.String();
-            ok();
-          }
+          'should have evaluated item default position' : () =>
+            config.should.have.property('evaluation context item position').which.is.a.String()
         },
         {
-          'should be either first or last' : (ok, ko) => {
-            ['first', 'last'].indexOf(config['evaluation context item position']).should.be.above(-1);
-            ok();
-          }
+          'should be either first or last' : () =>
+            ['first', 'last'].indexOf(config['evaluation context item position']).should.be.above(-1)
         }
       ]
     }

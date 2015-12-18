@@ -5,7 +5,7 @@ import should                     from 'should';
 import mock                       from '../../lib/app/socket-mock';
 import addView                    from '../../api/add-view';
 import User                       from '../../models/user';
-import isItem                     from '../../lib/assertions/is-item';
+import isItem                     from '../.test/assertions/is-item';
 import Item                       from '../../models/item';
 
 function test (props) {
@@ -15,7 +15,7 @@ function test (props) {
     {
       'Item' : [
         {
-          'should get random item' : (ok, ko) => {
+          'should get random item' : () => new Promise((ok, ko) => {
             Item.findOneRandom().then(
               item => {
                 locals.item = item;
@@ -23,7 +23,7 @@ function test (props) {
               },
               ko
             );
-          }
+          })
         },
         {
           'should be an item' : describe.use(() => isItem(locals.item))
@@ -31,13 +31,12 @@ function test (props) {
         {
           'get number of views' : (ok, ko) => {
             locals.views = locals.item.views;
-            ok();
           }
         }
       ]
     },
     {
-      'Add view' : (ok, ko) => {
+      'Add view' : () => new Promise((ok, ko) => {
         mock(props.socket, addView, 'add view', locals.item)
           .then(
             views => {
@@ -46,12 +45,12 @@ function test (props) {
             },
             ko
           );
-      }
+      })
     },
     {
       'Verify in DB' : [
         {
-          'Get item again' : (ok, ko) => {
+          'Get item again' : () => new Promise((ok, ko) => {
             Item.findById(locals.item).then(
               item => {
                 locals.item = item;
@@ -59,15 +58,13 @@ function test (props) {
               },
               ko
             );
-          }
+          })
         },
         {
           'views has been incremented' : (ok, ko) => {
             locals.item.should.have.property('views')
               .which.is.a.Number()
               .and.is.exactly(locals.views + 1);
-
-            ok();
           }
         }
       ]
