@@ -8,6 +8,7 @@ import isDetails                  from '../.test/assertions/is-details';
 import Item                       from '../../models/item';
 import Type                       from '../../models/type';
 import Vote                       from '../../models/vote';
+import Feedback                   from '../../models/feedback';
 import Criteria                   from '../../models/criteria';
 
 
@@ -179,6 +180,37 @@ function test (props) {
         }]);
 
       }]);
+
+    }]);
+
+    it('Feedback', [ it => {
+
+      it('should add feedback', () => new Promise((ok, ko) => {
+        Feedback.lambda({ item : locals.item }).then(
+          feedback => {
+            locals.feedback = feedback;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should get item details from API', () => new Promise((ok, ko) => {
+        mock(props.socket, getItemDetails, 'get item details', locals.item)
+          .then(
+            details => {
+              locals.details = details;
+              ok();
+            },
+            ko
+          );
+      }));
+
+      it('should be details', describe.use(() => isDetails(locals.details)));
+
+      it('should have 1 feedback' , () => locals.details.feedback.should.have.length(1));
+
+      it('should be the same feedback', () => locals.details.feedback[0]._id.equals(locals.feedback._id).should.be.true());
 
     }]);
 
