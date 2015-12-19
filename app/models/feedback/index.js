@@ -4,6 +4,7 @@ import Mungo                          from 'mungo';
 import Item                           from '../item';
 import User                           from '../user';
 import V1                             from './migrations/1';
+import lambda                         from './statics/lambda';
 
 class Feedback extends Mungo.Model {
   static schema () {
@@ -25,6 +26,10 @@ class Feedback extends Mungo.Model {
         "default"     :  Date.now
       }
     };
+  }
+
+  static lambda(...args) {
+    return lambda.apply(this, args);
   }
 }
 

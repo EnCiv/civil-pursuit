@@ -1,10 +1,11 @@
 'use strict';
 
-import Mungo from 'mungo';
-import User from '../user';
-import Item from '../item';
-import Criteria from '../criteria';
-import getAccumulation from './statics/get-accumulation';
+import Mungo                      from 'mungo';
+import User                       from '../user';
+import Item                       from '../item';
+import Criteria                   from '../criteria';
+import getAccumulation            from './statics/get-accumulation';
+import lambda                     from './statics/lambda';
 
 class Vote extends Mungo.Model {
   static schema () {
@@ -32,24 +33,8 @@ class Vote extends Mungo.Model {
     return getAccumulation.apply(this, args);
   }
 
-  static lambda (options = {}) {
-    const vote = {};
-
-    const promises = [
-
-      new Promise((ok, ko) => {
-        if ( 'item' in options ) {
-          if ( options.item instanceof Item ) {
-            return ok(item);
-          }
-        }
-      })
-
-    ];
-
-    return Promise.all(promises).then(results => {
-      const [ item ] = results;
-    }, ko);
+  static lambda (...args) {
+    return lambda.apply(this, args);
   }
 }
 

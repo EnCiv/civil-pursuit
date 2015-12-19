@@ -6,9 +6,13 @@ import describe             from 'redtea';
 import User                 from '../../models/user';
 import Item                 from '../../models/item';
 import Type                 from '../../models/type';
+import Feedback             from '../../models/feedback';
+import Vote                 from '../../models/vote';
+import Criteria             from '../../models/criteria';
 import isMungoError         from '../.test/assertions/is-mungo-error';
 import isItem               from '../.test/assertions/is-item';
 import isEvaluation         from '../.test/assertions/is-evaluation';
+import isDetails            from '../.test/assertions/is-details';
 
 function test () {
   const locals = {
@@ -167,6 +171,86 @@ function test () {
       }));
 
       it('should be an evaluation', describe.use(() => isEvaluation(locals.evaluation, locals.item.user, locals.item, locals.item.type)));
+    }]);
+
+    it('should get details', [ it => {
+      it('Create random item', () => new Promise((ok, ko) => {
+        Item.lambda().then(
+          item => {
+            locals.item = item;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should create feedback', () => new Promise((ok, ko) => {
+        Feedback.lambda({ item : locals.item }).then(
+          feedback => {
+            locals.feedback = feedback;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should fetch criterias', () => new Promise((ok, ko) => {
+        Criteria.find().then(
+          criterias => {
+            locals.criterias = criterias;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should create vote', () => new Promise((ok, ko) => {
+        Promise.all(
+          locals.criterias.map(criteria => Vote.lambda({ item : locals.item, criteria }))
+        ).then(votes => {
+          locals.votes = votes;
+          ok();
+        }, ko)
+      }));
+
+      it('should get item details', () => new Promise((ok, ko) => {
+        Item.getDetails(locals.item).then(
+          details => {
+            locals.details = details;
+            ok();
+          },
+          ko
+        );
+      }));
+
+      it('should be item details', describe.use(() => isDetails(locals.details, locals.item)));
+
+      it('should have 1 feedback', () => locals.details.feedback.should.have.length(1));
+
+      it('should have the right feedback', () => locals.details.feedback[0]._id.equals(locals.feedback._id).should.be.true());
+
+      it('should have the right votes', () => {
+        locals.criterias.forEach(criteria => {
+          locals.details.votes[criteria._id].total.should.be.exactly(1);
+
+          const vote = locals.votes.reduce((match, vote) => {
+            if ( vote.criteria.equals(criteria._id) ) {
+              match = vote;
+            }
+            return match;
+          }, null);
+
+          if ( ! vote ) {
+            throw new Error('Can not find vote for criteria ' + criteria._id);
+          }
+
+          locals.details.votes[criteria._id].values['-1'].should.be.exactly(+(vote.value === -1));
+
+          locals.details.votes[criteria._id].values['+0'].should.be.exactly(+(vote.value === 0));
+
+          locals.details.votes[criteria._id].values['+1'].should.be.exactly(+(vote.value === 1));
+        });
+      });
     }]);
 
   });
