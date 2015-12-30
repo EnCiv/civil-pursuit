@@ -2,16 +2,34 @@
 
 import describe                           from 'redtea';
 import should                             from 'should';
+import reset                              from '../../bin/reset';
 import User                               from '../../models/user';
 import Type                               from '../../models/type';
+import Item                               from '../../models/item';
 import signOut                            from '../.test/util/e2e-sign-out';
 import identify                           from '../.test/util/e2e-identify';
-import reset                              from '../../bin/reset';
+import isItem                             from 'syn/../../dist/test/assertions/is-item';
+import isItemView                         from 'syn/../../dist/test/assertions/is-item-view';
 
 function test(props) {
-  const locals = {
+  const panel   =   '#top-level-panel > .syn-panel';
+  const heading =   `${panel} > .syn-panel-heading`;
+  const body    =   `${panel} > .syn-panel-body`;
+  const form    =   `${body} > .syn-accordion:first-child form[name="creator"]`;
 
+  const locals      =   {
+    toggle          :   `${heading} > .toggle-creator`,
+    join            :   `form[name="join"]`,
+    form,
+    subject         :   `${form} input[name="subject"]`,
+    description     :   `${form} textarea[name="description"]`,
+    failure         :   `${form} .syn-flash--error`
   };
+
+  const { driver } = props;
+  const { client } = props.driver;
+
+  console.log(describe.version);
 
   return describe('E2E Create item', it => {
 
@@ -21,111 +39,162 @@ function test(props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('Types Group', [ it => {
-      it('should create group of types', () => new Promise((ok, ko) => {
-        Type.group(
-          'e2e create item parent',
-          'e2e create item subtype',
-          'e2e create item pro',
-          'e2e create item con'
-        ).then(
-          group => {
-            locals.group = group;
-            ok();
-          },
-          ko
+    it('should go to home page', () => client.url(`http://localhost:${props.port}`));
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('If user not logged in, clicking on Create Button should show Join', it => {
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should click on create button', () => client.click(locals.toggle));
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should show join form', () => driver.waitForVisible(locals.join, 1000));
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should not show create item form', () => driver.isInvisible(`${body} > .syn-accordion:first-child`));
+
+
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    it('identify', describe.use(() => identify(client)));
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    for ( let i = 0; i < 1; i ++ ) {
+
+      const subject = `E2E - Create item - parent - ${i}`;
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should click create item button', () => client.click(locals.toggle));
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should show create item form', () => driver.waitForVisible(locals.form, 1000));
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('Invalid form', [ it => {
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        it('No subject', [ it => {
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should submit form', () => client.submitForm(locals.form));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should see error message', () => driver.waitForVisible(locals.failure, 1000));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('error message should say "Subject can not be left empty"', () => driver.compareText(locals.failure, "Subject can not be left empty"));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        }]);
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        it('No description', [ it => {
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should fill subject', () => client.setValue(locals.subject, subject));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should submit form', () => client.submitForm(locals.form));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should see error message', () => driver.waitForVisible(locals.failure, 1000));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('error message should say "Description can not be left empty"', () => driver.compareText(locals.failure, "Description can not be left empty"));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should fill description', () => client.setValue(locals.description, 'Hey hey! I am a cool description'));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        }]);
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      }]);
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      if ( i === 0 ) {
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        it('should submit form',
+
+          () => client.submitForm(locals.form)
+
         );
-      }));
-    }]);
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should go to panel page', () => new Promise((ok, ko) => {
-      props.driver.client.isVisible('header[role="banner"].syn-top_bar').then(
-        ok,
-        error => {
-          props.driver.client.url(`http://localhost:${props.port}`).then(ok, ko);
-        }
-      );
-    }));
+        it('form should hide',
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          () => client.waitForVisible(locals.form, 3000, true)
 
-    it('identify', describe.use(() => identify(props.driver.client)));
+        );
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should click create item button', () => props.driver.client.click('#top-level-panel > .syn-panel > .syn-panel-heading .toggle-creator'));
+        it('should have created item in DB',
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          () => Item.findOne({ subject })
+            .then(item => { locals.item = item })
 
-    it('Invalid form', [ it => {
+        );
 
-      it('No subject', [ it => {
-        it('should submit form', () => props.driver.client.submitForm('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"]'));
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should see error message', () => new Promise((ok, ko) => {
-          props.driver.client
-            .waitForVisible('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error', 1500).then(
-              isVisible => {
-                isVisible.should.be.true();
-                ok();
-              },
-              ko
-            );
-        }));
+        it('should be an item',
 
-        it('error message should say "Subject can not be left empty"', () => new Promise((ok, ko) => {
-          props.driver.client.getText('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error').then(
-            text => {
-              text.should.be.exactly('Subject can not be left empty');
-              ok();
-            },
-            ko
-          );
-        }));
-      }]);
+          describe.use(() => isItem(locals.item, { subject }))
 
-      it('No description', [ it => {
-        it('should fill subject', () => props.driver.client.setValue('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] input[name="subject"]', 'Hey there!'));
+        );
 
-        it('should submit form', () => props.driver.client.submitForm('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"]'));
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should see error message', () => new Promise((ok, ko) => {
-          props.driver.client
-            .waitForVisible('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error', 1500).then(
-              isVisible => {
-                isVisible.should.be.true();
-                ok();
-              },
-              ko
-            );
-        }));
+        it('should have new item in UI',
 
-        it('error message should say "Description can not be left empty"', () => new Promise((ok, ko) => {
-          props.driver.client.getText('.syn-accordion-wrapper.show > .syn-accordion-content > form[name="creator"] .syn-flash--error').then(
-            text => {
-              text.should.be.exactly('Description can not be left empty');
-              ok();
-            },
-            ko
-          );
-        }));
-      }]);
+          () => { driver.waitForExisting(`#item-${locals.item._id}`, 2500) }
 
-    }]);
+        );
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        it('should be an item view',
+
+          describe.use(() => isItemView(driver, locals.item))
+
+        );
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      }
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     it('Leave', [ it => {
-      it('test 2', () => {
-        const { click } = props.driver.client;
-        const is = click.apply(props.driver.client, ['#top-level-panel > .syn-panel > .syn-panel-heading .toggle-creator']);
-
-        console.log(is.constructor.name);
-      });
-
-      it('should sign out', describe.use(() => signOut(props.driver.client)));
+      it('should sign out', describe.use(() => signOut(client)));
     }]);
 
 

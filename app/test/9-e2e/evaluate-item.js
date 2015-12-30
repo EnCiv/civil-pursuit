@@ -15,6 +15,9 @@ function test(props) {
     parent : []
   };
 
+  const { driver } = props;
+  const { client } = driver;
+
   function evaluateItems (driver, items) {
     return it => {
       items.forEach(item => {
@@ -69,161 +72,202 @@ function test(props) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('Types Group', [ it => {
-      it('should create group of types', () => new Promise((ok, ko) => {
-        Type.group(
-          'e2e evaluate item parent',
-          'e2e evaluate item subtype',
-          'e2e evaluate item pro',
-          'e2e evaluate item con'
-        ).then(
-          group => {
-            locals.group = group;
-            ok();
-          },
-          ko
-        );
-      }));
-    }]);
+    it('Types Group', it => {
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it('should create group of types',
+
+        () => Type
+
+          .group(
+            'e2e evaluate item parent',
+            'e2e evaluate item subtype',
+            'e2e evaluate item pro',
+            'e2e evaluate item con'
+          )
+
+          .then(group => { locals.group = group })
+
+      );
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    });
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('should go to home page', () => props.driver.client.url(`http://localhost:${props.port}`));
+    it('should go to home page',
+
+      () => client.url(`http://localhost:${props.port}`)
+
+    );
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('identify', describe.use(() => identify(props.driver.client)));
+    it('identify',
+
+      describe.use(() => identify(client))
+
+    );
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     for ( let i of [0, 1, 3, 4, 5, 6] ) {
-      it(`Parent item ${i}`, [ it => {
-        it(`should create parent type #${i}`, () => new Promise((ok, ko) => {
-          Item.lambda({ type : locals.group.parent }).then(
-            item => {
-              locals.item = item;
-              ok();
-            },
-            ko
-          );
 
-        }));
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      it(`Parent item ${i}`, it => {
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should go to item\'s page', () => props.driver.client.url(`http://localhost:${props.port}${locals.item.link}`));
+        it(`should create parent type #${i}`,
+
+          () => Item
+
+            .lambda({ type : locals.group.parent })
+
+            .then(item => { locals.item = item })
+
+        );
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should refresh', () => props.driver.client.refresh());
+        it('should go to item\'s page',
+
+          () => client.url(`http://localhost:${props.port}${locals.item.link}`)
+
+        );
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should see evaluate button', () => new Promise((ok, ko) => {
-          props.driver.client.waitForVisible('button.item-promotions', 1000)
-            .then(
-              isVisible => {
-                try {
-                  isVisible.should.be.true();
-                  ok();
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-              },
-              ko
-            );
-        }));
+        it('should refresh',
+
+          () => client.refresh()
+
+        );
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should click on evaluate button', () => props.driver.client.click('button.item-promotions'));
+        it('should see evaluate button',
+
+          () => driver.waitForVisible('button.item-promotions', 1000)
+
+        );
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        it('should see an evaluation panel', () => new Promise((ok, ko) => {
-          props.driver.client.waitForVisible(`#item-promote-${locals.item._id}`, 2500)
-          .then(
-            isVisible => {
-              try {
-                isVisible.should.be.true();
-                ok();
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-        }));
+        it('should click on evaluate button',
+
+          () => client.click('button.item-promotions')
+
+        );
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        it('should see an evaluation panel',
+
+          () => driver.waitForVisible(`#item-promote-${locals.item._id}`, 2500)
+
+        );
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if ( i === 0 ) {
-          it('should see a finish button with the text Finish', () => new Promise((ok, ko) => {
-            props.driver.client.getText(`#item-promote-${locals.item._id} .finish-evaluate`).then(
-              text => {
-                text.should.be.exactly('Finish');
-                ok();
-              },
-              ko
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should see a finish button with the text Finish',
+
+            () => client.compareText(
+              `#item-promote-${locals.item._id} .finish-evaluate`,
+              'Finish'
+            )
+
+          );
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('Click on finish', it => {
+
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            it('should click',
+
+              () => client.click(`#item-promote-${locals.item._id} .finish-evaluate`)
+
             );
-          }));
 
-          it('Click on finish', [ it => {
-            it('should click', () => props.driver.client.click(`#item-promote-${locals.item._id} .finish-evaluate`));
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            it('should show details', () => new Promise((ok, ko) => {
-              props.driver.client.waitForVisible(`#item-details-${locals.item._id}`).then(
-                isVisible => {
-                  isVisible.should.be.true();
-                  ok();
-                },
-                ko
-              );
-            }));
-          }]);
+            it('should show details',
+
+              () => driver.waitForVisible(`#item-details-${locals.item._id}`, 2500)
+
+            );
+
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          });
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if ( i === 1 ) {
-          it('should see a finish button with the text Finish', () => new Promise((ok, ko) => {
-            props.driver.client.getText(`#item-promote-${locals.item._id} .finish-evaluate`).then(
-              text => {
-                text.should.be.exactly('Finish');
-                ok();
-              },
-              ko
-            );
-          }));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should see a finish button with the text Finish',
+
+            () => driver.compareText(
+              `#item-promote-${locals.item._id} .finish-evaluate`,
+              'Finish'
+            )
+
+          );
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if ( i === 2 ) {
-          it('should see a finish button with the text Neither', () => new Promise((ok, ko) => {
-            props.driver.client.getText(`#item-promote-${locals.item._id} .finish-evaluate`).then(
-              text => {
-                text.should.be.exactly('Neither');
-                ok();
-              },
-              ko
-            );
-          }));
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          it('should see a finish button with the text Neither',
+
+            () => driver.compareText(
+              `#item-promote-${locals.item._id} .finish-evaluate`,
+              'Neither'
+            )
+
+          );
+
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      }]);
+      });
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    it('Leave', [ it => {
-      it('should sign out', describe.use(() => signOut(props.driver.client)));
-    }]);
+    it('Leave', it => {
 
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+      it('should sign out', describe.use(() => signOut(client)));
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   });
 }

@@ -164,6 +164,7 @@ if ( name ) {
                     .then(
                       props => {
                         try {
+                          console.log();
                           if ( props.passed === props.tests ) {
                             console.log(JSON.stringify(props).bgGreen.bold);
                           }

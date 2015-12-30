@@ -2,11 +2,15 @@
 
 import { EventEmitter }       from 'events';
 import colors                 from 'colors';
+import should                 from 'should';
 import webdriverio            from 'webdriverio';
 import FirefoxProfile         from 'firefox-profile';
 import User                   from '../../models/user';
 
 class WebDriver extends EventEmitter {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (options = {}) {
     super();
 
@@ -41,6 +45,8 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   init () {
     try {
       this.client.setViewportSize({ width : 700, height : 900 })
@@ -55,6 +61,122 @@ class WebDriver extends EventEmitter {
       this.emit('error', error);
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  quit() {
+    return new Promise((ok, ko) => {
+      this.client.end(error => {
+        if ( error ) {
+          ko(error);
+        }
+        else {
+          ok();
+        }
+      });
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  waitForVisible (selector, milliseconds = 500, reverse = false) {
+    return new Promise((ok, ko) => {
+      this.client.waitForVisible(selector, milliseconds, reverse).then(
+        result => {
+          try {
+            if ( result ) {
+              ok();
+            }
+            else {
+              ko(new Error(selector + ' still ' + ( reverse ? '' : 'not ' ) + ' visible after ' + milliseconds + ' ms'));
+            }
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  waitForExisting (selector, milliseconds = 500, reverse = false) {
+    return new Promise((ok, ko) => {
+      this.client.waitForExisting(selector, milliseconds, reverse).then(
+        result => {
+          try {
+            if ( result ) {
+              ok();
+            }
+            else {
+              ko(new Error(selector + ' still ' + ( reverse ? '' : 'not ' ) + ' visible after ' + milliseconds + ' ms'));
+            }
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  isVisible (selector, reverse = false) {
+    return new Promise((ok, ko) => {
+      try {
+        this.client.isVisibleWithinViewport(selector, reverse).then(
+          result => {
+            try {
+              if ( result ) {
+                ok();
+              }
+              else {
+                ko(new Error(selector + ' should ' + ( reverse ? 'not ' : '' ) + 'be visible'));
+              }
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  isInvisible (selector) {
+    return this.isVisible(selector, true);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  compareText (selector, compare) {
+    return new Promise((ok, ko) => {
+      this.client.getText(selector).then(
+        text => {
+          try {
+            text.should.be.exactly(compare);
+            ok();
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+    });
+  }
+
+
 }
 
 WebDriver.OPTIONS = {
