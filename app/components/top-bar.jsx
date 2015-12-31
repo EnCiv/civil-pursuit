@@ -9,6 +9,7 @@ import Login                          from './login';
 import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
+import OffCanvas                      from './off-canvas';
 
 class TopBar extends React.Component {
 
@@ -96,6 +97,14 @@ class TopBar extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  offCanvasHandler (e) {
+    e.preventDefault();
+
+    OffCanvas.toggle();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let { user, ready } = this.props;
 
@@ -159,6 +168,12 @@ class TopBar extends React.Component {
             { right1 }
 
             { right2 }
+
+            <section>
+              <Button onClick={ this.offCanvasHandler.bind(this) }>
+                <Icon icon="bars" />
+              </Button>
+            </section>
           </section>
         </header>
 

@@ -4037,6 +4037,10 @@ var _intro = require('./intro');
 
 var _intro2 = _interopRequireDefault(_intro);
 
+var _offCanvas = require('./off-canvas');
+
+var _offCanvas2 = _interopRequireDefault(_offCanvas);
+
 var Layout = (function (_React$Component) {
   _inherits(Layout, _React$Component);
 
@@ -4062,9 +4066,14 @@ var Layout = (function (_React$Component) {
         'section',
         null,
         _react2['default'].createElement(_topBar2['default'], this.props),
-        intro,
-        this.props.children,
-        _react2['default'].createElement(_footer2['default'], null)
+        _react2['default'].createElement(
+          'section',
+          { role: 'main' },
+          intro,
+          this.props.children,
+          _react2['default'].createElement(_footer2['default'], null),
+          _react2['default'].createElement(_offCanvas2['default'], null)
+        )
       );
     }
   }], [{
@@ -4083,7 +4092,7 @@ var Layout = (function (_React$Component) {
 
 exports['default'] = Layout;
 module.exports = exports['default'];
-},{"./footer":"/home/francois/Dev/syn/dist/components/footer.js","./intro":"/home/francois/Dev/syn/dist/components/intro.js","./panel":"/home/francois/Dev/syn/dist/components/panel.js","./top-bar":"/home/francois/Dev/syn/dist/components/top-bar.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/login.js":[function(require,module,exports){
+},{"./footer":"/home/francois/Dev/syn/dist/components/footer.js","./intro":"/home/francois/Dev/syn/dist/components/intro.js","./off-canvas":"/home/francois/Dev/syn/dist/components/off-canvas.js","./panel":"/home/francois/Dev/syn/dist/components/panel.js","./top-bar":"/home/francois/Dev/syn/dist/components/top-bar.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/login.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4397,7 +4406,58 @@ var Login = (function (_React$Component) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/syn/dist/components/util/submit.js","react":"/home/francois/Dev/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/syn/dist/components/panel-items.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/syn/dist/components/util/submit.js","react":"/home/francois/Dev/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/syn/dist/components/off-canvas.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var OffCanvas = (function (_React$Component) {
+  _inherits(OffCanvas, _React$Component);
+
+  function OffCanvas() {
+    _classCallCheck(this, OffCanvas);
+
+    _get(Object.getPrototypeOf(OffCanvas.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(OffCanvas, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement('section', { id: 'syn-off-canvas', ref: 'off-canvas' });
+    }
+  }], [{
+    key: 'toggle',
+    value: function toggle() {
+      var offCanvas = document.querySelector('#syn-off-canvas');
+      var html = document.querySelector('html');
+
+      offCanvas.classList.toggle('visible');
+      html.classList.toggle('off');
+    }
+  }]);
+
+  return OffCanvas;
+})(_react2['default'].Component);
+
+exports['default'] = OffCanvas;
+module.exports = exports['default'];
+},{"react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/panel-items.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6747,6 +6807,10 @@ var _libProptypesUser = require('../lib/proptypes/user');
 
 var _libProptypesUser2 = _interopRequireDefault(_libProptypesUser);
 
+var _offCanvas = require('./off-canvas');
+
+var _offCanvas2 = _interopRequireDefault(_offCanvas);
+
 var TopBar = (function (_React$Component) {
   _inherits(TopBar, _React$Component);
 
@@ -6837,6 +6901,16 @@ var TopBar = (function (_React$Component) {
     key: 'goToProfile',
     value: function goToProfile() {
       location.href = '/page/profile';
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  }, {
+    key: 'offCanvasHandler',
+    value: function offCanvasHandler(e) {
+      e.preventDefault();
+
+      _offCanvas2['default'].toggle();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -6934,7 +7008,16 @@ var TopBar = (function (_React$Component) {
               onlineNow
             ),
             right1,
-            right2
+            right2,
+            _react2['default'].createElement(
+              'section',
+              null,
+              _react2['default'].createElement(
+                _utilButton2['default'],
+                { onClick: this.offCanvasHandler.bind(this) },
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'bars' })
+              )
+            )
           )
         ),
         _react2['default'].createElement(_login2['default'], { show: this.state.showLogin, join: this.toggleJoin.bind(this), 'forgot-password': this.toggleForgotPassword.bind(this) }),
@@ -6963,7 +7046,7 @@ var TopBar = (function (_React$Component) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./forgot-password":"/home/francois/Dev/syn/dist/components/forgot-password.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./login":"/home/francois/Dev/syn/dist/components/login.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/cloudinary-image":"/home/francois/Dev/syn/dist/components/util/cloudinary-image.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/training.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/syn/dist/lib/app/component.js","../lib/proptypes/user":"/home/francois/Dev/syn/dist/lib/proptypes/user.js","./forgot-password":"/home/francois/Dev/syn/dist/components/forgot-password.js","./join":"/home/francois/Dev/syn/dist/components/join.js","./login":"/home/francois/Dev/syn/dist/components/login.js","./off-canvas":"/home/francois/Dev/syn/dist/components/off-canvas.js","./util/button":"/home/francois/Dev/syn/dist/components/util/button.js","./util/cloudinary-image":"/home/francois/Dev/syn/dist/components/util/cloudinary-image.js","./util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/training.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -37557,7 +37640,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"

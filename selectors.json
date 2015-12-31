@@ -1,0 +1,15 @@
+{
+  "topLevelPanel" : "#top-level-panel",
+  "create" : {
+    "toggle" : ".toggle-creator",
+    "form" : "form[name=\"creator\"]",
+    "subject" : "input[name=\"subject\"]"
+  },
+  "panel" : {
+    "heading" : ".syn-panel-heading",
+    "body" : ".syn-panel-body"
+  },
+  "accordion" : {
+    "main" : ".syn-accordion"
+  }
+}
