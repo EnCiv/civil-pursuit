@@ -9,7 +9,7 @@ import Login                          from './login';
 import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
-import OffCanvas                      from './off-canvas';
+import HeaderMenu                      from './header-menu';
 
 class TopBar extends React.Component {
 
@@ -97,10 +97,15 @@ class TopBar extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  offCanvasHandler (e) {
+  headerMenuHandler (e) {
     e.preventDefault();
 
-    OffCanvas.toggle();
+    HeaderMenu.toggle().then(
+      () => {
+        const hamburger = React.findDOMNode(this.refs.hamburger);
+        hamburger.classList.toggle('on');
+      }
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,8 +174,8 @@ class TopBar extends React.Component {
 
             { right2 }
 
-            <section>
-              <Button onClick={ this.offCanvasHandler.bind(this) }>
+            <section className="syn-top_bar-hamburger" ref="hamburger">
+              <Button onClick={ this.headerMenuHandler.bind(this) }>
                 <Icon icon="bars" />
               </Button>
             </section>

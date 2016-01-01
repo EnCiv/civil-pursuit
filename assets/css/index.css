@@ -1063,6 +1063,14 @@ body {
   padding-left: 10px;
   padding-right: 10px;
 }
+.syn-top_bar-hamburger {
+  transition: all ease 500ms;
+}
+.syn-top_bar-hamburger.on button,
+.syn-top_bar-hamburger.on button:hover {
+  background-color: #444 !important;
+  color: #fff !important;
+}
 /**-------------------------------------------------------------// top-bar    */
 /** ____________________________________________________________________________
 
@@ -1440,49 +1448,39 @@ blockquote {
     margin-top: 10px;
   }
 }
-#syn-off-canvas {
+#syn-header-menu {
   position: fixed;
-  top: 60px;
-  right: -35%;
-  bottom: 0;
-  width: 35%;
-  box-sizing: border-box;
-  transition: right ease 1s;
-  background: rgba(150, 150, 150, 0.7);
-  box-shadow: inset 11px 0px 24px 0px rgba(0, 0, 0, 0.49);
-}
-@media (max-width: 440px) {
-  #syn-off-canvas {
-    right: -100%;
-    width: 100%;
-  }
-}
-@media (min-width: 440px) and (max-width: 600px) {
-  #syn-off-canvas {
-    right: -75%;
-    width: 75%;
-  }
-}
-#syn-off-canvas.visible {
+  bottom: calc(100vh - 73px);
   right: 0;
+  box-sizing: border-box;
+  transition: all ease 500ms;
+  outline: 1px solid #444;
+  opacity: 0;
+  background: rgba(55, 55, 55, 0.95);
+  box-shadow: 0px 8px 15px 0px #444444;
 }
-html {
-  transition: all ease 1s;
+#syn-header-menu.visible {
+  opacity: 1;
 }
-html.off {
-  margin-left: -35%;
-  margin-right: 35%;
+#syn-header-menu ul {
+  padding: 0;
+  margin: 0;
 }
-@media (max-width: 440px) {
-  html.off {
-    margin-left: -100%;
-    margin-right: 100%;
-  }
+#syn-header-menu li {
+  padding: 10px 20px;
+  list-style: none;
+  color: #fff;
 }
-@media (min-width: 440px) and (max-width: 600px) {
-  html.off {
-    margin-left: -75%;
-    margin-right: 75%;
-  }
+#syn-header-menu li a {
+  color: #fff;
+  text-decoration: none;
+}
+#syn-header-menu li a i {
+  width: 35px;
+  text-align: center;
+}
+#syn-header-menu li:hover {
+  background: rgba(155, 155, 155, 0.8);
+  cursor: pointer;
 }
 /**-------------------------------------------------------------// index      */

@@ -5,7 +5,7 @@ import TopBar                         from './top-bar';
 import Footer                         from './footer';
 import Panel                          from './panel';
 import Intro                          from './intro';
-import OffCanvas                      from './off-canvas';
+import HeaderMenu                     from './header-menu';
 
 class Layout extends React.Component {
 
@@ -31,7 +31,7 @@ class Layout extends React.Component {
           {  intro }
           { this.props.children }
           <Footer />
-          <OffCanvas />
+          <HeaderMenu />
         </section>
       </section>
     );
