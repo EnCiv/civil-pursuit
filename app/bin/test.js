@@ -4,10 +4,10 @@ import path         from 'path';
 import fs           from 'fs';
 import Mungo        from 'mungo';
 import WebDriver    from '../lib/app/webdriver';
-import db           from '../test/3-db/0.connect';
-import reset        from '../test/3-db/1.reset';
-import http         from '../test/6-http/0.server';
-import api          from '../test/8-socket-api/0.api';
+import db           from 'syn/../../dist/test/run/3-db/0.connect';
+import reset        from 'syn/../../dist/test/run/3-db/1.reset';
+import http         from 'syn/../../dist/test/run/6-http/0.server';
+import api          from 'syn/../../dist/test/run/8-socket-api/0.api';
 import sequencer    from '../lib/util/sequencer';
 
 if ( process.title === 'node' ) {
@@ -51,7 +51,7 @@ const ERROR = error => {
 
 let name, special;
 
-const base = '../test';
+const base = '../test/run';
 
 const options = {
   end : true,
