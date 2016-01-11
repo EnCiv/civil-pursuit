@@ -5,7 +5,7 @@ import sequencer          from 'sequencer';
 
 function toPanelItem () {
 
-  return sequencer([
+  return sequencer.pipe(
 
     () => this.populate(),
 
@@ -68,7 +68,7 @@ function toPanelItem () {
       ok(item);
     })
 
-  ]);
+  );
 }
 
 export default toPanelItem;
