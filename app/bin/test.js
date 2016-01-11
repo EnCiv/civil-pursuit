@@ -8,7 +8,9 @@ import db           from 'syn/../../dist/test/run/3-db/0.connect';
 import reset        from 'syn/../../dist/test/run/3-db/1.reset';
 import http         from 'syn/../../dist/test/run/6-http/0.server';
 import api          from 'syn/../../dist/test/run/8-socket-api/0.api';
-import sequencer    from '../lib/util/sequencer';
+import sequencer    from 'sequencer';
+
+Mungo.verbosity = 0;
 
 if ( process.title === 'node' ) {
   process.title = 'syntest';
@@ -222,7 +224,17 @@ if ( name ) {
                 if ( +(result.number) > 3 ) {
                   stackOfPromises.push(
                     () => db(),
-                    () => reset()
+                    () => sequencer([
+                      () => reset(),
+                      stats => new Promise((ok, ko) => {
+                        if ( ! stats.failed ) {
+                          ok();
+                        }
+                        else {
+                          ko(new Error('Could not reset'));
+                        }
+                      })
+                    ])
                   );
                 }
 

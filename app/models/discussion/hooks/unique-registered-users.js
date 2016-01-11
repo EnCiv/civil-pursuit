@@ -2,6 +2,10 @@
 
 function uniqueRegisteredUsers (discussion) {
   return new Promise((ok, ko) => {
+    if ( ! discussion.registered ) {
+      return ok();
+    }
+
     const users = [];
 
     try {

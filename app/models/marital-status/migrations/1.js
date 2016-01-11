@@ -1,100 +1,90 @@
 'use strict';
 
 import Mungo from 'mungo';
+import sequencer from 'sequencer';
 
-const { mongodb } = Mungo;
+/** <<<MD
+Import data from Config
+===
 
-const collection = 'marital_statuses';
+This collection used to be a subdocument of the Config model
+ --it now has its own model.
 
-class V2 {
+- We count documents from Model if any
+- If count is above 0, exit
+- If count is 0:
+  - Config used to be a collection made of one big single document.
+    Now each property of this big document has its own document.
+    Plus some properties get moved to their own collection for maintability.
+    (This is the case of the current model)
+
+    So, in order to fetch data from old config's big document,
+     we'll bypass Mungo and use directly MongoDB node's native driver.
+    We look for a collection named `configs.
+    (When Config migrated from a big document to a bunch of small ones,
+     it also changed collection name from `configs` to `config`)`.
+
+    We then pull data from `configs` and put relevant one to current model.
+MD ***/
+
+class MaritalStatus extends Mungo.Migration {
+  static version = 1
+
+  static collection = 'marital_statuses'
+
+  static schema = { name : String }
+
   static do () {
-    return new Promise((ok, ko) => {
-      try {
+    return sequencer([
 
-        this
-          .count()
-          .then(
-            count => {
-              try {
-                if ( count ) {
-                  return ok();
-                }
+      ()      =>    this.count(),
 
-                const { db } = Mungo.connections[0];
+      count   =>    new Promise((ok, ko) => {
 
-                db
-                  .collections()
-                  .then(
-                    collections => {
-                      try {
-                        if ( collections.some(collection =>
-                          collection.s.namespace.split(/\./)[1] === 'configs'
-                        )) {
-                          db.collection('configs')
-                            .find()
-                            .toArray()
-                            .then(
-                              configs => {
-                                try {
-                                  this
-                                    .create(configs[0].married.map(married => {
-                                      married.__V = 2;
+        if ( count ) {
+          return ok();
+        }
 
-                                      return married;
-                                    }), { create : true })
-                                    .then(
-                                      created => {
-                                        try {
-                                          Mungo.Migration
-                                            .create({
-                                              collection,
-                                              version : 1,
-                                              created : created.map(doc => doc._id)
-                                            })
-                                            .then(ok, ko);
-                                        }
-                                        catch ( error ) {
-                                          ko(error);
-                                        }
-                                      },
-                                      ko
-                                    );
-                                }
-                                catch ( error ) {
-                                  ko(error);
-                                }
-                              },
-                              ko
-                            );
-                        }
-                        else {
-                          ok();
-                        }
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
+        const { db } = Mungo.connections[0];
 
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
+        sequencer([
 
-  static undo () {
-    return Mungo.Migration.undo(this, 1, collection);
+          () => db.collections(),
+
+          collections => new Promise((ok, ko) => {
+
+            const collectionExists = collections.some(collection =>
+              collection.s.namespace.split(/\./)[1] === 'configs'
+            );
+
+            if ( ! collectionExists ) {
+              return ok();
+            }
+
+            const configs = db.collection('configs');
+
+            sequencer([
+
+              ()        =>  configs.find().limit(1).toArray(),
+
+              config    =>  this.create(config.married),
+
+              doc       =>  this.revert({ remove : { _id : doc._id } })
+
+            ])
+            .then(ok, ko);
+
+          })
+
+        ])
+
+          .then(ok, ko);
+
+      })
+
+    ]);
+
   }
 }
 
-export default V2;
+export default MaritalStatus;

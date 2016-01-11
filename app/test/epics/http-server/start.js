@@ -6,9 +6,9 @@ import Server                 from '../../../server';
 import Type                   from '../../../models/type';
 import Item                   from '../../../models/item';
 import Config                 from '../../../models/config';
-import isType                 from '../syn/../../dist/test/assertions/is-type';
-import isItem                 from '../syn/../../dist/test/assertions/is-item';
-import isPanelItem            from '../syn/../../dist/test/assertions/is-panel-item';
+import isType                 from '../syn/../../dist/test/is/type';
+import isItem                 from '../syn/../../dist/test/is/item';
+import isPanelItem            from '../syn/../../dist/test/is/panel-item';
 import reset                  from '../../../bin/reset';
 
 const label = 'Start HTTP server';

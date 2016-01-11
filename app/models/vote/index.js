@@ -8,7 +8,10 @@ import getAccumulation            from './statics/get-accumulation';
 import lambda                     from './statics/lambda';
 
 class Vote extends Mungo.Model {
-  static schema () {
+
+  static version = 1
+
+  static get schema () {
     return {
       "item"             :   {
       	"type"           :   Item,

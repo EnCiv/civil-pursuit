@@ -1,13 +1,24 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/discussion/1.json';
-import Mungo from 'mungo';
-import User from '../../../models/user';
+import firstDiscussion        from 'syn/../../fixtures/discussion/1.json';
+import Mungo                  from 'mungo';
+import User                   from 'syn/../../dist/models/user';
+import sequencer              from 'sequencer';
 
-const collection = 'discussions';
+/** <<<MD
+Import data from fixtures to DB
+===
 
-class V2 {
-  static schema () {
+    fixtures = [{ name : String }]
+
+Insert `fixtures` into model's collection
+MD ***/
+
+class Discussion extends Mungo.Migration {
+
+  static version = 2
+
+  static get schema () {
     return {
       "subject"       :   {
         "type"        :   String,
@@ -21,64 +32,92 @@ class V2 {
         "type"        :   Date,
         "required"    :   true
       },
+      "starts"        :   {
+        "type"        :   Date,
+        "required"    :   true
+      },
       "goal"          :   {
         "type"        :   Number,
         "required"    :   true
       },
-      "registered"    :   [{
-        "type"        :   User,
-        "required"    :   true
-      }]
+      "registerd"     :   {
+        "type"        :   [User],
+        "default"     :   []
+      }
     };
   }
 
-  static do () {
+  static inserting () {
+    return [
+      this.uniqueRegisteredUsers.bind(this)
+    ];
+  }
+
+  static updating () {
+    return [
+      this.uniqueRegisteredUsers.bind(this)
+    ];
+  }
+
+  static uniqueRegisteredUsers (discussion)  {
     return new Promise((ok, ko) => {
+
+      if ( ! discussion.registered ) {
+        return ok();
+      }
+
+      const users = [];
+
       try {
-        this.find({ __V : 2 }, { limit : false })
-          .then(
-            documents => {
-              try {
-                if ( documents.length ) {
-                  return ok();
-                }
-                const discussion = fixtures[0];
-                this
-                  .create(discussion, { version : 2 })
-                  .then(
-                    created => {
-                      try {
-                        Mungo.Migration
-                          .create({
-                            collection,
-                            version : 2,
-                            created : [created._id]
-                          })
-                          .then(ok, ko);
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+        discussion.registered.forEach(user => {
+          if ( users.indexOf(user.toString()) === -1 ) {
+            users.push(user.toString());
+          }
+          else {
+            throw new Error('User already registered');
+          }
+        });
       }
       catch ( error ) {
-        ko(error);
+        return ko(error);
       }
+
+      ok();
     });
   }
 
-  static undo () {
-    return Mungo.Migration.undo(this, 2, collection);
+  static do () {
+    return sequencer([
+
+      // See if collection is empty
+
+      () => this.count(),
+
+      count => new Promise((ok, ko) => {
+        // Not empty -- exit
+
+        if ( count ) {
+          return ok();
+        }
+
+        sequencer
+
+          ([
+
+            // insert first discussion
+
+            () => this.create(firstDiscussion),
+
+            doc => this.revert({ remove : { _id : doc._id } })
+
+          ])
+
+          .then(ok, ko);
+
+      })
+
+    ]);
   }
 }
 
-export default V2;
+export default Discussion;

@@ -9,8 +9,8 @@ import PoliticalParty                   from '../political-party';
 import Country                          from '../country';
 import State                            from '../state';
 import validateGPS                      from './hooks/validate-gps';
-import encryptPassword                  from './statics/encrypt-password';
-import lowerEmail                       from './statics/lower-email';
+import encryptPassword                  from './hooks/encrypt-password';
+import lowerEmail                       from './hooks/lower-email';
 import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
 import saveImage                        from './statics/save-image';
@@ -24,7 +24,17 @@ import V2                               from './migrations/2';
 import V3                               from './migrations/3';
 
 class User extends Mungo.Model {
-  static schema () {
+
+  static version = 3
+
+  static migrations = {
+    2 : V2,
+    3 : V3
+  }
+
+  static gender = ['M', 'F', 'O']
+
+  static get schema () {
     return {
       "email"             :     {
         "type"            :     String,
@@ -150,14 +160,5 @@ User.encryptPassword          =     encryptPassword.bind(User);
 User.lowerEmail               =     lowerEmail.bind(User);
 User.identify                 =     identify.bind(User);
 User.isPasswordValid          =     isPasswordValid.bind(User);
-
-User.version = 3;
-
-User.migrations = {
-  2 : V2,
-  3 : V3
-};
-
-User.gender = ['M', 'F', 'O'];
 
 export default User;

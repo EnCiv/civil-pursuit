@@ -16,7 +16,7 @@
   function uploadImage (socket) {
     ss(socket).on('upload image', function (stream, data) {
       var filename = '/tmp/' + data.name;
-      stream.pipe(require('fs').createWriteStream(filename));
+      stream(require('fs').createWriteStream(filename));
     });
   }
 

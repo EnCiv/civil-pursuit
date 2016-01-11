@@ -114,7 +114,7 @@ class Creator extends React.Component {
       ss(window.socket).emit('upload image', stream,
         { size: this.file.size, name: this.file.name });
 
-      ss.createBlobReadStream(this.file).pipe(stream);
+      ss.createBlobReadStream(this.file)(stream);
 
       stream.on('end', () => {
         item.image = this.file.name;

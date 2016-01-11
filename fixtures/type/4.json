@@ -1,9 +1,14 @@
-[
-  {
-    "name" : "Why"
-  },
+{
+  "harmony" : [
+    {
+      "name" : "Why"
+    },
 
-  {
-    "name" : "Why not"
+    {
+      "name" : "Why not"
+    }
+  ],
+  "parent" : {
+    "name" : "Issue"
   }
-]
+}

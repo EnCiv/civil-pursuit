@@ -5,7 +5,9 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo           from 'mungo';
-import sequencer      from '../lib/util/sequencer';
+import sequencer      from 'sequencer';
+
+Mungo.verbosity = 0;
 
 function migrate (...models) {
   return new Promise((ok, ko) => {
@@ -24,36 +26,36 @@ function migrate (...models) {
       Promise.all(promises).then(
         () => {
           fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
-            if ( error ) {
-              throw error;
+
+            try {
+              if ( error ) {
+                throw error;
+              }
+
+              if ( models.length ) {
+                files = files.filter(file => models.indexOf(file) > -1);
+              }
+
+              let promises = files
+                .map(file => () => new Promise((ok, ko) => {
+                  try {
+                    let model = require(
+                      path.resolve(__dirname, `../models/${file}`)
+                    );
+
+                    model.migrate().then(ok, ko);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+              }));
+
+              sequencer(promises)
+                .then(ok, ko);
             }
-
-            if ( models.length ) {
-              files = files.filter(file => models.indexOf(file) > -1);
+            catch ( error ) {
+              ko(error);
             }
-
-            let promises = files
-              .map(file => () => new Promise((ok, ko) => {
-                try {
-                  let model = require(path.resolve(__dirname, `../models/${file}`));
-
-                  model.migrate().then(() => {
-                    ok();
-                  }, ko);
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-            }));
-
-            sequencer(promises)
-              .then(
-                results => {
-
-                   ok();
-                },
-                ko
-              );
 
           });
         },
@@ -74,6 +76,7 @@ if ( process.argv[1] === __filename || process.argv[1] === __filename.replace(/\
   migrate(...args)
     .then(
       () => {
+        console.log('Migrated OK!');
         Mungo.disconnect();
       },
       error => {

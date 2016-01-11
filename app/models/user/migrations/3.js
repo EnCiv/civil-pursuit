@@ -1,20 +1,33 @@
 'use strict';
 
-import Mungo                            from 'mungo';
-import Race                             from '../../race';
-import MaritalStatus                    from '../../marital-status';
-import Employment                       from '../../employment';
-import Education                        from '../../education';
-import PoliticalParty                   from '../../political-party';
-import Country                          from '../../country';
-import State                            from '../../state';
+import Mungo                      from 'mungo';
+import sequencer                  from 'sequencer';
+import Race                       from 'syn/../../dist/models/race';
+import MaritalStatus              from 'syn/../../dist/models/marital-status';
+import Employment                 from 'syn/../../dist/models/employment';
+import Education                  from 'syn/../../dist/models/education';
+import PoliticalParty             from 'syn/../../dist/models/political-party';
+import Country                    from 'syn/../../dist/models/country';
+import State                      from 'syn/../../dist/models/state';
 
-const { mongodb } = Mungo;
+/** <<< MD
+Transform citizenship as object to an array
+===
 
-const collection = 'users';
+Due to an untraced bug, `citizenship` sometimes got a list object instead of
+ an array, ie `{ citizenship : { 0 : Country } }` instead of
+ `{ citizenship : [Country] }`.
 
-class V3 {
-  static schema () {
+So we get documents that have their citizenship as on object
+ and transform them into arrays.
+MD
+*/
+
+class User extends Mungo.Migration {
+
+  static version = 3
+
+  static get schema () {
     return {
       "email"             :     {
         "type"            :     String,
@@ -56,11 +69,14 @@ class V3 {
 
       "activation_token"  :     String,
 
-      "race"              :     [Race],
+      "race"              :     {
+        "type"            :     [Race],
+        "distinct"        :     true
+      },
 
       "gender"            :     {
         "type"            :     String,
-        "validate"        :     value => ['M', 'F', 'O'].indexOf(value) > -1
+        "validate"        :     value => User.gender.indexOf(value) > -1
       },
 
       "married"           :     MaritalStatus,
@@ -84,70 +100,27 @@ class V3 {
       "zip"               :     String,
 
       "zip4"              :     String
-    }
+    };
   }
 
   static do () {
-    return new Promise((ok, ko) => {
-      try {
+    return sequencer([
 
-        Mungo.connections[0]
-          .db.collection(collection)
-          // citizenship should be an array, but sometimes it is an object, bug
-          .find({ citizenship : { $type : 3 } })
-          .limit(0)
-          .toArray()
-          .then(
-            users => {
-              try {
-                if ( ! users.length ) {
-                  return ok();
-                }
-                const updatedUsers = users.map(user => {
-                  user.citizenship = Object.keys(user.citizenship).map(index => user.citizenship[index]);
+      () => this.find({ citizenship : { $type : 3 } }).limit(0),
 
-                  return user;
-                });
+      users => Promise.all(users.map(user => sequencer([
 
-                const undo = users.map(user => ({
-                  _id : user._id,
-                  set : { citizenship : user.citizenship }
-                }));
+        () => user
+          .set('citizenship', Object.keys(user.citizenship).map(index =>
+            user.citizenship[index]
+          ))
+          .save()
 
-                this.create(users, { version : 3 })
-                  .then(
-                    () => {
-                      try {
-                        Mungo.Migration
-                          .create({
-                            collection,
-                            version : 3,
-                            undo
-                          })
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
+      ])))
 
-  static undo () {
-    return Mungo.Migration.undo(this, 3, collection);
+
+    ]);
   }
 }
 
-export default V3;
+export default User;

@@ -1,132 +1,60 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/type/1.json';
-import parents from '../../../../fixtures/type/2.json';
-import harmonies from '../../../../fixtures/type/3.json';
-import Mungo from 'mungo';
+import Mungo                from 'mungo';
+import sequencer            from 'sequencer';
+import types                from 'syn/../../fixtures/type/1.json';
 
-const collection = 'types';
 
-class V2 {
-  static do () {
-    return new Promise((ok, ko) => {
-      try {
-        const createTypes = props => new Promise((ok, ko) => {
-          try {
-            this
-              .create(fixtures.map(fixture => {
-                fixture.__V = 2;
-                return fixture;
-              }))
-              .then(
-                created => {
-                  props.created = created.map(created => created.toJSON());
-                  ok();
-                },
-                ko
-              );
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+/** Create default types
+===
 
-        const applyParents = props => new Promise((ok, ko) => {
-          try {
-            props.created = props.created.map(created => {
-              parents.forEach(parent => {
-                if ( parent.name === created.name ) {
-                  created.parent = props.created.reduce((match, doc) => {
-                      if ( doc.name === parent.parent ) {
-                        match = doc;
-                      }
-                      return match;
-                    },
-                    null
-                  );
-                }
-              });
-              return created;
-            });
+- Use fixtures `types` to create all the types
+*/
 
-            const promises = props.created
-              .filter(created => created.parent)
-              .map(created => this.updateById(created._id, { parent : created.parent }));
+class Type extends Mungo.Migration {
 
-            Promise.all(promises).then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+  static version = 2
 
-        const applyHarmony = props => new Promise((ok, ko) => {
-          try {
-            props.created = props.created.map(created => {
-              harmonies.forEach(harmony => {
-                if ( harmony.name === created.name ) {
-                  created.harmony = props.created.reduce((matches, doc) => {
-                      if ( harmony.harmony.indexOf(doc.name) > -1 ) {
-                        matches.push(doc);
-                      }
-                      return matches;
-                    },
-                    []
-                  );
-                }
-              });
-              return created;
-            });
+  static get schema () {
+    return {
+      "name"        :     {
+        type        :     String,
+        unique      :     true,
+        required    :     true
+      },
 
-            const promises = props.created
-              .filter(created => created.harmony)
-              .map(created => this.updateById(created._id, { harmony : created.harmony }));
+      "harmony"     :     {
+        type        :     [Type],
+        default     :     []
+      },
 
-            Promise.all(promises).then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
-
-        const saveMigrations = props => Mungo.Migration
-          .create({
-            collection,
-            version : 2,
-            created : props.created.map(doc => doc._id)
-          });
-
-        this.find([{ __V : 2 }, { name : 'Intro' }], { limit : false })
-          .then(
-            documents => {
-              try {
-                if ( documents.length ) {
-                  return ok();
-                }
-
-                Mungo.runSequence([
-                  createTypes,
-                  applyParents,
-                  applyHarmony,
-                  saveMigrations
-                ]).then(ok, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
+      "parent"      :     Type
+    };
   }
 
-  static undo () {
-    return Mungo.Migration.undo(this, 2, collection);
+  static do () {
+    return Promise.all(types.map(type => sequencer([
+
+      // see if type already inserted
+
+      () => this.count({ name : type.name }),
+
+      count => new Promise((ok, ko) => {
+        if ( count ) {
+          return ok();
+        }
+
+        sequencer
+          ([
+            () => this.create({ name : type.name }),
+
+            created => this.revert({ remove : { _id : created._id } })
+          ])
+          .then(ok, ko);
+      })
+
+    ])));
   }
 }
 
-export default V2;
+export default Type;

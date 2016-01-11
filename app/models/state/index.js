@@ -5,7 +5,7 @@ import V1                 from './migrations/1';
 import V2                 from './migrations/2';
 
 class State extends Mungo.Model {
-  static schema () {
+  static get schema () {
     return {
       "name" : String
     };

@@ -1,24 +1,21 @@
 'use strict';
 
-import Mungo       from 'mungo';
+import Mungo      from 'mungo';
 import V1         from './migrations/1';
 import V2         from './migrations/2';
 
 class MaritalStatus extends Mungo.Model {
-  static schema () {
-    return {
-      "name" : String
-    };
+
+  static version = 2
+
+  static collection = 'marital_statuses'
+
+  static migrations = {
+    1 : V1,
+    2 : V2
   }
+
+  static schema = { name : String }
 }
-
-MaritalStatus.migrations = {
-  1 : V1,
-  2 : V2
-};
-
-MaritalStatus.version = 2;
-
-MaritalStatus.collection = 'marital_statuses';
 
 export default MaritalStatus;

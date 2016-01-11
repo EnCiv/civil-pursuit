@@ -1,27 +1,24 @@
 'use strict';
 
+import sequencer from 'sequencer';
+import SynError from 'syn/../../dist/lib/app/error';
+
 function get (name) {
-  return new Promise((ok, ko) => {
-    try {
-      this.findOne({ name }).then(
-        config => {
-          try {
-            if ( ! config ) {
-              throw new Error(`No such config by the name of ${name}`);
-            }
-            ok(config.value);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        },
-        ko
+  return sequencer.pipe(
+
+    () => this.findOne({ name }),
+
+    config => new Promise((ok, ko) => {
+      config ? ok(config) : ko(
+        new SynError(
+          `No such config by the name of ${name}`,
+          {},
+          SynError.CONFIG_NOT_FOUND
+        )
       );
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+    })
+
+  );
 }
 
 export default get;

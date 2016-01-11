@@ -1,57 +1,67 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/political-party/1.json';
+import fixtures from 'syn/../../fixtures/political-party/1.json';
 import Mungo from 'mungo';
 
-const collection = 'political_parties';
+/** <<<MD
+Import data from fixtures to DB
+===
 
-class V2 {
+    fixtures = [{ name : String }]
+
+Insert `fixtures` into model's collection
+MD ***/
+
+class PoliticalParty extends Mungo.Migration {
+
+  static version = 2
+
+  static collection = 'political_parties'
+
+  static schema = { name : String }
+
   static do () {
     return new Promise((ok, ko) => {
       try {
-        this.find({ __V : 2 }, { limit : false })
-          .then(
-            documents => {
-              try {
-                if ( documents.length ) {
-                  return ok();
-                }
-                this
-                  .create(fixtures)
-                  .then(
-                    created => {
-                      try {
-                        Mungo.Migration
-                          .create({
-                            collection,
-                            version : 2,
-                            created : created.map(doc => doc._id)
-                          })
-                          .then(ok, ko);
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+
+        // See if collection is empty
+
+        this.count().then(
+          count => {
+
+            // Not empty -- exit
+
+            if ( count ) {
+              return ok();
+            }
+
+            // Insert all fixtures
+
+            this.create(fixtures).then(
+
+              docs =>
+
+                // Save changes in migrations
+
+                Promise.all(docs.map(doc =>
+                  super.revert({ remove : { _id : doc._id } })
+                ))
+
+                // Exit
+
+                .then(ok, ko),
+
+              ko
+            );
+          },
+          ko
+        );
       }
       catch ( error ) {
         ko(error);
       }
     });
   }
-
-  static undo () {
-    return Mungo.Migration.undo(this, 2, collection);
-  }
 }
 
-export default V2;
+export default PoliticalParty;

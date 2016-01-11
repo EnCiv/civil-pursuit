@@ -5,7 +5,15 @@ import V1 from './migrations/1';
 import V2 from './migrations/2';
 
 class Training extends Mungo.Model {
-  static schema () {
+
+  static version = 2
+
+  static migrations = {
+    // 1 : V1,
+    2 : V2
+  }
+
+  static get schema () {
     return {
       element           :   {
         type            :   String,
@@ -41,12 +49,5 @@ class Training extends Mungo.Model {
     };
   }
 }
-
-Training.version = 2;
-
-Training.migrations = {
-  1 : V1,
-  2 : V2
-};
 
 export default Training;

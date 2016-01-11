@@ -1,27 +1,34 @@
 'use strict';
 
-import S                from 'string';
-import Model            from '../../lib/app/model';
-import Is               from '../../lib/util/is';
-import User             from '../user';
-import Type             from '../type';
-import getPopularity    from './methods/get-popularity';
-import toPanelItem      from './methods/to-panel-item';
-import getLineage       from './methods/get-lineage';
-import countHarmony     from './methods/count-harmony';
-import countVotes       from './methods/count-votes';
-import countChildren    from './methods/count-children';
-import generateId       from './statics/id';
-import evaluate         from './statics/evaluate';
-import getPanelItems    from './statics/get-panel-items';
-import getDetails       from './statics/get-details';
-import getUrlTitle      from './statics/get-url-title';
-import saveImage        from './statics/save-image';
-import lambda           from './statics/lambda';
-import V2               from './migrations/2';
+import S                                from 'string';
+import Model                            from '../../lib/app/model';
+import Is                               from '../../lib/util/is';
+import User                             from '../user';
+import Type                             from '../type';
+import getPopularity                    from './methods/get-popularity';
+import toPanelItem                      from './methods/to-panel-item';
+import getLineage                       from './methods/get-lineage';
+import countHarmony                     from './methods/count-harmony';
+import countVotes                       from './methods/count-votes';
+import countChildren                    from './methods/count-children';
+import generateId                       from './hooks/set-id';
+import evaluate                         from './statics/evaluate';
+import getPanelItems                    from './statics/get-panel-items';
+import getDetails                       from './statics/get-details';
+import getUrlTitle                      from './statics/get-url-title';
+import saveImage                        from './statics/save-image';
+import lambda                           from './statics/lambda';
+import V2                               from './migrations/2';
 
 class Item extends Model {
-  static schema () {
+
+  static version = 2
+
+  static migrations = {
+    2 : V2
+  }
+
+  static get schema () {
     return {
       "id"                :   {
         "type"            :   String,
@@ -176,11 +183,5 @@ class Item extends Model {
     return lambda.apply(this, args);
   }
 }
-
-Item.version = 2;
-
-Item.migrations = {
-  2 : V2
-};
 
 export default Item;

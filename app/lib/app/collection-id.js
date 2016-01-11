@@ -8,6 +8,7 @@ function generateShortId (Model) {
       randomString(5)
         .then(
           id => {
+
             try {
 
               Model

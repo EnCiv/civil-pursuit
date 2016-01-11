@@ -1,90 +1,59 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/state/1.json';
+import fixtures from 'syn/../../fixtures/state/1.json';
 import Mungo from 'mungo';
 
-class V2 {
+/** <<<MD
+Import data from fixtures to DB
+===
+
+    fixtures = [{ name : String }]
+
+Insert `fixtures` into model's collection
+MD ***/
+
+class State extends Mungo.Migration {
+
+  static version = 2
+
+  static schema = { name : String }
+
   static do () {
     return new Promise((ok, ko) => {
       try {
-        this.find({ __V : 2 })
-          .then(
-            documents => {
-              try {
-                if ( documents.length ) {
-                  return ok();
-                }
-                this
-                  .create(fixtures)
-                  .then(
-                    created => {
-                      try {
-                        Mungo.Migration
-                          .create({
-                            model : this.name,
-                            collection : this.toCollectionName(),
-                            version : 2,
-                            created : created.map(doc => doc._id)
-                          })
-                          .then(ok, ko);
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
 
-  static undo () {
-    return new Promise((ok, ko) => {
-      try {
-        const getSavedDocuments = props => new Promise((ok, ko) => {
-          try {
-            Mungo.Migration
-              .findOne({
-                model : this.name,
-                collection : this.toCollectionName(),
-                version : 2
-              }, { limit : false })
-              .then(
-                document => {
-                  try {
-                    props.documents = document.created.map(doc => doc._id);
-                    ok();
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
+        // See if collection is empty
 
-            const deleteDocuments = props => this.removeByIds(...props.documents);
+        this.count().then(
+          count => {
 
-            Mungo
-              .runSequence([
-                getSavedDocuments,
-                deleteDocuments
-              ])
-              .then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+            // Not empty -- exit
+
+            if ( count ) {
+              return ok();
+            }
+
+            // Insert all fixtures
+
+            this.create(fixtures).then(
+
+              docs =>
+
+                // Save changes in migrations
+
+                Promise.all(docs.map(doc =>
+                  super.revert({ remove : { _id : doc._id } })
+                ))
+
+                // Exit
+
+                .then(ok, ko),
+
+              ko
+            );
+          },
+          ko
+        );
       }
       catch ( error ) {
         ko(error);
@@ -93,4 +62,4 @@ class V2 {
   }
 }
 
-export default V2;
+export default State;

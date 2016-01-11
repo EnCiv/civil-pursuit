@@ -1,11 +1,19 @@
 'use strict';
 
 import Mungo from 'mungo';
+import sequencer from 'sequencer';
+import parents from 'syn/../../fixtures/type/2.json';
 
-const collection = 'types';
+/** Put parents
+===
+Add parents
+*/
 
-class V3 {
-  static schema () {
+class Type extends Mungo.Migration {
+
+  static version = 3
+
+  static get schema () {
     return {
       "name"        :     {
         type        :     String,
@@ -23,84 +31,33 @@ class V3 {
   }
 
   static do () {
-    return new Promise((ok, ko) => {
-      try {
-        this.find({ __V : 3 }, { limit : false }).then(
-          documents => {
-            try {
-              if ( documents.length ) {
-                return ok();
-              }
-              this.find().then(
-                types => {
-                  try {
-                    const harmony = types
-                      .filter(type => type.harmony && type.harmony.length )
-                      .reduce((harmonies, type) => {
-                        harmonies.push(...(type.harmony));
-                        return harmonies;
-                      }, []);
 
-                    const parents = {};
+    return sequencer([
 
-                    harmony.forEach(harmony => {
-                      const type = types.reduce((match, type) => {
-                        if ( type.harmony.some($harmony => $harmony.equals(harmony)) ) {
-                          match = type;
-                        }
-                        return match;
-                      }, null);
+      () => Promise.all(parents.map(parent => sequencer([
 
-                      parents[harmony] = type._id;
-                    });
+        () => Promise.all([
+          this.findOne({ name : parent.name }),
+          this.findOne({ name : parent.parent })
+        ]),
 
-                    this.updateByIds(harmony, { $unset : 'parent' })
-                      .then(
-                        updated => {
-                          try {
-                            const undo = harmony.map(type => ({
-                              _id : type,
-                              set : { parent : parents[type] }
-                            }));
+        results => Promise.all([
 
-                            Mungo.Migration
-                              .create({
-                                collection,
-                                version : 3,
-                                undo
-                              })
-                              .then(ok, ko);
-                          }
-                          catch ( error ) {
-                            ko(error);
-                          }
-                        },
-                        ko
-                      );
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
+          this.revert({
+            update  : {
+              get   : { _id : results[0]._id },
+              set   : { parent : results[0].parent }
             }
-            catch ( error ) {
-              ko(error);
-            }
-          },
-          ko
-        );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
+          }),
 
-  static undo () {
-    return Mungo.Migration.undo(this, 3, collection);
+          this.updateById(results[0]._id, { parent : results[1] })
+
+        ])
+
+      ]))),
+
+    ]);
   }
 }
 
-export default V3;
+export default Type;

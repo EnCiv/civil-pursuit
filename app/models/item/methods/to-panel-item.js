@@ -1,124 +1,74 @@
 'use strict';
 
 import config             from '../../../../public.json';
+import sequencer          from 'sequencer';
 
 function toPanelItem () {
-  return new Promise((ok, ko) => {
-    try {
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      this
-        .populate()
-        .then(
-          () => {
-            try {
-              this.__populated.type.populate().then(
-                () => {
-                  try {
-                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  return sequencer([
 
-                    const {
-                      _id,              /** ObjectID **/
-                      parent,           /** ObjectID **/
-                      id,               /** String **/
-                      subject,          /** String **/
-                      description,      /** String **/
-                      image,            /** String **/
-                      references,       /** [{ title: String, url: String }] **/
-                      views,            /** Number **/
-                      promotions       /** Number **/
-                    } = this;
+    () => this.populate(),
 
-                    const item = {
-                      _id,
-                      id,
-                      subject,
-                      description,
-                      image,
-                      references,
-                      views,
-                      promotions,
-                      parent
-                    };
+    () => this.$populated.type.populate(),
 
-                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    () => Promise.all([
+      this.getLineage(),
+      this.$populated.type.getSubtype(),
+      this.countVotes(),
+      this.countChildren(),
+      this.countHarmony()
+    ]),
 
-                    item.image        =   item.image || config['default item image'];
+    results => new Promise((ok, ko) => {
+      const {
+        _id,              /** ObjectID **/
+        parent,           /** ObjectID **/
+        id,               /** String **/
+        subject,          /** String **/
+        description,      /** String **/
+        image,            /** String **/
+        references,       /** [{ title: String, url: String }] **/
+        views,            /** Number **/
+        promotions       /** Number **/
+      } = this;
 
-                    item.popularity   =   this.getPopularity();
-                    // item.link         =   `/item/${id}/${toSlug(subject)}`;
+      const item = {
+        _id,
+        id,
+        subject,
+        description,
+        image,
+        references,
+        views,
+        promotions,
+        parent
+      };
 
-                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      item.image        =   item.image || config['default item image'];
+      item.popularity   =   this.getPopularity();
 
-                    Promise
-                      .all([
-                        this.getLineage(),
-                        this.__populated.type.getSubtype(),
-                        this.countVotes(),
-                        this.countChildren(),
-                        this.countHarmony()
-                      ])
-                      .then(
-                        results => {
-                          try {
-                            item.lineage    =   results[0];
-                            item.subtype    =   results[1];
-                            item.votes      =   results[2];
-                            item.children   =   results[3];
-                            item.harmony    =   results[4];
+      item.lineage    =   results[0];
+      item.subtype    =   results[1];
+      item.votes      =   results[2];
+      item.children   =   results[3];
+      item.harmony    =   results[4];
 
-                            // const { harmony } = this.__populated.type.__populated;
-                            //
-                            // if ( harmony ) {
-                            //   this.__populated.type.set('harmony', harmony);
-                            // }
+      item.type       =   this.$populated.type;
 
-                            item.type       =   this.__populated.type;
+      if ( 'harmony' in this.$populated.type.$populated ) {
+        item.harmony.types = this.$populated.type.$populated.harmony;
+      }
 
-                            item.harmony.types = this.__populated.type.__populated.harmony;
+      item.user       =   this.$populated.user;
 
-                            // if ( harmony ) {
-                            //   delete item.type.harmony;
-                            //   item.type.harmony = harmony;
-                            // }
+      if ( typeof item.parent === 'undefined' ) {
+        delete item.parent;
+      }
 
-                            item.user       =   this.__populated.user;
+      ok(item);
+    })
 
-                            if ( typeof item.parent === 'undefined' ) {
-                              delete item.parent;
-                            }
-
-                            ok(item);
-                          }
-                          catch ( error ) {
-                            ko(error);
-                          }
-                        },
-                        ko
-                      );
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
-            }
-            catch ( error ) {
-              ko(error);
-            }
-          },
-          ko
-        );
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    }
-
-    catch ( error ) {
-      ko(error);
-    }
-
-  });
+  ]);
 }
 
 export default toPanelItem;

@@ -1,64 +1,58 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/user/1.json';
-import Mungo from 'mungo';
+import defaultUser    from 'syn/../../fixtures/user/1.json';
+import encrypt        from 'syn/../../dist/lib/util/encrypt';
+import Mungo          from 'mungo';
+import sequencer      from 'sequencer';
 
-const collection = 'users';
+/** <<< MD
+Create default user
+===
+MD
+*/
 
-class V2 {
-  static do () {
+class User extends Mungo.Migration {
+
+  static version = 2
+
+  static get schema () {
+    return {
+      "email"             :     {
+        "type"            :     String,
+        "required"        :     true,
+        "unique"          :     true
+      },
+
+      "password"          :     {
+        "type"            :     String,
+        "required"        :     true,
+        "private"         :     true
+      }
+    }
+  }
+
+  static inserting () {
+    return [
+      this.encryptPassword.bind(this),
+      this.lowerEmail.bind(this)
+    ];
+  }
+
+  static encryptPassword (doc) {
     return new Promise((ok, ko) => {
       try {
-        this
-          .findOne({ email : fixtures[0].email })
-          .then(
-            user => {
-              try {
-                if ( user ) {
-                  return ok();
-                }
-                this
-                  .create(fixtures[0])
-                  .then(
-                    created => {
-                      try {
-                        Mungo.Migration
-                          .create({
-                            collection,
-                            version : 2,
-                            created : [created._id]
-                          })
-                          .then(
-                            () => ok(created),
-                            ko
-                          );
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    error => {
-                      try {
-                        if ( error.code === 11000 ) {
-                          // means item has already called this
-                          ok();
-                        }
-                        else {
-                          ko(error);
-                        }
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    }
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+        encrypt(doc.password).then(
+          hash => {
+            try {
+              doc.set('password', hash);
+              ok();
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
       }
       catch ( error ) {
         ko(error);
@@ -66,9 +60,51 @@ class V2 {
     });
   }
 
-  static undo () {
-    return Mungo.Migration.undo(this, 2, collection);
+  static lowerEmail (doc) {
+    return new Promise((ok, ko) => {
+      try {
+        doc.set('email', doc.email.toLowerCase());
+        ok();
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  static do () {
+    return sequencer([
+      
+      () => this.findOne({ email : defaultUser.email }),
+
+      user => new Promise((ok, ko) => {
+        if ( user ) {
+          return ok();
+        }
+
+        sequencer
+          ([
+
+            ()    =>  this.create(defaultUser),
+
+            user  =>  this.revert({ remove : { _id : user._id } })
+
+          ])
+
+          .then(ok)
+
+          .catch(error => {
+            if ( error.code === 11000 ) {
+              // means item has already called this
+              ok();
+            }
+            else {
+              ko(error);
+            }
+          });
+      })
+    ]);
   }
 }
 
-export default V2;
+export default User;

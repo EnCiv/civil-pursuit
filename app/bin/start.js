@@ -2,13 +2,15 @@
 
 'use strict';
 
-import { EventEmitter }   from    'events';
-import colors             from    'colors';
-import Mungo              from    'mungo';
-import Server             from    '../server';
-import Item               from    '../models/item';
-import Type               from    '../models/type';
-import sequencer          from    '../lib/util/sequencer';
+import { EventEmitter }         from    'events';
+import colors                   from    'colors';
+import Mungo                    from    'mungo';
+import sequencer                from    'sequencer';
+import Server                   from    '../server';
+import Item                     from    '../models/item';
+import Type                     from    '../models/type';
+
+Mungo.verbosity = 0;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,116 +44,71 @@ function start (emitter = false) {
     if ( ! process.env.SYNAPP_ENV ) {
       throw new Error('Missing SYNAPP_ENV');
     }
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    const connectToDB = props => new Promise((ok, ko) => {
-      try {
-        Mungo.connect(process.env.MONGOHQ_URL)
-          .on('error', ko)
-          .on('connected', ok);
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    const getIntroType = props => new Promise((ok, ko) => {
-      try {
-        Type
-          .findOne({ name : 'Intro' })
-          .then(
-            type => {
-              try {
-                if ( ! type ) {
-                  throw new Error('Intro type not found');
-                }
-                props.intro = { type };
-                ok();
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
+    sequencer
+      ([
+
+        // Connect to MongoDB
+
+        () => new Promise((ok, ko) => {
+          Mungo.connect(process.env.MONGOHQ_URL)
+            .on('error', ko)
+            .on('connected', ok);
+        }),
+
+        // Get intro type
+
+        () => Type.findOne({ name : 'Intro' }),
+
+        // Exit if no type found
+
+        type => new Promise((ok, ko) => {
+          if ( ! type ) {
+            return ko(new Error('Intro type not found'));
+          }
+          ok(type);
+        }),
+
+        // Find intro item
+
+        type => Item.findOne({ type }),
+
+        // Exit if no item found
+
+        intro => new Promise((ok, ko) => {
+          if ( ! intro ) {
+            return ko(new Error('Intro item not found'));
+          }
+          ok(intro);
+        }),
+
+        intro => intro.toPanelItem(),
+
+        intro => new Promise((ok, ko) => {
+          try {
+            new Server({ intro })
+              .on('listening', status => {
+                emitter.emit('message', 'HTTP server is listening'.green, status);
+              })
+              .on('error', emitter.emit.bind(emitter, 'error') )
+              .on('message', emitter.emit.bind(emitter, 'message'));
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        })
+      ])
+
+      .then(emitter.emit.bind(emitter, 'message', 'started'))
+
+      .catch(emitter.emit.bind(emitter, 'error'))
+
+
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    const getIntroItem = props => new Promise((ok, ko) => {
-      try {
-        Item
-          .findOne( props.intro )
-          .then(
-            item => {
-              try {
-                if ( ! item ) {
-                  throw new Error('Intro item not found');
-                }
-                item
-                  .toPanelItem()
-                  .then(
-                    item => {
-                      try {
-                        props.intro.item = item;
-                        ok()
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    const startServer = props => new Promise((ok, ko) => {
-      try {
-        new Server({ intro : props.intro.item })
-          .on('listening', status => {
-            console.log('HTTP server is listening'.green, status);
-          })
-          .on('error', error => {
-            console.log('HTTP error'.red.bold, error.stack.yellow);
-          })
-          .on('message', console.log.bind(console));
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    sequencer([
-      connectToDB,
-      getIntroType,
-      getIntroItem,
-      startServer
-    ])
-      .then(
-        emitter.emit.bind(emitter, 'message', 'started'),
-        emitter.emit.bind(emitter, 'error')
-      );
   }
   catch ( error ) {
     emitter.emit('error', error);
@@ -162,6 +119,15 @@ const file = process.argv[1];
 
 if ( file === __filename || file === __filename.replace(/\.js$/, '') ) {
   start()
-    .on('message', message => console.log(message))
-    .on('error', error => {console.log(error.stack.red); process.exit(8)});
+    .on('message', (...messages) => console.log(...messages))
+    .on('error', error => {
+      console.log('Error'.bgRed);
+      if ( error.stack ) {
+        console.log(error.stack.red);
+      }
+      else {
+        console.log(error);
+      }
+      process.exit(8);
+    });
 }

@@ -5,16 +5,22 @@ function sequencer (pipeline = [], locals = {}, afterEach) {
     try {
       let cursor = 0;
 
-      let run = () => {
+      const results = [];
+
+      const run = () => {
         try {
           if ( pipeline[cursor] ) {
             pipeline[cursor](locals).then(
-              () => {
+              result => {
                 try {
+                  results.push(result);
+
                   if ( afterEach ) {
                     afterEach();
                   }
+
                   cursor ++;
+
                   run();
                 }
                 catch ( error ) {
@@ -25,7 +31,7 @@ function sequencer (pipeline = [], locals = {}, afterEach) {
             );
           }
           else {
-            ok(locals);
+            ok(results, locals);
           }
         }
         catch ( error ) {

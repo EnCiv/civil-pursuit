@@ -5,62 +5,70 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo          from 'mungo';
+import sequencer      from 'sequencer';
 import migrate        from './migrate';
 
 function reset (...models) {
-  return new Promise((ok, ko) => {
-    try {
-      const promises = [];
 
+  const dir = path.resolve(__dirname, '../models/');
+
+  return sequencer([
+
+    // Connect to MongoDB if no connection alive
+
+    () => new Promise((ok, ko) => {
       if ( ! Mungo.connections.length ) {
-        promises.push(new Promise((ok, ko) => {
-          Mungo.connect(process.env.MONGOHQ_URL)
-            .on('error', ko)
-            .on('connected', ok);
-        }));
+        Mungo.connect(process.env.MONGOHQ_URL)
+          .on('error', ko)
+          .on('connected', ok);
+      }
+      else {
+        ok();
+      }
+    }),
+
+    // get models from Model directory
+
+    () => sequencer.promisify(fs.readdir, [dir]),
+
+    // Trim down to argument models
+    // Get Models from files
+
+    files => new Promise((ok, ko) => {
+
+      // Trim down
+
+      if ( models.length ) {
+        files = files.filter(file => models.indexOf(file) > -1);
       }
 
-      Promise.all(promises).then(
-        () => {
-          fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
-            if ( error ) {
-              throw error;
-            }
+      // Require models from files
 
-            if ( models.length ) {
-              files = files.filter(file => models.indexOf(file) > -1);
-            }
+      models = files.map(file => require(path.join(dir, file)));
 
-            let promises = files
-              .map(file => new Promise((ok, ko) => {
-                try {
-                  let model = require(path.resolve(__dirname, `../models/${file}`));
+      models.forEach(model => console.log(`Resetting ${model.name}`));
 
-                  model.remove({}, { limit  : false }).then(ok, ko);
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-            }));
+      ok(models);
+    }),
 
-            Promise
-              .all(promises)
-              .then(
-                results => {
-                  migrate(...models).then(ok, ko);
-                },
-                ko
-              );
+    // Empty each model
 
-          });
-        },
-        ko
-      );
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+    models => new Promise((ok, ko) => {
+      Promise
+        .all(models.map(model => model.remove()))
+        .then(() => {
+          console.log('RESET OK!');
+          ok(models)
+        })
+        .catch(ko);
+    }),
+
+    // Migrate each model
+
+    models => migrate(...models)
+
+  ]);
+
 }
 
 export default reset;

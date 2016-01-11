@@ -1,89 +1,54 @@
 'use strict';
 
-import Mungo from 'mungo';
+import Mungo              from 'mungo';
+import sequencer          from 'sequencer';
 
-const collection = 'countries';
+/** Insert a __V attribute to all documents that have not one
+===
+*/
 
-class V1 {
-  static do () {
-    return new Promise((ok, ko) => {
-      try {
-        const documentsWithNoVersion = { __V : { $exists : false } };
+class Type extends Mungo.Migration {
 
-        const findDocumentsWithNoVersion = props => new Promise((ok, ko) => {
-          try {
-            this
-              .find(documentsWithNoVersion, { limit : false })
-              .then(
-                documents => {
-                  try {
-                    props.documentsWithNoVersion = documents;
-                    ok();
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+  static version = 1
 
-        const saveDocumentsWithNoVersion = props => new Promise((ok, ko) => {
-          try {
-            if ( ! props.documentsWithNoVersion.length ) {
-              return ok();
-            }
-            Mungo.Migration
-              .create({
-                collection,
-                version : 1,
-                undo : props.documentsWithNoVersion.map(doc => ({
-                  id : doc._id,
-                  unset : [ '__V' ]
-                }))
-              })
-              .then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+  static get schema () {
+    return {
+      "name"        :     {
+        type        :     String,
+        unique      :     true,
+        required    :     true
+      },
 
-        const tagDocuments = props => new Promise((ok, ko) => {
-          try {
-            if ( ! props.documentsWithNoVersion.length ) {
-              return ok();
-            }
-            this
-              .update(documentsWithNoVersion, { __V : 2 })
-              .then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
+      "harmony"     :     {
+        type        :     [Type],
+        default     :     []
+      },
 
-        Mungo
-          .runSequence([
-            findDocumentsWithNoVersion,
-            saveDocumentsWithNoVersion,
-            tagDocuments
-          ])
-          .then(ok, ko);
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
+      "parent"      :     Type
+    };
   }
 
-  static undo () {
-    return Mungo.Migration.undo(this, 1, collection);
+  static do () {
+    return sequencer([
+
+      // find all untagged documents
+
+      ()    =>  this.find({ __V : { $exists : false } }).limit(false),
+
+      // save documents in migrations for revert
+
+      docs  =>  new Promise((ok, ko) => {
+        Promise.all(docs.map(doc => super.revert(
+          { unset : { fields : ['__V'], get : { _id : doc._id } } }
+        ))).then(() => ok(docs), ko);
+      }),
+
+      // tag documents
+
+      docs  =>  Promise.all(docs.map(doc => doc.set('__V', 1).save()))
+
+    ]);
   }
 }
 
-export default V1;
+export default Type;

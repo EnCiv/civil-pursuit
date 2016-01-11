@@ -7,7 +7,16 @@ import V1                             from './migrations/1';
 import lambda                         from './statics/lambda';
 
 class Feedback extends Mungo.Model {
-  static schema () {
+
+  static version = 2
+
+  static collection = 'feedback'
+
+  static migrations = {
+    1 : V1
+  }
+
+  static get schema () {
     return {
       "item"          :  {
         type          :  Item,
@@ -32,13 +41,5 @@ class Feedback extends Mungo.Model {
     return lambda.apply(this, args);
   }
 }
-
-Feedback.collection = 'feedback';
-
-Feedback.migrations = {
-  1 : V1
-};
-
-Feedback.version = 2;
 
 export default Feedback;

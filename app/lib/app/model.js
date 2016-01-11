@@ -7,7 +7,7 @@ class Model extends Mungo.Model {
   static emit (event, document) {
     return new Promise((ok, ko) => {
       try {
-        emitter.emit(event, this.toCollectionName(), document);
+        emitter.emit(event, this.collection, document);
         ok();
       }
       catch ( error ) {

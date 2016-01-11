@@ -1,14 +1,16 @@
 'use strict';
 
-import fixtures from '../../../../fixtures/type/4.json';
-import harmonies from '../../../../fixtures/type/5.json';
-import Mungo from 'mungo';
-import Type from '../';
+import Mungo          from 'mungo';
+import sequencer      from 'sequencer';
+import harmonies      from 'syn/../../fixtures/type/3.json';
 
-const collection = 'types';
+/** Add harmonies to Type*/
 
-class V4 {
-  static schema () {
+class Type extends Mungo.Migration {
+
+  static version = 4
+
+  static get schema () {
     return {
       "name"        :     {
         type        :     String,
@@ -26,94 +28,38 @@ class V4 {
   }
 
   static do () {
-    return new Promise((ok, ko) => {
-      try {
-        this.findOne({ name : 'Issue' })
-          .then(
-            issue => {
-              try {
-                if ( issue && issue.harmony.length ) {
-                  return ok();
-                }
 
-                let added = false;
+    return sequencer([
 
-                Promise
-                  .all(['Why', 'Why not'].map(split => new Promise((ok, ko) => {
-                    this.findOne({ name : split }).then(
-                      harmony => {
-                        try {
-                          if ( ! harmony ) {
-                            this.create({ name : split }).then(
-                              harmony => {
-                                try {
-                                  added = true;
-                                  issue
-                                    .push('harmony', harmony)
-                                    .save()
-                                    .then(ok, ko);
-                                }
-                                catch ( error ) {
-                                  ko(error);
-                                }
-                              },
-                              ko
-                            );
-                          }
-                          else {
-                            issue
-                              .push('harmony', harmony)
-                              .save()
-                              .then(ok, ko);
-                          }
-                        }
-                        catch ( error ) {
-                          ko(error);
-                        }
-                      },
-                      ko
-                    );
-                  })))
-                    .then(
-                      () => {
-                        try {
-                          if  ( ! added ) {
-                            return ok();
-                          }
-                          Mungo.Migration
-                            .create({
-                              collection,
-                              version : 4,
-                              undo : [{
-                                _id : issue._id,
-                                set : { harmony : [] }
-                              }]
-                            })
-                            .then(ok, ko);
-                        }
-                        catch ( error ) {
-                          ko(error);
-                        }
-                      },
-                      ko
-                    );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
+      // attach harmonies -- if  not yet in DB
 
-  static undo () {
-    return Mungo.Migration.undo(this, 4, collection);
+      () => Promise.all(harmonies.map(harmony => sequencer([
+
+        () => sequencer([
+          () => this.findOne({ name : harmony.name }),
+          () => this.findOne({ name : harmony.harmony[0] }),
+          () => this.findOne({ name : harmony.harmony[1] })
+        ]),
+
+        results => Promise.all([
+
+          this.updateById(results[0]._id,
+            { harmony : [results[1], results[2]] }
+          ),
+
+          this.revert({
+            update    :   {
+              get     :   { _id : results[0]._id },
+              set     :   { harmony : results[0].harmony || this.getSchema().harmony.default }
+            }
+          })
+
+        ])
+
+      ])))
+
+    ]);
   }
 }
 
-export default V4;
+export default Type;

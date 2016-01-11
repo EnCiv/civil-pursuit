@@ -1,12 +1,18 @@
 'use strict';
 
-import collectionId       from '../../../lib/app/collection-id';
-import Mungo              from 'mungo';
+import Mungo from 'mungo';
+import sequencer from 'sequencer';
 
-const collection = 'types';
+/** Remove parent attribute from harmonies
+===
+Harmony type do not need to have a parent anymore, so remove parent field from all harmonies
+*/
 
-class V5 {
-  static schema () {
+class Type extends Mungo.Migration {
+
+  static version = 5
+
+  static get schema () {
     return {
       "name"        :     {
         type        :     String,
@@ -19,70 +25,67 @@ class V5 {
         default     :     []
       },
 
-      "parent"      :     Type,
-
-      "id"          :     String
+      "parent"      :     Type
     };
   }
 
   static do () {
-    return new Promise((ok, ko) => {
-      try {
-        this.find({ id : { $exists : false }, __V : { $lt : 5 } }, { limit : false })
-          .then(
-            documents => {
-              try {
-                if ( ! documents.length ) {
-                  return ok();
-                }
 
-                const undo = [];
-                const promises = [];
+    return sequencer([
 
-                documents.forEach(document => {
+      // get all types
 
-                  undo.push({ _id : document._id, unset : ['id'] });
+      () => this.find().limit(0),
 
-                  promises.push(new Promise((ok, ko) => {
-                    collectionId(this).then(
-                      id => {
-                        document.set('id', id).save().then(ok, ko);
-                      },
-                      ko
-                    );
-                  }));
+      // filter types that are harmonies
 
-                  Promise.all(promises).then(
-                    () => {
-                      Mungo.Migration
-                        .create({
-                          collection,
-                          version : 5,
-                          undo
-                        })
-                        .then(ok, ko);
-                    },
-                    ko
-                  );
+      types => new Promise(ok => {
 
-                });
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
+        // first we create an array of ObjectIDs of types that are harmonies
 
-  static undo () {
-    return Mungo.Migration.undo(this, 5, collection);
+        const harmoniesIds = types
+
+          // get types which have harmonies
+          .filter(type => type.harmony && type.harmony.length)
+
+          // create array of all harmony types
+          .reduce((harmonies, type) => {
+            harmonies.push(...(type.harmony));
+            return harmonies;
+          }, []);
+
+        // Now, using these ids, we find them back in types
+
+
+        const harmonies = types
+          .filter(type => harmoniesIds.some(id => id.equals(type._id)))
+
+          // filter only deprecated harmonies that have parents
+          .filter(harmony => harmony.parent);
+
+        ok(harmonies);
+      }),
+
+      // save changes in migrations
+
+      harmonies => new Promise((ok, ko) => {
+        Promise
+          .all(
+            harmonies
+            .map(harmony => this.revert({ update : {
+              get   : { _id : harmony._id },
+              set   : { parent : harmony.parent }
+            }}))
+          )
+          .then(() => ok(harmonies), ko);
+      }),
+
+      // now apply changes in DB
+
+      harmonies => this.updateByIds(harmonies, { $unset : 'parent' })
+
+    ]);
   }
 }
 
-export default V5;
+export default Type;

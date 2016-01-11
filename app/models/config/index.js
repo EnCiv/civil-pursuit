@@ -15,14 +15,14 @@ class Config extends Mungo.Model {
 
   static collection   =   'config'
 
-  static schema () {
+  static get schema () {
     return        {
       name        :   {
         type      :   String,
         required  :   true,
         unique    :   true
       },
-      value       :   Mungo.Mixed
+      value       :   Mungo.Type.Mixed
     };
   }
 

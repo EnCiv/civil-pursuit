@@ -1,6 +1,8 @@
-[
-  {
-    "name" : "top level type",
-    "value" : "Issue"
+{
+  "config" : {
+    "name" : "top level type"
+  },
+  "type" : {
+    "name" : "Issue"
   }
-]
+}

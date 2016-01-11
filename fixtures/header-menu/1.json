@@ -1,0 +1,31 @@
+[
+  {
+    "title" : "Home",
+    "icon" : "home",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "About",
+    "icon" : "info",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "FAQ",
+    "icon" : "life-ring",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "Blog",
+    "icon" : "rss",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "Contact",
+    "icon" : "fa-paper-plane-o",
+    "link" : "http://synaccord.com"
+  }
+]

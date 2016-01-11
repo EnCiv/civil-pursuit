@@ -12,7 +12,15 @@ import deadlineOverdue            from './hooks/deadline-overdue';
 import discussionNotStartedYet    from './hooks/discussion-not-started-yet';
 
 class Discussion extends Mungo.Model {
-  static schema () {
+
+  static version = 3
+
+  static migrations = {
+    1 : V1,
+    2 : V2
+  }
+
+  static get schema () {
     return {
       "subject"       :   {
         "type"        :   String,
@@ -34,7 +42,7 @@ class Discussion extends Mungo.Model {
         "type"        :   Number,
         "required"    :   true
       },
-      "registered"    :   {
+      "registerd"     :   {
         "type"        :   [User],
         "default"     :   []
       }
@@ -83,12 +91,5 @@ class Discussion extends Mungo.Model {
     return register.apply(this, args);
   }
 }
-
-Discussion.version = 3;
-
-Discussion.migrations = {
-  1 : V1,
-  2 : V2
-};
 
 export default Discussion;

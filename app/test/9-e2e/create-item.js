@@ -8,8 +8,8 @@ import Type                               from '../../models/type';
 import Item                               from '../../models/item';
 import signOut                            from '../.test/util/e2e-sign-out';
 import identify                           from '../.test/util/e2e-identify';
-import isItem                             from 'syn/../../dist/test/assertions/is-item';
-import isItemView                         from 'syn/../../dist/test/assertions/is-item-view';
+import isItem                             from 'syn/../../dist/test/is/item';
+import isItemView                         from 'syn/../../dist/test/is/item-view';
 
 function test(props) {
   const panel   =   '#top-level-panel > .syn-panel';
