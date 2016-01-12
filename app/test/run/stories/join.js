@@ -85,7 +85,7 @@ function test (props = {}) {
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Join form', [ it => {
+      it('Join form', it => {
         it('should be visible', () => new Promise((ok, ko) => {
           client.waitForVisible(locals.joinForm, 2000).then(
             visible => {
@@ -95,11 +95,11 @@ function test (props = {}) {
             ko
           );
         }));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Missing email', [ it => {
+      it('Missing email', it => {
         it('should submit form', () => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -115,11 +115,11 @@ function test (props = {}) {
         }));
 
         it('should fill an invalid email', () => client.setValue(locals.emailInput, 'locals.existingUser.email'));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Missing password', [ it => {
+      it('Missing password', it => {
         it('should submit form', () => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -134,11 +134,11 @@ function test (props = {}) {
           );
         }));
         it('should fill password', () => client.setValue(locals.passwordInput, locals.password));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Missing confirm password', [ it => {
+      it('Missing confirm password', it => {
         it('should submit form', () => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -154,11 +154,11 @@ function test (props = {}) {
         }));
 
         it('should fill confirm password with a value different from password', () => client.setValue(locals.confirmInput, 'locals.password'));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Email must be a valid email address', [ it => {
+      it('Email must be a valid email address', it => {
         it('should submit form', () => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -179,11 +179,11 @@ function test (props = {}) {
         }));
 
         it('should fill an existing email', () => client.setValue(locals.emailInput, locals.existingUser.email));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Passwords do not match', [ it => {
+      it('Passwords do not match', it => {
         it('should submit form', () => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -204,11 +204,11 @@ function test (props = {}) {
         }));
 
         it('should fill confirm password with same value than password', () => client.setValue(locals.confirmInput, locals.password));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Please agree to our terms of service', [ it => {
+      it('Please agree to our terms of service', it => {
         it('should submit form', (ok, ko) => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -229,11 +229,11 @@ function test (props = {}) {
         }));
 
         it('should fill click agree', () => client.click(locals.agreeBox));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('This email address is already taken', [ it => {
+      it('This email address is already taken', it => {
         it('should submit form', (ok, ko) => client.submitForm(locals.joinForm));
 
         it('should have an error message', () => client.waitForVisible(locals.flashError, 1000));
@@ -252,11 +252,11 @@ function test (props = {}) {
             ko
           );
         }));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Valid credentials', [ it => {
+      it('Valid credentials', it => {
         it('should fill a valid new email', () => client.setValue(locals.emailInput, locals.email));
 
         it('should fill a valid new password', () => client.setValue(locals.passwordInput, locals.password));
@@ -304,11 +304,11 @@ function test (props = {}) {
             ko
           );
         }));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Profile page', [ it => {
+      it('Profile page', it => {
         it('wait 2 seconds', () => client.pause(1000 * 2));
 
         it('should be at profile page', () => new Promise((ok, ko) => {
@@ -322,11 +322,11 @@ function test (props = {}) {
             }
           }, ko);
         }));
-      }])
+      })
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Cookie', [ it => {
+      it('Cookie', it => {
         it('should have cookie', () => new Promise((ok, ko) => {
           client.getCookie('synuser').then(cookie => {
             try {
@@ -350,13 +350,13 @@ function test (props = {}) {
             }
           }, ko);
         }));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      it('Leave', [ it => {
+      it('Leave', it => {
         it('should sign out', describe.use(() => signOut(client)));
-      }]);
+      });
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

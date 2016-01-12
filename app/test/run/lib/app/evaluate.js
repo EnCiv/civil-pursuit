@@ -71,7 +71,7 @@ function evaluate (evaluation, user, item, type) {
         locals.evaluate.then(
           results => {
             locals.results = results;
-            // console.log(require('util').inspect(results, { depth: null }));
+            console.log(require('util').inspect(results, { depth: null }));
             ok();
           },
           ko

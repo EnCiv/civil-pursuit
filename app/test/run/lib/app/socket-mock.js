@@ -3,6 +3,7 @@
 import describe           from 'redtea';
 import mock               from 'syn/../../dist/lib/app/socket-mock';
 import Socket             from 'syn/../../dist/lib/app/socket-mockup';
+import testWrapper        from 'syn/../../dist/lib/app/test-wrapper';
 
 function APIMethod (event, message) {
   process.nextTick(() => {
@@ -11,44 +12,49 @@ function APIMethod (event, message) {
 }
 
 function test(props) {
-  const locals = {
-    Socket : new Socket({
-      port : props.port
-    })
-  };
-  return describe('Lib / App / Socket api mockup', it => {
+  return testWrapper(
+    'Lib / App / Socket api mockup',
+    { mongodb : true, http : true },
+    wrappers => it => {
 
-    it('should be a function', (ok, ko) => {
-      mock.should.be.a.Function();
-    });
+      const locals = {
+        Socket : new Socket({
+          port : wrappers.http.app.get('port')
+        })
+      };
 
-    it('should return a promise', () => new Promise((ok, ko) => {
-      locals.promise = mock(
-        locals.Socket,
-        APIMethod.bind(locals.Socket),
-        'test',
-        'hello'
-      );
-      locals.promise.should.be.an.instanceOf(Promise);
-      ok();
-    }));
+      it('should be a function', (ok, ko) => {
+        mock.should.be.a.Function();
+      });
 
-    it('should listen', () => new Promise((ok, ko) => {
-      try {
-        locals.promise.then(
-          (...messages) => {
-            messages[0].should.be.exactly('hello');
-            ok();
-          },
-          ko
+      it('should return a promise', () => new Promise((ok, ko) => {
+        locals.promise = mock(
+          locals.Socket,
+          APIMethod.bind(locals.Socket),
+          'test',
+          'hello'
         );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    }));
+        locals.promise.should.be.an.instanceOf(Promise);
+        ok();
+      }));
 
-  });
+      it('should listen', () => new Promise((ok, ko) => {
+        try {
+          locals.promise.then(
+            (...messages) => {
+              messages[0].should.be.exactly('hello');
+              ok();
+            },
+            ko
+          );
+        }
+        catch ( error ) {
+          ko(error);
+        }
+      }));
+
+    }
+  );
 }
 
 export default test;

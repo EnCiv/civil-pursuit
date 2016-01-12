@@ -1,109 +1,108 @@
 'use strict';
 
-import User from '../../user';
-import Type from '../../type';
+import sequencer from 'sequencer';
+import User from 'syn/../../dist/models/user';
+import Type from 'syn/../../dist/models/type';
+import shuffleArray from 'syn/../../dist/lib/util/shuffle-array';
 
 function lambda (options = {}) {
+
   return new Promise((ok, ko) => {
     try {
-      const item = {
-        subject : options.subject || 'This is a lambda item',
-        description : options.description || "This is a lambda item's description"
-      };
 
-      if ( ( 'image' in options ) ) {
-        item.image = options.image;
-      }
+      sequencer(
 
-      if ( 'reference' in options ) {
-        item.references = [{ url : options.reference.url }];
-      }
+        // Subject
 
-      if ( 'parent' in options ) {
-        item.parent = options.parent;
-      }
-
-      Promise.all([
-        new Promise((ok, ko) => {
-          try {
-            if ( options.user ) {
-              item.user = options.user;
-              return ok();
-            }
-            User.findOneRandom().then(
-              user => {
-                try {
-                  item.user = user;
-                  ok();
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-              },
-              ko
-            );
-          }
-          catch ( error ) {
-            ko(error);
-          }
+        () => new Promise((ok, ko) => {
+          ok({ subject : options.subject || 'This is a lambda item' })
         }),
 
-        new Promise((ok, ko) => {
-          try {
-            if ( options.type ) {
-              item.type = options.type;
+        // Description
 
-              if ( ! options.subject ) {
-                item.subject += ' of type ' + ( item.type.name || item.type );
+        () => new Promise((ok, ko) => {
+          ok({ description : options.description || "This is a lambda item's description" });
+        }),
+
+        // Image
+
+        () => new Promise((ok, ko) => {
+          ok(( 'image' in options ) ? { image : options.image } : {});
+        }),
+
+        // Reference
+
+        () => new Promise((ok, ko) => {
+          ok(( 'reference' in options ) ? { reference : [options.reference] } : {});
+        }),
+
+        // Parent
+
+        () => new Promise((ok, ko) => {
+          ok(( 'parent' in options ) ? { parent : options.parent } : {});
+        }),
+
+        // User
+
+        () => new Promise((ok, ko) => {
+          if ( options.user ) {
+            return ok({ user : options.user });
+          }
+          User
+            .lambda()
+            .then(user => ok({ user }))
+            .catch(ko);
+        }),
+
+        // Type
+
+        () => new Promise((ok, ko) => {
+          if ( options.type ) {
+            return ok({ type : options.type });
+          }
+          Type
+            .group(
+              'test-item-model-lambda-parent',
+              'test-item-model-lambda-subtype',
+              'test-item-model-lambda-pro',
+              'test-item-model-lambda-con'
+            )
+            .then(group => {
+              let random = shuffleArray([0, 1, 2, 3])[0];
+
+              if ( random === 0 ) {
+                return ok({ type : group.parent });
               }
 
-              return ok();
-            }
-            Type.findOneRandom().then(
-              type => {
-                try {
-                  item.type = type;
+              let type;
 
-                  if ( ! type.parent ) {
-                    return ok();
-                  }
+              switch ( random ) {
+                case 1 : type = group.subtype; break;
+                case 2 : type = group.pro; break;
+                case 3 : type = group.con; break;
+              }
 
-                  this.findOneRandom({ type : type.parent }).then(
-                    parent => {
-                      try {
-                        item.parent = parent;
-                        ok();
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-                }
-                catch ( error ) {
-                  ko(error);
-                }
-              },
-              ko
-            );
-          }
-          catch ( error ) {
-            ko(error);
-          }
+              this
+                .lambda({ type : group.parent })
+                .then(item => {
+                  ok({ parent : item, type })
+                })
+                .catch(ko);
+            })
+            .catch(ko);
         })
-      ])
-      .then(
-        results => {
-          try {
-            this.create(item).then(ok, ko);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        },
-        ko
-      );
+
+      )
+
+      .then(results => {
+        let item = {};
+
+        results.forEach(result => Object.assign(item, result));
+
+        this.create(item).then(ok, ko);
+      })
+
+      .catch(ko);
     }
     catch ( error ) {
       ko(error);

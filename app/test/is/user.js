@@ -8,9 +8,10 @@ import isDocument     from './document';
 import isRace         from './race';
 import isObjectID     from './object-id';
 
-function isUser (user, compare = {}, serialized = false) {
+function isUser (user = {}, compare = {}, serialized = false) {
 
-  return it => {
+  return it => {  
+
     it(serialized ? 'should be serialized' : 'should not be serialized', () => {});
 
     it('should be a document', describe.use(() => isDocument(user, compare, serialized)));

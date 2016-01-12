@@ -375,12 +375,15 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
       }]);
     }]);
 
-    it('user', [ it => {
+    it('user', it => {
+
+      console.log('USER', panelItem.user);
+
       it('should have user', (ok, ko) => {
         panelItem.should.have.property('user');
       });
       it('should be a user', describe.use(() => isUser(panelItem.user, locals.user, serialized)));
-    }]);
+    });
 
   };
 }

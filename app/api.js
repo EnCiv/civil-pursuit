@@ -43,6 +43,7 @@ class API extends EventEmitter {
 
   disconnect () {
     return new Promise((ok, ko) => {
+
       this.unlistenToDB();
 
       if ( ! this.sockets.length ) {
@@ -50,8 +51,12 @@ class API extends EventEmitter {
       }
 
       const promises = this.sockets.map(socket => new Promise((ok, ko) => {
+        if ( ! socket.connected ) {
+          return ok();
+        }
+
         socket
-          .on('disconnect', ok)
+          .on('disconnect',ok)
           .disconnect(true);
       }));
 
@@ -206,6 +211,9 @@ class API extends EventEmitter {
       this.sockets.push(socket);
 
       socket.on('error', error => this.emit('error', error));
+
+      socket.on('disconnect', () => {
+      });
 
       this.emit('message', 'new socket connexion');
 
