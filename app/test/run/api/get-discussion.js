@@ -84,7 +84,7 @@ function test (props) {
         }));
 
         it('should be no discussion', (ok, ko) => {
-          should(locals.discussion).be.null();
+          should(locals.discussion).be.undefined();
         });
       }]);
     }

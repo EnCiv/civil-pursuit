@@ -23,7 +23,7 @@ function test (props = {}) {
   return testWrapper(
     'E2E / Join',
 
-    { mongodb : true, http : true, driver : true },
+    { mongodb : true, http : { verbose : true }, driver : true },
 
     wrappers => it => {
 

@@ -12,12 +12,16 @@ function isType (type, compare = {}, serialized = false) {
   return it => {
     it(serialized ? 'should be serialized' : 'should not be serialized', () => {});
 
-    it('should be a document', describe.use(() => isDocument(type, compare, serialized)));
-
     if ( ! serialized ) {
       it('should be a type', (ok, ko) => {
         type.should.be.an.instanceof(Type);
       });
+
+      it('should be a document', describe.use(() => isDocument(type, compare, serialized)));
+    }
+
+    else {
+      it('should be an object', () => type.should.be.an.Object());
     }
 
     it('name', it => {
@@ -57,7 +61,7 @@ function isType (type, compare = {}, serialized = false) {
 
       type.harmony.forEach(harmony =>
         it('harmony should be an Object ID',
-          describe.use(() => isObjectID(harmony))
+          describe.use(() => isObjectID(harmony, null, serialized))
         )
       );
     }

@@ -96,11 +96,15 @@ function testWrapper (name, options = {}, test) {
                   console.log(error);
                   ko(error);
                 })
-                // .on('message', console.log.bind(console, 'message'))
                 .on('listening', status => {
                   console.log('HTTP server listening'.green, status);
                   ok();
                 });
+
+              if ( typeof options.http === 'object' && options.http.verbose ) {
+                locals.http
+                  .on('message', console.log.bind(console, 'server message'));
+              }
             })
           );
         });
