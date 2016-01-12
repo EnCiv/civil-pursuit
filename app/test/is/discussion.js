@@ -9,6 +9,7 @@ import isObjectId                   from './object-id';
 
 function isDiscussion (discussion, compare = {}, serialized = false) {
   return it => {
+
     it(serialized ? 'should be serialized' : 'should not be serialized', () => {});
 
     it('should be a document', describe.use(() => isDocument(discussion, compare, serialized)));

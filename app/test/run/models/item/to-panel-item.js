@@ -5,6 +5,7 @@ import should                 from 'should';
 import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
 import Item                   from 'syn/../../dist/models/item';
 import Type                   from 'syn/../../dist/models/type';
+import isPanelItem            from 'syn/../../dist/test/is/panel-item';
 
 function testItemToPanelItem (props) {
 
@@ -45,7 +46,9 @@ function testItemToPanelItem (props) {
               .then(panelItem => { locals.panelItem = panelItem })
           );
 
-          it('dump', () => { console.log(locals.panelItem) });
+          it('is a panel item',
+            describe.use(() => isPanelItem(locals.panelItem, locals.parent))
+          );
         });
       });
 

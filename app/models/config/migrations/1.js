@@ -46,25 +46,21 @@ class Config extends Mungo.Migration {
   }
 
   static get (name) {
-    return new Promise((ok, ko) => {
-      sequencer(
+    return sequencer.pipe(
 
-        () => this.findOne({ name }),
+      () => this.findOne({ name }),
 
-        config => new Promise((ok, ko) => {
-          config ? ok(config) : ko(
-            new SynError(
-              `No such config by the name of ${name}`,
-              {},
-              SynError.CONFIG_NOT_FOUND
-            )
-          );
-        })
+      config => new Promise((ok, ko) => {
+        config ? ok(config.value) : ko(
+          new SynError(
+            `No such config by the name of ${name}`,
+            {},
+            SynError.CONFIG_NOT_FOUND
+          )
+        );
+      })
 
-      )
-      .then(results => ok(results.getLast()))
-      .catch(ko);
-    });
+    );
   }
 
   static do () {

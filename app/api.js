@@ -26,16 +26,7 @@ class API extends EventEmitter {
           this.on('error', this.server.emit.bind(server, 'error'));
           this.on('message', this.server.emit.bind(server, 'message'));
 
-          emitter.on('update', (collection, document) => {
-            if ( collection === 'items' ) {
-              document.toPanelItem().then(
-                item => {
-                  this.sockets.forEach(socket => socket.emit('item changed', item));
-                },
-                this.emit.bind(this, 'error')
-              );
-            }
-          });
+          this.listenToDB();
 
           this.fetchHandlers()
             .then(
@@ -48,6 +39,49 @@ class API extends EventEmitter {
         }
       });
     }
+  }
+
+  disconnect () {
+    return new Promise((ok, ko) => {
+      this.unlistenToDB();
+
+      if ( ! this.sockets.length ) {
+        return ok();
+      }
+
+      const promises = this.sockets.map(socket => new Promise((ok, ko) => {
+        socket
+          .on('disconnect', ok)
+          .disconnect(true);
+      }));
+
+      Promise.all(promises).then(
+        results => {
+          // this.io.close(closed => console.log('{ closed }'));
+          ok();
+        },
+        ko
+      );
+    });
+  }
+
+  listenToDBUpdates (collection, document) {
+    if ( collection === 'items' ) {
+      document.toPanelItem().then(
+        item => {
+          this.sockets.forEach(socket => socket.emit('item changed', item));
+        },
+        this.emit.bind(this, 'error')
+      );
+    }
+  }
+
+  listenToDB () {
+    emitter.on('update', this.listenToDBUpdates.bind(this));
+  }
+
+  unlistenToDB () {
+    emitter.removeListener('update', this.listenToDBUpdates.bind(this));
   }
 
   fetchHandlers () {

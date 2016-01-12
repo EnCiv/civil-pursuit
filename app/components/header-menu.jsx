@@ -1,6 +1,8 @@
 'use strict';
 
 import React from 'react';
+import menus from 'syn/../../fixtures/header-menu/1.json';
+import Icon from 'syn/../../dist/components/util/icon';
 
 class HeaderMenu extends React.Component {
 
@@ -29,43 +31,19 @@ class HeaderMenu extends React.Component {
   }
 
   render () {
+    const menusViews = menus.map(menu => (
+      <li>
+        <a href={ menu.link }>
+          <Icon icon={ menu.icon } />
+          <span> { menu.title }</span>
+        </a>
+      </li>
+    ));
+
     return (
       <section id="syn-header-menu" ref="header-menu">
         <ul>
-          <li>
-            <a href="">
-              <i className="fa fa-home"></i>
-              <span> Home</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="">
-              <i className="fa fa-info"></i>
-              <span> About</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="">
-              <i className="fa fa-life-ring"></i>
-              <span> FAQ</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="">
-              <i className="fa fa-rss"></i>
-              <span> Blog</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="">
-              <i className="fa fa-paper-plane-o"></i>
-              <span> Contact</span>
-            </a>
-          </li>
+          { menusViews }
         </ul>
       </section>
     );

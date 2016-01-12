@@ -9,7 +9,7 @@ function get (name) {
     () => this.findOne({ name }),
 
     config => new Promise((ok, ko) => {
-      config ? ok(config) : ko(
+      config ? ok(config.value) : ko(
         new SynError(
           `No such config by the name of ${name}`,
           {},

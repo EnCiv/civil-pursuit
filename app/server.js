@@ -34,6 +34,10 @@ import API                      from './api';
 
 class HttpServer extends EventEmitter {
 
+  sockets = {}
+
+  nextSocketId = 0
+
   constructor (props) {
     super();
 
@@ -408,6 +412,36 @@ class HttpServer extends EventEmitter {
       this.socketAPI = new API(this)
         .on('error', error => this.emit('error', error))
         .on('message', this.emit.bind(this, 'message'));
+    });
+
+    this.server.on('connection', socket => {
+      // Add a newly connected socket
+      const socketId = this.nextSocketId++;
+      this.sockets[socketId] = socket;
+
+      // Remove the socket when it closes
+      socket.on('close', () => {
+        delete this.sockets[socketId];
+      });
+
+      // Extend socket lifetime for demo purposes
+      // socket.setTimeout(4000);
+    });
+  }
+
+  stop () {
+    return new Promise((ok, ko) => {
+      this.socketAPI.disconnect().then(
+        () => {
+          this.server.close(ok);
+
+          for (let socketId in this.sockets) {
+            console.log('socket', socketId, 'destroyed');
+            this.sockets[socketId].destroy();
+          }
+        },
+        ko
+      );
     });
   }
 

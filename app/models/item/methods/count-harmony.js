@@ -4,7 +4,7 @@ import sequencer          from 'sequencer';
 import calcHarmony        from '../../../lib/app/get-harmony';
 
 function countHarmony () {
-  return sequencer([
+  return sequencer.pipe(
 
     // populate type if not $populated
 
@@ -13,6 +13,7 @@ function countHarmony () {
         if ( this.$populated.type ) {
           return ok();
         }
+
         this.populate('type').then(ok, ko);
       }
       catch ( error ) {
@@ -20,10 +21,22 @@ function countHarmony () {
       }
     }),
 
+    // populate harmony
+
+    () => new Promise((ok, ko) => {
+      if ( this.$populated.type.$populated.harmony ) {
+        return ok();
+      }
+
+      this.$populated.type.populate().then(ok, ko);
+
+    }),
+
     // count harmony
 
     () => Promise.all(
       (this.$populated.type.harmony || []).map(side => new Promise((ok, ko) => {
+
         try {
           if ( side ) {
             this
@@ -46,14 +59,20 @@ function countHarmony () {
 
     results => new Promise((ok, ko) => {
       try {
-        ok(calcHarmony(...results));
+
+        ok({
+          harmony : calcHarmony(...results),
+          pro : results[0],
+          con : results[1],
+          types : this.$populated.type.$populated.harmony
+        });
       }
       catch ( error ) {
         ko(error);
       }
     })
 
-  ]);
+  );
 };
 
 export default countHarmony;

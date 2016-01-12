@@ -24,9 +24,9 @@ function checkTypes (pro, con, types, serialized) {
       });
     }
     else {
-      it('type has no harmony', [ it => {
-        it('should be undefined', () => should(types).be.undefined());
-      }]);
+      it('type has no harmony', it => {
+        it('should be []', () => types.should.be.an.Array().and.have.length(0));
+      });
     }
   }
 }
@@ -161,8 +161,6 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
     if ( 'references' in panelItem ) {
       it('references', it => {
 
-        console.log(panelItem);
-
         it('should have references which is an array', () => panelItem.should.have.property('references').which.is.an.Array());
 
         if ( panelItem.references.length ) {
@@ -276,7 +274,12 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
 
       if ( ! panelItem.subtype ) {
         it('should be null', (ok, ko) => {
-          should(locals.subtype).be.null();
+          try {
+            should(locals.subtype).be.null();
+          }
+          catch ( error ) {
+            should(locals.subtype).be.undefined();
+          }
         });
       }
       else {

@@ -42,7 +42,7 @@ class Discussion extends Mungo.Model {
         "type"        :   Number,
         "required"    :   true
       },
-      "registerd"     :   {
+      "registered"    :   {
         "type"        :   [User],
         "default"     :   []
       }

@@ -136,7 +136,7 @@ function testType6 (props) {
 
             it('setter should be null harmony', () => {
               locals.migrations.forEach(mig => {
-                should(mig.update.set.harmony).be.null();
+                should(mig.update.set.harmony).be.Array().and.have.length(0);
               });
             });
 
@@ -158,7 +158,7 @@ function testType6 (props) {
 
           it('parent should have a null harmony', () => {
             locals.parent.should.have.property('harmony')
-              .which.is.null();
+              .which.is.an.Array().and.have.length(0);
           });
         });
 

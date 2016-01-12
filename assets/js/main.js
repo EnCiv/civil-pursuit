@@ -1114,7 +1114,7 @@ var Creator = (function (_React$Component) {
 
         ss(window.socket).emit('upload image', stream, { size: this.file.size, name: this.file.name });
 
-        ss.createBlobReadStream(this.file).pipe(stream);
+        ss.createBlobReadStream(this.file)(stream);
 
         stream.on('end', function () {
           item.image = _this3.file.name;
@@ -2316,6 +2316,14 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _synFixturesHeaderMenu1Json = require('syn/../../fixtures/header-menu/1.json');
+
+var _synFixturesHeaderMenu1Json2 = _interopRequireDefault(_synFixturesHeaderMenu1Json);
+
+var _synDistComponentsUtilIcon = require('syn/../../dist/components/util/icon');
+
+var _synDistComponentsUtilIcon2 = _interopRequireDefault(_synDistComponentsUtilIcon);
+
 var HeaderMenu = (function (_React$Component) {
   _inherits(HeaderMenu, _React$Component);
 
@@ -2328,82 +2336,31 @@ var HeaderMenu = (function (_React$Component) {
   _createClass(HeaderMenu, [{
     key: 'render',
     value: function render() {
+      var menusViews = _synFixturesHeaderMenu1Json2['default'].map(function (menu) {
+        return _react2['default'].createElement(
+          'li',
+          null,
+          _react2['default'].createElement(
+            'a',
+            { href: menu.link },
+            _react2['default'].createElement(_synDistComponentsUtilIcon2['default'], { icon: menu.icon }),
+            _react2['default'].createElement(
+              'span',
+              null,
+              ' ',
+              menu.title
+            )
+          )
+        );
+      });
+
       return _react2['default'].createElement(
         'section',
         { id: 'syn-header-menu', ref: 'header-menu' },
         _react2['default'].createElement(
           'ul',
           null,
-          _react2['default'].createElement(
-            'li',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '' },
-              _react2['default'].createElement('i', { className: 'fa fa-home' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Home'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'li',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '' },
-              _react2['default'].createElement('i', { className: 'fa fa-info' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' About'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'li',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '' },
-              _react2['default'].createElement('i', { className: 'fa fa-life-ring' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' FAQ'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'li',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '' },
-              _react2['default'].createElement('i', { className: 'fa fa-rss' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Blog'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'li',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '' },
-              _react2['default'].createElement('i', { className: 'fa fa-paper-plane-o' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Contact'
-              )
-            )
-          )
+          menusViews
         )
       );
     }
@@ -2437,7 +2394,7 @@ var HeaderMenu = (function (_React$Component) {
 
 exports['default'] = HeaderMenu;
 module.exports = exports['default'];
-},{"react":"/home/francois/Dev/syn/node_modules/react/react.js"}],"/home/francois/Dev/syn/dist/components/home.js":[function(require,module,exports){
+},{"react":"/home/francois/Dev/syn/node_modules/react/react.js","syn/../../dist/components/util/icon":"/home/francois/Dev/syn/dist/components/util/icon.js","syn/../../fixtures/header-menu/1.json":"/home/francois/Dev/syn/fixtures/header-menu/1.json"}],"/home/francois/Dev/syn/dist/components/home.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7728,7 +7685,7 @@ var Uploader = (function (_React$Component) {
 
       ss(window.socket).emit('upload image', stream, { size: file.size, name: file.name });
 
-      ss.createBlobReadStream(file).pipe(stream);
+      ss.createBlobReadStream(file)(stream);
 
       stream.on('end', function () {
 
@@ -11145,6 +11102,39 @@ function makeProps() {
 
 exports['default'] = makeProps;
 module.exports = exports['default'];
+},{}],"/home/francois/Dev/syn/fixtures/header-menu/1.json":[function(require,module,exports){
+module.exports=[
+  {
+    "title" : "Home",
+    "icon" : "home",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "About",
+    "icon" : "info",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "FAQ",
+    "icon" : "life-ring",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "Blog",
+    "icon" : "rss",
+    "link" : "http://synaccord.com"
+  },
+
+  {
+    "title" : "Contact",
+    "icon" : "paper-plane-o",
+    "link" : "http://synaccord.com"
+  }
+]
+
 },{}],"/home/francois/Dev/syn/node_modules/component-emitter/index.js":[function(require,module,exports){
 
 /**
@@ -37736,7 +37726,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/public.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"

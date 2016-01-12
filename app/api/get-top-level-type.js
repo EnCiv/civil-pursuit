@@ -6,11 +6,14 @@ import Config from '../models/config';
 
 function getTopLevelType (event) {
   try {
+    console.log('new API event', event);
+
     Config
       .get('top level type')
       .then(
         value => {
           try {
+            console.log('Config said', value);
             Type
               .findById(value)
               .then(
