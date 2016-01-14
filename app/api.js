@@ -8,6 +8,7 @@ import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
 import ss                 from 'socket.io-stream';
+import sequencer          from 'sequencer';
 import emitter            from './lib/app/emitter';
 
 class API extends EventEmitter {
@@ -22,9 +23,6 @@ class API extends EventEmitter {
           this.users = [];
           this.handlers = {};
           this.sockets = [];
-
-          this.on('error', this.server.emit.bind(server, 'error'));
-          this.on('message', this.server.emit.bind(server, 'message'));
 
           this.listenToDB();
 
@@ -90,42 +88,30 @@ class API extends EventEmitter {
   }
 
   fetchHandlers () {
-    return new Promise((ok, ko) => {
-      try {
-        fs.readdir(path.join(__dirname, 'api'), (error, files) => {
-          try {
-            if ( error ) {
-              throw error;
-            }
+    return sequencer(
 
-            files.forEach(file => {
-              const name      =   S(file.replace(/\.js$/, ''))
-                .humanize()
-                .s
-                .toLowerCase();
+      () => sequencer.promisify(fs.readdir, [path.join(__dirname, 'api')]),
 
-              const handler   =   require('./api/' + file);
+      files => Promise.all(files.map(file => new Promise((ok, ko) => {
+        const name      =   S(file.replace(/\.js$/, ''))
+          .humanize()
+          .s
+          .toLowerCase();
 
-              if ( typeof handler !== 'function' ) {
-                throw new Error(`API handler ${name} (${file}) is not a function`);
-              }
+        const handler   =   require('./api/' + file);
 
-              this.handlers[name] = handler;
+        if ( typeof handler !== 'function' ) {
+          throw new Error(`API handler ${name} (${file}) is not a function`);
+        }
 
-              this.handlers[name].slugName = file.replace(/\.js$/, '');
-            });
+        this.handlers[name] = handler;
 
-            ok();
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        });
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
+        this.handlers[name].slugName = file.replace(/\.js$/, '');
+
+        ok();
+      })))
+
+    );
   }
 
   start () {
@@ -206,7 +192,9 @@ class API extends EventEmitter {
   connected (socket) {
     try {
 
-      this.emit('message', { socket });
+      this.emit('message', { 'new socket' :
+        { id : socket.id, synuser : socket.synuser }
+      });
 
       this.sockets.push(socket);
 
@@ -223,7 +211,8 @@ class API extends EventEmitter {
       socket.emit('online users', this.users.length);
 
       socket.ok = (event, ...responses) => {
-        this.emit('message', '>>>'.green.bold, event.green.bold, ...responses);
+        const formatted = responses.map(res => JSON.stringify(res).magenta);
+        this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
         socket.emit('OK ' + event, ...responses);
       };
 
@@ -232,9 +221,10 @@ class API extends EventEmitter {
       };
 
       for ( let handler in this.handlers ) {
-        socket.on(handler, (...messages) =>
-          this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...messages)
-        );
+        socket.on(handler, (...messages) => {
+          const formatted = messages.map(res => JSON.stringify(res).grey);
+          this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...formatted)
+        });
         socket.on(handler, this.handlers[handler].bind(socket, handler));
       }
 
