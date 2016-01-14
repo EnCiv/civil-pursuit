@@ -127,13 +127,13 @@ function testType4 (props) {
               }
             );
 
-            it('all setters should have an mepty array as harmony',
+            it('all setters should have empty array as harmony',
               () => {
                 locals.migrations.forEach(migration =>
                   migration.update.set
                     .should.have.property('harmony')
                     .which.is.an.Array()
-                    .which.have.length(0)
+                    .and.have.length(0)
                 );
               }
             );

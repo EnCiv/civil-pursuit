@@ -59,8 +59,6 @@ function toPanelItem () {
         item.harmony.types = this.$populated.type.$populated.harmony;
       }
 
-      console.log('USER USER USER', this.$populated);
-
       item.user       =   this.$populated.user;
 
       if ( typeof item.parent === 'undefined' ) {

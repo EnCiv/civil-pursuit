@@ -1,22 +1,24 @@
 'use strict';
 
-import User from '../../../models/user';
+import User from 'syn/../../dist/models/user';
 
-function identify(client) {
-  const locals = {};
+function identify(client, user) {
+  const locals = { user : user };
 
   client.foo = true;
 
   return it => {
-    it('should create a User to sign in with', () => new Promise((ok, ko) => {
-      User.lambda().then(
-        user => {
-          locals.user = user;
-          ok();
-        },
-        ko
-      );
-    }));
+    if ( ! locals.user ) {
+      it('should create a User to sign in with', () => new Promise((ok, ko) => {
+        User.lambda().then(
+          user => {
+            locals.user = user;
+            ok();
+          },
+          ko
+        );
+      }));
+    }
 
     it('should set cookie', () => new Promise((ok, ko) => {
       client.setCookie({

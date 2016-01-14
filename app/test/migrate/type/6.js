@@ -134,9 +134,10 @@ function testType6 (props) {
               });
             });
 
-            it('setter should be null harmony', () => {
+            it('setter should be empty array harmony', () => {
               locals.migrations.forEach(mig => {
-                should(mig.update.set.harmony).be.Array().and.have.length(0);
+                should(mig.update.set.harmony).be.an.Array()
+                  .and.have.length(0);
               });
             });
 

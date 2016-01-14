@@ -7,6 +7,8 @@ function createItem (event, item) {
     // item.type = item.type._id || item.type;
     item.user = this.synuser.id;
 
+    console.log('Creating item', item);
+
     Item.create(item).then(
       item => {
         try {

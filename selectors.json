@@ -3,7 +3,8 @@
   "create" : {
     "toggle" : ".toggle-creator",
     "form" : "form[name=\"creator\"]",
-    "subject" : "input[name=\"subject\"]"
+    "subject" : "input[name=\"subject\"]",
+    "description" : "textarea[name=\"description\"]"
   },
   "panel" : {
     "heading" : ".syn-panel-heading",

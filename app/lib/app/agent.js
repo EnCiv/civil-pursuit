@@ -48,7 +48,7 @@ class Agent {
         const pipe = fs.createWriteStream(dest);
         this
           .request(url, options)
-          (pipe)
+          .pipe(pipe)
           .on('error', error => ko)
           .on('finish', ok);
       }

@@ -93,6 +93,11 @@ function testWrapper (name, options = {}, test) {
 
               locals.http
                 .on('error', error => {
+                  console.log('Server error');
+                  if ( error.stack ) {
+                    console.log(error.stack);
+                  }
+                  console.log('Error has no stack!');
                   console.log(error);
                   ko(error);
                 })
