@@ -19,7 +19,7 @@ function testType2 (props) {
   };
 
   return testWrapper(
-    'Config Model -> Migrations -> 1',
+    'Models -> Config -> Migrations -> 1',
     {
       mongodb : {
         migrate : false
