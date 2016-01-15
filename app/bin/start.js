@@ -9,6 +9,7 @@ import sequencer                from    'sequencer';
 import Server                   from    '../server';
 import Item                     from    '../models/item';
 import Type                     from    '../models/type';
+import AppError                 from    '../models/app-error';
 
 Mungo.verbosity = 0;
 
@@ -128,6 +129,7 @@ if ( file === __filename || file === __filename.replace(/\.js$/, '') ) {
       else {
         console.log(error);
       }
-      process.exit(8);
+      AppError.throwError(error);
+      // process.exit(8);
     });
 }
