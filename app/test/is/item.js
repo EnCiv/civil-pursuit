@@ -114,14 +114,9 @@ function isItem (item, compare = {}, serialized = false, populated = []) {
         }
 
         if ( 'references' in compare && compare.references.length ) {
-          it('should have the same references than item', (ok, ko) => {
-            try {
-              item.references[0].url.should.be.exactly(compare.references[0].url);
-            }
-            catch ( error ) {
-              ko(error);
-            }
-          });
+          it('should have the same references than item', () =>
+            item.references[0].url.should.be.exactly(compare.references[0].url)
+          );
         }
       }]);
     }

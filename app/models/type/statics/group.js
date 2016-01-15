@@ -2,9 +2,29 @@
 
 import sequencer from 'sequencer';
 
+function random () {
+  return Date.now().toString() + process.pid.toString() + Math.ceil(Math.random() * 97);
+}
+
 function group (parent, subtype, pro, con) {
 
   const groupTypes = { pro, con };
+
+  if ( ! parent ) {
+    parent = 'type-parent-' + random();
+  }
+
+  if ( ! subtype ) {
+    subtype = 'type-subtype-' + random();
+  }
+
+  if ( ! pro ) {
+    pro = 'type-pro-' + random();
+  }
+
+  if ( ! con ) {
+    con = 'type-con-' + random();
+  }
 
   return sequencer.pipe(
 

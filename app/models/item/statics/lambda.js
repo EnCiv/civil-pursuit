@@ -33,7 +33,7 @@ function lambda (options = {}) {
         // Reference
 
         () => new Promise((ok, ko) => {
-          ok(( 'reference' in options ) ? { reference : [options.reference] } : {});
+          ok(( 'references' in options ) ? { references : options.references } : {});
         }),
 
         // Parent
@@ -61,12 +61,7 @@ function lambda (options = {}) {
             return ok({ type : options.type });
           }
           Type
-            .group(
-              'test-item-model-lambda-parent',
-              'test-item-model-lambda-subtype',
-              'test-item-model-lambda-pro',
-              'test-item-model-lambda-con'
-            )
+            .group()
             .then(group => {
               let random = shuffleArray([0, 1, 2, 3])[0];
 

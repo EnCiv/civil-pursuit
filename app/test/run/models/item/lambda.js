@@ -8,9 +8,14 @@ import isItem               from 'syn/../../dist/test/is/item';
 import Item                 from 'syn/../../dist/models/item';
 
 function test () {
-  const locals = {};
+  const locals = {
+    references : [{
+      url : 'http://www.example.com'
+    }]
+  };
 
-  return testWrapper('Item Model -> Lambda',
+  return testWrapper(
+    'Models → Item → Lambda',
     {
       mongodb : true,
     },
@@ -26,6 +31,19 @@ function test () {
           describe.use(() => isItem(locals.item))
         );
 
+      });
+
+      it('Create lambda item with references', it => {
+        it('should create a lambda item', () =>
+          Item.lambda({ references : locals.references })
+            .then(item => { locals.item = item })
+        );
+
+        it('should be an item',
+          describe.use(() =>
+            isItem(locals.item, { references : locals.references })
+          )
+        );
       });
 
     }

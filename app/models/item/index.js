@@ -15,8 +15,8 @@ import generateId                       from './hooks/set-id';
 import evaluate                         from './statics/evaluate';
 import getPanelItems                    from './statics/get-panel-items';
 import getDetails                       from './statics/get-details';
-import getUrlTitle                      from './statics/get-url-title';
-import saveImage                        from './statics/save-image';
+import getUrlTitle                      from './hooks/get-url-title';
+import saveImage                        from './hooks/save-image';
 import lambda                           from './statics/lambda';
 import V2                               from './migrations/2';
 
