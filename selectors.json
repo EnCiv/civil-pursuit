@@ -12,5 +12,12 @@
   },
   "accordion" : {
     "main" : ".syn-accordion"
+  },
+  "evaluation" : {
+    "main" : {
+      "id" : {
+        "prefix" : "item-promote-"
+      }
+    }
   }
 }

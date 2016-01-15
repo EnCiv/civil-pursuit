@@ -155,7 +155,7 @@ class WebDriver extends EventEmitter {
 
   isNotVisible (selector, ms = 500) {
     return new Promise((ok, ko) => {
-      this.client.waitForVisible(selector, true, ms)
+      this.client.waitForVisible(selector, ms, true)
         .then(invisible => {
           try {
             invisible ? ok() :

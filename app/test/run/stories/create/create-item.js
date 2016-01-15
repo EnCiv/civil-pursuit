@@ -53,6 +53,15 @@ function test(props) {
         }
       )));
 
+      it('Create form', it => {
+        it('should have disappeared', () =>
+          wrappers.driver.isNotVisible([
+            selectors.topLevelPanel,
+            selectors.accordion.main + `:first-child`
+          ].join(' '), 2500)
+        );
+      });
+
       it('Get new item from DB', it => {
         it('should get item', () =>
           Item.findOne({ subject : locals.subject })
@@ -62,14 +71,13 @@ function test(props) {
         it('should be an item', describe.use(() => isItem(locals.item)));
       });
 
-      it('Create form', it => {
-        it('should have disappeared', () =>
-          wrappers.driver.isNotVisible(selectors.create.form)
+      it('Evaluation', it => {
+        it('should have an evaluation with new item', ()=>
+          wrappers.driver.isVisible(
+            `#${selectors.evaluation.main.id.prefix}${locals.item._id}`
+          )
         );
       });
-
-      describe.pause(600000)(it);
-
 
     }
   );
