@@ -194,7 +194,53 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  hasText (selector, expectedText) {
+    return new Promise((ok, ko) => {
+      this.client
+        .getText(selector)
+        .then(currentText => {
+          let match;
 
+          if ( typeof expectedText === 'string' ) {
+            match = expectedText === currentText;
+          }
+
+          else if ( expectedText instanceof RegExp ) {
+            match = expectedText.test(currentText);
+          }
+
+          match ? ok() : ko(new Error(
+            `Text mismatch: expecting ${expectedText}, got ${currentText}`
+          ));
+        })
+        .catch(ko);
+    });
+  }
+
+  attributeMatches (selector, attribute, expectedText) {
+    console.log('getting attribute', selector, attribute, expectedText);
+    return new Promise((ok, ko) => {
+      this.client
+        .getAttribute(selector, attribute)
+        .then(currentText => {
+          console.log('got attribute', currentText);
+          let match;
+
+          if ( typeof expectedText === 'string' ) {
+            match = expectedText === currentText;
+          }
+
+          else if ( expectedText instanceof RegExp ) {
+            match = expectedText.test(currentText);
+          }
+
+          match ? ok() : ko(new Error(
+            `${attribute} mismatch: expecting ${expectedText}, got ${currentText}`
+          ));
+        })
+        .catch(ko);
+    });
+  }
 }
 
 WebDriver.OPTIONS = {

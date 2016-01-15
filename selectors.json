@@ -14,19 +14,23 @@
     "main" : ".syn-accordion"
   },
   "evaluation" : {
-    "main" : {
-      "id" : {
-        "prefix" : "#item-promote-"
-      }
-    }
+    "id" : {
+      "prefix" : "#item-promote-"
+    },
+    "cursor" : ".cursor",
+    "limit" : ".limit",
+    "left" : ".promote-left"
   },
   "item" : {
     "id" : {
       "prefix" : "#item-"
     },
     "togglers" : {
-      "details" : ".toggle-details"
-    }
+      "details" : ".toggle-details",
+      "evaluation" : ".item-promotions"
+    },
+    "image" : ".item-media-wrapper .item-media img.syn-img-responsive",
+    "subject" : ".item-subject"
   },
   "details" : {
     "id" : {

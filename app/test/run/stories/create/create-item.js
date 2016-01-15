@@ -11,6 +11,7 @@ import identify               from 'syn/../../dist/test/util/e2e-identify';
 import createItem             from 'syn/../../dist/test/util/e2e-create-item';
 import selectors              from 'syn/../../selectors.json';
 import isItem                 from 'syn/../../dist/test/is/item';
+import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
 
 function test(props) {
   const locals = {
@@ -72,10 +73,15 @@ function test(props) {
       });
 
       it('Evaluation', it => {
-        it('should have an evaluation with new item', ()=>
-          wrappers.driver.isVisible(
-            `${selectors.evaluation.main.id.prefix}${locals.item._id}`
-          )
+        it('should be an evaluation view',
+          describe.use(() => isEvaluationView(
+            wrappers.driver,
+            locals.item,
+            {
+              cursor : 1,
+              limit : 1
+            }
+          ))
         );
       });
 
