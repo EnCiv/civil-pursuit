@@ -74,7 +74,7 @@ function test(props) {
       it('Evaluation', it => {
         it('should have an evaluation with new item', ()=>
           wrappers.driver.isVisible(
-            `#${selectors.evaluation.main.id.prefix}${locals.item._id}`
+            `${selectors.evaluation.main.id.prefix}${locals.item._id}`
           )
         );
       });

@@ -16,8 +16,21 @@
   "evaluation" : {
     "main" : {
       "id" : {
-        "prefix" : "item-promote-"
+        "prefix" : "#item-promote-"
       }
+    }
+  },
+  "item" : {
+    "id" : {
+      "prefix" : "#item-"
+    },
+    "togglers" : {
+      "details" : ".toggle-details"
+    }
+  },
+  "details" : {
+    "id" : {
+      "prefix" : "#item-details-"
     }
   }
 }
