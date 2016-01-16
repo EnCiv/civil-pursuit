@@ -24,6 +24,42 @@ function test(props) {
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
+      function usecase (createItemOptions = {}) {
+        return it => {
+          it('should create item', describe.use(() => createItem(
+            wrappers.driver,
+            null,
+            createItemOptions
+          )));
+
+          it('Create form', it => {
+            it('should still be here', () =>
+              wrappers.driver.isVisible([
+                selectors.topLevelPanel,
+                selectors.accordion.main + `:first-child`
+              ].join(' '))
+            );
+          });
+
+          it('No new item in DB', it => {
+            it('should attempt to get item', () =>
+              Item.findOne({ subject : locals.subject })
+                .then(item => { locals.item = item })
+            );
+
+            it('should be null', () => {
+              should(locals.item).be.undefined();
+            });
+          });
+
+          it('Evaluation', it => {
+            it('should not be an evaluation view', () =>
+              wrappers.driver.doesNotExist(selectors.evaluation.className)
+            );
+          });
+        };
+      }
+
       it('Populate data', it => {
         it('User', it => {
           it('should create user', () =>
@@ -45,45 +81,19 @@ function test(props) {
         selectors.create.toggle
       ));
 
-      it('should create item', describe.use(() => createItem(
-        wrappers.driver,
-        null,
-        {
-          subject : locals.subject,
-          description : locals.description
-        }
-      )));
+      it('Empty form', describe.use(() => usecase({
+        error : 'Subject can not be left empty'
+      })));
 
-      it('Create form', it => {
-        it('should have disappeared', () =>
-          wrappers.driver.isNotVisible([
-            selectors.topLevelPanel,
-            selectors.accordion.main + `:first-child`
-          ].join(' '), 2500)
-        );
-      });
+      it('Form only has subject', describe.use(() => usecase({
+        subject : 'subject - test story create item with missing fields',
+        error : 'Description can not be left empty'
+      })));
 
-      it('Get new item from DB', it => {
-        it('should get item', () =>
-          Item.findOne({ subject : locals.subject })
-            .then(item => { locals.item = item })
-        );
-
-        it('should be an item', describe.use(() => isItem(locals.item)));
-      });
-
-      it('Evaluation', it => {
-        it('should be an evaluation view',
-          describe.use(() => isEvaluationView(
-            wrappers.driver,
-            locals.item,
-            {
-              cursor : 1,
-              limit : 1
-            }
-          ))
-        );
-      });
+      it('Form only has description', describe.use(() => usecase({
+        description : 'description - test story create item with missing fields',
+        error : 'Subject can not be left empty'
+      })));
 
     }
   );

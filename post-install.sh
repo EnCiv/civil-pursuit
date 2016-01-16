@@ -99,3 +99,16 @@ node dist/bin/migrate  || {
   exit 1
 }
 echo "migrate ok"
+
+echo '*************************************************************************'
+echo CLEAR ERRORS IN DB
+echo '*************************************************************************'
+
+cat << MONGODB > /tmp/clear-apperrors.js
+db.apperrors.remove()
+MONGODB
+# echo $MONGOHQ_URL
+mongo ${MONGOHQ_URL/mongodb:\/\//} /tmp/clear-apperrors.js
+rm /tmp/clear-apperrors.js
+
+echo "clear errors in db ok"

@@ -241,6 +241,17 @@ class WebDriver extends EventEmitter {
         .catch(ko);
     });
   }
+
+  doesNotExist (selector) {
+    return new Promise((ok, ko) => {
+      this.client
+        .isExisting(selector)
+        .then(exists => ! exists ? ok() :
+          ko(new Error(`Selector ${selector} does exist`))
+        )
+        .catch(ko);
+    });
+  }
 }
 
 WebDriver.OPTIONS = {

@@ -17,6 +17,7 @@
     "id" : {
       "prefix" : "#item-promote-"
     },
+    "className" : "item-promote",
     "cursor" : ".cursor",
     "limit" : ".limit",
     "left" : ".promote-left"
@@ -36,5 +37,9 @@
     "id" : {
       "prefix" : "#item-details-"
     }
+  },
+  "flash" : {
+    "selector" : ".syn-flash",
+    "error" : ".syn-flash--error"
   }
 }
