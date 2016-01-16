@@ -69,7 +69,12 @@ class API extends EventEmitter {
   }
 
   listenToDBUpdates (collection, document) {
+    this.emit('message', 'db writes detected'.bgYellow,
+      collection, document.toString().grey
+    );
+
     if ( collection === 'items' ) {
+
       document.toPanelItem().then(
         item => {
           this.sockets.forEach(socket => socket.emit('item changed', item));

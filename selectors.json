@@ -41,5 +41,6 @@
   "flash" : {
     "selector" : ".syn-flash",
     "error" : ".syn-flash--error"
-  }
+  },
+  "popularity" : ".syn-popularity .syn-popularity-bar"
 }
