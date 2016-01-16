@@ -3,7 +3,7 @@
 import Mungo from 'mungo';
 
 class AppError extends Mungo.Model {
-  static version = 2
+  static version = 3
 
   static schema = {
     "name"        :   {
@@ -18,10 +18,7 @@ class AppError extends Mungo.Model {
 
     "code"        :   String,
 
-    "stack"       :   {
-      type        :   String,
-      required    :   true
-    },
+    "stack"       :   [String],
 
     "debug"       :   Object,
 
@@ -37,7 +34,7 @@ class AppError extends Mungo.Model {
     const err = {
       name      :   error.name,
       message   :   error.message,
-      stack     :   error.stack
+      stack     :   error.stack.split(/\n/)
     };
 
     for ( let optional of ['code', 'debug', 'repair'] ) {
@@ -45,7 +42,6 @@ class AppError extends Mungo.Model {
         err[optional] = error[optional];
       }
     }
-
 
     return this.create(err);
   }
