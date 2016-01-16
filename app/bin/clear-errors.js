@@ -5,6 +5,7 @@ import AppError from '../models/app-error';
 
 const mongodbUrl = process.env.MONGOHQ_URL;
 
+
 Mungo.connect(mongodbUrl)
   .on('connected', conn => {
     AppError.remove()
