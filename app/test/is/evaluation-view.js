@@ -2,6 +2,7 @@
 
 import selectors              from 'syn/../../selectors.json';
 import config                 from 'syn/../../public.json';
+import Criteria               from 'syn/../../dist/models/criteria';
 
 function isEvaluationView (driver, item, options = {}) {
   const locals = {};
@@ -128,6 +129,121 @@ function isEvaluationView (driver, item, options = {}) {
         }
       });
 
+      it('Subject', it => {
+        it('should have a subject', () =>
+          driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.item.subject
+          ].join(' '))
+        );
+
+        if ( ( 'left' in options ) ) {
+          it('should have item subject', () =>
+            driver.hasText([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.item.subject
+            ].join(' '), options.left.subject)
+          );
+        }
+      });
+
+      it('Description', it => {
+        it('should have a description', () =>
+          driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.item.description
+          ].join(' '))
+        );
+
+        if ( ( 'left' in options ) ) {
+          it('should have item description', () =>
+            driver.hasText([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.item.description
+            ].join(' '), options.left.description)
+          );
+        }
+      });
+
+      it('Feedback', it => {
+        it('should have a feedback', () =>
+          driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.feedback.input
+          ].join(' '))
+        );
+
+        it('should have the right placeholder', () =>
+          driver.attributeMatches([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.feedback.input
+          ].join(' '), 'placeholder', 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+        );
+      });
+
+      it('Sliders', it => {
+        it('should have sliders', () =>
+          driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.sliders.selector
+          ].join(' '))
+        );
+
+        it('should get criterias', () =>
+          Criteria.find().then(criterias => { locals.criterias = criterias })
+        );
+
+        it('each criterias are in view', () =>
+          Promise.all(locals.criterias.map(criteria => driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            `${selectors.sliders.criteria.prefix}${criteria._id}`
+          ].join(' '))))
+        );
+
+        it('each criterias have a slider', () =>
+          Promise.all(locals.criterias.map(criteria => driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            `${selectors.sliders.criteria.prefix}${criteria._id}`,
+            selectors.sliders.criteria.slider
+          ].join(' '))))
+        );
+      });
+
+      it('Button', it => {
+        it('should have a button', () =>
+          driver.isVisible([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            selectors.evaluation.button
+          ].join(' '))
+        );
+
+        if ( ( 'button' in options ) ) {
+          it('should have the right text', () =>
+            driver.hasText([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              selectors.evaluation.button
+            ].join(' '), options.button)
+          );
+        }
+      });
     });
 
   };

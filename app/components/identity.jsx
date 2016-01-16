@@ -9,7 +9,7 @@ import Select                         from './util/select';
 import DateInput                      from './util/date-input';
 import Uploader                       from './uploader';
 import userType                       from '../lib/proptypes/user';
-import countryType                       from '../lib/proptypes/country';
+import countryType                    from '../lib/proptypes/country';
 
 class Identity extends React.Component {
 
@@ -170,7 +170,8 @@ class Identity extends React.Component {
     }
 
     return (
-      <section>
+      <section className="syn-identity">
+        <hr />
         <Row>
           <Column span="50" className="gutter">
             <Uploader handler={ this.saveImage.bind(this) } image={ user.image } />

@@ -76,10 +76,21 @@ function test(props) {
           {
             cursor : 1,
             limit : 1,
-            left : locals.item
+            left : locals.item,
+            button : 'Finish'
           }
         ))
       );
+
+      it('should not have incremented view since nothing to promote', it => {
+        it('should get item from DB', ()=>
+          Item.findById(locals.item).then(item => { locals.item = item })
+        );
+
+        it('should have view 0', () => {
+          locals.item.views.should.be.exactly(0);
+        });
+      });
 
       describe.pause(15000)(it);
 

@@ -10,7 +10,7 @@ import AppError             from 'syn/../../dist/models/app-error';
 function test () {
   const locals = {};
 
-  return testWrapper('Models/AppError',
+  return testWrapper('Models -> AppError -> Throw',
     {
       mongodb : true,
     },

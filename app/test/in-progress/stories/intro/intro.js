@@ -20,35 +20,30 @@ function test(props) {
   };
 
   return testWrapper(
-    'Story -> Create -> User not signed-in',
+    'Story -> Intro',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
+
+      it('Populate data', it => {
+        it('User', it => {
+          it('should create user', () =>
+            User.lambda().then(user => { locals.user = user })
+          )
+        });
+      });
 
       it('should go to home page', () =>
         wrappers.driver.client
           .url(`http://localhost:${wrappers.http.app.get('port')}`)
       );
 
-      it('should click on toggle button', () => wrappers.driver.client.click(
-        selectors.create.toggle
+      it('should sign in', describe.use(
+        () => identify(wrappers.driver.client, locals.user)
       ));
 
-      it('Create form', it => {
-        it('should not have appeared', () =>
-          wrappers.driver.isNotVisible([
-            selectors.topLevelPanel,
-            selectors.accordion.main + `:first-child`
-          ].join(' '))
-        );
-      });
-
-      it('Join form', it => {
-        it('should have appeared', () =>
-          wrappers.driver.isVisible([
-            selectors.join.form
-          ].join(' '))
-        );
-      });
+      it('should see Intro panel', () => wrappers.driver.isVisible(
+        selectors.intro, 2500
+      ));
 
     }
   );

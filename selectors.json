@@ -20,7 +20,8 @@
     "className" : "item-promote",
     "cursor" : ".cursor",
     "limit" : ".limit",
-    "left" : ".promote-left"
+    "left" : ".promote-left",
+    "button" : ".finish-evaluate"
   },
   "item" : {
     "id" : {
@@ -31,7 +32,8 @@
       "evaluation" : ".item-promotions"
     },
     "image" : ".item-media-wrapper .item-media img.syn-img-responsive",
-    "subject" : ".item-subject"
+    "subject" : ".item-subject",
+    "description" : ".item-description"
   },
   "details" : {
     "id" : {
@@ -42,5 +44,28 @@
     "selector" : ".syn-flash",
     "error" : ".syn-flash--error"
   },
-  "popularity" : ".syn-popularity .syn-popularity-bar"
+  "popularity" : ".syn-popularity .syn-popularity-bar",
+  "feedback" : {
+    "input" : "textarea.user-feedback"
+  },
+  "sliders" : {
+    "selector" : ".promote-sliders",
+    "criteria" : {
+      "prefix" : "#criteria-slider-",
+      "name" : ".syn-sliders-criteria-name"
+    },
+    "slider" : ".syn-sliders-slider"
+  },
+  "identity" : {
+    "selector" : ".syn-identity"
+  },
+  "intro" : "#syn-intro",
+  "join" : {
+    "button" : ".syn-top_bar-join_button button",
+    "form" : "form[name=\"join\"]"
+  },
+  "login" : {
+    "button" : ".syn-top_bar-login_button",
+    "form" : "form[name=\"login\"]"
+  }
 }

@@ -125,17 +125,19 @@ class WebDriver extends EventEmitter {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  isVisible (selector, reverse = false) {
+  isVisible (selector, ms = 500, viewport = false) {
     return new Promise((ok, ko) => {
       try {
-        this.client.isVisibleWithinViewport(selector, reverse).then(
+        const fn = viewport ? 'isVisibleWithinViewport' : 'isVisible';
+
+        this.client.waitForVisible(selector, ms).then(
           result => {
             try {
               if ( result ) {
                 ok();
               }
               else {
-                ko(new Error(selector + ' should ' + ( reverse ? 'not ' : '' ) + 'be visible'));
+                ko(new Error(selector + ' should ' + ( reverse ? 'not ' : '' ) + 'be visible' + ( viewport ? ' in viewport' : '')));
               }
             }
             catch ( error ) {
@@ -146,6 +148,7 @@ class WebDriver extends EventEmitter {
         );
       }
       catch ( error ) {
+        console.log('not visible !!!!');
         ko(error);
       }
     });

@@ -17,7 +17,7 @@ class Sliders extends React.Component {
     let { criterias } = this.props;
 
     let sliders = criterias.map(criteria => (
-      <Slider criteria={ criteria } />
+      <Slider key={ criteria._id } criteria={ criteria } />
     ));
 
     return (

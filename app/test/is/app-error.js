@@ -67,14 +67,10 @@ function isAppError(appError, compare = {}, serialized = false) {
         it('should have stack', (ok, ko) => {
           appError.should.have.property('stack');
         });
-        it('should be a string', (ok, ko) => {
-          appError.stack.should.be.a.String();
+        it('should be an array', (ok, ko) => {
+          appError.stack.should.be.an.Array();
         });
-        if ( 'stack' in compare ) {
-          it('should match compare', (ok, ko) => {
-            appError.stack.should.be.exactly(compare.stack);
-          });
-        }
+        
       }]);
     }
 

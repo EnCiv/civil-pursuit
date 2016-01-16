@@ -45,7 +45,7 @@ class Subject extends React.Component {
 
   render () {
     return (
-      <h4>{ this.props.subject }</h4>
+      <h4 className="item-subject">{ this.props.subject }</h4>
     );
   }
 }
@@ -59,7 +59,7 @@ class Description extends React.Component {
 
   render () {
     return (
-      <section className="promote-description">{ this.props.description }</section>
+      <section className="promote-description item-description">{ this.props.description }</section>
     );
   }
 }
