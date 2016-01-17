@@ -62,10 +62,17 @@
   "intro" : "#syn-intro",
   "join" : {
     "button" : ".syn-top_bar-join_button button",
-    "form" : "form[name=\"join\"]"
+    "form" : "form[name=\"join\"]",
+    "close" : ".syn-join .syn-modal-container > footer a"
   },
   "login" : {
     "button" : ".syn-top_bar-login_button",
     "form" : "form[name=\"login\"]"
+  },
+  "panel" : {
+    "createLink" : ".click-to-create"
+  },
+  "training" : {
+    "close" : ".syn-training-close i"
   }
 }

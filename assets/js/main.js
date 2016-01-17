@@ -4553,6 +4553,10 @@ var _libAppMakePanelId = require('../lib/app/make-panel-id');
 
 var _libAppMakePanelId2 = _interopRequireDefault(_libAppMakePanelId);
 
+var _join = require('./join');
+
+var _join2 = _interopRequireDefault(_join);
+
 var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
@@ -4584,7 +4588,11 @@ var PanelItems = (function (_React$Component) {
     value: function toggleCreator(e) {
       e.preventDefault();
 
-      window.Dispatcher.emit('set active', this.props.panel.panel, 'creator');
+      if (this.props.user) {
+        window.Dispatcher.emit('set active', this.props, 'creator');
+      } else {
+        _join2['default'].click();
+      }
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4653,7 +4661,7 @@ var PanelItems = (function (_React$Component) {
             { className: 'gutter text-center' },
             _react2['default'].createElement(
               'a',
-              { href: '#', onClick: this.toggleCreator.bind(this) },
+              { href: '#', onClick: this.toggleCreator.bind(this), className: 'click-to-create' },
               'Click the + to be the first to add something here'
             )
           );
@@ -4723,7 +4731,7 @@ var PanelItems = (function (_React$Component) {
 
 exports['default'] = PanelItems;
 module.exports = exports['default'];
-},{"../lib/app/make-panel-id":63,"../lib/proptypes/panel":75,"./item":17,"./panel":22,"./util/icon":44,"./util/link":48,"./util/loading":49,"react":245}],22:[function(require,module,exports){
+},{"../lib/app/make-panel-id":63,"../lib/proptypes/panel":75,"./item":17,"./join":18,"./panel":22,"./util/icon":44,"./util/link":48,"./util/loading":49,"react":245}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

@@ -255,6 +255,17 @@ class WebDriver extends EventEmitter {
         .catch(ko);
     });
   }
+
+  click (selector) {
+    return new Promise((ok, ko) => {
+      this.client.click(selector)
+        .then(result => {
+          console.log(selector, result);
+          ok();
+        })
+        .catch(ko);
+    });
+  }
 }
 
 WebDriver.OPTIONS = {

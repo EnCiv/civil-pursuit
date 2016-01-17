@@ -48,6 +48,39 @@ function test(props) {
             selectors.join.form
           ].join(' '))
         );
+
+        it('should close', () =>
+          wrappers.driver.client.click(selectors.join.close)
+        );
+      });
+
+      it('Click to create', it => {
+
+        describe.pause(1000)(it);
+
+        it('should close training', () => wrappers.driver.client.click(
+          selectors.training.close
+        ));
+
+        describe.pause(1000)(it);
+
+        it('should click on create link', () => wrappers.driver.client.click(
+          selectors.panel.createLink
+        ));
+
+        it('should click on create link', () => wrappers.driver.client.click(
+          selectors.panel.createLink
+        ));
+
+        // it('should click on create link', () => wrappers.driver.client.click(
+        //   selectors.panel.createLink
+        // ));
+
+        it('should show join form', () =>
+          wrappers.driver.isVisible([
+            selectors.join.form
+          ].join(' '), 2500)
+        );
       });
 
     }

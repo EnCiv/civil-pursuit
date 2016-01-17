@@ -7,6 +7,7 @@ import Link               from './util/link';
 import Icon               from './util/icon';
 import panelType          from '../lib/proptypes/panel';
 import makePanelId        from '../lib/app/make-panel-id';
+import Join               from './join';
 
 class PanelItems extends React.Component {
 
@@ -27,7 +28,12 @@ class PanelItems extends React.Component {
   toggleCreator (e) {
     e.preventDefault();
 
-    window.Dispatcher.emit('set active', this.props.panel.panel, 'creator');
+    if ( this.props.user ) {
+      window.Dispatcher.emit('set active', this.props, 'creator');
+    }
+    else {
+      Join.click();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +90,7 @@ class PanelItems extends React.Component {
       if ( ! items.length ) {
         content = (
           <div className="gutter text-center">
-            <a href="#" onClick={ this.toggleCreator.bind(this) }>
+            <a href="#" onClick={ this.toggleCreator.bind(this) } className="click-to-create">
               Click the + to be the first to add something here
             </a>
           </div>
