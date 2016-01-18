@@ -3,14 +3,13 @@
 import describe                   from 'redtea';
 import should                     from 'should';
 import testWrapper                from 'syn/../../dist/lib/app/test-wrapper';
-import socketClient               from 'socket.io-client';
 import Item                       from 'syn/../../dist/models/item';
 
 function test (props) {
   const locals = {};
 
   return testWrapper(
-    'API -> Add Race',
+    'API -> Item Changed',
     {
       mongodb : true,
       http : { verbose : true },
@@ -20,24 +19,6 @@ function test (props) {
 
       it('Item changed', it => {
 
-        it('it should connect socket client', () => new Promise((ok, ko) => {
-
-          try {
-            locals.client = socketClient.connect(`http://localhost:${wrappers.http.app.get('port')}`, {
-              transports: ['websocket'],
-              'force new connection': true
-            });
-
-            locals.client
-              .on('error', ko)
-              .on('connect', ok);
-          }
-          catch ( error ) {
-            ko(error);
-          }
-
-        }));
-
         it('should create item', () =>
           Item.lambda().then(item => { locals.item = item })
         );
@@ -46,7 +27,7 @@ function test (props) {
           new Promise((ok, ko) => {
             let listened;
 
-            locals.client.on('item changed', item => {
+            wrappers.sockets.client.on('item changed', item => {
               if ( item._id.toString() === locals.item._id.toString() ) {
                 if ( /^http:\/\/res\.cloudinary\.com\//.test(item.image) ) {
                   listened = true;

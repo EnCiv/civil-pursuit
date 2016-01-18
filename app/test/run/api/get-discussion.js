@@ -23,7 +23,7 @@ function test (props) {
 
       it('No current discussion', [ it => {
         it('Get discussion', () => new Promise((ok, ko) => {
-          mock(wrappers.apiClient, getDiscussion, 'get discussion')
+          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
             .then(
               discussion => {
                 locals.discussion = discussion;
@@ -50,7 +50,7 @@ function test (props) {
         }));
 
         it('should find current', () => new Promise((ok, ko) => {
-          mock(wrappers.apiClient, getDiscussion, 'get discussion')
+          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
             .then(
               discussion => {
                 locals.discussion = discussion;
@@ -73,7 +73,7 @@ function test (props) {
         }));
 
         it('Get discussion', () => new Promise((ok, ko) => {
-          mock(wrappers.apiClient, getDiscussion, 'get discussion')
+          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
             .then(
               discussion => {
                 locals.discussion = discussion;

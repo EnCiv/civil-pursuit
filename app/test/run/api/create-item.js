@@ -42,7 +42,7 @@ function test (props) {
 
       it('Create item', it => {
         it('should create item', () =>
-          mock(wrappers.apiClient, createItem, 'create item', locals.item)
+          mock(wrappers.sockets.apiClient, createItem, 'create item', locals.item)
             .then(created => { locals.created = created })
         );
 

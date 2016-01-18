@@ -104,6 +104,12 @@ class Creator extends React.Component {
       }
     }
 
+    console.log('file', this.file);
+
+    if ( this.file ) {
+      item.image = this.file;
+    }
+
     let insert = () => {
       window.Dispatcher.emit('create item', item);
     };
@@ -114,7 +120,7 @@ class Creator extends React.Component {
       ss(window.socket).emit('upload image', stream,
         { size: this.file.size, name: this.file.name });
 
-      ss.createBlobReadStream(this.file)(stream);
+      ss.createBlobReadStream(this.file).pipe(stream);
 
       stream.on('end', () => {
         item.image = this.file.name;

@@ -45,7 +45,7 @@ class Uploader extends React.Component {
     ss(window.socket)
       .emit('upload image', stream, { size: file.size, name: file.name });
 
-    ss.createBlobReadStream(file)(stream);
+    ss.createBlobReadStream(file).pipe(stream);
 
     stream.on('end', () => {
 

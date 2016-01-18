@@ -21,7 +21,12 @@ function test(props) {
 
   return testWrapper(
     'Story -> Create -> Create item',
-    { mongodb : true, http : { verbose : true }, sockets : true, driver : true },
+    {
+      mongodb : true,
+      http : { verbose : true },
+      sockets : true,
+      driver : true
+    },
     wrappers => it => {
 
       it('Populate data', it => {
@@ -39,6 +44,10 @@ function test(props) {
 
       it('should sign in', describe.use(
         () => identify(wrappers.driver.client, locals.user)
+      ));
+
+      it('should click on close training', () => wrappers.driver.click(
+        selectors.training.close, 5000
       ));
 
       it('should click on toggle button', () => wrappers.driver.client.click(
@@ -81,18 +90,21 @@ function test(props) {
           let updated;
 
           const listener = item => {
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
-            console.log('..............................................');
+            if ( item._id === locals.item._id.toString() ) {
+              updated = true;
+              wrappers.sockets.client.removeListener('item changed', listener);
+              locals.item = item;
+              ok();
+            }
           };
 
-          wrappers.apiClient.on('item changed', listener);
+          wrappers.sockets.client.on('item changed', listener);
+
+          setTimeout(() => {
+            if ( ! updated ) {
+              ko(new Error('Time out waiting for image'));
+            }
+          }, 15000);
         }));
       });
 
@@ -109,7 +121,11 @@ function test(props) {
         );
       });
 
-      describe.pause(15000)(it);
+      it('Image is cloudinary', it => {
+        locals.item.image.should.startWith('http://res.cloudinary.com/');
+      });
+
+      // describe.pause(15000)(it);
 
     }
   );

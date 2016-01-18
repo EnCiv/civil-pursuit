@@ -1105,6 +1105,12 @@ var Creator = (function (_React$Component) {
         }
       }
 
+      console.log('file', this.file);
+
+      if (this.file) {
+        item.image = this.file;
+      }
+
       var insert = function insert() {
         window.Dispatcher.emit('create item', item);
       };
@@ -1114,7 +1120,7 @@ var Creator = (function (_React$Component) {
 
         ss(window.socket).emit('upload image', stream, { size: this.file.size, name: this.file.name });
 
-        ss.createBlobReadStream(this.file)(stream);
+        ss.createBlobReadStream(this.file).pipe(stream);
 
         stream.on('end', function () {
           item.image = _this3.file.name;
@@ -7694,7 +7700,7 @@ var Uploader = (function (_React$Component) {
 
       ss(window.socket).emit('upload image', stream, { size: file.size, name: file.name });
 
-      ss.createBlobReadStream(file)(stream);
+      ss.createBlobReadStream(file).pipe(stream);
 
       stream.on('end', function () {
 

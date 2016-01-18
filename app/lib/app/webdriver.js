@@ -256,8 +256,15 @@ class WebDriver extends EventEmitter {
     });
   }
 
-  click (selector) {
+  click (selector, ms = 0) {
     return new Promise((ok, ko) => {
+
+      if ( ms ) {
+        return this.isVisible(selector, ms)
+          .then(() => this.click(selector).then(ok, ko))
+          .catch(ko);
+      }
+
       this.client.click(selector)
         .then(result => {
           console.log(selector, result);

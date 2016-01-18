@@ -22,7 +22,7 @@ function test (props) {
 
       it('Get Top Level Type from API', it => {
         it('should get top level type', () => new Promise((ok, ko) => {
-          mock(wrappers.apiClient, getTopLevelType, 'get top level type')
+          mock(wrappers.sockets.apiClient, getTopLevelType, 'get top level type')
             .then(
               type => {
                 locals.type = type;

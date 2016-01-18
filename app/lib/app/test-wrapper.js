@@ -3,11 +3,11 @@
 import url                  from 'url';
 import Mungo                from 'mungo';
 import describe             from 'redtea';
+import socketClient         from 'socket.io-client';
 import migrate              from 'syn/../../dist/bin/migrate';
 import Type                 from 'syn/../../dist/models/type';
 import Item                 from 'syn/../../dist/models/item';
 import Server               from 'syn/../../dist/server';
-import socketClient         from 'socket.io-client';
 import User                 from 'syn/../../dist/models/user';
 import Socket               from 'syn/../../dist/lib/app/socket-mockup';
 import WebDriver            from 'syn/../../dist/lib/app/webdriver';
@@ -136,10 +136,12 @@ function testWrapper (name, options = {}, test) {
     //  ************************************************************************
 
     if ( 'sockets' in options ) {
+      locals.sockets = {};
+
       before.push(it => {
 
         it('should create mocker', () => {
-          locals.apiClient = Socket({
+          locals.sockets.apiClient = Socket({
             port : locals.http.app.get('port')
           })
         });
@@ -147,12 +149,12 @@ function testWrapper (name, options = {}, test) {
         it('it should connect', () => new Promise((ok, ko) => {
 
           try {
-            locals.socketClient = socketClient.connect(`http://localhost:${locals.http.app.get('port')}`, {
+            locals.sockets.client = socketClient.connect(`http://localhost:${locals.http.app.get('port')}`, {
               transports: ['websocket'],
               'force new connection': true
             });
 
-            locals.socketClient
+            locals.sockets.client
               .on('error', ko)
               .on('connect', ok);
           }
@@ -169,7 +171,7 @@ function testWrapper (name, options = {}, test) {
               user => {
                 try {
                   const json = user.toJSON();
-                  locals.apiClient.synuser = {
+                  locals.sockets.apiClient.synuser = {
                     id : json._id
                   };
                   ok();

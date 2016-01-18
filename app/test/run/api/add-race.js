@@ -33,7 +33,7 @@ function test (props) {
       });
 
       it('Add race as a document', () =>
-        mock(wrappers.apiClient, addRace, 'add race', locals.race)
+        mock(wrappers.sockets.apiClient, addRace, 'add race', locals.race)
           .then(user => { locals.user = user })
       );
 
