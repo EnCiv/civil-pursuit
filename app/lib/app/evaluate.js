@@ -31,8 +31,6 @@ class Evaluator extends EventEmitter {
   constructor (userId, itemId) {
     super();
 
-    console.log({ userId, itemId });
-
     if ( typeof userId !== 'string' ) {
       if ( userId instanceof UserModel || '_id' in userId ) {
         userId = userId._id;

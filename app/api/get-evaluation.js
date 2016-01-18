@@ -4,11 +4,6 @@ import Item from '../models/item';
 
 function getEvaluation (event, itemId) {
   try {
-
-    console.log('------------------------------------------------------------');
-    console.log('get evaluation', this.synuser.id, itemId);
-    console.log('------------------------------------------------------------');
-
     Item
       .evaluate(this.synuser.id, itemId)
       .then(

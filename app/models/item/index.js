@@ -103,49 +103,17 @@ class Item extends Model {
     };
   }
 
-  toPanelItem (...args) {
-    return toPanelItem.apply(this, args);
-  }
-
-  getPopularity (...args) {
-    return getPopularity.apply(this, args);
-  }
-
-  getLineage (...args) {
-    return getLineage.apply(this, args);
-  }
-
-  countHarmony (...args) {
-    return countHarmony.apply(this, args);
-  }
-
-  countVotes (...args) {
-    return countVotes.apply(this, args);
-  }
-
-  countChildren (...args) {
-    return countChildren.apply(this, args);
-  }
-
-  get link () {
-    return `/item/${this.id}/${this.slug}`;
-  }
-
-  get slug () {
-    return S(this.subject).slugify().s;
-  }
-
-  static inserting () {
-    return [
-      this.generateId.bind(this)
-    ];
-  }
-
   static inserted () {
     return [
       this.emit.bind(this, 'created'),
       this.saveImage.bind(this),
       this.getUrlTitle.bind(this),
+    ];
+  }
+
+  static inserting () {
+    return [
+      this.generateId.bind(this)
     ];
   }
 
@@ -181,6 +149,38 @@ class Item extends Model {
 
   static lambda (...args) {
     return lambda.apply(this, args);
+  }
+
+  toPanelItem (...args) {
+    return toPanelItem.apply(this, args);
+  }
+
+  getPopularity (...args) {
+    return getPopularity.apply(this, args);
+  }
+
+  getLineage (...args) {
+    return getLineage.apply(this, args);
+  }
+
+  countHarmony (...args) {
+    return countHarmony.apply(this, args);
+  }
+
+  countVotes (...args) {
+    return countVotes.apply(this, args);
+  }
+
+  countChildren (...args) {
+    return countChildren.apply(this, args);
+  }
+
+  get link () {
+    return `/item/${this.id}/${this.slug}`;
+  }
+
+  get slug () {
+    return S(this.subject).slugify().s;
   }
 }
 
