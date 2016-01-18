@@ -18,6 +18,16 @@ function createItem (driver, context, options = {}) {
       ].join(' '), options.description || '')
     );
 
+    if ( ( 'image' in options ) ) {
+      it('should upload image', () => driver.client.setValue(
+        selectors.create.image.input, options.image
+      ));
+
+      it('should see image', () =>
+        driver.client.isVisible(selectors.create.image.preview, 5000)
+      );
+    }
+
     it('should submit form', () =>
       driver.client.submitForm(selectors.create.form)
     );

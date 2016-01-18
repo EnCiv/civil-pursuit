@@ -6,6 +6,7 @@ import describe             from 'redtea';
 import testWrapper          from 'syn/../../dist/lib/app/test-wrapper';
 import isItem               from 'syn/../../dist/test/is/item';
 import Item                 from 'syn/../../dist/models/item';
+import Agent                from 'syn/../../dist/lib/app/agent';
 
 function test () {
   const locals = {
@@ -42,6 +43,24 @@ function test () {
         it('should be an item',
           describe.use(() =>
             isItem(locals.item, { references : locals.references })
+          )
+        );
+      });
+
+      it('Create lambda item with image', it => {
+        it('should download image', () => Agent.download(
+          'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg',
+          '/tmp/syn-test-model-item-lambda.jpg'
+        ));
+
+        it('should create a lambda item', () =>
+          Item.lambda({ image : 'syn-test-model-item-lambda.jpg' })
+            .then(item => { locals.item = item })
+        );
+
+        it('should be an item',
+          describe.use(() =>
+            isItem(locals.item, { image : 'syn-test-model-item-lambda.jpg' })
           )
         );
       });

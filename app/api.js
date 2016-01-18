@@ -245,7 +245,7 @@ class API extends EventEmitter {
       ss(socket).on('upload image', (stream, data) => {
         console.log('<<<'.bold.cyan, 'upload image'.bold.cyan, stream, data)
         const filename = '/tmp/' + data.name;
-        stream(fs.createWriteStream(filename));
+        stream.pipe(fs.createWriteStream(filename));
       });
     }
     catch ( error ) {
