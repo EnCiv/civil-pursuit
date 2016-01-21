@@ -360,17 +360,22 @@ class HttpServer extends EventEmitter {
   notFound () {
     this.app.use((req, res, next) => {
       res.statusCode = 404;
-      res.send('Page not found');
-    });
+      req.notFound = true;
+      next();
+    }, homePage.bind(this));
   }
 
   error () {
-    this.app.use((err, req, res, next) => {
+    this.app.use((error, req, res, next) => {
+      // res.send('hello')
+      this.emit('error', error);
 
-      this.emit('error', err);
-      res.send(err);
+      res.statusCode = 500
 
-    });
+      res.locals.error = error;
+
+      next();
+    }, homePage.bind(this));
   }
 
   api () {

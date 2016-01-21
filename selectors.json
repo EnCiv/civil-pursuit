@@ -8,7 +8,19 @@
     "image" : {
       "input" : "input[name=\"image\"]",
       "preview": ".preview-image"
-    }
+    },
+    "reference" : "input[name=\"reference\"]",
+    "looking" : {
+      "up" : {
+        "icon" : ".looking-up"
+      }
+    },
+    "edit" : {
+      "again" : {
+        "icon" : ".syn-edit-url"
+      }
+    },
+    "title" : ".url-title"
   },
   "panel" : {
     "heading" : ".syn-panel-heading",
@@ -55,6 +67,7 @@
   "sliders" : {
     "selector" : ".promote-sliders",
     "criteria" : {
+      "selector" : ".criteria-slider",
       "prefix" : "#criteria-slider-",
       "name" : ".syn-sliders-criteria-name"
     },
@@ -67,7 +80,8 @@
   "join" : {
     "button" : ".syn-top_bar-join_button button",
     "form" : "form[name=\"join\"]",
-    "close" : ".syn-join .syn-modal-container > footer a"
+    "close" : ".syn-join .syn-modal-container > footer a",
+    "twitter" : ".join-with-twitter"
   },
   "login" : {
     "button" : ".syn-top_bar-login_button",
@@ -78,5 +92,19 @@
   },
   "training" : {
     "close" : ".syn-training-close i"
+  },
+  "votes" : ".syn-votes",
+  "vote" : {
+    "id" : {
+      "prefix" : "#criteria-vote-"
+    },
+    "label" : {
+      "legend" : "g.c3-legend-item text"
+    }
+  },
+  "sign" : {
+    "out" : {
+      "button" : ".syn-top_bar-sign-out-button"
+    }
   }
 }

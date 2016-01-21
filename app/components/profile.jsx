@@ -30,36 +30,28 @@ class Profile extends React.Component {
       Promise
         .all([
           new Promise((ok, ko) => {
-            window.socket.emit('get user info')
-              .on('OK get user info', ok);
+            window.socket.emit('get user info', ok);
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get countries')
-              .on('OK get countries', ok)
+            window.socket.emit('get countries', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get states')
-              .on('OK get states', ok)
+            window.socket.emit('get states', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get races')
-              .on('OK get races', ok)
+            window.socket.emit('get races', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get educations')
-              .on('OK get educations', ok)
+            window.socket.emit('get educations', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get marital statuses')
-              .on('OK get marital statuses', ok)
+            window.socket.emit('get marital statuses', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get employments')
-              .on('OK get employments', ok)
+            window.socket.emit('get employments', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get political parties')
-              .on('OK get political parties', ok)
+            window.socket.emit('get political parties', ok)
           })
         ])
         .then(

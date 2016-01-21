@@ -11,6 +11,8 @@ import selectors              from 'syn/../../selectors.json';
 import isItem                 from 'syn/../../dist/test/is/item';
 import identify               from 'syn/../../dist/test/util/e2e-identify';
 import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
+import isDetailsView          from 'syn/../../dist/test/is/details-view';
+import Feedback               from 'syn/../../dist/models/feedback';
 
 function test(props) {
   const locals = {};
@@ -56,6 +58,10 @@ function test(props) {
         () => identify(wrappers.driver.client, locals.user)
       ));
 
+      it('should close training', () => wrappers.driver.click(
+        selectors.training.close, 5000
+      ));
+
       it('should see item', () =>
         wrappers.driver.isVisible(
           `${selectors.item.id.prefix}${locals.item._id}`, 2500
@@ -82,7 +88,7 @@ function test(props) {
         ))
       );
 
-      it('should not have incremented view since nothing to promote', it => {
+      it('Verify item', it => {
         it('should get item from DB', ()=>
           Item.findById(locals.item).then(item => { locals.item = item })
         );
@@ -90,7 +96,33 @@ function test(props) {
         it('should have view 0', () => {
           locals.item.views.should.be.exactly(0);
         });
+
+        it('should have promotions 0', () => {
+          locals.item.promotions.should.be.exactly(0);
+        });
+
+        it('Feedback', it => {
+          it('Get feedback', () => Feedback.find({ item : locals.item})
+            .then(feedback => { locals.feedback = feedback })
+          );
+
+          it('has no feedback', () => locals.feedback.should.have.length(0));
+        });
       });
+
+      it('Click on Finish', () => wrappers.driver.click(
+        selectors.evaluation.button
+      ));
+
+      describe.pause(2000)(it);
+
+      // it('Click on Finish', () => wrappers.driver.client.click(
+      //   selectors.evaluation.button
+      // ));
+
+      it('Shows details view', describe.use(() => isDetailsView(
+        wrappers.driver, locals.item
+      )));
 
       describe.pause(15000)(it);
 

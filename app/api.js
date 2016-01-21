@@ -10,6 +10,7 @@ import cookieParser       from 'cookie-parser';
 import ss                 from 'socket.io-stream';
 import sequencer          from 'sequencer';
 import emitter            from './lib/app/emitter';
+import Item               from './models/item';
 
 class API extends EventEmitter {
 
@@ -69,26 +70,61 @@ class API extends EventEmitter {
   }
 
   listenToDBUpdates (collection, document) {
-    this.emit('message', 'db writes detected'.bgYellow,
+    this.emit('message', 'db updates detected'.bgYellow,
       collection, document.toString().grey
     );
 
     if ( collection === 'items' ) {
-
       document.toPanelItem().then(
         item => {
-          this.sockets.forEach(socket => socket.emit('item changed', item));
+          this.sockets.forEach(socket => {
+            socket.emit('item changed', item);
+            this.handlers['get item details'].apply(socket, [item]);
+          });
         },
         this.emit.bind(this, 'error')
       );
     }
   }
 
+  listenToDBInserts (collection, document) {
+    this.emit('message', 'db inserts detected'.bgYellow,
+      collection, document.toString().grey
+    );
+    //
+    // if ( collection === 'votes' ) {
+    //   try {
+    //     Item.findById(document.item)
+    //       .then(item => {
+    //         try {
+    //           Promise.all([
+    //             item.toPanelItem(),
+    //             Item.getDetails(item)
+    //           ])
+    //           .then(results => {
+    //             const [ panelItem, details ] = results;
+    //             this.sockets.forEach(socket => {
+    //               socket.emit('item changed', panelItem);
+    //               socket.emit('OK get item details', details);
+    //             });
+    //           })
+    //           .catch(error => this.emit('error', error))
+    //         }
+    //         catch ( error ) { this.emit('error', error) }
+    //       })
+    //       .catch(error => this.emit('error', error));
+    //   }
+    //   catch ( error ) { this.emit('error', error) }
+    // }
+  }
+
   listenToDB () {
+    emitter.on('create', this.listenToDBInserts.bind(this));
     emitter.on('update', this.listenToDBUpdates.bind(this));
   }
 
   unlistenToDB () {
+    emitter.removeListener('create', this.listenToDBInserts.bind(this));
     emitter.removeListener('update', this.listenToDBUpdates.bind(this));
   }
 
@@ -216,8 +252,18 @@ class API extends EventEmitter {
       socket.emit('online users', this.users.length);
 
       socket.ok = (event, ...responses) => {
-        const formatted = responses.map(res => JSON.stringify(res).magenta);
+        const formatted = responses.map(res => {
+          let stringified = JSON.stringify(res);
+
+          if ( typeof stringified === 'undefined' ) {
+            return 'undefined'.magenta;
+          }
+
+          return stringified.magenta;
+        });
+
         this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
+
         socket.emit('OK ' + event, ...responses);
       };
 
@@ -226,11 +272,11 @@ class API extends EventEmitter {
       };
 
       for ( let handler in this.handlers ) {
-        socket.on(handler, (...messages) => {
-          const formatted = messages.map(res => JSON.stringify(res).grey);
-          this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...formatted)
-        });
-        socket.on(handler, this.handlers[handler].bind(socket, handler));
+        // socket.on(handler, (...messages) => {
+        //   const formatted = messages.map(res => JSON.stringify(res).grey);
+        //   this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...formatted)
+        // });
+        socket.on(handler, this.handlers[handler].bind(socket));
       }
 
       this.stream(socket);

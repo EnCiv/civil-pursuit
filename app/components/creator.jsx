@@ -27,7 +27,7 @@ class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  state = {}
+  state = { blank : true }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -104,14 +104,12 @@ class Creator extends React.Component {
       }
     }
 
-    console.log('file', this.file);
-
     if ( this.file ) {
       item.image = this.file;
     }
 
     let insert = () => {
-      window.Dispatcher.emit('create item', item);
+      window.socket.emit('create item', item);
     };
 
     if ( this.file ) {
@@ -131,6 +129,8 @@ class Creator extends React.Component {
     else {
       insert();
     }
+
+    this.props.toggle();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,10 +145,9 @@ class Creator extends React.Component {
 
       error.classList.remove('visible');
 
-      window.socket.emit('get url title', url)
-        .on('OK get url title', title => {
-          this.applyTitle(title, url);
-        });
+      window.socket.emit('get url title', url, title => {
+        this.applyTitle(title, url);
+      });
     }
   }
 
@@ -242,15 +241,40 @@ class Creator extends React.Component {
               <TextInput block placeholder="Subject" ref="subject" required name="subject" defaultValue={ subject } />
 
               <Row center-items>
-                <Icon icon="globe" spin={ true } text-muted className="looking-up" ref="lookingUp" />
+                <Icon
+                  icon        =   "globe"
+                  spin        =   { true }
+                  text-muted
+                  className   =   "looking-up"
+                  ref         =   "lookingUp"
+                  />
 
                 <Icon icon="exclamation" text-warning className="error" ref="errorLookingUp" />
 
-                <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" name="reference" defaultValue={ url } />
+                <TextInput
+                  block
+                  placeholder   =   "http://"
+                  ref           =   "reference"
+                  onBlur        =   { this.getUrlTitle.bind(this) }
+                  className     =   "url-editor"
+                  name          =   "reference"
+                  defaultValue  =   { url }
+                  />
 
-                <TextInput disabled defaultValue="" className="url-title" ref="title" />
+                <TextInput
+                  disabled
+                  defaultValue  =   ""
+                  className     =   "url-title"
+                  ref           =   "title"
+                  />
 
-                <Icon icon="pencil" mute className="syn-edit-url" ref="editURL"  onClick={ this.editURL.bind(this) }/>
+                <Icon
+                  icon          =   "pencil"
+                  mute
+                  className     =   "syn-edit-url"
+                  ref           =   "editURL"
+                  onClick       =   { this.editURL.bind(this) }
+                  />
               </Row>
 
               <TextArea block placeholder="Description" ref="description" required name="description" defaultValue={ description }></TextArea>

@@ -7,7 +7,7 @@ class Footer extends React.Component {
     return (
       <footer className="syn-footer">
         <p>
-          Coypright © 2014 - { new Date().getFullYear() } by Synaccord, LLC.
+          Copyright © 2014 - { new Date().getFullYear() } by Synaccord, LLC.
         </p>
         <p>
           <a href="/page/terms-of-service">Terms of Service and Privacy Policy</a>

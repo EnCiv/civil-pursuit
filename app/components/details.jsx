@@ -6,6 +6,7 @@ import Votes                          from './votes';
 import Popularity                     from './popularity';
 import Feedback                       from './feedback';
 import itemType                       from '../lib/proptypes/item';
+import DetailsStore                   from './store/details';
 
 class Details extends React.Component {
   static propTypes = {
@@ -13,35 +14,42 @@ class Details extends React.Component {
     item : itemType
   }
 
-  state = {}
+  state = { changed : 0 }
 
   status = 'iddle'
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
-      window.Dispatcher.emit('get details', this.props.item);
+      window.Dispatcher
+        .emit('get details', this.props.item);
     }
   }
 
   render () {
+    const { details } = this.props;
+
     let content = ( <Loading message="Loading details" /> );
 
-    if ( this.props.items[this.props.item._id] && this.props.items[this.props.item._id].details ) {
+    const attr = {};
 
-      let { details } = this.props.items[this.props.item._id];
+    if ( details ) {
+
+      const { item, feedback, popularity } = details;
+
+      attr.id = `item-details-${item._id}`;
 
       content = [];
 
       content.push(
-        ( <Popularity { ...this.props.item.popularity } /> ),
+        ( <Popularity { ...popularity } /> ),
         ( <Votes { ...details } /> ),
-        ( <Feedback entries={ details.feedback } /> )
+        ( <Feedback entries={ feedback } /> )
       );
     }
 
     return (
-      <section className={`item-details ${this.props.className}`} id={ `item-details-${this.props.item._id}`}>
+      <section className={`item-details ${this.props.className}`} { ...attr }>
         { content }
       </section>
     );

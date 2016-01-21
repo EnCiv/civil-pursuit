@@ -23,13 +23,10 @@ function test (props) {
 
       it('No current discussion', [ it => {
         it('Get discussion', () => new Promise((ok, ko) => {
-          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
-            .then(
-              discussion => {
-                locals.discussion = discussion;
-                ok();
-              },
-              ko
+          getDiscussion
+            .apply(
+              wrappers.sockets.apiClient,
+              [discussion => { locals.discussion = discussion; ok() }]
             );
         }));
 
@@ -50,13 +47,10 @@ function test (props) {
         }));
 
         it('should find current', () => new Promise((ok, ko) => {
-          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
-            .then(
-              discussion => {
-                locals.discussion = discussion;
-                ok();
-              },
-              ko
+          getDiscussion
+            .apply(
+              wrappers.sockets.apiClient,
+              [discussion => { locals.discussion = discussion; ok() }]
             );
         }));
 
@@ -73,13 +67,10 @@ function test (props) {
         }));
 
         it('Get discussion', () => new Promise((ok, ko) => {
-          mock(wrappers.sockets.apiClient, getDiscussion, 'get discussion')
-            .then(
-              discussion => {
-                locals.discussion = discussion;
-                ok();
-              },
-              ko
+          getDiscussion
+            .apply(
+              wrappers.sockets.apiClient,
+              [discussion => { locals.discussion = discussion; ok() }]
             );
         }));
 

@@ -7,6 +7,7 @@ import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
 import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
+import PanelStore                   from './store/panel';
 
 class Home extends React.Component {
 
@@ -19,26 +20,58 @@ class Home extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  stage = 'loading'
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   state = {
-    discussion : null
+    discussion : null,
+    topLevelType : null,
+    training : null
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
+  componentDidMount () {
+    this.stage = 'waiting for discussion';
 
-    this.get();
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  get () {
     if ( typeof window !== 'undefined' ) {
-      window.socket.emit('get discussion')
-        .on('OK get discussion', discussion => this.setState({ discussion }));
+      window.socket.emit('get discussion', this.okGetDiscussion.bind(this));
+    }
+  }
 
-      window.socket.emit('get top level type');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentdidUnmount () {
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  okGetDiscussion (discussion) {
+    console.log('got discussion', discussion);
+    if ( discussion ) {
+      this.setState({ discussion });
+    }
+    else {
+      window.socket
+        .emit('get top level type', this.okGetTopLevelType.bind(this))
+        .emit('get training', this.okGetTraining.bind(this));
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  okGetTopLevelType (type) {
+    console.log('got top level type', type);
+    this.setState({ panel : { type } });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  okGetTraining (training) {
+    console.log('got training', training);
+    if ( training ) {
+      this.setState({ training });
     }
   }
 
@@ -46,28 +79,32 @@ class Home extends React.Component {
 
   render () {
     let content = (
-      <Loading message="Loading issues..." />
+      <Loading message="Loading discussions ..." />
     );
 
-    if ( this.state.discussion ) {
-      const { deadline } = new Date(this.state.discussion);
+    const { discussion, panel, items, training } = this.state;
+
+    if ( discussion ) {
+      const { deadline } = new Date(discussion);
       const now = Date.now();
 
       if ( now < deadline ) {
-        content = ( <Countdown discussion={ this.state.discussion } { ...this.props } /> );
+        content = ( <Countdown discussion={ discussion } { ...this.props } /> );
       }
     }
 
-    else if ( this.props.topLevelType ) {
-      const panel = this.props.panels[this.props.topLevelType];
+    else if ( panel ) {
+      // const panel = this.props.panels[this.props.topLevelType];
 
       content = (
         <div>
           <div id="top-level-panel">
-            <PanelItems panel={ panel } { ...this.props } />
+            <PanelStore { ...panel }>
+              <PanelItems user={ this.props.user } />
+            </PanelStore>
           </div>
 
-          <Training { ...this.props } />
+          <Training instructions={ training || [] } />
         </div>
       );
     }

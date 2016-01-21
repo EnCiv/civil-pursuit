@@ -12,25 +12,26 @@ class Layout extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
-    'show-intro' : React.PropTypes.bool
+    intro : React.PropTypes.object,
+    user : React.PropTypes.object
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let intro;
-
-    if ( this.props['show-intro'] ) {
-      intro = ( <Intro { ...this.props } /> );
-    }
+    const { intro, user } = this.props;
 
     return (
       <section>
-        <TopBar { ...this.props } />
+        <TopBar user={ user } />
+
         <section role="main">
-          {  intro }
+          { intro ? ( <Intro intro={ intro } /> ) : ''}
+
           { this.props.children }
+
           <Footer />
+
           <HeaderMenu />
         </section>
       </section>

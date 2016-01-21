@@ -1,34 +1,17 @@
 'use strict';
 
-import config from '../../secret.json';
-import Type from '../models/type';
-import Config from '../models/config';
+import sequencer    from 'sequencer';
+import Type         from '../models/type';
+import Config       from '../models/config';
 
-function getTopLevelType (event) {
-  try {
+function getTopLevelType (cb) {
+  sequencer.pipe(
+    () => Config.get('top level type'),
 
-    Config
-      .get('top level type')
-      .then(
-        value => {
-          try {
-            Type
-              .findById(value)
-              .then(
-                type => this.ok(event, type.toJSON()),
-                this.error.bind(this)
-              )
-          }
-          catch ( error ) {
-            this.error('error');
-          }
-        },
-        this.error.bind(this)
-      );
-  }
-  catch ( error ) {
-    this.error('error');
-  }
+    type => Type.findById(type)
+  )
+  .then(type => cb(type.toJSON()))
+  .catch(this.error.bind(this));
 }
 
 export default getTopLevelType;

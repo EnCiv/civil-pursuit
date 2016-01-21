@@ -3,7 +3,6 @@
 import describe               from 'redtea';
 import should                 from 'should';
 import User                   from 'syn/../../dist/models/user';
-import signOut                from 'syn/../../dist/test/util/e2e-sign-out';
 import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
 import Config                 from 'syn/../../dist/models/config';
 import Item                   from 'syn/../../dist/models/item';
@@ -14,10 +13,7 @@ import isItem                 from 'syn/../../dist/test/is/item';
 import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
 
 function test(props) {
-  const locals = {
-    subject : 'This is a subject',
-    description : 'This is a description'
-  };
+  const locals = {};
 
   return testWrapper(
     'Story -> Identity',

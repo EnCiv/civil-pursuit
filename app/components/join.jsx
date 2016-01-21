@@ -80,11 +80,11 @@ class Join extends React.Component {
   }
 
   loginWithFacebook () {
-    location.href = '/sign/facebook';
+    location.href = '/sign/in/facebook/';
   }
 
   loginWithTwitter () {
-    location.href = '/sign/twitter';
+    location.href = '/sign/in/twitter/';
   }
 
   agree () {
@@ -114,12 +114,12 @@ class Join extends React.Component {
     let content = (
       <div>
         <ButtonGroup block>
-          <Button primary onClick={ this.loginWithFacebook } medium>
+          <Button primary onClick={ this.loginWithFacebook } medium className="join-with-facebook">
             <Icon icon="facebook" />
             <span className={ Component.classList(this) } inline> Facebook</span>
           </Button>
 
-          <Button info onClick={ this.loginWithTwitter } medium>
+          <Button info onClick={ this.loginWithTwitter } medium className="join-with-twitter">
             <Icon icon="twitter" />
             <span> Twitter</span>
           </Button>

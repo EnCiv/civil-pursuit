@@ -37,7 +37,7 @@ class Training extends React.Component {
   constructor (props) {
     super(props);
 
-    window.Dispatcher.emit('get instructions');
+    // window.Dispatcher.emit('get instructions');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

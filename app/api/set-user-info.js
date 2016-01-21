@@ -2,20 +2,12 @@
 
 import User from '../models/user';
 
-function setUserInfo (event, set) {
+function setUserInfo (set, cb) {
   try {
     User
       .updateById(this.synuser.id, set)
       .then(
-        user => {
-          try {
-            user = user.toJSON();
-            this.ok(event, user);
-          }
-          catch ( error ) {
-            this.error(error);
-          }
-        },
+        user => cb(user.toJSON()),
         error => this.error(error)
       );
   }

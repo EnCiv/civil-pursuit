@@ -4,15 +4,40 @@ import React              from 'react';
 import Panel              from './panel';
 import Loading            from './util/loading';
 import Link               from './util/link';
-import Icon               from './util/icon';
 import panelType          from '../lib/proptypes/panel';
 import makePanelId        from '../lib/app/make-panel-id';
 import Join               from './join';
+import Accordion        from './util/accordion';
+import Promote          from './promote';
+import EvaluationStore from './store/evaluation';
+import ItemButtons from './item-buttons';
+import Icon               from './util/icon';
+import Creator from './creator';
+import ItemStore from 'syn/../../dist/components/store/item';
+import Details from './details';
+import DetailsStore from './store/details';
 
 class PanelItems extends React.Component {
 
   static propTypes  =   {
     panel           :   panelType
+  }
+
+  new = null
+
+  mountedItems = {}
+
+  state = { active : null }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentDidUpdate () {
+    if ( this.props.new ) {
+      if ( this.props.new._id !== this.new ) {
+        this.new = this.props.new._id;
+        this.toggle(this.props.new._id, 'promote');
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,15 +50,30 @@ class PanelItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  toggleCreator (e) {
-    e.preventDefault();
+  toggle (itemId, section) {
 
-    if ( this.props.user ) {
-      window.Dispatcher.emit('set active', this.props, 'creator');
+    console.log('toggle', itemId, section);
+
+    if (
+      this.state.active &&
+      ( this.state.active.item === itemId || ! itemId ) &&
+      this.state.active.section === section ) {
+      return this.setState({ active : { item : itemId, section : null } });
     }
-    else {
-      Join.click();
+
+    if ( section === 'creator' && ! this.props.user ) {
+      return Join.click();
     }
+
+    if ( itemId ) {
+      if ( ! this.mountedItems[itemId] ) {
+        this.mountedItems[itemId] = {};
+      }
+
+      this.mountedItems[itemId][section] = true;
+    }
+
+    this.setState({ active : { item : itemId, section }});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,46 +91,43 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let title           =     'Loading items',
-      type              =     null,
-      loaded            =     false,
-      content           =     ( <Loading /> ),
-      loadMore          =     ( <div className="gutter-top"></div> ),
-      parent            =     null,
-      className         =     '';
+    console.log('render panel-items', this.props);
+    const { active } = this.state;
 
-    const { panel }     =     this.props;
+    const { panel, count, items } = this.props;
+
+    let title = 'Loading items', name, loaded = false, content, loadMore,
+      type, parent, creator;
 
     if ( panel ) {
-      type              =     panel.panel.type;
-      className         =     `syn-panel-${type._id}`;
-      parent            =     panel.panel.parent;
+      loaded = true;
+
+      type = panel.type;
+      parent = panel.parent;
+
+      name = `syn-panel-${type._id}`;
 
       if ( parent ) {
-        className       +=    `-${parent._id || parent}`;
+        name += `-${parent._id || parent}`;
       }
 
-      title             =     (
+      title = (
         <Link
-          href        =   { `/items/${type.id}/${panel.panel.parent || ""}` }
+          href        =   { `/items/${type.id}/${parent || ""}` }
           then        =   { this.unFocus.bind(this) }
           >
           <Icon icon="angle-double-left" />
           <span> </span>
-          { panel.panel.type.name }
+          { type.name }
         </Link>
-      );
+      )
 
-      title = panel.panel.type.name;
-
-      loaded            =     true;
-
-      let { items }     =     panel;
+      title = type.name;
 
       if ( ! items.length ) {
         content = (
           <div className="gutter text-center">
-            <a href="#" onClick={ this.toggleCreator.bind(this) } className="click-to-create">
+            <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
               Click the + to be the first to add something here
             </a>
           </div>
@@ -98,24 +135,64 @@ class PanelItems extends React.Component {
       }
 
       else {
-        content = [];
+        content = items
+          .map(item => {
+            let promote, details;
 
-        // if ( this.props.focus.item && ( makePanelId(this.props.focus.item) === makePanelId(panel.panel) )) {
-        //
-        //   console.warn('neeen!')
-        //
-        //   items = items.filter(panelItem => panelItem._id === this.props.focus.item._id);
-        // }
+            if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
+              promote = (
+                <div className="toggler promote">
+                  <Accordion
+                    poa     =   { this.refs.item }
+                    name    =   "promote"
+                    active  =   { (active && active.item === item._id && active.section === 'promote') }
+                    >
+                    <EvaluationStore
+                      item-id     =   { item._id }
+                      toggle      =   { this.toggle.bind(this, item._id) }
+                      >
+                      <Promote
+                        ref       =   "promote"
+                        show      =   { (active && active.item === item._id && active.section === 'promote') }
+                        />
+                    </EvaluationStore>
+                  </Accordion>
+                </div>
+              );
+            }
 
-        items = items.filter(panelItem => ! panelItem.__hidden);
+            if ( this.mountedItems[item._id] && this.mountedItems[item._id].details ) {
+              details = (
+                <div className="toggler details">
+                  <Accordion
+                    poa     =   { this.refs.item }
+                    name    =   "details"
+                    active  =   { (active && active.item === item._id && active.section === 'details') }
+                    >
+                    <DetailsStore item={ item }>
+                      <Details />
+                    </DetailsStore>
+                  </Accordion>
+                </div>
+              );
+            }
 
-        items.forEach(item => content.push(
-          <Item key={ item._id } { ...this.props } item={ item } />
-        ));
+            return (
+              <ItemStore item={ item } key={ `item-${item._id}` }>
+                <Item
+                    item    =   { item }
+                    buttons =   { (
+                      <ItemButtons
+                        item    =   { item }
+                        toggle  =   { this.toggle.bind(this) }
+                        />
+                    ) }
+                    footer  =   { [ promote, details ] } />
+              </ItemStore>
+            );
+          });
 
-        const { count } = panel;
-
-        const { skip, limit } = panel.panel;
+        const { skip, limit } = panel;
 
         const end = skip + limit;
 
@@ -127,18 +204,45 @@ class PanelItems extends React.Component {
           );
         }
       }
+
+      let creatorPanel;
+
+      if ( active && active.section === 'creator' ) {
+        creatorPanel = (
+          <Creator
+            type    =   { type }
+            parent  =   { parent }
+            toggle  =   { this.toggle.bind(this, null, 'creator') }
+            />
+        );
+      }
+
+      creator = (
+        <Accordion
+          active    =   { (active && active.section === 'creator') }
+          poa       =   { this.refs.panel }
+          >
+          { creatorPanel }
+        </Accordion>
+      );
     }
 
     return (
       <Panel
-        { ...this.props }
-        title       =   { title }
-        type        =   { type }
-        parent      =   { parent }
-        loaded      =   { loaded }
-        className   =   { className }
+        className   =   { name }
         ref         =   "panel"
+        heading     =   {[
+          ( <h4>{ title }</h4> ),
+          (
+            <Icon
+              icon        =   "plus"
+              className   =   "toggle-creator"
+              onClick     =   { this.toggle.bind(this, null, 'creator') }
+              />
+          )
+        ]}
         >
+        { creator }
         { content }
         { loadMore }
       </Panel>

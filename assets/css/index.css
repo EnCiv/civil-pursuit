@@ -801,13 +801,13 @@ form h2:empty {
   font-weight: bold;
 }
 .syn-flash.syn-flash--error {
-  color: #CD3232;
-  background: yellow;
-  border-color: orange;
+  color: white;
+  background: #CD3232;
+  border-color: #CD3232;
 }
 .syn-flash.syn-flash--success {
-  color: #5CB85C;
-  background: yellow;
+  color: white;
+  background: #5CB85C;
   border-color: #5CB85C;
 }
 .syn-flash.syn-flash--info {
@@ -1430,6 +1430,9 @@ blockquote {
   transition: all 1s;
 }
 .syn-sliders-criteria-description:not(.syn-visible) {
+  display: none;
+}
+.syn-votes-criteria-description:not(.syn-visible) {
   display: none;
 }
 .item-harmony {

@@ -83,9 +83,12 @@ class Layout extends Document {
 
     this.add(this.container());
 
-    this.add(
-      new Script().text(`window.synapp = ${JSON.stringify({ intro, panels })}`)
-    );
+    if ( props.react ) {
+      this.add(
+        new Script()
+          .text('window.reactProps = ' + JSON.stringify(props.react) + '')
+      );
+    }
 
     if ( props.env === 'development' ) {
       this.add(
@@ -123,7 +126,7 @@ class Layout extends Document {
   }
 
   container () {
-    return new Element('#synapp').text('<!-- #synapp -->');
+    return new Element('#synapp').text(this.props.rendered);
   }
 }
 

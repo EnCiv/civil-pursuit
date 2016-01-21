@@ -197,6 +197,8 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   hasText (selector, expectedText) {
     return new Promise((ok, ko) => {
       this.client
@@ -220,8 +222,32 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  hasValue (selector, expectedValue) {
+    return new Promise((ok, ko) => {
+      this.client
+        .getValue(selector)
+        .then(currentValue => {
+          let match;
+
+          if ( typeof expectedValue === 'string' ) {
+            match = expectedValue === currentValue;
+          }
+
+          else if ( expectedValue instanceof RegExp ) {
+            match = expectedValue.test(currentValue);
+          }
+
+          match ? ok() : ko(new Error(
+            `Text mismatch: expecting ${expectedValue}, got ${currentValue}`
+          ));
+        })
+        .catch(ko);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   attributeMatches (selector, attribute, expectedText) {
-    console.log('getting attribute', selector, attribute, expectedText);
     return new Promise((ok, ko) => {
       this.client
         .getAttribute(selector, attribute)
@@ -245,6 +271,21 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  exists (selector, ms = 500) {
+    return new Promise((ok, ko) => {
+      this.client
+        .waitForExist(selector, ms)
+        .then(exists => exists ? ok() :
+          ko(new Error(`Selector ${selector} does not exist after ${ms} ms`))
+        )
+        .catch(ko);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   doesNotExist (selector) {
     return new Promise((ok, ko) => {
       this.client
@@ -256,6 +297,8 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   click (selector, ms = 0) {
     return new Promise((ok, ko) => {
 
@@ -265,10 +308,73 @@ class WebDriver extends EventEmitter {
           .catch(ko);
       }
 
-      this.client.click(selector)
-        .then(result => {
-          console.log(selector, result);
-          ok();
+      this.scroll(selector)
+        .then(() => this.client.click(selector).then(ok, ko))
+        .catch(ko);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  scroll (selector) {
+    return new Promise((ok, ko) => {
+      this.client.scroll(selector)
+        .then(() => {
+          this.client.getLocation(selector)
+            .then(pos => {
+              this.client.getElementSize(selector)
+                .then(size => {
+                  this.client
+                    .scroll(pos.x + (size.width / 2), 25000)
+                    .then(ok, ko);
+                })
+                .catch(ko);
+            })
+            .catch(ko);
+        })
+        .catch(ko);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  hasCookie (cookie, fn) {
+    return new Promise((ok, ko) => {
+      this.client
+        .getCookie(cookie)
+        .then(cookieInCookieJar => {
+          try {
+            if ( ! cookieInCookieJar ) {
+              return ko(new Error(`${cookie} should be set`));
+            }
+            if ( fn ) {
+              fn(JSON.parse(
+                decodeURIComponent(cookieInCookieJar.value)
+                .replace(/^\w:/, '')
+              ));
+
+              ok();
+            }
+            else {
+              ok();
+            }
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        })
+        .catch(ko);
+    });
+  }
+
+  hasNotCookie (cookie) {
+    return new Promise((ok, ko) => {
+      this.client
+        .getCookie(cookie)
+        .then(cookieInCookieJar => {
+          cookieInCookieJar === null
+            ? ok()
+            : ko(new Error(`${cookie} should not be set`));
         })
         .catch(ko);
     });

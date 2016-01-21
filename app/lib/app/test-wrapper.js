@@ -12,8 +12,6 @@ import User                 from 'syn/../../dist/models/user';
 import Socket               from 'syn/../../dist/lib/app/socket-mockup';
 import WebDriver            from 'syn/../../dist/lib/app/webdriver';
 
-Mungo.verbosity = 0;
-
 function testWrapper (name, options = {}, test) {
   const wrappers = {};
 
@@ -211,7 +209,12 @@ function testWrapper (name, options = {}, test) {
     });
 
     it(name, it => {
-      test(locals)(it);
+      try {
+        test(locals)(it);
+      }
+      catch ( error ) {
+        it('should not have error', () => { throw error });
+      }
     });
 
     it('Wrappers', it => {

@@ -16,11 +16,22 @@ class Votes extends React.Component {
   }
 
   render () {
-    let { criterias, votes, item } = this.props;
 
-    let sliders = criterias.map(criteria => (
-      <Vote criteria={ criteria } vote={ votes[criteria._id] } key={ criteria._id } item={ item } />
-    ));
+    console.log('R', 'votes', this.props);
+
+    const { criterias, votes, item } = this.props;
+
+    let sliders;
+
+    if ( item ) {
+      sliders = criterias.map(criteria => (
+        <Vote
+          criteria    =   { criteria }
+          vote        =   { votes[criteria._id] }
+          key         =   { criteria._id }
+          item        =   { item } />
+      ));
+    }
 
     return (
       <div className="syn-sliders">

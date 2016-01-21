@@ -10,13 +10,13 @@ function initValues () {
   return values;
 }
 
-function getAccumulation (itemId) {
+function getAccumulation (item) {
   return new Promise((ok, ko) => {
     try {
       let accumulation = {};
 
       this
-        .find({ item : itemId })
+        .find({ item })
         .then(
           votes => {
             try {

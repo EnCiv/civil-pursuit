@@ -2,25 +2,8 @@
 
 import Race from '../models/race';
 
-function getRaces (event) {
-  try {
-    Race
-      .find()
-      .then(
-        races => {
-          try {
-            this.ok(event, races);
-          }
-          catch ( error ) {
-            this.error(error);
-          }
-        },
-        error => { this.error(error) }
-      );
-  }
-  catch ( error ) {
-    this.error(error);
-  }
+function getRaces (cb) {
+  Race.find().then(cb).catch(this.error.bind(this));
 }
 
 export default getRaces;

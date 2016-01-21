@@ -2,12 +2,9 @@
 
 import Item from '../models/item';
 
-function createItem (event, item) {
+function createItem (item) {
   try {
-    // item.type = item.type._id || item.type;
     item.user = this.synuser.id;
-
-    console.log('Creating item', item);
 
     Item.create(item).then(
       item => {
@@ -16,7 +13,7 @@ function createItem (event, item) {
             .toPanelItem()
             .then(
               item => {
-                this.ok(event, item);
+                this.emit('OK create item', item);
               },
               error => this.error(error)
             )

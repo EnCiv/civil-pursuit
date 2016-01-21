@@ -1,40 +1,15 @@
 'use strict';
 
-import React                          from 'react';
-import Row                            from './util/row';
-import Column                         from './util/column';
-import ItemMedia                      from './item-media';
-import Loading                        from './util/loading';
-import Sliders                        from './sliders';
-import TextArea                       from './util/text-area';
-import Button                         from './util/button';
-import Component                      from '../lib/app/component';
-import evaluationType                 from '../lib/proptypes/evaluation';
+import React from 'react';
+import Row from './util/row';
 import itemType                       from '../lib/proptypes/item';
-import criteriaType                   from '../lib/proptypes/criteria';
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class Header extends React.Component {
-  static propTypes = {
-    evaluation : evaluationType
-  }
-
-  render () {
-    let { evaluation } = this.props;
-
-    return (
-      <header className="text-center gutter-bottom">
-        <h2>
-          <span className="cursor">{ evaluation.cursor }</span>
-          <span> of </span>
-          <span className="limit">{ evaluation.limit }</span>
-        </h2>
-        <h4>Evaluate each item below</h4>
-      </header>
-    );
-  }
-}
+import criteriaType        from '../lib/proptypes/criteria';
+import Column from './util/column';
+import ItemMedia                      from './item-media';
+import TextArea                       from './util/text-area';
+import Sliders                        from './sliders';
+import Button                         from './util/button';
+import Loading                        from './util/loading';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -140,13 +115,13 @@ class Finish extends React.Component {
   }
 
   next () {
-    let { evaluated } = this.props;
+    let { emitter } = this.props;
 
     let view = React.findDOMNode(this.refs.view);
 
     let parent = view.closest('.item-promote');
 
-    window.Dispatcher.emit('promote item', null, null, evaluated, parent);
+    emitter.emit('next');
   }
 
   render () {
@@ -330,154 +305,131 @@ class SideColumn extends React.Component {
   }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 class Promote extends React.Component {
 
-  static propTypes = {
-    active : React.PropTypes.bool,
-    item : itemType,
-    items : React.PropTypes.arrayOf(itemType),
-    'panel-id' : React.PropTypes.string
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  constructor (props) {
-    super(props);
-
-    this.status = 'iddle';
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentWillReceiveProps (props) {
-    if ( this.status === 'iddle' && props.active ) {
-      this.status = 'ready';
-      window.Dispatcher.emit('get evaluation', this.props.item);
-    }
-    else if ( this.props.items[this.props.item._id] && ! this.props.items[this.props.item._id].evaluation && this.status === 'ready' ) {
-      this.status = 'iddle';
-      window.Dispatcher.emit('set active', props['panel-id'], `${this.props.item._id}-details`);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
+    const { show, cursor, limit, evaluation, left, right, emitter } = this.props;
 
-    let content = ( <Loading message="Loading evaluation" /> );
+    const content = [];
 
-    if ( this.props.items[this.props.item._id] && this.props.items[this.props.item._id].evaluation ) {
-
-      let { evaluation } = this.props.items[this.props.item._id];
-
-      let { left, right, criterias, item } = evaluation;
-
-      content = [];
-
-      let foo = <h5 className="text-center gutter">Which of these is most important for the community to consider?</h5>;
-
-      if ( ! left || ! right ) {
-        foo = ( <div></div> );
+    if ( show ) {
+      if ( ! evaluation ) {
+        content.push( <Loading message="Loading evaluation" /> );
       }
+      else {
+        let foo = <h5 className="text-center gutter">Which of these is most important for the community to consider?</h5>;
 
-      let promoteMe = (
-        <ColumnButtons { ...this.props } key="left-buttons" item={ left } position='left' evaluated={ item } panel-id={ this.props['panel-id'] } />
-      );
+        if ( ! left || ! right ) {
+          foo = ( <div></div> );
+        }
 
-      if ( ! left || ! right ) {
-        promoteMe = ( <div></div> );
-      }
+        let promoteMe = (
+          <ColumnButtons
+            key         =   "left-buttons"
+            item        =   { left }
+            position    =   'left'
+            evaluated   =   { evaluation.item }
+            panel-id    =   { this.props['panel-id'] }
+            />
+        );
 
-      content.push(
-        (
-          <Header evaluation={ evaluation } />
-        ),
+        if ( ! left || ! right ) {
+          promoteMe = ( <div></div> );
+        }
 
-        // big screens
+        content.push(
+          (
+            <header className="text-center gutter-bottom">
+              <h2>
+                <span className="cursor">{ cursor }</span>
+                <span> of </span>
+                <span className="limit">{ limit }</span>
+              </h2>
+              <h4>Evaluate each item below</h4>
+            </header>
+          ),
 
-        (
-          <div data-screen="phone-and-up">
-            <Row>
-              <ColumnItem item={ left } position='left' key='item-left' />
+          (
+            <div data-screen="phone-and-up">
+              <Row>
+                <ColumnItem item={ left } position='left' key='item-left' />
 
-              <ColumnItem item={ right } position='right' key='item-right' />
-            </Row>
+                <ColumnItem item={ right } position='right' key='item-right' />
+              </Row>
 
-            <Row>
-              <ColumnFeedback key="left-feedback" item={ left } position='left' />
+              <Row>
+                <ColumnFeedback key="left-feedback" item={ left } position='left' />
 
-              <ColumnFeedback key="right-feedback" item={ right } position='right' />
-            </Row>
+                <ColumnFeedback key="right-feedback" item={ right } position='right' />
+              </Row>
 
-            <Row>
-              <ColumnSliders key="left-sliders"  item={ left } position='left' criterias={ criterias } />
+              <Row>
+                <ColumnSliders key="left-sliders"  item={ left } position='left' criterias={ evaluation.criterias } />
 
-              <ColumnSliders key="right-sliders" item={ right } position='right' criterias={ criterias } />
+                <ColumnSliders key="right-sliders" item={ right } position='right' criterias={ evaluation.criterias } />
 
-            </Row>
+              </Row>
 
-            { foo }
+              { foo }
 
-            <Row>
-              { promoteMe }
+              <Row>
+                { promoteMe }
 
-              <ColumnButtons { ...this.props } key="right-buttons" item={ right } position='right' evaluated={ item } panel-id={ this.props['panel-id'] } />
+                <ColumnButtons
+                  key         =   "right-buttons"
+                  item        =   { right }
+                  position    =   'right'
+                  evaluated   =   { evaluation.item }
+                  panel-id    =   { this.props['panel-id'] }
+                  />
 
-            </Row>
-          </div>
-        ),
+              </Row>
+            </div>
+          ),
 
-        // SMALL SCREENS
-
-        (
-          <div data-screen="up-to-phone">
-            <Row data-stack="phone-and-down">
-              <SideColumn
-                { ...this.props }
-                key         =   "left"
-                position    =   "left"
-                item        =   { left }
-                criterias   =   { criterias }
-                panel-id    =   { this.props['panel-id'] }
-                evaluated   =   { item }
-                other       =   { right }
-                />
-
+          (
+            <div data-screen="up-to-phone">
+              <Row data-stack="phone-and-down">
                 <SideColumn
                   { ...this.props }
-                  key         =   "right"
-                  position    =   "right"
-                  item        =   { right }
-                  criterias   =   { criterias }
-                  panel-id    =   { this.props['panel-id'] }
-                  evaluated   =   { item }
-                  other       =   { left }
+                  key         =   "left"
+                  position    =   "left"
+                  item        =   { left }
+                  criterias   =   { evaluation.criterias }
+                  evaluated   =   { evaluation.item }
+                  other       =   { right }
                   />
-            </Row>
-          </div>
-        ),
 
-        (
-          <div className="gutter">
-            <Finish
-              cursor={ evaluation.cursor }
-              limit={ evaluation.limit }
-              evaluated={ item } />
-          </div>
-        )
-      );
+                  <SideColumn
+                    { ...this.props }
+                    key         =   "right"
+                    position    =   "right"
+                    item        =   { right }
+                    criterias   =   { evaluation.criterias }
+                    evaluated   =   { evaluation.item }
+                    other       =   { left }
+                    />
+              </Row>
+            </div>
+          ),
+
+          (
+            <div className="gutter">
+              <Finish
+                cursor      =   { cursor }
+                limit       =   { limit }
+                emitter     =   { emitter }
+                />
+            </div>
+          )
+        );
+      }
     }
 
     return (
-      <section className={`item-promote ${this.props.className}`} ref="view" id={`item-promote-${this.props.item._id}`}>
-        { content }
-      </section>
+      <div>{ content }</div>
     );
   }
 }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 export default Promote;

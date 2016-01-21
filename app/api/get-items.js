@@ -2,7 +2,7 @@
 
 import Item from '../models/item';
 
-function getItems (event, panel, item) {
+function getItems (panel, cb) {
   try {
     let id        =   'panel-' + panel.type._id || panel.type;
     const query   =   { type : panel.type._id || panel.type};
@@ -21,7 +21,7 @@ function getItems (event, panel, item) {
       .then(
         results => {
           try {
-            this.ok(event, panel, results.count, results.items);
+            cb(panel, results.count, results.items);
           }
           catch ( error ) {
             ko(error);

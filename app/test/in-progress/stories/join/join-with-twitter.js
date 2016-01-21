@@ -32,6 +32,12 @@ function test(props) {
 
       it('should be a Join form', describe.use(() => isJoinForm(wrappers.driver)));
 
+      it('should click on Join with Twitter', () =>
+        wrappers.driver.client.click(selectors.join.twitter)
+      );
+
+      describe.pause(15000)(it);
+
     }
   );
 }

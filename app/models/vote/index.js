@@ -6,8 +6,9 @@ import Item                       from '../item';
 import Criteria                   from '../criteria';
 import getAccumulation            from './statics/get-accumulation';
 import lambda                     from './statics/lambda';
+import Model                      from '../../lib/app/model';
 
-class Vote extends Mungo.Model {
+class Vote extends Model {
 
   static version = 1
 
@@ -30,6 +31,10 @@ class Vote extends Mungo.Model {
       	"required"       :   true
       }
     };
+  }
+
+  static inserted () {
+    return [this.emit.bind(this, 'created')];
   }
 
   static getAccumulation (...args) {

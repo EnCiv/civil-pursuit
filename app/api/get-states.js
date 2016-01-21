@@ -1,26 +1,11 @@
 'use strict';
 
-import StateModel from '../models/state';
+import State from '../models/state';
 
-function getStates (event) {
-  try {
-    StateModel
-      .find({}, { limit : false })
-      .then(
-        states => {
-          try {
-            this.ok(event, states);
-          }
-          catch ( error ) {
-            this.error(error);
-          }
-        },
-        error => { this.error(error) }
-      );
-  }
-  catch ( error ) {
-    this.error(error);
-  }
+function getStates (cb) {
+  State.find().limit(false)
+    .then(cb)
+    .catch(this.error.bind(this));
 }
 
 export default getStates;

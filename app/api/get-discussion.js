@@ -2,18 +2,11 @@
 
 import Discussion from '../models/discussion';
 
-function getDiscussion (event) {
-  try {
-    Discussion
-      .findCurrent()
-      .then(
-        discussion => this.ok(event, discussion),
-        error => this.emit('error', error)
-      );
-  }
-  catch ( error ) {
-    this.error('error', error);
-  }
+function getDiscussion (cb) {
+  Discussion
+    .findCurrent()
+    .then(cb)
+    .catch(error => this.emit('error', error));
 }
 
 export default getDiscussion;

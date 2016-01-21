@@ -22,7 +22,7 @@ class Slider extends React.Component {
     let { criteria } = this.props;
 
     return (
-      <div id={ `criteria-slider-${criteria._id}` }>
+      <div id={ `criteria-slider-${criteria._id}` } className="criteria-slider">
         <Row>
           <Column span="40">
             <h5 className="syn-sliders-criteria-name" onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h5>

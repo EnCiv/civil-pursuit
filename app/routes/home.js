@@ -26,26 +26,30 @@ function home (req, res, next) {
       }
     }
 
-    const
-      props           =   makeProps({
-        env           :   this.app.get('env'),
-        path          :   req.path,
-        intro         :   JSON.parse(JSON.stringify(this.props.intro)),
-        item          :   JSON.parse(JSON.stringify(req.item || null)),
-        panel         :   JSON.parse(JSON.stringify(req.panel || null)),
-        panels        :   JSON.parse(JSON.stringify(req.panels || null)),
-        backEnd       :   true
-    }),
-      appFactory      =   React.createFactory(App),
-      app             =   appFactory(props),
-      source          =   new Index(props)
-                            .render()
-                            .replace(
-                              /<!-- #synapp -->/,
-                              React.renderToString(app)
-                            );
+    console.log('rendering home');
 
-    res.send(source);
+    const props       =   {
+      env             :   this.app.get('env'),
+      path            :   req.path,
+      intro           :   JSON.parse(JSON.stringify(this.props.intro)),
+      item            :   JSON.parse(JSON.stringify(req.item || null)),
+      panel           :   JSON.parse(JSON.stringify(req.panel || null)),
+      panels          :   JSON.parse(JSON.stringify(req.panels || null)),
+      ready           :   false,
+      user            :   null,
+      notFound        :   req.notFound,
+      error           :   res.locals.error
+    };
+
+    props.react = Object.assign({}, props);
+
+    delete props.react.env, props.react.rendered;
+
+    props.rendered = React.renderToString(
+      React.createFactory(App)(props.react)
+    );
+
+    res.send(new Index(props).render());
   }
   catch ( error ) {
     next(error);

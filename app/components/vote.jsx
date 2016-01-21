@@ -9,6 +9,8 @@ import Column                         from './util/column';
 
 class Vote extends React.Component {
 
+  item = {}
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes  =   {
@@ -27,6 +29,11 @@ class Vote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
+
+    if ( this.props.item && this.props.item._id !== this.item ) {
+      this.item = this.props.item._id;
+    }
+
     let { criteria, vote, item } = this.props;
 
     let svg = React.findDOMNode(this.refs.svg);
@@ -99,11 +106,11 @@ class Vote extends React.Component {
     let { criteria, vote } = this.props;
 
     return (
-      <div className="syn-sliders-criteria">
+      <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
         <Row>
           <Column span="40">
             <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
-            <h5 className="syn-sliders-criteria-description" ref="description">{ criteria.description }</h5>
+            <h5 className="syn-votes-criteria-description" ref="description">{ criteria.description }</h5>
           </Column>
 
           <Column span="60">

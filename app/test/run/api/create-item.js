@@ -41,10 +41,17 @@ function test (props) {
       );
 
       it('Create item', it => {
-        it('should create item', () =>
-          mock(wrappers.sockets.apiClient, createItem, 'create item', locals.item)
-            .then(created => { locals.created = created })
-        );
+        it('should create item', () => new Promise((ok, ko) => {
+          createItem
+            .apply(wrappers.sockets.apiClient, [ locals.item ]);
+
+          wrappers.sockets.apiClient
+            .on('error', ko)
+            .on('OK create item', created => {
+              locals.created = created;
+              ok();
+            });
+        }));
 
         it('should have returned a panel item',
           describe.use(() => isPanelItem(locals.created, locals.item))

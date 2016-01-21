@@ -3,7 +3,7 @@
 import Training           from '../models/training';
 import cookieParser       from 'cookie-parser';
 
-function getTraining (event) {
+function getTraining (cb) {
   try {
     const req = {
       "headers"     :   {
@@ -19,15 +19,13 @@ function getTraining (event) {
       Training
         .find({}, { sort : { step : 1 } })
         .then(
-          instructions => {
-            this.ok(event, instructions);
-          },
+          cb,
           this.error.bind(this)
         );
     }
 
     else {
-      this.ok(event, []);
+      cb([]);
     }
   }
   catch ( error ) {

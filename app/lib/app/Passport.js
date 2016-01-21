@@ -20,6 +20,8 @@ class Passport {
 
   constructor (service, app) {
     try {
+      console.log('Setting passport', service);
+
       this.app = app;
       this.user = null;
       this.service = service;
@@ -52,35 +54,19 @@ class Passport {
       if ( user ) {
         this.user = user;
 
-        DiscussionModel
-          .findOne()
-          .exec()
-          .then(
-            discussion => {
-              try {
-                if ( discussion.registered.some(registered => registered.toString() === user._id.toString()) ) {
-                  return done(null, user);
-                }
-
-                discussion.registered.push(user._id);
-
-                discussion.save(error => {
-                  if ( error ) {
-                    return next(error);
-                  }
-                  done(null, user);
-                });
-              }
-              catch (error) {
-                next(error);
-              }
-            },
-            next
-          );
+        done(null, user)
       }
 
       else {
-        this.createUser(req, res, next, done);
+        UserModel.create({
+          email: this.email,
+          password: this.profile.id + Date.now()
+        })
+        .then(user => {
+          this.user = user;
+          done(null, user);
+        })
+        .catch(next);
       }
     }
     catch ( error ) {
@@ -98,7 +84,6 @@ class Passport {
 
       UserModel
         .findOne({ email: this.email })
-        .exec()
         .then(
           user => { this.associate(req, res, next, user, done) },
           next
@@ -112,22 +97,22 @@ class Passport {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   createUser (req, res, next, done) {
+    UserModel.create({
+      email: this.email,
+      password: this.profile.id + Date.now()
+    })
+
     try {
       let d = new Domain().on('error', next);
 
       d.run(() => {
-        UserModel.create(
-          { email: this.email, password: this.profile.id + Date.now() },
-          d.bind((error, user) => {
+        UserModel
+          .create({
+            email: this.email,
+            password: this.profile.id + Date.now()
+          })
+          .then(user => {
             try {
-              if ( error ) {
-                if ( error.message && /duplicate/.test(error.message) ) {
-                  return done(new Error('Duplicate user'));
-                }
-
-                return next(error);
-              }
-
               this.user = user;
 
               DiscussionModel
@@ -155,7 +140,13 @@ class Passport {
               next(error);
             }
           })
-        );
+          .catch(error => {
+            if ( error.message && /duplicate/.test(error.message) ) {
+              return done(new Error('Duplicate user'));
+            }
+
+            return next(error);
+          });
       });
     }
     catch ( error ) {
@@ -167,7 +158,9 @@ class Passport {
 
   serviceStrategy (req, res, next) {
     try {
+      console.log(this);
       this.strategy(req, res, next);
+
       next();
     }
     catch ( error ) {
@@ -187,6 +180,7 @@ class Passport {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   callback (req, res, next) {
+    console.log('callback url', this.service, req.path, passport)
     passport.authenticate(this.service, this.redirect.bind(this, req, res, next))
       (req, res, next);
   }

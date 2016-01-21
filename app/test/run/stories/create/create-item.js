@@ -41,7 +41,7 @@ function test(props) {
         () => identify(wrappers.driver.client, locals.user)
       ));
 
-      it('should click on toggle button', () => wrappers.driver.client.click(
+      it('should click on toggle button', () => wrappers.driver.click(
         selectors.create.toggle
       ));
 

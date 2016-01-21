@@ -8,6 +8,8 @@ import Home                             from './home';
 import ResetPassword                    from './reset-password';
 import PanelItems                       from './panel-items';
 import panelItemType                    from '../lib/proptypes/panel-item';
+import Panel                            from './panel';
+import Icon                             from './util/icon';
 
 class App extends React.Component {
 
@@ -16,7 +18,8 @@ class App extends React.Component {
   static propTypes  =   {
     path            :   React.PropTypes.string,
     item            :   panelItemType,
-    panels          :   React.PropTypes.object
+    panels          :   React.PropTypes.object,
+    intro           :   React.PropTypes.object
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,68 +29,92 @@ class App extends React.Component {
     const {
       item,
       panels,
-      path
+      path,
+      user,
+      intro,
+      notFound,
+      error
     } = this.props;
 
-    let page = ( <div></div> );
+    let page = (
+      <Panel heading={(<h4>Not found</h4>)}>
+        <section style={{ padding: 10 }}>
+          <h4>Page not found</h4>
+          <p>Sorry, this page was not found.</p>
+        </section>
+      </Panel>
+    );
 
     let showIntro = true;
 
-    if ( path === '/' ) {
-      page = <Home { ...this.props } />;
+    if ( error ) {
+      page = (
+        <Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
+          <section style={{ padding: 10 }}>
+            <h4 style={{ color : 'red', textAlign : 'center' }}>The system glitched :(</h4>
+            <p style={{ textAlign : 'center' }}>We have encountered an error. We apologize for any inconvenience.</p>
+          </section>
+        </Panel>
+      );
     }
 
-    const paths = path.split(/\//);
+    else {
+      if ( path === '/' ) {
+        page = <Home user={ user } />;
+      }
 
-    paths.shift();
+      const paths = path.split(/\//);
 
-    switch ( paths[0] ) {
-      case 'page':
-        switch ( paths[1] ) {
-          case 'profile':
-            page = ( <Profile /> );
-            showIntro = false;
-            break;
+      paths.shift();
 
-          case 'terms-of-service':
-            page = ( <TermsOfService /> );
-            showIntro = false;
-            break;
+      switch ( paths[0] ) {
+        case 'page':
+          switch ( paths[1] ) {
+            case 'profile':
+              page = ( <Profile /> );
+              showIntro = false;
+              break;
 
-          case 'reset-password':
-            page = ( <ResetPassword { ...this.props } /> );
-            showIntro = false;
-            break;
-        }
-        break;
+            case 'terms-of-service':
+              page = ( <TermsOfService /> );
+              showIntro = false;
+              break;
 
-      case 'item':
-        const panelId1 = Object.keys(this.props.panels)[0];
+            case 'reset-password':
+              page = ( <ResetPassword { ...this.props } /> );
+              showIntro = false;
+              break;
+          }
+          break;
 
-        const panel = Object.assign({}, this.props.panels[panelId1]);
+        case 'item':
+          const panelId1 = Object.keys(this.props.panels)[0];
 
-        panel.items = panel.items.filter(item => item.id === paths[1]);
+          const panel = Object.assign({}, this.props.panels[panelId1]);
 
-        console.info({ panel })
+          panel.items = panel.items.filter(item => item.id === paths[1]);
 
-        page = (
-          <PanelItems { ...this.props } panel={ panel } />
-        );
+          console.info({ panel })
 
-        break;
+          page = (
+            <PanelItems { ...this.props } panel={ panel } />
+          );
 
-      case 'items':
+          break;
 
-        const panelId2 = Object.keys(this.props.panels)[0];
+        case 'items':
 
-        page = (
-          <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
-        );
-        break;
+          const panelId2 = Object.keys(this.props.panels)[0];
+
+          page = (
+            <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
+          );
+          break;
+      }
     }
 
     return (
-      <Layout { ...this.props } show-intro={ showIntro }>
+      <Layout intro={ showIntro ? intro : null } user={ user }>
         { page }
       </Layout>
     );

@@ -15,18 +15,12 @@ class Intro extends React.Component {
     return (
       <section id               =     "syn-intro">
         <Panel
-          title                 =     { this.props.intro.subject }
-          creator               =     { false }
+          heading               =     { (<h4>{this.props.intro.subject}</h4>) }
           >
           <Item
             item                =     { this.props.intro }
             is-intro            =     { true }
-            buttons             =     { false }
-            promote             =     { false }
-            details             =     { false }
-            subtype             =     { false }
-            harmony             =     { false }
-            edit-and-go-again   =     { false } />
+            />
         </Panel>
       </section>
     );

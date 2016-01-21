@@ -28,6 +28,15 @@ function createItem (driver, context, options = {}) {
       );
     }
 
+    if ( 'reference' in options ) {
+      it('should set reference', () => driver.client
+        .setValue([
+          selectors.create.form,
+          selectors.create.reference
+        ].join(' '), options.reference)
+      );
+    }
+
     it('should submit form', () =>
       driver.client.submitForm(selectors.create.form)
     );

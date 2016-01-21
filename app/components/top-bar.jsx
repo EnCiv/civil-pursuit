@@ -10,6 +10,7 @@ import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
 import HeaderMenu                      from './header-menu';
+import selectors                      from 'syn/../../selectors.json';
 
 class TopBar extends React.Component {
 
@@ -17,7 +18,6 @@ class TopBar extends React.Component {
 
   static propTypes = {
     user        :   userType,
-    ready       :   React.PropTypes.bool,
     online      :   React.PropTypes.number
   }
 
@@ -119,7 +119,7 @@ class TopBar extends React.Component {
 
     let right1, right2;
 
-    if ( ready ) {
+    // if ( ready ) {
       if ( user ) {
         right1 = (
           <section className={ `${comp}-profile-button` }>
@@ -130,7 +130,7 @@ class TopBar extends React.Component {
         );
 
         right2 = (
-          <section className={ `${comp}-sign-out-button` }>
+          <section className={ selectors.sign.out.button }>
             <Button onClick={ this.signOut.bind(this) }>
               <Icon icon="sign-out" />
             </Button>
@@ -150,7 +150,7 @@ class TopBar extends React.Component {
           </section>
         );
       }
-    }
+    // }
 
     return (
       <section>
