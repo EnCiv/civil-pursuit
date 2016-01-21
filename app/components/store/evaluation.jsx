@@ -3,6 +3,7 @@
 import React from 'react';
 import selectors from 'syn/../../selectors.json';
 import { EventEmitter } from 'events';
+import screens from 'syn/../../screens.json';
 
 class EvaluationStore extends React.Component {
 
@@ -75,6 +76,15 @@ class EvaluationStore extends React.Component {
     let left, right;
 
     if ( cursor <= this.state.limit ) {
+
+      if ( this.state.left ) {
+        this.insertVotes('left');
+      }
+
+      if ( this.state.right ) {
+        this.insertVotes('right');
+      }
+
       left = this.state.evaluation.items[cursor];
       right = this.state.evaluation.items[cursor + 1];
 
@@ -89,6 +99,32 @@ class EvaluationStore extends React.Component {
     else {
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('details');
+    }
+  }
+
+  getScreen () {
+    return window.innerWidth < screens.phone ? 'up-to-phone' : 'phone-and-up';
+  }
+
+  insertVotes(position) {
+    const sliders = React.findDOMNode(this.refs.view).querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
+
+    if ( sliders.length ) {
+      const votes = [];
+
+      for ( let i = 0; i < sliders.length; i ++ ) {
+        const vote = sliders[i];
+
+        votes.push({
+          criteria  :   vote.dataset.criteria,
+          value     :   vote.value,
+          item      :   vote.closest('.item').id.split('-')[1]
+        });
+      }
+
+      console.log({ votes, sliders : sliders.length });
+
+      window.socket.emit('insert votes', votes);
     }
   }
 
@@ -111,7 +147,7 @@ class EvaluationStore extends React.Component {
     }
 
     return (
-      <section className={ selectors.evaluation.className } { ...attr }>
+      <section className={ selectors.evaluation.className } { ...attr } ref="view">
         { this.renderChildren() }
       </section>
     );

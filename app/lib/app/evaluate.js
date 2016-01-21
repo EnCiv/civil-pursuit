@@ -28,7 +28,7 @@ class Evaluator extends EventEmitter {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (userId, itemId) {
+  constructor (userId = {}, itemId = {}) {
     super();
 
     if ( typeof userId !== 'string' ) {

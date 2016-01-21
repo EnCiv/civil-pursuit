@@ -91,32 +91,21 @@ class API extends EventEmitter {
     this.emit('message', 'db inserts detected'.bgYellow,
       collection, document.toString().grey
     );
-    //
-    // if ( collection === 'votes' ) {
-    //   try {
-    //     Item.findById(document.item)
-    //       .then(item => {
-    //         try {
-    //           Promise.all([
-    //             item.toPanelItem(),
-    //             Item.getDetails(item)
-    //           ])
-    //           .then(results => {
-    //             const [ panelItem, details ] = results;
-    //             this.sockets.forEach(socket => {
-    //               socket.emit('item changed', panelItem);
-    //               socket.emit('OK get item details', details);
-    //             });
-    //           })
-    //           .catch(error => this.emit('error', error))
-    //         }
-    //         catch ( error ) { this.emit('error', error) }
-    //       })
-    //       .catch(error => this.emit('error', error));
-    //   }
-    //   catch ( error ) { this.emit('error', error) }
-    // }
+
+    if ( collection === 'votes' ) {
+      try {
+        Item.findById(document.item)
+          .then(item => {
+            this.sockets.forEach(socket => {
+              this.handlers['get item details'].apply(socket, [item]);
+            });
+          })
+          .catch(error => this.emit('error', error));
+      }
+      catch ( error ) { this.emit('error', error) }
+    }
   }
+
 
   listenToDB () {
     emitter.on('create', this.listenToDBInserts.bind(this));
