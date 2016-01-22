@@ -125,6 +125,22 @@ function test(props) {
         locals.item.image.should.startWith('http://res.cloudinary.com/');
       });
 
+      it('Image has updated in item box', () =>
+        wrappers.driver.attributeMatches(
+          `#item-${locals.item._id} > .item-media-wrapper img`,
+          'src',
+          locals.item.image
+        )
+      );
+
+      it('Image has updated in evaluation', () =>
+        wrappers.driver.attributeMatches(
+          `#item-${locals.item._id} .item-promote [data-screen="phone-and-up"] .promote-left img`,
+          'src',
+          locals.item.image
+        )
+      );
+
       // describe.pause(15000)(it);
 
     }

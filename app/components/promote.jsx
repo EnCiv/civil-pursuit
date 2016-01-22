@@ -12,6 +12,7 @@ import Button                         from './util/button';
 import Loading                        from './util/loading';
 import Subject            from './promote-item-subject';
 import Description        from './promote-item-description';
+import ItemStore          from './store/item';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -132,7 +133,9 @@ class ColumnItem extends React.Component {
 
     return (
       <Column span="50" className={ `promote-${position}` }>
-        <ItemMedia item={ item } />
+        <ItemStore item={ item }>
+          <ItemMedia />
+        </ItemStore>
         <Subject subject={ item.subject } />
         <Reference { ...item.references[0] } />
         <Description description={ item.description } />
@@ -261,7 +264,9 @@ class SideColumn extends React.Component {
 
     return (
       <Column span="50" className={ `promote-${position}` } ref="view">
-        <ItemMedia item={ item } />
+        <ItemStore item={ item }>
+          <ItemMedia />
+        </ItemStore>
         <Subject subject={ item.subject } />
         <Reference { ...item.references[0] } />
         <Description description={ item.description } />

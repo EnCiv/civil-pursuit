@@ -44,13 +44,11 @@ class EvaluationStore extends React.Component {
   }
 
   componentWillUnmount () {
-    this.emitter.off('next', this.next.bind(this));
+    this.emitter.removeListener('next', this.next.bind(this));
   }
 
   okGetEvaluation (evaluation) {
     if ( evaluation.item === this.props['item-id']) {
-      console.log(evaluation);
-
       let limit = this.state.limti;
 
       switch ( evaluation.items.length ) {

@@ -4542,6 +4542,10 @@ var _promoteItemDescription = require('./promote-item-description');
 
 var _promoteItemDescription2 = _interopRequireDefault(_promoteItemDescription);
 
+var _storeItem = require('./store/item');
+
+var _storeItem2 = _interopRequireDefault(_storeItem);
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Reference = (function (_React$Component) {
@@ -4763,7 +4767,11 @@ var ColumnItem = (function (_React$Component6) {
       return _react2['default'].createElement(
         _utilColumn2['default'],
         { span: '50', className: 'promote-' + position },
-        _react2['default'].createElement(_itemMedia2['default'], { item: item }),
+        _react2['default'].createElement(
+          _storeItem2['default'],
+          { item: item },
+          _react2['default'].createElement(_itemMedia2['default'], null)
+        ),
         _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject }),
         _react2['default'].createElement(Reference, item.references[0]),
         _react2['default'].createElement(_promoteItemDescription2['default'], { description: item.description })
@@ -4963,7 +4971,11 @@ var SideColumn = (function (_React$Component10) {
       return _react2['default'].createElement(
         _utilColumn2['default'],
         { span: '50', className: 'promote-' + position, ref: 'view' },
-        _react2['default'].createElement(_itemMedia2['default'], { item: item }),
+        _react2['default'].createElement(
+          _storeItem2['default'],
+          { item: item },
+          _react2['default'].createElement(_itemMedia2['default'], null)
+        ),
         _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject }),
         _react2['default'].createElement(Reference, item.references[0]),
         _react2['default'].createElement(_promoteItemDescription2['default'], { description: item.description }),
@@ -5155,7 +5167,7 @@ var Promote = (function (_React$Component11) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"../lib/proptypes/criteria":69,"../lib/proptypes/item":74,"./item-media":15,"./promote-item-description":24,"./promote-item-subject":25,"./sliders":30,"./util/button":41,"./util/column":43,"./util/loading":53,"./util/row":57,"./util/text-area":60,"react":245}],27:[function(require,module,exports){
+},{"../lib/proptypes/criteria":69,"../lib/proptypes/item":74,"./item-media":15,"./promote-item-description":24,"./promote-item-subject":25,"./sliders":30,"./store/item":33,"./util/button":41,"./util/column":43,"./util/loading":53,"./util/row":57,"./util/text-area":60,"react":245}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5962,14 +5974,12 @@ var EvaluationStore = (function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      this.emitter.off('next', this.next.bind(this));
+      this.emitter.removeListener('next', this.next.bind(this));
     }
   }, {
     key: 'okGetEvaluation',
     value: function okGetEvaluation(evaluation) {
       if (evaluation.item === this.props['item-id']) {
-        console.log(evaluation);
-
         var limit = this.state.limti;
 
         switch (evaluation.items.length) {
