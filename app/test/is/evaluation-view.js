@@ -3,11 +3,17 @@
 import selectors              from 'syn/../../selectors.json';
 import config                 from 'syn/../../public.json';
 import Criteria               from 'syn/../../dist/models/criteria';
+import Item                   from 'syn/../../dist/models/item';
 
 function isEvaluationView (driver, item, options = {}) {
   const locals = {};
 
   return it => {
+    it('should evaluate item for reference', () =>
+      Item.evaluate(item.user, item)
+        .then(evaluation => { locals.evaluation = evaluation })
+    );
+
     it('should see item', () =>
       driver.isVisible(
         `${selectors.item.id.prefix}${item._id}`, 2500
@@ -227,6 +233,19 @@ function isEvaluationView (driver, item, options = {}) {
         );
       });
 
+      it('Promote', it => {
+        if ( locals.evaluation.items.length > 1 ) {
+          it('should have a promote button', it => {
+            driver.isVisible([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.evaluation.promote
+            ])
+          });
+        }
+      });
+
       it('Button', it => {
         it('should have a button', () =>
           driver.isVisible([
@@ -245,7 +264,6 @@ function isEvaluationView (driver, item, options = {}) {
         }
       });
     });
-
   };
 }
 

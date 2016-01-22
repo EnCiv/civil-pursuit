@@ -114,17 +114,9 @@ function test(props) {
         selectors.evaluation.button
       ));
 
-      describe.pause(2000)(it);
-
-      // it('Click on Finish', () => wrappers.driver.client.click(
-      //   selectors.evaluation.button
-      // ));
-
       it('Shows details view', describe.use(() => isDetailsView(
         wrappers.driver, locals.item
       )));
-
-      describe.pause(15000)(it);
 
     }
   );

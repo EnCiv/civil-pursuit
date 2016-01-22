@@ -10,34 +10,8 @@ import TextArea                       from './util/text-area';
 import Sliders                        from './sliders';
 import Button                         from './util/button';
 import Loading                        from './util/loading';
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class Subject extends React.Component {
-  static propTypes = {
-    subject : React.PropTypes.string
-  }
-
-  render () {
-    return (
-      <h4 className="item-subject">{ this.props.subject }</h4>
-    );
-  }
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class Description extends React.Component {
-  static propTypes = {
-    description : React.PropTypes.string
-  }
-
-  render () {
-    return (
-      <section className="promote-description item-description">{ this.props.description }</section>
-    );
-  }
-}
+import Subject            from './promote-item-subject';
+import Description        from './promote-item-description';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -241,7 +215,7 @@ class ColumnButtons extends React.Component {
     }
 
     return (
-      <Column span="50" className={ `promote-${position} promote-item-${position}` } ref="view">
+      <Column span="50" className={ `promote-item-button promote-${position} promote-item-${position}` } ref="view">
         <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
         <EditAndGoAgain { ...this.props } panel-id={ this.props['panel-id'] } item={ item } />
       </Column>

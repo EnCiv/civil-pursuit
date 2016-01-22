@@ -39,7 +39,7 @@ function test(props) {
       ));
 
       it('should click on sign-out button', () =>
-        wrappers.driver.client.click(selectors.sign.out.button)
+        wrappers.driver.click(selectors.sign.out.button, 2500)
       );
 
       describe.pause(1500)(it);

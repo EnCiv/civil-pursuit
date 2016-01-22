@@ -130,124 +130,124 @@ window.Dispatcher
   //   window.socket.emit('add view', item);
   // })
   //
-  // .on('promote item', (item, position, evaluatedItem, view) => {
-  //   INCOMING('promote item', item, position, evaluatedItem, view);
-  //
-  //   let dataScreen = width < screens.phone ? 'up-to-phone' : 'phone-and-up';
-  //
-  //   const saveFeedback = position => {
-  //     const feedback = view.querySelectorAll(`.promote-${position} .user-feedback`);
-  //
-  //     for ( let i = 0; i < feedback.length; i ++ ) {
-  //       let value = feedback[i].value;
-  //
-  //       if ( value ) {
-  //         let id = feedback[i].closest('.item').id.split('-')[1];
-  //
-  //         window.Dispatcher.emit('insert feedback', id, value);
-  //
-  //         feedback[i].value = '';
-  //       }
-  //     }
-  //   };
-  //
-  //   const saveVotes = position => {
-  //
-  //     const sliders = view.querySelectorAll(`[data-screen="${dataScreen}"] .promote-${position} [type="range"]`);
-  //
-  //     if ( sliders.length ) {
-  //       const votes = [];
-  //
-  //       for ( let i = 0; i < sliders.length; i ++ ) {
-  //         const vote = sliders[i];
-  //
-  //         votes.push({
-  //           criteria  :   vote.dataset.criteria,
-  //           value     :   vote.value,
-  //           item      :   vote.closest('.item').id.split('-')[1]
-  //         });
-  //       }
-  //
-  //       console.log({ votes, sliders : sliders.length });
-  //
-  //       window.Dispatcher.emit('insert votes', votes);
-  //     }
-  //   };
-  //
-  //   if ( item ) {
-  //     window.socket.emit('promote', item);
-  //   }
-  //
-  //   let { evaluation } = props.items[evaluatedItem];
-  //
-  //   let isEnd = evaluation.cursor === evaluation.limit;
-  //
-  //   if ( evaluation.cursor <= evaluation.limit ) {
-  //     if ( position === 'left' ) {
-  //
-  //       if ( evaluation.right ) {
-  //         saveFeedback('right');
-  //         saveVotes('right');
-  //       }
-  //
-  //       if ( evaluation.cursor < evaluation.limit ) {
-  //         evaluation.cursor ++;
-  //
-  //         evaluation.right = evaluation.items[evaluation.cursor];
-  //       }
-  //     }
-  //     else if ( position === 'right' ) {
-  //
-  //       if ( evaluation.left ) {
-  //         saveFeedback('left');
-  //         saveVotes('left');
-  //       }
-  //
-  //       if ( evaluation.cursor < evaluation.limit ) {
-  //         evaluation.cursor ++;
-  //
-  //         evaluation.left = evaluation.items[evaluation.cursor];
-  //       }
-  //     }
-  //     else {
-  //       saveFeedback('left');
-  //       saveVotes('left');
-  //       saveFeedback('right');
-  //       saveVotes('right');
-  //
-  //       if ( evaluation.cursor < evaluation.limit ) {
-  //         evaluation.cursor ++;
-  //
-  //         evaluation.left = evaluation.items[evaluation.cursor];
-  //       }
-  //
-  //       if ( evaluation.cursor < evaluation.limit ) {
-  //         evaluation.cursor ++;
-  //
-  //         evaluation.right = evaluation.items[evaluation.cursor];
-  //       }
-  //     }
-  //   }
-  //
-  //   else {
-  //     evaluation.cursor = evaluation.limit;
-  //   }
-  //
-  //   if ( isEnd ) {
-  //     delete props.items[evaluatedItem].evaluation;
-  //   }
-  //
-  //   // scroll to top
-  //
-  //   let top = view.getBoundingClientRect().top;
-  //   let { pageYOffset } = window;
-  //
-  //   window.scrollTo(0, pageYOffset + top - 60);
-  //
-  //   render();
-  //
-  //   window.Emitter.emit('promote');
-  // })
+  .on('promote item', (item, position, evaluatedItem, view) => {
+    INCOMING('promote item', item, position, evaluatedItem, view);
+
+    let dataScreen = width < screens.phone ? 'up-to-phone' : 'phone-and-up';
+
+    const saveFeedback = position => {
+      const feedback = view.querySelectorAll(`.promote-${position} .user-feedback`);
+
+      for ( let i = 0; i < feedback.length; i ++ ) {
+        let value = feedback[i].value;
+
+        if ( value ) {
+          let id = feedback[i].closest('.item').id.split('-')[1];
+
+          window.Dispatcher.emit('insert feedback', id, value);
+
+          feedback[i].value = '';
+        }
+      }
+    };
+
+    const saveVotes = position => {
+
+      const sliders = view.querySelectorAll(`[data-screen="${dataScreen}"] .promote-${position} [type="range"]`);
+
+      if ( sliders.length ) {
+        const votes = [];
+
+        for ( let i = 0; i < sliders.length; i ++ ) {
+          const vote = sliders[i];
+
+          votes.push({
+            criteria  :   vote.dataset.criteria,
+            value     :   vote.value,
+            item      :   vote.closest('.item').id.split('-')[1]
+          });
+        }
+
+        console.log({ votes, sliders : sliders.length });
+
+        window.Dispatcher.emit('insert votes', votes);
+      }
+    };
+
+    if ( item ) {
+      window.socket.emit('promote', item);
+    }
+
+    let { evaluation } = props.items[evaluatedItem];
+
+    let isEnd = evaluation.cursor === evaluation.limit;
+
+    if ( evaluation.cursor <= evaluation.limit ) {
+      if ( position === 'left' ) {
+
+        if ( evaluation.right ) {
+          saveFeedback('right');
+          saveVotes('right');
+        }
+
+        if ( evaluation.cursor < evaluation.limit ) {
+          evaluation.cursor ++;
+
+          evaluation.right = evaluation.items[evaluation.cursor];
+        }
+      }
+      else if ( position === 'right' ) {
+
+        if ( evaluation.left ) {
+          saveFeedback('left');
+          saveVotes('left');
+        }
+
+        if ( evaluation.cursor < evaluation.limit ) {
+          evaluation.cursor ++;
+
+          evaluation.left = evaluation.items[evaluation.cursor];
+        }
+      }
+      else {
+        saveFeedback('left');
+        saveVotes('left');
+        saveFeedback('right');
+        saveVotes('right');
+
+        if ( evaluation.cursor < evaluation.limit ) {
+          evaluation.cursor ++;
+
+          evaluation.left = evaluation.items[evaluation.cursor];
+        }
+
+        if ( evaluation.cursor < evaluation.limit ) {
+          evaluation.cursor ++;
+
+          evaluation.right = evaluation.items[evaluation.cursor];
+        }
+      }
+    }
+
+    else {
+      evaluation.cursor = evaluation.limit;
+    }
+
+    if ( isEnd ) {
+      delete props.items[evaluatedItem].evaluation;
+    }
+
+    // scroll to top
+
+    let top = view.getBoundingClientRect().top;
+    let { pageYOffset } = window;
+
+    window.scrollTo(0, pageYOffset + top - 60);
+
+    render();
+
+    window.Emitter.emit('promote');
+  })
   //
   // .on('get details', item => {
   //   INCOMING('get details', item);

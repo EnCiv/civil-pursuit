@@ -130,7 +130,7 @@ class TopBar extends React.Component {
         );
 
         right2 = (
-          <section className={ selectors.sign.out.button }>
+          <section className={ selectors.sign.out.button.replace(/\./, '') }>
             <Button onClick={ this.signOut.bind(this) }>
               <Icon icon="sign-out" />
             </Button>

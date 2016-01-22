@@ -12,7 +12,7 @@ function isDetailsView (driver, item) {
 
   return it => {
     it('should have a details view for item', () =>
-      driver.exists(locals.element)
+      driver.exists(locals.element, 2500)
     );
 
     it('Popularity', it => {
@@ -36,7 +36,7 @@ function isDetailsView (driver, item) {
       );
 
       it('should get votes', () => Vote.getAccumulation(item)
-        .then(votes => { locals.votes = votes })
+        .then(votes => { locals.votes = votes; console.log(votes); })
       );
 
       it('each criterias are in view', () =>

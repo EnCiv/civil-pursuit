@@ -37,7 +37,8 @@
     "cursor" : ".cursor",
     "limit" : ".limit",
     "left" : ".promote-left",
-    "button" : ".finish-evaluate"
+    "button" : ".finish-evaluate",
+    "promote" : ".promote-item-button"
   },
   "item" : {
     "id" : {

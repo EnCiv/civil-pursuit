@@ -1,9 +1,16 @@
 'use strict';
 
-import VoteModel from '../models/vote';
+import Vote from '../models/vote';
 
 function insertVotes (votes) {
-  VoteModel.create(votes);
+  Vote
+    .create(votes.map(vote => {
+      vote.user = this.synuser.id;
+
+      return vote;
+    }))
+    .then(() => {})
+    .catch(this.error.bind(this))
 }
 
 export default insertVotes;

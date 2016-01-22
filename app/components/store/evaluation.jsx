@@ -75,15 +75,15 @@ class EvaluationStore extends React.Component {
 
     let left, right;
 
+    if ( this.state.left ) {
+      this.insertVotes('left', this.state.left._id);
+    }
+
+    if ( this.state.right ) {
+      this.insertVotes('right', this.state.right._id);
+    }
+
     if ( cursor <= this.state.limit ) {
-
-      if ( this.state.left ) {
-        this.insertVotes('left');
-      }
-
-      if ( this.state.right ) {
-        this.insertVotes('right');
-      }
 
       left = this.state.evaluation.items[cursor];
       right = this.state.evaluation.items[cursor + 1];
@@ -106,7 +106,7 @@ class EvaluationStore extends React.Component {
     return window.innerWidth < screens.phone ? 'up-to-phone' : 'phone-and-up';
   }
 
-  insertVotes(position) {
+  insertVotes(position, itemId) {
     const sliders = React.findDOMNode(this.refs.view).querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
 
     if ( sliders.length ) {
@@ -118,7 +118,7 @@ class EvaluationStore extends React.Component {
         votes.push({
           criteria  :   vote.dataset.criteria,
           value     :   vote.value,
-          item      :   vote.closest('.item').id.split('-')[1]
+          item      :   itemId
         });
       }
 
