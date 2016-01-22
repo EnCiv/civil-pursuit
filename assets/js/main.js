@@ -2013,6 +2013,10 @@ var _libProptypesCountry = require('../lib/proptypes/country');
 
 var _libProptypesCountry2 = _interopRequireDefault(_libProptypesCountry);
 
+var _synSelectorsJson = require('syn/../../selectors.json');
+
+var _synSelectorsJson2 = _interopRequireDefault(_synSelectorsJson);
+
 var Identity = (function (_React$Component) {
   _inherits(Identity, _React$Component);
 
@@ -2048,7 +2052,7 @@ var Identity = (function (_React$Component) {
   _createClass(Identity, [{
     key: 'saveImage',
     value: function saveImage(file) {
-      window.socket.emit('save user image', file.name);
+      window.socket.emit('save user image', file.name, function () {});
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2213,14 +2217,17 @@ var Identity = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'syn-identity' },
+        { className: _synSelectorsJson2['default'].identity.selector.replace(/\./g, ' ') },
         _react2['default'].createElement('hr', null),
         _react2['default'].createElement(
           _utilRow2['default'],
           null,
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', className: 'gutter' },
+            {
+              span: '50',
+              className: 'gutter ' + _synSelectorsJson2['default'].identity.uploader.replace(/\./g, ' ')
+            },
             _react2['default'].createElement(_uploader2['default'], { handler: this.saveImage.bind(this), image: user.image })
           ),
           _react2['default'].createElement(
@@ -2357,7 +2364,7 @@ var Identity = (function (_React$Component) {
 
 exports['default'] = Identity;
 module.exports = exports['default'];
-},{"../lib/proptypes/country":68,"../lib/proptypes/user":82,"./uploader":38,"./util/column":43,"./util/date-input":44,"./util/input-group":50,"./util/row":57,"./util/select":58,"./util/text-input":61,"react":245}],13:[function(require,module,exports){
+},{"../lib/proptypes/country":68,"../lib/proptypes/user":82,"./uploader":38,"./util/column":43,"./util/date-input":44,"./util/input-group":50,"./util/row":57,"./util/select":58,"./util/text-input":61,"react":245,"syn/../../selectors.json":250}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -36702,7 +36709,12 @@ module.exports={
     "slider" : ".syn-sliders-slider"
   },
   "identity" : {
-    "selector" : ".syn-identity"
+    "selector" : ".syn-identity",
+    "uploader" : ".identity-uploader",
+    "image" : {
+      "input" : "input[name=\"image\"]",
+      "preview": ".preview-image"
+    }
   },
   "intro" : "#syn-intro",
   "join" : {

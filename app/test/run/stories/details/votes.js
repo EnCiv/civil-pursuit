@@ -16,7 +16,7 @@ function test(props) {
   const locals = {};
 
   return testWrapper(
-    'Story -> Details -> View Item Details',
+    'Story -> Details -> Votes',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 

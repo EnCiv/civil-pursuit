@@ -75,7 +75,12 @@
     "slider" : ".syn-sliders-slider"
   },
   "identity" : {
-    "selector" : ".syn-identity"
+    "selector" : ".syn-identity",
+    "uploader" : ".identity-uploader",
+    "image" : {
+      "input" : "input[name=\"image\"]",
+      "preview": ".preview-image"
+    }
   },
   "intro" : "#syn-intro",
   "join" : {

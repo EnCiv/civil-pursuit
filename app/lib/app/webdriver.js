@@ -5,7 +5,7 @@ import colors                 from 'colors';
 import should                 from 'should';
 import webdriverio            from 'webdriverio';
 import FirefoxProfile         from 'firefox-profile';
-import User                   from '../../models/user';
+import sequencer              from 'sequencer';
 
 class WebDriver extends EventEmitter {
 
@@ -319,23 +319,11 @@ class WebDriver extends EventEmitter {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   scroll (selector) {
-    return new Promise((ok, ko) => {
-      this.client.scroll(selector)
-        .then(() => {
-          this.client.getLocation(selector)
-            .then(pos => {
-              this.client.getElementSize(selector)
-                .then(size => {
-                  this.client
-                    .scroll(pos.x + (size.width / 2), 25000)
-                    .then(ok, ko);
-                })
-                .catch(ko);
-            })
-            .catch(ko);
-        })
-        .catch(ko);
-    });
+    return sequencer(
+      () => this.client.scroll(selector),
+      () => this.client.pause(500),
+      () => this.client.scroll(selector)
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -411,7 +399,7 @@ class WebDriver extends EventEmitter {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
 }
 
 WebDriver.OPTIONS = {

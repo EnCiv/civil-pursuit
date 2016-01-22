@@ -11,6 +11,7 @@ import createItem             from 'syn/../../dist/test/util/e2e-create-item';
 import selectors              from 'syn/../../selectors.json';
 import isItem                 from 'syn/../../dist/test/is/item';
 import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
+import Agent                  from 'syn/../../dist/lib/app/agent';
 
 function test(props) {
   const locals = {};
@@ -28,18 +29,43 @@ function test(props) {
         });
       });
 
-      it('should go to profile', () =>
+      it('should go home', () =>
         wrappers.driver.client
-          .url(`http://localhost:${wrappers.http.app.get('port')}/page/profile`)
+          .url(`http://localhost:${wrappers.http.app.get('port')}/`)
       );
 
       it('should sign in', describe.use(
         () => identify(wrappers.driver.client, locals.user)
       ));
 
+      it('should go to profile', () =>
+        wrappers.driver.client
+          .url(`http://localhost:${wrappers.http.app.get('port')}/page/profile`)
+      );
+
       it('should see Identity panel', () => wrappers.driver.isVisible(
         selectors.identity.selector, 2500
       ));
+
+      it('should have an uploader', () =>
+        wrappers.driver.isVisible(selectors.identity.uploader)
+      );
+
+      it('should download image', () => Agent.download(
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Tim_Bartel.jpg/196px-Tim_Bartel.jpg',
+        '/tmp/syn-test-story-identity.jpg'
+      ));
+
+      it('should set it as value', () =>
+        wrappers.driver.client.setValue(
+          selectors.identity.image.input,
+          '/tmp/syn-test-story-identity.jpg'
+        )
+      );
+
+      it('should see image', () =>
+        wrappers.driver.isVisible(selectors.identity.image.preview, 5000)
+      );
 
     }
   );

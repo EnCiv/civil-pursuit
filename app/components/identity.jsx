@@ -10,6 +10,7 @@ import DateInput                      from './util/date-input';
 import Uploader                       from './uploader';
 import userType                       from '../lib/proptypes/user';
 import countryType                    from '../lib/proptypes/country';
+import selectors                      from 'syn/../../selectors.json';
 
 class Identity extends React.Component {
 
@@ -33,7 +34,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveImage (file) {
-    window.socket.emit('save user image', file.name);
+    window.socket.emit('save user image', file.name, () => {});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -170,10 +171,13 @@ class Identity extends React.Component {
     }
 
     return (
-      <section className="syn-identity">
+      <section className={ selectors.identity.selector.replace(/\./g, ' ') }>
         <hr />
         <Row>
-          <Column span="50" className="gutter">
+          <Column
+            span        =   "50"
+            className   =   { `gutter ${selectors.identity.uploader.replace(/\./g, ' ')}` }
+            >
             <Uploader handler={ this.saveImage.bind(this) } image={ user.image } />
           </Column>
           <Column span="50" className="gutter">
