@@ -3471,7 +3471,7 @@ var Login = (function (_React$Component) {
   }, {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
-      location.href = '/sign/facebook';
+      location.href = '/sign/in/facebook';
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3479,7 +3479,7 @@ var Login = (function (_React$Component) {
   }, {
     key: 'loginWithTwitter',
     value: function loginWithTwitter() {
-      location.href = '/sign/twitter';
+      location.href = '/sign/in/twitter';
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5856,7 +5856,6 @@ var DetailsStore = (function (_React$Component) {
   }, {
     key: 'okGetItemdetails',
     value: function okGetItemdetails(details) {
-      console.log({ details: details });
       if (details.item._id === this.props.item._id) {
         console.log({ details: details });
         this.setState({ details: details });
@@ -5945,6 +5944,13 @@ var EvaluationStore = (function (_React$Component) {
       }
 
       this.emitter.on('next', this.next.bind(this));
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      if (!this.state.evaluation) {
+        window.socket.emit('get evaluation', this.props['item-id'], this.okGetEvaluation.bind(this));
+      }
     }
   }, {
     key: 'componentWillUnmount',
@@ -9120,6 +9126,7 @@ var Vote = (function (_React$Component) {
     _get(Object.getPrototypeOf(Vote.prototype), 'constructor', this).apply(this, arguments);
 
     this.item = {};
+    this.total = null;
   }
 
   _createClass(Vote, [{
@@ -9137,21 +9144,20 @@ var Vote = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-
-      if (this.props.item && this.props.item._id !== this.item) {
-        this.item = this.props.item._id;
-      }
-
+      this.makeChart();
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      this.makeChart();
+    }
+  }, {
+    key: 'makeChart',
+    value: function makeChart() {
       var _props = this.props;
       var criteria = _props.criteria;
       var vote = _props.vote;
       var item = _props.item;
-
-      var svg = _react2['default'].findDOMNode(this.refs.svg);
-
-      svg.id = 'chart-' + item._id + '-' + criteria._id;
-
-      var data = [];
 
       if (!vote) {
         vote = {
@@ -9163,6 +9169,22 @@ var Vote = (function (_React$Component) {
           total: 0
         };
       }
+
+      if (this.total !== null && vote.total === this.total) {
+        return;
+      }
+
+      this.total = vote.total;
+
+      if (this.props.item && this.props.item._id !== this.item) {
+        this.item = this.props.item._id;
+      }
+
+      var svg = _react2['default'].findDOMNode(this.refs.svg);
+
+      svg.id = 'chart-' + item._id + '-' + criteria._id;
+
+      var data = [];
 
       for (var number in vote.values) {
         data.push({
@@ -9531,18 +9553,15 @@ var Votes = (function (_React$Component) {
   _createClass(Votes, [{
     key: 'render',
     value: function render() {
-
-      console.log('R', 'votes', this.props);
-
       var _props = this.props;
       var criterias = _props.criterias;
       var votes = _props.votes;
       var item = _props.item;
 
-      var sliders = undefined;
+      var votesViews = undefined;
 
       if (item) {
-        sliders = criterias.map(function (criteria) {
+        votesViews = criterias.map(function (criteria) {
           return _react2['default'].createElement(_vote2['default'], {
             criteria: criteria,
             vote: votes[criteria._id],
@@ -9553,8 +9572,8 @@ var Votes = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'div',
-        { className: 'syn-sliders' },
-        sliders
+        { className: 'syn-votes' },
+        votesViews
       );
     }
   }], [{
@@ -36709,7 +36728,8 @@ module.exports={
     },
     "label" : {
       "legend" : "g.c3-legend-item text"
-    }
+    },
+    "minus1" : "svg.chart.c3 g.c3-chart g.c3-chart-bars path:nth-child(1)"
   },
   "sign" : {
     "out" : {

@@ -101,7 +101,8 @@
     },
     "label" : {
       "legend" : "g.c3-legend-item text"
-    }
+    },
+    "minus1" : "svg.chart.c3 g.c3-chart g.c3-chart-bars path:nth-child(1)"
   },
   "sign" : {
     "out" : {

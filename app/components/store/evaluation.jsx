@@ -33,6 +33,16 @@ class EvaluationStore extends React.Component {
     this.emitter.on('next', this.next.bind(this));
   }
 
+  componentDidUpdate () {
+    if ( ! this.state.evaluation ) {
+      window.socket.emit(
+        'get evaluation',
+        this.props['item-id'],
+        this.okGetEvaluation.bind(this)
+      );
+    }
+  }
+
   componentWillUnmount () {
     this.emitter.off('next', this.next.bind(this));
   }

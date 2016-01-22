@@ -11,6 +11,8 @@ class Vote extends React.Component {
 
   item = {}
 
+  total = null
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes  =   {
@@ -29,29 +31,43 @@ class Vote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
+    this.makeChart();
+  }
 
-    if ( this.props.item && this.props.item._id !== this.item ) {
-      this.item = this.props.item._id;
-    }
+  componentDidUpdate () {
+    this.makeChart();
+  }
+
+  makeChart () {
 
     let { criteria, vote, item } = this.props;
 
-    let svg = React.findDOMNode(this.refs.svg);
-
-    svg.id = `chart-${item._id}-${criteria._id}`;
-
-    let data = [];
-
-    if ( ! vote )   {
-      vote        = {
+    if ( ! vote ) {
+      vote = {
         values    : {
           '-1'    : 0,
           '0'     : 0,
           '1'     : 0
         },
         total: 0
-      }
+      };
     }
+
+    if ( this.total !== null && vote.total === this.total ) {
+      return;
+    }
+
+    this.total = vote.total;
+
+    if ( this.props.item && this.props.item._id !== this.item ) {
+      this.item = this.props.item._id;
+    }
+
+    let svg = React.findDOMNode(this.refs.svg);
+
+    svg.id = `chart-${item._id}-${criteria._id}`;
+
+    let data = [];
 
     for ( let number in vote.values ) {
       data.push({

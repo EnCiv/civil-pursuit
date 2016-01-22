@@ -17,14 +17,12 @@ class Votes extends React.Component {
 
   render () {
 
-    console.log('R', 'votes', this.props);
-
     const { criterias, votes, item } = this.props;
 
-    let sliders;
+    let votesViews;
 
     if ( item ) {
-      sliders = criterias.map(criteria => (
+      votesViews = criterias.map(criteria => (
         <Vote
           criteria    =   { criteria }
           vote        =   { votes[criteria._id] }
@@ -34,8 +32,8 @@ class Votes extends React.Component {
     }
 
     return (
-      <div className="syn-sliders">
-        { sliders }
+      <div className="syn-votes">
+        { votesViews }
       </div>
     );
   }

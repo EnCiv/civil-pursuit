@@ -59,7 +59,7 @@ function test(props) {
 
       it('should see item details', () =>
         wrappers.driver.isVisible(
-          `${selectors.details.id.prefix}${locals.item._id}`
+          `${selectors.details.id.prefix}${locals.item._id}`, 2500
         )
       );
 

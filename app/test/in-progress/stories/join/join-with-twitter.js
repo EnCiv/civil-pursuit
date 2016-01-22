@@ -30,13 +30,25 @@ function test(props) {
         selectors.join.button
       ));
 
+      describe.pause(2000)(it);
+
       it('should be a Join form', describe.use(() => isJoinForm(wrappers.driver)));
 
       it('should click on Join with Twitter', () =>
         wrappers.driver.client.click(selectors.join.twitter)
       );
 
-      describe.pause(15000)(it);
+      describe.pause(3500)(it);
+
+      it('should be in twitter', () =>
+        wrappers.driver.hasUrl(/api\.twitter\.com/)
+      );
+
+      it('should fill username', () => wrappers.driver.client.setValue(
+        '#username_or_email', 'helloooooooooo'
+      ));
+
+      describe.pause(30000)(it);
 
     }
   );

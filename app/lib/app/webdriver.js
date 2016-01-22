@@ -222,6 +222,8 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   hasValue (selector, expectedValue) {
     return new Promise((ok, ko) => {
       this.client
@@ -367,6 +369,8 @@ class WebDriver extends EventEmitter {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   hasNotCookie (cookie) {
     return new Promise((ok, ko) => {
       this.client
@@ -379,6 +383,35 @@ class WebDriver extends EventEmitter {
         .catch(ko);
     });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  hasUrl (expectedURL) {
+    return new Promise((ok, ko) => {
+      this.client
+        .url()
+        .then(currentURL => {
+          currentURL = currentURL.value;
+
+          let match = false;
+
+          if ( expectedURL instanceof RegExp ) {
+            match = expectedURL.test(currentURL);
+          }
+          else {
+            match = expectedURL === currentURL;
+          }
+
+          match ? ok() : ko(new Error(
+            `URL mismatch: expecting ${expectedURL}, got ${currentURL}`
+          ));
+        })
+        .catch(ko);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
 }
 
 WebDriver.OPTIONS = {

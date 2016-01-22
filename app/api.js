@@ -93,16 +93,14 @@ class API extends EventEmitter {
     );
 
     if ( collection === 'votes' ) {
-      try {
-        Item.findById(document.item)
-          .then(item => {
-            this.sockets.forEach(socket => {
-              this.handlers['get item details'].apply(socket, [item]);
-            });
-          })
-          .catch(error => this.emit('error', error));
-      }
-      catch ( error ) { this.emit('error', error) }
+      Item
+        .getDetails(document.item)
+        .then(details => {
+          this.sockets.forEach(socket => {
+            socket.emit('OK get item details', details)
+          });
+        })
+        .catch(error => this.emit('error', error));
     }
   }
 
