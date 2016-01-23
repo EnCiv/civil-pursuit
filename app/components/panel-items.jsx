@@ -150,6 +150,7 @@ class PanelItems extends React.Component {
                     <EvaluationStore
                       item-id     =   { item._id }
                       toggle      =   { this.toggle.bind(this, item._id) }
+                      active      =   { active }
                       >
                       <Promote
                         ref       =   "promote"

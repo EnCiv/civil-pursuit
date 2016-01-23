@@ -70,7 +70,7 @@ class API extends EventEmitter {
   }
 
   listenToDBUpdates (collection, document) {
-    this.emit('message', 'db updates detected'.bgYellow,
+    this.emit('message', 'DB UPDATES'.bgYellow,
       collection, document.toString().grey
     );
 
@@ -88,7 +88,7 @@ class API extends EventEmitter {
   }
 
   listenToDBInserts (collection, document) {
-    this.emit('message', 'db inserts detected'.bgYellow,
+    this.emit('message', 'DB INSERTS'.bgGreen,
       collection, document.toString().grey
     );
 

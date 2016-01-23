@@ -7,6 +7,8 @@ import screens from 'syn/../../screens.json';
 
 class EvaluationStore extends React.Component {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   state = {
     evaluation : null,
     cursor : 1,
@@ -15,11 +17,17 @@ class EvaluationStore extends React.Component {
     right : null
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   emitter = new EventEmitter()
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
     super(props);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
     if ( ! this.state.evaluation ) {
@@ -30,11 +38,15 @@ class EvaluationStore extends React.Component {
       );
     }
 
-    this.emitter.on('next', this.next.bind(this));
+    this.emitter
+      .on('next', this.next.bind(this))
+      .on('promote', this.promote.bind(this));
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentDidUpdate () {
-    if ( ! this.state.evaluation ) {
+    if ( ! this.state.evaluation && this.props.active && this.props.active.item === this.props['item-id'] && this.props.active.section === 'promote' ) {
       window.socket.emit(
         'get evaluation',
         this.props['item-id'],
@@ -43,12 +55,19 @@ class EvaluationStore extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentWillUnmount () {
     this.emitter.removeListener('next', this.next.bind(this));
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   okGetEvaluation (evaluation) {
-    if ( evaluation.item === this.props['item-id']) {
+    if ( evaluation.item === this.props['item-id'] ) {
+
+      console.info('Evaluation');
+
       let limit = this.state.limti;
 
       switch ( evaluation.items.length ) {
@@ -61,6 +80,11 @@ class EvaluationStore extends React.Component {
 
       let left, right;
 
+      if ( evaluation.items[1] ) {
+        right = evaluation.items[1];
+        window.socket.emit('add view', evaluation.items[1]);
+      }
+
       if ( evaluation.items[0] ) {
         left = evaluation.items[0];
 
@@ -69,14 +93,11 @@ class EvaluationStore extends React.Component {
         }
       }
 
-      if ( evaluation.items[1] ) {
-        right = evaluation.items[1];
-        window.socket.emit('add view', evaluation.items[1]);
-      }
-
       this.setState({ evaluation, limit, left, right });
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   next () {
     const cursor = this.state.cursor + 1;
@@ -110,9 +131,13 @@ class EvaluationStore extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   getScreen () {
     return window.innerWidth < screens.phone ? 'up-to-phone' : 'phone-and-up';
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertVotes(position, itemId) {
     const sliders = React.findDOMNode(this.refs.view).querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
@@ -133,6 +158,39 @@ class EvaluationStore extends React.Component {
       console.log({ votes, sliders : sliders.length });
 
       window.socket.emit('insert votes', votes);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  promote (position) {
+    const opposite = position === 'left' ? 'right' : 'left';
+
+    const cursor = this.state.cursor + 1;
+
+    let right = this.state.right, left = this.state.left;
+
+    window.socket.emit('promote', this.state[position]);
+
+    this.insertVotes(opposite, this.state[opposite]._id);
+
+    if ( cursor <= this.state.limit ) {
+
+      if ( left && right ) {
+        window.socket.emit('add view', this.state[position]);
+        window.socket.emit('add view', this.state[opposite]);
+      }
+
+      this.setState({
+        cursor,
+        [opposite] : this.state.evaluation.items[cursor]
+      });
+    }
+
+    else {
+      this.insertVotes(position, this.state[position]._id);
+      this.setState({ evaluation : null, cursor : 1 });
+      this.props.toggle('details');
     }
   }
 
