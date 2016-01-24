@@ -2251,9 +2251,27 @@ var Identity = (function (_React$Component) {
           _react2['default'].createElement(
             _utilInputGroup2['default'],
             { block: true },
-            _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'First name', onChange: this.saveFirstName.bind(this), ref: 'firstName', defaultValue: user.first_name }),
-            _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Middle name', onChange: this.saveMiddleName.bind(this), ref: 'middleName', defaultValue: user.middle_name }),
-            _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Last name', onChange: this.saveLastName.bind(this), ref: 'lastName', defaultValue: user.last_name })
+            _react2['default'].createElement(_utilTextInput2['default'], {
+              placeholder: 'First name',
+              onChange: this.saveFirstName.bind(this),
+              ref: 'firstName',
+              name: 'first-name',
+              defaultValue: user.first_name
+            }),
+            _react2['default'].createElement(_utilTextInput2['default'], {
+              placeholder: 'Middle name',
+              onChange: this.saveMiddleName.bind(this),
+              ref: 'middleName',
+              defaultValue: user.middle_name,
+              name: 'middle-name'
+            }),
+            _react2['default'].createElement(_utilTextInput2['default'], {
+              placeholder: 'Last name',
+              onChange: this.saveLastName.bind(this),
+              ref: 'lastName',
+              defaultValue: user.last_name,
+              name: 'last-name'
+            })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
@@ -3919,10 +3937,14 @@ var PanelItems = (function (_React$Component) {
               { item: item, key: 'item-' + item._id },
               _react2['default'].createElement(_item2['default'], {
                 item: item,
-                buttons: _react2['default'].createElement(_itemButtons2['default'], {
-                  item: item,
-                  toggle: _this.toggle.bind(_this)
-                }),
+                buttons: _react2['default'].createElement(
+                  _synDistComponentsStoreItem2['default'],
+                  { item: item },
+                  _react2['default'].createElement(_itemButtons2['default'], {
+                    item: item,
+                    toggle: _this.toggle.bind(_this)
+                  })
+                ),
                 footer: [promote, details] })
             );
           });
@@ -37009,7 +37031,8 @@ module.exports={
   },
   "panel" : {
     "heading" : ".syn-panel-heading",
-    "body" : ".syn-panel-body"
+    "body" : ".syn-panel-body",
+    "createLink" : ".click-to-create"
   },
   "accordion" : {
     "main" : ".syn-accordion"
@@ -37035,7 +37058,12 @@ module.exports={
     },
     "image" : ".item-media-wrapper .item-media img.syn-img-responsive",
     "subject" : ".item-subject",
-    "description" : ".item-description"
+    "description" : ".item-description",
+    "video" : ".video-container iframe",
+    "read": {
+      "more" : ".item-read-more a"
+    },
+    "promoted" : ".item-promotions"
   },
   "details" : {
     "id" : {
@@ -37065,6 +37093,11 @@ module.exports={
     "image" : {
       "input" : "input[name=\"image\"]",
       "preview": ".preview-image"
+    },
+    "names" : {
+      "first" : "input[name=\"first-name\"]",
+      "middle" : "input[name=\"middle-name\"]",
+      "last" : "input[name=\"last-name\"]"
     }
   },
   "intro" : "#syn-intro",
@@ -37077,9 +37110,6 @@ module.exports={
   "login" : {
     "button" : ".syn-top_bar-login_button",
     "form" : "form[name=\"login\"]"
-  },
-  "panel" : {
-    "createLink" : ".click-to-create"
   },
   "training" : {
     "close" : ".syn-training-close i"

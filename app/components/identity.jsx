@@ -188,11 +188,29 @@ class Identity extends React.Component {
 
         <section className="gutter">
           <InputGroup block>
-            <TextInput placeholder="First name" onChange={ this.saveFirstName.bind(this) } ref="firstName" defaultValue={ user.first_name} />
+            <TextInput
+              placeholder     =   "First name"
+              onChange        =   { this.saveFirstName.bind(this) }
+              ref             =   "firstName"
+              name            =   "first-name"
+              defaultValue    =   { user.first_name}
+              />
 
-            <TextInput placeholder="Middle name" onChange={ this.saveMiddleName.bind(this) } ref="middleName" defaultValue={ user.middle_name}  />
+            <TextInput
+              placeholder     =   "Middle name"
+              onChange        =   { this.saveMiddleName.bind(this) }
+              ref             =   "middleName"
+              defaultValue    =   { user.middle_name}
+              name            =   "middle-name"
+              />
 
-            <TextInput placeholder="Last name" onChange={ this.saveLastName.bind(this) } ref="lastName" defaultValue={ user.last_name}  />
+            <TextInput
+              placeholder     =   "Last name"
+              onChange        =   { this.saveLastName.bind(this) }
+              ref             =   "lastName"
+              defaultValue    =   { user.last_name}
+              name            =   "last-name"
+              />
           </InputGroup>
 
           <Row baseline className="gutter-y">

@@ -24,7 +24,8 @@
   },
   "panel" : {
     "heading" : ".syn-panel-heading",
-    "body" : ".syn-panel-body"
+    "body" : ".syn-panel-body",
+    "createLink" : ".click-to-create"
   },
   "accordion" : {
     "main" : ".syn-accordion"
@@ -50,7 +51,12 @@
     },
     "image" : ".item-media-wrapper .item-media img.syn-img-responsive",
     "subject" : ".item-subject",
-    "description" : ".item-description"
+    "description" : ".item-description",
+    "video" : ".video-container iframe",
+    "read": {
+      "more" : ".item-read-more a"
+    },
+    "promoted" : ".item-promotions"
   },
   "details" : {
     "id" : {
@@ -80,6 +86,11 @@
     "image" : {
       "input" : "input[name=\"image\"]",
       "preview": ".preview-image"
+    },
+    "names" : {
+      "first" : "input[name=\"first-name\"]",
+      "middle" : "input[name=\"middle-name\"]",
+      "last" : "input[name=\"last-name\"]"
     }
   },
   "intro" : "#syn-intro",
@@ -92,9 +103,6 @@
   "login" : {
     "button" : ".syn-top_bar-login_button",
     "form" : "form[name=\"login\"]"
-  },
-  "panel" : {
-    "createLink" : ".click-to-create"
   },
   "training" : {
     "close" : ".syn-training-close i"

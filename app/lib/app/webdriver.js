@@ -215,10 +215,11 @@ class WebDriver extends EventEmitter {
           }
 
           match ? ok() : ko(new Error(
-            `Text mismatch: expecting ${expectedText}, got ${currentText}`
+            `Text mismatch for selector "${selector}": expecting ${expectedText}, got ${currentText}`
           ));
         })
         .catch(ko);
+        
     });
   }
 

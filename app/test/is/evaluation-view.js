@@ -4,6 +4,7 @@ import selectors              from 'syn/../../selectors.json';
 import config                 from 'syn/../../public.json';
 import Criteria               from 'syn/../../dist/models/criteria';
 import Item                   from 'syn/../../dist/models/item';
+import YouTube                from 'syn/../../dist/components/youtube';
 
 function isEvaluationView (driver, item, options = {}) {
   const locals = {};
@@ -101,15 +102,39 @@ function isEvaluationView (driver, item, options = {}) {
         ].join(' '))
       );
 
-      it('Image', it => {
-        it('should have an image', () =>
-          driver.isVisible([
-            `${selectors.evaluation.id.prefix}${item._id}`,
-            locals.screen,
-            selectors.evaluation.left,
-            selectors.item.image
-          ].join(' '))
-        );
+      it('Media', it => {
+        if ( YouTube.isYouTube(item) ) {
+          it('should have a youtube video', () =>
+            driver.isVisible([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.item.video
+            ].join(' '))
+          );
+
+          it('should be the right link', () =>
+            driver.attributeMatches([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.item.video
+            ].join(' '), 'src',
+              `http://www.youtube.com/embed/${YouTube.getId(item.references[0].url)}?autoplay=0`
+            )
+          );
+        }
+
+        else {
+          it('should have an image', () =>
+            driver.isVisible([
+              `${selectors.evaluation.id.prefix}${item._id}`,
+              locals.screen,
+              selectors.evaluation.left,
+              selectors.item.image
+            ].join(' '))
+          );
+        }
 
         if ( ( 'left' in options ) ) {
           if ( 'image' in options.left ) {

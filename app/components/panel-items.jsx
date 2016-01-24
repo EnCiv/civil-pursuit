@@ -183,10 +183,12 @@ class PanelItems extends React.Component {
                 <Item
                     item    =   { item }
                     buttons =   { (
-                      <ItemButtons
-                        item    =   { item }
-                        toggle  =   { this.toggle.bind(this) }
-                        />
+                      <ItemStore item={ item }>
+                        <ItemButtons
+                          item    =   { item }
+                          toggle  =   { this.toggle.bind(this) }
+                          />
+                      </ItemStore>
                     ) }
                     footer  =   { [ promote, details ] } />
               </ItemStore>

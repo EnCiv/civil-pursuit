@@ -22,6 +22,7 @@ import removeRace                       from './methods/remove-race';
 import setCitizenship                   from './methods/set-citizenship';
 import V2                               from './migrations/2';
 import V3                               from './migrations/3';
+import emitter                          from 'syn/../../dist/lib/app/emitter';
 
 class User extends Mungo.Model {
 
@@ -121,6 +122,18 @@ class User extends Mungo.Model {
     return [
       this.validateGPS.bind(this)
     ];
+  }
+
+  static updated () {
+    return [
+      this.emit.bind(this, 'update')
+    ];
+  }
+
+  static emit(event, user) {
+    return new Promise((ok, ko) => {
+      emitter.emit(event, 'users', user);
+    });
   }
 
   static saveImage (...args) {
