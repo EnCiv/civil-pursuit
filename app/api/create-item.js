@@ -1,10 +1,11 @@
 'use strict';
 
 import Item from '../models/item';
+import Mungo from 'mungo';
 
 function createItem (item) {
   try {
-    item.user = this.synuser.id;
+    item.user = Mungo.mongodb.ObjectID(this.synuser.id);
 
     Item.create(item).then(
       item => {

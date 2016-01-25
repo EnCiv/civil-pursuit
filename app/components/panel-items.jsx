@@ -7,15 +7,15 @@ import Link               from './util/link';
 import panelType          from '../lib/proptypes/panel';
 import makePanelId        from '../lib/app/make-panel-id';
 import Join               from './join';
-import Accordion        from './util/accordion';
-import Promote          from './promote';
-import EvaluationStore from './store/evaluation';
-import ItemButtons from './item-buttons';
+import Accordion          from './util/accordion';
+import Promote            from './promote';
+import EvaluationStore    from './store/evaluation';
+import ItemButtons        from './item-buttons';
 import Icon               from './util/icon';
-import Creator from './creator';
-import ItemStore from 'syn/../../dist/components/store/item';
-import Details from './details';
-import DetailsStore from './store/details';
+import Creator            from './creator';
+import ItemStore          from 'syn/../../dist/components/store/item';
+import Details            from './details';
+import DetailsStore       from './store/details';
 
 class PanelItems extends React.Component {
 
@@ -94,7 +94,7 @@ class PanelItems extends React.Component {
     console.log('render panel-items', this.props);
     const { active } = this.state;
 
-    const { panel, count, items } = this.props;
+    const { panel, count, items, user } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
@@ -137,7 +137,7 @@ class PanelItems extends React.Component {
       else {
         content = items
           .map(item => {
-            let promote, details;
+            let promote, details, subtype;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
               promote = (
@@ -173,6 +173,26 @@ class PanelItems extends React.Component {
                     <DetailsStore item={ item }>
                       <Details />
                     </DetailsStore>
+                  </Accordion>
+                </div>
+              );
+            }
+
+            if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
+              details = (
+                <div className="toggler subtype">
+                  <Accordion
+                    poa     =   { this.refs.item }
+                    name    =   "subtype"
+                    active  =   { (active && active.item === item._id && active.section === 'subtype') }
+                    >
+                    <Subtype
+                      type    =   { item.subtype }
+                      parent  =   { item }
+                      ref     =   "subtype"
+                      user    =   { user }
+                      active  =   { (active && active.item === item._id && active.section === 'subtype') }
+                      />
                   </Accordion>
                 </div>
               );
@@ -256,3 +276,4 @@ class PanelItems extends React.Component {
 export default PanelItems;
 
 import Item from './item';
+import Subtype from './subtype';

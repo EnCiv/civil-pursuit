@@ -6,6 +6,7 @@ function createItem (driver, context, options = {}) {
   return it => {
     it('should set subject', () => driver.client
       .setValue([
+        context,
         selectors.create.form,
         selectors.create.subject
       ].join(' '), options.subject || '')
@@ -13,6 +14,7 @@ function createItem (driver, context, options = {}) {
 
     it('should set description', () => driver.client
       .setValue([
+        context,
         selectors.create.form,
         selectors.create.description
       ].join(' '), options.description || '')
@@ -20,17 +22,18 @@ function createItem (driver, context, options = {}) {
 
     if ( ( 'image' in options ) ) {
       it('should upload image', () => driver.client.setValue(
-        selectors.create.image.input, options.image
+        context + ' ' + selectors.create.image.input, options.image
       ));
 
       it('should see image', () =>
-        driver.client.isVisible(selectors.create.image.preview, 5000)
+        driver.client.isVisible(context + ' ' + selectors.create.image.preview, 5000)
       );
     }
 
     if ( 'reference' in options ) {
       it('should set reference', () => driver.client
         .setValue([
+          context,
           selectors.create.form,
           selectors.create.reference
         ].join(' '), options.reference)
@@ -45,6 +48,7 @@ function createItem (driver, context, options = {}) {
       it('Error message', it => {
         it('should be visible', () =>
           driver.isVisible([
+            context,
             selectors.create.form,
             selectors.flash.error
           ].join(' '))
@@ -52,6 +56,7 @@ function createItem (driver, context, options = {}) {
 
         it(`should have an error message saying "${options.error}"`, () =>
           driver.hasText([
+            context,
             selectors.create.form,
             selectors.flash.error
           ].join(' '), options.error)

@@ -6,26 +6,9 @@ import PanelItems                 from './panel-items';
 import makePanelId                from '../lib/app/make-panel-id';
 import itemType                   from '../lib/proptypes/item';
 import panelType                  from '../lib/proptypes/panel';
+import PanelStore                 from './store/panel';
 
 class Subtype extends React.Component {
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static propTypes = {
-    item : itemType,
-    active : React.PropTypes.bool,
-    panels : React.PropTypes.arrayOf(panelType)
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  constructor (props) {
-    super(props);
-
-    this.status = 'iddle';
-
-    this.id = makePanelId( { type : this.props.item.subtype, parent : this.props.item._id });
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,12 +25,16 @@ class Subtype extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    const { panel, type, user, parent, active } = this.props;
+
     let content = ( <Loading message="Loading related" /> );
 
-    if ( this.props.panels[this.id] && this.status === 'ready' ) {
-      content = <div>
-        <PanelItems { ...this.props } panel={ this.props.panels[this.id] } />
-      </div>;
+    if ( active ) {
+      content = (
+        <PanelStore type={ type} parent={ parent }>
+          <PanelItems user={ user } />
+        </PanelStore>
+      )
     }
 
     return (

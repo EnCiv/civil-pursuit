@@ -14,11 +14,11 @@ class PanelStore extends React.Component {
   componentDidMount() {
     window.socket.on('OK create item', this.okCreateItem.bind(this));
 
-    if ( ! this.state.panel ) {
+    if ( ! this.state.panel && this.props['auto-mount'] !== false ) {
       const panel = { type : this.props.type };
 
       if ( this.props.parent ) {
-        panel.parent = this.props.parents;
+        panel.parent = this.props.parent._id;
       }
 
       this.id = makePanelId(panel);
@@ -36,7 +36,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetItems (panel, count, items) {
-    console.log('get items', panel, count, items);
+    console.info('OK get items', panel, count, items);
     if ( makePanelId(panel) === this.id ) {
       this.setState({ panel, count, items });
     }
@@ -45,7 +45,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okCreateItem (item) {
-    console.log('ok item', item);
+    console.info('ok item', item);
 
     if ( item.type._id === this.props.type._id && item.parent === this.props.parent ) {
       let { items } = this.state;
@@ -73,6 +73,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    console.log('RENDER PANEL STORE', { props : this.props, state : this.state});
     return (
       <section>
         { this.renderChildren() }

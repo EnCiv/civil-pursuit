@@ -14,15 +14,25 @@ class ItemStore extends React.Component {
 
   componentDidMount () {
     window.socket.on('item changed', this.itemChanged.bind(this));
+    window.socket.on('OK create item', this.itemCreated.bind(this));
   }
 
   componentWillUnmount () {
     window.socket.off('item changed', this.itemChanged.bind(this));
+    window.socket.off('OK create item', this.itemCreated.bind(this));
   }
 
   itemChanged (item) {
     if ( item._id === this.state.item._id ) {
       this.setState({ item });
+    }
+  }
+
+  itemCreated (item) {
+    if ( item.parent === this.state.item._id ) {
+      const stateItem = this.state.item;
+      stateItem.children ++;
+      this.setState({ item : stateItem });
     }
   }
 

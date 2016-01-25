@@ -29,6 +29,12 @@ function test(props) {
           .url(`http://localhost:${wrappers.http.app.get('port')}`)
       );
 
+      // describe.pause(3000)(it);
+
+      it('should close training', () => wrappers.driver.click(
+        selectors.training.close, 2500
+      ));
+
       it('should click on toggle button', () => wrappers.driver.client.click(
         selectors.create.toggle
       ));
@@ -55,12 +61,6 @@ function test(props) {
       });
 
       it('Click to create', it => {
-
-        describe.pause(1000)(it);
-
-        it('should close training', () => wrappers.driver.client.click(
-          selectors.training.close
-        ));
 
         describe.pause(1000)(it);
 

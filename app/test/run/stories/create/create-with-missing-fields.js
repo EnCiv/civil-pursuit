@@ -20,7 +20,7 @@ function test(props) {
   };
 
   return testWrapper(
-    'Story -> Create -> Create item',
+    'Story -> Create -> Create item with missing fields',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 

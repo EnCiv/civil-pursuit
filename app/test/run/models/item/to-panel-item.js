@@ -22,12 +22,7 @@ function testItemToPanelItem (props) {
       it('Types', it => {
         it('should create a group of types',
           () => Type
-            .group(
-              'test-item-to-panel-item-parent',
-              'test-item-to-panel-item-subtype',
-              'test-item-to-panel-item-pro',
-              'test-item-to-panel-item-con'
-            )
+            .group()
             .then(group => { locals.group = group })
         );
       });
@@ -37,6 +32,25 @@ function testItemToPanelItem (props) {
           () => Item
             .lambda({ type : locals.group.parent })
             .then(parent => { locals.parent = parent })
+        );
+
+        it('Panel item', it => {
+          it('should panelify',
+            () => locals.parent
+              .toPanelItem()
+              .then(panelItem => { locals.panelItem = panelItem })
+          );
+
+          it('is a panel item',
+            describe.use(() => isPanelItem(locals.panelItem, locals.parent))
+          );
+        });
+      });
+
+      it('Child', it => {
+        it('should create a child item',
+          () => Item
+            .lambda({ type : locals.group.subtype, parent : locals.parent })
         );
 
         it('Panel item', it => {

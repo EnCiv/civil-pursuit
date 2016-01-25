@@ -56,7 +56,9 @@
     "read": {
       "more" : ".item-read-more a"
     },
-    "promoted" : ".item-promotions"
+    "promoted" : ".item-promotions",
+    "popularity" : ".toggle-details",
+    "subtype" : ".subtype-button"
   },
   "details" : {
     "id" : {
@@ -121,5 +123,6 @@
     "out" : {
       "button" : ".syn-top_bar-sign-out-button"
     }
-  }
+  },
+  "subtype" : ".item-subtype"
 }

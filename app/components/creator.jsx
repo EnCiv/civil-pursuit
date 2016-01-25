@@ -89,7 +89,7 @@ class Creator extends React.Component {
     const item = { subject, description, type: this.props.type };
 
     if ( this.props.parent ) {
-      item.parent = this.props.parent._id || this.props.parent;
+      item.parent = this.props.parent;
     }
 
     if ( url ) {
@@ -98,15 +98,13 @@ class Creator extends React.Component {
 
     if ( this.props.item ) {
       item.from = this.props.item._id;
-
-      if ( this.props.item.lineage.length ) {
-        item.parent = this.props.item.lineage[this.props.item.lineage.length - 1];
-      }
     }
 
     if ( this.file ) {
       item.image = this.file;
     }
+
+    console.info('CREATE ITEM', item);
 
     let insert = () => {
       window.socket.emit('create item', item);
@@ -202,6 +200,7 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    console.log('RENDER creator', this.props);
     let { item } = this.props;
 
     let subject, description, image, url, title;

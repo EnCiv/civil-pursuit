@@ -20,7 +20,7 @@ function test(props) {
   };
 
   return testWrapper(
-    'Story -> Create -> Create item',
+    'Story -> Create -> Create with image',
     {
       mongodb : true,
       http : { verbose : true },
@@ -61,7 +61,7 @@ function test(props) {
 
       it('should create item', describe.use(() => createItem(
         wrappers.driver,
-        null,
+        '',
         {
           subject : locals.subject,
           description : locals.description,

@@ -306,7 +306,7 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
       it('should be a number', (ok, ko) => {
         panelItem.children.should.be.a.Number();
       });
-      it('should match children', (ok, ko) => {
+      it(`should have ${locals.children} child(ren)`, (ok, ko) => {
         panelItem.children.should.be.exactly(locals.children);
       })
     }]);
@@ -376,9 +376,6 @@ function isPanelItem (panelItem, item = {}, serialized = false) {
     }]);
 
     it('user', it => {
-
-      console.log('USER', panelItem.user);
-
       it('should have user', (ok, ko) => {
         panelItem.should.have.property('user');
       });
