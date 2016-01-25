@@ -106,6 +106,7 @@ class EvaluationStore extends React.Component {
 
     if ( this.state.left ) {
       this.insertVotes('left', this.state.left._id);
+      this.insertFeedback('left', this.state.left._id);
     }
 
     if ( this.state.right ) {
@@ -158,6 +159,20 @@ class EvaluationStore extends React.Component {
       console.log({ votes, sliders : sliders.length });
 
       window.socket.emit('insert votes', votes);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  insertFeedback(position, itemId) {
+    const feedback = React.findDOMNode(this.refs.view)
+      .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`)
+      .value;
+
+    console.log('insert feedback', feedback);
+
+    if ( feedback ) {
+      window.socket.emit('insert feedback', this.state.evaluation.item, feedback);
     }
   }
 

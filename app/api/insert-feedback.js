@@ -1,19 +1,21 @@
 'use strict';
 
-import feedback from '../models/feedback';
+import Feedback from '../models/feedback';
 
-function insertFeedback (event, itemId, value) {
+function insertFeedback (itemId, value) {
   try {
-    let feedback = {
-      item : itemId,
-      user : this.synuser.id,
-      feedback : value
+    const feedback = {
+      item      :   itemId,
+      user      :   this.synuser.id,
+      feedback  :   value
     };
 
-    feedback
+    console.log('create', feedback)
+
+    Feedback
       .create(feedback)
       .then(
-        inserted => this.ok(event, inserted),
+        inserted => {},
         error => this.error(error)
       );
   }

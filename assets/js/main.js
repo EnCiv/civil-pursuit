@@ -6385,6 +6385,7 @@ var EvaluationStore = (function (_React$Component) {
 
       if (this.state.left) {
         this.insertVotes('left', this.state.left._id);
+        this.insertFeedback('left', this.state.left._id);
       }
 
       if (this.state.right) {
@@ -6439,6 +6440,20 @@ var EvaluationStore = (function (_React$Component) {
         console.log({ votes: votes, sliders: sliders.length });
 
         window.socket.emit('insert votes', votes);
+      }
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  }, {
+    key: 'insertFeedback',
+    value: function insertFeedback(position, itemId) {
+      var feedback = _react2['default'].findDOMNode(this.refs.view).querySelector('[data-screen="' + this.getScreen() + '"] .promote-' + position + ' .user-feedback').value;
+
+      console.log('insert feedback', feedback);
+
+      if (feedback) {
+        window.socket.emit('insert feedback', this.state.evaluation.item, feedback);
       }
     }
 
@@ -37203,7 +37218,8 @@ module.exports={
     "limit" : ".limit",
     "left" : ".promote-left",
     "button" : ".finish-evaluate",
-    "promote" : ".promote-item-button"
+    "promote" : ".promote-item-button",
+    "feedback" : ".user-feedback"
   },
   "item" : {
     "id" : {

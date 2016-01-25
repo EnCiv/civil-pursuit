@@ -39,7 +39,8 @@
     "limit" : ".limit",
     "left" : ".promote-left",
     "button" : ".finish-evaluate",
-    "promote" : ".promote-item-button"
+    "promote" : ".promote-item-button",
+    "feedback" : ".user-feedback"
   },
   "item" : {
     "id" : {
