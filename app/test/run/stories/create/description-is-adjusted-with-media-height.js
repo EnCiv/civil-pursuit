@@ -13,7 +13,7 @@ function test(props) {
   const locals = {};
 
   return testWrapper(
-    'Story -> Create -> Autogrow',
+    'Story -> Create -> Description is adjusted with media height',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
@@ -34,11 +34,29 @@ function test(props) {
         () => identify(wrappers.driver.client, locals.user)
       ));
 
+      it('should close training', () => wrappers.driver.click(
+        selectors.training.close, 2500
+      ));
+
       it('should click on toggle button', () => wrappers.driver.click(
         selectors.create.toggle
       ));
 
-      describe.pause(15000)(it);
+      it('should see description', () => wrappers.driver.isVisible(
+        selectors.create.description, 2500
+      ));
+
+      it('should get description\'s height', () =>
+        wrappers.driver.client
+          .getElementSize(
+            selectors.create.description
+          )
+          .then(size => { locals.height = size.height })
+      );
+
+      it('should be 100 pixels', () => {
+        locals.height.should.be.exactly(100);
+      });
 
     }
   );

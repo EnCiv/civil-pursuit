@@ -590,7 +590,7 @@ var Creator = (function (_React$Component) {
           mediaHeight = media.offsetHeight,
           inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
+      description.style.height = mediaHeight - inputHeight + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -1075,7 +1075,7 @@ var Demographics = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        null,
+        { className: 'demographics' },
         _react2['default'].createElement(
           'section',
           { style: { width: '50%', float: 'left' } },
@@ -37631,7 +37631,10 @@ module.exports={
     }
   },
   "subtype" : ".item-subtype",
-  "edit" : ".edit-and-go-again"
+  "edit" : ".edit-and-go-again",
+  "demographics" : {
+    "selector" : ".demographics"
+  }
 }
 
 },{}]},{},[1]);

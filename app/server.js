@@ -24,6 +24,7 @@ import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
 import homePage                 from './routes/home';
+// import errorRoutes              from './routes/error';
 
 import User                     from './models/user';
 import Item                     from './models/item';

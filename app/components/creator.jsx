@@ -41,7 +41,7 @@ class Creator extends React.Component {
       mediaHeight   =   media.offsetHeight,
       inputHeight   =   subject.offsetHeight + reference.offsetHeight;
 
-    // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
+    description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
     subject.addEventListener('keydown', (e) => {
       if ( e.keyCode === 13 ) {

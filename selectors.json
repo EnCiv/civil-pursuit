@@ -131,5 +131,8 @@
     }
   },
   "subtype" : ".item-subtype",
-  "edit" : ".edit-and-go-again"
+  "edit" : ".edit-and-go-again",
+  "demographics" : {
+    "selector" : ".demographics"
+  }
 }

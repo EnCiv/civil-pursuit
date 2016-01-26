@@ -10,13 +10,11 @@ function getItemDetails (item) {
 
     () => Promise.all([
       VoteModel.getAccumulation(item),
-      FeedbackModel.find({ item }).limit(5),
+      FeedbackModel.find({ item }).limit(25),
       CriteriaModel.find({}, { limit : 4 }),
       this.findById(item),
       FeedbackModel.count({ item })
     ]),
-
-
 
     results => new Promise((ok, ko) => {
       const [ votes, feedback, criterias, item, totalFeedback ] = results;
