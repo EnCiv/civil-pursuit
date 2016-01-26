@@ -77,8 +77,8 @@ function test(props) {
         () => identify(wrappers.driver.client, locals.user)
       ));
 
-      it('should click on toggle button', () => wrappers.driver.client.click(
-        selectors.create.toggle
+      it('should click on toggle button', () => wrappers.driver.click(
+        selectors.create.toggle, 2500
       ));
 
       it('Empty form', describe.use(() => usecase({

@@ -45,9 +45,15 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okCreateItem (item) {
-    console.info('ok item', item);
+    console.info('new item', {
+      new : item,
+      props : this.props
+    });
 
-    if ( item.type._id === this.props.type._id && item.parent === this.props.parent ) {
+    const parent = this.props.parent ? this.props.parent._id : undefined;
+
+    if ( item.type._id === this.props.type._id && item.parent === parent ) {
+
       let { items } = this.state;
 
       if ( ! items ) {

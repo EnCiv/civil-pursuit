@@ -95,6 +95,8 @@ function test(props) {
         }))
       );
 
+      describe.pause(1000)(it);
+
       it('should say 1', () =>
         wrappers.driver.hasText([
           selectors.item.id.prefix + locals.item._id,
