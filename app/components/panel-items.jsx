@@ -17,6 +17,7 @@ import ItemStore          from 'syn/../../dist/components/store/item';
 import Details            from './details';
 import DetailsStore       from './store/details';
 import EditAndGoAgain     from './edit-and-go-again';
+import Harmony            from './harmony';
 
 class PanelItems extends React.Component {
 
@@ -74,7 +75,7 @@ class PanelItems extends React.Component {
       return this.setState({ active : { item : itemId, section : null } });
     }
 
-    if ( section === 'creator' && ! this.props.user ) {
+    if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
       return Join.click();
     }
 
@@ -156,7 +157,7 @@ class PanelItems extends React.Component {
       else {
         content = items
           .map(item => {
-            let promote, details, subtype, editItem;
+            let promote, details, subtype, editItem, harmony;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
               promote = (
@@ -218,6 +219,25 @@ class PanelItems extends React.Component {
               );
             }
 
+            if ( this.mountedItems[item._id] && this.mountedItems[item._id].harmony ) {
+              harmony = (
+                <div className="toggler harmony">
+                  <Accordion
+                    poa     =   { this.refs.item }
+                    name    =   "harmony"
+                    active  =   { (active && active.item === item._id && active.section === 'harmony') }
+                    >
+                    <Harmony
+                      item    =   { item }
+                      ref     =   "harmony"
+                      user    =   { user }
+                      active  =   { (active && active.item === item._id && active.section === 'harmony') }
+                      />
+                  </Accordion>
+                </div>
+              );
+            }
+
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
@@ -225,16 +245,21 @@ class PanelItems extends React.Component {
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
-                    item    =   { item }
-                    buttons =   { (
-                      <ItemStore item={ item }>
-                        <ItemButtons
-                          item    =   { item }
-                          toggle  =   { this.toggle.bind(this) }
-                          />
-                      </ItemStore>
-                    ) }
-                    footer  =   { [ promote, details, subtype, editItem ] } />
+                  item    =   { item }
+
+                  buttons =   { (
+                    <ItemStore item={ item }>
+                      <ItemButtons
+                        item    =   { item }
+                        toggle  =   { this.toggle.bind(this) }
+                        />
+                    </ItemStore>
+                  ) }
+
+                  footer  =   { [
+                    promote, details, subtype, editItem, harmony
+                    ] }
+                  />
               </ItemStore>
             );
           });

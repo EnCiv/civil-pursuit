@@ -8,6 +8,7 @@ import PanelItems                   from './panel-items';
 import makePanelId                  from '../lib/app/make-panel-id';
 import itemType                     from '../lib/proptypes/item';
 import panelType                    from '../lib/proptypes/panel';
+import PanelStore                   from './store/panel';
 
 class Harmony extends React.Component {
 
@@ -63,20 +64,24 @@ class Harmony extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    const { active, item, user } = this.props;
+
     let contentLeft = ( <Loading message="Loading" /> );
 
     let contentRight = ( <Loading message="Loading" /> );
 
-    if ( this.props.panels[this.leftId] && this.status === 'ready' ) {
-      contentLeft = <div>
-        <PanelItems { ...this.props } panel={ this.props.panels[this.leftId] } />
-      </div>;
-    }
+    if ( active ) {
+      contentLeft = (
+        <PanelStore type={ item.harmony.types[0] } parent={ item }>
+          <PanelItems user={ user } />
+        </PanelStore>
+      );
 
-    if ( this.props.panels[this.rightId] && this.status === 'ready' ) {
-      contentRight = <div>
-        <PanelItems { ...this.props } panel={ this.props.panels[this.rightId] } />
-      </div>;
+      contentRight = (
+        <PanelStore type={ item.harmony.types[1] } parent={ item }>
+          <PanelItems user={ user } />
+        </PanelStore>
+      );
     }
 
     return (

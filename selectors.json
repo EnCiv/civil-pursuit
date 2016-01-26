@@ -60,7 +60,8 @@
     },
     "promoted" : ".item-promotions",
     "popularity" : ".toggle-details",
-    "subtype" : ".subtype-button"
+    "subtype" : ".subtype-button",
+    "harmony" : ".harmony-button"
   },
   "details" : {
     "id" : {
