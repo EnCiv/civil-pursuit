@@ -38,6 +38,8 @@ class EvaluationStore extends React.Component {
       );
     }
 
+    this.panelEmitter = this.props.emitter;
+
     this.emitter
       .on('next', this.next.bind(this))
       .on('promote', this.promote.bind(this));
@@ -58,7 +60,9 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillUnmount () {
-    this.emitter.removeListener('next', this.next.bind(this));
+    this.emitter
+      .removeListener('next', this.next.bind(this))
+      .removeListener('promote', this.promote.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +217,7 @@ class EvaluationStore extends React.Component {
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>
-      React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter }))
+      React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter, panelEmitter : this.panelEmitter }))
     );
   }
 

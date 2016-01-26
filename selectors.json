@@ -40,7 +40,8 @@
     "left" : ".promote-left",
     "button" : ".finish-evaluate",
     "promote" : ".promote-item-button",
-    "feedback" : ".user-feedback"
+    "feedback" : ".user-feedback",
+    "edit-and-go-again" : ".edit-and-go-again-button"
   },
   "item" : {
     "id" : {
@@ -128,5 +129,6 @@
       "button" : ".syn-top_bar-sign-out-button"
     }
   },
-  "subtype" : ".item-subtype"
+  "subtype" : ".item-subtype",
+  "edit" : ".edit-and-go-again"
 }

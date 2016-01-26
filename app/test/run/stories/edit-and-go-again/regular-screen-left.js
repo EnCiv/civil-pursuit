@@ -13,14 +13,15 @@ import identify               from 'syn/../../dist/test/util/e2e-identify';
 import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
 import isDetailsView          from 'syn/../../dist/test/is/details-view';
 import Feedback               from 'syn/../../dist/models/feedback';
+import isFeedback             from 'syn/../../dist/test/is/feedback';
 
 function test(props) {
   const locals = {
-    items : []
+    candidate : 'This is a feedback'
   };
 
   return testWrapper(
-    'Story -> Evaluation -> Promote right item of 2 items',
+    'Story -> Edit And Go Again -> Promoted item',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
@@ -39,19 +40,10 @@ function test(props) {
         });
 
         it('Item', it => {
-          it('Item #1', it => {
-            it('should create item', () =>
-              Item.lambda({ type : locals.topLevelType, subject : 'Item #1' })
-                .then(item => { locals.items.push(item) })
-            );
-          });
-
-          it('Item #2', it => {
-            it('should create item', () =>
-              Item.lambda({ type : locals.topLevelType, subject : 'Item #2' })
-                .then(item => { locals.items.push(item) })
-            );
-          });
+          it('should create item', () =>
+            Item.lambda({ type : locals.topLevelType, subject : 'Item #1' })
+              .then(item => { locals.item = item })
+          );
         });
       });
 
@@ -70,40 +62,34 @@ function test(props) {
 
       it('should see item 1', () =>
         wrappers.driver.isVisible(
-          `${selectors.item.id.prefix}${locals.items[0]._id}`, 2500
+          `${selectors.item.id.prefix}${locals.item._id}`, 2500
         )
       );
 
       it('should click on evaluation toggler', () =>
         wrappers.driver.client.click([
-          `${selectors.item.id.prefix}${locals.items[0]._id}`,
+          `${selectors.item.id.prefix}${locals.item._id}`,
           selectors.item.togglers.evaluation
         ].join(' '))
       );
 
       it('should see evaluation', () => wrappers.driver.exists(
-        `${selectors.evaluation.id.prefix}${locals.items[0]._id}`, 2000
+        `${selectors.evaluation.id.prefix}${locals.item._id}`, 2000
       ));
 
-      it('should promote item', () => wrappers.driver.click([
-        `${selectors.evaluation.id.prefix}${locals.items[0]._id}`,
-        '[data-screen="phone-and-up"]',
-        '.promote-right',
-        selectors.evaluation.promote
-      ].join(' ')));
+      it('should click edit and go again button', () =>
+        wrappers.driver.click([
+          `${selectors.evaluation.id.prefix}${locals.item._id}`,
+          selectors.evaluation['edit-and-go-again']
+        ].join(' '))
+      );
 
-      it('should have gone to details', () => wrappers.driver.exists(
-        selectors.details.id.prefix + locals.items[0]._id, 2500
-      ));
-
-      it('Verify item', it => {
-        it('should fetch item', () => Item.findById(locals.items[0])
-          .then(item => { console.log(item); locals.item = item })
-        );
-
-        it('should have 1 view', () => locals.item.views.should.be.exactly(1));
-        it('should have 1 promotion', () => locals.item.promotions.should.be.exactly(1));
-      });
+      it('should see editor', () =>
+        wrappers.driver.isVisible(
+          `${selectors.item.id.prefix}${locals.item._id} ${selectors.edit}`,
+          2500
+        )
+      );
     }
   );
 }

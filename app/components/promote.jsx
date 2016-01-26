@@ -13,7 +13,7 @@ import ColumnFeedback           from './promote-feedback-column';
 class Promote extends React.Component {
 
   render () {
-    const { show, cursor, limit, evaluation, left, right, emitter } = this.props;
+    const { show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
 
     const content = [];
 
@@ -34,18 +34,16 @@ class Promote extends React.Component {
 
         let promoteMe = (
           <PromoteBigScreenButtons
-            key         =   "left-buttons"
-            item        =   { left }
-            position    =   'left'
-            evaluated   =   { evaluation.item }
-            panel-id    =   { this.props['panel-id'] }
-            emitter     =   { emitter }
+            key               =   "left-buttons"
+            item              =   { left }
+            position          =   'left'
+            opposite          =   { right }
+            evaluated         =   { evaluation.item }
+            panel-id          =   { this.props['panel-id'] }
+            panel-emitter     =   { panelEmitter }
+            emitter           =   { emitter }
             />
         );
-
-        if ( ! left || ! right ) {
-          promoteMe = ( <div></div> );
-        }
 
         content.push(
           (
@@ -86,12 +84,14 @@ class Promote extends React.Component {
                 { promoteMe }
 
                 <PromoteBigScreenButtons
-                  key         =   "right-buttons"
-                  item        =   { right }
-                  position    =   'right'
-                  evaluated   =   { evaluation.item }
-                  panel-id    =   { this.props['panel-id'] }
-                  emitter     =   { emitter }
+                  key               =   "right-buttons"
+                  item              =   { right }
+                  position          =   'right'
+                  evaluated         =   { evaluation.item }
+                  panel-id          =   { this.props['panel-id'] }
+                  opposite          =   { left }
+                  panel-emitter     =   { panelEmitter }
+                  emitter           =   { emitter }
                   />
 
               </Row>

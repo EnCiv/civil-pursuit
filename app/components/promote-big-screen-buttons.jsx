@@ -14,11 +14,24 @@ class PromoteBigScreenButtons extends React.Component {
   }
 
   render () {
+    const { item, position, opposite, emitter } = this.props;
 
-    let { item, position } = this.props;
+    const panelEmitter = this.props['panel-emitter'];
 
     if ( ! item ) {
       return ( <div></div> );
+    }
+
+    let promoteButton;
+
+    if ( opposite ) {
+      promoteButton = (
+        <PromoteButton
+          { ...item }
+          onClick   =   { this.next.bind(this) }
+          className =   "gutter-bottom promote-item-button"
+          />
+      );
     }
 
     return (
@@ -28,16 +41,11 @@ class PromoteBigScreenButtons extends React.Component {
         ref         =   "view"
         >
 
-        <PromoteButton
-          { ...item }
-          onClick   =   { this.next.bind(this) }
-          className =   "gutter-bottom promote-item-button"
-          />
+        { promoteButton }
 
         <PromoteEditAndGoAgainButton
-          { ...this.props }
-          panel-id  =   { this.props['panel-id'] }
-          item      =   { item }
+          item            =   { item }
+          panel-emitter   =   { panelEmitter }
           />
 
       </Column>

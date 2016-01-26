@@ -16,6 +16,7 @@ import Creator            from './creator';
 import ItemStore          from 'syn/../../dist/components/store/item';
 import Details            from './details';
 import DetailsStore       from './store/details';
+import EditAndGoAgain     from './edit-and-go-again';
 
 class PanelItems extends React.Component {
 
@@ -28,6 +29,18 @@ class PanelItems extends React.Component {
   mountedItems = {}
 
   state = { active : null }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentDidMount () {
+    this.props.emitter.on('show', this.show.bind(this));
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentWillUnmount () {
+    this.props.emitter.removeListener('show', this.show.bind(this));
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -78,6 +91,12 @@ class PanelItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  show (item, section) {
+    this.toggle(item, section);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   unFocus () {
     // window.Dispatcher.emit('refresh');
     // const panelId = makePanelId(this.props.panel.panel);
@@ -94,7 +113,7 @@ class PanelItems extends React.Component {
     console.log('render panel-items', this.props);
     const { active } = this.state;
 
-    const { panel, count, items, user } = this.props;
+    const { panel, count, items, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
@@ -137,7 +156,7 @@ class PanelItems extends React.Component {
       else {
         content = items
           .map(item => {
-            let promote, details, subtype;
+            let promote, details, subtype, editItem;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
               promote = (
@@ -151,6 +170,7 @@ class PanelItems extends React.Component {
                       item-id     =   { item._id }
                       toggle      =   { this.toggle.bind(this, item._id) }
                       active      =   { active }
+                      emitter     =   { emitter }
                       >
                       <Promote
                         ref       =   "promote"
@@ -179,7 +199,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
-              details = (
+              subtype = (
                 <div className="toggler subtype">
                   <Accordion
                     poa     =   { this.refs.item }
@@ -198,6 +218,10 @@ class PanelItems extends React.Component {
               );
             }
 
+            if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
+              editItem = ( <EditAndGoAgain item={ item } /> );
+            }
+
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
@@ -210,7 +234,7 @@ class PanelItems extends React.Component {
                           />
                       </ItemStore>
                     ) }
-                    footer  =   { [ promote, details ] } />
+                    footer  =   { [ promote, details, subtype, editItem ] } />
               </ItemStore>
             );
           });

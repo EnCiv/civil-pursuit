@@ -73,6 +73,8 @@ function test(props) {
         locals.item, { $inc : { 'promotions' : 1 } }
       ));
 
+      describe.pause(1500)(it);
+
       it('should say 100%', () =>
         wrappers.driver.hasText([
           selectors.item.id.prefix + locals.item._id,

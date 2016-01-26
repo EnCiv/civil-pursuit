@@ -6,10 +6,6 @@ import Youtube            from './youtube';
 import itemType           from '../lib/proptypes/item';
 
 class EditAndGoAgain extends React.Component {
-  static propTypes = {
-    item : itemType
-  }
-
   render () {
     const { item } = this.props;
 
@@ -20,8 +16,13 @@ class EditAndGoAgain extends React.Component {
     }
 
     return (
-      <section>
-        <Creator item={ item } image={ item.image } video={ video } type={ item.type } />
+      <section className="edit-and-go-again">
+        <Creator
+          item      =   { item }
+          image     =   { item.image }
+          video     =   { video }
+          type      =   { item.type }
+          />
       </section>
     );
   }

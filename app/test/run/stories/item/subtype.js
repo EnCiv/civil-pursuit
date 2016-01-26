@@ -100,7 +100,7 @@ function test(props) {
       it('should say 1', () =>
         wrappers.driver.hasText([
           selectors.item.id.prefix + locals.item._id,
-          selectors.item.subtype,
+          '> .item-buttons ' + selectors.item.subtype,
           '> span span:first-child'
         ].join(' '), '1')
       );
