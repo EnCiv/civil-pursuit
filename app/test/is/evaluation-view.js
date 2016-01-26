@@ -225,6 +225,15 @@ function isEvaluationView (driver, item, options = {}) {
       });
 
       it('Sliders', it => {
+        it('scroll to sliders', () =>
+          driver.scroll([
+            `${selectors.evaluation.id.prefix}${item._id}`,
+            locals.screen,
+            selectors.evaluation.left,
+            selectors.sliders.selector
+          ].join(' '))
+        );
+
         it('should have sliders', () =>
           driver.isVisible([
             `${selectors.evaluation.id.prefix}${item._id}`,

@@ -21,7 +21,7 @@ function test(props) {
   };
 
   return testWrapper(
-    'Story -> Evaluation -> Feedback',
+    'Story -> Evaluation -> Save Left Feedback on Finish',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
@@ -85,6 +85,8 @@ function test(props) {
         selectors.evaluation.button
       ));
 
+      describe.pause(1000)(it);
+      
       it('Verify feedback', it => {
         it('should get item from DB', () =>
           Feedback.find({ item : locals.item })

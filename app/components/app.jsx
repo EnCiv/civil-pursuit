@@ -15,15 +15,6 @@ class App extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes  =   {
-    path            :   React.PropTypes.string,
-    item            :   panelItemType,
-    panels          :   React.PropTypes.object,
-    intro           :   React.PropTypes.object
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
 
     const {

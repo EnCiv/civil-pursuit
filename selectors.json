@@ -72,7 +72,10 @@
   },
   "popularity" : ".syn-popularity .syn-popularity-bar",
   "feedback" : {
-    "input" : "textarea.user-feedback"
+    "input" : "textarea.user-feedback",
+    "number" : ".number-of-feedback",
+    "wrapper" : ".details-feedback",
+    "entry" : ".details-feedback-entry"
   },
   "sliders" : {
     "selector" : ".promote-sliders",

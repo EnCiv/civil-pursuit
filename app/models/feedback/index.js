@@ -5,6 +5,7 @@ import Item                           from '../item';
 import User                           from '../user';
 import V1                             from './migrations/1';
 import lambda                         from './statics/lambda';
+import emitter                        from 'syn/../../dist/lib/app/emitter';
 
 class Feedback extends Mungo.Model {
 
@@ -39,6 +40,19 @@ class Feedback extends Mungo.Model {
 
   static lambda(...args) {
     return lambda.apply(this, args);
+  }
+
+  static inserted () {
+    return [
+      this.emit.bind(this, 'created')
+    ];
+  }
+
+  static emit (event, feedback) {
+    return new Promise((ok, ko) => {
+      emitter.emit('create', this.collection, feedback);
+      ok();
+    });
   }
 }
 

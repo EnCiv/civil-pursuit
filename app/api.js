@@ -92,7 +92,7 @@ class API extends EventEmitter {
       collection, document.toString().grey
     );
 
-    if ( collection === 'votes' ) {
+    if ( collection === 'votes' || collection === 'feedback' ) {
       Item
         .getDetails(document.item)
         .then(details => {

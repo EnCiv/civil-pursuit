@@ -31,8 +31,8 @@ class HeaderMenu extends React.Component {
   }
 
   render () {
-    const menusViews = menus.map(menu => (
-      <li>
+    const menusViews = menus.map((menu, index) => (
+      <li key={ `header-menu-${index}` }>
         <a href={ menu.link }>
           <Icon icon={ menu.icon } />
           <span> { menu.title }</span>

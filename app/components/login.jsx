@@ -17,15 +17,6 @@ import Password       from './util/password';
 import Loading        from './util/loading';
 
 class Login extends React.Component {
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static propTypes      =   {
-    join                :   React.PropTypes.func,
-    'forgot-password'   :   React.PropTypes.func,
-    show                :   React.PropTypes.bool
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {

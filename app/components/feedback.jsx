@@ -10,23 +10,23 @@ class Feedback extends React.Component {
   }
 
   render () {
-    const { entries } = this.props;
+    const { entries, total } = this.props;
 
     if ( ! entries.length ) {
-      return (<div></div>);
+      return (<section className="details-no-feedback"></section>);
     }
 
     const comments = entries.map(entry => (
-      <div key={ entry._id }>
+      <section key={ entry._id } className="details-feedback-entry">
         { entry.feedback }
-      </div>
+      </section>
     ));
 
     return (
-      <div>
-        <h4>{ entries.length } feedback</h4>
+      <section className="details-feedback">
+        <h4 className="number-of-feedback">{ total } feedback</h4>
         { comments }
-      </div>
+      </section>
     );
   }
 }

@@ -35,7 +35,7 @@ class Details extends React.Component {
 
     if ( details ) {
 
-      const { item, feedback, popularity } = details;
+      const { item, feedback, popularity, totals } = details;
 
       attr.id = `item-details-${item._id}`;
 
@@ -44,7 +44,7 @@ class Details extends React.Component {
       content.push(
         ( <Popularity { ...popularity } /> ),
         ( <Votes { ...details } /> ),
-        ( <Feedback entries={ feedback } /> )
+        ( <Feedback entries={ feedback } total={ totals.feedback } /> )
       );
     }
 

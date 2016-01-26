@@ -218,18 +218,6 @@ var App = (function (_React$Component) {
         page
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      path: _react2['default'].PropTypes.string,
-      item: _libProptypesPanelItem2['default'],
-      panels: _react2['default'].PropTypes.object,
-      intro: _react2['default'].PropTypes.object
-    },
-    enumerable: true
   }]);
 
   return App;
@@ -1296,12 +1284,13 @@ var Details = (function (_React$Component) {
         var item = details.item;
         var feedback = details.feedback;
         var popularity = details.popularity;
+        var totals = details.totals;
 
         attr.id = 'item-details-' + item._id;
 
         content = [];
 
-        content.push(_react2['default'].createElement(_popularity2['default'], popularity), _react2['default'].createElement(_votes2['default'], details), _react2['default'].createElement(_feedback2['default'], { entries: feedback }));
+        content.push(_react2['default'].createElement(_popularity2['default'], popularity), _react2['default'].createElement(_votes2['default'], details), _react2['default'].createElement(_feedback2['default'], { entries: feedback, total: totals.feedback }));
       }
 
       return _react2['default'].createElement(
@@ -1361,27 +1350,29 @@ var Feedback = (function (_React$Component) {
   _createClass(Feedback, [{
     key: 'render',
     value: function render() {
-      var entries = this.props.entries;
+      var _props = this.props;
+      var entries = _props.entries;
+      var total = _props.total;
 
       if (!entries.length) {
-        return _react2['default'].createElement('div', null);
+        return _react2['default'].createElement('section', { className: 'details-no-feedback' });
       }
 
       var comments = entries.map(function (entry) {
         return _react2['default'].createElement(
-          'div',
-          { key: entry._id },
+          'section',
+          { key: entry._id, className: 'details-feedback-entry' },
           entry.feedback
         );
       });
 
       return _react2['default'].createElement(
-        'div',
-        null,
+        'section',
+        { className: 'details-feedback' },
         _react2['default'].createElement(
           'h4',
-          null,
-          entries.length,
+          { className: 'number-of-feedback' },
+          total,
           ' feedback'
         ),
         comments
@@ -1712,10 +1703,10 @@ var HeaderMenu = (function (_React$Component) {
   _createClass(HeaderMenu, [{
     key: 'render',
     value: function render() {
-      var menusViews = _synFixturesHeaderMenu1Json2['default'].map(function (menu) {
+      var menusViews = _synFixturesHeaderMenu1Json2['default'].map(function (menu, index) {
         return _react2['default'].createElement(
           'li',
-          null,
+          { key: 'header-menu-' + index },
           _react2['default'].createElement(
             'a',
             { href: menu.link },
@@ -1933,19 +1924,6 @@ var Home = (function (_React$Component) {
 
       return content;
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      topLevelType: _react2['default'].PropTypes.string,
-      panels: _react2['default'].PropTypes.object
-    },
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    enumerable: true
   }]);
 
   return Home;
@@ -1953,6 +1931,8 @@ var Home = (function (_React$Component) {
 
 exports['default'] = Home;
 module.exports = exports['default'];
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 },{"../lib/proptypes/panel":88,"./countdown":3,"./panel-items":20,"./store/panel":44,"./training":48,"./util/icon":59,"./util/loading":64,"react":256}],12:[function(require,module,exports){
@@ -2445,12 +2425,6 @@ var Intro = (function (_React$Component) {
         )
       );
     }
-  }], [{
-    key: 'propTypes',
-    value: {
-      intro: _libProptypesPanelItem2['default']
-    },
-    enumerable: true
   }]);
 
   return Intro;
@@ -3435,21 +3409,7 @@ var _utilLoading2 = _interopRequireDefault(_utilLoading);
 var Login = (function (_React$Component) {
   _inherits(Login, _React$Component);
 
-  _createClass(Login, null, [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      join: _react2['default'].PropTypes.func,
-      'forgot-password': _react2['default'].PropTypes.func,
-      show: _react2['default'].PropTypes.bool
-    },
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    enumerable: true
-  }]);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   function Login(props) {
     _classCallCheck(this, Login);
@@ -4156,16 +4116,6 @@ var Panel = (function (_React$Component) {
         )
       );
     }
-  }], [{
-    key: 'propTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: {
-      heading: _react2['default'].PropTypes.elem,
-      className: _react2['default'].PropTypes.string
-    },
-    enumerable: true
   }]);
 
   return Panel;
@@ -37251,7 +37201,10 @@ module.exports={
   },
   "popularity" : ".syn-popularity .syn-popularity-bar",
   "feedback" : {
-    "input" : "textarea.user-feedback"
+    "input" : "textarea.user-feedback",
+    "number" : ".number-of-feedback",
+    "wrapper" : ".details-feedback",
+    "entry" : ".details-feedback-entry"
   },
   "sliders" : {
     "selector" : ".promote-sliders",

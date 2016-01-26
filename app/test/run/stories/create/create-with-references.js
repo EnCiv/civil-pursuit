@@ -104,8 +104,7 @@ function test(props) {
         null,
         {
           subject : locals.subject,
-          description : locals.description,
-          reference : 'http://google.com'
+          description : locals.description
         }
       )));
 

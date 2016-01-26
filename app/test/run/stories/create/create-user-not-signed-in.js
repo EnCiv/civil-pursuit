@@ -64,11 +64,13 @@ function test(props) {
 
         describe.pause(1000)(it);
 
-        it('should click on create link', () => wrappers.driver.client.click(
+        it('should click on create link', () => wrappers.driver.click(
           selectors.panel.createLink
         ));
 
-        it('should click on create link', () => wrappers.driver.client.click(
+        describe.pause(500)(it);
+
+        it('should click on create link', () => wrappers.driver.click(
           selectors.panel.createLink
         ));
 
