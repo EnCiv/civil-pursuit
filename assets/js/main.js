@@ -4879,7 +4879,7 @@ var PromoteButton = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         _utilButton2['default'],
-        _extends({ block: true }, this.props),
+        _extends({ block: true }, this.props, { id: 'promote-item-button-' + this.props._id }),
         this.props.subject
       );
     }
@@ -6708,6 +6708,7 @@ var EvaluationStore = (function (_React$Component) {
 
       if (this.state.right) {
         this.insertVotes('right', this.state.right._id);
+        this.insertFeedback('right', this.state.right._id);
       }
 
       if (cursor <= this.state.limit) {

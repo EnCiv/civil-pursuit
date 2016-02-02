@@ -85,6 +85,17 @@ function test(props) {
         `${selectors.evaluation.id.prefix}${locals.items[5]._id}`, 2000
       ));
 
+      it('should remember which item is the one on the left', () =>
+        wrappers.driver.client.getAttribute(
+          selectors.evaluation.id.prefix + locals.items[5]._id +
+            ' [data-screen="phone-and-up"] .promote-left ' +
+            selectors.evaluation.promote,
+          'id'
+        )
+        .then(id => { locals.promoted = id.split('-')[3] })
+      );
+
+
       it('should scroll to left promote button', () => wrappers.driver.client
         .scroll(
           selectors.evaluation.id.prefix + locals.items[5]._id +
@@ -94,45 +105,27 @@ function test(props) {
         )
       );
 
-      it('should click left promote button', () => wrappers.driver.client
-        .click(
+      for ( let i = 0; i < 5; i ++ ) {
+        it('should leave a feedback', () => wrappers.driver.client.setValue(
           selectors.evaluation.id.prefix + locals.items[5]._id +
           ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote
-        )
-      );
+          selectors.evaluation.feedback,
+          `Feedback #${ i + 1 }`
+        ));
 
-      it('should click left promote button', () => wrappers.driver.client
-        .click(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote
-        )
-      );
+        it('should click left promote button', () => wrappers.driver.client
+          .click(
+            selectors.evaluation.id.prefix + locals.items[5]._id +
+            ' [data-screen="phone-and-up"] .promote-left ' +
+            selectors.evaluation.promote
+          )
+        );
+      }
 
-      it('should click left promote button', () => wrappers.driver.client
-        .click(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote
-        )
-      );
-
-      it('should click left promote button', () => wrappers.driver.client
-        .click(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote
-        )
-      );
-
-      it('should click left promote button', () => wrappers.driver.client
-        .click(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote
-        )
-      );
+      it('should view details of item #1', () => wrappers.driver.click(
+        selectors.item.id.prefix + locals.promoted +
+        ' ' + selectors.item.togglers.details
+      ));
 
       describe.pause(15000)(it);
     }

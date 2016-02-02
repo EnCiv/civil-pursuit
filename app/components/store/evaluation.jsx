@@ -115,6 +115,7 @@ class EvaluationStore extends React.Component {
 
     if ( this.state.right ) {
       this.insertVotes('right', this.state.right._id);
+      this.insertFeedback('right', this.state.right._id);
     }
 
     if ( cursor <= this.state.limit ) {

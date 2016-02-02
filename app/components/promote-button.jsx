@@ -10,7 +10,7 @@ class PromoteButton extends React.Component {
 
   render () {
     return (
-      <Button block { ...this.props }>{ this.props.subject }</Button>
+      <Button block { ...this.props } id={ `promote-item-button-${this.props._id}` }>{ this.props.subject }</Button>
     );
   }
 }
