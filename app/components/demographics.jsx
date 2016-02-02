@@ -76,12 +76,17 @@ class Demographics extends React.Component {
     let { user, races, educations, maritalStatuses, employments } = this.props;
 
     let racesList = races.map(race => (
-      <Row key={ race._id }>
+      <Row key={ race._id } className="demographics-race" id={ `demographics-race-${race._id}` }>
         <Column className="gutter">
           { race.name }
         </Column>
         <Column className="gutter">
-          <input type="checkbox" onChange={ this.checkRace.bind(this) } value={ race._id } defaultChecked={ (user.race || []).some(r => r === race._id) } />
+          <input
+            type            =   "checkbox"
+            onChange        =   { this.checkRace.bind(this) }
+            value           =   { race._id }
+            defaultChecked  =   { (user.race || []).some(r => r === race._id) }
+            />
         </Column>
       </Row>
     ));

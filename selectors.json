@@ -133,6 +133,14 @@
   "subtype" : ".item-subtype",
   "edit" : ".edit-and-go-again",
   "demographics" : {
-    "selector" : ".demographics"
-  }
+    "selector" : ".demographics",
+    "race" : {
+      "id": {
+        "prefix" : "#demographics-race-"
+      }
+    }
+  },
+  "harmony" : ".item-harmony",
+  "pro" : ".harmony-pro",
+  "con" : ".harmony-con"
 }

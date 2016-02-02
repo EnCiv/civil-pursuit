@@ -72,15 +72,19 @@ class Harmony extends React.Component {
 
     if ( active ) {
       contentLeft = (
-        <PanelStore type={ item.harmony.types[0] } parent={ item }>
-          <PanelItems user={ user } />
-        </PanelStore>
+        <section className="harmony-pro">
+          <PanelStore type={ item.harmony.types[0] } parent={ item }>
+            <PanelItems user={ user } />
+          </PanelStore>
+        </section>
       );
 
       contentRight = (
-        <PanelStore type={ item.harmony.types[1] } parent={ item }>
-          <PanelItems user={ user } />
-        </PanelStore>
+        <section className="harmony-con">
+          <PanelStore type={ item.harmony.types[1] } parent={ item }>
+            <PanelItems user={ user } />
+          </PanelStore>
+        </section>
       );
     }
 

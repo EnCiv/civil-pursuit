@@ -34,11 +34,38 @@ function test(props) {
         () => identify(wrappers.driver.client, locals.user)
       ));
 
+      it('should close training', () => wrappers.driver.click(
+        selectors.training.close, 2500
+      ));
+
       it('should click on toggle button', () => wrappers.driver.click(
         selectors.create.toggle
       ));
 
-      describe.pause(15000)(it);
+      it('should get all the size of textara', () =>
+        wrappers.driver.client
+          .getElementSize(selectors.create.description)
+          .then(size => { locals.size = size })
+      );
+
+      it('should be 100 pixels high', () => {
+        locals.size.height.should.be.exactly(100);
+      });
+
+      it('should enter multi lines', () => wrappers.driver.client.setValue(
+        selectors.create.description,
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
+      ));
+
+      it('should get all the size of textara', () =>
+        wrappers.driver.client
+          .getElementSize(selectors.create.description)
+          .then(size => { locals.size = size })
+      );
+
+      it('should be more than 100 pixels high', () => {
+        locals.size.height.should.be.above(100);
+      });
 
     }
   );

@@ -1,8 +1,14 @@
 'use strict';
 
 import React from 'react';
+import autosize from 'autosize';
 
 class Textarea extends React.Component {
+  componentDidMount () {
+    const view = React.findDOMNode(this.refs.view);
+    autosize(view);
+  }
+
   render () {
     let classes = [];
 
@@ -27,7 +33,7 @@ class Textarea extends React.Component {
     }
 
     return (
-      <textarea className={ classes.join(' ') } { ...this.props }>{ this.props.children }</textarea>
+      <textarea className={ classes.join(' ') } { ...this.props } ref="view">{ this.props.children }</textarea>
     );
   }
 }

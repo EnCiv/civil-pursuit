@@ -26,8 +26,6 @@ function home (req, res, next) {
       }
     }
 
-    console.log('rendering home');
-
     const props       =   {
       env             :   this.app.get('env'),
       path            :   req.path,

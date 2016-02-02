@@ -10,6 +10,7 @@ import identify               from 'syn/../../dist/test/util/e2e-identify';
 import selectors              from 'syn/../../selectors.json';
 import Agent                  from 'syn/../../dist/lib/app/agent';
 import emitter                from 'syn/../../dist/lib/app/emitter';
+import Race                   from 'syn/../../dist/models/race';
 
 function test(props) {
   const locals = {};
@@ -60,6 +61,12 @@ function test(props) {
             User.lambda().then(user => { locals.user = user })
           )
         });
+
+        it('Races', it => {
+          it('should get races', () => Race.find().then(races => {
+            locals.races = races
+          }));
+        });
       });
 
       it('should go home', () =>
@@ -79,6 +86,16 @@ function test(props) {
       it('should see Demographics panel', () => wrappers.driver.isVisible(
         selectors.demographics.selector, 2500
       ));
+
+      it('Race', it => {
+        it('Add 1 race', () => wrappers.driver.client.scroll(
+          selectors.demographics.race.id.prefix + locals.races[0]._id + ' [type="checkbox"]', 0 , -250
+        ));
+
+        it('Add 1 race', () => wrappers.driver.client.click(
+          selectors.demographics.race.id.prefix + locals.races[0]._id + ' [type="checkbox"]'
+        ));
+      });
 
       describe.pause(15000)(it);
 

@@ -41,7 +41,7 @@ class Creator extends React.Component {
       mediaHeight   =   media.offsetHeight,
       inputHeight   =   subject.offsetHeight + reference.offsetHeight;
 
-    description.style.height = ( mediaHeight -  inputHeight ) + 'px';
+    description.style.minHeight = ( mediaHeight -  inputHeight ) + 'px';
 
     subject.addEventListener('keydown', (e) => {
       if ( e.keyCode === 13 ) {
@@ -276,7 +276,14 @@ class Creator extends React.Component {
                   />
               </Row>
 
-              <TextArea block placeholder="Description" ref="description" required name="description" defaultValue={ description }></TextArea>
+              <TextArea
+                placeholder     =   "Description"
+                ref             =   "description"
+                name            =   "description"
+                defaultValue    =   { description }
+                block
+                required
+                ></TextArea>
             </div>
           </section>
 
