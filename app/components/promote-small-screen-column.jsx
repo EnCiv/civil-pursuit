@@ -43,7 +43,7 @@ class PromoteSmallScreenColumn extends React.Component {
         <ItemStore item={ item }>
           <ItemMedia />
         </ItemStore>
-        <Subject subject={ item.subject } />
+        <Subject subject={ item.subject } position={ position } id={ item._id } />
         <Reference { ...item.references[0] } />
         <Description description={ item.description } />
         <div style={{ clear: 'both' }} />

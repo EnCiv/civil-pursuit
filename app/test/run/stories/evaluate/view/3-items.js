@@ -19,8 +19,35 @@ function test(props) {
     items : []
   };
 
+  function verifyItem (pos, views, promotions, feedback) {
+    return it => {
+      it('Verify item #' + (pos + 1), it => {
+        it('should get item from DB', ()=>
+          Item.findById(locals.dataItems.split(',')[pos])
+            .then(item => { locals.thisItem = item })
+        );
+
+        it('should have view ' + views, () => {
+          locals.thisItem.views.should.be.exactly(views);
+        });
+
+        it('should have promotions ' + promotions, () => {
+          locals.thisItem.promotions.should.be.exactly(promotions);
+        });
+
+        it('Feedback', it => {
+          it('Get feedback', () => Feedback.find({ item : locals.thisItem })
+            .then(feedback => { locals.feedback = feedback })
+          );
+
+          it('has no feedback', () => locals.feedback.should.have.length(feedback));
+        });
+      });
+    };
+  }
+
   return testWrapper(
-    'Story -> Evaluation -> View -> 2 items',
+    'Story -> Evaluation -> View -> 3 items',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
@@ -52,6 +79,13 @@ function test(props) {
                 .then(item => { locals.items.push(item) })
             );
           });
+
+          it('Item #3', it => {
+            it('should create item', () =>
+              Item.lambda({ type : locals.topLevelType, subject : 'Item #3' })
+                .then(item => { locals.items.push(item) })
+            );
+          });
         });
       });
 
@@ -68,67 +102,48 @@ function test(props) {
         selectors.training.close, 5000
       ));
 
-      it('item #1', it => {
-        it('should see item 1', () =>
-          wrappers.driver.isVisible(
-            `${selectors.item.id.prefix}${locals.items[0]._id}`, 2500
-          )
-        );
+      it('should see item 1', () =>
+        wrappers.driver.isVisible(
+          `${selectors.item.id.prefix}${locals.items[0]._id}`, 2500
+        )
+      );
 
-        it('should click on evaluation toggler', () =>
-          wrappers.driver.client.click([
-            `${selectors.item.id.prefix}${locals.items[0]._id}`,
-            selectors.item.togglers.evaluation
-          ].join(' '))
-        );
+      it('should click on evaluation toggler', () =>
+        wrappers.driver.client.click([
+          `${selectors.item.id.prefix}${locals.items[0]._id}`,
+          selectors.item.togglers.evaluation
+        ].join(' '))
+      );
 
+      it('Data items', it => {
+        it('should get data items', () => wrappers.driver.client.getAttribute(
+          selectors.evaluation.id.prefix + locals.items[0]._id,
+          'data-items'
+        ).then(items => { locals.dataItems = items }));
+
+        it('should have 3 items', () => {
+          locals.dataItems.split(',').should.have.length(3)
+        });
+      });
+
+      it('1st cycle', it => {
         it('should be an evaluation view',
           describe.use(() => isEvaluationView(
             wrappers.driver,
             locals.items[0],
             {
               cursor : 1,
-              limit : 1,
-              left : locals.items[1],
-              right : locals.items[0],
-              button : 'Finish'
+              limit : 2,
+              button : 'Neither'
             }
           ))
         );
 
-        it('Data items', it => {
-          it('should get data items', () => wrappers.driver.client.getAttribute(
-            selectors.evaluation.id.prefix + locals.items[0]._id,
-            'data-items'
-          ).then(items => { locals.dataItems = items }));
+        it('Verify item #1', describe.use(() => verifyItem(0, 1, 0, 0)));
 
-          it('should have 2 items', () => {
-            locals.dataItems.split(',').should.have.length(2)
-          });
-        });
+        it('Verify item #2', describe.use(() => verifyItem(1, 1, 0, 0)));
 
-        it('Verify item', it => {
-          it('should get item from DB', ()=>
-            Item.findById(locals.items[0])
-              .then(item => { locals.items[0] = item })
-          );
-
-          it('should have view 1', () => {
-            locals.items[0].views.should.be.exactly(1);
-          });
-
-          it('should have promotions 0', () => {
-            locals.items[0].promotions.should.be.exactly(0);
-          });
-
-          it('Feedback', it => {
-            it('Get feedback', () => Feedback.find({ item : locals.items[0] })
-              .then(feedback => { locals.feedback = feedback })
-            );
-
-            it('has no feedback', () => locals.feedback.should.have.length(0));
-          });
-        });
+        it('Verify item #3', describe.use(() => verifyItem(2, 0, 0, 0)));
 
         it('Left item', it => {
           it('get left item id', () => wrappers.driver.client.getAttribute(
@@ -152,8 +167,46 @@ function test(props) {
           it('should match data items', () => {
             locals.rightId.should.be.exactly(locals.dataItems.split(',')[1]);
           });
+        });
 
-          it('should be the evaluee', () => locals.rightId.should.be.exactly(locals.items[0]._id.toString()));
+        it('Click on Neither', () => wrappers.driver.click(
+          selectors.evaluation.button
+        ));
+
+        describe.pause(1000)(it);
+      });
+
+      it('2nd cycle', it => {
+        it('should be an evaluation view',
+          describe.use(() => isEvaluationView(
+            wrappers.driver,
+            locals.items[0],
+            {
+              cursor : 2,
+              limit : 2,
+              button : 'Finish'
+            }
+          ))
+        );
+
+        it('Verify item #1', describe.use(() => verifyItem(0, 1, 0, 0)));
+
+        it('Verify item #2', describe.use(() => verifyItem(1, 1, 0, 0)));
+
+        it('Verify item #3', describe.use(() => verifyItem(2, 0, 0, 0)));
+
+        it('Left item', it => {
+          it('get left item id', () => wrappers.driver.client.getAttribute(
+            selectors.evaluation.id.prefix + locals.items[0]._id +
+            ' [data-screen="phone-and-up"] .item-subject.left',
+            'id'
+          ).then(id => { locals.leftId = id.split('-')[2] }));
+
+          it('should match data items', () => {
+            locals.leftId.should.be.exactly(locals.dataItems.split(',')[2]);
+          });
+
+          it('should be the evaluee', () => locals.leftId.should.be.exactly(locals.items[0]._id.toString()));
         });
 
         it('Click on Finish', () => wrappers.driver.click(
@@ -164,15 +217,6 @@ function test(props) {
           wrappers.driver, locals.items[0]
         )));
       });
-
-      it('Item #2', it => {
-        it('should see item 2', () =>
-          wrappers.driver.isVisible(
-            `${selectors.item.id.prefix}${locals.items[1]._id}`
-          )
-        );
-      });
-
     }
   );
 }

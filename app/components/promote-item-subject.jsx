@@ -9,7 +9,10 @@ class Subject extends React.Component {
 
   render () {
     return (
-      <h4 className="item-subject">{ this.props.subject }</h4>
+      <h4
+        className   =   { `item-subject ${this.props.position}` }
+        id          =   { `item-subject-${this.props.id}` }
+        >{ this.props.subject }</h4>
     );
   }
 }

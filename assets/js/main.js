@@ -4969,7 +4969,7 @@ var ColumnItem = (function (_React$Component) {
           { item: item },
           _react2['default'].createElement(_itemMedia2['default'], null)
         ),
-        _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject }),
+        _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject, position: position, id: item._id }),
         _react2['default'].createElement(_promoteReference2['default'], item.references[0]),
         _react2['default'].createElement(_promoteItemDescription2['default'], { description: item.description })
       );
@@ -5395,7 +5395,10 @@ var Subject = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         'h4',
-        { className: 'item-subject' },
+        {
+          className: 'item-subject ' + this.props.position,
+          id: 'item-subject-' + this.props.id
+        },
         this.props.subject
       );
     }
@@ -5582,7 +5585,7 @@ var PromoteSmallScreenColumn = (function (_React$Component) {
           { item: item },
           _react2['default'].createElement(_itemMedia2['default'], null)
         ),
-        _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject }),
+        _react2['default'].createElement(_promoteItemSubject2['default'], { subject: item.subject, position: position, id: item._id }),
         _react2['default'].createElement(_promoteReference2['default'], item.references[0]),
         _react2['default'].createElement(_promoteItemDescription2['default'], { description: item.description }),
         _react2['default'].createElement('div', { style: { clear: 'both' } }),
@@ -6654,8 +6657,6 @@ var EvaluationStore = (function (_React$Component) {
     value: function okGetEvaluation(evaluation) {
       if (evaluation.item === this.props['item-id']) {
 
-        console.info('Evaluation');
-
         var limit = this.state.limti;
 
         switch (evaluation.items.length) {
@@ -6696,7 +6697,15 @@ var EvaluationStore = (function (_React$Component) {
   }, {
     key: 'next',
     value: function next() {
-      var cursor = this.state.cursor + 1;
+      var cursor = this.state.cursor;
+      var regular = true;
+
+      if (cursor + 2 > this.state.limit) {
+        cursor += 1;
+        regular = false;
+      } else {
+        cursor += 2;
+      }
 
       var left = undefined,
           right = undefined;
@@ -6713,8 +6722,8 @@ var EvaluationStore = (function (_React$Component) {
 
       if (cursor <= this.state.limit) {
 
-        left = this.state.evaluation.items[cursor];
-        right = this.state.evaluation.items[cursor + 1];
+        left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
+        right = this.state.evaluation.items[regular ? cursor : cursor + 1];
 
         if (left && right) {
           window.socket.emit('add view', left);
@@ -6788,7 +6797,9 @@ var EvaluationStore = (function (_React$Component) {
       var right = this.state.right,
           left = this.state.left;
 
-      window.socket.emit('promote', this.state[position]);
+      if (cursor > this.state.limit) {
+        window.socket.emit('promote', this.state[position]);
+      }
 
       this.insertVotes(opposite, this.state[opposite]._id);
 
@@ -6828,13 +6839,21 @@ var EvaluationStore = (function (_React$Component) {
     value: function render() {
       var attr = {};
 
+      var dataset = {
+        items: []
+      };
+
       if (this.state.evaluation) {
         attr.id = _synSelectorsJson2['default'].evaluation.id.prefix.replace(/^#/, '') + this.state.evaluation.item;
+
+        dataset.items = this.state.evaluation.items.map(function (item) {
+          return item._id;
+        });
       }
 
       return _react2['default'].createElement(
         'section',
-        _extends({ className: _synSelectorsJson2['default'].evaluation.className }, attr, { ref: 'view' }),
+        _extends({ className: _synSelectorsJson2['default'].evaluation.className }, attr, { ref: 'view', 'data-items': dataset.items.join(',') }),
         this.renderChildren()
       );
     }

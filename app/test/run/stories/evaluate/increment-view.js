@@ -20,7 +20,7 @@ function test(props) {
   };
 
   return testWrapper(
-    'Story -> Evaluation -> Save feedback and votes of promoted item only on last round',
+    'Story -> Evaluation -> Increment view',
     { mongodb : true, http : { verbose : true }, driver : true },
     wrappers => it => {
 
@@ -39,7 +39,7 @@ function test(props) {
         });
 
         it('Item', it => {
-          for ( let i = 0; i < 6; i ++ ) {
+          for ( let i = 0; i < 7; i ++ ) {
             it(`Item #${ i + 1 }`, it => {
               it('should create item', () =>
                 Item.lambda({
@@ -85,49 +85,63 @@ function test(props) {
         `${selectors.evaluation.id.prefix}${locals.items[5]._id}`, 2000
       ));
 
-      it('should remember which item is the one on the left', () =>
-        wrappers.driver.client.getAttribute(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-            ' [data-screen="phone-and-up"] .promote-left ' +
-            selectors.evaluation.promote,
-          'id'
-        )
-        .then(id => { locals.promoted = id.split('-')[3] })
-      );
+      it('should scroll to finish button', it => {
+        for ( let i = 0; i < 18; i ++ ) {
+          it('should hit tab', () => wrappers.driver.client.keys(['\uE004']));
+        }
+      });
 
+      for ( let i = 0; i < 3; i ++ ) {
+        it('Left item ' + (i + 1), it => {
+          it('should get item id', () =>
+            wrappers.driver.client.getAttribute(
+              selectors.evaluation.id.prefix + locals.items[5]._id +
+                ' [data-screen="phone-and-up"] .promote-left ' +
+                selectors.evaluation.promote,
+              'id'
+            )
+            .then(id => { locals.promoted = id.split('-')[3] })
+          );
 
-      it('should scroll to left promote button', () => wrappers.driver.client
-        .scroll(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.promote,
-          0, -250
-        )
-      );
+          it(`should have 1 view`, it => {
+            it('should get item from db', () => Item
+              .findById(locals.promoted)
+              .then(item => { locals.views = item.views })
+            );
 
-      for ( let i = 0; i < 5; i ++ ) {
-        it('should leave a feedback', () => wrappers.driver.client.setValue(
-          selectors.evaluation.id.prefix + locals.items[5]._id +
-          ' [data-screen="phone-and-up"] .promote-left ' +
-          selectors.evaluation.feedback,
-          `Feedback #${ i + 1 }`
-        ));
+            it('views should be ' + 1, () =>
+              locals.views.should.be.exactly(1)
+            );
+          });
+        });
 
-        it('should click left promote button', () => wrappers.driver.client
-          .click(
-            selectors.evaluation.id.prefix + locals.items[5]._id +
-            ' [data-screen="phone-and-up"] .promote-left ' +
-            selectors.evaluation.promote
-          )
+        it('Right item ' + (i + 1), it => {
+          it('should get item id', () =>
+            wrappers.driver.client.getAttribute(
+              selectors.evaluation.id.prefix + locals.items[5]._id +
+                ' [data-screen="phone-and-up"] .promote-right ' +
+                selectors.evaluation.promote,
+              'id'
+            )
+            .then(id => { locals.promoted = id.split('-')[3] })
+          );
+
+          it(`should have 1 view`, it => {
+            it('should get item from db', () => Item
+              .findById(locals.promoted)
+              .then(item => { locals.views = item.views })
+            );
+
+            it('views should be ' + 1, () =>
+              locals.views.should.be.exactly(1)
+            );
+          });
+        });
+
+        it('should press button', () =>
+          wrappers.driver.client.keys(['\uE007'])
         );
       }
-
-      it('should view details of item #1', () => wrappers.driver.click(
-        selectors.item.id.prefix + locals.promoted +
-        ' ' + selectors.item.togglers.details
-      ));
-
-      describe.pause(15000)(it);
     }
   );
 }

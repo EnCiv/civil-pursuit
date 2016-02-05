@@ -70,8 +70,6 @@ class EvaluationStore extends React.Component {
   okGetEvaluation (evaluation) {
     if ( evaluation.item === this.props['item-id'] ) {
 
-      console.info('Evaluation');
-
       let limit = this.state.limti;
 
       switch ( evaluation.items.length ) {
@@ -104,7 +102,16 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   next () {
-    const cursor = this.state.cursor + 1;
+    let cursor = this.state.cursor;
+    let regular = true;
+
+    if ( cursor + 2 > this.state.limit ) {
+      cursor += 1;
+      regular = false;
+    }
+    else {
+      cursor += 2;
+    }
 
     let left, right;
 
@@ -120,8 +127,8 @@ class EvaluationStore extends React.Component {
 
     if ( cursor <= this.state.limit ) {
 
-      left = this.state.evaluation.items[cursor];
-      right = this.state.evaluation.items[cursor + 1];
+      left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
+      right = this.state.evaluation.items[regular ? cursor : cursor + 1];
 
       if ( left && right ) {
         window.socket.emit('add view', left);
@@ -190,7 +197,9 @@ class EvaluationStore extends React.Component {
 
     let right = this.state.right, left = this.state.left;
 
-    window.socket.emit('promote', this.state[position]);
+    if ( cursor > this.state.limit ) {
+      window.socket.emit('promote', this.state[position]);
+    }
 
     this.insertVotes(opposite, this.state[opposite]._id);
 
@@ -227,13 +236,19 @@ class EvaluationStore extends React.Component {
   render () {
     const attr = {};
 
+    const dataset = {
+      items : []
+    };
+
     if ( this.state.evaluation ) {
       attr.id = selectors.evaluation.id.prefix.replace(/^#/, '') +
         this.state.evaluation.item;
+
+      dataset.items = this.state.evaluation.items.map(item => item._id);
     }
 
     return (
-      <section className={ selectors.evaluation.className } { ...attr } ref="view">
+      <section className={ selectors.evaluation.className } { ...attr } ref="view" data-items={ dataset.items.join(',') }>
         { this.renderChildren() }
       </section>
     );

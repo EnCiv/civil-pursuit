@@ -110,6 +110,17 @@ function test(props) {
         });
       });
 
+      it('Data items', it => {
+        it('should get data items', () => wrappers.driver.client.getAttribute(
+          selectors.evaluation.id.prefix + locals.item._id,
+          'data-items'
+        ).then(items => { locals.dataItems = items }));
+
+        it('should have 1 item', () => {
+          locals.dataItems.should.be.exactly(locals.item._id.toString());
+        });
+      });
+
       it('Click on Finish', () => wrappers.driver.click(
         selectors.evaluation.button
       ));
