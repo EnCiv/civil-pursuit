@@ -6,6 +6,7 @@ import User                   from 'syn/../../dist/models/user';
 import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
 import selectors              from 'syn/../../selectors.json';
 import isJoinForm             from 'syn/../../dist/test/is/join-form';
+import secret                 from 'syn/../../secret.json';
 
 function test(props) {
   const locals = {
@@ -45,10 +46,44 @@ function test(props) {
       );
 
       it('should fill username', () => wrappers.driver.client.setValue(
-        '#username_or_email', 'helloooooooooo'
+        '#username_or_email', secret.test.twitter.email
       ));
 
-      describe.pause(30000)(it);
+      it('should fill username', () => wrappers.driver.client.setValue(
+        '[name="session[password]"]', secret.test.twitter.password + "\n"
+      ));
+
+      describe.pause(3500)(it);
+
+      it('should be back to synapp', () =>
+        wrappers.driver.hasUrl(/\/page\/profile/)
+      );
+
+      it('Cookie', it => {
+        it('should have cookie', () => new Promise((ok, ko) => {
+          wrappers.driver.client.getCookie('synuser').then(cookie => {
+            try {
+              cookie.should.be.an.Object()
+                .and.have.property('value')
+                .which.is.a.String();
+
+              const value = JSON.parse(decodeURIComponent(cookie.value).replace(/^j:/, ''));
+
+              value.should.be.an.Object()
+                .and.have.property('email')
+                .which.endWith('@twitter.com');
+
+              value.should.have.property('id')
+                .which.is.a.String();
+
+              ok();
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          }, ko);
+        }));
+      });
 
     }
   );

@@ -190,7 +190,7 @@ class Passport {
   ok (req, res, next) {
     res.cookie('synuser', {
         email   : this.user.email,
-        id      : this.user.id
+        id      : this.user._id
       }, secret.cookie);
 
     res.redirect('/page/profile');

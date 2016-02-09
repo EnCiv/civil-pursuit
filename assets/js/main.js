@@ -37913,7 +37913,8 @@ module.exports={
     "button" : ".syn-top_bar-join_button button",
     "form" : "form[name=\"join\"]",
     "close" : ".syn-join .syn-modal-container > footer a",
-    "twitter" : ".join-with-twitter"
+    "twitter" : ".join-with-twitter",
+    "facebook" : ".join-with-facebook"
   },
   "login" : {
     "button" : ".syn-top_bar-login_button",
