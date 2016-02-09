@@ -111,7 +111,9 @@
   },
   "login" : {
     "button" : ".syn-top_bar-login_button",
-    "form" : "form[name=\"login\"]"
+    "form" : "form[name=\"login\"]",
+    "twitter" : ".login-with-twitter",
+    "facebook" : ".login-with-facebook"
   },
   "training" : {
     "close" : ".syn-training-close i"

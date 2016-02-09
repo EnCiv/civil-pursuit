@@ -125,12 +125,12 @@ class Login extends React.Component {
     let content = (
       <div>
         <ButtonGroup block>
-          <Button medium primary onClick={ this.loginWithFacebook }>
+          <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook">
             <Icon icon="facebook" />
             <span className={ Component.classList(this) } inline> Facebook</span>
           </Button>
 
-          <Button medium info onClick={ this.loginWithTwitter }>
+          <Button medium info onClick={ this.loginWithTwitter } className="login-with-twitter">
             <Icon icon="twitter" />
             <span> Twitter</span>
           </Button>
