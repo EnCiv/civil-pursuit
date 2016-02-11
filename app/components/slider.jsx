@@ -11,7 +11,7 @@ class Slider extends React.Component {
 
   static propTypes = {
     criteria : criteriaType
-  }
+  };
 
   toggleDescription (e) {
     let description = React.findDOMNode(this.refs.description);

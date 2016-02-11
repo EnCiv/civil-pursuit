@@ -30,9 +30,9 @@ MD ***/
 
 class Config extends Mungo.Migration {
 
-  static version        =   1
+  static version        =   1;
 
-  static collection     =   'config'
+  static collection     =   'config';
 
   static get schema () {
     return {

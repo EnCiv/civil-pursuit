@@ -14,11 +14,11 @@ MD ***/
 
 class PoliticalParty extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
-  static collection = 'political_parties'
+  static collection = 'political_parties';
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return new Promise((ok, ko) => {

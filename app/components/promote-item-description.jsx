@@ -5,7 +5,7 @@ import React from 'react';
 class Description extends React.Component {
   static propTypes = {
     description : React.PropTypes.string
-  }
+  };
 
   render () {
     return (

@@ -5,7 +5,7 @@ import React from 'react';
 class Subject extends React.Component {
   static propTypes = {
     subject : React.PropTypes.string
-  }
+  };
 
   render () {
     return (

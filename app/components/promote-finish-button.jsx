@@ -6,7 +6,7 @@ import Button from './util/button';
 class Finish extends React.Component {
   static propTypes = {
     evaluated : React.PropTypes.bool
-  }
+  };
 
   next () {
     let { emitter } = this.props;

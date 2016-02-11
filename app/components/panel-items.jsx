@@ -23,13 +23,13 @@ class PanelItems extends React.Component {
 
   static propTypes  =   {
     panel           :   panelType
-  }
+  };
 
-  new = null
+  new = null;
 
-  mountedItems = {}
+  mountedItems = {};
 
-  state = { active : null }
+  state = { active : null };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -15,7 +15,7 @@ MD ***/
 
 class Training extends Mungo.Migration {
 
-  static version = 1
+  static version = 1;
 
   static get schema () {
     return {

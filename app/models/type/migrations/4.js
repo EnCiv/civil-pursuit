@@ -8,7 +8,7 @@ import harmonies      from 'syn/../../fixtures/type/3.json';
 
 class Type extends Mungo.Migration {
 
-  static version = 4
+  static version = 4;
 
   static get schema () {
     return {

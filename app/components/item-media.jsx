@@ -9,7 +9,7 @@ import itemType                       from '../lib/proptypes/item';
 class ItemMedia extends React.Component {
   static propTypes = {
     item : itemType
-  }
+  };
 
   render () {
     let { item } = this.props;

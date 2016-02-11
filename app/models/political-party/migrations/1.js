@@ -28,11 +28,11 @@ This collection used to be a subdocument of the Config model
 MD ***/
 
 class PoliticalParty extends Mungo.Migration {
-  static version = 1
+  static version = 1;
 
-  static collection = 'political_parties'
+  static collection = 'political_parties';
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return sequencer([

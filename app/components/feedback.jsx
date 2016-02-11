@@ -5,10 +5,6 @@ import feedbackType                   from '../lib/proptypes/feedback';
 
 class Feedback extends React.Component {
 
-  static propTypes = {
-    entries : React.PropTypes.arrayOf(feedbackType)
-  }
-
   render () {
     const { entries, total } = this.props;
 

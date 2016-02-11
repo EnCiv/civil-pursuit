@@ -19,7 +19,7 @@ class Voter extends React.Component {
   static propTypes = {
     user : userType,
     politicalParties : React.PropTypes.arrayOf(politicalPartyType)
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

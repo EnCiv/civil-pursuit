@@ -7,13 +7,13 @@ import V1             from './migrations/1';
 
 class Config extends Mungo.Model {
 
-  static version      =   1
+  static version      =   1;
 
   static migrations   =   {
     1                 :   V1
-  }
+  };
 
-  static collection   =   'config'
+  static collection   =   'config';
 
   static get schema () {
     return        {
@@ -24,7 +24,7 @@ class Config extends Mungo.Model {
       },
       value       :   Mungo.Type.Mixed
     };
-  }
+  };
 
   static get (...args) {
     return get.apply(this, args);

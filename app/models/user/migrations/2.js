@@ -13,7 +13,7 @@ MD
 
 class User extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
   static get schema () {
     return {
@@ -74,7 +74,7 @@ class User extends Mungo.Migration {
 
   static do () {
     return sequencer([
-      
+
       () => this.findOne({ email : defaultUser.email }),
 
       user => new Promise((ok, ko) => {

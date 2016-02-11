@@ -1,4 +1,4 @@
-'use strict';
+;'use strict';
 
 /**
  *  Add harmonies (Why/Why not) to Issue
@@ -10,7 +10,7 @@ import fixtures       from 'syn/../../fixtures/type/4.json';
 
 class Type extends Mungo.Migration {
 
-  static version = 6
+  static version = 6;
 
   static get schema () {
     return {

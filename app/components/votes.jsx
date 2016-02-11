@@ -13,7 +13,7 @@ class Votes extends React.Component {
     criterias : React.PropTypes.arrayOf(criteriaType),
     votes : React.PropTypes.arrayOf(voteType),
     item : itemType
-  }
+  };
 
   render () {
 

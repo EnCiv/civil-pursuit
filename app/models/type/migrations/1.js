@@ -9,7 +9,7 @@ import sequencer          from 'sequencer';
 
 class Type extends Mungo.Migration {
 
-  static version = 1
+  static version = 1;
 
   static get schema () {
     return {

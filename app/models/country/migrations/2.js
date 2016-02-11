@@ -14,11 +14,11 @@ MD ***/
 
 class Country extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
-  static collection = 'countries'
+  static collection = 'countries';
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return new Promise((ok, ko) => {

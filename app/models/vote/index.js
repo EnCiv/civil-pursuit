@@ -10,7 +10,7 @@ import Model                      from '../../lib/app/model';
 
 class Vote extends Model {
 
-  static version = 1
+  static version = 1;
 
   static get schema () {
     return {

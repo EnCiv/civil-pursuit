@@ -18,7 +18,7 @@ class Uploader extends React.Component {
     handler : React.PropTypes.func,
     image : React.PropTypes.string,
     video : React.PropTypes.string
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

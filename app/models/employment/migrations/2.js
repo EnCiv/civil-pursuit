@@ -14,9 +14,9 @@ MD ***/
 
 class Employment extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return new Promise((ok, ko) => {

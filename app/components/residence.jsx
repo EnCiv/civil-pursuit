@@ -19,7 +19,7 @@ class Residence extends React.Component {
   static propTypes = {
     user : userType,
     states : React.PropTypes.arrayOf(stateType)
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

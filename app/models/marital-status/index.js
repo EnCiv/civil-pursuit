@@ -6,16 +6,16 @@ import V2         from './migrations/2';
 
 class MaritalStatus extends Mungo.Model {
 
-  static version = 2
+  static version = 2;
 
-  static collection = 'marital_statuses'
+  static collection = 'marital_statuses';
 
   static migrations = {
     1 : V1,
     2 : V2
-  }
+  };
 
-  static schema = { name : String }
+  static schema = { name : String };
 }
 
 export default MaritalStatus;

@@ -9,14 +9,10 @@ import itemType                       from '../lib/proptypes/item';
 import DetailsStore                   from './store/details';
 
 class Details extends React.Component {
-  static propTypes = {
-    active : React.PropTypes.bool,
-    item : itemType
-  }
 
-  state = { changed : 0 }
+  state = { changed : 0 };
 
-  status = 'iddle'
+  status = 'iddle';
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {

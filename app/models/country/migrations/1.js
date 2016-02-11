@@ -15,15 +15,15 @@ MD ***/
 
 class Country extends Mungo.Migration {
 
-  static version = 1
+  static version = 1;
 
-  static collection = 'countries'
+  static collection = 'countries';
 
   static get schema () {
     return {
       "name" : String
     };
-  }
+  };
 
   static do () {
     return sequencer([

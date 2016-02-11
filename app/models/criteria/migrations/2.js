@@ -14,7 +14,7 @@ MD ***/
 
 class Criteria extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
   static schema = {
     "name"          : 	{
@@ -25,7 +25,7 @@ class Criteria extends Mungo.Migration {
       type          :   String,
       required      :   true
     }
-  }
+  };
 
   static do () {
     return new Promise((ok, ko) => {

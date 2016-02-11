@@ -16,7 +16,7 @@ MD ***/
 
 class Discussion extends Mungo.Migration {
 
-  static version = 1
+  static version = 1;
 
   static get schema () {
     return {
@@ -45,7 +45,7 @@ class Discussion extends Mungo.Migration {
         "default"     :   []
       }
     };
-  }
+  };
 
   static do () {
     return sequencer([

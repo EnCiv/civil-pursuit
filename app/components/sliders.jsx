@@ -11,7 +11,7 @@ import criteriaType                     from '../lib/proptypes/criteria';
 class Sliders extends React.Component {
   static propTypes = {
     criterias : React.PropTypes.arrayOf(criteriaType)
-  }
+  };
 
   render () {
     let { criterias } = this.props;

@@ -10,7 +10,7 @@ Harmony type do not need to have a parent anymore, so remove parent field from a
 
 class Type extends Mungo.Migration {
 
-  static version = 5
+  static version = 5;
 
   static get schema () {
     return {

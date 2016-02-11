@@ -19,11 +19,6 @@ import Loading        from './util/loading';
 
 class Join extends React.Component {
 
-  static proptypes = {
-    login : React.PropTypes.func,
-    show : React.PropTypes.bool
-  }
-
   constructor (props) {
     super(props);
 

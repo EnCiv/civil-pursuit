@@ -9,7 +9,7 @@ class YouTube extends React.Component {
 
   static propTypes = {
     item : itemType
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

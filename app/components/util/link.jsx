@@ -8,7 +8,7 @@ class Link extends React.Component {
     go              :     React.PropTypes.string,
     href            :     React.PropTypes.string,
     then            :     React.PropTypes.func
-  }
+  };
 
   static go (target) {
     return new Promise((ok, ko) => {

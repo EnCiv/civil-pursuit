@@ -9,13 +9,13 @@ import emitter                        from 'syn/../../dist/lib/app/emitter';
 
 class Feedback extends Mungo.Model {
 
-  static version = 2
+  static version = 2;
 
-  static collection = 'feedback'
+  static collection = 'feedback';
 
   static migrations = {
     1 : V1
-  }
+  };
 
   static get schema () {
     return {
@@ -36,7 +36,7 @@ class Feedback extends Mungo.Model {
         "default"     :  Date.now
       }
     };
-  }
+  };
 
   static lambda(...args) {
     return lambda.apply(this, args);

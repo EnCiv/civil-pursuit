@@ -11,7 +11,7 @@ class ExtendableError extends Error {
 
 class SynError extends ExtendableError {
 
-  static CONFIG_NOT_FOUND = 1
+  static CONFIG_NOT_FOUND = 1;
 
   constructor (message, options = {}, code) {
     super(message);

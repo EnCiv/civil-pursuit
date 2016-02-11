@@ -13,7 +13,7 @@ import types                from 'syn/../../fixtures/type/1.json';
 
 class Type extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
   static get schema () {
     return {

@@ -14,11 +14,11 @@ MD ***/
 
 class MaritalStatus extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
-  static collection = 'marital_statuses'
+  static collection = 'marital_statuses';
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return new Promise((ok, ko) => {

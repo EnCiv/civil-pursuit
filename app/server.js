@@ -35,9 +35,9 @@ import API                      from './api';
 
 class HttpServer extends EventEmitter {
 
-  sockets = {}
+  sockets = {};
 
-  nextSocketId = 0
+  nextSocketId = 0;
 
   constructor (props) {
     super();

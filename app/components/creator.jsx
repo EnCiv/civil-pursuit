@@ -16,18 +16,7 @@ class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes  =   {
-    // created         :   itemType,
-    'panel-id'      :   React.PropTypes.string,
-    type            :   typeType,
-    parent          :   React.PropTypes.oneOfType([itemType, React.PropTypes.string]),
-    item            :   itemType,
-    video           :   React.PropTypes.bool
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  state = { blank : true }
+  state = { blank : true };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

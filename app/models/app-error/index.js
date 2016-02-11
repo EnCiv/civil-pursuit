@@ -3,7 +3,7 @@
 import Mungo from 'mungo';
 
 class AppError extends Mungo.Model {
-  static version = 3
+  static version = 3;
 
   static schema = {
     "name"        :   {
@@ -28,7 +28,7 @@ class AppError extends Mungo.Model {
       "type"      :   Date,
       "default"   :   new Date()
     }
-  }
+  };
 
   static throwError (error) {
     const err = {

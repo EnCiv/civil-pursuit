@@ -6,7 +6,7 @@ class PromoteReference extends React.Component {
   static propTypes = {
     title : React.PropTypes.string,
     url : React.PropTypes.string.isRequired
-  }
+  };
 
   render () {
     return (

@@ -4,7 +4,7 @@ import React from 'react';
 
 class ItemStore extends React.Component {
 
-  state = { item : null }
+  state = { item : null };
 
   constructor (props) {
     super(props);

@@ -14,7 +14,7 @@ class Training extends React.Component {
   static propTypes    =   {
     instructions      :  React.PropTypes.arrayOf(instructionType),
     user              :   userType
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -22,15 +22,15 @@ class Training extends React.Component {
     cursor            :   0,
     loader            :   false,
     dontShowNextTime  :   false
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ready = false
+  ready = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  cursor = -1
+  cursor = -1;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

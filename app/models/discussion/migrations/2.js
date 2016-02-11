@@ -16,7 +16,7 @@ MD ***/
 
 class Discussion extends Mungo.Migration {
 
-  static version = 2
+  static version = 2;
 
   static get schema () {
     return {

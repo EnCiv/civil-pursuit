@@ -6,7 +6,7 @@ import Button from './util/button';
 class PromoteButton extends React.Component {
   static propTypes = {
     subject : React.PropTypes.string
-  }
+  };
 
   render () {
     return (

@@ -5,7 +5,7 @@ import React            from 'react';
 class Popularity extends React.Component {
   static propTypes = {
     number : React.PropTypes.number
-  }
+  };
 
   animate () {
     const { number } = this.props;

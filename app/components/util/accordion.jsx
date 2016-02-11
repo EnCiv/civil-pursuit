@@ -7,16 +7,16 @@ class Accordion extends React.Component {
 
   static propTypes  =   {
     active          :   React.PropTypes.bool
-  }
+  };
 
-  counter           =   0
-  height            =   null
-  visibility        =   false
-  id                =   null
+  counter           =   0;
+  height            =   null;
+  visibility        =   false;
+  id                =   null;
 
   state             =   {
     attr            :   'hide'
-  }
+  };
 
   constructor (props) {
     super(props);

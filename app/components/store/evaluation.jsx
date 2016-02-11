@@ -15,11 +15,11 @@ class EvaluationStore extends React.Component {
     limit : 5,
     left : null,
     right : null
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  emitter = new EventEmitter()
+  emitter = new EventEmitter();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -21,7 +21,7 @@ class ResetPassword extends React.Component {
     urlParams : React.PropTypes.shape({
       token : React.PropTypes.string
     })
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

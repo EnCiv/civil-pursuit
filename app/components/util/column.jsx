@@ -7,7 +7,7 @@ class Column extends React.Component {
   static propTypes = {
     style : React.PropTypes.object,
     span :  React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string])
-  }
+  };
 
   style () {
     const style = this.props.style || {};

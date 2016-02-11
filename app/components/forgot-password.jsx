@@ -24,7 +24,7 @@ class ForgotPassword extends React.Component {
     validationError : null,
     successMessage : null,
     info : null
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

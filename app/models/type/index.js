@@ -16,7 +16,7 @@ import V7                               from './migrations/7';
 
 class Type extends Mungo.Model {
 
-  static version = 7
+  static version = 7;
 
   static migrations = {
     1 : V1,
@@ -26,7 +26,7 @@ class Type extends Mungo.Model {
     5 : V5,
     6 : V6,
     7 : V7
-  }
+  };
 
   static get schema () {
     return {

@@ -9,9 +9,9 @@ import Column                         from './util/column';
 
 class Vote extends React.Component {
 
-  item = {}
+  item = {};
 
-  total = null
+  total = null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -19,7 +19,7 @@ class Vote extends React.Component {
     criteria        :   criteriaType,
     vote            :   voteType,
     item            :   itemType
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

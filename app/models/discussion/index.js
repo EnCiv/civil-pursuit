@@ -13,12 +13,12 @@ import discussionNotStartedYet    from './hooks/discussion-not-started-yet';
 
 class Discussion extends Mungo.Model {
 
-  static version = 3
+  static version = 3;
 
   static migrations = {
     1 : V1,
     2 : V2
-  }
+  };
 
   static get schema () {
     return {

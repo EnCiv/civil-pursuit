@@ -6,11 +6,11 @@ import { EventEmitter } from 'events';
 
 class PanelStore extends React.Component {
 
-  id
+  id;
 
-  state = { panel : null, count : null, items : null, new : false }
+  state = { panel : null, count : null, items : null, new : false };
 
-  emitter = new EventEmitter()
+  emitter = new EventEmitter();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

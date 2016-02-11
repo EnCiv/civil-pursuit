@@ -28,9 +28,9 @@ This collection used to be a subdocument of the Config model
 MD ***/
 
 class Employment extends Mungo.Migration {
-  static version = 1
+  static version = 1;
 
-  static schema = { name : String }
+  static schema = { name : String };
 
   static do () {
     return sequencer([

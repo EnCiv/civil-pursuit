@@ -4,7 +4,7 @@ import React from 'react';
 
 class DetailsStore extends React.Component {
 
-  state = { details : null }
+  state = { details : null };
 
   componentDidMount() {
     window.socket.on('OK get item details', this.okGetItemdetails.bind(this));

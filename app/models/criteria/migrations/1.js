@@ -15,7 +15,7 @@ MD ***/
 
 class Criteria extends Mungo.Migration {
 
-  static version = 1
+  static version = 1;
 
   static schema = {
     "name"          : 	{
@@ -26,7 +26,7 @@ class Criteria extends Mungo.Migration {
       type          :   String,
       required      :   true
     }
-  }
+  };
 
   static do () {
     return sequencer([

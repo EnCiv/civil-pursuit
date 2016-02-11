@@ -19,16 +19,6 @@ class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes            =   {
-    user                      :   userType,
-    races                     :   React.PropTypes.arrayOf(raceType),
-    educations                :   React.PropTypes.arrayOf(educationType),
-    maritalStatuses           :   React.PropTypes.arrayOf(maritalStatusType),
-    employments               :   React.PropTypes.arrayOf(employmentType)
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   setEducation () {
     let education = React.findDOMNode(this.refs.education).value;
 

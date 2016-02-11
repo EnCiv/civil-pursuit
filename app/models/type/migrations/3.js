@@ -11,7 +11,7 @@ Add parents
 
 class Type extends Mungo.Migration {
 
-  static version = 3
+  static version = 3;
 
   static get schema () {
     return {

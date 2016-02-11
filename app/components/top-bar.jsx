@@ -19,7 +19,7 @@ class TopBar extends React.Component {
   static propTypes = {
     user        :   userType,
     online      :   React.PropTypes.number
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -27,7 +27,7 @@ class TopBar extends React.Component {
     showLogin           :   false,
     showJoin            :   false,
     showForgotPassword  :   false
-  }
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

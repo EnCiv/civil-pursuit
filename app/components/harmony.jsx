@@ -12,13 +12,6 @@ import PanelStore                   from './store/panel';
 
 class Harmony extends React.Component {
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static propTypes = {
-    item : itemType,
-    active : React.PropTypes.bool,
-    panels : React.PropTypes.arrayOf(panelType)
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -8,7 +8,7 @@ class CloudinaryImage extends React.Component {
     transparent       :   React.PropTypes.bool,
     version           :   React.PropTypes.string,
     id                :   React.PropTypes.string
-  }
+  };
 
   render () {
     const url = ['http:/', 'res.cloudinary.com', 'hscbexf6a', 'image', 'upload'];
