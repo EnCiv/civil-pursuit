@@ -11,7 +11,7 @@
     "postinstall": "./post-install.sh",
     "build": "bash bin/bundle.sh",
     "watchify": "bash bin/watchify.sh",
-    "transpile": "babel -V",
+    "transpile": "babel --out-dir dist app",
     "hot-transpile": "babel --watch --out-dir dist/ app",
     "less": "lessc assets/less/index.less assets/css/index.css; lessc assets/less/training.less assets/css/training.css",
     "watch-less": "npm run less && node dist/bin/watch-less",
