@@ -15,8 +15,7 @@ Before you start the app, you need to set the environment variables. Follow the 
 
 - **MONGOHQ_URL** The URL of the MongoDB server (*if this is not set, it will connect to localhost at MongoDB's default industry port*)
 - **PORT** The HTTP server port (*3000 if not set*)
-- **SYNAPP_ENV** *experimental* The name of the instance (ie, `synappalpha`)
-- **SYNAPP_SELENIUM_TARGET** The URL to run tests to (ie, `http://democracysin.gs`)
+- **SYNAPP_ENV** The name of the instance (ie, `synappalpha`)
 
 # Start
 
