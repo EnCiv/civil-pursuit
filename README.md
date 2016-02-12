@@ -1,41 +1,11 @@
 Synaccord Web Application
 ---
 
-```
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac   
-
-```
-
----
-
 # Install
 
 ```bash
-git clone https://bitbucket.org/synaccord/democratysings
-cd democratysings
+git clone https://bitbucket.org/francoisvespa/synaccord-web-application
+cd synaccord-web-application
 npm install
 ```
 
@@ -51,7 +21,7 @@ Before you start the app, you need to set the environment variables. Follow the 
 # Start
 
 ```bash
-. export.sh # the file with the environment variables
+source export.sh # the file with the environment variables
 npm start
 ```
 
@@ -63,38 +33,14 @@ Technical constraints (like the Facebook app) lead us to put names to our variou
 - **beta**
 - **prod**
 
-# Database
-
-We use MongoDB for the storage. The address of the MongoDB server is provided to the application via the `MONGOHQ_URL` environment.
-
-## Database server
-
-We use Compose (ex MongoHQ) for storage. We use it as a Heroku plugin.
-
-## Database
-
-- App hosted on heroku (synaccord.heroku.com)
-- MongoDB hosted by MongoHQ as an heroku plugin (free plan)
-- 1 dyno: WEB
-
-# NPM
+# NPM commands
 
 - `npm install` - Install app
 - `npm start` - Start app
 - `npm test` - Run all tests suites
-
-# Test
-
-There are 4 levels of testing:
-
-- Model
-- Socket
-- Selenium
-- HTTP Server
-
-## Test commands
-
-```bash
-node app/bin/test test # Run all test
-``` 
-
+- `npm run transpile` - Transpile ES6/7 ro ES5 (babel)
+- `npm run hot-transpile` - Same than transpile, but live
+- `npm run build` - Browserify
+- `npm run watchify` - Browserify live (with watchify)
+- `npm run watch-less` - Convert LESS to css
+- `npm run reset` - Empty database then populate it running the migrations
