@@ -5,7 +5,7 @@
 import { EventEmitter }         from    'events';
 import colors                   from    'colors';
 import Mungo                    from    'mungo';
-import sequencer                from    'sequencer';
+import sequencer                from    'promise-sequencer';
 import Server                   from    '../server';
 import Item                     from    '../models/item';
 import Type                     from    '../models/type';
