@@ -1,6 +1,6 @@
 'use strict';
 
-import getUrlTitle from 'syn/../../dist/lib/app/get-url-title';
+import getUrlTitle from '../lib/app/get-url-title';
 
 function apiGetUrlTitle (url, cb) {
   getUrlTitle(url)

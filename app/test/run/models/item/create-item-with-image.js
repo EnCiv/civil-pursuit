@@ -2,11 +2,11 @@
 
 import describe               from 'redtea';
 import should                 from 'should';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import emitter                from 'syn/../../dist/lib/app/emitter';
-import Item                   from 'syn/../../dist/models/item';
-import isItem                 from 'syn/../../dist/test/is/item';
-import Agent                  from 'syn/../../dist/lib/app/agent';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import emitter                from '../../../../lib/app/emitter';
+import Item                   from '../../../../models/item';
+import isItem                 from '../../../is/item';
+import Agent                  from '../../../../lib/app/agent';
 
 function testCreateItem (props) {
 

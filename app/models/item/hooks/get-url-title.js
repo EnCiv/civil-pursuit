@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 import getUrlTitle from 'syn/../../dist/lib/app/get-url-title';
 
 function fetchUrlTitle (item) {

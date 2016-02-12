@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import Upload               from 'syn/../../dist/lib/util/upload';
+import Upload               from '../../../../lib/util/upload';
 
 function test () {
 

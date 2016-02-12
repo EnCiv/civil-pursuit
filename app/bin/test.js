@@ -3,12 +3,12 @@
 import path         from 'path';
 import fs           from 'fs';
 import Mungo        from 'mungo';
+import sequencer    from 'promise-sequencer';
 import WebDriver    from '../lib/app/webdriver';
-import db           from 'syn/../../dist/test/run/3-db/0.connect';
-import reset        from 'syn/../../dist/test/run/3-db/1.reset';
-import http         from 'syn/../../dist/test/run/6-http/0.server';
-import api          from 'syn/../../dist/test/run/8-socket-api/0.api';
-import sequencer    from 'sequencer';
+import db           from '../test/run/3-db/0.connect';
+import reset        from '../test/run/3-db/1.reset';
+import http         from '../test/run/6-http/0.server';
+import api          from '../test/run/8-socket-api/0.api';
 
 Mungo.verbosity = 0;
 

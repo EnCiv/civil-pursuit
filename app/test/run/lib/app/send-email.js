@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import sendEmail            from 'syn/../../dist/lib/app/send-email';
+import sendEmail            from '../../../../lib/app/send-email';
 
 function test () {
 

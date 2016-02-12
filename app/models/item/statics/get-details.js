@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 import VoteModel          from '../../vote';
 import FeedbackModel      from '../../feedback';
 import CriteriaModel      from '../../criteria';

@@ -5,7 +5,7 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo           from 'mungo';
-import sequencer      from 'sequencer';
+import sequencer      from 'promise-sequencer';
 
 Mungo.verbosity = 0;
 
@@ -41,8 +41,8 @@ function migrate (...models) {
                   try {
                     let model = require(
                       path.resolve(__dirname, `../models/${file}`)
-                    );
-
+                    ).default;
+                    // console.log({ model });
                     model.migrate().then(ok, ko);
                   }
                   catch ( error ) {

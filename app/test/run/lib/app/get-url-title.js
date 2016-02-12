@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import getUrlTitle          from 'syn/../../dist/lib/app/get-url-title';
+import getUrlTitle          from '../../../../lib/app/get-url-title';
 
 function test () {
 

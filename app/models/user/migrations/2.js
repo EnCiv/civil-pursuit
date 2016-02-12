@@ -3,7 +3,7 @@
 import defaultUser    from 'syn/../../fixtures/user/1.json';
 import encrypt        from 'syn/../../dist/lib/util/encrypt';
 import Mungo          from 'mungo';
-import sequencer      from 'sequencer';
+import sequencer      from 'promise-sequencer';
 
 /** <<< MD
 Create default user

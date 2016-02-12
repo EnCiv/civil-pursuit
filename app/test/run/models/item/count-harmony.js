@@ -2,9 +2,9 @@
 
 import describe               from 'redtea';
 import should                 from 'should';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Item                   from 'syn/../../dist/models/item';
-import Type                   from 'syn/../../dist/models/type';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import Item                   from '../../../../models/item';
+import Type                   from '../../../../models/type';
 
 function testItemCountHarmony (props) {
 

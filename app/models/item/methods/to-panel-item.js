@@ -1,7 +1,7 @@
 'use strict';
 
 import config             from '../../../../public.json';
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 
 function toPanelItem () {
 

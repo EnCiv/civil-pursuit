@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo                      from 'mungo';
-import sequencer                  from 'sequencer';
+import sequencer                  from 'promise-sequencer';
 import Race                       from 'syn/../../dist/models/race';
 import MaritalStatus              from 'syn/../../dist/models/marital-status';
 import Employment                 from 'syn/../../dist/models/employment';

@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo              from 'mungo';
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 
 /** Insert a __V attribute to all documents that have not one
 ===

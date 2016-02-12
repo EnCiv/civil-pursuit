@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 import publicConfig from '../../../../public.json';
 
 /**

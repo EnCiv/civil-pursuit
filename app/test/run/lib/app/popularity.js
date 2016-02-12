@@ -1,8 +1,8 @@
 'use strict';
 
 import describe             from 'redtea';
-import Popularity           from 'syn/../../dist/lib/app/popularity';
-import isPopularity         from 'syn/../../dist/test/is/popularity';
+import Popularity           from '../../../../lib/app/popularity';
+import isPopularity         from '../../../is/popularity';
 
 function testPopularity (props) {
   const locals = {};

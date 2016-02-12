@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo from 'mungo';
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 
 /** <<<MD
 Import data from Config

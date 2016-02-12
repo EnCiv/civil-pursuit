@@ -2,11 +2,11 @@
 
 import describe                   from 'redtea';
 import should                     from 'should';
-import testWrapper                from 'syn/../../dist/lib/app/test-wrapper';
-import mock                       from 'syn/../../dist/lib/app/socket-mock';
-import getTopLevelType            from 'syn/../../dist/api/get-top-level-type';
-import isType                     from 'syn/../../dist/test/is/type';
-import Config                     from 'syn/../../dist/models/config';
+import testWrapper                from '../../../lib/app/test-wrapper';
+import mock                       from '../../../lib/app/socket-mock';
+import getTopLevelType            from '../../../api/get-top-level-type';
+import isType                     from '../../is/type';
+import Config                     from '../../../models/config';
 
 function test (props) {
   const locals = {};

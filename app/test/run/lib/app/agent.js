@@ -4,9 +4,9 @@ import fs                   from 'fs';
 import { IncomingMessage }  from 'http';
 import should               from 'should';
 import superagent           from 'superagent';
-import config               from 'syn/../../secret.json';
 import describe             from 'redtea';
-import Agent                from 'syn/../../dist/lib/app/agent';
+import config               from 'syn/../../secret.json';
+import Agent                from '../../../../lib/app/agent';
 
 function test () {
 
@@ -35,9 +35,7 @@ function test () {
       );
 
       it('should have a user agent', () => {
-          locals.request.should.have.property('req')
-            .which.is.an.Object()
-            .and.have.property('_headers')
+          locals.request.should.have.property('header')
             .which.is.an.Object()
             .and.have.property('user-agent')
             .which.is.exactly(config['user agent']);

@@ -10,7 +10,7 @@ import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
 import HeaderMenu                      from './header-menu';
-import selectors                      from 'syn/../../selectors.json';
+import selectors                      from '../../selectors.json';
 
 class TopBar extends React.Component {
 

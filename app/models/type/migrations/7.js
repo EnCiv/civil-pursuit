@@ -7,7 +7,7 @@
 
 import collectionId       from '../../../lib/app/collection-id';
 import Mungo              from 'mungo';
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 
 class Type extends Mungo.Migration {
 

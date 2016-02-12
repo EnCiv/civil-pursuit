@@ -1,9 +1,9 @@
 'use strict';
 
-import should                   from 'should';
+import should               from 'should';
 import fs                   from 'fs';
 import describe             from 'redtea';
-import minifyCSS            from 'syn/../../dist/lib/util/minify-css';
+import minifyCSS            from '../../../../lib/util/minify-css';
 
 function test () {
 

@@ -5,7 +5,7 @@
  */
 
 import Mungo          from 'mungo';
-import sequencer      from 'sequencer';
+import sequencer      from 'promise-sequencer';
 import fixtures       from 'syn/../../fixtures/type/4.json';
 
 class Type extends Mungo.Migration {

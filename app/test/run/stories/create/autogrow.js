@@ -2,12 +2,12 @@
 
 import describe               from 'redtea';
 import should                 from 'should';
-import User                   from 'syn/../../dist/models/user';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Config                 from 'syn/../../dist/models/config';
-import Item                   from 'syn/../../dist/models/item';
-import identify               from 'syn/../../dist/test/util/e2e-identify';
-import selectors              from 'syn/../../selectors.json';
+import User                   from '../../../../models/user';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import Config                 from '../../../../models/config';
+import Item                   from '../../../../models/item';
+import identify               from '../../../util/e2e-identify';
+import selectors              from '../../../../../selectors.json';
 
 function test(props) {
   const locals = {};

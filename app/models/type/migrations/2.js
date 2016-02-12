@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo                from 'mungo';
-import sequencer            from 'sequencer';
+import sequencer            from 'promise-sequencer';
 import types                from 'syn/../../fixtures/type/1.json';
 
 

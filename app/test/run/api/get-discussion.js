@@ -2,12 +2,12 @@
 
 import describe                   from 'redtea';
 import should                     from 'should';
-import testWrapper                from 'syn/../../dist/lib/app/test-wrapper';
-import mock                       from 'syn/../../dist/lib/app/socket-mock';
-import getDiscussion              from 'syn/../../dist/api/get-discussion';
-import isDiscussion               from 'syn/../../dist/test/is/discussion';
-import Discussion                 from 'syn/../../dist/models/discussion';
-import reset                      from 'syn/../../dist/bin/reset';
+import testWrapper                from '../../../lib/app/test-wrapper';
+import mock                       from '../../../lib/app/socket-mock';
+import getDiscussion              from '../../../api/get-discussion';
+import isDiscussion               from '../../is/discussion';
+import Discussion                 from '../../../models/discussion';
+import reset                      from '../../../bin/reset';
 
 function test (props) {
   const locals = {};

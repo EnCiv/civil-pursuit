@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import getHarmony           from 'syn/../../dist/lib/app/get-harmony';
+import getHarmony           from '../../../../lib/app/get-harmony';
 
 function test () {
 

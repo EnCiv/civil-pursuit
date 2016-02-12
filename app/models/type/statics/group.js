@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 
 function random () {
   return Date.now().toString() + process.pid.toString() + Math.ceil(Math.random() * 97);

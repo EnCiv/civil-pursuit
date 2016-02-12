@@ -2,16 +2,16 @@
 
 import describe               from 'redtea';
 import should                 from 'should';
-import User                   from 'syn/../../dist/models/user';
-import signOut                from 'syn/../../dist/test/util/e2e-sign-out';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Config                 from 'syn/../../dist/models/config';
-import Item                   from 'syn/../../dist/models/item';
-import identify               from 'syn/../../dist/test/util/e2e-identify';
-import createItem             from 'syn/../../dist/test/util/e2e-create-item';
-import selectors              from 'syn/../../selectors.json';
-import isItem                 from 'syn/../../dist/test/is/item';
-import isEvaluationView       from 'syn/../../dist/test/is/evaluation-view';
+import User                   from '../../../../models/user';
+import signOut                from '../../../util/e2e-sign-out';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import Config                 from '../../../../models/config';
+import Item                   from '../../../../models/item';
+import identify               from '../../../util/e2e-identify';
+import createItem             from '../../../util/e2e-create-item';
+import selectors              from '../../../../../selectors.json';
+import isItem                 from '../../../is/item';
+import isEvaluationView       from '../../../is/evaluation-view';
 
 function test(props) {
   const locals = {

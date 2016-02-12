@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo          from 'mungo';
-import sequencer      from 'sequencer';
+import sequencer      from 'promise-sequencer';
 import harmonies      from 'syn/../../fixtures/type/3.json';
 
 /** Add harmonies to Type*/

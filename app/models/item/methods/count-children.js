@@ -1,7 +1,7 @@
 'use strict';
 
 import Type from '../../type';
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 
 function countChildren () {
   return sequencer.pipe(

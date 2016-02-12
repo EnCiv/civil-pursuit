@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import encrypt              from 'syn/../../dist/lib/util/encrypt';
+import encrypt              from '../../../../lib/util/encrypt';
 
 function test () {
 

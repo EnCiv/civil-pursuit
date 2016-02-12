@@ -1,9 +1,9 @@
 'use strict';
 
-import describe from 'redtea';
-import superagent from 'superagent';
-import should from 'should';
-import testWrapper from 'syn/../../dist/lib/app/test-wrapper';
+import describe               from 'redtea';
+import superagent             from 'superagent';
+import should                 from 'should';
+import testWrapper            from '../../../lib/app/test-wrapper';
 
 function test(props) {
   const locals = {};

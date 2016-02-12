@@ -2,7 +2,7 @@
 
 import fixtures from 'syn/../../fixtures/training/1.json';
 import Mungo from 'mungo';
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 
 /** <<<MD
 Import data from fixtures to DB

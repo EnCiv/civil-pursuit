@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer    from 'sequencer';
+import sequencer    from 'promise-sequencer';
 import Type         from '../models/type';
 import Config       from '../models/config';
 

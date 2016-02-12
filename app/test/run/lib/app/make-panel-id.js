@@ -2,11 +2,11 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import makePanelId          from 'syn/../../dist/lib/app/make-panel-id';
-import Type                 from 'syn/../../dist/models/type';
-import Item                 from 'syn/../../dist/models/item';
-import isError              from 'syn/../../dist/test/is/error';
-import testWrapper          from 'syn/../../dist/lib/app/test-wrapper';
+import makePanelId          from '../../../../lib/app/make-panel-id';
+import Type                 from '../../../../models/type';
+import Item                 from '../../../../models/item';
+import isError              from '../../../is/error';
+import testWrapper          from '../../../../lib/app/test-wrapper';
 
 function test () {
 

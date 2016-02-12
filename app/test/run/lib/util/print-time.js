@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import printTime            from 'syn/../../dist/lib/util/print-time';
+import printTime            from '../../../../lib/util/print-time';
 
 function test () {
 

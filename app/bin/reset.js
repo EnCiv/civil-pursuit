@@ -5,7 +5,7 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo          from 'mungo';
-import sequencer      from 'sequencer';
+import sequencer      from 'promise-sequencer';
 import migrate        from './migrate';
 
 function reset (...models) {

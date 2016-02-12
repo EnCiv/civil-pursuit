@@ -2,8 +2,8 @@
 
 import describe                   from 'redtea';
 import should                     from 'should';
-import testWrapper                from 'syn/../../dist/lib/app/test-wrapper';
-import Item                       from 'syn/../../dist/models/item';
+import testWrapper                from '../../../lib/app/test-wrapper';
+import Item                       from '../../../models/item';
 
 function test (props) {
   const locals = {};

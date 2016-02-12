@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import Is                   from 'syn/../../dist/lib/util/is';
+import Is                   from '../../../../lib/util/is';
 
 function test () {
 

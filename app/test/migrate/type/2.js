@@ -3,9 +3,9 @@
 import describe               from 'redtea';
 import should                 from 'should';
 import Mungo                  from 'mungo';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Type                   from 'syn/../../dist/models/type';
-import types                  from 'syn/../../fixtures/type/1.json';
+import testWrapper            from '../../../lib/app/test-wrapper';
+import Type                   from '../../../models/type';
+import types                  from '../../../../fixtures/type/1.json';
 
 const { Query, Migration } = Mungo;
 

@@ -10,7 +10,7 @@ import DateInput                      from './util/date-input';
 import Uploader                       from './uploader';
 import userType                       from '../lib/proptypes/user';
 import countryType                    from '../lib/proptypes/country';
-import selectors                      from 'syn/../../selectors.json';
+import selectors                      from '../../selectors.json';
 
 class Identity extends React.Component {
 

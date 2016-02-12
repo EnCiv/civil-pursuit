@@ -3,8 +3,8 @@
 import should               from 'should';
 import Mungo                from 'mungo';
 import describe             from 'redtea';
-import Model                from 'syn/../../dist/lib/app/model';
-import emitter              from 'syn/../../dist/lib/app/emitter';
+import Model                from '../../../../lib/app/model';
+import emitter              from '../../../../lib/app/emitter';
 
 function test () {
 

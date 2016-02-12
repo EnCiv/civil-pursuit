@@ -1,8 +1,8 @@
 'use strict';
 
 import React            from 'react';
-import makePanelId      from 'syn/../../dist/lib/app/make-panel-id';
 import { EventEmitter } from 'events';
+import makePanelId      from '../../lib/app/make-panel-id';
 
 class PanelStore extends React.Component {
 

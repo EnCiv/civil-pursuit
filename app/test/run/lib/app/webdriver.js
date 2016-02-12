@@ -3,7 +3,7 @@
 import { EventEmitter }     from 'events';
 import should               from 'should';
 import describe             from 'redtea';
-import WebDriver            from 'syn/../../dist/lib/app/webdriver';
+import WebDriver            from '../../../../lib/app/webdriver';
 
 function test () {
 

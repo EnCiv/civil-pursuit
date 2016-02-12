@@ -3,10 +3,10 @@
 import describe               from 'redtea';
 import should                 from 'should';
 import Mungo                  from 'mungo';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Type                   from 'syn/../../dist/models/type';
-import isType                 from 'syn/../../dist/test/is/type';
-import harmonies      from 'syn/../../fixtures/type/3.json';
+import testWrapper            from '../../../lib/app/test-wrapper';
+import Type                   from '../../../models/type';
+import isType                 from '../../is/type';
+import harmonies              from '../../../../fixtures/type/3.json';
 
 const { Query, Migration } = Mungo;
 

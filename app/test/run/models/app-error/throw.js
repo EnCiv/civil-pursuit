@@ -3,9 +3,9 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import testWrapper          from 'syn/../../dist/lib/app/test-wrapper';
-import isAppError           from 'syn/../../dist/test/is/app-error';
-import AppError             from 'syn/../../dist/models/app-error';
+import testWrapper          from '../../../../lib/app/test-wrapper';
+import isAppError           from '../../../../test/is/app-error';
+import AppError             from '../../../../models/app-error';
 
 function test () {
   const locals = {};

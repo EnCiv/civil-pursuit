@@ -3,8 +3,8 @@
 import describe           from 'redtea';
 import { EventEmitter }   from 'events';
 import should             from 'should';
-import Socket             from 'syn/../../dist/lib/app/socket-mockup';
-import testWrapper        from 'syn/../../dist/lib/app/test-wrapper';
+import Socket             from '../../../../lib/app/socket-mockup';
+import testWrapper        from '../../../../lib/app/test-wrapper';
 
 function test(props) {
   const locals = {};

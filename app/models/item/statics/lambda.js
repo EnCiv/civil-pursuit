@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 import User from 'syn/../../dist/models/user';
 import Type from 'syn/../../dist/models/type';
 import shuffleArray from 'syn/../../dist/lib/util/shuffle-array';

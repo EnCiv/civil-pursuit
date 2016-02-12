@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import randomString         from 'syn/../../dist/lib/util/random-string';
+import randomString         from '../../../../lib/util/random-string';
 
 function test () {
 

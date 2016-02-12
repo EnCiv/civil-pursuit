@@ -2,9 +2,9 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import generateShortId      from 'syn/../../dist/lib/app/collection-id';
-import Item                 from 'syn/../../dist/models/item';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
+import generateShortId      from '../../../../lib/app/collection-id';
+import Item                 from '../../../../models/item';
+import testWrapper          from '../../../../lib/app/test-wrapper';
 
 function test () {
 

@@ -3,12 +3,12 @@
 import describe               from 'redtea';
 import should                 from 'should';
 import Mungo                  from 'mungo';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import emitter                from 'syn/../../dist/lib/app/emitter';
-import Item                   from 'syn/../../dist/models/item';
-import isItem                 from 'syn/../../dist/test/is/item';
-import isMungoError           from 'syn/../../dist/test/is/mungo-error';
-import Config                 from 'syn/../../dist/models/config';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import emitter                from '../../../../lib/app/emitter';
+import Item                   from '../../../../models/item';
+import isItem                 from '../../../is/item';
+import isMungoError           from '../../../is/mungo-error';
+import Config                 from '../../../../models/config';
 
 function testCreateItem (props) {
 

@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import printRequest         from 'syn/../../dist/lib/util/express-pretty';
+import printRequest         from '../../../../lib/util/express-pretty';
 
 function test () {
 

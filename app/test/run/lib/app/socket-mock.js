@@ -1,9 +1,9 @@
 'use strict';
 
 import describe           from 'redtea';
-import mock               from 'syn/../../dist/lib/app/socket-mock';
-import Socket             from 'syn/../../dist/lib/app/socket-mockup';
-import testWrapper        from 'syn/../../dist/lib/app/test-wrapper';
+import mock               from '../../../../lib/app/socket-mock';
+import Socket             from '../../../../lib/app/socket-mockup';
+import testWrapper        from '../../../../lib/app/test-wrapper';
 
 function APIMethod (event, message) {
   process.nextTick(() => {

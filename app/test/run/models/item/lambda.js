@@ -3,10 +3,10 @@
 import Mungo                from 'mungo';
 import should               from 'should';
 import describe             from 'redtea';
-import testWrapper          from 'syn/../../dist/lib/app/test-wrapper';
-import isItem               from 'syn/../../dist/test/is/item';
-import Item                 from 'syn/../../dist/models/item';
-import Agent                from 'syn/../../dist/lib/app/agent';
+import testWrapper          from '../../../../lib/app/test-wrapper';
+import isItem               from '../../../is/item';
+import Item                 from '../../../../models/item';
+import Agent                from '../../../../lib/app/agent';
 
 function test () {
   const locals = {

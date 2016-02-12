@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import emitter              from 'syn/../../dist/lib/app/emitter';
+import emitter              from '../../../../lib/app/emitter';
 import { EventEmitter }     from 'events';
 
 function test () {

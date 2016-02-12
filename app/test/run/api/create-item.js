@@ -2,12 +2,12 @@
 
 import describe                   from 'redtea';
 import should                     from 'should';
-import testWrapper                from 'syn/../../dist/lib/app/test-wrapper';
-import mock                       from 'syn/../../dist/lib/app/socket-mock';
-import createItem                 from 'syn/../../dist/api/create-item';
-import isPanelItem                from 'syn/../../dist/test/is/panel-item';
-import Config                     from 'syn/../../dist/models/config';
-import User                       from 'syn/../../dist/models/user';
+import testWrapper                from '../../../lib/app/test-wrapper';
+import mock                       from '../../../lib/app/socket-mock';
+import createItem                 from '../../../api/create-item';
+import isPanelItem                from '../../is/panel-item';
+import Config                     from '../../../models/config';
+import User                       from '../../../models/user';
 
 function test (props) {
   const locals = {};

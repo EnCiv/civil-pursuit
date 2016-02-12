@@ -2,7 +2,7 @@
 
 import should               from 'should';
 import describe             from 'redtea';
-import Component            from 'syn/../../dist/lib/app/component';
+import Component            from '../../../../lib/app/component';
 
 function test () {
 

@@ -3,7 +3,7 @@
 import firstDiscussion        from 'syn/../../fixtures/discussion/1.json';
 import Mungo                  from 'mungo';
 import User                   from 'syn/../../dist/models/user';
-import sequencer              from 'sequencer';
+import sequencer              from 'promise-sequencer';
 
 /** <<<MD
 Import data from fixtures to DB

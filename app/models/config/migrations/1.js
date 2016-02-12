@@ -1,10 +1,10 @@
 'use strict';
 
 import Mungo                  from 'mungo';
-import sequencer              from 'sequencer';
-import Type                   from 'syn/../../dist/models/type';
-import fixtures               from 'syn/../../fixtures/config/1.json';
-import SynError               from 'syn/../../dist/lib/app/error';
+import sequencer              from 'promise-sequencer';
+import Type                   from '../../type';
+import fixtures               from '../../../../fixtures/config/1.json';
+import SynError               from '../../../lib/app/error';
 
 /** <<<MD
 Create config entry for "top level type" which returns a type _id

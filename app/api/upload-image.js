@@ -1,25 +1,12 @@
-/** *********************************************
-    *********************************************
+'use strict';
 
-    U   P   L   O   A   D       I   M   A   G   E
+import ss from 'socket.io-stream';
 
-    *********************************************
-    *********************************************
-**/
+function uploadImage (socket) {
+  ss(socket).on('upload image', function (stream, data) {
+    const filename = '/tmp/' + data.name;
+    stream(require('fs').createWriteStream(filename));
+  });
+}
 
-! function () {
-
-  'use strict';
-
-  var ss = require('socket.io-stream');
-
-  function uploadImage (socket) {
-    ss(socket).on('upload image', function (stream, data) {
-      var filename = '/tmp/' + data.name;
-      stream(require('fs').createWriteStream(filename));
-    });
-  }
-
-  module.exports = uploadImage;
-
-} ();
+export default uploadImage;

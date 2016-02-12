@@ -5,7 +5,7 @@ import colors                 from 'colors';
 import should                 from 'should';
 import webdriverio            from 'webdriverio';
 import FirefoxProfile         from 'firefox-profile';
-import sequencer              from 'sequencer';
+import sequencer              from 'promise-sequencer';
 
 class WebDriver extends EventEmitter {
 

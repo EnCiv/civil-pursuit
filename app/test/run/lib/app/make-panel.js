@@ -2,13 +2,13 @@
 
 import should               from 'should';
 import Mungo                from 'mungo';
-import config               from 'syn/../../dist/../public.json';
 import describe             from 'redtea';
-import makePanel            from 'syn/../../dist/lib/app/make-panel';
-import Type                 from 'syn/../../dist/models/type';
-import Item                 from 'syn/../../dist/models/item';
-import isType               from 'syn/../../dist/test/is/type';
-import testWrapper          from 'syn/../../dist/lib/app/test-wrapper';
+import isType               from '../../../is/type';
+import makePanel            from '../../../../lib/app/make-panel';
+import testWrapper          from '../../../../lib/app/test-wrapper';
+import Type                 from '../../../../models/type';
+import Item                 from '../../../../models/item';
+import config               from '../../../../../public.json';
 
 function test () {
 

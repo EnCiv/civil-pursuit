@@ -1,9 +1,9 @@
 'use strict';
 
-import React from 'react';
-import selectors from 'syn/../../selectors.json';
-import { EventEmitter } from 'events';
-import screens from 'syn/../../screens.json';
+import { EventEmitter }   from 'events';
+import React              from 'react';
+import selectors          from '../../../selectors.json';
+import screens            from '../../../screens.json';
 
 class EvaluationStore extends React.Component {
 

@@ -2,13 +2,13 @@
 
 import describe               from 'redtea';
 import should                 from 'should';
-import User                   from 'syn/../../dist/models/user';
-import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
-import Item                   from 'syn/../../dist/models/item';
-import Config                 from 'syn/../../dist/models/config';
-import createItem             from 'syn/../../dist/test/util/e2e-create-item';
-import selectors              from 'syn/../../selectors.json';
-import isItem                 from 'syn/../../dist/test/is/item';
+import User                   from '../../../../models/user';
+import testWrapper            from '../../../../lib/app/test-wrapper';
+import Item                   from '../../../../models/item';
+import Config                 from '../../../../models/config';
+import createItem             from '../../../util/e2e-create-item';
+import selectors              from '../../../../../selectors.json';
+import isItem                 from '../../../is/item';
 
 function test(props) {
   const locals = {};

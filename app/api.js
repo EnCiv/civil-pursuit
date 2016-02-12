@@ -8,7 +8,7 @@ import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
 import ss                 from 'socket.io-stream';
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 import emitter            from './lib/app/emitter';
 import Item               from './models/item';
 
@@ -126,7 +126,7 @@ class API extends EventEmitter {
           .s
           .toLowerCase();
 
-        const handler   =   require('./api/' + file);
+        const handler   =   require('./api/' + file).default;
 
         if ( typeof handler !== 'function' ) {
           throw new Error(`API handler ${name} (${file}) is not a function`);

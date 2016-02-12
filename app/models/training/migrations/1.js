@@ -1,7 +1,7 @@
 'use strict';
 
 import Mungo from 'mungo';
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 
 /** <<<MD
 Switching model engine from Mongoose to Mungo

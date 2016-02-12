@@ -3,7 +3,7 @@
 import should               from 'should';
 import Cloudinary           from 'cloudinary';
 import describe             from 'redtea';
-import cloudinary           from 'syn/../../dist/lib/app/cloudinary';
+import cloudinary           from '../../../../lib/app/cloudinary';
 
 function test () {
 
@@ -19,7 +19,7 @@ function test () {
       cloudinary.should.have.property('config')
         .which.is.a.Function();
     });
-    
+
   });
 
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer          from 'sequencer';
+import sequencer          from 'promise-sequencer';
 import calcHarmony        from '../../../lib/app/get-harmony';
 
 function countHarmony () {

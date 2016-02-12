@@ -1,6 +1,6 @@
 'use strict';
 
-import sequencer from 'sequencer';
+import sequencer from 'promise-sequencer';
 import SynError from 'syn/../../dist/lib/app/error';
 
 function get (name) {

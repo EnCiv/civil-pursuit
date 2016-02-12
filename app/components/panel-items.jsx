@@ -13,7 +13,7 @@ import EvaluationStore    from './store/evaluation';
 import ItemButtons        from './item-buttons';
 import Icon               from './util/icon';
 import Creator            from './creator';
-import ItemStore          from 'syn/../../dist/components/store/item';
+import ItemStore          from '../components/store/item';
 import Details            from './details';
 import DetailsStore       from './store/details';
 import EditAndGoAgain     from './edit-and-go-again';

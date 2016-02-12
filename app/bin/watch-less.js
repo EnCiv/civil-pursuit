@@ -1,9 +1,9 @@
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
-import colors from 'colors';
+import fs             from 'fs';
+import path           from 'path';
+import { exec }       from 'child_process';
+import colors         from 'colors';
 
 let file = path.resolve(__dirname, '../../assets/less/index.less');
 

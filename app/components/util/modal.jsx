@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import Component            from '../../lib/app/component';
+import Component from '../../lib/app/component';
 
 class Modal extends React.Component {
 
