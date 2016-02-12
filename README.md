@@ -24,14 +24,6 @@ source export.sh # the file with the environment variables
 npm start
 ```
 
-# Server instances
-
-Technical constraints (like the Facebook app) lead us to put names to our various environments:
-
-- **alpha**
-- **beta**
-- **prod**
-
 # NPM commands
 
 - `npm install` - Install app
