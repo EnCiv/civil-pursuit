@@ -29,7 +29,8 @@
   },
   "license": "BSD-2-Clause",
   "engines": {
-    "node": "5.x.x"
+    "node": "5.x.x",
+    "npm": "3.x.x"
   },
   "dependencies": {
     "autosize": "^3.0.15",
