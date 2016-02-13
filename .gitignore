@@ -1,5 +1,6 @@
 /node_modules/*
 /.env.sh
 /.start.sh
+/export.sh
 /.vagrant/*
 /dist/*

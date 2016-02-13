@@ -1,26 +1,32 @@
 Synaccord Web Application
 ---
 
-# Install
+# Download
 
 ```bash
 git clone https://bitbucket.org/francoisvespa/synaccord-web-application
 cd synaccord-web-application
-npm install
 ```
 
 # Environment
 
-Before you start the app, you need to set the environment variables. Follow the instructions disclosed in file [export.example.sh](export.example.sh). Below is a list of the required variables:
+Before you start the app, you need to set the environment variables. Follow the instructions disclosed in file [export.example.sh](export.example.sh). You should then have a file `export.sh`. Source it from terminal:
 
-- **MONGOHQ_URL** The URL of the MongoDB server (*if this is not set, it will connect to localhost at MongoDB's default industry port*)
-- **PORT** The HTTP server port (*3000 if not set*)
-- **SYNAPP_ENV** The name of the instance (ie, `synappalpha`)
+```bash
+source export.sh
+```
+
+**You will need to source it everytime you install or start the app**.
+
+# Install
+
+```bash
+npm install
+```
 
 # Start
 
 ```bash
-source export.sh # the file with the environment variables
 npm start
 ```
 

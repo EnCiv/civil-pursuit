@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This is an example file where to store the configuration variables for app Synaccord
-# Copy this file (for example, as "export.sh") and fill it with the needed value
+# Copy this file to export.sh and fill it with the needed value
 # Then call it like this from terminal ". export.sh"
 # Make sure git ignores the file you created.
 
