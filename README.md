@@ -1,6 +1,8 @@
 Synaccord Web Application
 ---
 
+![Circle CI](https://circleci.com/gh/co2-git/synaccord.svg?style=shield&circle-token=0aabf9f8f926be4078d928dacf3e9f827c528d70)
+
 # Download
 
 ```bash
