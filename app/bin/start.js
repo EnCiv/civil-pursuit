@@ -2,6 +2,7 @@
 
 'use strict';
 
+import "babel-polyfill";
 import { EventEmitter }         from    'events';
 import colors                   from    'colors';
 import Mungo                    from    'mungo';
