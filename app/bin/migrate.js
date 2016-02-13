@@ -8,7 +8,7 @@ import Mungo          from 'mungo';
 import MungoJson      from 'mungo/package.json';
 import sequencer      from 'promise-sequencer';
 
-console.log('Migrating', MungoJson.version);
+console.log('Migrating, mungo v', MungoJson.version);
 
 Mungo.verbosity = 0;
 
@@ -49,7 +49,7 @@ function migrate (...models) {
                     model.migrate()
                       .then(ok)
                       .catch(error => {
-                        console.log('Could not migrate', model);
+                        console.log('Could not migrate', model.name);
                         ko(error);
                       });
                   }
