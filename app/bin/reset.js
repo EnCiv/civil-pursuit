@@ -44,7 +44,7 @@ function reset (...models) {
 
       // Require models from files
 
-      models = files.map(file => require(path.join(dir, file)));
+      models = files.map(file => require(path.join(dir, file)).default);
 
       models.forEach(model => console.log(`Resetting ${model.name}`));
 
