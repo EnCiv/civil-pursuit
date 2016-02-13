@@ -5,7 +5,10 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo          from 'mungo';
+import MungoJson      from 'mungo/package.json';
 import sequencer      from 'promise-sequencer';
+
+console.log('Migrating', MungoJson.version);
 
 Mungo.verbosity = 0;
 
