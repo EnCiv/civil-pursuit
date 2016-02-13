@@ -8,8 +8,6 @@ machine:
     MONGOHQ_URL: mongodb://@localhost/bp_db
   node:
     version: 5.1.1
-  npm:
-    version: 3.7.2
 
 dependencies:
   post:
