@@ -4,8 +4,11 @@ import fs             from 'fs';
 import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
-import Mungo           from 'mungo';
+import Mungo          from 'mungo';
+import MungoJson      from 'mungo/package.json';
 import sequencer      from 'promise-sequencer';
+
+console.log('Migrating, mungo v', MungoJson.version);
 
 Mungo.verbosity = 0;
 
@@ -43,7 +46,12 @@ function migrate (...models) {
                       path.resolve(__dirname, `../models/${file}`)
                     ).default;
                     // console.log({ model });
-                    model.migrate().then(ok, ko);
+                    model.migrate()
+                      .then(ok)
+                      .catch(error => {
+                        console.log('Could not migrate', model.name);
+                        ko(error);
+                      });
                   }
                   catch ( error ) {
                     ko(error);

@@ -44,13 +44,12 @@ class Type extends Mungo.Migration {
           return ok();
         }
 
-        sequencer
-          ([
-            () => this.create({ name : type.name }),
+        sequencer(
+          () => this.create({ name : type.name }),
 
-            created => this.revert({ remove : { _id : created._id } })
-          ])
-          .then(ok, ko);
+          created => this.revert({ remove : { _id : created._id } })
+        )
+        .then(ok, ko);
       })
 
     ])));
