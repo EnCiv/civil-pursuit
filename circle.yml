@@ -17,3 +17,9 @@ dependencies:
         background: true
     - npm start:
         background: true
+
+notify:
+  webhooks:
+    # A list of hook hashes, containing the url field
+    # gitter hook
+    - url: https://webhooks.gitter.im/e/a5cdb31894a3a4b352c5
