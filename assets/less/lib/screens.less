@@ -39,6 +39,12 @@
   }
 }
 
+section.syn-column {
+   @media (max-width: @screen-phone){
+      flex-basis: none !important
+  }
+}
+
 [data-screen="up-to-phone"] {
   @media (min-width: @screen-phone) {
     display: none !important;
