@@ -45,6 +45,12 @@ section.syn-column {
   }
 }
 
+section.syn-row {
+  @media (max-width: @screen-phone){
+      display: auto !important
+  }
+}
+
 [data-screen="up-to-phone"] {
   @media (min-width: @screen-phone) {
     display: none !important;
