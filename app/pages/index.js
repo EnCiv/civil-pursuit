@@ -90,6 +90,8 @@ class Layout extends Document {
       );
     }
 
+    this.add(new Script().text(`window.env = "${props.env}"; window.synappEnv = "${process.env.SYNAPP_ENV}"`));
+
     if ( props.env === 'development' ) {
       this.add(
         new Script('/socket.io/socket.io.js'),

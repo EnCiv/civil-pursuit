@@ -1,7 +1,10 @@
 'use strict';
 
-import React from 'react';
-import App from '../components/app';
+import React              from 'react';
+import App                from '../components/app';
+import Facebook           from '../lib/app/fb-sdk';
+
+new Facebook();
 
 window.socket = io();
 

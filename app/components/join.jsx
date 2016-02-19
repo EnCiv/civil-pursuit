@@ -2,6 +2,7 @@
 
 import React          from 'react';
 import superagent     from 'superagent';
+import config         from 'syn/../../public.json';
 import Component      from '../lib/app/component';
 import Modal          from './util/modal';
 import Form           from './util/form';
@@ -16,6 +17,7 @@ import EmailInput     from './util/email-input';
 import Password       from './util/password';
 import InputGroup     from './util/input-group';
 import Loading        from './util/loading';
+import Facebook       from './util/facebook';
 
 class Join extends React.Component {
 
@@ -75,7 +77,8 @@ class Join extends React.Component {
   }
 
   loginWithFacebook () {
-    location.href = '/sign/in/facebook/';
+    // location.href = '/sign/in/facebook/';
+    Facebook.login();
   }
 
   loginWithTwitter () {
