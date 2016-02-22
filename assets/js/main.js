@@ -15,7 +15,16 @@ var _fbSdk2 = _interopRequireDefault(_fbSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-new _fbSdk2.default();
+new _fbSdk2.default().on('ready', function () {
+  _fbSdk2.default.getLoginStatus(function (response) {
+    if (response.status === 'connected') {
+      // socket.emit('facebook user', )
+      _fbSdk2.default.me(function (me) {
+        console.warn({ me: me });
+      });
+    }
+  });
+});
 
 window.socket = io();
 
@@ -3246,9 +3255,9 @@ var _loading = require('./util/loading');
 
 var _loading2 = _interopRequireDefault(_loading);
 
-var _facebook = require('./util/facebook');
+var _fbSdk = require('../lib/app/fb-sdk');
 
-var _facebook2 = _interopRequireDefault(_facebook);
+var _fbSdk2 = _interopRequireDefault(_fbSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3324,7 +3333,7 @@ var Join = function (_React$Component) {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
       // location.href = '/sign/in/facebook/';
-      _facebook2.default.login();
+      _fbSdk2.default.login();
     }
   }, {
     key: 'loginWithTwitter',
@@ -3489,7 +3498,7 @@ var Join = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Join;
-},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/facebook":"/home/francois/Dev/work/syn/dist/components/util/facebook.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/input-group":"/home/francois/Dev/work/syn/dist/components/util/input-group.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js","syn/../../public.json":"/home/francois/Dev/work/syn/public.json"}],"/home/francois/Dev/work/syn/dist/components/layout.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","../lib/app/fb-sdk":"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/input-group":"/home/francois/Dev/work/syn/dist/components/util/input-group.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js","syn/../../public.json":"/home/francois/Dev/work/syn/public.json"}],"/home/francois/Dev/work/syn/dist/components/layout.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8723,84 +8732,7 @@ var EmailInput = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = EmailInput;
-},{"./input":"/home/francois/Dev/work/syn/dist/components/util/input.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js"}],"/home/francois/Dev/work/syn/dist/components/util/facebook.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Facebook = function (_React$Component) {
-  _inherits(Facebook, _React$Component);
-
-  function Facebook() {
-    _classCallCheck(this, Facebook);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Facebook).apply(this, arguments));
-  }
-
-  _createClass(Facebook, null, [{
-    key: 'login',
-    value: function login() {
-      console.log('hello');
-      FB.getLoginStatus(function (response) {
-        return console.log({ response: response });
-      }, true);
-    }
-
-    // This is called with the results from from FB.getLoginStatus().
-
-  }, {
-    key: 'statusChangeCallback',
-    value: function statusChangeCallback(response) {
-      console.log('statusChangeCallback');
-      console.log(response);
-      // The response object is returned with a status field that lets the
-      // app know the current login status of the person.
-      // Full docs on the response object can be found in the documentation
-      // for FB.getLoginStatus().
-      if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        this.testAPI();
-      } else if (response.status === 'not_authorized') {
-        // The person is logged into Facebook, but not your app.
-        console.log('Please login to app');
-      } else {
-        // The person is not logged into Facebook, so we're not sure if
-        // they are logged into this app or not.
-        console.log('Please login to facebook');
-      }
-    }
-  }, {
-    key: 'testAPI',
-    value: function testAPI() {
-      console.log('Welcome!  Fetching your information.... ');
-      FB.api('/me', function (response) {
-        console.log('Successful login for: ' + response.name);
-        document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
-      });
-    }
-  }]);
-
-  return Facebook;
-}(_react2.default.Component);
-
-exports.default = Facebook;
-},{"react":"/home/francois/Dev/work/syn/node_modules/react/react.js"}],"/home/francois/Dev/work/syn/dist/components/util/flash.js":[function(require,module,exports){
+},{"./input":"/home/francois/Dev/work/syn/dist/components/util/input.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js"}],"/home/francois/Dev/work/syn/dist/components/util/flash.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10687,6 +10619,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = require('events');
+
 var _public = require('../../../public.json');
 
 var _public2 = _interopRequireDefault(_public);
@@ -10695,27 +10629,94 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Facebook = function () {
-  function Facebook() {
-    var _this = this;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Facebook = function (_EventEmitter) {
+  _inherits(Facebook, _EventEmitter);
+
+  _createClass(Facebook, null, [{
+    key: 'login',
+    value: function login() {
+      FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
+    }
+  }, {
+    key: 'loginDialog',
+    value: function loginDialog() {
+      var _this2 = this;
+
+      FB.login(function (response) {
+        return _this2.login();
+      }, { scope: 'public_profile,email' });
+    }
+  }, {
+    key: 'getLoginStatus',
+    value: function getLoginStatus(cb) {
+      FB.getLoginStatus(cb, true);
+    }
+
+    // This is called with the results from from FB.getLoginStatus().
+
+  }, {
+    key: 'statusChangeCallback',
+    value: function statusChangeCallback(response) {
+      console.log('statusChangeCallback');
+      console.log(response);
+      // The response object is returned with a status field that lets the
+      // app know the current login status of the person.
+      // Full docs on the response object can be found in the documentation
+      // for FB.getLoginStatus().
+      if (response.status === 'connected') {
+        // Logged into your app and Facebook.
+        this.testAPI();
+      } else if (response.status === 'not_authorized') {
+        // The person is logged into Facebook, but not your app.
+        console.log('Please login to app');
+      } else {
+        // The person is not logged into Facebook, so we're not sure if
+        // they are logged into this app or not.
+        this.loginDialog();
+      }
+    }
+  }, {
+    key: 'me',
+    value: function me(cb) {
+      FB.api('/me', cb);
+    }
+  }, {
+    key: 'testAPI',
+    value: function testAPI() {
+      console.log('Welcome!  Fetching your information.... ');
+      FB.api('/me', function (response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+      });
+    }
+  }]);
+
+  function Facebook() {
     _classCallCheck(this, Facebook);
 
-    this.appId = _public2.default.facebook[synappEnv]['app id'];
-    this.cookie = true;
-    this.xfbml = true;
-    this.version = 'v2.5';
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Facebook).call(this));
 
-    this.waitForFB = window.setInterval(function () {
+    _this.appId = /*config.facebook[synappEnv]['app id']*/'473111569540341';
+    _this.cookie = true;
+    _this.xfbml = true;
+    _this.version = 'v2.5';
+
+
+    _this.waitForFB = window.setInterval(function () {
       console.log('FB', typeof FB !== 'undefined');
 
-      if (FB) {
+      if (typeof FB !== 'undefined') {
         window.clearInterval(_this.waitForFB);
         _this.init();
       }
     }, 1000);
 
-    this.loadSDK();
+    _this.loadSDK();
+    return _this;
   }
 
   _createClass(Facebook, [{
@@ -10742,14 +10743,15 @@ var Facebook = function () {
         xfbml: this.xfbml,
         version: this.version
       });
+      this.emit('ready');
     }
   }]);
 
   return Facebook;
-}();
+}(_events.EventEmitter);
 
 exports.default = Facebook;
-},{"../../../public.json":"/home/francois/Dev/work/syn/public.json"}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
+},{"../../../public.json":"/home/francois/Dev/work/syn/public.json","events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11547,7 +11549,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38221,7 +38223,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38275,7 +38277,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38284,7 +38286,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",

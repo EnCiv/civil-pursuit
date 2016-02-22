@@ -4,8 +4,18 @@ import React from 'react';
 
 class Facebook extends React.Component {
   static login () {
-    console.log('hello');
-    FB.getLoginStatus(response => console.log({response}), true);
+    FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
+  }
+
+  static loginDialog () {
+    FB.login(
+      response => this.login(),
+      { scope: 'public_profile,email' }
+    );
+  }
+
+  static loginIfConnected () {
+    
   }
 
   // This is called with the results from from FB.getLoginStatus().
@@ -25,7 +35,7 @@ class Facebook extends React.Component {
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
-      console.log('Please login to facebook');
+      this.loginDialog();
     }
   }
 

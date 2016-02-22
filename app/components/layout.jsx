@@ -17,7 +17,7 @@ class Layout extends React.Component {
     return (
       <section>
         <div id="fb-root"></div>
-        
+
         <TopBar user={ user } />
 
         <section role="main">

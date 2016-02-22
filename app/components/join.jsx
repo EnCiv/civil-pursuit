@@ -17,7 +17,7 @@ import EmailInput     from './util/email-input';
 import Password       from './util/password';
 import InputGroup     from './util/input-group';
 import Loading        from './util/loading';
-import Facebook       from './util/facebook';
+import Facebook       from '../lib/app/fb-sdk';
 
 class Join extends React.Component {
 
