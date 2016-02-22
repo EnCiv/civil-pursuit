@@ -58,7 +58,10 @@ class User extends Mungo.Model {
 
       "twitter"           :     String,
 
-      "facebook"          :     String,
+      "facebook"          :     {
+        "type"            :     String,
+        "unique"          :     true
+      },
 
       "first_name"        :     String,
 

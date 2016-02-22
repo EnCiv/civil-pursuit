@@ -4,13 +4,15 @@ import React              from 'react';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 
+let currentUser;
+
 new Facebook()
   .on('ready', () => {
     Facebook.getLoginStatus(response => {
       if ( response.status === 'connected' ) {
-        // socket.emit('facebook user', )
         Facebook.me(me => {
-          console.warn({ me });
+          console.error(me);
+          socket.emit('connect facebook user', me);
         });
       }
     });
@@ -19,6 +21,7 @@ new Facebook()
 window.socket = io();
 
 window.socket.on('welcome', user => {
+  currentUser = user;
   render(Object.assign({}, reactProps, { user }));
 });
 

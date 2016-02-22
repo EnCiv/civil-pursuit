@@ -15,12 +15,14 @@ var _fbSdk2 = _interopRequireDefault(_fbSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var currentUser = undefined;
+
 new _fbSdk2.default().on('ready', function () {
   _fbSdk2.default.getLoginStatus(function (response) {
     if (response.status === 'connected') {
-      // socket.emit('facebook user', )
       _fbSdk2.default.me(function (me) {
-        console.warn({ me: me });
+        console.error(me);
+        socket.emit('connect facebook user', me);
       });
     }
   });
@@ -29,6 +31,7 @@ new _fbSdk2.default().on('ready', function () {
 window.socket = io();
 
 window.socket.on('welcome', function (user) {
+  currentUser = user;
   render(Object.assign({}, reactProps, { user: user }));
 });
 
@@ -11549,7 +11552,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38223,7 +38226,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38277,7 +38280,7 @@ module.exports={
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38286,7 +38289,7 @@ module.exports={
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
