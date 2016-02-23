@@ -259,10 +259,6 @@ class API extends EventEmitter {
       };
 
       for ( let handler in this.handlers ) {
-        // socket.on(handler, (...messages) => {
-        //   const formatted = messages.map(res => JSON.stringify(res).grey);
-        //   this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...formatted)
-        // });
         socket.on(handler, this.handlers[handler].bind(socket));
       }
 

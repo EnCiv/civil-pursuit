@@ -7,9 +7,13 @@ function signUp (req, res, next) {
 
   try {
 
-    const { email, password } = req.body;
+    let { email, password, facebook } = req.body;
 
-    console.log({ email, password });
+    console.log({ email, password, facebook });
+
+    if ( facebook ) {
+      password = facebook + 'synapp';
+    }
 
     if ( ! email ) {
       res.statusCode = 400;
@@ -23,7 +27,7 @@ function signUp (req, res, next) {
 
     else {
       User
-        .create({ email, password })
+        .create({ email, password, facebook })
         .then(
           user => {
             try {

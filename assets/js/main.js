@@ -15,23 +15,16 @@ var _fbSdk2 = _interopRequireDefault(_fbSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var currentUser = undefined;
-
-new _fbSdk2.default().on('ready', function () {
-  _fbSdk2.default.getLoginStatus(function (response) {
-    if (response.status === 'connected') {
-      _fbSdk2.default.me(function (me) {
-        console.error(me);
-        socket.emit('connect facebook user', me);
-      });
-    }
-  });
-});
-
 window.socket = io();
 
 window.socket.on('welcome', function (user) {
-  currentUser = user;
+  if (!user) {
+    new _fbSdk2.default().on('ready', function () {
+      return _fbSdk2.default.connect().then(function (res) {
+        console.info({ res: res });
+      });
+    });
+  }
   render(Object.assign({}, reactProps, { user: user }));
 });
 
@@ -10624,6 +10617,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _events = require('events');
 
+var _promiseSequencer = require('promise-sequencer');
+
+var _promiseSequencer2 = _interopRequireDefault(_promiseSequencer);
+
+var _superagent = require('superagent');
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
 var _public = require('../../../public.json');
 
 var _public2 = _interopRequireDefault(_public);
@@ -10640,62 +10641,145 @@ var Facebook = function (_EventEmitter) {
   _inherits(Facebook, _EventEmitter);
 
   _createClass(Facebook, null, [{
-    key: 'login',
-    value: function login() {
-      FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
-    }
-  }, {
-    key: 'loginDialog',
-    value: function loginDialog() {
+    key: 'connect',
+    value: function connect() {
       var _this2 = this;
 
-      FB.login(function (response) {
-        return _this2.login();
-      }, { scope: 'public_profile,email' });
+      return new Promise(function (ok, ko) {
+        _this2.getLoginStatus().then(function (status) {
+          switch (status) {
+            case 'connected':
+              _this2.getUserInfo().then(function (user) {
+                _this2.logInApp(user).then(function () {
+                  location.reload();
+                }).catch(ko);
+              }).catch(ko);
+
+              break;
+
+            case 'not_authorized':
+            default:
+              _this2.logInFacebook().then(function (user) {
+                _this2.signInApp(user);
+              }).catch(ko);
+              break;
+          }
+        }).catch(ko);
+      });
     }
   }, {
     key: 'getLoginStatus',
-    value: function getLoginStatus(cb) {
-      FB.getLoginStatus(cb, true);
-    }
-
-    // This is called with the results from from FB.getLoginStatus().
-
-  }, {
-    key: 'statusChangeCallback',
-    value: function statusChangeCallback(response) {
-      console.log('statusChangeCallback');
-      console.log(response);
-      // The response object is returned with a status field that lets the
-      // app know the current login status of the person.
-      // Full docs on the response object can be found in the documentation
-      // for FB.getLoginStatus().
-      if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        this.testAPI();
-      } else if (response.status === 'not_authorized') {
-        // The person is logged into Facebook, but not your app.
-        console.log('Please login to app');
-      } else {
-        // The person is not logged into Facebook, so we're not sure if
-        // they are logged into this app or not.
-        this.loginDialog();
-      }
-    }
-  }, {
-    key: 'me',
-    value: function me(cb) {
-      FB.api('/me', cb);
-    }
-  }, {
-    key: 'testAPI',
-    value: function testAPI() {
-      console.log('Welcome!  Fetching your information.... ');
-      FB.api('/me', function (response) {
-        console.log('Successful login for: ' + response.name);
-        document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+    value: function getLoginStatus() {
+      return new Promise(function (ok, ko) {
+        FB.getLoginStatus(function (res) {
+          if (res.error) {
+            return ko(new Error(res.error));
+          }
+          ok(res.status);
+        });
       });
     }
+  }, {
+    key: 'getUserInfo',
+    value: function getUserInfo() {
+      var user = arguments.length <= 0 || arguments[0] === undefined ? 'me' : arguments[0];
+
+      return new Promise(function (ok, ko) {
+        FB.api('/' + user + '?fields=id,email,name', function (res) {
+          if (res.error) {
+            return ko(new Error(res.error));
+          }
+          ok(res);
+        });
+      });
+    }
+  }, {
+    key: 'signInApp',
+    value: function signInApp(user) {
+      return new Promise(function (ok, ko) {
+        _superagent2.default.post('/sign/up').send({ email: user.email, facebook: user.id }).end(function (err, res) {
+          if (err) {
+            return ko(err);
+          }
+          ok();
+        });
+      });
+    }
+  }, {
+    key: 'logInApp',
+    value: function logInApp(user) {
+      return new Promise(function (ok, ko) {
+        _superagent2.default.post('/sign/in').send({ email: user.email, facebook: user.id }).end(function (err, res) {
+          if (err) {
+            return ko(err);
+          }
+          ok();
+        });
+      });
+    }
+  }, {
+    key: 'logInFacebook',
+    value: function logInFacebook() {
+      return new Promise(function (ok, ko) {
+        FB.login(function (response) {
+          if (response.error) {
+            return ko(new Error(response.error));
+          }
+          ok(response);
+        }, { scope: 'public_profile,email' });
+      });
+    }
+
+    // static login () {
+    //   FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
+    // }
+    //
+    // static loginDialog () {
+    //   FB.login(
+    //     response => {
+    //       console.log({response});
+    //       this.login();
+    //     },
+    //     { scope: 'public_profile,email' }
+    //   );
+    // }
+    //
+    // static getLoginStatus (cb) {
+    //   FB.getLoginStatus(cb, true);
+    // }
+    //
+    // // This is called with the results from from FB.getLoginStatus().
+    // static statusChangeCallback (response) {
+    //   console.log('statusChangeCallback');
+    //   console.log(response);
+    //   // The response object is returned with a status field that lets the
+    //   // app know the current login status of the person.
+    //   // Full docs on the response object can be found in the documentation
+    //   // for FB.getLoginStatus().
+    //   if (response.status === 'connected') {
+    //     // Logged into your app and Facebook.
+    //     this.me(user => window.socket.emit('get facebook user', user));
+    //   } else if (response.status === 'not_authorized') {
+    //     // The person is logged into Facebook, but not your app.
+    //     this.loginDialog();
+    //   } else {
+    //     // The person is not logged into Facebook, so we're not sure if
+    //     // they are logged into this app or not.
+    //     this.loginDialog();
+    //   }
+    // }
+    //
+    // static me(cb) {
+    //   FB.api('/me?fields=id,email,name', cb);
+    // }
+    //
+    // static testAPI() {
+    //   console.log('Welcome!  Fetching your information.... ');
+    //   FB.api('/me?fields=id,email,name', function(response) {
+    //     console.log('Successful login for: ', response);
+    //   });
+    // }
+
   }]);
 
   function Facebook() {
@@ -10754,7 +10838,7 @@ var Facebook = function (_EventEmitter) {
 }(_events.EventEmitter);
 
 exports.default = Facebook;
-},{"../../../public.json":"/home/francois/Dev/work/syn/public.json","events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
+},{"../../../public.json":"/home/francois/Dev/work/syn/public.json","events":"/home/francois/Dev/work/syn/node_modules/events/events.js","promise-sequencer":"/home/francois/Dev/work/syn/node_modules/promise-sequencer/dist/sequencer.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11552,7 +11636,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -17126,6 +17210,97 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
+},{}],"/home/francois/Dev/work/syn/node_modules/promise-sequencer/dist/sequencer.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function sequencer() {
+  for (var _len = arguments.length, pipeline = Array(_len), _key = 0; _key < _len; _key++) {
+    pipeline[_key] = arguments[_key];
+  }
+
+  if (Array.isArray(pipeline[0])) {
+    pipeline = pipeline[0];
+  }
+
+  var write = undefined;
+
+  var results = [];
+
+  results.getLast = function () {
+    return results[results.length - 1];
+  };
+
+  return new Promise(function (resolve, reject) {
+    try {
+      (function () {
+        var cursor = 0;
+
+        var run = function run() {
+          try {
+            if (pipeline[cursor]) {
+              pipeline[cursor](write, results).then(function (result) {
+                try {
+                  cursor++;
+                  results.push(result);
+                  write = result;
+                  run();
+                } catch (error) {
+                  reject(error);
+                }
+              }).catch(reject);
+            } else {
+              resolve(results);
+            }
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        run();
+      })();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+sequencer.pipe = function pipe() {
+  for (var _len2 = arguments.length, stack = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    stack[_key2] = arguments[_key2];
+  }
+
+  return new Promise(function (resolve, reject) {
+    sequencer(stack).then(function (results) {
+      return resolve(results.getLast());
+    }).catch(reject);
+  });
+};
+
+sequencer.promisify = function promisify(fn) {
+  var args = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+  var that = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+  return new Promise(function (resolve, reject) {
+    args.push(function (error) {
+      for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+        args[_key3 - 1] = arguments[_key3];
+      }
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve.apply(undefined, args);
+      }
+    });
+
+    fn.apply(that, args);
+  });
+};
+
+exports.default = sequencer;
 },{}],"/home/francois/Dev/work/syn/node_modules/react/lib/AutoFocusMixin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -38226,7 +38401,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38280,7 +38455,7 @@ module.exports={
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38289,7 +38464,7 @@ module.exports={
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
