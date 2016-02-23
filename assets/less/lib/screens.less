@@ -15,6 +15,7 @@
 **/
 
 
+@screen-iPhone5      375px;
 @screen-phone:       440px;
 @screen-split:       600px;
 @screen-tablet:      768px;
@@ -38,7 +39,7 @@
     display: none !important;
   }
 }
-
+----iPhone
 section.syn-column {
    @media (max-width: @screen-phone){
       flex-basis: auto !important;
@@ -101,7 +102,7 @@ textarea.user-feedback.block{
       height: 100px !important;
   }
 }
-
+-----------------
 [data-screen="up-to-phone"] {
   @media (min-width: @screen-phone) {
     display: none !important;
