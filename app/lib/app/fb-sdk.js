@@ -8,36 +8,35 @@ import config from '../../../public.json';
 class Facebook extends EventEmitter {
 
   static connect (auto = true) {
-
-    const _connect = () => {
-      this.getUserInfo()
-        .then(user => {
-          console.info({ fbUser : user });
-          this.logInApp(user)
-            .then(() => {
-              location.reload();
-            })
-            .catch(error => {
-              if ( auto ) {
-                if ( error.message === 'Not Found' ) {
-                  this.signInApp(user)
-                    .then(user => {
-                      location.reload();
-                    })
-                    .catch(ko);
-                }
-                else if ( error.message === 'Unauthorized' ) {
-                  window.socket.emit('new facebook version', user, synUser => {
-                    _connect();
-                  });
-                }
-              }
-            })
-        })
-        .catch(ko);
-    }
-
     return new Promise((ok, ko) => {
+      const _connect = () => {
+        this.getUserInfo()
+          .then(user => {
+            console.info({ fbUser : user });
+            this.logInApp(user)
+              .then(() => {
+                location.reload();
+              })
+              .catch(error => {
+                if ( auto ) {
+                  if ( error.message === 'Not Found' ) {
+                    this.signInApp(user)
+                      .then(user => {
+                        location.reload();
+                      })
+                      .catch(ko);
+                  }
+                  else if ( error.message === 'Unauthorized' ) {
+                    window.socket.emit('new facebook version', user, synUser => {
+                      _connect();
+                    });
+                  }
+                }
+              })
+          })
+          .catch(ko);
+      };
+      
       this.getLoginStatus()
         .then(status => {
           console.info({ status });

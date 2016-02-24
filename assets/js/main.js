@@ -10650,29 +10650,28 @@ var Facebook = function (_EventEmitter) {
 
       var auto = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-
-      var _connect = function _connect() {
-        _this2.getUserInfo().then(function (user) {
-          console.info({ fbUser: user });
-          _this2.logInApp(user).then(function () {
-            location.reload();
-          }).catch(function (error) {
-            if (auto) {
-              if (error.message === 'Not Found') {
-                _this2.signInApp(user).then(function (user) {
-                  location.reload();
-                }).catch(ko);
-              } else if (error.message === 'Unauthorized') {
-                window.socket.emit('new facebook version', user, function (synUser) {
-                  _connect();
-                });
-              }
-            }
-          });
-        }).catch(ko);
-      };
-
       return new Promise(function (ok, ko) {
+        var _connect = function _connect() {
+          _this2.getUserInfo().then(function (user) {
+            console.info({ fbUser: user });
+            _this2.logInApp(user).then(function () {
+              location.reload();
+            }).catch(function (error) {
+              if (auto) {
+                if (error.message === 'Not Found') {
+                  _this2.signInApp(user).then(function (user) {
+                    location.reload();
+                  }).catch(ko);
+                } else if (error.message === 'Unauthorized') {
+                  window.socket.emit('new facebook version', user, function (synUser) {
+                    _connect();
+                  });
+                }
+              }
+            });
+          }).catch(ko);
+        };
+
         _this2.getLoginStatus().then(function (status) {
           console.info({ status: status });
           switch (status) {
@@ -11611,7 +11610,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38376,7 +38375,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38430,7 +38429,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38439,7 +38438,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
