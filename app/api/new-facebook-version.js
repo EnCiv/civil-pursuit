@@ -11,7 +11,7 @@ function newFacebookVersion (user, cb) {
   )
     .then(results => {
       const [ synuser, password ] = results;
-      synuser.set({ password }).then(cb)
+      synuser.set({ password }).save().then(cb)
     });
 }
 
