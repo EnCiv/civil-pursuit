@@ -7,14 +7,17 @@ import config from '../../../public.json';
 
 class Facebook extends EventEmitter {
 
-  static connect () {
+  static connect (auto = true) {
+    console.info('connecting via facebook', { auto });
     return new Promise((ok, ko) => {
       this.getLoginStatus()
         .then(status => {
+          console.info({ status });
           switch ( status ) {
             case 'connected' :
               this.getUserInfo()
                 .then(user => {
+                  console.info({ fbUser : user });
                   this.logInApp(user)
                     .then(() => {
                       location.reload();
@@ -27,11 +30,23 @@ class Facebook extends EventEmitter {
 
             case 'not_authorized':
             default:
-              this.logInFacebook()
-                .then(user => {
-                  this.signInApp(user)
-                })
-                .catch(ko);
+              if ( auto ) {
+                this.logInFacebook()
+                  .then(user => {
+                    console.info({ fbUser : user });
+                    this.getUserInfo()
+                      .then(user => {
+                        console.info({ fbUser : user });
+                        this.logInApp(user)
+                          .then(() => {
+                            location.reload();
+                          })
+                          .catch(ko)
+                      })
+                      .catch(ko);
+                  })
+                  .catch(ko);
+              }
               break;
           }
         })

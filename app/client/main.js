@@ -8,10 +8,7 @@ window.socket = io();
 
 window.socket.on('welcome', user => {
   if ( ! user ) {
-    new Facebook()
-      .on('ready', () => Facebook.connect()
-        .then(res => { console.info({ res })})
-      );
+    new Facebook().on('ready', () => Facebook.connect(false));
   }
   render(Object.assign({}, reactProps, { user }));
 });

@@ -20,9 +20,7 @@ window.socket = io();
 window.socket.on('welcome', function (user) {
   if (!user) {
     new _fbSdk2.default().on('ready', function () {
-      return _fbSdk2.default.connect().then(function (res) {
-        console.info({ res: res });
-      });
+      return _fbSdk2.default.connect(false);
     });
   }
   render(Object.assign({}, reactProps, { user: user }));
@@ -3329,7 +3327,7 @@ var Join = function (_React$Component) {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
       // location.href = '/sign/in/facebook/';
-      _fbSdk2.default.login();
+      _fbSdk2.default.connect();
     }
   }, {
     key: 'loginWithTwitter',
@@ -3646,6 +3644,10 @@ var _loading = require('./util/loading');
 
 var _loading2 = _interopRequireDefault(_loading);
 
+var _fbSdk = require('../lib/app/fb-sdk');
+
+var _fbSdk2 = _interopRequireDefault(_fbSdk);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3719,7 +3721,8 @@ var Login = function (_React$Component) {
   }, {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
-      location.href = '/sign/in/facebook';
+      // location.href = '/sign/in/facebook';
+      _fbSdk2.default.connect();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3878,7 +3881,7 @@ var Login = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Login;
-},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/components/panel-items.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","../lib/app/fb-sdk":"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/components/panel-items.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10645,11 +10648,16 @@ var Facebook = function (_EventEmitter) {
     value: function connect() {
       var _this2 = this;
 
+      var auto = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+      console.info('connecting via facebook', { auto: auto });
       return new Promise(function (ok, ko) {
         _this2.getLoginStatus().then(function (status) {
+          console.info({ status: status });
           switch (status) {
             case 'connected':
               _this2.getUserInfo().then(function (user) {
+                console.info({ fbUser: user });
                 _this2.logInApp(user).then(function () {
                   location.reload();
                 }).catch(ko);
@@ -10659,9 +10667,17 @@ var Facebook = function (_EventEmitter) {
 
             case 'not_authorized':
             default:
-              _this2.logInFacebook().then(function (user) {
-                _this2.signInApp(user);
-              }).catch(ko);
+              if (auto) {
+                _this2.logInFacebook().then(function (user) {
+                  console.info({ fbUser: user });
+                  _this2.getUserInfo().then(function (user) {
+                    console.info({ fbUser: user });
+                    _this2.logInApp(user).then(function () {
+                      location.reload();
+                    }).catch(ko);
+                  }).catch(ko);
+                }).catch(ko);
+              }
               break;
           }
         }).catch(ko);
@@ -11636,7 +11652,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38401,7 +38417,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38455,7 +38471,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38464,7 +38480,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
