@@ -8,34 +8,42 @@ import config from '../../../public.json';
 class Facebook extends EventEmitter {
 
   static connect (auto = true) {
-    console.info('connecting via facebook', { auto });
+
+    function _connect () {
+      this.getUserInfo()
+        .then(user => {
+          console.info({ fbUser : user });
+          this.logInApp(user)
+            .then(() => {
+              location.reload();
+            })
+            .catch(error => {
+              if ( auto ) {
+                if ( error.message === 'Not Found' ) {
+                  this.signInApp(user)
+                    .then(user => {
+                      location.reload();
+                    })
+                    .catch(ko);
+                }
+                else if ( error.message === 'Unauthorized' ) {
+                  window.socket.emit('new facebook version', user, synUser => {
+                    _connect();
+                  });
+                }
+              }
+            })
+        })
+        .catch(ko);
+    }
+
     return new Promise((ok, ko) => {
       this.getLoginStatus()
         .then(status => {
           console.info({ status });
           switch ( status ) {
             case 'connected' :
-              this.getUserInfo()
-                .then(user => {
-                  console.info({ fbUser : user });
-                  this.logInApp(user)
-                    .then(() => {
-                      location.reload();
-                    })
-                    .catch(error => {
-                      if ( auto ) {
-                        if ( error.message === 'Not Found' ) {
-                          this.signInApp(user)
-                            .then(user => {
-                              location.reload();
-                            })
-                            .catch(ko);
-                        }
-                      }
-                    })
-                })
-                .catch(ko);
-
+              _connect();
               break;
 
             case 'not_authorized':
@@ -44,26 +52,7 @@ class Facebook extends EventEmitter {
                 this.logInFacebook()
                   .then(user => {
                     console.info({ fbUser : user });
-                    this.getUserInfo()
-                      .then(user => {
-                        console.info({ fbUser : user });
-                        this.logInApp(user)
-                          .then(() => {
-                            location.reload();
-                          })
-                          .catch(error => {
-                            if ( auto ) {
-                              if ( error.message === 'Not Found' ) {
-                                this.signInApp(user)
-                                  .then(user => {
-                                    location.reload();
-                                  })
-                                  .catch(ko);
-                              }
-                            }
-                          })
-                      })
-                      .catch(ko);
+                    _connect();
                   })
                   .catch(ko);
               }
