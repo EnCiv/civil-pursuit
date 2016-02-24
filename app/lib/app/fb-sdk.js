@@ -9,7 +9,7 @@ class Facebook extends EventEmitter {
 
   static connect (auto = true) {
 
-    function _connect () {
+    const _connect = () => {
       this.getUserInfo()
         .then(user => {
           console.info({ fbUser : user });

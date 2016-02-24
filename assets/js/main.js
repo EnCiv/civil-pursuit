@@ -10646,15 +10646,13 @@ var Facebook = function (_EventEmitter) {
   _createClass(Facebook, null, [{
     key: 'connect',
     value: function connect() {
-      var _this3 = this;
+      var _this2 = this;
 
       var auto = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
 
-      function _connect() {
-        var _this2 = this;
-
-        this.getUserInfo().then(function (user) {
+      var _connect = function _connect() {
+        _this2.getUserInfo().then(function (user) {
           console.info({ fbUser: user });
           _this2.logInApp(user).then(function () {
             location.reload();
@@ -10672,10 +10670,10 @@ var Facebook = function (_EventEmitter) {
             }
           });
         }).catch(ko);
-      }
+      };
 
       return new Promise(function (ok, ko) {
-        _this3.getLoginStatus().then(function (status) {
+        _this2.getLoginStatus().then(function (status) {
           console.info({ status: status });
           switch (status) {
             case 'connected':
@@ -10685,7 +10683,7 @@ var Facebook = function (_EventEmitter) {
             case 'not_authorized':
             default:
               if (auto) {
-                _this3.logInFacebook().then(function (user) {
+                _this2.logInFacebook().then(function (user) {
                   console.info({ fbUser: user });
                   _connect();
                 }).catch(ko);
@@ -11613,7 +11611,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38378,7 +38376,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38432,7 +38430,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38441,7 +38439,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
