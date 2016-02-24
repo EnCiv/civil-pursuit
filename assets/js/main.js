@@ -10660,7 +10660,15 @@ var Facebook = function (_EventEmitter) {
                 console.info({ fbUser: user });
                 _this2.logInApp(user).then(function () {
                   location.reload();
-                }).catch(ko);
+                }).catch(function (error) {
+                  if (auto) {
+                    if (error.message === 'Not Found') {
+                      _this2.signInApp(user).then(function (user) {
+                        location.reload();
+                      }).catch(ko);
+                    }
+                  }
+                });
               }).catch(ko);
 
               break;
@@ -10674,7 +10682,15 @@ var Facebook = function (_EventEmitter) {
                     console.info({ fbUser: user });
                     _this2.logInApp(user).then(function () {
                       location.reload();
-                    }).catch(ko);
+                    }).catch(function (error) {
+                      if (auto) {
+                        if (error.message === 'Not Found') {
+                          _this2.signInApp(user).then(function (user) {
+                            location.reload();
+                          }).catch(ko);
+                        }
+                      }
+                    });
                   }).catch(ko);
                 }).catch(ko);
               }
@@ -10745,57 +10761,6 @@ var Facebook = function (_EventEmitter) {
         }, { scope: 'public_profile,email' });
       });
     }
-
-    // static login () {
-    //   FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
-    // }
-    //
-    // static loginDialog () {
-    //   FB.login(
-    //     response => {
-    //       console.log({response});
-    //       this.login();
-    //     },
-    //     { scope: 'public_profile,email' }
-    //   );
-    // }
-    //
-    // static getLoginStatus (cb) {
-    //   FB.getLoginStatus(cb, true);
-    // }
-    //
-    // // This is called with the results from from FB.getLoginStatus().
-    // static statusChangeCallback (response) {
-    //   console.log('statusChangeCallback');
-    //   console.log(response);
-    //   // The response object is returned with a status field that lets the
-    //   // app know the current login status of the person.
-    //   // Full docs on the response object can be found in the documentation
-    //   // for FB.getLoginStatus().
-    //   if (response.status === 'connected') {
-    //     // Logged into your app and Facebook.
-    //     this.me(user => window.socket.emit('get facebook user', user));
-    //   } else if (response.status === 'not_authorized') {
-    //     // The person is logged into Facebook, but not your app.
-    //     this.loginDialog();
-    //   } else {
-    //     // The person is not logged into Facebook, so we're not sure if
-    //     // they are logged into this app or not.
-    //     this.loginDialog();
-    //   }
-    // }
-    //
-    // static me(cb) {
-    //   FB.api('/me?fields=id,email,name', cb);
-    // }
-    //
-    // static testAPI() {
-    //   console.log('Welcome!  Fetching your information.... ');
-    //   FB.api('/me?fields=id,email,name', function(response) {
-    //     console.log('Successful login for: ', response);
-    //   });
-    // }
-
   }]);
 
   function Facebook() {
@@ -11652,7 +11617,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -38417,7 +38382,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38471,7 +38436,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38480,7 +38445,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",

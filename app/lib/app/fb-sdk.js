@@ -22,7 +22,17 @@ class Facebook extends EventEmitter {
                     .then(() => {
                       location.reload();
                     })
-                    .catch(ko)
+                    .catch(error => {
+                      if ( auto ) {
+                        if ( error.message === 'Not Found' ) {
+                          this.signInApp(user)
+                            .then(user => {
+                              location.reload();
+                            })
+                            .catch(ko);
+                        }
+                      }
+                    })
                 })
                 .catch(ko);
 
@@ -41,7 +51,17 @@ class Facebook extends EventEmitter {
                           .then(() => {
                             location.reload();
                           })
-                          .catch(ko)
+                          .catch(error => {
+                            if ( auto ) {
+                              if ( error.message === 'Not Found' ) {
+                                this.signInApp(user)
+                                  .then(user => {
+                                    location.reload();
+                                  })
+                                  .catch(ko);
+                              }
+                            }
+                          })
                       })
                       .catch(ko);
                   })
@@ -117,56 +137,6 @@ class Facebook extends EventEmitter {
       );
     });
   }
-
-  // static login () {
-  //   FB.getLoginStatus(this.statusChangeCallback.bind(this), true);
-  // }
-  //
-  // static loginDialog () {
-  //   FB.login(
-  //     response => {
-  //       console.log({response});
-  //       this.login();
-  //     },
-  //     { scope: 'public_profile,email' }
-  //   );
-  // }
-  //
-  // static getLoginStatus (cb) {
-  //   FB.getLoginStatus(cb, true);
-  // }
-  //
-  // // This is called with the results from from FB.getLoginStatus().
-  // static statusChangeCallback (response) {
-  //   console.log('statusChangeCallback');
-  //   console.log(response);
-  //   // The response object is returned with a status field that lets the
-  //   // app know the current login status of the person.
-  //   // Full docs on the response object can be found in the documentation
-  //   // for FB.getLoginStatus().
-  //   if (response.status === 'connected') {
-  //     // Logged into your app and Facebook.
-  //     this.me(user => window.socket.emit('get facebook user', user));
-  //   } else if (response.status === 'not_authorized') {
-  //     // The person is logged into Facebook, but not your app.
-  //     this.loginDialog();
-  //   } else {
-  //     // The person is not logged into Facebook, so we're not sure if
-  //     // they are logged into this app or not.
-  //     this.loginDialog();
-  //   }
-  // }
-  //
-  // static me(cb) {
-  //   FB.api('/me?fields=id,email,name', cb);
-  // }
-  //
-  // static testAPI() {
-  //   console.log('Welcome!  Fetching your information.... ');
-  //   FB.api('/me?fields=id,email,name', function(response) {
-  //     console.log('Successful login for: ', response);
-  //   });
-  // }
 
   appId       =   /*config.facebook[synappEnv]['app id']*/'473111569540341';
   cookie      =   true;
