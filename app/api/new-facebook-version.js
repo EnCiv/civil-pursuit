@@ -2,12 +2,17 @@
 
 import sequencer from 'promise-sequencer';
 import User from '../models/user';
+import encrypt from '../lib/util/encrypt';
 
 function newFacebookVersion (user, cb) {
-  sequencer.pipe(
+  sequencer(
     () => User.findOne({ email : user.email, __V : { $lt : 4 } }),
-    user => user.set('password', user.id + 'synapp').save()
-  ).then(cb);
+    () => encrypt(user.id + 'synapp')
+  )
+    .then(results => {
+      const [ synuser, password ] = results;
+      synuser.set({ password }).then(cb)
+    });
 }
 
 export default newFacebookVersion;
