@@ -65,13 +65,15 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggle (itemId, section) {
-alert('');
     console.log('toggle', itemId, section);
 
     if (
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
+      alert('');
+      var a = document.getElementByClassName('.promote-description');
+      console.log(a[0]);
       return this.setState({ active : { item : itemId, section : null } });
     }
 
