@@ -65,7 +65,7 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggle (itemId, section) {
-
+alert('');
     console.log('toggle', itemId, section);
 
     if (
@@ -76,7 +76,6 @@ class PanelItems extends React.Component {
     }
 
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
-      alert('');
       return Join.click();
     }
 
