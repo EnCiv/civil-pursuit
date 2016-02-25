@@ -71,9 +71,6 @@ class PanelItems extends React.Component {
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
-      alert('');
-      var a = document.getElementByClassName('.promote-description');
-      console.log(a[0]);
       return this.setState({ active : { item : itemId, section : null } });
     }
 
@@ -83,11 +80,16 @@ class PanelItems extends React.Component {
 
     if ( itemId ) {
       if ( ! this.mountedItems[itemId] ) {
+        alert('if');
         this.mountedItems[itemId] = {};
       }
-
+      alert('notif');
       this.mountedItems[itemId][section] = true;
     }
+    alert('');
+      var a = document.getElementByClassName('.promote-description');
+      console.log(a[0]);
+      
 
     this.setState({ active : { item : itemId, section }});
   }
