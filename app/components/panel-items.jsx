@@ -80,16 +80,12 @@ class PanelItems extends React.Component {
 
     if ( itemId ) {
       if ( ! this.mountedItems[itemId] ) {
-        alert('if');
         this.mountedItems[itemId] = {};
       }
-      alert('notif');
       this.mountedItems[itemId][section] = true;
-    }
-    alert('');
       var a = document.getElementByClassName('.promote-description');
-      console.log(a[0]);
-      
+      alert(a[0].innerHTML);
+    }      
 
     this.setState({ active : { item : itemId, section }});
   }
