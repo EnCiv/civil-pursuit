@@ -86,7 +86,10 @@ class PanelItems extends React.Component {
      }      
     this.setState({ active : { item : itemId, section }});
     if (document.getElementById('left_description') != null)
-         alert(document.getElementById('left_description'));    
+        alert('not null');
+        // alert(document.getElementById('left_description'));    
+    else
+      alert('null');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
