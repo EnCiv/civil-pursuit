@@ -85,7 +85,7 @@ class PanelItems extends React.Component {
       this.mountedItems[itemId][section] = true;
      }      
     if (document.getElementById('left_description') != null)
-         alert(document.getElementById('left_description').text);    
+         alert(document.getElementById('left_description'));    
     this.setState({ active : { item : itemId, section }});
   }
 
