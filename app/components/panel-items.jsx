@@ -34,9 +34,24 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    this.props.emitter.on('show', this.show.bind(this));
+    
 
 
+  if (document.getElementById('left_description') != null) {
+      alert('offsetHeight1');
+
+        var ly = document.getElementById('left_description').offsetHeight;
+        var ry = document.getElementById('right_description').offsetHeight;
+         alert(ry);
+        if (ly < ry) {
+          document.getElementById('left_description').style.height = ry;
+        }
+        else {
+          document.getElementById('right_description').style.height = ly;
+        }
+    }  
+
+this.props.emitter.on('show', this.show.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,15 +77,11 @@ class PanelItems extends React.Component {
         var ry = document.getElementById('right_description').offsetHeight;
          alert(ry);
         if (ly < ry) {
-          alert(ry);
           document.getElementById('left_description').style.height = ry;
         }
         else {
-          alert(ly);
           document.getElementById('right_description').style.height = ly;
         }
-        document.getElementById('left_description').style.height = '400px';
-        document.getElementById('right_description').style.height = '400px';
     }  
   }
 
