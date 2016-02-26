@@ -54,8 +54,6 @@ class PanelItems extends React.Component {
         document.getElementById('left_description').style.height = '400px';
         document.getElementById('right_description').style.height = '400px';
     }  
-    else
-      alert('null');
 
   }
 
