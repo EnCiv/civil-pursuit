@@ -10,7 +10,7 @@ class Description extends React.Component {
 
   render () {
     return (
-      <section id={this.props.itemid} className="promote-description item-description">{ this.props.description }</section>
+      <section id="left_description" className="promote-description item-description">{ this.props.description }</section>
     );
   }
 }
