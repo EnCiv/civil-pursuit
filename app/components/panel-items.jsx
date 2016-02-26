@@ -37,9 +37,18 @@ class PanelItems extends React.Component {
     this.props.emitter.on('show', this.show.bind(this));
 
 
-    if (document.getElementById('left_description') != null)
-    //    alert('not null');
-         alert(document.getElementById('left_description'));    
+    if (document.getElementById('left_description') != null) {
+        var ly = document.getElementById('left_description').offsetHeight;
+        var ry = document.getElementById('right_description').offsetHeight;
+        if (ly < ry) {
+          alert(ry);
+          document.getElementById('left_description').style.height = ry;
+        }
+        else {
+          alert(ly);
+          document.getElementById('right_description').style.height = ly;
+        }
+    }  
     else
       alert('null');
 
