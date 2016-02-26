@@ -19,9 +19,11 @@ componentDidUpdate () {
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
         if (ly < ry) {
+          alert("right big");
           document.getElementById('left_description').style.height = ry + "px";
         }
         else {
+          alert("left big");
           document.getElementById('right_description').style.height = ly + "px'";
         }
     }  
