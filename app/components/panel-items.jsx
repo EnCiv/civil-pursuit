@@ -85,12 +85,8 @@ class PanelItems extends React.Component {
       this.mountedItems[itemId][section] = true;
      }      
          alert('a');
-    var a = document.getElementsByClassName('promote-description');
-      alert(a[0]);
+    alert(document.getElementByID('left_description').text);    
     this.setState({ active : { item : itemId, section }});
-        alert('b');
-    var a = document.getElementsByClassName('promote-description');
-      alert(a[0]);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

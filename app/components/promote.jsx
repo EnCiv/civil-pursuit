@@ -109,6 +109,7 @@ class Promote extends React.Component {
                   criterias   =   { evaluation.criterias }
                   evaluated   =   { evaluation.item }
                   other       =   { right }
+                  desc_id     =   "left_description"
                   />
 
                   <PromoteSmallScreenColumn
@@ -119,6 +120,7 @@ class Promote extends React.Component {
                     criterias   =   { evaluation.criterias }
                     evaluated   =   { evaluation.item }
                     other       =   { left }
+                    desc_id     =   "right_description"
                     />
               </Row>
             </div>
