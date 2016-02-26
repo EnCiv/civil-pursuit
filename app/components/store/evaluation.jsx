@@ -63,8 +63,7 @@ class EvaluationStore extends React.Component {
         }
         else {
           document.getElementById('right_description').style.height = ly + "px";
-        }
-      }  
+        }  
     }
   }
 
@@ -149,7 +148,7 @@ class EvaluationStore extends React.Component {
       }
 
       this.setState({ cursor, left, right });
-
+    }
     else {
       alert("2");
       this.setState({ evaluation : null, cursor : 1 });
