@@ -9,6 +9,7 @@ class Description extends React.Component {
   };
 
   render () {
+  	alert(this.props.itemid);
     return (
       <section id={ this.props.itemid } className="promote-description item-description">{ this.props.description }</section>
     );
