@@ -109,19 +109,19 @@ class Promote extends React.Component {
                   criterias   =   { evaluation.criterias }
                   evaluated   =   { evaluation.item }
                   other       =   { right }
-                  desc_id     =   "left_description"
+                  descid      =   "left_description"
                   />
 
-                  <PromoteSmallScreenColumn
-                    { ...this.props }
-                    key         =   "right"
-                    position    =   "right"
-                    item        =   { right }
-                    criterias   =   { evaluation.criterias }
-                    evaluated   =   { evaluation.item }
-                    other       =   { left }
-                    descid     =   "right_description"
-                    />
+                <PromoteSmallScreenColumn
+                  { ...this.props }
+                  key         =   "right"
+                  position    =   "right"
+                  item        =   { right }
+                  criterias   =   { evaluation.criterias }
+                  evaluated   =   { evaluation.item }
+                  other       =   { left }
+                  descid      =   "right_description"
+                  />
               </Row>
             </div>
           ),

@@ -35,6 +35,14 @@ class PanelItems extends React.Component {
 
   componentDidMount () {
     this.props.emitter.on('show', this.show.bind(this));
+
+
+    if (document.getElementById('left_description') != null)
+    //    alert('not null');
+         alert(document.getElementById('left_description'));    
+    else
+      alert('null');
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,18 +74,17 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
     console.log('toggle', itemId, section);
-alert('not 1');
+
     if (
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
       return this.setState({ active : { item : itemId, section : null } });
     }
-alert('not 2');
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
       return Join.click();
     }
-alert('not 3');
+
     if ( itemId ) {
       if ( ! this.mountedItems[itemId] ) {
         this.mountedItems[itemId] = {};
@@ -85,11 +92,6 @@ alert('not 3');
       this.mountedItems[itemId][section] = true;
      }      
     this.setState({ active : { item : itemId, section }});
-    if (document.getElementById('left_description') != null)
-    //    alert('not null');
-         alert(document.getElementById('left_description'));    
-   else
-      alert('null');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
