@@ -44,7 +44,7 @@ class PanelItems extends React.Component {
         var ry = document.getElementById('right_description').offsetHeight;
         alert(ly);
          alert(ry);
-        if (ly < ry) {
+        if (parseInt(ly) < parseInt(ry)) {
           document.getElementById('left_description').style.height = ry;
         }
         else {
