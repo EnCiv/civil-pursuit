@@ -84,7 +84,7 @@ alert('not 3');
       }
       this.mountedItems[itemId][section] = true;
      }      
-    this.setState({ active : { item : itemId, section }});
+  //  this.setState({ active : { item : itemId, section }});
   //  if (document.getElementById('left_description') != null)
         alert('not null');
         // alert(document.getElementById('left_description'));    
