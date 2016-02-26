@@ -25,8 +25,7 @@ componentDidUpdate () {
         }
         else {
           alert("leftbig");
-          document.getElementById('right_description').style.height = ly + "px'";
-          document.getElementById('right_description').style.height = "100px'";
+          document.getElementById('right_description').style.height = ly + "px";
         }
     }  
   }
