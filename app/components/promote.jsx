@@ -25,7 +25,15 @@ componentDidUpdate () {
           document.getElementById('right_description').style.height = ly + "px";
         }
     }  
-  }
+ /*   var obj = document.getElementByClassName('description');
+    var firsth5 = obj[0];
+    var secondh5 = obj[1];
+    if(obj[0] > obj[1])
+      obj[1].style.height = obj[0] + "px";
+    else
+      obj[0].style.height = obj[1] + "px";
+*/      
+    }
 
   render () {
     const { show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
