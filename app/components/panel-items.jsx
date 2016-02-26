@@ -38,7 +38,7 @@ class PanelItems extends React.Component {
 
 
     if (document.getElementById('left_description') != null) {
-      
+
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
         if (ly < ry) {
@@ -49,6 +49,8 @@ class PanelItems extends React.Component {
           alert(ly);
           document.getElementById('right_description').style.height = ly;
         }
+        document.getElementById('left_description').style.height = '400px';
+        document.getElementById('right_description').style.height = '400px';
     }  
     else
       alert('null');
