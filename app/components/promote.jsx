@@ -12,6 +12,21 @@ import ColumnFeedback           from './promote-feedback-column';
 
 class Promote extends React.Component {
 
+componentDidUpdate () {
+    
+/////////////--------------------HANS
+    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
+        var ly = document.getElementById('left_description').offsetHeight;
+        var ry = document.getElementById('right_description').offsetHeight;
+        if (ly < ry) {
+          document.getElementById('left_description').style.height = ry + "px";
+        }
+        else {
+          document.getElementById('right_description').style.height = ly + "px'";
+        }
+    }  
+  }
+
   render () {
     const { show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
 
