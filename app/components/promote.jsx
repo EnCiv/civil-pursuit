@@ -16,13 +16,15 @@ componentDidUpdate () {
     
 /////////////--------------------HANS
     if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
-        alert('offsetX');
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
+        alert(ly + ":" + ry);
         if (ly < ry) {
+          alert("rightbig");
           document.getElementById('left_description').style.height = ry + "px";
         }
         else {
+          alert("leftbig");
           document.getElementById('right_description').style.height = ly + "px'";
         }
     }  
