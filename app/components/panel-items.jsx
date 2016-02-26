@@ -86,7 +86,7 @@ alert('not 3');
      }      
     this.setState({ active : { item : itemId, section }});
     if (document.getElementById('left_description') != null)
-        alert('not null');
+    //    alert('not null');
          alert(document.getElementById('left_description'));    
    else
       alert('null');
