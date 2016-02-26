@@ -16,6 +16,7 @@ componentDidUpdate () {
     
 /////////////--------------------HANS
     if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
+        alert('offsetX');
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
         if (ly < ry) {
