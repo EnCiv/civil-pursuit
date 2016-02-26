@@ -21,10 +21,11 @@ componentDidUpdate () {
         if (ly < ry) {
           alert("right big" + ry);
           document.getElementById('left_description').style.height = ry + "px";
+          document.getElementById('left_description').style.height = "300px";
         }
         else {
           alert("left big" + ly);
-          document.getElementById('right_description').style.height = ly + "px'";
+          document.getElementById('right_description').style.height = "300px'";
         }
     }  
   }
