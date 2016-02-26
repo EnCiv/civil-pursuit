@@ -35,8 +35,9 @@ class PanelItems extends React.Component {
 
   componentDidMount () {
     
-
+    alert('aa');
   this.props.emitter.on('show', this.show.bind(this));
+  alert('bb');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,11 +60,10 @@ class PanelItems extends React.Component {
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
         if (ly < ry) {
-          document.getElementById('left_description').style.height = "" + ry + "px";
-          alert("" + ry + "px");
+          document.getElementById('left_description').style.height = ry + "px";
         }
         else {
-          document.getElementById('right_description').style.height = "'"+ly + "px'";
+          document.getElementById('right_description').style.height = ly + "px'";
         }
     }  
   }
