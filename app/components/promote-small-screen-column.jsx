@@ -14,7 +14,7 @@ import Reference          from './promote-reference';
 
 class PromoteSmallScreenColumn extends React.Component {
   next () {
-    let { item, position, evaluated, desc_id } = this.props;
+    let { item, position, evaluated } = this.props;
 
     let view = React.findDOMNode(this.refs.view);
 
@@ -24,7 +24,7 @@ class PromoteSmallScreenColumn extends React.Component {
   }
 
   render () {
-    let { item, criterias, position, other } = this.props;
+    let { item, criterias, position, other, descid } = this.props;
 
     if ( ! item ) {
       return ( <div></div> );
@@ -45,7 +45,7 @@ class PromoteSmallScreenColumn extends React.Component {
         </ItemStore>
         <Subject subject={ item.subject } position={ position } id={ item._id } />
         <Reference { ...item.references[0] } />
-        <Description item_id={itemid} description={ item.description } />
+        <Description itemid={descid} description={ item.description } />
         <div style={{ clear: 'both' }} />
         <Sliders criterias={ criterias } className="promote-sliders" />
         <Feedback className="gutter-top" />
