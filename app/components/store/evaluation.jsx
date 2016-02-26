@@ -126,6 +126,7 @@ class EvaluationStore extends React.Component {
     }
 
     if ( cursor <= this.state.limit ) {
+      alert("1");
 
       left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
       right = this.state.evaluation.items[regular ? cursor : cursor + 1];
@@ -139,6 +140,7 @@ class EvaluationStore extends React.Component {
     }
 
     else {
+      alert("2");
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('details');
     }
