@@ -56,16 +56,13 @@ class PanelItems extends React.Component {
     }
 
     if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
-      alert('offsetHeight');
-
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
         if (ly < ry) {
-          alert('ry:' + ry);
-          document.getElementById('left_description').style.height = "60px";
+          document.getElementById('left_description').style.height = "" + ry + "px";
+          alert("" + ry + "px");
         }
         else {
-          alert('right big');
           document.getElementById('right_description').style.height = "'"+ly + "px'";
         }
     }  
