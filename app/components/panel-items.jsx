@@ -66,18 +66,18 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
     console.log('toggle', itemId, section);
-
+alert('not 1');
     if (
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
       return this.setState({ active : { item : itemId, section : null } });
     }
-
+alert('not 2');
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
       return Join.click();
     }
-
+alert('not 3');
     if ( itemId ) {
       if ( ! this.mountedItems[itemId] ) {
         this.mountedItems[itemId] = {};
