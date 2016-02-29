@@ -26,7 +26,7 @@ import emitter                          from 'syn/../../dist/lib/app/emitter';
 
 class User extends Mungo.Model {
 
-  static version = 3;
+  static version = 4;
 
   static migrations = {
     2 : V2,

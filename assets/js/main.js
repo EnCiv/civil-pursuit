@@ -9,11 +9,20 @@ var _app = require('../components/app');
 
 var _app2 = _interopRequireDefault(_app);
 
+var _fbSdk = require('../lib/app/fb-sdk');
+
+var _fbSdk2 = _interopRequireDefault(_fbSdk);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.socket = io();
 
 window.socket.on('welcome', function (user) {
+  if (!user) {
+    new _fbSdk2.default().on('ready', function () {
+      return _fbSdk2.default.connect(false);
+    });
+  }
   render(Object.assign({}, reactProps, { user: user }));
 });
 
@@ -23,7 +32,7 @@ function render(props) {
 }
 
 render(reactProps);
-},{"../components/app":"/home/francois/Dev/work/syn/dist/components/app.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js"}],"/home/francois/Dev/work/syn/dist/components/app.js":[function(require,module,exports){
+},{"../components/app":"/home/francois/Dev/work/syn/dist/components/app.js","../lib/app/fb-sdk":"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js"}],"/home/francois/Dev/work/syn/dist/components/app.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3180,6 +3189,10 @@ var _superagent = require('superagent');
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
+var _public = require('syn/../../public.json');
+
+var _public2 = _interopRequireDefault(_public);
+
 var _component = require('../lib/app/component');
 
 var _component2 = _interopRequireDefault(_component);
@@ -3235,6 +3248,10 @@ var _inputGroup2 = _interopRequireDefault(_inputGroup);
 var _loading = require('./util/loading');
 
 var _loading2 = _interopRequireDefault(_loading);
+
+var _fbSdk = require('../lib/app/fb-sdk');
+
+var _fbSdk2 = _interopRequireDefault(_fbSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3309,7 +3326,8 @@ var Join = function (_React$Component) {
   }, {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
-      location.href = '/sign/in/facebook/';
+      // location.href = '/sign/in/facebook/';
+      _fbSdk2.default.connect();
     }
   }, {
     key: 'loginWithTwitter',
@@ -3474,7 +3492,7 @@ var Join = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Join;
-},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/input-group":"/home/francois/Dev/work/syn/dist/components/util/input-group.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/components/layout.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","../lib/app/fb-sdk":"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/input-group":"/home/francois/Dev/work/syn/dist/components/util/input-group.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js","syn/../../public.json":"/home/francois/Dev/work/syn/public.json"}],"/home/francois/Dev/work/syn/dist/components/layout.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3539,6 +3557,7 @@ var Layout = function (_React$Component) {
       return _react2.default.createElement(
         'section',
         null,
+        _react2.default.createElement('div', { id: 'fb-root' }),
         _react2.default.createElement(_topBar2.default, { user: user }),
         _react2.default.createElement(
           'section',
@@ -3625,6 +3644,10 @@ var _loading = require('./util/loading');
 
 var _loading2 = _interopRequireDefault(_loading);
 
+var _fbSdk = require('../lib/app/fb-sdk');
+
+var _fbSdk2 = _interopRequireDefault(_fbSdk);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3698,7 +3721,8 @@ var Login = function (_React$Component) {
   }, {
     key: 'loginWithFacebook',
     value: function loginWithFacebook() {
-      location.href = '/sign/in/facebook';
+      // location.href = '/sign/in/facebook';
+      _fbSdk2.default.connect();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3857,7 +3881,7 @@ var Login = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Login;
-},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/components/panel-items.js":[function(require,module,exports){
+},{"../lib/app/component":"/home/francois/Dev/work/syn/dist/lib/app/component.js","../lib/app/fb-sdk":"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js","./util/button":"/home/francois/Dev/work/syn/dist/components/util/button.js","./util/button-group":"/home/francois/Dev/work/syn/dist/components/util/button-group.js","./util/column":"/home/francois/Dev/work/syn/dist/components/util/column.js","./util/email-input":"/home/francois/Dev/work/syn/dist/components/util/email-input.js","./util/form":"/home/francois/Dev/work/syn/dist/components/util/form.js","./util/icon":"/home/francois/Dev/work/syn/dist/components/util/icon.js","./util/link":"/home/francois/Dev/work/syn/dist/components/util/link.js","./util/loading":"/home/francois/Dev/work/syn/dist/components/util/loading.js","./util/modal":"/home/francois/Dev/work/syn/dist/components/util/modal.js","./util/password":"/home/francois/Dev/work/syn/dist/components/util/password.js","./util/row":"/home/francois/Dev/work/syn/dist/components/util/row.js","./util/submit":"/home/francois/Dev/work/syn/dist/components/util/submit.js","react":"/home/francois/Dev/work/syn/node_modules/react/react.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/components/panel-items.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10580,7 +10604,210 @@ var Component = function () {
 }();
 
 exports.default = Component;
-},{}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/work/syn/dist/lib/app/fb-sdk.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _events = require('events');
+
+var _promiseSequencer = require('promise-sequencer');
+
+var _promiseSequencer2 = _interopRequireDefault(_promiseSequencer);
+
+var _superagent = require('superagent');
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
+var _public = require('../../../public.json');
+
+var _public2 = _interopRequireDefault(_public);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Facebook = function (_EventEmitter) {
+  _inherits(Facebook, _EventEmitter);
+
+  _createClass(Facebook, null, [{
+    key: 'connect',
+    value: function connect() {
+      var _this2 = this;
+
+      var auto = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+      return new Promise(function (ok, ko) {
+        var _connect = function _connect() {
+          _this2.getUserInfo().then(function (user) {
+            console.info({ fbUser: user });
+            _this2.logInApp(user).then(function () {
+              location.reload();
+            }).catch(function (error) {
+              if (auto) {
+                if (error.message === 'Not Found') {
+                  _this2.signInApp(user).then(function (user) {
+                    location.reload();
+                  }).catch(ko);
+                } else if (error.message === 'Unauthorized') {
+                  window.socket.emit('new facebook version', user, function (synUser) {
+                    _connect();
+                  });
+                }
+              }
+            });
+          }).catch(ko);
+        };
+
+        _this2.getLoginStatus().then(function (status) {
+          console.info({ status: status });
+          switch (status) {
+            case 'connected':
+              _connect();
+              break;
+
+            case 'not_authorized':
+            default:
+              if (auto) {
+                _this2.logInFacebook().then(function (user) {
+                  console.info({ fbUser: user });
+                  _connect();
+                }).catch(ko);
+              }
+              break;
+          }
+        }).catch(ko);
+      });
+    }
+  }, {
+    key: 'getLoginStatus',
+    value: function getLoginStatus() {
+      return new Promise(function (ok, ko) {
+        FB.getLoginStatus(function (res) {
+          if (res.error) {
+            return ko(new Error(res.error));
+          }
+          ok(res.status);
+        });
+      });
+    }
+  }, {
+    key: 'getUserInfo',
+    value: function getUserInfo() {
+      var user = arguments.length <= 0 || arguments[0] === undefined ? 'me' : arguments[0];
+
+      return new Promise(function (ok, ko) {
+        FB.api('/' + user + '?fields=id,email,name', function (res) {
+          if (res.error) {
+            return ko(new Error(res.error));
+          }
+          ok(res);
+        });
+      });
+    }
+  }, {
+    key: 'signInApp',
+    value: function signInApp(user) {
+      return new Promise(function (ok, ko) {
+        _superagent2.default.post('/sign/up').send({ email: user.email, facebook: user.id }).end(function (err, res) {
+          if (err) {
+            return ko(err);
+          }
+          ok();
+        });
+      });
+    }
+  }, {
+    key: 'logInApp',
+    value: function logInApp(user) {
+      return new Promise(function (ok, ko) {
+        _superagent2.default.post('/sign/in').send({ email: user.email, facebook: user.id }).end(function (err, res) {
+          if (err) {
+            return ko(err);
+          }
+          ok();
+        });
+      });
+    }
+  }, {
+    key: 'logInFacebook',
+    value: function logInFacebook() {
+      return new Promise(function (ok, ko) {
+        FB.login(function (response) {
+          if (response.error) {
+            return ko(new Error(response.error));
+          }
+          ok(response);
+        }, { scope: 'public_profile,email' });
+      });
+    }
+  }]);
+
+  function Facebook() {
+    _classCallCheck(this, Facebook);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Facebook).call(this));
+
+    _this.appId = _public2.default.facebook[synappEnv]['app id'];
+    _this.cookie = true;
+    _this.xfbml = true;
+    _this.version = 'v2.5';
+
+
+    _this.waitForFB = window.setInterval(function () {
+      console.log('FB', typeof FB !== 'undefined');
+
+      if (typeof FB !== 'undefined') {
+        window.clearInterval(_this.waitForFB);
+        _this.init();
+      }
+    }, 1000);
+
+    _this.loadSDK();
+    return _this;
+  }
+
+  _createClass(Facebook, [{
+    key: 'src',
+    value: function src(d, s, id) {
+      var js,
+          fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }
+  }, {
+    key: 'loadSDK',
+    value: function loadSDK() {
+      this.src(document, 'script', 'facebook-jssdk');
+    }
+  }, {
+    key: 'init',
+    value: function init() {
+      FB.init({
+        appId: this.appId,
+        cookie: this.cookie,
+        xfbml: this.xfbml,
+        version: this.version
+      });
+      this.emit('ready');
+    }
+  }]);
+
+  return Facebook;
+}(_events.EventEmitter);
+
+exports.default = Facebook;
+},{"../../../public.json":"/home/francois/Dev/work/syn/public.json","events":"/home/francois/Dev/work/syn/node_modules/events/events.js","promise-sequencer":"/home/francois/Dev/work/syn/node_modules/promise-sequencer/dist/sequencer.js","superagent":"/home/francois/Dev/work/syn/node_modules/superagent/lib/client.js"}],"/home/francois/Dev/work/syn/dist/lib/app/make-panel-id.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11378,7 +11605,7 @@ var Upload = function (_EventEmitter) {
 
 exports.default = Upload;
 },{"events":"/home/francois/Dev/work/syn/node_modules/events/events.js"}],"/home/francois/Dev/work/syn/fixtures/header-menu/1.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=[
+module.exports=[
   {
     "title" : "Home",
     "icon" : "home",
@@ -16952,6 +17179,97 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
+},{}],"/home/francois/Dev/work/syn/node_modules/promise-sequencer/dist/sequencer.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function sequencer() {
+  for (var _len = arguments.length, pipeline = Array(_len), _key = 0; _key < _len; _key++) {
+    pipeline[_key] = arguments[_key];
+  }
+
+  if (Array.isArray(pipeline[0])) {
+    pipeline = pipeline[0];
+  }
+
+  var write = undefined;
+
+  var results = [];
+
+  results.getLast = function () {
+    return results[results.length - 1];
+  };
+
+  return new Promise(function (resolve, reject) {
+    try {
+      (function () {
+        var cursor = 0;
+
+        var run = function run() {
+          try {
+            if (pipeline[cursor]) {
+              pipeline[cursor](write, results).then(function (result) {
+                try {
+                  cursor++;
+                  results.push(result);
+                  write = result;
+                  run();
+                } catch (error) {
+                  reject(error);
+                }
+              }).catch(reject);
+            } else {
+              resolve(results);
+            }
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        run();
+      })();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+sequencer.pipe = function pipe() {
+  for (var _len2 = arguments.length, stack = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    stack[_key2] = arguments[_key2];
+  }
+
+  return new Promise(function (resolve, reject) {
+    sequencer(stack).then(function (results) {
+      return resolve(results.getLast());
+    }).catch(reject);
+  });
+};
+
+sequencer.promisify = function promisify(fn) {
+  var args = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+  var that = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+  return new Promise(function (resolve, reject) {
+    args.push(function (error) {
+      for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+        args[_key3 - 1] = arguments[_key3];
+      }
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve.apply(undefined, args);
+      }
+    });
+
+    fn.apply(that, args);
+  });
+};
+
+exports.default = sequencer;
 },{}],"/home/francois/Dev/work/syn/node_modules/react/lib/AutoFocusMixin.js":[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -38052,7 +38370,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],"/home/francois/Dev/work/syn/public.json":[function(require,module,exports){
-module.exports=module.exports={
+module.exports={
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
@@ -38087,11 +38405,30 @@ module.exports=module.exports={
     "cdn": "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
   },
 
-  "evaluation context item position": "last"
+  "evaluation context item position": "last",
+
+  "facebook": {
+
+    "test" : {
+      "app id" : "473111569540341"
+    },
+
+    "alpha-heroku": {
+      "app id"        :   "295589523959214"
+    },
+
+    "alpha": {
+      "app id"        :   "295589523959214"
+    },
+
+    "beta": {
+      "app id"        :   "295589523959214"
+    }
+  }
 }
 
 },{}],"/home/francois/Dev/work/syn/screens.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports={
   "phone" :       440,
   "split" :       600,
   "tablet" :      768,
@@ -38100,7 +38437,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 }
 
 },{}],"/home/francois/Dev/work/syn/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports={
   "topLevelPanel" : "#top-level-panel",
   "create" : {
     "toggle" : ".toggle-creator",
