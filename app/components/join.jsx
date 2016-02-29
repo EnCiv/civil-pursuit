@@ -1,21 +1,23 @@
 'use strict';
 
-import React          from 'react';
-import superagent     from 'superagent';
-import Component      from '../lib/app/component';
-import Modal          from './util/modal';
-import Form           from './util/form';
-import Button         from './util/button';
-import Submit         from './util/submit';
-import ButtonGroup    from './util/button-group';
-import Icon           from './util/icon';
-import Link           from './util/link';
-import Row            from './util/row';
-import Column         from './util/column';
-import EmailInput     from './util/email-input';
-import Password       from './util/password';
-import InputGroup     from './util/input-group';
-import Loading        from './util/loading';
+import React                        from 'react';
+import superagent                   from 'superagent';
+import config                       from 'syn/../../public.json';
+import Component                    from '../lib/app/component';
+import Modal                        from './util/modal';
+import Form                         from './util/form';
+import Button                       from './util/button';
+import Submit                       from './util/submit';
+import ButtonGroup                  from './util/button-group';
+import Icon                         from './util/icon';
+import Link                         from './util/link';
+import Row                          from './util/row';
+import Column                       from './util/column';
+import EmailInput                   from './util/email-input';
+import Password                     from './util/password';
+import InputGroup                   from './util/input-group';
+import Loading                      from './util/loading';
+import Facebook                     from '../lib/app/fb-sdk';
 
 class Join extends React.Component {
 
@@ -75,7 +77,8 @@ class Join extends React.Component {
   }
 
   loginWithFacebook () {
-    location.href = '/sign/in/facebook/';
+    // location.href = '/sign/in/facebook/';
+    Facebook.connect();
   }
 
   loginWithTwitter () {

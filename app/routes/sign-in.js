@@ -7,7 +7,11 @@ function signIn (req, res, next) {
 
   try {
 
-    const { email, password } = req.body;
+    let { email, password, facebook } = req.body;
+
+    if ( facebook ) {
+      password = facebook + 'synapp';
+    }
 
     if ( ! email ) {
       res.statusCode = 400;

@@ -24,8 +24,6 @@ function migrate (...models) {
         }));
       }
 
-      // stack.push(() => Config.set('migrating', true));
-
       sequencer(stack).then(
 
         () => {

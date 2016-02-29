@@ -33,5 +33,24 @@
     "cdn": "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
   },
 
-  "evaluation context item position": "last"
+  "evaluation context item position": "last",
+
+  "facebook": {
+
+    "test" : {
+      "app id" : "473111569540341"
+    },
+
+    "alpha-heroku": {
+      "app id"        :   "295589523959214"
+    },
+
+    "alpha": {
+      "app id"        :   "295589523959214"
+    },
+
+    "beta": {
+      "app id"        :   "295589523959214"
+    }
+  }
 }
