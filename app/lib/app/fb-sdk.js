@@ -36,7 +36,7 @@ class Facebook extends EventEmitter {
           })
           .catch(ko);
       };
-      
+
       this.getLoginStatus()
         .then(status => {
           console.info({ status });
@@ -126,7 +126,7 @@ class Facebook extends EventEmitter {
     });
   }
 
-  appId       =   /*config.facebook[synappEnv]['app id']*/'473111569540341';
+  appId       =   config.facebook[synappEnv]['app id'];
   cookie      =   true;
   xfbml       =   true;
   version     =   'v2.5';

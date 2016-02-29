@@ -10756,7 +10756,7 @@ var Facebook = function (_EventEmitter) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Facebook).call(this));
 
-    _this.appId = /*config.facebook[synappEnv]['app id']*/'473111569540341';
+    _this.appId = _public2.default.facebook[synappEnv]['app id'];
     _this.cookie = true;
     _this.xfbml = true;
     _this.version = 'v2.5';
@@ -38408,6 +38408,10 @@ module.exports={
   "evaluation context item position": "last",
 
   "facebook": {
+
+    "test" : {
+      "app id" : "473111569540341"
+    },
 
     "alpha-heroku": {
       "app id"        :   "295589523959214"
