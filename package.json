@@ -18,8 +18,7 @@
     "min-css": "bash bin/min-css.sh",
     "uglify": "uglifyjs assets/js/main.js -o assets/js/main.min.js",
     "uglify-assets": "bash bin/uglify-assets.sh",
-    "deploy-no-test": "bash bin/deploy-no-test.sh",
-    "deploy": "bash bin/deploy.sh",
+    "deploy": "bash bin/build.sh",
     "migrate": "node dist/bin/migrate",
     "reset": "node dist/bin/reset && node dist/bin/migrate"
   },

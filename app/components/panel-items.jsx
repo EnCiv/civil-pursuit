@@ -111,7 +111,8 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.log('render panel-items', this.props);
+    console.info('<PanelItems>', this);
+
     const { active } = this.state;
 
     const { panel, count, items, user, emitter } = this.props;
