@@ -24,6 +24,6 @@ npm run uglify &&
 npm run uglify-assets &&
 npm test &&
 git add --ignore-removal app/ assets/ fixtures/ doc/ &&
-git commit --allow-empty -am "'$message'" &&
+git commit --allow-empty -am "$message" &&
 git push github $branch &&
 git push heroku $branch:master
