@@ -2749,7 +2749,7 @@ var ItemButtons = function (_React$Component) {
       var subtype = undefined,
           harmony = undefined;
 
-      if (item.subtype) {
+      if (item.subtype && item.children) {
         subtype = _react2.default.createElement(
           _button2.default,
           { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype'), className: 'subtype-button' },
@@ -2763,7 +2763,7 @@ var ItemButtons = function (_React$Component) {
         );
       }
 
-      if (item.harmony) {
+      if (item.harmony && item.harmony.harmony) {
         harmony = _react2.default.createElement(
           _button2.default,
           {
