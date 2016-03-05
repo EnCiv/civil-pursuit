@@ -50,7 +50,7 @@ class ItemButtons extends React.Component {
         );
     }
 
-    if ( item.harmony && item.harmony.harmony ) {
+    if ( item.harmony ) {
       harmony = (
         <Button
           small
@@ -64,7 +64,7 @@ class ItemButtons extends React.Component {
        );
         buttons.push(
         <ButtonGroup>
-          { harmony }
+          { harmony } 
         </ButtonGroup>
       );
     }
