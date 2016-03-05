@@ -36,7 +36,7 @@ class ItemButtons extends React.Component {
 
     let subtype, harmony;
 
-    if ( item.subtype && item.children ) {
+    if ( item.subtype ) {
       subtype = (
         <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
           <span>{ item.children } </span>
