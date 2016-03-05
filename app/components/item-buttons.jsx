@@ -61,11 +61,11 @@ class ItemButtons extends React.Component {
           <span>{ item.harmony.harmony } </span>
           <Icon icon="music" />
         </Button>
+       );
         buttons.push(
         <ButtonGroup>
           { harmony }
         </ButtonGroup>
-        );
       );
     }
 
