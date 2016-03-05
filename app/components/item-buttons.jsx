@@ -58,7 +58,7 @@ class ItemButtons extends React.Component {
           onClick     =   { this.toggle.bind(this, 'harmony') }
           className   =   "harmony-button"
           >
-          <span>{ item.harmony.harmony } </span>
+          <span>{ item.harmony.harmony + '%' } </span>
           <Icon icon="music" />
         </Button>
        );
