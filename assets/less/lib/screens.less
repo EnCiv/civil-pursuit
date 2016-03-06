@@ -14,7 +14,7 @@
     ____________________________________________________________________________
 **/
 
-
+@screen-samsung      360px;
 @screen-phone:       440px;
 @screen-split:       600px;
 @screen-tablet:      768px;
@@ -38,11 +38,16 @@
     display: none !important;
   }
 }
+----Samsung Galaxy S4/ Note S4
+section.syn-column {
+    @media (max-width: @screen-samsung){
+      width: 60% !important;
+    }
+}
 ----iPhone(Hans)
 section.syn-column {
    @media (max-width: @screen-phone){
       flex-basis: auto !important;
-      width: 60% !important;
   }
 }
 
