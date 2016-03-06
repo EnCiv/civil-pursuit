@@ -30,7 +30,7 @@ class PromoteSmallScreenColumn extends React.Component {
       return ( <div></div> );
     }
 
-    let h5id = (position == 'left')? 'h5_left': 'h5_right';
+    let h5_id = (position == 'left')? 'h5_left': 'h5_right';
     let promoteMe = (
       <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
     );
