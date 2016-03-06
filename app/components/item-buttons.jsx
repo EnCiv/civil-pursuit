@@ -49,7 +49,7 @@ class ItemButtons extends React.Component {
         </ButtonGroup>
         );
     }
-    consol.log (JSON.stringify(item.harmony));
+    console.log (JSON.stringify(item.harmony));
     if ( JSON.stringify(item.harmony) !== '{ harmony:0 }' ) {
       harmony = (
         <Button
