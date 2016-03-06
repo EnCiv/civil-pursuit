@@ -7,7 +7,7 @@ fi
 
 branch="$(git branch | grep \* | cut -d' ' -f2)"
 issue="$(git branch | grep \* | cut -d' ' -f2 | cut -d/ -f1)";
-message="'$1 #${issue}'";
+message="$1 #${issue}";
 
 echo Branch'     '$branch
 echo Issue'      '$issue
