@@ -30,7 +30,6 @@ class PromoteSmallScreenColumn extends React.Component {
       return ( <div></div> );
     }
 
-    let h5id = (position == 'left')? 'h5_left': 'h5_right';
     let promoteMe = (
       <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
     );
@@ -45,7 +44,7 @@ class PromoteSmallScreenColumn extends React.Component {
           <ItemMedia />
         </ItemStore>
         <Subject subject={ item.subject } position={ position } id={ item._id } />
-        <Reference itemid={h5id} { h5_position, ...item.references[0] } />
+        <Reference { ...item.references[0] } />
         <Description itemid={descid} description={ item.description } />
         <div style={{ clear: 'both' }} />
         <Sliders criterias={ criterias } className="promote-sliders" />
