@@ -11,7 +11,7 @@ class PromoteReference extends React.Component {
 
   render () {
     return (
-      <h5 id="itemid" className="description">
+      <h5 id={this.props.itemid} className="description">
         <a href={ this.props.url } rel="nofollow" target="_blank">{ this.props.title || this.props.url }</a>
       </h5>
     );
