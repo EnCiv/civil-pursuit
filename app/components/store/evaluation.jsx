@@ -65,6 +65,17 @@ class EvaluationStore extends React.Component {
           document.getElementById('right_description').style.height = ly + "px";
         }  
     }
+
+    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
+        var ly = document.getElementById('h5_left').offsetHeight;
+        var ry = document.getElementById('h5_right').offsetHeight;
+        if (ly < ry) {
+          document.getElementById('h5_left').style.height = ry + "px";
+        }
+        else {
+          document.getElementById('h5_right').style.height = ly + "px";
+        }  
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

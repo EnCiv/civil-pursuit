@@ -25,14 +25,16 @@ componentDidUpdate () {
           document.getElementById('right_description').style.height = ly + "px";
         }
     }  
- /*   var obj = document.getElementByClassName('description');
-    var firsth5 = obj[0];
-    var secondh5 = obj[1];
-    if(obj[0] > obj[1])
-      obj[1].style.height = obj[0] + "px";
-    else
-      obj[0].style.height = obj[1] + "px";
-*/      
+    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
+        var ly = document.getElementById('h5_left').offsetHeight;
+        var ry = document.getElementById('h5_right').offsetHeight;
+        if (ly < ry) {
+          document.getElementById('h5_left').style.height = ry + "px";
+        }
+        else {
+          document.getElementById('h5_right').style.height = ly + "px";
+        }  
+    } 
     }
 
   render () {
