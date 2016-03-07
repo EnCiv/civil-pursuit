@@ -49,8 +49,8 @@ class ItemButtons extends React.Component {
         </ButtonGroup>
         );
     }
-    console.log (JSON.stringify(item.harmony));
-    if ( JSON.stringify(item.harmony) !== '{ harmony:0 }' ) {
+    console.log ('this is a item.harmony' + JSON.stringify(item.harmony));
+    if ( item.type ) {
       harmony = (
         <Button
           small
