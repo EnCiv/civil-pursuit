@@ -36,20 +36,6 @@ class ItemButtons extends React.Component {
 
     let subtype, harmony;
 
-    if ( item.subtype ) {
-      subtype = (
-        <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-          <span>{ item.children } </span>
-          <Icon icon="fire" />
-        </Button>
-      );
-      buttons.push(
-        <ButtonGroup>
-          {subtype}
-        </ButtonGroup>
-        );
-    }
-
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       harmony = (
         <Button
@@ -69,7 +55,19 @@ class ItemButtons extends React.Component {
       );
     }
 
-    
+    if ( item.subtype ) {
+      subtype = (
+        <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
+          <span>{ item.children } </span>
+          <Icon icon="fire" />
+        </Button>
+      );
+      buttons.push(
+        <ButtonGroup>
+          {subtype}
+        </ButtonGroup>
+        );
+    }
 
     return (<section>{ buttons }</section>);
   }
