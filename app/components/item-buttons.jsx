@@ -49,7 +49,7 @@ class ItemButtons extends React.Component {
         </ButtonGroup>
         );
     }
-    console.log ('this is a item.harmony' + JSON.stringify(item.harmony));
+
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       harmony = (
         <Button
