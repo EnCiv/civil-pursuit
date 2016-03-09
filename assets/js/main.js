@@ -2749,21 +2749,7 @@ var ItemButtons = function (_React$Component) {
       var subtype = undefined,
           harmony = undefined;
 
-      if (item.subtype && item.children) {
-        subtype = _react2.default.createElement(
-          _button2.default,
-          { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype'), className: 'subtype-button' },
-          _react2.default.createElement(
-            'span',
-            null,
-            item.children,
-            ' '
-          ),
-          _react2.default.createElement(_icon2.default, { icon: 'fire' })
-        );
-      }
-
-      if (item.harmony && item.harmony.harmony) {
+      if (item.type && item.type.harmony && item.type.harmony.length) {
         harmony = _react2.default.createElement(
           _button2.default,
           {
@@ -2775,19 +2761,36 @@ var ItemButtons = function (_React$Component) {
           _react2.default.createElement(
             'span',
             null,
-            item.harmony.harmony,
+            item.harmony.harmony + '%',
             ' '
           ),
           _react2.default.createElement(_icon2.default, { icon: 'music' })
         );
+        buttons.push(_react2.default.createElement(
+          _buttonGroup2.default,
+          null,
+          harmony
+        ));
       }
 
-      buttons.push(_react2.default.createElement(
-        _buttonGroup2.default,
-        null,
-        subtype,
-        harmony
-      ));
+      if (item.subtype) {
+        subtype = _react2.default.createElement(
+          _button2.default,
+          { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype'), className: 'subtype-button' },
+          _react2.default.createElement(
+            'span',
+            null,
+            item.children,
+            ' '
+          ),
+          _react2.default.createElement(_icon2.default, { icon: 'fire' })
+        );
+        buttons.push(_react2.default.createElement(
+          _buttonGroup2.default,
+          null,
+          subtype
+        ));
+      }
 
       return _react2.default.createElement(
         'section',
