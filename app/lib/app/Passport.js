@@ -20,8 +20,6 @@ class Passport {
 
   constructor (service, app) {
     try {
-      console.log('Setting passport', service);
-
       this.app = app;
       this.user = null;
       this.service = service;
@@ -158,7 +156,6 @@ class Passport {
 
   serviceStrategy (req, res, next) {
     try {
-      console.log(this);
       this.strategy(req, res, next);
 
       next();
@@ -180,7 +177,6 @@ class Passport {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   callback (req, res, next) {
-    console.log('callback url', this.service, req.path, passport)
     passport.authenticate(this.service, this.redirect.bind(this, req, res, next))
       (req, res, next);
   }

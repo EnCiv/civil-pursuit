@@ -189,8 +189,6 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info('<Item>', this);
-
     const { item, buttons, footer } = this.props;
 
     let referenceLink, referenceTitle;
