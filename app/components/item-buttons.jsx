@@ -19,7 +19,7 @@ class ItemButtons extends React.Component {
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
             <span>{ item.promotions } </span>
-            <Icon icon="bullhorn" />
+            <Icon icon="thumbs-o-up" />
           </Button>
         </ButtonGroup>
       ),
@@ -28,7 +28,7 @@ class ItemButtons extends React.Component {
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
             <span>{ item.popularity.number + '%' } </span>
-            <Icon icon="signal" />
+            <Icon icon="bar-chart" />
           </Button>
         </ButtonGroup>
       )
@@ -59,7 +59,7 @@ class ItemButtons extends React.Component {
       subtype = (
         <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
           <span>{ item.children } </span>
-          <Icon icon="fire" />
+          <Icon icon="level-down" />
         </Button>
       );
       buttons.push(
