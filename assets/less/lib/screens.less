@@ -20,10 +20,17 @@
 @screen-desktop:     992px;
 @screen-large:       1200px;
 
+.syn-input-group.syn--block input{
+  @media (max-width: @screen-desktop){
+    width:50% !important;
+  }
+}
+
+
 /** modal dialog-desktop
 
 .syn-modal-container{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     width:400px !important;
     max-height:600px !important;
     left:40% !important;
@@ -31,42 +38,36 @@
 }
 
 .syn-modal-container h1{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     font-size:2em !important;
   }
 }
 
 .syn-modal-container button{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     font-size:100% !important;
   }
 }
 
 .syn-modal-container a{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     display:block !important;
   }
 }
 
 .syn-modal-container input{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     font-size:100% !important;
   }
 }
 
 .syn-modal-container label{
-  @media (min-width: @screen-split){
+  @media (max-width: @screen-desktop){
     font-size:100% !important;
   }
 }
 
 **/
-
-.syn-input-group.syn--block input{
-  @media (max-width: @screen-desktop){
-    width:50% !important;
-  }
-}
 
 .syn-modal-container{
   @media (max-width: @screen-phone){
