@@ -1621,14 +1621,26 @@ var ForgotPassword = function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function sendResetPassword() {
+      var _this2 = this;
 
       this.setState({ validationError: null, info: 'One moment...' });
 
       var email = _react2.default.findDOMNode(this.refs.email).value;
 
-      window.socket.emit('send password', email);
+      window.socket.emit('send password', email, function (response) {
+        if (response.error) {
+          var error = response.error;
 
-      this.setState({ info: null, successMessage: 'Message sent! Please check your inbox' });
+
+          if (error === 'User not found') {
+            error = 'Email not found';
+          }
+
+          _this2.setState({ info: null, validationError: error });
+        } else {
+          _this2.setState({ info: null, successMessage: 'Message sent! Please check your inbox' });
+        }
+      });
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1656,7 +1668,7 @@ var ForgotPassword = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var classes = ['syn-login'];
+      var classes = ['syn-forgot-password'];
 
       if (this.props.show) {
         classes.push('syn--visible');
@@ -1673,14 +1685,27 @@ var ForgotPassword = function (_React$Component) {
             null,
             'Email'
           ),
-          _react2.default.createElement(_emailInput2.default, { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
+          _react2.default.createElement(_emailInput2.default, {
+            block: true,
+            autoFocus: true,
+            required: true,
+            medium: true,
+            placeholder: 'Email',
+            ref: 'email',
+            name: 'email'
+          })
         ),
         _react2.default.createElement(
           'div',
           { className: 'syn-form-group syn-form-submit' },
           _react2.default.createElement(
             _submit2.default,
-            { block: true, large: true, success: true, radius: true },
+            {
+              block: true,
+              large: true,
+              success: true,
+              radius: true
+            },
             'Send me reset password email'
           )
         ),
@@ -1692,7 +1717,11 @@ var ForgotPassword = function (_React$Component) {
             { span: '50', gutter: true },
             _react2.default.createElement(
               'a',
-              { href: '', onClick: this.signUp.bind(this) },
+              {
+                href: '',
+                onClick: this.signUp.bind(this),
+                className: 'forgot-password-sign-up'
+              },
               'Sign up'
             )
           ),
@@ -1701,7 +1730,11 @@ var ForgotPassword = function (_React$Component) {
             { span: '50', 'text-right': true, gutter: true },
             _react2.default.createElement(
               'a',
-              { href: '', onClick: this.signIn.bind(this) },
+              {
+                href: '',
+                onClick: this.signIn.bind(this),
+                className: 'forgot-password-sign-in'
+              },
               'Sign in'
             )
           )
@@ -1719,7 +1752,11 @@ var ForgotPassword = function (_React$Component) {
         { className: _component2.default.classList.apply(_component2.default, [this].concat(classes)), title: 'Forgot password?' },
         _react2.default.createElement(
           _form2.default,
-          { handler: this.sendResetPassword.bind(this), flash: this.state, 'form-center': true },
+          {
+            handler: this.sendResetPassword.bind(this),
+            flash: this.state,
+            name: 'forgot-password',
+            'form-center': true },
           content
         )
       );
@@ -2853,8 +2890,6 @@ var ItemMedia = function (_React$Component) {
   _createClass(ItemMedia, [{
     key: 'render',
     value: function render() {
-      console.info('<ItemMedia>', this);
-
       var item = this.props.item;
 
 
@@ -3032,8 +3067,6 @@ var Item = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.info('<Item>', this);
-
       var _props = this.props;
       var item = _props.item;
       var buttons = _props.buttons;
@@ -3835,11 +3868,19 @@ var Login = function (_React$Component) {
           ),
           _react2.default.createElement(
             _column2.default,
-            { span: '50', 'text-right': true, gutter: true },
-            'Forgot password? ',
+            { span: '50', 'text-right': true, gutter: true, className: 'forgot-password' },
+            _react2.default.createElement(
+              'span',
+              { className: 'forgot-password-label' },
+              'Forgot password? '
+            ),
             _react2.default.createElement(
               'a',
-              { href: '#', onClick: this.forgotPassword.bind(this) },
+              {
+                href: '#',
+                className: 'forgot-password-link',
+                onClick: this.forgotPassword.bind(this)
+              },
               'Click here'
             )
           )

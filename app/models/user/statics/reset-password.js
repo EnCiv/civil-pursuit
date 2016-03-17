@@ -1,26 +1,22 @@
 'use strict';
 
-import { Domain } from 'domain';
+import sequencer from 'promise-sequencer';
 import encrypt from '../../../lib/util/encrypt';
 
-function resetPassword (key, token, password) {
-  return new Promise((ok, ko) => {
-    try {
-      encrypt(password)
-        .then(
-          hash => this
-            .update(
-              { activation_key: key, activation_token: token },
-              { password : hash, activation_key : null, activation_token : null }
-            )
-            .then(ok, ko),
-          ko
-        );
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+function resetPassword (activation_key, activation_token, password) {
+  return sequencer(
+    ()    =>  encrypt(password),
+    hash  =>  sequencer(
+      ()      =>  this.findOne({ activation_key, activation_token }),
+      user    =>  user
+        .set({
+          password          :   hash,
+          activation_key    :   null,
+          activation_token  :   null
+        })
+        .save()
+    )
+  );
 }
 
 export default resetPassword;
