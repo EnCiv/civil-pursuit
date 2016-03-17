@@ -23,7 +23,15 @@
 /** modal dialog-desktop **/
 
 .syn-modal-container{
-  @media (min-width: @screen-tablet){
+  @media (max-width: @screen-large){
+    width:400px !important;
+    max-height:600px !important;
+    left:40% !important;
+  }
+}
+
+.syn-modal-container{
+  @media (max-width: @screen-desktop){
     width:400px !important;
     max-height:600px !important;
     left:30% !important;
@@ -31,10 +39,10 @@
 }
 
 .syn-modal-container{
-  @media (min-width: @screen-desktop){
+  @media (max-width: @screen-tablet){
     width:400px !important;
     max-height:600px !important;
-    left:40% !important;
+    left:20% !important;
   }
 }
 
@@ -76,12 +84,12 @@
   }
 }
 
-/** logo 630px **/
+/** logo **/
 
 .syn-screen-tablet_and_up{
   @media (max-width: 630px)
   {
-      width: 200px;
+      width: 250px;
       margin-top: 10px;
   }
 }
