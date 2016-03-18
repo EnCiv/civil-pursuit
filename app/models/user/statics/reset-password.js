@@ -4,7 +4,7 @@ import sequencer from 'promise-sequencer';
 import encrypt from '../../../lib/util/encrypt';
 
 function resetPassword (activation_key, activation_token, password) {
-  return sequencer(
+  return sequencer.pipe(
     ()    =>  encrypt(password),
     hash  =>  sequencer(
       ()      =>  this.findOne({ activation_key, activation_token }),

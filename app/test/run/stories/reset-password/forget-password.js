@@ -40,8 +40,8 @@ function test (props) {
           if ( ( 'error' in options ) ) {
             it('should show an error', it => {
               it('should show a flash alert', () => wrappers.driver.exists(
-                locals.formError
-              ), options.wait || 0);
+                locals.formError, options.wait || 500
+              ));
 
               it(`should say "${options.error}"`, () => wrappers.driver.hasText(
                 locals.formError, options.error
@@ -52,8 +52,8 @@ function test (props) {
           if ( ( 'success' in options ) ) {
             it('should show an success', it => {
               it('should show a flash ok', () => wrappers.driver.exists(
-                locals.formSuccess
-              ), options.wait || 0);
+                locals.formSuccess, options.wait || 500
+              ));
 
               it(`should say "${options.success}"`, () => wrappers.driver.hasText(
                 locals.formSuccess, options.success
@@ -88,11 +88,11 @@ function test (props) {
         }));
 
         it('Forgot Password section', it => {
-          it('should exists', () => wrappers.driver.exists(locals.forgotPassword));
+          it('should exists', () => wrappers.driver.exists(locals.forgotPassword, 1000));
 
           it('Label', it => {
             it('should exists', () =>
-              wrappers.driver.exists(locals.forgotPasswordLabel)
+              wrappers.driver.exists(locals.forgotPasswordLabel, 1000)
             );
 
             it('should say "Forgot password?"',
@@ -124,12 +124,14 @@ function test (props) {
         );
 
         it('Submit with no email', describe.use(() => submit({
-          error : 'Email can not be left empty'
+          error : 'Email can not be left empty',
+          wait : 1500
         })));
 
         it('Submit with invalid email', describe.use(() => submit({
           email : 'hello',
-          error : 'Email must be a valid email address'
+          error : 'Email must be a valid email address',
+          wait : 1500
         })));
 
         it('Submit with no such email', describe.use(() => submit({
@@ -143,6 +145,24 @@ function test (props) {
           success : 'Message sent! Please check your inbox',
           wait : 2500
         })));
+
+        it('DB should have new password', it => {
+
+          it('should fetch user in DB', () => User
+            .findById(locals.user)
+            .then(user => { locals.user = user })
+          );
+
+          it('user should have access token set', () => {
+            locals.user.should.have.property('activation_token')
+              .which.is.a.String();
+          });
+
+          it('user should have reset token set', () => {
+            locals.user.should.have.property('activation_key')
+              .which.is.a.String();
+          });
+        });
 
       });
 

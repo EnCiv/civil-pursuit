@@ -11,7 +11,7 @@ function sendPassword (email, cb) {
   function emailBody (key, token) {
     return secret['forgot password email']
       .replace(/\{key\}/g, key)
-      .replace(/\{url\}/g, `http://${host}/page/reset-password?token=${token}`);
+      .replace(/\{url\}/g, `http://${host}/page/reset-password/${token}`);
   }
 
   new Promise((pass, fail) => {
