@@ -1,8 +1,8 @@
 'use strict';
 
-import nodemailer from 'nodemailer';
-import sequencer from 'promise-sequencer';
-import secret from '../../../secret.json';
+import nodemailer         from 'nodemailer';
+import sequencer          from 'promise-sequencer';
+import secret             from 'syn/../../secret.json';
 
 const transporter = nodemailer.createTransport({
   service : 'Zoho',
@@ -13,26 +13,34 @@ const transporter = nodemailer.createTransport({
 });
 
 function sendEmail (options = {}) {
-  console.log('sending password', options);
+  console.log('Sending email', options);
 
-  if ( process.env.NODE_ENV !== 'production' ) {
-    return new Promise(pass => {
+  return new Promise((pass, fail) => {
+    if ( ! options.to ) {
+      return fail(new Error('Missing email recipient'));
+    }
+
+    if ( ! options.subject ) {
+      return fail(new Error('Missing email subject'));
+    }
+
+    if ( process.env.NODE_ENV !== 'production' ) {
       console.log('Not sending emails when not in production');
-      pass();
-    });
-  }
+      return pass();
+    }
 
-  return sequencer(
-    ()        =>    sequencer.promisify(::transporter.sendMail),
-    results   =>    new Promise((pass, fail) => {
-      if ( results.response === '250 Message received' ) {
-        pass();
-      }
-      else {
-        fail(new Error(results.response));
-      }
-    })
-  );
+    sequencer(
+      ()        =>    sequencer.promisify(::transporter.sendMail, [options]),
+      results   =>    new Promise((pass, fail) => {
+        if ( results.response === '250 Message received' ) {
+          pass();
+        }
+        else {
+          fail(new Error(results.response));
+        }
+      })
+    ).then(pass, fail);
+  });
 }
 
 export default sendEmail;
