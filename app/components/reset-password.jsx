@@ -29,29 +29,18 @@ class ResetPassword extends React.Component {
     super(props);
 
     this.state = {
-      user              : null,
       validationError   : null,
       successMessage    : null,
       info              : null
     };
-
-    this.get();
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  get () {
-    if ( typeof window !== 'undefined' && ! this.props.userToReset ) {
-      window.Dispatcher.emit('get user', { activation_token : this.props.urlParams.token });
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   save () {
-    let password = React.findDOMNode(this.refs.password);
-    let confirmPassword = React.findDOMNode(this.refs.confirmPassword);
-    let resetKey = React.findDOMNode(this.refs.reset);
+    const password            =   React.findDOMNode(this.refs.password);
+    const confirmPassword     =   React.findDOMNode(this.refs.confirmPassword);
+    const resetKey            =   React.findDOMNode(this.refs.reset);
 
     this.setState({ validationError : null });
 
@@ -60,18 +49,14 @@ class ResetPassword extends React.Component {
       return;
     }
 
-    if ( resetKey.value !== this.props.userToReset.activation_key ) {
+    if ( resetKey.value !== this.props.user.activation_key ) {
       this.setState({ validationError : 'Wrong reset key' });
       return;
     }
 
-    window.Dispatcher.emit('reset password', this.props.userToReset, password.value);
-
-    this.setState({ info : 'Resetting your password' });
-
-    window.Dispatcher.on('password reset', () => {
+    this.props.actions['reset password'](password.value, user => {
       Login
-        .signIn(this.props.userToReset.email, password.value)
+        .signIn(this.props.user.email, password.value)
         .then(
           () => {
             this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
@@ -80,6 +65,12 @@ class ResetPassword extends React.Component {
           ko => this.setState({ validationError : 'Wrong email', info: null })
         );
     });
+
+    this.setState({ info : 'Resetting your password' });
+
+    // window.Dispatcher.on('password reset', () => {
+
+    // });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,9 +78,7 @@ class ResetPassword extends React.Component {
   render () {
     let content = ( <Loading message="Getting user info" /> );
 
-    if ( this.props.userToReset ) {
-
-      let user = this.props.userToReset;
+    if ( this.props.user ) {
 
       let formContents;
 
@@ -98,19 +87,48 @@ class ResetPassword extends React.Component {
           <div>
             <h3 className="text-center">Your email</h3>
 
-            <EmailInput block autoFocus required medium placeholder="Email" ref="email" disabled value={ user.email } />
+            <EmailInput
+              block
+              autoFocus
+              required
+              medium
+              disabled
+              placeholder                 =   "Email"
+              ref                         =   "email"
+              name                        =   "email"
+              value                       =   { this.props.user.email }
+            />
 
             <h3 className="text-center">Your reset key</h3>
 
             <h5 className="text-center">Enter here the reset key that was sent to you by email</h5>
 
-            <TextInput block medium ref="reset" required placeholder="Your reset key" />
+            <TextInput
+              block
+              medium
+              required
+              ref                         =   "reset"
+              name                        =   "reset"
+              placeholder                 =   "Your reset key"
+            />
 
             <h3 className="text-center">Enter a new password</h3>
 
             <InputGroup block>
-              <Password required placeholder="Password" ref="password" medium />
-              <Password required placeholder="Confirm password" ref="confirmPassword" medium />
+              <Password
+                required
+                medium
+                placeholder               =   "Password"
+                ref                       =   "password"
+                name                      =   "password"
+              />
+              <Password
+                required
+                medium
+                placeholder               =   "Confirm password"
+                ref                       =   "confirmPassword"
+                name                      =   "confirm-password"
+              />
             </InputGroup>
 
             <Button radius block medium primary style={{ marginTop : '10px' }} type="submit">Save new password</Button>
@@ -119,7 +137,13 @@ class ResetPassword extends React.Component {
       }
 
       content = (
-        <Form form-center style={{ margin : '10px' }} flash={ this.state } handler={ this.save.bind(this) }>
+        <Form
+          form-center
+          style                       =   {{ margin : '10px' }}
+          flash                       =   { this.state }
+          handler                     =   { ::this.save }
+          name                        =   "reset-password"
+        >
           { formContents }
         </Form>
       );

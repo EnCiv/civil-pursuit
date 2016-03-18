@@ -1,15 +1,13 @@
 'use strict';
 
-import UserModel from '../models/user';
+import User from '../models/user';
 
-function resetPassword (event, key, token, password) {
+function resetPassword (key, token, password, cb) {
   try {
-    UserModel
+    User
       .resetPassword(key, token, password)
-      .then(
-        () => this.ok(event),
-        error => this.error(error)
-      )
+      .then(cb)
+      .catch(error => this.error(error));
   }
   catch ( error ) {
     this.error(error);

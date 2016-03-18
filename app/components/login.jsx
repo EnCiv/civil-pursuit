@@ -157,8 +157,15 @@ class Login extends React.Component {
             Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
           </Column>
 
-          <Column span="50" text-right gutter>
-            Forgot password? <a href="#" onClick={ this.forgotPassword.bind(this) }>Click here</a>
+          <Column span="50" text-right gutter className="forgot-password">
+            <span className="forgot-password-label">Forgot password? </span>
+            <a
+              href              =   "#"
+              className         =   "forgot-password-link"
+              onClick           = { ::this.forgotPassword }
+            >
+              Click here
+            </a>
           </Column>
         </Row>
       </div>
