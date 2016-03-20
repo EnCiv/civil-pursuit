@@ -29,7 +29,7 @@ class App extends React.Component {
     } = this.props;
 
     let page = (
-      <Panel heading={(<h4>Not found</h4>)}>
+      <Panel heading={(<h4>Not found</h4>)} id="not-found">
         <section style={{ padding: 10 }}>
           <h4>Page not found</h4>
           <p>Sorry, this page was not found.</p>
