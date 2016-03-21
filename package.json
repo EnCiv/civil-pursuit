@@ -4,7 +4,7 @@
   "description": "Synapp",
   "main": "index.js",
   "scripts": {
-    "test": "node dist/bin/drop-sandbox-dbs.js && redtea dist/test/migrate dist/test/run --fork",
+    "test": "redtea dist/test/migrate dist/test/run --fork",
     "syntest": "node dist/bin/test",
     "start": "node dist/bin/start.js",
     "magic-start": "npm install && npm start",
@@ -20,8 +20,9 @@
     "uglify-assets": "bash bin/uglify-assets.sh",
     "deploy": "bash bin/build.sh",
     "migrate": "node dist/bin/migrate",
-    "reset": "node dist/bin/reset && node dist/bin/migrate"
-  },
+    "reset": "node dist/bin/reset && node dist/bin/migrate",
+    "clean" : "node dist/bin/drop-sandbox-dbs.js"
+   },
   "author": {
     "email": "francoisrvespa@gmail.com",
     "name": "francois"
