@@ -13,11 +13,10 @@ function test(props) {
     wrappers => it => {
 
       it('should go to a not found page', () =>
-        wrappers.driver.client
-          .url(`http://localhost:${wrappers.http.app.get('port')}/not/found`)
+        wrappers.driver.client.url(`http://localhost:${wrappers.http.app.get('port')}/not/found`)
       );
 
-      it('should have a header message that says "Not found"', () => wrapper.driver.hasText('#not-found .syn-panel-heading h4', 'Not found'));
+      it('should have a header message that says "Not found"', () => wrappers.driver.hasText('#not-found .syn-panel-heading h4', 'Not found'));
 
     }
   );
