@@ -1,7 +1,7 @@
 Synaccord Web Application
 ---
 
-![Circle CI](https://circleci.com/gh/co2-git/synaccord.svg?style=shield&circle-token=0aabf9f8f926be4078d928dacf3e9f827c528d70)
+[![Circle CI](https://circleci.com/gh/Synaccord/synaccord.svg?style=shield&circle-token=5b337ba4f00eedca75846279350b3ca1c2072d5d)](https://circleci.com/gh/Synaccord/synaccord) [![Gitter](https://badges.gitter.im/Synaccord/synaccord.svg)](https://gitter.im/Synaccord/synaccord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # Download
 

@@ -14,13 +14,9 @@ import Reference          from './promote-reference';
 
 class PromoteSmallScreenColumn extends React.Component {
   next () {
-    let { item, position, evaluated } = this.props;
+    const { position, emitter } = this.props;
 
-    let view = React.findDOMNode(this.refs.view);
-
-    let parent = view.closest('.item-promote');
-
-    window.Dispatcher.emit('promote item', item, position, evaluated, parent);
+    emitter.emit('promote', position);
   }
 
   render () {

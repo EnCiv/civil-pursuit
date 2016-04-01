@@ -144,7 +144,6 @@ class HttpServer extends EventEmitter {
       signInRoute,
       setUserCookie,
       function (req, res) {
-        console.log(req.user);
         res.send({
           in: true,
           id: req.user._id

@@ -1,20 +1,21 @@
 'use strict';
 
-import React          from 'react';
-import superagent     from 'superagent';
-import Component      from '../lib/app/component';
-import Modal          from './util/modal';
-import Form           from './util/form';
-import Button         from './util/button';
-import Submit         from './util/submit';
-import ButtonGroup    from './util/button-group';
-import Icon           from './util/icon';
-import Link           from './util/link';
-import Row            from './util/row';
-import Column         from './util/column';
-import EmailInput     from './util/email-input';
-import Password       from './util/password';
-import Loading        from './util/loading';
+import React                          from 'react';
+import superagent                     from 'superagent';
+import Component                      from '../lib/app/component';
+import Modal                          from './util/modal';
+import Form                           from './util/form';
+import Button                         from './util/button';
+import Submit                         from './util/submit';
+import ButtonGroup                    from './util/button-group';
+import Icon                           from './util/icon';
+import Link                           from './util/link';
+import Row                            from './util/row';
+import Column                         from './util/column';
+import EmailInput                     from './util/email-input';
+import Password                       from './util/password';
+import Loading                        from './util/loading';
+import Facebook                       from '../lib/app/fb-sdk';
 
 class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +105,8 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   loginWithFacebook () {
-    location.href = '/sign/in/facebook';
+    // location.href = '/sign/in/facebook';
+    Facebook.connect();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,8 +157,15 @@ class Login extends React.Component {
             Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
           </Column>
 
-          <Column span="50" text-right gutter>
-            Forgot password? <a href="#" onClick={ this.forgotPassword.bind(this) }>Click here</a>
+          <Column span="50" text-right gutter className="forgot-password">
+            <span className="forgot-password-label">Forgot password? </span>
+            <a
+              href              =   "#"
+              className         =   "forgot-password-link"
+              onClick           = { ::this.forgotPassword }
+            >
+              Click here
+            </a>
           </Column>
         </Row>
       </div>

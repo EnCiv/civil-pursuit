@@ -2,30 +2,30 @@
   {
     "title" : "Home",
     "icon" : "home",
-    "link" : "http://synaccord.com"
+    "link" : "http://www.synaccord.com"
   },
 
   {
     "title" : "About",
     "icon" : "info",
-    "link" : "http://synaccord.com"
+    "link" : "http://www.synaccord.com/about.html"
   },
 
   {
     "title" : "FAQ",
     "icon" : "life-ring",
-    "link" : "http://synaccord.com"
+    "link" : "http://www.synaccord.com/faq.html"
   },
 
   {
     "title" : "Blog",
     "icon" : "rss",
-    "link" : "http://synaccord.com"
+    "link" : "https://synaccord.wordpress.com/"
   },
 
   {
     "title" : "Contact",
     "icon" : "paper-plane-o",
-    "link" : "http://synaccord.com"
+    "link" : "http://www.synaccord.com/contact.html"
   }
 ]

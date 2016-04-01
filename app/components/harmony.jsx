@@ -38,18 +38,20 @@ class Harmony extends React.Component {
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
 
-      if ( ! props.panels[this.leftId] ) {
-        window.Dispatcher.emit('get items', {
-          type        :   props.item.harmony.types[0],
-          parent      :   props.item._id
-        });
-      }
+      if ( props.panels ) {
+        if ( ! props.panels[this.leftId] ) {
+          window.Dispatcher.emit('get items', {
+            type        :   props.item.harmony.types[0],
+            parent      :   props.item._id
+          });
+        }
 
-      if ( ! props.panels[this.rightId] ) {
-        window.Dispatcher.emit('get items', {
-          type        :   props.item.harmony.types[1],
-          parent      :   props.item._id
-        });
+        if ( ! props.panels[this.rightId] ) {
+          window.Dispatcher.emit('get items', {
+            type        :   props.item.harmony.types[1],
+            parent      :   props.item._id
+          });
+        }
       }
     }
   }

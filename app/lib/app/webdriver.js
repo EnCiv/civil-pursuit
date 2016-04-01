@@ -219,7 +219,7 @@ class WebDriver extends EventEmitter {
           ));
         })
         .catch(ko);
-        
+
     });
   }
 

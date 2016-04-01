@@ -19,7 +19,11 @@ class Panel extends React.Component {
     const { heading, className } = this.props;
 
     return (
-      <section className={ className + " syn-panel" } ref="panel">
+      <section
+        { ...this.props }
+        className     =   { (className || '') + " syn-panel" }
+        ref           =   "panel"
+      >
         <section className="syn-panel-heading">
           { heading }
         </section>

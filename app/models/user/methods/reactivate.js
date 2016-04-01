@@ -1,32 +1,17 @@
 'use strict';
 
+import sequencer          from 'promise-sequencer';
 import randomString from '../../../lib/util/random-string';
 
 function reactivate () {
-  return new Promise((ok, ko) => {
-    try {
-      Promise.all([randomString(8), randomString(8)])
-        .then(
-          results => {
-            try {
-              const [ activation_key, activation_token ] = results;
-
-              this.set('activation_key', activation_key);
-              this.set('activation_token', activation_token);
-
-              ok();
-            }
-            catch ( error ) {
-              ko(error);
-            }
-          },
-          ko
-        );
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+  return sequencer.pipe(
+    ()        =>  Promise.all([randomString(8), randomString(8)]),
+    results   =>  Promise.all([
+      this.set({ activation_key : results[0] }).save(),
+      this.set({ activation_token : results[0] }).save()
+    ]),
+    ()        =>  new Promise(ok => ok(this))
+  );
 }
 
 export default reactivate;

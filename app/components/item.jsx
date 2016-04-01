@@ -146,16 +146,25 @@ class Item extends React.Component {
         };
 
         if ( image ) {
-          image.addEventListener('load', onLoad);
+          if ( image.complete && image.naturalWidth ) {
+            onLoad();
+          }
+
+          else {
+            image.addEventListener('load', onLoad);
+          }
         }
         else {
-          video.addEventListener('load', onLoad);
+          onLoad();
+          // video.addEventListener('load', onLoad);
         }
 
         this.truncated = true;
       }
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
     e.preventDefault();
@@ -176,6 +185,8 @@ class Item extends React.Component {
       text.innerText = 'more';
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     const { item, buttons, footer } = this.props;

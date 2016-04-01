@@ -34,9 +34,20 @@ class ForgotPassword extends React.Component {
 
     let email = React.findDOMNode(this.refs.email).value;
 
-    window.socket.emit('send password', email);
+    window.socket.emit('send password', email, response => {
+      if ( response.error ) {
+        let { error } = response;
 
-    this.setState({ info : null, successMessage : 'Message sent! Please check your inbox' });
+        if ( error === 'User not found' ) {
+          error = 'Email not found';
+        }
+
+        this.setState({ info : null, validationError : error });
+      }
+      else {
+        this.setState({ info : null, successMessage : 'Message sent! Please check your inbox' });
+      }
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +69,7 @@ class ForgotPassword extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let classes = [ 'syn-login' ];
+    let classes = [ 'syn-forgot-password' ];
 
     if ( this.props.show ) {
       classes.push('syn--visible');
@@ -68,20 +79,47 @@ class ForgotPassword extends React.Component {
       <div>
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
+          <EmailInput
+            block
+            autoFocus
+            required
+            medium
+            placeholder           =   "Email"
+            ref                   =   "email"
+            name                  =   "email"
+          />
         </div>
 
         <div className="syn-form-group syn-form-submit">
-          <Submit block large success radius>Send me reset password email</Submit>
+          <Submit
+            block
+            large
+            success
+            radius
+          >
+            Send me reset password email
+          </Submit>
         </div>
 
         <Row data-stack="phone-and-down">
           <Column span="50" gutter>
-            <a href="" onClick={ this.signUp.bind(this) }>Sign up</a>
+            <a
+              href            =   ""
+              onClick         =   { ::this.signUp }
+              className       =   "forgot-password-sign-up"
+            >
+              Sign up
+            </a>
           </Column>
 
           <Column span="50" text-right gutter>
-            <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
+            <a
+              href            =   ""
+              onClick         =   { ::this.signIn }
+              className       =   "forgot-password-sign-in"
+            >
+              Sign in
+            </a>
           </Column>
         </Row>
       </div>
@@ -97,7 +135,11 @@ class ForgotPassword extends React.Component {
 
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Forgot password?">
-        <Form handler={ this.sendResetPassword.bind(this) } flash={ this.state } form-center>
+        <Form
+          handler             =   { this.sendResetPassword.bind(this) }
+          flash               =   { this.state }
+          name                =   "forgot-password"
+          form-center>
           { content }
         </Form>
       </Modal>

@@ -5,10 +5,8 @@ import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mungo          from 'mungo';
-import MungoJson      from 'mungo/package.json';
 import sequencer      from 'promise-sequencer';
-
-console.log('Migrating, mungo v', MungoJson.version);
+import Config         from '../models/config';
 
 Mungo.verbosity = 0;
 
@@ -16,17 +14,18 @@ function migrate (...models) {
   return new Promise((ok, ko) => {
     try {
 
-      const promises = [];
+      const stack = [];
 
       if ( ! Mungo.connections.length ) {
-        promises.push(new Promise((ok, ko) => {
+        stack.push(() => new Promise((ok, ko) => {
           Mungo.connect(process.env.MONGOHQ_URL)
             .on('error', ko)
             .on('connected', ok);
         }));
       }
 
-      Promise.all(promises).then(
+      sequencer(stack).then(
+
         () => {
           fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
 
@@ -46,12 +45,7 @@ function migrate (...models) {
                       path.resolve(__dirname, `../models/${file}`)
                     ).default;
                     // console.log({ model });
-                    model.migrate()
-                      .then(ok)
-                      .catch(error => {
-                        console.log('Could not migrate', model.name);
-                        ko(error);
-                      });
+                    model.migrate().then(ok, ko);
                   }
                   catch ( error ) {
                     ko(error);

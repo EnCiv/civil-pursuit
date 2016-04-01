@@ -29,7 +29,6 @@ function test(props) {
       it('should create a User to sign in with', () => new Promise((ok, ko) => {
         User.lambda({ password : '1234' }).then(
           user => {
-            console.log(user.toJSON());
             locals.user = user;
             ok();
           },

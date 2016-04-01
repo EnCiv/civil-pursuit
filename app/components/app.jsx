@@ -10,6 +10,7 @@ import PanelItems                       from './panel-items';
 import panelItemType                    from '../lib/proptypes/panel-item';
 import Panel                            from './panel';
 import Icon                             from './util/icon';
+import UserStore                        from './store/user';
 
 class App extends React.Component {
 
@@ -28,7 +29,7 @@ class App extends React.Component {
     } = this.props;
 
     let page = (
-      <Panel heading={(<h4>Not found</h4>)}>
+      <Panel heading={(<h4>Not found</h4>)} id="not-found">
         <section style={{ padding: 10 }}>
           <h4>Page not found</h4>
           <p>Sorry, this page was not found.</p>
@@ -72,7 +73,11 @@ class App extends React.Component {
               break;
 
             case 'reset-password':
-              page = ( <ResetPassword { ...this.props } /> );
+              page = (
+                <UserStore user={ { activation_token : paths[2] } }>
+                  <ResetPassword user={ user } />
+                </UserStore>
+              );
               showIntro = false;
               break;
           }
