@@ -14,12 +14,12 @@ function isHarmony () {
         .then(
           parent => {
             try {
-              if ( parent.harmony ) {
-                if (! parent.harmony.length ) {
-                  return ok(false);
-                } else {
-                  return ok(false);
-                }
+              if ( ! parent.harmony) {
+                return ok(false);
+              }
+              if ( ! parent.harmony.length ) {
+                return ok(false);
+              }
               ok(parent.harmony.map(id => id.toString()).indexOf(this._id.toString()) > -1);
             }
             catch ( error ) {
