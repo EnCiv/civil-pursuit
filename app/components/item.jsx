@@ -227,7 +227,7 @@ class Item extends React.Component {
 
         <section style={ { clear : 'both' }}></section>
 
-        <section style={{ marginRight : '-10px' }}>
+        <section style={{ marginRight : '0px' }}>
           { footer }
         </section>
       </article>

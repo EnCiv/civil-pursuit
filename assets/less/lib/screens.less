@@ -14,15 +14,195 @@
     ____________________________________________________________________________
 **/
 
-
 @screen-phone:       440px;
 @screen-split:       600px;
 @screen-tablet:      768px;
 @screen-desktop:     992px;
-@screen-large:       1200px;
+@screen-large:       1920px;
 
+/** modal dialog-desktop **/
+
+.syn-modal-container{
+  @media (max-width: @screen-large){
+    width:400px !important;
+    max-height:600px !important;
+    left:40% !important;
+  }
+}
+
+.syn-modal-container{
+  @media (max-width: @screen-desktop){
+    width:400px !important;
+    max-height:600px !important;
+    left:30% !important;
+  }
+}
+
+.syn-modal-container{
+  @media (max-width: @screen-tablet){
+    width:400px !important;
+    max-height:600px !important;
+    left:20% !important;
+  }
+}
+
+.syn-modal-container h1{
+  @media (min-width: @screen-split){
+    font-size:2em !important;
+  }
+}
+
+.syn-modal-container button{
+  @media (min-width: @screen-split){
+    font-size:100% !important;
+  }
+}
+
+.syn-modal-container a{
+  @media (min-width: @screen-split){
+    display:block !important;
+  }
+}
+
+.syn-modal-container input{
+  @media (min-width: @screen-split){
+    font-size:100% !important;
+  }
+}
+
+.syn-modal-container label{
+  @media (min-width: @screen-split){
+    font-size:100% !important;
+  }
+}
+
+/** **/
+
+.syn-input-group.syn--block input{
+  @media (max-width: @screen-desktop){
+    width:50% !important;
+  }
+}
+
+/** logo **/
+
+.syn-screen-tablet_and_up{
+  @media (max-width: @screen-tablet)
+  {
+      width: 250px;
+      margin-top: 10px;
+  }
+}
+
+.syn-screen-phone_and_down{
+  @media (max-width: @screen-tablet)
+  {
+      display: none;
+  }
+}
+
+/** modal dialog-phone **/
+
+.syn-modal-container{
+  @media (max-width: @screen-phone){
+    max-height:calc(75vh) !important;
+    left:10% !important;
+    width:75% !important;
+    overflow: hidden !important;
+  }
+}
+
+.syn-modal-container footer{
+  @media (max-width: @screen-phone){
+    padding: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+.syn-modal-container h1{
+  @media (max-width: @screen-phone){
+    font-size:2em !important;
+  }
+}
+
+.syn-modal-container button{
+  @media (max-width: @screen-phone){
+    font-size:100% !important;
+  }
+}
+
+.syn-modal-container a{
+  @media (max-width: @screen-phone){
+    display:block !important;
+  }
+}
+
+.syn-modal-container input{
+  @media (max-width: @screen-phone){
+    font-size:100% !important;
+  }
+}
+
+.syn-modal-container label{
+  @media (max-width: @screen-phone){
+    font-size:100% !important;
+  }
+}
+
+/** **/
+
+
+/** modal dialog-phone **/
+
+.syn-modal-container{
+  @media (max-width: 320px){
+    max-height:calc(70vh) !important;
+    left:10% !important;
+    width:75% !important;
+    overflow: hidden !important;
+  }
+}
+
+.syn-modal-container footer{
+  @media (max-width: 320px){
+    padding: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+.syn-modal-container h1{
+  @media (max-width: 320px){
+    font-size:2em !important;
+  }
+}
+
+.syn-modal-container button{
+  @media (max-width: 320px){
+    font-size:80% !important;
+  }
+}
+
+.syn-modal-container a{
+  @media (max-width: 320px){
+    display:block !important;
+  }
+}
+
+.syn-modal-container input{
+  @media (max-width: 320px){
+    font-size:80% !important;
+  }
+}
+
+.syn-modal-container label{
+  @media (max-width: 320px){
+    font-size:80% !important;
+  }
+}
+
+/** **/
 .syn-screen-tablet_and_up {
-  @media (max-width: @screen-tablet) {
+  @media (max-height: @screen-tablet) {
     display: none;
   }
 }
@@ -38,7 +218,110 @@
     display: none !important;
   }
 }
+/**----Samsung Galaxy S3 Note S4 **/
+section.syn-column {
+    @media (max-width: 360px){
+      width: 50% !important;
+    }
+}
 
+.fa-2x {
+    @media (max-width: 360px){
+     font-size: 1.2em !important;
+    }
+}
+
+section.syn-column > span{
+    @media (max-width: 360px){
+      overflow: hidden;
+      max-width: 75px;
+    }
+}
+/**----iPhone(Hans) **/
+section.syn-column {
+   @media (max-width: @screen-phone){
+      flex-basis: auto !important;
+  }
+}
+
+.bp_input block{
+  @media (max-width: @screen-phone){
+      width: 100px !important;
+  }  
+}
+
+.item-buttons{
+  @media (max-width: @screen-phone){
+      padding: 0px 5px 10px 10px !important;
+  }
+}
+
+section.syn-panel {
+  @media (max-width: @screen-phone){
+      margin-top: 0px !important;
+  }
+}
+section.syn-row{
+  @media (max-width: @screen-phone){
+      flex-direction: row !important;
+  }
+}
+
+h4.item-subject{
+  @media (max-width: @screen-phone){
+      text-align: left !important;
+  }
+}
+
+h4.item-subject.left, h4.item-subject.right{
+  @media (max-width: @screen-phone){
+      height: 32px !important;
+  }
+}
+
+h4{
+  @media (max-width: @screen-phone){
+      font-size: 1.0em;
+      font-weight: 100;
+  }
+}
+
+h5{
+  @media (max-width: @screen-phone){
+      font-size: .7em;
+  }
+}
+
+h5.syn-sliders-criteria-description{
+  @media (max-width: @screen-phone){
+    width: 150px;
+  }
+}
+
+input.syn-sliders-slider{
+  @media (max-width: @screen-phone){
+      width: 80px;
+  }
+}
+
+button.block{
+  @media (max-width: @screen-phone){
+      font-size: .7em;
+  }
+}
+
+svg{
+  @media (max-width: @screen-phone){
+      height: 60px;
+  }  
+}
+
+textarea.user-feedback.block{
+  @media (max-width: @screen-phone){
+      height: 100px !important;
+  }
+}
+/**-----------------**/
 [data-screen="up-to-phone"] {
   @media (min-width: @screen-phone) {
     display: none !important;

@@ -55,6 +55,27 @@ class EvaluationStore extends React.Component {
         this.okGetEvaluation.bind(this)
       );
     }
+    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
+        var ly = document.getElementById('left_description').offsetHeight;
+        var ry = document.getElementById('right_description').offsetHeight;
+        if (ly < ry) {
+          document.getElementById('left_description').style.height = ry + "px";
+        }
+        else {
+          document.getElementById('right_description').style.height = ly + "px";
+        }  
+    }
+
+    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
+        var ly = document.getElementById('h5_left').offsetHeight;
+        var ry = document.getElementById('h5_right').offsetHeight;
+        if (ly < ry) {
+          document.getElementById('h5_left').style.height = ry + "px";
+        }
+        else {
+          document.getElementById('h5_right').style.height = ly + "px";
+        }  
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,6 +147,8 @@ class EvaluationStore extends React.Component {
     }
 
     if ( cursor <= this.state.limit ) {
+      document.getElementById('left_description').style.height = "auto";
+      document.getElementById('right_description').style.height = "auto";
 
       left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
       right = this.state.evaluation.items[regular ? cursor : cursor + 1];
@@ -137,7 +160,6 @@ class EvaluationStore extends React.Component {
 
       this.setState({ cursor, left, right });
     }
-
     else {
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('details');

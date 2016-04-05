@@ -58,7 +58,6 @@ function test(props) {
             ko
           );
         }));
-
         it('should go to ')
       })
     };
