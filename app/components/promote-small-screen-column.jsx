@@ -20,7 +20,7 @@ class PromoteSmallScreenColumn extends React.Component {
   }
 
   render () {
-    let { item, criterias, position, other } = this.props;
+    let { item, criterias, position, other, descid } = this.props;
 
     if ( ! item ) {
       return ( <div></div> );
@@ -33,6 +33,7 @@ class PromoteSmallScreenColumn extends React.Component {
     if ( ! other ) {
       promoteMe = ( <div></div> );
     }
+    let h5id = (position == 'left')? 'h5_left': 'h5_right';
 
     return (
       <Column span="50" className={ `promote-${position}` } ref="view">
@@ -40,8 +41,8 @@ class PromoteSmallScreenColumn extends React.Component {
           <ItemMedia />
         </ItemStore>
         <Subject subject={ item.subject } position={ position } id={ item._id } />
-        <Reference { ...item.references[0] } />
-        <Description description={ item.description } />
+        <Reference  itemid={h5id} { ...item.references[0] } />
+        <Description itemid={descid} description={ item.description } />
         <div style={{ clear: 'both' }} />
         <Sliders criterias={ criterias } className="promote-sliders" />
         <Feedback className="gutter-top" />
