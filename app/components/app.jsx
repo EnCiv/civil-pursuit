@@ -37,7 +37,7 @@ class App extends React.Component {
       </Panel>
     );
 
-    let showIntro = true;
+    let showIntro = false;
 
     if ( error ) {
       page = (
