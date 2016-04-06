@@ -59,6 +59,7 @@ class Join extends React.Component {
           case 200:
             this.setState({ validationError : null, successMessage : 'Welcome aboard!', info: null });
             //location.href = '/page/profile';
+            location.href = '/';
             break;
 
           default:
@@ -150,9 +151,7 @@ class Join extends React.Component {
           <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" />
         </InputGroup>
 
-        <div className="syn-form-group syn-form-submit">
-          <Submit block large success radius>Join</Submit>
-        </div>
+
 
         <Row data-stack="phone-and-down">
           <Column span="50" gutter>
@@ -163,6 +162,11 @@ class Join extends React.Component {
             <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" name="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
           </Column>
         </Row>
+
+        <div className="syn-form-group syn-form-submit">
+          <Submit block large success radius>Join</Submit>
+        </div>
+        
       </div>
     );
 
