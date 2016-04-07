@@ -9,6 +9,7 @@ import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
+import Server                   from 'express-emitter'
 
 import config                   from '../secret.json';
 
@@ -33,16 +34,72 @@ import Type                     from './models/type';
 import API                      from './api';
 
 
-class HttpServer extends EventEmitter {
-
-  sockets = {};
-
-  nextSocketId = 0;
+class HttpServer extends Server {
 
   constructor (props) {
-    super();
+    // Passport
+
+    passport.serializeUser((user, done) => {
+      done(null, user._id);
+    });
+
+    passport.deserializeUser((id, done) => {
+      User.findById(id).then(done, done);
+    });
+
+    super(app =>
+      app
+
+        // Port
+        // _____________________________________________________________________
+
+        .set('port', +(process.env.PORT || 3012))
+
+        // Parsers
+        // _____________________________________________________________________
+
+        .use(
+          bodyParser.urlencoded({ extended: true }),
+          bodyParser.json(),
+          bodyParser.text()
+        )
+
+        .use(cookieParser())
+
+        // Session @deprecated?
+        // _____________________________________________________________________
+
+        .use(
+          session({
+            secret              :   config.secret,
+            resave              :   true,
+            saveUninitialized   :   true
+          })
+        )
+
+        // Passport
+        // _____________________________________________________________________
+
+        .use(passport.initialize())
+    );
 
     this.props = props;
+
+    // Twitter
+
+    new TwitterPassport(this.app);
+
+    this.props = props;
+
+    this.router();
+
+    this.api();
+
+    this.cdn();
+
+    this.notFound();
+
+    this.error();
 
     this
 
@@ -56,87 +113,12 @@ class HttpServer extends EventEmitter {
 
       .on('response', function (res) {
         printIt(res.req, res);
-      });
-
-      process.nextTick(() => {
-        try {
-          if ( ! this.props.intro ) {
-            throw new Error('Missing intro');
-          }
-
-          this.app = express();
-
-          this.set();
-
-          this.parsers();
-
-          this.cookies();
-
-          this.session();
-
-          this.passport();
-
-          this.twitterMiddleware();
-
-          this.facebookMiddleware();
-
-          this.signers();
-
-          this.router();
-
-          this.api();
-
-          this.cdn();
-
-          this.notFound();
-
-          this.error();
-
-          this.start();
-        }
-        catch ( error ) {
-          this.emit('error', error);
-        }
-      });
-
-  }
-
-  set () {
-    this.app.set('port', +(process.env.PORT || 3012));
-  }
-
-  passport () {
-    passport.serializeUser((user, done) => {
-      done(null, user._id);
-    });
-
-    passport.deserializeUser((id, done) => {
-      User.findById(id).then(done, done);
-    });
-
-    this.app.use(passport.initialize());
-  }
-
-  parsers () {
-    this.app.use(
-      bodyParser.urlencoded({ extended: true }),
-      bodyParser.json(),
-      bodyParser.text()
-    );
-  }
-
-  cookies () {
-    this.app.use(cookieParser());
-  }
-
-  session () {
-    this.app.use(
-      session({
-        secret:             config.secret,
-        resave:             true,
-        saveUninitialized:  true
       })
-    );
+
+      .on('listening', () => {
+        new API(this)
+          .on('error', this.emit.bind(this, 'error'));
+      });
   }
 
   signers () {
@@ -398,58 +380,6 @@ class HttpServer extends EventEmitter {
 
     });
   }
-
-  start () {
-    this.server = http.createServer(this.app);
-
-    this.server.on('error', error => {
-      this.emit('error', error);
-    });
-
-    this.server.listen(this.app.get('port'),  () => {
-      this.emit('message', 'Server is listening', {
-        port    :   this.app.get('port'),
-        env     :   this.app.get('env')
-      });
-
-      this.emit('listening', { port : this.app.get('port') });
-
-      this.socketAPI = new API(this)
-        .on('error', error => this.emit('error', error))
-        .on('message', this.emit.bind(this, 'message'));
-    });
-
-    this.server.on('connection', socket => {
-      // Add a newly connected socket
-      const socketId = this.nextSocketId++;
-      this.sockets[socketId] = socket;
-
-      // Remove the socket when it closes
-      socket.on('close', () => {
-        delete this.sockets[socketId];
-      });
-
-      // Extend socket lifetime for demo purposes
-      // socket.setTimeout(4000);
-    });
-  }
-
-  stop () {
-    return new Promise((ok, ko) => {
-      this.socketAPI.disconnect().then(
-        () => {
-          this.server.close(ok);
-
-          for (let socketId in this.sockets) {
-            console.log('socket', socketId, 'destroyed');
-            this.sockets[socketId].destroy();
-          }
-        },
-        ko
-      );
-    });
-  }
-
 }
 
 export default HttpServer;
