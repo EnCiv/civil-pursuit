@@ -155,7 +155,154 @@ button,
 
     ____________________________________________________________________________
 **/
+/** modal dialog-desktop **/
+@media (max-width: 1920px) {
+  .syn-modal-container {
+    width: 400px !important;
+    max-height: 600px !important;
+    left: 40% !important;
+  }
+}
+@media (max-width: 992px) {
+  .syn-modal-container {
+    width: 400px !important;
+    max-height: 600px !important;
+    left: 30% !important;
+  }
+}
 @media (max-width: 768px) {
+  .syn-modal-container {
+    width: 400px !important;
+    max-height: 600px !important;
+    left: 20% !important;
+  }
+}
+@media (min-width: 600px) {
+  .syn-modal-container h1 {
+    font-size: 2em !important;
+  }
+}
+@media (min-width: 600px) {
+  .syn-modal-container button {
+    font-size: 100% !important;
+  }
+}
+@media (min-width: 600px) {
+  .syn-modal-container a {
+    display: block !important;
+  }
+}
+@media (min-width: 600px) {
+  .syn-modal-container input {
+    font-size: 100% !important;
+  }
+}
+@media (min-width: 600px) {
+  .syn-modal-container label {
+    font-size: 100% !important;
+  }
+}
+/** **/
+@media (max-width: 992px) {
+  .syn-input-group.syn--block input {
+    width: 50% !important;
+  }
+}
+/** logo **/
+@media (max-width: 768px) {
+  .syn-screen-tablet_and_up {
+    width: 250px;
+    margin-top: 10px;
+  }
+}
+@media (max-width: 768px) {
+  .syn-screen-phone_and_down {
+    display: none;
+  }
+}
+/** modal dialog-phone **/
+@media (max-width: 440px) {
+  .syn-modal-container {
+    max-height: calc(75vh) !important;
+    left: 10% !important;
+    width: 75% !important;
+    overflow: hidden !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container footer {
+    padding: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container h1 {
+    font-size: 2em !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container button {
+    font-size: 100% !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container a {
+    display: block !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container input {
+    font-size: 100% !important;
+  }
+}
+@media (max-width: 440px) {
+  .syn-modal-container label {
+    font-size: 100% !important;
+  }
+}
+/** **/
+/** modal dialog-phone **/
+@media (max-width: 320px) {
+  .syn-modal-container {
+    max-height: calc(70vh) !important;
+    left: 10% !important;
+    width: 75% !important;
+    overflow: hidden !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container footer {
+    padding: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container h1 {
+    font-size: 2em !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container button {
+    font-size: 80% !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container a {
+    display: block !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container input {
+    font-size: 80% !important;
+  }
+}
+@media (max-width: 320px) {
+  .syn-modal-container label {
+    font-size: 80% !important;
+  }
+}
+/** **/
+@media (max-height: 768px) {
   .syn-screen-tablet_and_up {
     display: none;
   }
@@ -172,6 +319,97 @@ button,
     display: none !important;
   }
 }
+/**----Samsung Galaxy S3 Note S4 **/
+@media (max-width: 360px) {
+  section.syn-column {
+    width: 50% !important;
+  }
+}
+@media (max-width: 360px) {
+  .fa-2x {
+    font-size: 1.2em !important;
+  }
+}
+@media (max-width: 360px) {
+  section.syn-column > span {
+    overflow: hidden;
+    max-width: 75px;
+  }
+}
+/**----iPhone(Hans) **/
+@media (max-width: 440px) {
+  section.syn-column {
+    flex-basis: auto !important;
+  }
+}
+@media (max-width: 440px) {
+  .bp_input block {
+    width: 100px !important;
+  }
+}
+@media (max-width: 440px) {
+  .item-buttons {
+    padding: 0px 5px 10px 10px !important;
+  }
+}
+@media (max-width: 440px) {
+  section.syn-panel {
+    margin-top: 0px !important;
+  }
+}
+@media (max-width: 440px) {
+  section.syn-row {
+    flex-direction: row !important;
+  }
+}
+@media (max-width: 440px) {
+  h4.item-subject {
+    text-align: left !important;
+  }
+}
+@media (max-width: 440px) {
+  h4.item-subject.left,
+  h4.item-subject.right {
+    height: 32px !important;
+  }
+}
+@media (max-width: 440px) {
+  h4 {
+    font-size: 1.0em;
+    font-weight: 100;
+  }
+}
+@media (max-width: 440px) {
+  h5 {
+    font-size: .7em;
+  }
+}
+@media (max-width: 440px) {
+  h5.syn-sliders-criteria-description {
+    width: 150px;
+  }
+}
+@media (max-width: 440px) {
+  input.syn-sliders-slider {
+    width: 80px;
+  }
+}
+@media (max-width: 440px) {
+  button.block {
+    font-size: .7em;
+  }
+}
+@media (max-width: 440px) {
+  svg {
+    height: 60px;
+  }
+}
+@media (max-width: 440px) {
+  textarea.user-feedback.block {
+    height: 100px !important;
+  }
+}
+/**-----------------**/
 @media (min-width: 440px) {
   [data-screen="up-to-phone"] {
     display: none !important;
@@ -465,7 +703,7 @@ button.small,
 .button.small {
   font-size: 80% !important;
   border-width: 2px;
-  padding: 0.4em;
+  padding: 0.2em;
 }
 button.medium,
 .button.medium {
@@ -501,6 +739,8 @@ a.button {
 }
 .syn-button-group button:first-child:last-child {
   border-radius: 6px;
+  width: 100%;
+  text-align: right;
 }
 .syn-button-group.syn--block {
   display: flex;
@@ -1039,7 +1279,7 @@ body {
 .syn-top_bar-beta.small {
   font-size: 80% !important;
   border-width: 2px;
-  padding: 0.4em;
+  padding: 0.2em;
 }
 .syn-top_bar-beta.medium {
   font-size: 125%;
@@ -1250,6 +1490,7 @@ body {
   padding: 10px;
   border-radius: 6px 0 0 6px;
   border-right: none;
+  padding-right: 0px;
 }
 .item-media {
   float: left;
@@ -1277,6 +1518,7 @@ body {
 .item-subject {
   margin: 0;
   margin-left: 10px;
+  text-align: left;
 }
 blockquote {
   color: red;
@@ -1295,7 +1537,7 @@ blockquote {
   text-align: right;
   padding: 10px;
   margin-top: -10px;
-  padding-right: 0;
+  padding-right: 5px;
 }
 .item-hidden {
   display: none;
