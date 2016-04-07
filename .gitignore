@@ -4,3 +4,7 @@
 /export.sh
 /.vagrant/*
 /dist/*
+/assets/bower_components/*
+/assets/css/*
+/assets/js/main.js
+/assets/js/main.min.js
