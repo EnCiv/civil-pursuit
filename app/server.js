@@ -1,16 +1,15 @@
-'use strict';
+'use strict'
 
-import path                     from 'path';
+import fs                       from 'fs';
+import http                     from 'http';
+import { EventEmitter }         from 'events';
 
-import _                        from 'lodash';
 import express                  from 'express';
 import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
 import Server                   from 'express-emitter'
-import renderReact              from 'reacted-express';
-import sequencer                from 'promise-sequencer';
 
 import config                   from '../secret.json';
 
@@ -20,70 +19,24 @@ import makePanelId              from './lib/app/make-panel-id';
 import makePanel                from './lib/app/make-panel';
 
 import TwitterPassport          from './routes/twitter';
+import FacebookPassport         from './routes/facebook';
 import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
 import homePage                 from './routes/home';
+// import errorRoutes              from './routes/error';
 
 import User                     from './models/user';
-import Type                     from './models/type';
 import Item                     from './models/item';
-import Discussion                     from './models/discussion';
-import Training                     from './models/training';
+import Type                     from './models/type';
 
 import API                      from './api';
 
-import type {isItem} from './interfaces/Item';
-import type {isPanel} from './interfaces/Panel';
-import type {isDiscussion} from './interfaces/Discussion';
-import type {isTraining} from './interfaces/Training';
-
-type initialData = {
-  intro : ?isItem,
-  panel : ?isPanel,
-  discussion : ?isDiscussion,
-  training : ?isTraining
-};
 
 class HttpServer extends Server {
 
-  static fetchInitialData () {
-    return new Promise((pass, fail) => {
-      try {
-        const stack = [
-          Item.getIntro(),
-          Item.getTopLevel(),
-          Discussion.findCurrent(),
-          Training.find()
-        ];
-
-        Promise.all(stack)
-          .then(results => {
-            const [ intro, panel, discussion, training ] = results;
-            const response: initialData = { intro, panel, discussion, training };
-            pass(response);
-          })
-          .catch(fail);
-      }
-      catch (error) {
-        fail(error);
-      }
-    });
-  }
-
-  app;
-  api;
-  props = {};
-  cache: initialData = {
-    intro : null,
-    panel : null,
-    discussion : null,
-    training : null
-  };
-
   constructor (props) {
-
     // Passport
 
     passport.serializeUser((user, done) => {
@@ -132,154 +85,26 @@ class HttpServer extends Server {
 
     this.props = props;
 
-    if ( ! props.initialData.intro ) {
-      throw new Error('Missing intro');
-    }
-
-    this.cache = this.props.initialData;
-
     // Twitter
 
     new TwitterPassport(this.app);
 
-    this.app
+    this.props = props;
 
-      // Identify user
-      //------------------------------------------------------------------------
+    this.router();
 
-      .use((req, res, next) => {
-        if ( req.cookies.synuser ) {
-          User
-            .findById(req.cookies.synuser.id)
-            .then(user => {
-              req.user = user;
-              next();
-            })
-            .catch(next);
-        }
-        else {
-          next()
-        }
-      })
+    this.api();
 
-      // Log in
-      //------------------------------------------------------------------------
+    this.cdn();
 
-      .post('/sign/in',
-        signInRoute,
-        setUserCookie,
-        (req, res) => {
-          res.send({
-            in: true,
-            id: req.user._id
-          });
-        }
-      )
+    this.notFound();
 
-      // Join
-      //------------------------------------------------------------------------
-
-      .post('/sign/up',
-        signUpRoute,
-        setUserCookie,
-        (req, res) => {
-          res.json({
-            up: true,
-            id: req.user._id
-          });
-        }
-      )
-
-      // Sign out
-      //------------------------------------------------------------------------
-
-      .all('/sign/out', signOutRoute)
-
-      // User settings
-      //------------------------------------------------------------------------
-
-      .get('/settings', (req, res, next) => {
-        if ( 'showtraining' in req.query ) {
-          res.cookie('synapp',
-            { training : !!+(req.query.showtraining) },
-            {
-              "path":"/",
-              "signed": false,
-              "maxAge": 604800000,
-              "httpOnly": true
-            });
-          res.send({ training : !!+(req.query.showtraining) });
-        }
-      })
-
-      // Home
-      //------------------------------------------------------------------------
-
-      .get('/', this.render({ intro : true }))
-
-      // Item page
-      //------------------------------------------------------------------------
-
-      .get(
-        '/item/:itemId/:itemSlug',
-        (req, res, next) => {
-          sequencer.pipe(
-            () => Item.findOne({ id: req.params.itemId }),
-
-            item => item.toPanelItem(),
-
-            item => new Promise((pass, fail) => {
-              res.locals.item = item;
-              pass(item);
-            }),
-
-            item => Item.getPanelItems(_.pick(item, ['type', 'parent']))
-          )
-          .then(panel => {
-            res.locals.panel = panel;
-            next();
-          })
-          .catch(next);
-        },
-        this.render({ intro : true, item : true })
-      )
-
-      // Static files
-      //------------------------------------------------------------------------
-
-      .use('/assets/', express.static('assets'))
-
-      // Not found
-      //------------------------------------------------------------------------
-
-      .use(
-        (req, res, next) => {
-          res.statusCode = 404;
-          next();
-        },
-        this.render({ intro : true })
-      )
-
-      // Server error
-      //------------------------------------------------------------------------
-
-      .use(
-        (err, req, res, next) => {
-          this.emit('error', err);
-
-          res.statusCode = 500;
-
-          res.locals.error = err;
-
-          next();
-        },
-        this.render()
-      );
+    this.error();
 
     this
 
       .on('message', (...messages) => {
-        if ( props.verbose ) {
+        if ( this.props.verbose ) {
           console.log(...messages);
         }
       })
@@ -291,65 +116,269 @@ class HttpServer extends Server {
       })
 
       .on('listening', () => {
-        this.api = new API(this.server);
-
-        this.api
-
-          .on('error', this.emit.bind(this, 'error'))
-
-          .on('message', this.emit.bind(this, 'message'))
-
-          .on('listening', this.emit.bind(this, 'message', 'Web Sockets up!'));
+        new API(this)
+          .on('error', this.emit.bind(this, 'error'));
       });
   }
 
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
+  signers () {
+    this.app.post('/sign/in',
+      signInRoute,
+      setUserCookie,
+      function (req, res) {
+        res.send({
+          in: true,
+          id: req.user._id
+        });
+      });
 
-  render (options = {}) {
-    return (req, res, next) => {
-      let env = this.app.get('env');
+    this.app.all('/sign/up',
+      signUpRoute,
+      setUserCookie,
+      function (req, res) {
+        res.json({
+          up: true,
+          id: req.user._id
+        });
+      });
 
-      if ( env === 'test' ) {
-        env = 'development';
-      }
+    this.app.all('/sign/out', signOutRoute);
+  }
 
-      const props = {
-        meta : {
-          path : req.path,
-          synappEnv : process.env.SYNAPP_ENV,
-          error : null,
-          notFound : false
+  facebookMiddleware () {
+    new FacebookPassport(this.app);
+  }
+
+  twitterMiddleware () {
+    new TwitterPassport(this.app);
+  }
+
+  router () {
+    this.timeout();
+    this.getLandingPage();
+    this.getTermsOfServicePage();
+    this.getSettings();
+    this.getItemPage();
+    this.getPanelPage();
+
+    this.app.get('/error', (req, res, next) => {
+      next(new Error('Test error > next with error'));
+    });
+
+    this.app.get('/error/synchronous', (req, res, next) => {
+      throw new Error('Test error > synchronous error');
+    });
+
+    this.app.get('/error/asynchronous', (req, res, next) => {
+      process.nextTick(() => {
+        throw new Error('Test error > asynchronous error');
+      });
+    });
+  }
+
+  timeout () {
+    this.app.use((req, res, next) => {
+      setTimeout(() => {
+        if ( ! res.headersSent ) {
+          next(new Error('Test error > timeout'));
+        }
+      }, 1000 * 60);
+      next();
+    });
+  }
+
+  getLandingPage () {
+    try {
+      this.app.get('/',
+        (req, res, next) => {
+          if ( ! req.cookies.synapp ) {
+            res.cookie('synapp',
+              { training : true },
+              {
+                "path":"/",
+                "signed": false,
+                "maxAge": 604800000,
+                "httpOnly": true
+              });
+          }
+          // else {
+
+          // }
+          next();
         },
-        store : {
-          user : req.user,
-          ...this.cache
-        }
-      };
+        homePage.bind(this));
 
-      if ( options.item ) {
-        props.store.item = res.locals.item;
-        props.store.panel = res.locals.panel;
+      this.app.get('/page/:page', homePage.bind(this));
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
+  }
+
+  getSettings () {
+    try {
+      this.app.get('/settings', (req, res, next) => {
+        try {
+          if ( 'showtraining' in req.query ) {
+            res.cookie('synapp',
+              { training : !!+(req.query.showtraining) },
+              {
+                "path":"/",
+                "signed": false,
+                "maxAge": 604800000,
+                "httpOnly": true
+              });
+            res.send({ training : !!+(req.query.showtraining) });
+          }
+        }
+        catch ( error ) {
+          next(error);
+        }
+      });
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
+  }
+
+  getTermsOfServicePage () {
+    this.app.get('/doc/terms-of-service.md', (req, res, next) => {
+      fs
+        .createReadStream('TOS.md')
+        .on('error', next)
+        .on('data', function (data) {
+          if ( ! this.data ) {
+            this.data = '';
+          }
+          this.data += data.toString();
+        })
+        .on('end', function () {
+          res.header({ 'Content-Type': 'text/markdown; charset=UTF-8'});
+          res.send(this.data);
+        });
+    });
+  }
+
+  getItemPage () {
+    this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
+      try {
+        Item.findOne({ id : req.params.item_short_id }).then(
+          item => {
+            if ( ! item ) {
+              return next();
+            }
+            item.toPanelItem().then(
+              item => {
+                req.panels = {};
+
+                item.lineage.forEach((ancestor, index) => {
+                  const panelId = makePanelId(ancestor);
+
+                  if ( ! req.panels[panelId] ) {
+                    req.panels[panelId] = makePanel(ancestor);
+                  }
+
+                  req.panels[panelId].items.push(ancestor);
+
+                  req.panels[panelId].active = `${ancestor._id}-subtype`;
+                });
+
+                req.panels[makePanelId(item)] = makePanel(item);
+
+                req.panels[makePanelId(item)].items.push(item);
+
+                next();
+              },
+              next
+            );
+          },
+          next
+        );
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, homePage.bind(this));
+  }
+
+  getPanelPage () {
+    this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
+      try {
+        Type.findOne({ id : req.params.panelShortId }).then(
+          type => {
+            if ( ! type ) {
+              return next(new Error('No such type'));
+            }
+
+            const panelId = makePanelId({ type, parent : req.params.panelParent });
+
+            Item.getPanelItems({ type, parent : req.params.panelParent }).then(
+              results => {
+                req.panels = { [panelId] : makePanel({ type, parent : req.params.panelParent }) };
+
+                req.panels[panelId].items = results.items;
+
+                console.log(require('util').inspect(req.panels, { depth: null }));
+
+                next();
+
+              },
+              next
+            );
+          },
+          next
+        );
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, homePage.bind(this));
+  }
+
+  cdn () {
+    this.app.use('/assets/',      express.static('assets'));
+  }
+
+  notFound () {
+    this.app.use((req, res, next) => {
+      res.statusCode = 404;
+      req.notFound = true;
+      next();
+    }, homePage.bind(this));
+  }
+
+  error () {
+    this.app.use((error, req, res, next) => {
+      // res.send('hello')
+      this.emit('error', error);
+
+      res.statusCode = 500
+
+      res.locals.error = error;
+
+      next();
+    }, homePage.bind(this));
+  }
+
+  api () {
+    this.app.all('/api/:handler', (req, res, next) => {
+      let apiHandler;
+
+      for ( let handler in this.socketAPI.handlers ) {
+        if ( this.socketAPI.handlers[handler].slugName === req.params.handler ) {
+          apiHandler = {
+            name : handler,
+            method : this.socketAPI.handlers[handler]
+          };
+        }
       }
 
-      const renderOptions = {
-        inject    :   {
-          into    :   `index.${env}.html`,
-          where   :   'Loading',
-          props   :   /\{ \/\* reactProps \*\/ \}/
-        }
-      };
-
-      for ( const entry in require.cache ) {
-        if ( path.dirname(entry) === path.join(__dirname, 'components') ) {
-          delete require.cache[entry];
-        }
+      if ( ! apiHandler ) {
+        return next();
       }
 
-      const App = require('./components/app').default;
 
-      renderReact(App, props, renderOptions)(req, res, next);
-    };
+    });
   }
 }
 
