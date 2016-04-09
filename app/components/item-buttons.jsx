@@ -56,7 +56,7 @@ class ItemButtons extends React.Component {
     }
 
     if ( item.subtype ) {
-      if (item.promotions.number > 2) {
+      if (item.promotions > 2) {
         subtype = (
           <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
             <span>{ item.children } </span>
