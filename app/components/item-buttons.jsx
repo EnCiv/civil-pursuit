@@ -66,7 +66,7 @@ class ItemButtons extends React.Component {
       } else
       {
         subtype = (
-          <Button small shy className="subtype-button-gray">
+          <Button small shy inactive className="subtype-button">
             <Icon icon="lock" />
             <Icon icon="level-down" />
           </Button>
