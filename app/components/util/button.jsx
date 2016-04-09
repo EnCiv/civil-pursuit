@@ -16,8 +16,8 @@ class Button extends React.Component {
     success           :   React.PropTypes.bool,
     error             :   React.PropTypes.bool,
     warning           :   React.PropTypes.bool,
-    small             :   React.PropTypes.bool
-    inactive          :   React.PropTypes.bool,
+    small             :   React.PropTypes.bool,
+    inactive          :   React.PropTypes.bool
   };
 
   render () {
