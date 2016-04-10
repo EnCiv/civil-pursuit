@@ -27,7 +27,7 @@ class ItemButtons extends React.Component {
 
     let details, subtype, harmony;
 
-    if( item.user == this.props.synuser.id) {
+    if( item.user == this.props.synuser) {
       details = (
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
