@@ -22,19 +22,26 @@ class ItemButtons extends React.Component {
             <Icon icon="thumbs-o-up" />
           </Button>
         </ButtonGroup>
-      ),
+      )
+    ];
 
-      (
+    let details, subtype, harmony;
+
+    if( item.user == this.synuser.id) {
+      details = (
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
             <span>{ item.popularity.number + '%' } </span>
             <Icon icon="bar-chart" />
           </Button>
         </ButtonGroup>
-      )
-    ];
-
-    let subtype, harmony;
+      );
+      buttons.push(
+        <ButtonGroup>
+        { details}
+        </ButtonGroup>
+      );
+    }
 
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       harmony = (
