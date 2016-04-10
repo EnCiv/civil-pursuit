@@ -27,12 +27,12 @@ class ItemButtons extends React.Component {
 
     let details, subtype, harmony;
 
-    console.log('item.user._id'+item.user._id);
-    console.log('item.user.id'+item.user.id);
-    console.log('user._id'+user._id);
-    console.log('user.id'+user.id);
+    console.log('item.user._id:'+item.user._id);
+    console.log('item.user.id:'+item.user.id);
+    console.log('user._id:'+user._id);
+    console.log('user.id:'+user.id);
 
-    if( item.user._id == user._id) {
+    if( item.user._id == user.id) {
       details = (
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
