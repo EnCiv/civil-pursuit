@@ -65,17 +65,17 @@ class Layout extends Document {
     if ( props.env === 'development' ) {
       this.add(
         new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
-        new Stylesheet('/assets/css/index.css'),
-        new Stylesheet('/assets/css/training.css'),
+        new Stylesheet('/dist-assets/css/index.css'),
+        new Stylesheet('/dist-assets/css/training.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css')
       );
     }
     else {
       this.add(
-        new Stylesheet('/assets/css/assets.min.css'),
-        new Stylesheet('/assets/css/index.min.css'),
-        new Stylesheet('/assets/css/training.min.css'),
+        new Stylesheet('/dist-assets/css/assets.min.css'),
+        new Stylesheet('/dist-assets/css/index.min.css'),
+        new Stylesheet('/dist-assets/css/training.min.css'),
         // new Stylesheet(publicConfig['font awesome'].cdn)
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.min.css')
       );
@@ -95,7 +95,7 @@ class Layout extends Document {
     if ( props.env === 'development' ) {
       this.add(
         new Script('/socket.io/socket.io.js'),
-        new Script('/assets/js/main.js'),
+        new Script('/dist-assets/js/main.js'),
         new Script('/assets/js/socket.io-stream.js'),
         new Script('/assets/bower_components/d3/d3.js'),
         new Script('/assets/bower_components/c3/c3.js')
@@ -105,7 +105,7 @@ class Layout extends Document {
     else {
       this.add(
         new Script('/socket.io/socket.io.js'),
-        new Script('/assets/js/main.min.js'),
+        new Script('/dist-assets/js/main.min.js'),
         new Script('/assets/js/assets.min.js'),
         new GoogleAnalytics()
       );

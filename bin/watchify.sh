@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-watchify dist/client/main.js -o assets/js/main.js
+watchify dist/client/main.js -o dist-assets/js/main.js
