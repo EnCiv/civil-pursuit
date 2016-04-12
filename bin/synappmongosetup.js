@@ -1,0 +1,17 @@
+db.createCollection("apperrors");
+db.createCollection("config");
+db.createCollection("countries");
+db.createCollection("criterias");
+db.createCollection("discussions");
+db.createCollection("educations");
+db.createCollection("employments");
+db.createCollection("feedback");
+db.createCollection("header_menus");
+db.createCollection("items");
+db.createCollection("marital_statuses");
+db.createCollection("political_parties");
+db.createCollection("races");
+db.createCollection("states");
+db.createCollection("trainings");
+db.createCollection("types");
+db.createCollection("users");
