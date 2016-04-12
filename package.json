@@ -22,7 +22,9 @@
     "migrate": "node dist/bin/migrate",
     "reset": "node dist/bin/reset && node dist/bin/migrate",
     "clean" : "node dist/bin/drop-sandbox-dbs.js",
-    "flow": "flow"
+    "flow": "flow",
+    "mongodb-setup": ". export.sh && mongo $MONGOHQ_URL < bin/synappmongosetup.js"
+
    },
   "author": {
     "email": "francoisrvespa@gmail.com",
