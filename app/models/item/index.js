@@ -19,6 +19,7 @@ import getUrlTitle                      from './hooks/get-url-title';
 import saveImage                        from './hooks/save-image';
 import lambda                           from './statics/lambda';
 import getIntro                         from './statics/getIntro';
+import getTopLevelItems                 from './statics/getTopLevelItems';
 import V2                               from './migrations/2';
 
 class Item extends Model {
@@ -150,6 +151,14 @@ class Item extends Model {
 
   static lambda (...args) {
     return lambda.apply(this, args);
+  }
+
+  static getIntro (...args) {
+    return getIntro.apply(this, args);
+  }
+
+  static getTopLevelItems (...args) {
+    return getTopLevelItems.apply(this, args);
   }
 
   toPanelItem (...args) {
