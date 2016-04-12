@@ -18,6 +18,7 @@ import getDetails                       from './statics/get-details';
 import getUrlTitle                      from './hooks/get-url-title';
 import saveImage                        from './hooks/save-image';
 import lambda                           from './statics/lambda';
+import getIntro                         from './statics/getIntro';
 import V2                               from './migrations/2';
 
 class Item extends Model {
