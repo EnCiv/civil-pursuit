@@ -4,3 +4,5 @@
 /export.sh
 /.vagrant/*
 /dist/*
+/assets/js/main.js
+/assets/js/main.min.js
