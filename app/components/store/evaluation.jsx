@@ -162,7 +162,7 @@ class EvaluationStore extends React.Component {
     }
     else {
       this.setState({ evaluation : null, cursor : 1 });
-      this.props.toggle('details');
+      this.props.toggle('evaluation');
     }
   }
 
