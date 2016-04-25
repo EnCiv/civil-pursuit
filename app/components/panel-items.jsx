@@ -302,24 +302,26 @@ class PanelItems extends React.Component {
     }
 
     return (
-      <Panel
-        className   =   { name }
-        ref         =   "panel"
-        heading     =   {[
-          ( <h4>{ title }</h4> ),
-          (
-            <Icon
-              icon        =   "plus"
-              className   =   "toggle-creator"
-              onClick     =   { this.toggle.bind(this, null, 'creator') }
+      <section id               =     "syn-panel">
+        <Panel
+          className   =   { name }
+          ref         =   "panel"
+          heading     =   {[
+            ( <h4>{ title }</h4> ),
+            (
+              <Icon
+                icon        =   "plus"
+                className   =   "toggle-creator"
+                onClick     =   { this.toggle.bind(this, null, 'creator') }
               />
-          )
-        ]}
-        >
-        { creator }
-        { content }
-        { loadMore }
-      </Panel>
+            )
+          ]}
+          >
+          { creator }
+          { content }
+          { loadMore }
+        </Panel>
+      </section>
     );
   }
 }
