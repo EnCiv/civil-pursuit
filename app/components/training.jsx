@@ -264,7 +264,7 @@ class Training extends React.Component {
     else if ( video ) {
       video.addEventListener('load', onLoad);
     } else {
-      intro.addEventListener('load', onLoad);
+      onLoad ();
     }
 
 
