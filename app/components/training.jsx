@@ -250,7 +250,7 @@ class Training extends React.Component {
         this.ready = true;
         view.classList.add('show');
         this.go();
-      }, 1000);
+      }, 10000);
     }
 
     if ( image ) {
