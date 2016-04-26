@@ -238,7 +238,7 @@ class Training extends React.Component {
 
     const video = intro.querySelector('iframe');
 
-    if (!intro)
+    if (intro == null)
     { intro=document.querySelector('#syn-panel-items');
     }
 
