@@ -230,7 +230,7 @@ class Training extends React.Component {
 
     let media;
 
-    const intro = document.querySelector('#syn-intro');
+    var intro = document.querySelector('#syn-intro');
 
     const view = React.findDOMNode(this.refs.view);
 
