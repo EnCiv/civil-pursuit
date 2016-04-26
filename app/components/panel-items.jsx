@@ -302,7 +302,7 @@ class PanelItems extends React.Component {
     }
 
     return (
-      <section id               =     "syn-panel">
+      <section id               =     "syn-panel-items">
         <Panel
           className   =   { name }
           ref         =   "panel"
