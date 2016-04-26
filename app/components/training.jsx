@@ -232,15 +232,15 @@ class Training extends React.Component {
 
     var intro = document.querySelector('#syn-intro');
 
+    if (intro == null)
+    { intro=document.querySelector('#syn-panel-items');
+    }
+
     const view = React.findDOMNode(this.refs.view);
 
     const image = intro.querySelector('img');
 
     const video = intro.querySelector('iframe');
-
-    if (intro == null)
-    { intro=document.querySelector('#syn-panel-items');
-    }
 
     if ( video ) {
       media = intro.querySelector('.video-container');
