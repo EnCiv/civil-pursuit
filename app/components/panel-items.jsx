@@ -118,13 +118,9 @@ class PanelItems extends React.Component {
     const { panel, count, items, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
-      type, parent, creator, buttonstate={};
+      type, parent, creator;
 
-    buttonstate.promote="";
-    buttonstate.details="";
-    buttonstate.harmony="";
-    buttonstate.subtype="";
-
+      this.setState( {"buttonstate" : {{"promote":false}, {"details":false}, {"harmony":false}, {"subtype":false}}} );
 
     if ( panel ) {
       loaded = true;
@@ -167,7 +163,7 @@ class PanelItems extends React.Component {
             let promote, details, subtype, editItem, harmony;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
-              buttonstate.promote=(active && active.item === item._id && active.section === 'promote');
+              this.state.buttonstate.promote=(active && active.item === item._id && active.section === 'promote');
               promote = (
                 <div className="toggler promote">
                   <Accordion
@@ -192,7 +188,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].details ) {
-              buttonstate.details= (active && active.item === item._id && active.section === 'details') ;
+              this.state.buttonstate.details= (active && active.item === item._id && active.section === 'details') ;
               details = (
                 <div className="toggler details">
                   <Accordion
@@ -209,7 +205,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
-              buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
+              this.state.buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
               subtype = (
                 <div className="toggler subtype">
                   <Accordion
@@ -230,7 +226,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].harmony ) {
-              buttonstate.harmony= (active && active.item === item._id && active.section === 'harmony');
+              this.state.buttonstate.harmony= (active && active.item === item._id && active.section === 'harmony');
               harmony = (
                 <div className="toggler harmony">
                   <Accordion
@@ -264,7 +260,7 @@ class PanelItems extends React.Component {
                         item    =   { item }
                         user    =   { user }
                         toggle  =   { this.toggle.bind(this) }
-                        buttonstate = { buttonstate }
+                        buttonstate = { this.state.buttonstate }
                         />
                     </ItemStore>
                   ) }
