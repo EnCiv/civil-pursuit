@@ -16,7 +16,7 @@ class ItemButtons extends React.Component {
 
     console.info(this);
 
-    console.log("buttonstate.promote=", buttonstate.promote);
+    console.info(buttonstate);
 
     const buttons = [];
 
@@ -112,7 +112,7 @@ class ItemButtons extends React.Component {
       if (item.promotions > 2) {
         if (buttonstate.subtype) {
           subtype = (
-            <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
+            <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
               <span>{ item.children } </span>
               <Icon icon="level-down" />
             </Button>
