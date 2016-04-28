@@ -118,7 +118,13 @@ class PanelItems extends React.Component {
     const { panel, count, items, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
-      type, parent, creator, buttonstate={{"promote":""},{"details":""},{"subtype":""},{"harmony":""}};
+      type, parent, creator, buttonstate={};
+
+    buttonstate.promote="";
+    buttonstate.details="";
+    buttonstate.harmony="";
+    buttonstate.subtype="";
+
 
     if ( panel ) {
       loaded = true;
@@ -161,7 +167,7 @@ class PanelItems extends React.Component {
             let promote, details, subtype, editItem, harmony;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
-              buttonstate.promote=success;
+              buttonstate.promote="success";
               promote = (
                 <div className="toggler promote">
                   <Accordion
