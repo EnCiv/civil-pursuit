@@ -12,7 +12,7 @@ class ItemButtons extends React.Component {
 
   render () {
 
-    const { item, panel, user } = this.props;
+    const { item, panel, user, buttonState } = this.props;
 
     const buttons = [
       (
