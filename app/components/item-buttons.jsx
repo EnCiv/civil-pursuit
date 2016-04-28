@@ -76,11 +76,23 @@ class ItemButtons extends React.Component {
 
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       if(buttonstate.harmony) {
-      harmony = (
-        <Button
+        harmony = (
+          <Button
+            small
+            shy
+            success
+            onClick     =   { this.toggle.bind(this, 'harmony') }
+            className   =   "harmony-button"
+            >
+            <span>{ item.harmony.harmony + '%' } </span>
+            <Icon icon="music" />
+          </Button>
+         );
+      } else {
+        harmony = ( 
+          <Button
           small
           shy
-          success
           onClick     =   { this.toggle.bind(this, 'harmony') }
           className   =   "harmony-button"
           >
@@ -88,19 +100,8 @@ class ItemButtons extends React.Component {
           <Icon icon="music" />
         </Button>
        );
-    } else {
-        <Button
-          small
-          shy
-          onClick     =   { this.toggle.bind(this, 'harmony') }
-          className   =   "harmony-button"
-          >
-          <span>{ item.harmony.harmony + '%' } </span>
-          <Icon icon="music" />
-        </Button>
-       );
-    }
-        buttons.push(
+      }
+      buttons.push(
         <ButtonGroup>
           { harmony } 
         </ButtonGroup>
