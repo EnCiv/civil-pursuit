@@ -21,7 +21,7 @@ class ItemButtons extends React.Component {
     const buttons = [
       (
         <ButtonGroup>
-          <Button small shy { buttonstate.promote } onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+          <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
             <span>{ item.promotions } </span>
             <Icon icon="thumbs-o-up" />
           </Button>
@@ -32,14 +32,25 @@ class ItemButtons extends React.Component {
     let details, subtype, harmony;
 
     if( user && item.user._id == user.id) {
-      details = (
-        <ButtonGroup>
-          <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-            <span>{ item.popularity.number + '%' } </span>
-            <Icon icon="bar-chart" />
-          </Button>
-        </ButtonGroup>
-      );
+      if(buttonstate.details) {
+        details = (
+          <ButtonGroup>
+            <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+              <span>{ item.popularity.number + '%' } </span>
+              <Icon icon="bar-chart" />
+            </Button>
+          </ButtonGroup>
+        );
+      else {
+        details = (
+          <ButtonGroup>
+            <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+              <span>{ item.popularity.number + '%' } </span>
+              <Icon icon="bar-chart" />
+            </Button>
+          </ButtonGroup>
+        );
+      }
       buttons.push(
         <ButtonGroup>
         { details}
