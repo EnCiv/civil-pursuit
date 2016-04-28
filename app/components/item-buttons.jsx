@@ -16,7 +16,7 @@ class ItemButtons extends React.Component {
 
     console.info(this);
 
-    console.log("buttonstate[promote]=", buttonstate[promote]);
+    console.log("buttonstate.promote=", buttonstate.promote);
 
     const buttons = [
       (
