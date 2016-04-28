@@ -16,10 +16,12 @@ class ItemButtons extends React.Component {
 
     console.info(this);
 
+    console.log("buttonstate[promote]=", buttonstate["promote"]);
+
     const buttons = [
       (
         <ButtonGroup>
-          <Button small shy { buttonstate["promote"] } onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+          <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
             <span>{ item.promotions } </span>
             <Icon icon="thumbs-o-up" />
           </Button>
