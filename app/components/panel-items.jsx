@@ -167,7 +167,7 @@ class PanelItems extends React.Component {
             let promote, details, subtype, editItem, harmony;
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
-              buttonstate.promote="success";
+              buttonstate.promote=(active && active.item === item._id && active.section === 'promote');
               promote = (
                 <div className="toggler promote">
                   <Accordion
@@ -192,7 +192,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].details ) {
-              buttonstate.details="success";
+              buttonstate.details= (active && active.item === item._id && active.section === 'details') ;
               details = (
                 <div className="toggler details">
                   <Accordion
@@ -209,7 +209,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
-              buttonstate.subtype="success";
+              buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
               subtype = (
                 <div className="toggler subtype">
                   <Accordion
@@ -230,7 +230,7 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].harmony ) {
-              buttonstate.harmony="success";
+              buttonstate.harmony= (active && active.item === item._id && active.section === 'harmony');
               harmony = (
                 <div className="toggler harmony">
                   <Accordion

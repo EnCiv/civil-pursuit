@@ -18,18 +18,34 @@ class ItemButtons extends React.Component {
 
     console.log("buttonstate.promote=", buttonstate.promote);
 
-    const buttons = [
-      (
+    const buttons = [];
+
+    let promote, details, subtype, harmony;
+
+    if (buttonstate.promote) {
+      promote = (
+        <ButtonGroup>
+          <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+            <span>{ item.promotions } </span>
+            <Icon icon="thumbs-o-up" />
+          </Button>
+        </ButtonGroup>
+      );
+    } else {
+      promote = (
         <ButtonGroup>
           <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
             <span>{ item.promotions } </span>
             <Icon icon="thumbs-o-up" />
           </Button>
         </ButtonGroup>
-      )
-    ];
+      );
+    }
+    buttons.push(
+        { promote }
+    );
 
-    let details, subtype, harmony;
+
 
     if( user && item.user._id == user.id) {
       if(buttonstate.details) {
@@ -59,7 +75,20 @@ class ItemButtons extends React.Component {
     }
 
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
+      if(buttonstate.harmony) {
       harmony = (
+        <Button
+          small
+          shy
+          success
+          onClick     =   { this.toggle.bind(this, 'harmony') }
+          className   =   "harmony-button"
+          >
+          <span>{ item.harmony.harmony + '%' } </span>
+          <Icon icon="music" />
+        </Button>
+       );
+    } else {
         <Button
           small
           shy
@@ -70,6 +99,7 @@ class ItemButtons extends React.Component {
           <Icon icon="music" />
         </Button>
        );
+    }
         buttons.push(
         <ButtonGroup>
           { harmony } 
@@ -79,12 +109,21 @@ class ItemButtons extends React.Component {
 
     if ( item.subtype ) {
       if (item.promotions > 2) {
-        subtype = (
-          <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-            <span>{ item.children } </span>
-            <Icon icon="level-down" />
-          </Button>
-        );
+        if (buttonstate.subtype) {
+          subtype = (
+            <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
+              <span>{ item.children } </span>
+              <Icon icon="level-down" />
+            </Button>
+          );
+        } else {
+            subtype = (
+            <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
+              <span>{ item.children } </span>
+              <Icon icon="level-down" />
+            </Button>
+          );
+        } 
       } else
       {
         subtype = (
