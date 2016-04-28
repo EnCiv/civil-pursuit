@@ -118,12 +118,7 @@ class PanelItems extends React.Component {
     const { panel, count, items, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
-      type, parent, creator, buttonstate;
-
-    buttonstate.promote="";
-    buttonstate.details="";
-    buttonstate.subtype="";
-    buttonstate.harmony="";
+      type, parent, creator, buttonstate={{"promote":""},{"details":""},{"subtype":""},{"harmony":""}};
 
     if ( panel ) {
       loaded = true;
