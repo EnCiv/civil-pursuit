@@ -21,7 +21,7 @@ class ItemButtons extends React.Component {
     const buttons = [
       (
         <ButtonGroup>
-          <Button small shy buttonstate.promote onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+          <Button small shy { buttonstate.promote } onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
             <span>{ item.promotions } </span>
             <Icon icon="thumbs-o-up" />
           </Button>
