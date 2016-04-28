@@ -121,7 +121,7 @@ class PanelItems extends React.Component {
       type, parent, creator;
 
       this.setState( { buttonstate : {} } );
-      this.state.buttonstate = { promote:false,  details:false, harmony:false, subtype:false};
+     // this.state.buttonstate = { promote:false,  details:false, harmony:false, subtype:false};
 
     if ( panel ) {
       loaded = true;
