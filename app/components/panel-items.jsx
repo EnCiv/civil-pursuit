@@ -120,7 +120,7 @@ class PanelItems extends React.Component {
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator, buttonstate={promote:false, details: false, subtype: false, harmony: false};
 
-    this.setState( buttonstate );
+    this.setState( { buttonstate } );
      // this.state.buttonstate = { promote:false,  details:false, harmony:false, subtype:false};
 
     if ( panel ) {
