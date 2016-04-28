@@ -41,7 +41,7 @@ class ItemButtons extends React.Component {
             </Button>
           </ButtonGroup>
         );
-      else {
+      } else {
         details = (
           <ButtonGroup>
             <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
