@@ -106,7 +106,7 @@ class Profile extends React.Component {
       <Panel title="Profile" creator={ false }>
         <div className="table" >
          <div className="table-left">
-          <h4 className="gutter muted">Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.</h4>
+          <h4 className="gutter muted">Providing profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.</h4>
          </div>
          <div className="table-right">
           <div className="text-right gutter-y">
