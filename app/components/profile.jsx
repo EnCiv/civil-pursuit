@@ -104,13 +104,15 @@ class Profile extends React.Component {
 
     return (
       <Panel title="Profile" creator={ false }>
-        <div className="block-left">
+        <div className="table"
+         <div className="table-left">
           <h4 className="gutter muted">Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.</h4>
-        </div>
-        <div className="block-right">
-          <div className="text-left gutter-y">
+         </div>
+         <div className="table-right">
+          <div className="text-right gutter-y">
             <Button radius onClick={ this.done }>Skip</Button>
           </div>
+         </div>
         </div>
 
         { content }
