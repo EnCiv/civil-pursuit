@@ -28,13 +28,13 @@
 }
 
 .syn-screen-phone_and_up, [data-screen="phone-and-up"] {
-  @media (max-width: @screen-phone) {
+  @media (max-width: @screen-phone) and (max-device-pixel-ratio: 1){
     display: none !important;
   }
 }
 
 section.syn-column {
-   @media (max-width: @screen-phone){
+   @media (max-width: @screen-phone) and (max-device-pixel-ratio: 1){
       flex-basis: none !important
   }
 }
