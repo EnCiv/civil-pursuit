@@ -24,25 +24,23 @@ class ItemButtons extends React.Component {
 
     if (buttonstate.promote) {
       promote = (
-        <ButtonGroup>
-          <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-            <span>{ item.promotions } </span>
-            <Icon icon="thumbs-o-up" />
-          </Button>
-        </ButtonGroup>
+        <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+          <span>{ item.promotions } </span>
+          <Icon icon="thumbs-o-up" />
+        </Button>
       );
     } else {
       promote = (
-        <ButtonGroup>
-          <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-            <span>{ item.promotions } </span>
-            <Icon icon="thumbs-o-up" />
-          </Button>
-        </ButtonGroup>
+        <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+          <span>{ item.promotions } </span>
+          <Icon icon="thumbs-o-up" />
+        </Button>
       );
     }
     buttons.push(
+      <ButtonGroup>
         { promote }
+      </ButtonGroup>
     );
 
 
@@ -50,21 +48,17 @@ class ItemButtons extends React.Component {
     if( user && item.user._id == user.id) {
       if(buttonstate.details) {
         details = (
-          <ButtonGroup>
-            <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-              <span>{ item.popularity.number + '%' } </span>
-              <Icon icon="bar-chart" />
-            </Button>
-          </ButtonGroup>
+          <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+            <span>{ item.popularity.number + '%' } </span>
+            <Icon icon="bar-chart" />
+          </Button>
         );
       } else {
         details = (
-          <ButtonGroup>
-            <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-              <span>{ item.popularity.number + '%' } </span>
-              <Icon icon="bar-chart" />
-            </Button>
-          </ButtonGroup>
+          <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+            <span>{ item.popularity.number + '%' } </span>
+            <Icon icon="bar-chart" />
+          </Button>
         );
       }
       buttons.push(
@@ -113,14 +107,14 @@ class ItemButtons extends React.Component {
         if (buttonstate.subtype) {
           subtype = (
             <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span>{ item.children } </span>
+              <span>{ (item.children ? item.children : 0 )} </span>
               <Icon icon="level-down" />
             </Button>
           );
         } else {
             subtype = (
             <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span>{ item.children } </span>
+              <span>{ (item.children ? item.children : 0)} </span>
               <Icon icon="level-down" />
             </Button>
           );
