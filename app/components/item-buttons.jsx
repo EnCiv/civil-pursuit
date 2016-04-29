@@ -14,10 +14,6 @@ class ItemButtons extends React.Component {
 
     const { item, panel, user, buttonstate } = this.props;
 
-    console.info(this);
-
-    console.info(buttonstate);
-
     const buttons = [];
 
     let promote, details, subtype, harmony;
