@@ -165,7 +165,6 @@ class Identity extends React.Component {
 
     return (
       <section className={ selectors.identity.selector.replace(/\./g, ' ') }>
-        <hr />
         <Row>
           <Column
             span        =   "50"
