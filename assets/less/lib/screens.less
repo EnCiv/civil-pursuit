@@ -207,20 +207,23 @@
   }
 }
 
+
+
 .syn-screen-phone_and_up, [data-screen="phone-and-up"] {
-  @media (max-width: @screen-phone) {
+  @media (max-width: @screen-phone), (max-device-pixel-ratio: 1) {
     display: none !important;
   }
 }
 
+
 .syn-screen-phone_and_down, [data-screen="phone-and-down"] {
-  @media (min-width: @screen-tablet) {
+  @media (min-width: @screen-tablet), (min-device-pixel-ratio: 1) {
     display: none !important;
   }
 }
-/**----Samsung Galaxy S3 Note S4 **/
+/**----Samsung Galaxy S3 Note S4 **'/'
 section.syn-column {
-    @media (max-width: 360px){
+    @media (max-width: 360px), (max-device-pixel-ratio: 1){
       width: 50% !important;
     }
 }
@@ -229,10 +232,10 @@ section.syn-column {
     @media (max-width: 360px){
      font-size: 1.2em !important;
     }
-}
+}  
 
 section.syn-column > span{
-    @media (max-width: 360px){
+    @media (max-width: 360px), (max-device-pixel-ratio: 1){
       overflow: hidden;
       max-width: 75px;
     }
@@ -264,7 +267,7 @@ section.syn-panel {
 
 /**
 section.syn-row{
-  @media (max-width: @screen-phone){
+  @media (max-width: @screen-phone), (max-device-pixel-ratio: 1){
       flex-direction: row !important;
   }
 }
