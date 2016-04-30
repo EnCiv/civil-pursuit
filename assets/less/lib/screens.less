@@ -214,7 +214,7 @@
 
 
 .syn-screen-phone_and_up, [data-screen="phone-and-up"] {
-  @media (max-width: @screen-phone) and (max-device-pixel-ratio: 1) {
+  @media (max-width: @screen-phone) and (-webkit-max-device-pixel-ratio: 1) {
     display: none !important;
   }
 }
@@ -340,7 +340,7 @@ textarea.user-feedback.block{
 
 /**-----------------**/
 [data-screen="show-on-low-res"] {
-  @media (min-width: @screen-phone) , (min-device-pixel-ratio: 1.1){
+  @media (min-width: @screen-phone) , (-webkit-min-device-pixel-ratio: 1.1){
     display: none !important;
   }
 }
