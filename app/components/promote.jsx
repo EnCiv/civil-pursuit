@@ -83,7 +83,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div data-screen="phone-and-up">
+            <div data-screen="show-on-high-res">
               <Row>
                 <ColumnItem item={ left } position='left' key='item-left' />
 
@@ -124,7 +124,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div data-screen="up-to-phone">
+            <div data-screen="show-on-low-res">
               <Row data-stack="phone-and-down">
                 <PromoteSmallScreenColumn
                   { ...this.props }

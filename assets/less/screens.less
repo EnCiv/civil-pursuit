@@ -27,7 +27,7 @@
   }
 }
 
-.syn-screen-phone_and_up, [data-screen="phone-and-up"] {
+[data-screen="show-on-high-res"] {
   @media ((max-width: @screen-phone) and (max-device-pixel-ratio: 1)) {
     display: none !important;
   }
@@ -45,8 +45,8 @@ section.syn-column {
   }
 }
 
-[data-screen="up-to-phone"] {
-  @media (min-width: @screen-phone), (min-device-pixel-ratio: 1.1) {
+[data-screen="show-on-low-res"] {
+  @media (min-width: @screen-phone) , (min-device-pixel-ratio: 1.1) {
     display: none !important;
   }
 }
