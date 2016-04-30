@@ -94,6 +94,7 @@
   }
 }
 
+/**
 .syn-screen-phone_and_down{
   @media (max-width: @screen-tablet)
   {
@@ -102,6 +103,7 @@
       margin-top: 5px;
   }
 }
+**/
 
 /** modal dialog-phone **/
 
@@ -325,7 +327,7 @@ textarea.user-feedback.block{
 }
 /**-----------------**/
 [data-screen="up-to-phone"] {
-  @media (min-width: @screen-phone) and (max-device-pixel-ratio: 1){
+  @media (min-width: @screen-phone) {
     display: none !important;
   }
 }
