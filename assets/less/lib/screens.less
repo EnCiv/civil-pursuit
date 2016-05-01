@@ -220,6 +220,12 @@
   }
 }
 
+[data-screen="tablet-and-up"] {
+  @media (max-width: @screen-tablet) and (-webkit-max-device-pixel-ratio: 1) {
+    display: none !important;
+  }
+}
+
 [data-screen="show-on-high-res"] {
   @media (max-width: @screen-phone) and (-webkit-max-device-pixel-ratio: 1) {
     display: none !important;
