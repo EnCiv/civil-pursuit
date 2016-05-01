@@ -45,13 +45,13 @@
 }
 
 .syn-row[data-stack="phone-and-down"] {
-  @media (max-width: @screen-phone) {
+  @media (max-width: @screen-phone) and (-webkit-max-pixel-ratio: 1) {
     flex-direction: column;
   }
 }
 
 .syn-row[data-stack="tablet-and-down"] {
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet) and (-webkit-max-pixel-ratio: 1){
     flex-direction: column;
   }
 }
