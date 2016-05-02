@@ -24,9 +24,10 @@ class ItemMedia extends React.Component {
       media = ( <Image src={ item.image } responsive /> );
     }
 
+/** don't show image if no image
     else {
       media = ( <Image src={ publicConfig['default item image'] } responsive /> );
-    }
+    } **/
 
     return (
       <section className="item-media-wrapper">
