@@ -28,7 +28,7 @@ class ItemMedia extends React.Component {
     else {
       /** don't show image if
       media = ( <Image src={ publicConfig['default item image'] } responsive /> ); **/
-      return ();
+      media = "";
     }
 
     return (
