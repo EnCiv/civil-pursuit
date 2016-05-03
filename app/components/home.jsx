@@ -103,7 +103,7 @@ class Home extends React.Component {
         </div>
       );
     }
-
+    console.info("Home.render end", this.props, this.state);
     return content;
   }
 }
