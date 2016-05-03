@@ -77,6 +77,8 @@ class Home extends React.Component {
 
     const { discussion, panel, items, training } = this.state;
 
+    console.info("Home.render", this.props, this.state);
+
     if ( discussion ) {
       const { deadline } = new Date(discussion);
       const now = Date.now();
