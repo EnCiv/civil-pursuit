@@ -87,7 +87,7 @@ class PanelItems extends React.Component {
       this.mountedItems[itemId][section] = true;
     }
 
-    console.info("toggle", itemId, section, "mountedItems", this.mountedItems.length);
+    console.info("toggle", itemId, section, "mountedItems", Object.keys(this.mountedItems).length, Object.keys(this.mountedItems));
 
     this.setState({ active : { item : itemId, section }});
   }
