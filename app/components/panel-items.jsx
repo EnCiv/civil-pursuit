@@ -66,7 +66,7 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
-    console.info("toggle", itemId, section, this.mountedItems);
+    console.info("toggle", itemId, section, "mountedItems", this.mountedItems.length);
 
     if (
       this.state.active &&
