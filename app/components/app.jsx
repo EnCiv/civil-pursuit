@@ -28,6 +28,8 @@ class App extends React.Component {
       error
     } = this.props;
 
+    console.info("App.render", this.props);
+
     let page = (
       <Panel heading={(<h4>Not found</h4>)} id="not-found">
         <section style={{ padding: 10 }}>
@@ -90,7 +92,7 @@ class App extends React.Component {
 
           panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          console.info({ panel })
+          console.info("App.render item", { panel })
 
           page = (
             <PanelItems { ...this.props } panel={ panel } />
@@ -101,6 +103,8 @@ class App extends React.Component {
         case 'items':
 
           const panelId2 = Object.keys(this.props.panels)[0];
+
+          console.info("App.render items", { panelId2 });
 
           page = (
             <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
