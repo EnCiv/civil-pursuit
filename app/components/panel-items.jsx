@@ -108,12 +108,12 @@ class PanelItems extends React.Component {
           let hid;
           if (itemId) {
             if (item._id == itemId) {
-              hid = false; 
+              ( hid = false ); 
             } else {
-              hid = true;
+              ( hid = true );
             }
           } else {
-            hid = false;
+            ( hid = false);
           }
         }
     } else {
