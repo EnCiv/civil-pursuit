@@ -305,7 +305,7 @@ class PanelItems extends React.Component {
                     promote, details, subtype, editItem, harmony
                     ] }
 
-                  collapsed = { this.state.itemhide[item._id] }
+                  collapsed = { this.state.itemhide ? this.state.itemhide[item._id] : false }
 
                   />
               </ItemStore>
