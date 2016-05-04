@@ -104,7 +104,7 @@ class PanelItems extends React.Component {
     if (!itemId) // turn all items on
     { for ( let itm in this.props.items ) {
         if (this.state.itemhide[itm._id]==true) { // this item was previously hidden
-           this.setState( { itemhide : {itm._id : false} } ); // so unhide it
+           this.setState( { itemhide : { item: itm._id, false} } ); // so unhide it
         }
       }
     } else {
@@ -113,11 +113,11 @@ class PanelItems extends React.Component {
           if( this.state.itemhide[itm._id]==false) { //this item was previously not hidden
             ; // no need to do anything
           } else if (this.state.itemhide[itm._id]==true) { // this item was previously hidden
-             this.setState( { itemhide : {itm._id : false} } ); // so unhide it
+             this.setState( { itemhide : {item: itm._id, false} } ); // so unhide it
           }
         } else  { // this item should be hidden
           if (this.state.itemhide[itm._id] == false ) { // this is not hidden
-            this.setState( { itemhide: {itm._id : true} } );
+            this.setState( { itemhide: {item: itm._id, true} } );
           } else { // this item is already hidden
               ;
           }
