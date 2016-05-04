@@ -236,7 +236,7 @@ class Item extends React.Component {
         </article>
       );
     } else {
-      rendered item = (
+      rendereditem = (
         <article className="item" ref="item" id={ `item-${item._id}` }>
           <ItemMedia
             item      =   { item }
