@@ -191,6 +191,8 @@ class Item extends React.Component {
   render () {
     const { item, buttons, footer, collapsed } = this.props;
 
+    console.info("item.render:", this.props, this.state)
+
     let rendereditem = {};
 
     let referenceLink, referenceTitle;
@@ -271,7 +273,7 @@ class Item extends React.Component {
         </article>
       );
     }
-    return ( { rendereditem } );
+    return (  rendereditem );
   }
 }
 
