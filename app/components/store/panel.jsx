@@ -93,9 +93,9 @@ class PanelStore extends React.Component {
   collapseAroundItem (itemId) {
     for ( let itm in this.state.items ) {
       if ( this.state.items[itm]._id == itemId ) {
-        this.setState(this.state.items[itm].hidden=false;
+        this.state.items[itm].hidden=false;
       } else {
-        this.setState(this.state.items[itm].hidden=true;)
+        this.state.items[itm].hidden=true;
       }
     }
   }  
