@@ -87,6 +87,20 @@ class PanelStore extends React.Component {
     }
   }
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  collapseAroundItem (itemId) {
+    for ( let itm in this.state.items ) {
+      if ( this.state.items[itm]._id == itemId ) {
+        this.setState(this.state.items[itm].hidden=false;
+      } else {
+        this.setState(this.state.items[itm].hidden=true;)
+      }
+    }
+  }  
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderChildren () {
@@ -100,7 +114,7 @@ class PanelStore extends React.Component {
   render () {
     console.info("panel render", this.props, this.state);
     const panelout = this.renderChildren();
-    console.info("panel render after", ...this.props, ...this.state);
+    console.info("panel render after", this.props, this.state);
 
     return (  
       <section>

@@ -72,7 +72,8 @@ class PanelItems extends React.Component {
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
-      return this.setState({ active : { item : itemId, section : null } });
+        collapseAroundItem (false);
+        return this.setState({ active : { item : itemId, section : null } });
     }
 
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
@@ -85,6 +86,7 @@ class PanelItems extends React.Component {
       }
 
       this.mountedItems[itemId][section] = true;
+      collapseAroundItem(itemId);
     }
 
     console.info("toggle", itemId, section, "mountedItems", Object.keys(this.mountedItems).length, Object.keys(this.mountedItems));
