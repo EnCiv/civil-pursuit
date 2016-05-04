@@ -104,6 +104,7 @@ class PanelItems extends React.Component {
     
     if(!this.state.itemhide) {
       for ( let itm in this.props.items ) {
+          console.info("in collapse", itm._id, this.props.items);
           this.setState( { itemhide : { item: itm._id, hid: false} } ); // so unhide it
       }
     }
