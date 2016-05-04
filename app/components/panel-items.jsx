@@ -29,7 +29,7 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : null , itemhide : [] };
+  state = { active : null , itemhide : {} };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,34 +101,33 @@ class PanelItems extends React.Component {
 
   collapseAroundItem (itemId) {
     console.info("collapseArroundItem before", itemId, this.props, this.state);
-    
-    if(!this.state.itemhide.length) {
-      for ( let itm =0; itm < this.props.items.length ; itm++ ) {
-          console.info("in collapse", this.props.items[itm]._id, this.props.items);
-          this.setState( { itemhide : { item: this.props.items[itm._id], hid: false} } ); // so unhide it
-      }
-    }
 
-    if (!itemId) // turn all items on
-    { for ( let itm in this.props.items ) {
-        if (this.state.itemhide[itm._id].hid==true) { // this item was previously hidden
-           this.setState( { itemhide : { item: itm._id, hid: false} } ); // so unhide it
+    if(!this.state.itemhide.length) {
+      this.state.itemhide = this.props.items
+        .map(item => {
+            let hid;
+            if (itemId) {
+              if (item._id == itemId) {
+                hid = false; 
+              } else {
+                hid = true;
+              }
+            } else {
+              hid = false;
+            }
+          }
         }
       }
     } else {
-      for ( let itm in this.props.items ) { 
-        if ( itm._id == itemId ) {  //this item should not be hidden
-          if( this.state.itemhide[itm._id].hid==false) { //this item was previously not hidden
-            ; // no need to do anything
-          } else if (this.state.itemhide[itm._id].hid==true) { // this item was previously hidden
-             this.setState( { itemhide : {item: itm._id, hid: false} } ); // so unhide it
-          }
-        } else  { // this item should be hidden
-          if (this.state.itemhide[itm._id].hid == false ) { // this is not hidden
-            this.setState( { itemhide: {item: itm._id, hid: true} } );
-          } else { // this item is already hidden
-              ;
-          }
+      for (let itm in this.state.itemhide) {
+        if (itemId) {
+            if (this.state.itemhide[itm]._id == itemId) {
+               this.state.itemhide[itm].hid = false; 
+            } else {
+              this.state.itemhide[itm].hid = true;
+            }
+          } else {
+            this.state.itemhide[itm].hid = false;
         }
       }
     }
