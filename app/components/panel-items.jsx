@@ -102,7 +102,7 @@ class PanelItems extends React.Component {
   collapseAroundItem (itemId) {
     console.info("collapseArroundItem before", itemId, this.props, this.state);
     
-    if(!this.state.itemhide) {
+    if(!this.state.itemhide.length) {
       for ( let itm =0; itm < this.props.items.length ; itm++ ) {
           console.info("in collapse", this.props.items[itm]._id, this.props.items);
           this.setState( { itemhide : { item: this.props.items[itm._id], hid: false} } ); // so unhide it
