@@ -101,6 +101,7 @@ class PanelStore extends React.Component {
     return (
       <section>
         { this.renderChildren() }
+        console.info("panel render", this.props);
       </section>
     );
   }
