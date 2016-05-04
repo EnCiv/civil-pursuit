@@ -105,10 +105,8 @@ class PanelItems extends React.Component {
     if(!this.state.itemhide) {
       for ( let itm in this.props.items ) {
           this.setState( { itemhide : { item: itm._id, false} } ); // so unhide it
-        }
       }
     }
-
 
     if (!itemId) // turn all items on
     { for ( let itm in this.props.items ) {
