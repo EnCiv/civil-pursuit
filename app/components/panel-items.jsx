@@ -29,9 +29,8 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { { active : null },
-            { itemhide : {} }
-          };
+  state = { active : null , itemhide : null };
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
