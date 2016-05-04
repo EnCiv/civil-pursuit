@@ -123,8 +123,7 @@ class PanelItems extends React.Component {
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
-//    this.setState( { buttonstate } );
-     // this.state.buttonstate = { promote:false,  details:false, harmony:false, subtype:false};
+    console.info("panel-items.render", this.props, this.state);
 
     if ( panel ) {
       loaded = true;
