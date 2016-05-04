@@ -189,7 +189,9 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { item, buttons, footer } = this.props;
+    const { item, buttons, footer, collapsed } = this.props;
+
+    let rendereditem = {};
 
     let referenceLink, referenceTitle;
 
@@ -198,40 +200,78 @@ class Item extends React.Component {
       referenceTitle = item.references[0].title;
     }
 
-    return (
-      <article className="item" ref="item" id={ `item-${item._id}` }>
-        <ItemMedia
-          item      =   { item }
-          ref       =   "media"
-          />
+    if(collapsed==true) {
+      rendereditem = (
+        <article className="item" ref="item" id={ `item-${item._id}` } style="display: none";>
+          <ItemMedia
+            item      =   { item }
+            ref       =   "media"
+            />
 
-        <section className="item-buttons">
-          { buttons }
-        </section>
+          <section className="item-buttons">
+            { buttons }
+          </section>
 
-        <section className="item-text">
-          <div className="item-truncatable">
-            <h4 className="item-subject">
-              { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-              { item.subject }
-            </h4>
-            <h5 className="item-reference">
-              <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
-            </h5>
-            <div className="item-description pre-text">{ item.description }</div>
-            <div className="item-read-more" ref="more">
-              <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
+          <section className="item-text">
+            <div className="item-truncatable">
+              <h4 className="item-subject">
+                { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
+                { item.subject }
+              </h4>
+              <h5 className="item-reference">
+                <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
+              </h5>
+              <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-read-more" ref="more">
+                <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section style={ { clear : 'both' }}></section>
+          <section style={ { clear : 'both' }}></section>
 
-        <section style={{ marginRight : '0px' }}>
-          { footer }
-        </section>
-      </article>
-    );
+          <section style={{ marginRight : '0px' }}>
+            { footer }
+          </section>
+        </article>
+      );
+    } else {
+      rendered item = (
+        <article className="item" ref="item" id={ `item-${item._id}` }>
+          <ItemMedia
+            item      =   { item }
+            ref       =   "media"
+            />
+
+          <section className="item-buttons">
+            { buttons }
+          </section>
+
+          <section className="item-text">
+            <div className="item-truncatable">
+              <h4 className="item-subject">
+                { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
+                { item.subject }
+              </h4>
+              <h5 className="item-reference">
+                <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
+              </h5>
+              <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-read-more" ref="more">
+                <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
+              </div>
+            </div>
+          </section>
+
+          <section style={ { clear : 'both' }}></section>
+
+          <section style={{ marginRight : '0px' }}>
+            { footer }
+          </section>
+        </article>
+      );
+    }
+    return ( { rendereditem } );
   }
 }
 

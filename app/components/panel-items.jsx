@@ -29,7 +29,9 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : null };
+  state = { { active : null },
+            { itemhide : {} }
+          };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -92,6 +94,38 @@ class PanelItems extends React.Component {
     console.info("toggle", itemId, section, "mountedItems", Object.keys(this.mountedItems).length, Object.keys(this.mountedItems));
 
     this.setState({ active : { item : itemId, section }});
+
+
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  collapseAroundItem (itemId) {
+    console.info("collapseArroundItem", itemId, this.props, this.state);
+    if (!itemId) // turn all items on
+    { for ( let itm in this.props.items ) {
+        if (this.state.itemhide[itm._id]==true) { // this item was previously hidden
+           this.setState( { itemvis : {itm._id : false} } ); // so unhide it
+        }
+      }
+    } else {
+      for ( let itm in this.props.items ) { 
+        if ( itm._id == itemId ) {  //this item should not be hidden
+          if( this.state.itemhide[itm._id]==false) { //this item was previously not hidden
+            ; // no need to do anything
+          } else if (this.state.itemhide[itm._id]==true) { // this item was previously hidden
+             this.setState( { itemvis : {itm._id : false} } ); // so unhide it
+          }
+        } else  { // this item should be hidden
+          if (this.state.itemhide[itm._id] == false ) { // this is not hidden
+            this.setState( { itemvis: {itm._id : true} } );
+          } else { // this item is already hidden
+              ;
+          }
+        }
+      }
+    }
+    console.info("collapseArroundItem after", itemId, this.props, this.state);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -271,6 +305,9 @@ class PanelItems extends React.Component {
                   footer  =   { [
                     promote, details, subtype, editItem, harmony
                     ] }
+
+                  collapsed = { this.state.itemhide[item._id] }
+
                   />
               </ItemStore>
             );
