@@ -105,19 +105,17 @@ class PanelItems extends React.Component {
     if(!this.state.itemhide.length) {
       this.state.itemhide = this.props.items
         .map(item => {
-            let hid;
-            if (itemId) {
-              if (item._id == itemId) {
-                hid = false; 
-              } else {
-                hid = true;
-              }
+          let hid;
+          if (itemId) {
+            if (item._id == itemId) {
+              hid = false; 
             } else {
-              hid = false;
+              hid = true;
             }
+          } else {
+            hid = false;
           }
         }
-      }
     } else {
       for (let itm in this.state.itemhide) {
         if (itemId) {
