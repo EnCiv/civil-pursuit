@@ -29,7 +29,7 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : null , itemhide : null };
+  state = { active : null , itemhide : [] };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,9 +103,9 @@ class PanelItems extends React.Component {
     console.info("collapseArroundItem before", itemId, this.props, this.state);
     
     if(!this.state.itemhide) {
-      for ( let itm in this.props.items ) {
-          console.info("in collapse", itm._id, this.props.items);
-          this.setState( { itemhide : { item: itm._id, hid: false} } ); // so unhide it
+      for ( let itm =0; itm < this.props.items.length ; itm++ ) {
+          console.info("in collapse", this.props.items[itm]._id, this.props.items);
+          this.setState( { itemhide : { item: this.props.items[itm._id], hid: false} } ); // so unhide it
       }
     }
 
