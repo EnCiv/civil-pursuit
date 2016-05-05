@@ -199,6 +199,8 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertFeedback(position, itemId) {
+    console.info("insertFeedback", position, itemId, this.refs);
+
     const feedback = React.findDOMNode(this.refs.view)
       .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`)
       .value;
