@@ -103,25 +103,17 @@ class PanelItems extends React.Component {
     console.info("collapseArroundItem before", itemId, this.props, this.state);
 
     if(!this.state.itemhide.length) {
-      this.state.itemhide = this.props.items
-        .map(item => {
-          let val;
-          if (itemId) {
-            if (item._id == itemId) {
-               val = { _id: item._id, hid: false }; 
-            } else {
-               val = { _id: item._id, hid: true } ;
-            }
-          } else {
-             val = { _id: item._id, hid: false };
-          }
-        return (val);
+      for (let itm in this.props.items) {
+        this.state.itemhide[this.props.items[itm]._id] =
+            (itemId) ? 
+              ((item._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
+            : ( { hid: false } );
         }
       );
     } else {
       for (let itm in this.state.itemhide) {
         if (itemId) {
-            if (this.state.itemhide[itm]._id == itemId) {
+            if (itm == itemId) {
                this.state.itemhide[itm].hid = false; 
             } else {
               this.state.itemhide[itm].hid = true;
@@ -313,7 +305,7 @@ class PanelItems extends React.Component {
                     ] }
 
 //                  collapsed = { this.state.itemhide ? this.state.itemhide[item._id] : false }
-                    collapsed =  { this.state.itemhide.length ? this.state.itemhide[item._id].hid : false }
+                    collapsed =  { this.state.itemhide[item._id] ? this.state.itemhide[item._id].hid : false }
                   />
               </ItemStore>
             );
