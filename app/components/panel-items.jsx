@@ -106,7 +106,7 @@ class PanelItems extends React.Component {
       for (let itm in this.props.items) {
         this.state.itemhide[this.props.items[itm]._id] =
             (itemId) ? 
-              ((itm._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
+              ((itm == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
             : ( { hid: false } );
         }
     } else {
