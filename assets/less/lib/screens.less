@@ -226,12 +226,6 @@
   }
 }
 
-[data-screen="show-on-high-res"] {
-  @media (max-width: @screen-phone) and (-webkit-max-device-pixel-ratio: 1) {
-    display: none !important;
-  }
-}
-
 /** changed @screen-tablet to @screen-phone **/
 .syn-screen-phone_and_down, [data-screen="phone-and-down"] {
   @media (min-width: @screen-phone) {
@@ -346,13 +340,6 @@ textarea.user-feedback.block{
 /**-----------------**/
 [data-screen="up-to-phone"] {
   @media (min-width: @screen-phone), (-webkit-min-device-pixel-ratio: 1.1){
-    display: none !important;
-  }
-}
-
-/**-----------------**/
-[data-screen="show-on-low-res"] {
-  @media (min-width: @screen-phone) , (-webkit-min-device-pixel-ratio: 1.1){
     display: none !important;
   }
 }
