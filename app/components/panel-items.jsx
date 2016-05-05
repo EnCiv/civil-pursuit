@@ -115,6 +115,7 @@ class PanelItems extends React.Component {
           } else {
             ( hid = false);
           }
+        return (hid);
         }
       );
     } else {
