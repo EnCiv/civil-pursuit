@@ -200,15 +200,15 @@ class EvaluationStore extends React.Component {
 
   insertFeedback(position, itemId) {
     console.info("insertFeedback", position, itemId, this.refs);
+    console.info(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
 
     const feedback = React.findDOMNode(this.refs.view)
-      .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`)
-      .value;
+      .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
 
     console.log('insert feedback', feedback);
 
     if ( feedback ) {
-      window.socket.emit('insert feedback', this.state.evaluation.item, feedback);
+      window.socket.emit('insert feedback', this.state.evaluation.item, feedback.value);
     }
   }
 
