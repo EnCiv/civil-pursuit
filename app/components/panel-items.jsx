@@ -109,7 +109,6 @@ class PanelItems extends React.Component {
               ((item._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
             : ( { hid: false } );
         }
-      );
     } else {
       for (let itm in this.state.itemhide) {
         if (itemId) {
