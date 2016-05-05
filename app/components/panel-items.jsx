@@ -313,7 +313,7 @@ class PanelItems extends React.Component {
                     ] }
 
 //                  collapsed = { this.state.itemhide ? this.state.itemhide[item._id] : false }
-                    collapsed =  { false }
+                    collapsed =  { this.state.itemhide[item._id].hid }
                   />
               </ItemStore>
             );
