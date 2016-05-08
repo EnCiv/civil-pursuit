@@ -124,7 +124,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div data-screen="phone-and-down">
+            <div data-screen="up-to-phone">
               <Row data-stack="phone-and-down">
                 <PromoteSmallScreenColumn
                   { ...this.props }
