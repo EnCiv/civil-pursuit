@@ -32,8 +32,8 @@ button, .button {
   border-radius:        1px;
 
   &:hover {
-    background: lighten(@syn-success-color, 40%);
-    border-color: lighten(@syn-success-color, 40%);
+    background: @syn-muted-color;
+    border-color: @syn-muted-color;
   }
 
   &[disabled] {
@@ -53,7 +53,7 @@ button, .button {
     border-color: transparent;
 
     &:hover:not(.very) {
-      background: lighten(@syn-success-color, 40%) !important;
+      background: @syn-muted-color !important;
     }
 
     &.very {
