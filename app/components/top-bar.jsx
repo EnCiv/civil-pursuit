@@ -159,8 +159,8 @@ class TopBar extends React.Component {
             <section className={ `${comp}-logo` }>
                 <a href="/">
                   <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent />
+                  Synaccord<sub>TM</sub>
                 </a>
-                Synaccord<sub>TM</sub>
             </section>
             <section className={ `${comp}-beta` }>beta</section>
           </section>
