@@ -15,26 +15,26 @@ class Promote extends React.Component {
 componentDidUpdate () {
     
 /////////////--------------------HANS
-    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
-        var ly = document.getElementById('left_description').offsetHeight;
-        var ry = document.getElementById('right_description').offsetHeight;
-        if (ly < ry) {
-          document.getElementById('left_description').style.height = ry + "px";
-        }
-        else {
-          document.getElementById('right_description').style.height = ly + "px";
-        }
-    }  
-    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
-        var ly = document.getElementById('h5_left').offsetHeight;
-        var ry = document.getElementById('h5_right').offsetHeight;
-        if (ly < ry) {
-          document.getElementById('h5_left').style.height = ry + "px";
-        }
-        else {
-          document.getElementById('h5_right').style.height = ly + "px";
-        }  
-    } 
+//    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
+//        var ly = document.getElementById('left_description').offsetHeight;
+//        var ry = document.getElementById('right_description').offsetHeight;
+//        if (ly < ry) {
+//          document.getElementById('left_description').style.height = ry + "px";
+//        }
+//        else {
+//          document.getElementById('right_description').style.height = ly + "px";
+//        }
+//    }  
+//    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
+//        var ly = document.getElementById('h5_left').offsetHeight;
+//        var ry = document.getElementById('h5_right').offsetHeight;
+//        if (ly < ry) {
+//          document.getElementById('h5_left').style.height = ry + "px";
+//        }
+//        else {
+//          document.getElementById('h5_right').style.height = ly + "px";
+//        }  
+//   } 
     }
 
   render () {
