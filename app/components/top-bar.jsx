@@ -156,11 +156,13 @@ class TopBar extends React.Component {
       <section>
         <header role="banner" className="syn-top_bar">
           <section className={ `${comp}-left` }>
+            <section className={ `${comp}-logo` }>
             <section className={ `${comp}-image` }>
-              <a href="/">
-                <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" screen="tablet-and-down" transparent />
-                <CloudinaryImage id="Synaccord_logo_name_300x61_xyohja.png" screen="tablet-and-up" transparent />
-              </a>
+                <a href="/">
+                  <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent />
+                  <p>Synaccord<sub>TM</sub></p>
+                </a>
+              </section>
             </section>
             <section className={ `${comp}-beta` }>beta</section>
           </section>
