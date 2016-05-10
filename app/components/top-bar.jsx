@@ -158,7 +158,7 @@ class TopBar extends React.Component {
           <section className={ `${comp}-left` }>
             <section className={ `${comp}-image` }>
               <a href="/">
-                <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" screen="phone-and-down" transparent />
+                <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" screen="tablet-and-down" transparent />
                 <CloudinaryImage id="Synaccord_logo_name_300x61_xyohja.png" screen="tablet-and-up" transparent />
               </a>
             </section>
