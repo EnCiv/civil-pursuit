@@ -164,35 +164,37 @@ class TopBar extends React.Component {
     return (
       <section>
         <header role="banner" className="syn-top_bar">
-          <section className={ `${comp}-left` }>
-            <section className={ `${comp}-image` }>
-                <a href="/">
-                  <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
-                </a>
+          <section className= "syn-top_bar-info">
+            <section className={ `${comp}-left` }>
+              <section className={ `${comp}-image` }>
+                  <a href="/">
+                    <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
+                  </a>
+              </section>
+              <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
+              <section className={ `${comp}-beta` }>beta</section>
             </section>
-            <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
-            <section className={ `${comp}-beta` }>beta</section>
+
+            <section className={ `${comp}-right` }>
+              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
+                Online now: { onlineNow }
+              </section>
+
+              { right1 }
+
+              { right2 }
+
+              <section className="syn-top_bar-hamburger" ref="hamburger">
+                <Button onClick={ this.headerMenuHandler.bind(this) }>
+                  <Icon icon="bars" />
+                </Button>
+              </section>
+            </section>
           </section>
-
-          <section className={ `${comp}-right` }>
-            <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
-              Online now: { onlineNow }
-            </section>
-
-            { right1 }
-
-            { right2 }
-
-            <section className="syn-top_bar-hamburger" ref="hamburger">
-              <Button onClick={ this.headerMenuHandler.bind(this) }>
-                <Icon icon="bars" />
-              </Button>
-            </section>
+          <section className="syn-top_bar-menu-row">
+            { menustrip }
           </section>
         </header>
-        <section className="syn-top_bar-menu-row">
-            { menustrip }
-        </section>
 
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
