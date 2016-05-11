@@ -101,10 +101,16 @@
   display: table;
   vertical-align: middle;
 
+  @media (max-width: @screen-phone) {
+    display: none;
+  }
+
   sub {
+        padding-left: 2px;
         font-family: 'sans-serif';
-        font-size: 20%;
+        font-size: 15%;
         text-decoration: none;
+        bottom: -1em;
       }
 
   p {
@@ -116,6 +122,7 @@
 
     }
 }
+
 
 .syn-top_bar-online_now {
   padding-left: @syn-gutter;
