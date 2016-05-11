@@ -146,7 +146,12 @@
   vertical-align: middle;
   text-align: center;
   color: white;
+  padding: 1em;
 
+  a {
+        color: white;
+        font-weight: 600;
+  }
 
   &:hover {
     background-color: @syn-gold-color;
@@ -155,9 +160,12 @@
 }
 
 .syn-top_bar-menu-row {
+  .flex.row();
+  .flex.space-between();
   display: table;
   width: 100%;
   background-color: @syn-purple-color;
+  height: 40px;
 }
 
 /**-------------------------------------------------------------// top-bar    */
