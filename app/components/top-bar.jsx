@@ -161,7 +161,7 @@ class TopBar extends React.Component {
                   <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
                 </a>
             </section>
-            <section className={ `${comp}-logo` }><p>Synaccord<sub>TM</sub></p></section>
+            <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
             <section className={ `${comp}-beta` }>beta</section>
           </section>
 

@@ -53,6 +53,7 @@
   .flex.row();
   .flex.align-items(flex-start);
   .flex.align-content(stretch);
+  height: 100%;
 }
 
 .syn-top_bar-right {
@@ -94,8 +95,11 @@
 
 .syn-top_bar-logo {
   font-family: 'SynaccordLogo';
-  font-size: 40px;
+  font-size: 48px;
   color: darkslategray;
+  height: 100%;
+  display: table;
+  vertical-align: middle;
 
   sub {
         font-family: 'sans-serif';
@@ -103,10 +107,13 @@
         text-decoration: none;
       }
 
-  a {
-          font-size: 40px;
+  p {
+          font-size: 48px;
           text-decoration: none;
           color: darkslategray;
+          display: table-cell;
+          vertical-align: middle;
+
     }
 }
 
