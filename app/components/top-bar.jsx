@@ -185,15 +185,14 @@ class TopBar extends React.Component {
                   </a>
               </section>
               <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
-              <section className={ `${comp}-beta` }>beta</section>
             </section>
 
             <section className={ `${comp}-right` }>
-              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
-                Online now: { onlineNow }
-              </section>
-
-              <section className="syn-top_bar-hamburger" ref="hamburger">
+//              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
+//                Online now: { onlineNow }
+//              </section>
+              <section className={ `${comp}-beta` }>beta</section>
+              <section className={ "syn-top_bar-hamburger", 'syn-screen-up-to-phone'} ref="hamburger">
                 <Button onClick={ this.headerMenuHandler.bind(this) }>
                   <Icon icon="bars" />
                 </Button>
