@@ -153,13 +153,13 @@ class TopBar extends React.Component {
       }
     // }
 
-    const menustrip = menus.map((menu, index) => (
-      <div className={syn-top_bar-menu-item} key={ `header-menu-${index}` }>
-        <a href={ menu.link }>
+    const menustrip = menus.map( (menu, index) => (
+      <div className={syn-top_bar-menu-item} key={ `header-menu-${index}` } >
+        <a href={ menu.link } >
           <span> { menu.title }</span>
         </a>
       </div>
-    );
+    ));
 
     return (
       <section>
