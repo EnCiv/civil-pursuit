@@ -24,13 +24,7 @@
 
 .syn-top_bar {
   
-  position                    :       fixed;
-  top                         :       0;
-  left                        :       0;
-  right: 0;
-  z-index                     :       9999;
   width:                      100%;
-  border-bottom:              1px solid #444;
   margin:                     0;
   padding:                    0;
   height:                     60px;
@@ -52,6 +46,17 @@
   height: 100%;
 }
 
+.syn-top_bar-wrapper {
+  position                    :       fixed;
+  top                         :       0;
+  left                        :       0;
+  right: 0;
+  z-index                     :       9999;
+  border-bottom:              1px solid #444;
+  max-width: 1780;
+  margin: auto;
+  height: 100px;
+}
 
 .syn-top_bar-left {
   .flex();
@@ -64,9 +69,9 @@
 .syn-top_bar-right {
   .flex();
   .flex.row();
-  .flex.align-items();
+  .flex.align-items(baseline);
   .flex.align-content(stretch);
-  border-left: 1px solid #ccc;
+  //border-left: 1px solid #ccc;
   @media (max-width: @screen-phone) {
     border-left: none;
   }
@@ -93,14 +98,14 @@
   background: #333;
   color: #fff;
   padding: @syn-gutter;
-  margin-top: 7px;
+  margin-top: 0;
   margin-left: @syn-gutter;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .syn-top_bar-logo {
   font-family: 'SynaccordLogo';
-  font-size: 48px;
+  font-size: 39px;
   color: darkslategray;
   height: 100%;
   display: table;
@@ -119,7 +124,7 @@
       }
 
   p {
-          font-size: 48px;
+          font-size: inherit;
           text-decoration: none;
           color: darkslategray;
           display: table-cell;

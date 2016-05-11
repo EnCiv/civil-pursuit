@@ -176,28 +176,30 @@ class TopBar extends React.Component {
 
     return (
       <section>
-        <header role="banner" className="syn-top_bar">
-          <section className= "syn-top_bar-info">
-            <section className={ `${comp}-left` }>
-              <section className={ `${comp}-image` }>
-                  <a href="/">
-                    <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
-                  </a>
+        <header role="banner" className="syn-top_bar-wrapper">
+          <section className= "syn-top_bar">
+            <section className= "syn-top_bar-info">
+              <section className={ `${comp}-left` }>
+                <section className={ `${comp}-image` }>
+                    <a href="/">
+                      <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
+                    </a>
+                </section>
+                <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
               </section>
-              <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
-            </section>
 
-            <section className={ `${comp}-right` }>
-              <section className={ `${comp}-beta` }>beta</section>
-              <section className={ 'syn-top_bar-hamburger', 'syn-screen-phone_and_down' } ref="hamburger">
-                <Button onClick={ this.headerMenuHandler.bind(this) }>
-                  <Icon icon="bars" />
-                </Button>
+              <section className={ `${comp}-right` }>
+                <section className={ `${comp}-beta` }>Beta</section>
+                <section className={ 'syn-top_bar-hamburger', 'syn-screen-phone_and_down' } ref="hamburger">
+                  <Button onClick={ this.headerMenuHandler.bind(this) }>
+                    <Icon icon="bars" />
+                  </Button>
+                </section>
               </section>
             </section>
-          </section>
-          <section className="syn-top_bar-menu-row">
-            { menustrip }
+            <section className="syn-top_bar-menu-row">
+              { menustrip }
+            </section>
           </section>
         </header>
 
