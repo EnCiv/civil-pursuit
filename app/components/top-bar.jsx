@@ -188,11 +188,8 @@ class TopBar extends React.Component {
             </section>
 
             <section className={ `${comp}-right` }>
-//              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
-//                Online now: { onlineNow }
-//              </section>
               <section className={ `${comp}-beta` }>beta</section>
-              <section className={ "syn-top_bar-hamburger", 'syn-screen-up-to-phone'} ref="hamburger">
+              <section className={ "syn-top_bar-hamburger", 'syn-screen-phone_and_down'} ref="hamburger">
                 <Button onClick={ this.headerMenuHandler.bind(this) }>
                   <Icon icon="bars" />
                 </Button>
@@ -212,4 +209,8 @@ class TopBar extends React.Component {
   }
 }
 
+// moved this out of render - return because I couldn't comment it out.
+//              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
+//                Online now: { onlineNow }
+//              </section>
 export default TopBar;
