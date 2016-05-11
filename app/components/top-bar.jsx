@@ -123,42 +123,42 @@ class TopBar extends React.Component {
     // if ( ready ) {
       if ( user ) {
         right1 = (
-          <section className={ `${comp}-profile-button` }>
+//          <section className={ `${comp}-profile-button` }>
             <div className="syn-top_bar-menu-item" key={ `header-menu-profile-button` } >
               <button onClick={ this.goToProfile.bind(this) }>
                 <span>Profile</span>
               </button>
             </div>
-          </section>
+ //         </section>
         );
         right2 = (
-          <section className={ selectors.sign.out.button.replace(/\./, '') }>
+//          <section className={ selectors.sign.out.button.replace(/\./, '') }>
             <div className="syn-top_bar-menu-item">
               <button onClick={ this.signOut.bind(this) }>
                 <span>Logout</span>
               </button>
             </div>
-          </section>
+ //         </section>
         );
       }
       else {
         right1 = (
-          <section className={ `${comp}-login_button` }>
+ //         <section className={ `${comp}-login_button` }>
             <div className="syn-top_bar-menu-item">
               <button onClick={ this.toggleLogin.bind(this) }>
                 <span>Login</span>
               </button>
             </div>
-          </section>
+ //         </section>
         );
         right2 = (
-          <section className={ `${comp}-join_button` }>
+ //         <section className={ `${comp}-join_button` }>
             <div className="syn-top_bar-menu-item">
-              <button onClick={ this.toggleLogin.bind(this) }>
-                <span>Login</span>
+              <button onClick={ this.toggleJoin.bind(this) }>
+                <span>Join</span>
               </button>
             </div>
-          </section>
+//          </section>
         );
       }
     // }
