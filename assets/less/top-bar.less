@@ -42,7 +42,7 @@
   /** Appearance */
 
   background:                 rgba(255, 255, 255, 0.9);
-  box-shadow:                -2px 4px 3px 3px rgba(0, 0, 0, 0.14);
+  /** box-shadow:                -2px 4px 3px 3px rgba(0, 0, 0, 0.14); **/
 }
 
 .syn-top_bar-info{
@@ -148,11 +148,11 @@
 .syn-top_bar-menu-item {
   display: table-cell;
   background-color: @syn-purple-color;
-  width: 20%;
+  width: 14.2857%;
   vertical-align: middle;
   text-align: center;
   color: white;
-  padding: 1em;
+  padding: .5em;
 
   a {
         color: white;
@@ -172,6 +172,7 @@
   width: 100%;
   background-color: @syn-purple-color;
   height: 40px;
+  max-width: 962; /** this should be calculated. It's 982 for the body width less 10 for padding on each side **/
+  margin: auto;
 }
-
 /**-------------------------------------------------------------// top-bar    */
