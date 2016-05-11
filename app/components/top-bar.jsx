@@ -189,10 +189,10 @@ class TopBar extends React.Component {
               </Button>
             </section>
           </section>
-          <section className="syn-top_bar-menu-row">
-            { menustrip }
-          </section>
         </header>
+        <section className="syn-top_bar-menu-row">
+            { menustrip }
+        </section>
 
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
