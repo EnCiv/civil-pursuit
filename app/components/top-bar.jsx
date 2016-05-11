@@ -189,7 +189,7 @@ class TopBar extends React.Component {
 
             <section className={ `${comp}-right` }>
               <section className={ `${comp}-beta` }>beta</section>
-              <section className={ "syn-top_bar-hamburger", 'syn-screen-phone_and_down'} ref="hamburger">
+              <section className={ 'syn-top_bar-hamburger', 'syn-screen-phone_and_down' } ref="hamburger">
                 <Button onClick={ this.headerMenuHandler.bind(this) }>
                   <Icon icon="bars" />
                 </Button>
