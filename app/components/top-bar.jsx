@@ -193,10 +193,6 @@ class TopBar extends React.Component {
                 Online now: { onlineNow }
               </section>
 
-              { right1 }
-
-              { right2 }
-
               <section className="syn-top_bar-hamburger" ref="hamburger">
                 <Button onClick={ this.headerMenuHandler.bind(this) }>
                   <Icon icon="bars" />
