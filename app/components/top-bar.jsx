@@ -9,8 +9,9 @@ import Login                          from './login';
 import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
-import HeaderMenu                      from './header-menu';
+import HeaderMenu                     from './header-menu';
 import selectors                      from '../../selectors.json';
+import menus                          from '../../fixtures/header-menu/1.json';
 
 class TopBar extends React.Component {
 
@@ -152,6 +153,14 @@ class TopBar extends React.Component {
       }
     // }
 
+    const menustrip = menus.map((menu, index) => (
+      <div className={syn-top_bar-menu-item} key={ `header-menu-${index}` }>
+        <a href={ menu.link }>
+          <span> { menu.title }</span>
+        </a>
+      </div>
+    );
+
     return (
       <section>
         <header role="banner" className="syn-top_bar">
@@ -179,6 +188,9 @@ class TopBar extends React.Component {
                 <Icon icon="bars" />
               </Button>
             </section>
+          </section>
+          <section className="syn-top_bar-menu-row">
+            { menustrip }
           </section>
         </header>
 
