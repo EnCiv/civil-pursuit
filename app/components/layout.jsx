@@ -27,7 +27,6 @@ class Layout extends React.Component {
 
           <Footer />
 
-          <HeaderMenu />
         </section>
       </section>
     );

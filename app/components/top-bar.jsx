@@ -209,6 +209,7 @@ class TopBar extends React.Component {
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
       </section>
+      <HeaderMenu />
     );
   }
 }
