@@ -59,7 +59,7 @@ class App extends React.Component {
 
       const paths = path.split(/\//);
 
-      console.info ("app path"; path);
+      console.info ("app path", path);
 
       paths.shift();
 
