@@ -278,7 +278,7 @@ class HttpServer extends EventEmitter {
   }
 
   getItemPage () {
-    console.info("getItemPage:", req, res);
+    console.info("getItemPage:", this.props);
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
       console.info("getItemPage after get:", req, res);
       try {
