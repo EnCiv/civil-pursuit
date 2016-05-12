@@ -170,13 +170,20 @@
 }
 
 .syn-top_bar-hamburger {
+  height: 100%
   transition: all ease 500ms;
+  color: @syn-purple-color;
 
   &.on {
     button, button:hover {
-      background-color: #444 !important;
-      color: #fff !important;
+      background-color: @syn-purple-color !important;
+      color: white !important;
     }
+  }
+
+  @media (min-width: @screen-phone) {
+    display: none;
+    /** do not show this on a desktop **/
   }
 }
 

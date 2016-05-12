@@ -56,6 +56,7 @@ class App extends React.Component {
       if ( path === '/' ) {
         page = <Home user={ user } />;
       }
+      console.info ("app path before split", path);
 
       const paths = path.split(/\//);
 
