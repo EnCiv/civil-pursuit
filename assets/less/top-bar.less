@@ -56,6 +56,9 @@
   max-width: 1780px;
   margin: auto;
   height: 100px;
+  @media (max-width: @screen-phone) {
+    height 60px;
+  }
 }
 
 .syn-top_bar-left {
@@ -106,7 +109,7 @@
     font-weight: bold;
     padding-left: @syn-gutter * 2;
     padding-right: @syn-gutter * 2;
-    border-left: 1px solid #ccc;
+    // border-left: 1px solid #ccc;
   }
 
   // .syn-top_bar-online_now {
