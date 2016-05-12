@@ -68,7 +68,7 @@
   margin-top: 5px;
 }
 
-.syn-top_bar-center{
+.syn-top_bar-center {
   .flex();
   .flex.row();
   .flex.align-items();
@@ -82,6 +82,10 @@
 
   span {
   padding-bottom: inherit;
+  }
+
+  @media (max-width: @screen-phone) {
+    display: none;
   }
 }
 
@@ -121,6 +125,9 @@
   margin-left: @syn-gutter;
   border-radius: 0;
   width: 100px;
+  @media (max-width: @screen-phone) {
+    display: none;
+  }
 }
 
 .syn-top_bar-logo {
@@ -204,5 +211,9 @@
   height: 40px;
   max-width: 962px; /** this should be calculated. It's 982 for the body width less 10 for padding on each side **/
   margin: auto;
+
+  @media (max-width: @screen-phone) {
+    display: none;
+  }
 }
 /**-------------------------------------------------------------// top-bar    */
