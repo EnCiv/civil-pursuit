@@ -279,7 +279,7 @@ class HttpServer extends EventEmitter {
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
-      colsole.info("getItemPage:", req, res);
+      console.info("getItemPage:", req, res);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
