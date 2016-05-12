@@ -41,6 +41,8 @@ class App extends React.Component {
 
     let showIntro = false;
 
+    console.info("app.render error:", error, error ? "true" : "false");
+
     if ( error ) {
       page = (
         <Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
