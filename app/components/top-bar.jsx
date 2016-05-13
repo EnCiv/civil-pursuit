@@ -205,7 +205,7 @@ class TopBar extends React.Component {
         menu1 = (
           <li key={ `header-menu-login-button` }>
             <button onClick={this.toggleLogin.bind(this) }>
- //             <Icon icon={ "sign-in" } />
+ /**             <Icon icon={ "sign-in" } /> **/
               <span>Login</span>
             </button>
           </li>
@@ -213,7 +213,7 @@ class TopBar extends React.Component {
         menu2 = (
           <li key={ `header-menu-join-button` }>
             <button onClick={this.toggleJoin.bind(this) }>
-//              <Icon icon={ "heart" } />
+/**              <Icon icon={ "heart" } /> **/
               <span>Join</span>
             </button>
           </li>
@@ -236,7 +236,7 @@ class TopBar extends React.Component {
     let menuViews = menus.map((menu, index) => (
       <li key={ `header-menu-${index}` }>
         <a href={ menu.link }>
-//          <Icon icon={ menu.icon } />
+/**          <Icon icon={ menu.icon } /> **/
           <span> { menu.title }</span>
         </a>
       </li>
