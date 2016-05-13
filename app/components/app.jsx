@@ -62,7 +62,7 @@ class App extends React.Component {
 
       const paths = path.split(/\//);
 
-      console.info ("app path", path);
+      console.info ("app path", paths);
 
       paths.shift();
 
@@ -93,7 +93,7 @@ class App extends React.Component {
         case 'item':
           console.info("item:", paths[1]);
 
-          const panelId1 = Object.keys(this.props.panels)[0];
+          const panelId1 = this.props.panels ? Object.keys(this.props.panels)[0] : 0;
 
           const panel = Object.assign({}, this.props.panels[panelId1]);
 

@@ -101,12 +101,38 @@ class TopBar extends React.Component {
   headerMenuHandler (e) {
     e.preventDefault();
 
-    HeaderMenu.toggle().then(
+    HeaderMenuToggle().then(
       () => {
         const hamburger = React.findDOMNode(this.refs.hamburger);
         hamburger.classList.toggle('on');
       }
     );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static HeaderMenuToggle () {
+    return new Promise((ok, ko) => {
+      const headerMenu = document.querySelector('#syn-header-menu');
+
+      headerMenu.classList.toggle('visible');
+
+      if ( headerMenu.classList.contains('visible') ) {
+        const headerHeight = headerMenu.offsetHeight;
+
+        const bottom = `calc(100vh - ${(78 + headerHeight)}px)`;
+
+        console.log({ bottom });
+
+        headerMenu.style.bottom = bottom;
+      }
+
+      else {
+        headerMenu.style.bottom = 'calc(100vh - 73px)';
+      }
+
+      setTimeout(ok);
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,7 +144,7 @@ class TopBar extends React.Component {
 
     let onlineNow = this.props.online || 0;
 
-    let right1, right2;
+    let right1, right2, menu1, menu2;
 
     // if ( ready ) {
       if ( user ) {
@@ -140,6 +166,22 @@ class TopBar extends React.Component {
             </div>
  //         </section>
         );
+        menu1 = (
+          <li key={ `header-menu-profile-button` }>
+            <button onClick={this.goToProfile.bind(this) }>
+              <Icon icon={ "user" } />
+              <span>Profile</span>
+            </button>
+          </li>
+        );
+        menu2 = (
+          <li key={ `header-menu-signout-button` }>
+            <button onClick={this.signOut.bind(this) }>
+              <Icon icon={ "sign-out" } />
+              <span>Profile</span>
+            </button>
+          </li>
+        );
       }
       else {
         right1 = (
@@ -160,7 +202,24 @@ class TopBar extends React.Component {
             </div>
 //          </section>
         );
+        menu1 = (
+          <li key={ `header-menu-login-button` }>
+            <button onClick={this.toggleLogin.bind(this) }>
+              <Icon icon={ "sign-in" } />
+              <span>Login</span>
+            </button>
+          </li>
+        );
+        menu2 = (
+          <li key={ `header-menu-join-button` }>
+            <button onClick={this.toggleJoin.bind(this) }>
+              <Icon icon={ "heart" } />
+              <span>Profile</span>
+            </button>
+          </li>
+        );
       }
+  
     // }
 
     let menustrip = menus.map( (menu, index) => (
@@ -173,6 +232,21 @@ class TopBar extends React.Component {
 
     menustrip.push(right1);
     menustrip.push(right2);
+
+    const menusViews = menus.map((menu, index) => (
+      <li key={ `header-menu-${index}` }>
+        <a href={ menu.link }>
+          <Icon icon={ menu.icon } />
+          <span> { menu.title }</span>
+        </a>
+      </li>
+    ));
+
+    menusView.push(menu1);
+    menusView.push(menu2);
+
+
+
 
     return (
       <section>
@@ -208,7 +282,11 @@ class TopBar extends React.Component {
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
-        <HeaderMenu />
+        <section id="syn-header-menu" ref="header-menu">
+          <ul>
+           { menusViews }
+          </ul>
+        </section>
       </section>
     );
   }
