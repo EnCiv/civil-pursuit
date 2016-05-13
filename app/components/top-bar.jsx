@@ -233,7 +233,7 @@ class TopBar extends React.Component {
     menustrip.push(right1);
     menustrip.push(right2);
 
-    const menusViews = menus.map((menu, index) => (
+    let menuViews = menus.map((menu, index) => (
       <li key={ `header-menu-${index}` }>
         <a href={ menu.link }>
           <Icon icon={ menu.icon } />
@@ -242,8 +242,8 @@ class TopBar extends React.Component {
       </li>
     ));
 
-    menusView.push(menu1);
-    menusView.push(menu2);
+    menuViews.push(menu1);
+    menuViews.push(menu2);
 
 
 
@@ -284,7 +284,7 @@ class TopBar extends React.Component {
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
         <section id="syn-header-menu" ref="header-menu">
           <ul>
-           { menusViews }
+           { menuViews }
           </ul>
         </section>
       </section>
