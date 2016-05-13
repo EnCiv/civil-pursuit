@@ -178,7 +178,7 @@ class TopBar extends React.Component {
           <li key={ `header-menu-signout-button` }>
             <button onClick={this.signOut.bind(this) }>
               <Icon icon={ "sign-out" } />
-              <span>Profile</span>
+              <span>Logout</span>
             </button>
           </li>
         );
@@ -214,7 +214,7 @@ class TopBar extends React.Component {
           <li key={ `header-menu-join-button` }>
             <button onClick={this.toggleJoin.bind(this) }>
               <Icon icon={ "heart" } />
-              <span>Profile</span>
+              <span>Join</span>
             </button>
           </li>
         );
