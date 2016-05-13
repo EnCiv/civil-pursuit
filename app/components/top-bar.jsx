@@ -101,7 +101,7 @@ class TopBar extends React.Component {
   headerMenuHandler (e) {
     e.preventDefault();
 
-    HeaderMenuToggle().then(
+    this.HeaderMenuToggle().then(
       () => {
         const hamburger = React.findDOMNode(this.refs.hamburger);
         hamburger.classList.toggle('on');
@@ -111,7 +111,7 @@ class TopBar extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static HeaderMenuToggle () {
+  HeaderMenuToggle () {
     return new Promise((ok, ko) => {
       const headerMenu = document.querySelector('#syn-header-menu');
 
