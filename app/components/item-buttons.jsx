@@ -7,6 +7,7 @@ import Icon               from './util/icon';
 
 class ItemButtons extends React.Component {
   toggle (section) {
+    console.info("ItemButtons.toggle", section);
     this.props.toggle(this.props.item._id, section);
   }
 
