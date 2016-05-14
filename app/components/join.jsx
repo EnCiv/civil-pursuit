@@ -100,7 +100,10 @@ class Join extends React.Component {
   }
 
   static click () {
-    document.querySelector('.syn-top_bar-join_button button').click();
+//    document.querySelector('.syn-top_bar-join_button button').click();
+    let modal = React.findDOMNode('.syn-join syn-modal');
+    console.info("Join.click", modal);
+    modal.classList.add('syn--visible');
   }
 
   render () {
