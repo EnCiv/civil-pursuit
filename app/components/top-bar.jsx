@@ -37,15 +37,17 @@ class TopBar extends React.Component {
       e.preventDefault();
     }
 
-    this.setState({ showLogin : ! this.state.showLogin });
+    let modalJoin = document.querySelector('.syn-join');
+    let modalLogin = document.querySelector('.syn-login');
+    let modalForgotP = document.querySelector('.syn-forgot-password');
 
-    if ( this.state.showJoin ) {
-      this.setState({ showJoin : false });
-    }
+    modalJoin.classList.remove('syn--visible');
 
-    if ( this.state.showForgotPassword ) {
-      this.setState({ showForgotPassword : false });
-    }
+    modalLogin.classList.toggle('syn--visible');
+
+    modalForgotP.classList.remove('syn--visible');
+
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,21 +58,17 @@ class TopBar extends React.Component {
     }
 
 
-    let modal = document.querySelector('.syn-join');
-    console.info("Join.click", modal);
-    modal.classList.toggle('syn--visible');
+    let modalJoin = document.querySelector('.syn-join');
+    let modalLogin = document.querySelector('.syn-login');
+    let modalForgotP = document.querySelector('.syn-forgot-password');
 
+    console.info("Join.click", modalJoin);
+    modalJoin.classList.toggle('syn--visible');
 
+    modalLogin.classList.remove('syn--visible');
 
-    this.setState({ showJoin : modal.classList.contains('syn--visible') });
+    modalForgotP.classList.remove('syn--visible');
 
-    if ( this.state.showLogin ) {
-      this.setState({ showLogin : false });
-    }
-
-    if ( this.state.showForgotPassword ) {
-      this.setState({ showForgotPassword : false });
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,15 +78,16 @@ class TopBar extends React.Component {
       e.preventDefault();
     }
 
-    this.setState({ showForgotPassword : ! this.state.showForgotPassword });
+    let modalJoin = document.querySelector('.syn-join');
+    let modalLogin = document.querySelector('.syn-login');
+    let modalForgotP = document.querySelector('.syn-forgot-password');
 
-    if ( this.state.showJoin ) {
-      this.setState({ showJoin : false });
-    }
+    modalJoin.classList.remove('syn--visible');
 
-    if ( this.state.showLogin ) {
-      this.setState({ showLogin : false });
-    }
+    modalLogin.classList.remove('syn--visible');
+
+    modalForgotP.classList.toggle('syn--visible');
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
