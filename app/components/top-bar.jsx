@@ -62,7 +62,7 @@ class TopBar extends React.Component {
 
 
 
-    this.setState({ showJoin : ! modal.classList.contains('syn--visible') });
+    this.setState({ showJoin : modal.classList.contains('syn--visible') });
 
     if ( this.state.showLogin ) {
       this.setState({ showLogin : false });
