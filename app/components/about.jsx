@@ -14,6 +14,21 @@ class About extends React.Component {
     console.info("About:", this.props)
     return (
       <div className="civil-pursuit">
+
+
+        <div class="conteiner">
+            <div class="bg-inner">
+              <div class="news-headline">
+                <div class="news-headline-inner">
+                  <p id="color-text">Democracy Needs You</p>
+                </div>
+              </div>
+            <div class="social-bar">
+                <a href="https://www.twitter.com/synaccord" target="_blank"><img src="images/TW-t-logo__white_29.png" alt="Twitter.com/Synaccord"></a>
+                <a href="https://www.facebook.com/synaccord" target="_blank"><img src="images/FB-f-Logo__blue_29.png" alt="Facebook.com/Synaccord"></a>
+            </div>
+        </div>
+        
         <div className="title">
           <div className="conteiner-inner">
             <p id="p-title">About</p>
@@ -72,7 +87,7 @@ class About extends React.Component {
           <div className="content-about cf">
             <p id="h2">The Founder</p>
             <div className="foto-wrapper-left-about">
-              <img src="images/SynaccordFounderDavidFridley.png" alt="David Fridley, Founder of Synaccord" />
+              <img src="http://www.gravatar.com/avatar/1048b2e27181e99baf011f397a3db1a7.jpg?s=240&r=g" alt="David Fridley, Founder of Synaccord" />
               <h3><a href="http://linkedin/in/dfridley" target="_blank">David Fridley</a></h3>
             </div>
             <div className="text-right-about">
