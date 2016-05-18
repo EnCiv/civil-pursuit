@@ -8,7 +8,7 @@
   {
     "title" : "About",
     "icon" : "info",
-    "link" : "http://www.synaccord.com/about.html"
+    "link" : "./about"
   },
 
   {
