@@ -206,6 +206,7 @@ class HttpServer extends EventEmitter {
   }
 
   getLandingPage () {
+    console.info("getLandingPage");
     try {
       this.app.get('/',
         (req, res, next) => {
