@@ -95,6 +95,12 @@ class App extends React.Component {
               break;
           }
           break;
+          
+        case 'about':
+              page = ( <About /> );
+              showIntro = false;
+              break;
+
 
         case 'item':
           console.info("item:", paths[1]);
