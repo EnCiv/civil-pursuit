@@ -87,55 +87,6 @@ sup {
   font-size: smaller;
 }
 
-@font-face {
-    font-family: 'allerregular';
-    src: url('../fonts/regular/aller_rg-webfont.eot');
-    src: url('../fonts/regular/aller_rg-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/regular/aller_rg-webfont.woff2') format('woff2'),
-         url('../fonts/regular/aller_rg-webfont.woff') format('woff'),
-         url('../fonts/regular/aller_rg-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'allerbold';
-    src: url('../fonts/bold/aller_bd-webfont.eot');
-    src: url('../fonts/bold/aller_bd-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/bold/aller_bd-webfont.woff2') format('woff2'),
-         url('../fonts/bold/aller_bd-webfont.woff') format('woff'),
-         url('../fonts/bold/aller_bd-webfont.ttf') format('truetype'),
-         url('../fonts/bold/aller_bd-webfont.svg#allerbold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'biminibold';
-    src: url('../fonts/bimini-bold/bimini_bold-webfont.eot');
-    src: url('../fonts/bimini-bold/bimini_bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/bimini-bold/bimini_bold-webfont.woff2') format('woff2'),
-         url('../fonts/bimini-bold/bimini_bold-webfont.woff') format('woff'),
-         url('../fonts/bimini-bold/bimini_bold-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Oswald';
-    src: url('//fonts.googleapis.com/css?family=Oswald');
-    font-weight: normal;
-      font-style: normal;
-}
-
-body {
-  background: #fff;
-
-  font-family: 'Oswald';
-  font-size: 14px;
-  width: 100%;
-}
-
 .conteiner-inner p {
   font-size: 19px;
   color: darkslategrey;
@@ -199,39 +150,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8f00', end
   width: 100%;
 }
 
-.#pull{
-  display:none;
-}
-
-.header {
-  width: 100%;
-  background: #fff;
-  padding-bottom: 15px;
-  padding-top: 10px;
-  position: fixed;
-  z-index: 999999999; 
-  height: auto;
-}
-
-UNUSED#prewbutton, UNUSED#nextbutton{ 
-  width: 17px;
-  height: 27px;
-  z-index: 9999;
-  position: absolute;
-  margin-top: -27px;
-  top: 50%;
-  font-size: 0;
-}
-
-#prewbutton{
-  left:1%;background: url(../images/left.png) no-repeat;
-}
-
-#nextbutton{
-  background: url(../images/right.png) no-repeat;
-  right: 1%;
-}
-
 .title {
   background: #F5F5F5;
   width: 100%;
@@ -241,15 +159,6 @@ UNUSED#prewbutton, UNUSED#nextbutton{
   color: #000000;
   font-size: 30px;
   
-}
-
-.sli-links .control-slide:hover {
-  cursor:pointer;
-  background-position:center center;
-}
-
-#prewbutton:hover, #nextbutton:hover {
-  opacity:1;
 }
 
 .content {
@@ -308,30 +217,6 @@ UNUSED#prewbutton, UNUSED#nextbutton{
   height: 39px;
   padding-left: 10px;
   font-size: 16px;
-}
-
-.button_support {
-  cursor:pointer;
-  outline: none;
-  border:none;
-  
-  float: left;
-  display: block;
-  border-radius: 7px;
-  text-decoration: none;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 16px;
-  height: 41px;
-  color: #fff;
-background: #ff8f00; 
-background: -moz-linear-gradient(top, #ff8f00 0%, #ff7002 51%, #ff7002 100%); 
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff8f00), color-stop(51%,#ff7002), color-stop(100%,#ff7002)); 
-background: -webkit-linear-gradient(top, #ff8f00 0%,#ff7002 51%,#ff7002 100%); 
-background: -o-linear-gradient(top, #ff8f00 0%,#ff7002 51%,#ff7002 100%); 
-background: -ms-linear-gradient(top, #ff8f00 0%,#ff7002 51%,#ff7002 100%); 
-background: linear-gradient(to bottom, #ff8f00 0%,#ff7002 51%,#ff7002 100%); 
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8f00', endColorstr='#ff7002',GradientType=0 ); 
 }
 
 .text_foto-wrapper-white-about {
@@ -400,69 +285,8 @@ h2 {
   width: 180px;
   float: left;
 }
-.menu {
-  float: right;
-  margin-top: 15px;
-}
-
-.menu ul{
-  display: table;
-  font-size: 0;
-  line-height: normal;
-}
-
-.menu ul li{
-  font-size: 20px;
-  display: inline-block;
-}
-
-.menu ul li a{
-  color: #000;
-  padding: 10px 24px 10px 24px;
-  text-decoration: none;
-}
-
-.menu ul li a:hover{
-  background: #3f038e;
-  border-radius: 7px;
-  color: #fff;
-  padding: 10px 24px 10px 24px;
-  text-decoration: none;
-}
-
-.footer{
-  background: #f5f5f5;
-  color: #6b6b6b;
-  font-size: 14px;
-  padding-bottom: 25px;
-  padding-top: 25px;
-}
-
-.footer-block-left {
-  float: left;
-  max-width: 50%;
-}
-
-.footer-block-left p a{
-  
-  text-decoration: color;
-  text-decoration-color: #000000;
-  color: #6b6b6b;
-}
-
-.footer-block-left p a:hover{
-  text-decoration: none;
-  color: #000;
-}
-
-.foto-wrapper {
-
-}
 
 .bg-inner {
-
-
-
 
   width: 100%;
   height: 350px;
@@ -1056,10 +880,6 @@ h2 {
     float: left;
   }
 
-  .slide img {
-    width: 280px;
-  }
-
   .slideshow-h2 {
     font-size: 18px;
   }
@@ -1093,106 +913,8 @@ h2 {
     margin-top: -10px;
   }
 
-  .menu ul{
-    display:none;
-  }
 
-  #pull{
-    display:block;
-    font-size:14px;
-    font-weight:bold;
-    color:#333;
-    text-decoration:none;
-    padding:10px 3%;
-    padding-top: 2px;
-    width:98%;
-    position:relative;
-    text-align: left;
-    outline: none;
-    padding-left: 5px;
-    padding-right: 7px;
-  }
-
-  #pull:after{
-    background:url(../images/icon-menu-2.png) no-repeat;
-    display:inline-block;
-    position:absolute;
-    width:30px;
-    height:30px;
-    top:12px;
-    right:2px;
-    content:"";
-  }
-
-  .menu ul li{
-    width:100%;
-  }
-
-  #last-deportation {
-    padding: 8px 24px 8px 24px;
-    border-radius: 0px 0px 7px 7px;
-    display: block;
-    background: #f8f7f6; 
-  background: -moz-linear-gradient(top, #f8f7f6 0%, #ebe9e7 97%); 
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f7f6), color-stop(97%,#ebe9e7)); 
-  background: -webkit-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -o-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -ms-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: linear-gradient(to bottom, #f8f7f6 0%,#ebe9e7 97%); 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7f6', endColorstr='#ebe9e7',GradientType=0 ); 
-  }
-
-  .menu ul li a {
-    padding: 8px 24px 8px 24px;
-    display: block;
-    background: #f8f7f6; 
-  background: -moz-linear-gradient(top, #f8f7f6 0%, #ebe9e7 97%); 
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f7f6), color-stop(97%,#ebe9e7)); 
-  background: -webkit-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -o-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -ms-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: linear-gradient(to bottom, #f8f7f6 0%,#ebe9e7 97%); 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7f6', endColorstr='#ebe9e7',GradientType=0 ); 
-  }
-
-  .menu ul li a:hover{
-    background: #3f038e;
-    border-radius: 0px;
-    color: #fff;
-    padding: 8px 24px 8px 24px;
-    text-decoration: none;
-  }
-
-  #first-deportation {
-    padding: 8px 24px 8px 24px;
-    border-radius: 7px 7px 0px 0px;
-    display: block;
-    background: #f8f7f6; 
-  background: -moz-linear-gradient(top, #f8f7f6 0%, #ebe9e7 97%); 
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f7f6), color-stop(97%,#ebe9e7)); 
-  background: -webkit-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -o-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: -ms-linear-gradient(top, #f8f7f6 0%,#ebe9e7 97%); 
-  background: linear-gradient(to bottom, #f8f7f6 0%,#ebe9e7 97%); 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7f6', endColorstr='#ebe9e7',GradientType=0 ); 
-  }
-
-  #first-deportation:hover  {
-    border-radius: 7px 7px 0px 0px;
-      background: #3f038e;
-  }
-
-  #last-deportation:hover  {
-    border-radius: 0px 0px 7px 7px;
-    background: #3f038e;
-  }
-
-  .search_menu_block {
-    margin: 0 auto;
-    width: 62%;
-  }
-
-  #color-text2 {
+    #color-text2 {
     font-size: 20px;
   }
 
@@ -1288,38 +1010,6 @@ h2 {
     padding: 5px 5px;
     font-size: 18px;
     margin-left: 0px;
-  }
-
-
-  .menu {
-    width: 99%;
-    float: none;
-    margin: 20 auto;
-    margin-top: 5px;
-  }
-
-  .text-slideshow {
-    margin: 30px auto;
-    margin-bottom: 0px;
-    font-size: 14px;
-  }
-
-  .logotip {
-    width:100px;
-  }
-
-  .synaccord {
-      font-size: 22px;
-  }
-
-  .logotip_text {
-      font-size: 10px;
-  }
-
-  .logo {
-  
-  
-    float: left;
   }
 
   .conteiner {
