@@ -11,6 +11,7 @@ import panelItemType                    from '../lib/proptypes/panel-item';
 import Panel                            from './panel';
 import Icon                             from './util/icon';
 import UserStore                        from './store/user';
+import About                            from './about';
 
 class App extends React.Component {
 
