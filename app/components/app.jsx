@@ -79,6 +79,11 @@ class App extends React.Component {
               showIntro = false;
               break;
 
+            case 'about':
+              page = ( <About /> );
+              showIntro = false;
+              break;
+
             case 'reset-password':
               page = (
                 <UserStore user={ { activation_token : paths[2] } }>
