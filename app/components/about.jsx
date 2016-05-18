@@ -16,19 +16,20 @@ class About extends React.Component {
       <div className="civil-pursuit">
 
 
-        <div class="conteiner">
-            <div class="bg-inner">
-              <div class="news-headline">
-                <div class="news-headline-inner">
-                  <p id="color-text">Democracy Needs You</p>
-                </div>
+        <div className="conteiner">
+          <div className="bg-inner">
+            <div className="news-headline">
+              <div className="news-headline-inner">
+                <p id="color-text">Democracy Needs You</p>
               </div>
-            <div class="social-bar">
-                <a href="https://www.twitter.com/synaccord" target="_blank"><img src="images/TW-t-logo__white_29.png" alt="Twitter.com/Synaccord"></a>
-                <a href="https://www.facebook.com/synaccord" target="_blank"><img src="images/FB-f-Logo__blue_29.png" alt="Facebook.com/Synaccord"></a>
             </div>
+            <div className="social-bar">
+              <a href="https://www.twitter.com/synaccord" target="_blank"><img src="images/TW-t-logo__white_29.png" alt="Twitter.com/Synaccord" /></a>
+              <a href="https://www.facebook.com/synaccord" target="_blank"><img src="images/FB-f-Logo__blue_29.png" alt="Facebook.com/Synaccord" /></a>
+            </div>
+          </div>
         </div>
-        
+
         <div className="title">
           <div className="conteiner-inner">
             <p id="p-title">About</p>
