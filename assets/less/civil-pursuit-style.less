@@ -51,9 +51,15 @@ background:#888;
   background: transparent;      
   font-size: 100%;
   display: table;
-  width: 100%;
-      
+  width: 100vw;
+  position: absolute;
+  left: 0;
+  top: @syn-topbar-height;
 
+   @media (max-width: @screen-phone) {
+    top: @syn-topbar-height-up-to-phone;
+  }
+      
   a {                                            
     margin:0;
     padding:0;
@@ -62,6 +68,27 @@ background:#888;
     background:transparent;
   }             
 }
+
+.civil-pursuit-conteiner {
+  width: 100%;
+  position: relative;
+}
+
+
+.civil-pursuit-title {
+    background: #F5F5F5;
+    width: 100%;
+}
+
+.civil-pursuit-title-text {
+  color: #000000;
+  font-size: 30px;
+
+  @media only screen and (max-width: 500px){
+      font-size: 24px;
+  }
+}
+
 
 table {           
   border-collapse: collapse;
@@ -91,17 +118,16 @@ sup {
   font-size: smaller;
 }
 
-.conteiner-inner p {
-  font-size: 19px;
-  color: darkslategrey;
-}
-
 .conteiner-inner {
   margin: 0 auto;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 15px;
   padding-bottom: 8px
+
+  p {
+  font-size: 19px;
+  color: darkslategrey;
 }
 
 
@@ -150,16 +176,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8f00', end
   margin-right: 150px;
 }
 
-.title {
-  background: #F5F5F5;
-  width: 100%;
-}
-
-.civil-pursuit-title-text {
-  color: #000000;
-  font-size: 30px;
-  
-}
 
 .content {
   max-width: 960px;
@@ -178,21 +194,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8f00', end
   margin: 0 auto;
 }
 
-.conteiner {
-  width: 100vw;
-  position: absolute;
-}
-
-.logo {
-  display:block;
-  width: 31.7%;
-  float:left;
-}
-
-.dop-block {
-  float: left;
-  width: 11.4%;
-}
 
 .support_button {
   width: 100%;
@@ -735,9 +736,6 @@ h2 {
 
 @media only screen and (max-width: 675px){
 
-  .dop-block {
-    display: none;
-  }
 
   .search_menu_block {
     width: 65%;
@@ -1024,10 +1022,6 @@ h2 {
     font-size: 16px;
     margin-bottom: 5px;
     margin-top: 5px;
-  }
-
-  .civil-pursuit-title-text {
-    font-size: 24px;
   }
 
   #h2 {

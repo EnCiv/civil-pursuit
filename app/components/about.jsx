@@ -14,7 +14,7 @@ class About extends React.Component {
     console.info("About:", this.props);
     return (
       <div className="civil-pursuit">
-        <div className="conteiner">
+        <div className="civil-pursuit-conteiner">
           <div className="bg-inner">
             <div className="news-headline">
               <div className="news-headline-inner">
@@ -28,9 +28,9 @@ class About extends React.Component {
           </div>
         </div>
 
-        <div className="title">
+        <div className="civil-pursuit-title">
           <div className="conteiner-inner">
-            <p className="civil-pursuit-title-text">About</p>
+            <div className="civil-pursuit-title-text">About</div>
           </div>
         </div>
         <div className="content-inner-text">
