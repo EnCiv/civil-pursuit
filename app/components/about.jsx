@@ -33,6 +33,7 @@ class About extends React.Component {
             <div className="civil-pursuit-title">
               <div className="civil-pursuit-title inner">
                 <h2>About</h2>
+              </div>
             </div>
             <div className="content-inner-text">
               <div className="conteiner-inner">
@@ -138,8 +139,6 @@ class About extends React.Component {
           </div>
         </div>
       </div>
-    </div>
-
     );
   }
 }
