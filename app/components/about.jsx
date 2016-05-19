@@ -44,54 +44,46 @@ class About extends React.Component {
                 You’re not alone, most people agree this country is heading in the wrong direction, and think we need big changes or a complete government overhaul to fix it. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
               </p>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">Mission</p>
+            <div className="civil-pursuit-text-block">
+                <h2>Mission</h2>
                 <p>
                   Bring The People together online, keep it civil, find the solutions that unite us, and make them happen. 
                 </p>
-              </div>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">The Meaning Behind Our Name</p>
+             <div className="civil-pursuit-text-block">
+                <h2>The Meaning Behind Our Name</h2>
                 <p>
                   Synaccord is the a combination of the words “synergy” and “accord.”  Synergy is the beautiful thing that happens when people get together and do more than they could individually. An accord is a harmonious agreement.  We need both of these to build a democracy that works even better.
                 </p>
-              </div>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">What it Is</p>
+            <div className="civil-pursuit-text-block">
+                <h2>What it Is</h2>
                 <p>
                   The place for everyone to get together online to participate in the fair and balanced pursuit of solutions that unite us to our democratic challenges.
                 </p>
                 <h3>Technical:</h3>
                 <p> It’s a web app that works on your phone, tablet and desktop for structured text or video based discussion in small diverse groups.
                 </p>
-              </div>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">Why</p>
+            <div className="civil-pursuit-text-block">
+                <h2>Why</h2>
                 <p>
                   Most people think our country is headed in the wrong direction, and while we continue heading down this wrong track our political polarization increases and, our education, healthcare, infrastructure, justice, and economic prosperity decline relative to other countries.  
                 </p>
                 <p>
                   In the US, the financial crisis of 2008, and the fiscal cliff showdown of 2011, shows how bad things can go when the government isn’t working effectively and how it can effect the whole world. And it seems like we have bigger crisis’ ahead that we have to work through.
                 </p>
-              </div>
             </div>
-            <div className="civil-pursuit-wrapper">
-              <div className="civil-pursuit-wrapper title" >
+            <div className="civil-pursuit-text-block">
+              <div className="civil-pursuit-text-block title" >
                 <h2>The Founder</h2>
               </div>
-              <div className="civil-pursuit-wrapper two-col">
-                <div className="civil-pursuit-wrapper left-col">
+              <div className="civil-pursuit-text-block two-col">
+                <div className="civil-pursuit-text-block left-col">
                   <img src="http://www.gravatar.com/avatar/1048b2e27181e99baf011f397a3db1a7.jpg?s=240&r=g" alt="David Fridley, Founder of Synaccord" />
                   <h3><a href="http://linkedin/in/dfridley" target="_blank">David Fridley</a></h3>
                 </div>
-                <div className="civil-pursuit-wrapper right-col">
+                <div className="civil-pursuit-text-block right-col">
                   <p>
                     “I was the type who voted, but mostly avoided the nastiness of politics.  I was taking an online course in user interface design, while working on a different startup idea. There were thousands of students in the class.  To get our work graded, each student had to grade the work of 5 others.  I learned from giving feedback on what other people did, and I learned from the feedback I got. 
                   </p>
@@ -104,9 +96,8 @@ class About extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">Ways to Help</p>
+            <div className="civil-pursuit-text-block">
+                <h2>Ways to Help</h2>
                 <p>There are two things you can do to help this succeed.</p>
                 <p>The first is the easiest.</p>
                 <p>Leave your email address below. This action is huge because it shows others there&#39;s support for this mission. That means we can get the resources to build it, and we will send you occasional updates on our progress.</p>
@@ -133,7 +124,6 @@ class About extends React.Component {
                     <input className="button_support" type="submit" defaultValue="I'm an Expert" />
                   </form>
                 </div>
-              </div>
             </div>
           </div>
         </div>

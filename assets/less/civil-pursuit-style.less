@@ -83,21 +83,19 @@ background:#888;
 
 .civil-pursuit-conteiner-inner {
   max-width: @syn-max-width-center-column;
+  padding-top: .5em;
 
-  margin: 0 auto;
-  padding: 1.25%;
+  margin: auto;
 
   @media (max-width: calc( @syn-max-width-center-column - 20px)) {
-    padding: 10px;
-  }
-
-  @media (max-width: @screen-phone) {
-    padding: 5px;
+    padding-left: .5em;
+    padding-right: .5em;
   }
 
   p {
-  font-size: 19px;
+  font-size: 1.1em;
   color: darkslategrey;
+  margin: 0;
   }
 }
 
@@ -133,14 +131,18 @@ background:#888;
     display: table-cell;
     height: 100%;
     vertical-align: top;
-    padding-right: 5px;
+    padding-right: .25em;
+    padding-bottom: 0;
+    padding-top: 0;
   }
 
   .right-col {
     display: table-cell;
     height: 100%;
     vertical-align: top;
-    padding-left: 5px;
+    padding-left: .25em;
+    padding-bottom: 0;
+    padding-top: 0;
   }
 
   .title {
@@ -213,17 +215,52 @@ sup {
 }
 
 .civil-pursuit-text-block {
+  display: block;
   padding-top: 10px;
   padding-bottom: 10px;
 
   h2 {
-  font-size: 200%;
-  color: darkslategrey;
-  padding-bottom: 10px;
+  font-size: 175%;
+  color: #444;
+  padding-bottom: .25em;
+  }
+
+  h3 {
+  font-size: 125%;
+  color: #444;
+  padding-bottom: .25em;
   }
 
   p {
-  color: slategrey;
+  color: slatedarkgrey;
+  }
+
+
+  .two-col {
+     display: table;
+     height: 100%;
+  }
+
+  .left-col { 
+    display: table-cell;
+    height: 100%;
+    vertical-align: top;
+    padding-right: .25em;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  .right-col {
+    display: table-cell;
+    height: 100%;
+    vertical-align: top;
+    padding-left: .25em;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  .title {
+    padding-bottom: .25em;
   }
 }
 
