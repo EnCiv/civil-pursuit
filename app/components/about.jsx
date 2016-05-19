@@ -21,8 +21,8 @@ class About extends React.Component {
                 <div className="news-headline-text">Democracy Needs You</div>
               </div>
             </div>
-            <div className="social-bar">
-              <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/bo_3px_solid_rgb:fff,c_scale,t_media_lib_thumb,w_29/v1463643337/synaccord/images/TwitterLogo__55acee.jpg" alt="Twitter.com/Synaccord" /></a>
+            <div className="civil-pursuit social-bar">
+              <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/bo_3px_solid_rgb:fff,c_scale,h_26,r_3/v1463643337/synaccord/images/TwitterLogo__55acee.png" alt="Twitter.com/Synaccord" /></a>
               <a href="https://www.facebook.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/Synaccord" /></a>
             </div>
           </div>
@@ -101,11 +101,11 @@ class About extends React.Component {
                 <p>There are two things you can do to help this succeed.</p>
                 <p>The first is the easiest.</p>
                 <p>Leave your email address below. This action is huge because it shows others there&#39;s support for this mission. That means we can get the resources to build it, and we will send you occasional updates on our progress.</p>
-                <div className="support_button cf">
+                <div className="civil-pursuit-text-block email_form cf">
                   <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll">
-                      <input className="search-class" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                      <input className="button_support" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
+                      <input className="civil_pursuit email-input" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                      <input className="civil_pursutt email-button" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
                     </div>
                   </form>
                 </div>
