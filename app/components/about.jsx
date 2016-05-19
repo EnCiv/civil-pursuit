@@ -29,22 +29,20 @@ class About extends React.Component {
         </div>
 
         <div className="civil-pursuit-container-outer">
-          <div className="civil-pursuit-conteiner-inner">
-            <div className="civil-pursuit-title">
-              <div className="civil-pursuit-title inner">
-                <h2>About</h2>
-              </div>
+          <div className="civil-pursuit-title">
+            <div className="civil-pursuit-title inner">
+              <h2>About</h2>
             </div>
-            <div className="content-inner-text">
-              <div className="conteiner-inner">
-                <p id="h2">What&#39;s Wrong?</p>
-                <p>
-                  You’re rational, good-natured, and you genuinely want to find the best solution, but politics has become too hostile, deceitful, and uncivilized. You care, but you’re disengaging because it’s futile and unhealthy.
-                </p>
-                <p>
-                  You’re not alone, most people agree this country is heading in the wrong direction, and think we need big changes or a complete government overhaul to fix it. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
-                </p>
-              </div>
+          </div>
+          <div className="civil-pursuit-conteiner-inner">
+            <div className="civil-pursuit-text-block">
+              <h2>What&#39;s Wrong?</h2>
+              <p>
+                You’re rational, good-natured, and you genuinely want to find the best solution, but politics has become too hostile, deceitful, and uncivilized. You care, but you’re disengaging because it’s futile and unhealthy.
+              </p>
+              <p>
+                You’re not alone, most people agree this country is heading in the wrong direction, and think we need big changes or a complete government overhaul to fix it. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
+              </p>
             </div>
             <div className="content-inner-text">
               <div className="conteiner-inner">
