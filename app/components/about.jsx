@@ -79,7 +79,7 @@ class About extends React.Component {
                 <h2>The Founder</h2>
               </div>
               <div className="civil-pursuit-text-block two-col">
-                <div className="civil-pursuit-text-block left-col">
+                <div className="civil-pursuit-text-block single-center left-col">
                   <img src="http://www.gravatar.com/avatar/1048b2e27181e99baf011f397a3db1a7.jpg?s=240&r=g" alt="David Fridley, Founder of Synaccord" />
                   <h3><a href="http://linkedin/in/dfridley" target="_blank">David Fridley</a></h3>
                 </div>

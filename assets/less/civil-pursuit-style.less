@@ -87,9 +87,9 @@ background:#888;
 
   margin: auto;
 
-  @media (max-width: calc( @syn-max-width-center-column - 20px)) {
-    padding-left: .5em;
-    padding-right: .5em;
+  @media (max-width: @syn-max-width-center-column) {
+    padding-left: 1em;
+    padding-right: 1em;
   }
 
   p {
@@ -115,9 +115,9 @@ background:#888;
     font-size: 200%;
   }
 
-  @media (max-width: calc( @syn-max-width-center-column + 1em)) {
-    padding-left: .5em;
-    padding-right: .5em;
+  @media (max-width: @syn-max-width-center-column) {
+    padding-left: 1em;
+    padding-right: 1em;
   }
 }
 
@@ -244,6 +244,7 @@ sup {
       display: block;
       padding: 0;
       padding-bottom: .5em;
+      height: auto;
     }
   }
 
@@ -257,6 +258,7 @@ sup {
     @media ( max-width: @screen-phone ) {
       display: block;
       padding: 0;
+      height: auto;
     }
   }
 
