@@ -23,7 +23,7 @@ class About extends React.Component {
             </div>
             <div className="social-bar">
               <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/bo_3px_solid_rgb:fff,c_scale,t_media_lib_thumb,w_29/v1463643337/synaccord/images/TwitterLogo__55acee.jpg" alt="Twitter.com/Synaccord" /></a>
-              <a href="https://www.facebook.com/synaccord" target="_blank"><img src="images/FB-f-Logo__blue_29.png" alt="Facebook.com/Synaccord" /></a>
+              <a href="https://www.facebook.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/Synaccord" /></a>
             </div>
           </div>
         </div>
