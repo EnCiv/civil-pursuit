@@ -6,10 +6,8 @@ Civil Pursuit Style
     ____________________________________________________________________________
 **/
 
-@import (reference) "lib/mixins";
-@import (reference) "lib/screens";
 @import "lib/var";
-@import "elements/button";
+
 
 
 #mce-MMERGE3:hover {
@@ -60,6 +58,10 @@ background:#888;
    @media (max-width: @screen-phone) {
     top: @syn-topbar-height-up-to-phone;
   }
+
+  .civil-pursuit-conteiner {
+    position: relative;
+  }
       
   a {                                            
     margin:0;
@@ -82,13 +84,49 @@ background:#888;
     img {
       padding-right: .3em;
     }
-  }             
+  }
+
+  .bg-image {
+    display: table;
+    position: relative;
+
+    width: 100%;
+    height: 350px;
+    background-image: url(http://res.cloudinary.com/hrltiizbo/image/upload/c_thumb,g_north,h_500,w_1920/a_0/v1449181489/shutterstock_144639305_multi_ethnic_crowd_hands_hi_fbltsn.jpg);
+
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    background-color:#464646;
+     display: table;
+    vertical-align: middle; 
+    text-align: center;
+  }
+
+  .news-headline {
+    left: 50%;
+    z-index: 1;
+    display: table-cell; 
+    vertical-align: middle;
+  }
+
+  .news-headline-inner {
+    display: inline-block; 
+    background-color: rgba(255,255,255,0.8); 
+    padding-right: 1%; 
+    padding-left: 1%; 
+    padding-bottom:0.5%;
+  }
+
+  .news-headline-text {
+    color: black;
+    font-size: 250%;
+    font-weight: 700;
+    margin-top: 0;
+    padding: 0;
+  }
 }
 
-.civil-pursuit-conteiner {
-  width: 100%;
-  position: relative;
-}
 
 .civil-pursuit-conteiner-outer {
   padding-left: 0;
@@ -228,8 +266,8 @@ sup {
 
 .civil-pursuit-text-block {
   display: block;
-  padding-top: .5em;
-  padding-bottom: .5em;
+  padding-top: .25em;
+  padding-bottom: 0;
 
   h2 {
   font-size: 175%;
@@ -244,7 +282,9 @@ sup {
   }
 
   p {
-  color: slatedarkgrey;
+  color: darkslategray;
+  padding-bottom: .5em;
+
   }
 
 
@@ -292,11 +332,14 @@ sup {
     padding-bottom: .25em;
   }
 
-  .email_form {
+  .email-block {
+    display: block;
+    width: 1005;
+
+  }
+  .email-form {
     display: table;
     float: right;
-    width: 100%;
-
   }
 
   input[type="email"] {
@@ -306,21 +349,24 @@ sup {
     border:none;
     border-radius: 7px;
     border: 1px solid #a6a3af;
-    width: 20em;
+    width: 19em;
     height: 2em;
     padding-left: .5em;
     font-size: 1em;
     padding-top: .1em;
     padding-bottom: .1em;
+
+    @media (max-width: #screen-phone) {
+      width: 12em;
+    }
   }
 
   input[type="submit"] {
     display: table-cell;
+    float: right;
     cursor: pointer;
     outline: medium none;
     border: medium none;
-    float: left;
-    display: block;
     border-radius: 7px;
     text-decoration: none;
     padding-left: .5em;
@@ -463,45 +509,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8f00', end
   float: left;
 }
 
-.bg-inner {
-
-  width: 100%;
-  height: 350px;
-  background-image: url(http://res.cloudinary.com/hrltiizbo/image/upload/c_thumb,g_north,h_500,w_1920/a_0/v1449181489/shutterstock_144639305_multi_ethnic_crowd_hands_hi_fbltsn.jpg);
-
-  background-position: center center;
-  background-repeat: no-repeat;
-
-  background-color:#464646;
-   display: table;
-  vertical-align: middle; 
-  text-align: center;
-}
 
 
 
-.news-headline {
-  left: 50%;
-  z-index: 1;
-  display: table-cell; 
-  vertical-align: middle;
-}
 
-.news-headline-inner {
-  display: inline-block; 
-  background-color: rgba(255,255,255,0.8); 
-  padding-right: 1%; 
-  padding-left: 1%; 
-  padding-bottom:0.5%;
-}
 
-.news-headline-text {
-  color: black;
-  font-size: 250%;
-  font-weight: 700;
-  margin-top: 0;
-  padding: 0;
-}
 
 
 @media only screen and (min-width:1255px){
