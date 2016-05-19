@@ -30,7 +30,7 @@ class About extends React.Component {
 
         <div className="civil-pursuit-container-outer">
           <div className="civil-pursuit-title">
-            <div className="civil-pursuit-title-inner">
+            <div className="civil-pursuit-title inner">
               <h2>About</h2>
             </div>
           </div>
