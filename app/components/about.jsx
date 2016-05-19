@@ -101,27 +101,20 @@ class About extends React.Component {
                 <p>There are two things you can do to help this succeed.</p>
                 <p>The first is the easiest.</p>
                 <p>Leave your email address below. This action is huge because it shows others there&#39;s support for this mission. That means we can get the resources to build it, and we will send you occasional updates on our progress.</p>
-                <div className="civil-pursuit-text-block email_form cf">
-                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                    <div id="mc_embed_signup_scroll">
-                      <input className="civil-pursuit-text-block" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+
+                 <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+                  <div id="mc_embed_signup_scroll">
+                    <div className="civil-pursuit-text-block email_form cf">                   
+                      <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
                       <input className="civil-pursuit-text-block" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
                     </div>
-                  </form>
-                </div>
-                <div className="search-device cf">
-                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                    <div id="mc_embed_signup_scroll">
-                      <div className="input-device"> <input className="search-class-device" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required /></div>
-                      <input className="button_subscribe-device" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
-                    </div>
-                  </form>
-                </div>
+                  </div>
+                </form>
                 <p>The second way to get involved is to apply to participate in our beta trial. You’ll get to see the first version of Synaccord and give us feedback that will help improve the experience for future users. We’re building a new user interface for democracy and you are the expert in how well it works. With your input, we can keep working to make it engaging and fun to participate in democracy, and keep it civil. All you’ve gotta do is tell us what you think.
                 </p>
                 <div className="expert_button cf">
                   <form action="https://www.surveymonkey.com/r/5XFFXSS" target="_blank">
-                    <input className="button_support" type="submit" defaultValue="I'm an Expert" />
+                    <input className="civil-pursuit-text-block" type="submit" defaultValue="I'm an Expert" />
                   </form>
                 </div>
             </div>
