@@ -100,20 +100,25 @@ background:#888;
 }
 
 .civil-pursuit-title {
-    background: #F5F5F5;
-    width: 100%;
+  background: #F5F5F5;
+  width: 100%;
 
-    .inner {
-          max-width: @syn-max-width-center-column;
-          margin: auto;
-          padding-top: .25em;
-          padding-bottom: .25em;
-    }
+  .inner {
+    max-width: @syn-max-width-center-column;
+    margin: auto;
+    padding-top: .25em;
+    padding-bottom: .25em;
+  }
 
-    h2 {
-      color: #000000;
-      font-size: 200%;
-    }
+  h2 {
+    color: #000000;
+    font-size: 200%;
+  }
+
+  @media (max-width: calc( @syn-max-width-center-column + 1em)) {
+    padding-left: .5em;
+    padding-right: .5em;
+  }
 }
 
 .civil-pursuit-wrapper {
@@ -201,19 +206,6 @@ sup {
   font-size: smaller;
 }
 
-.conteiner-inner {
-  margin: 0 auto;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 15px;
-  padding-bottom: 8px;
-
-  p {
-  font-size: 19px;
-  color: darkslategrey;
-  }
-}
-
 .civil-pursuit-text-block {
   display: block;
   padding-top: 10px;
@@ -248,6 +240,11 @@ sup {
     padding-right: .25em;
     padding-bottom: 0;
     padding-top: 0;
+    @media ( max-width: @screen-phone ) {
+      display: block;
+      padding: 0;
+      padding-bottom: .5em;
+    }
   }
 
   .right-col {
@@ -257,6 +254,16 @@ sup {
     padding-left: .25em;
     padding-bottom: 0;
     padding-top: 0;
+    @media ( max-width: @screen-phone ) {
+      display: block;
+      padding: 0;
+    }
+  }
+
+  single-center {
+    @media ( max-width: @screen-phone ) {
+      text-align: center;
+    }
   }
 
   .title {
