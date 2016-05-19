@@ -11,16 +11,14 @@ class About extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    console.info("About:", this.props)
+    console.info("About:", this.props);
     return (
       <div className="civil-pursuit">
-
-
         <div className="conteiner">
           <div className="bg-inner">
             <div className="news-headline">
               <div className="news-headline-inner">
-                <p id="color-text">Democracy Needs You</p>
+                <div className="news-headline-text">Democracy Needs You</div>
               </div>
             </div>
             <div className="social-bar">
@@ -32,7 +30,7 @@ class About extends React.Component {
 
         <div className="title">
           <div className="conteiner-inner">
-            <p id="p-title">About</p>
+            <p className="civil-pursuit-title-text">About</p>
           </div>
         </div>
         <div className="content-inner-text">
