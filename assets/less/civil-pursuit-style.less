@@ -95,11 +95,38 @@ background:#888;
   font-size: 200%;
 }
 
-.civil-pursuit-2col-wrapper {
-  display: table;
+.civil-pursuit-wrapper {
+  display: block;
   background: #ffffff;
   padding-top: 20px;
   padding-bottom: 20px;
+
+  .two-col-wrapper {
+     display: table;
+     height: 100%;
+  }
+
+  .left-column { 
+    display: table-cell;
+    height: 100%;
+  }
+
+  .right-column {
+    display: table-cell;
+    height: 100%;
+  }
+
+  title {
+    h2 {
+
+        color:#000000;
+        font-size: 30px;
+        line-height: 1;
+        margin-left: 0px;
+        margin-bottom: 15px;
+        text-align: left;
+    }
+  }
 }
 
 civil-pursuit-wrapper-title {

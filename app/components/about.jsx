@@ -29,7 +29,7 @@ class About extends React.Component {
         </div>
 
         <div className="civil-pursuit-title">
-          <div className="conteiner-inner">
+          <div className="civil-pursuit-conteiner-inner">
             <div className="civil-pursuit-title-text">About</div>
           </div>
         </div>
@@ -82,14 +82,16 @@ class About extends React.Component {
             </p>
           </div>
         </div>
-        <div className="text_foto-wrapper-white-about">
-          <div className="content-about cf">
-            <p id="h2">The Founder</p>
-            <div className="foto-wrapper-left-about">
+        <div className="civil-pursuit-wrapper">
+          <div className="civil-pursuit-wrapper title" >
+            <h2>The Founder</h2>
+          </div>
+          <div className="civil-pursuit-wrapper two-col">
+            <div className="civil-pursuit-wrapper left-col">
               <img src="http://www.gravatar.com/avatar/1048b2e27181e99baf011f397a3db1a7.jpg?s=240&r=g" alt="David Fridley, Founder of Synaccord" />
               <h3><a href="http://linkedin/in/dfridley" target="_blank">David Fridley</a></h3>
             </div>
-            <div className="text-right-about">
+            <div className="civil-pursuit-wrapper right-col">
               <p>
                 “I was the type who voted, but mostly avoided the nastiness of politics.  I was taking an online course in user interface design, while working on a different startup idea. There were thousands of students in the class.  To get our work graded, each student had to grade the work of 5 others.  I learned from giving feedback on what other people did, and I learned from the feedback I got. 
               </p>
