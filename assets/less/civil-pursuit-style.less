@@ -23,9 +23,6 @@ background:#888;
 background:#888;
 }
 
-
-
-
 .cf:before,
 .cf:after {
     content: " ";
@@ -53,13 +50,13 @@ background:#888;
   width: 100%;
   position: absolute;
   left: 0;
-  top: @syn-topbar-height;
+  /** top: @syn-topbar-height; **/
 
    @media (max-width: @screen-phone) {
     top: @syn-topbar-height-up-to-phone;
   }
 
-  .civil-pursuit-conteiner {
+  .conteiner {
     position: relative;
   }
       
@@ -111,14 +108,18 @@ background:#888;
   }
 
   .news-headline-inner {
+    position: relative;
     display: inline-block; 
     background-color: rgba(255,255,255,0.8); 
     padding-right: 1%; 
     padding-left: 1%; 
     padding-bottom:0.5%;
+    width: auto;
   }
 
   .news-headline-text {
+    display: block;
+    position: relative;
     color: black;
     font-size: 250%;
     font-weight: 700;
