@@ -22,7 +22,7 @@ class About extends React.Component {
               </div>
             </div>
             <div className="civil-pursuit social-bar">
-              <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/bo_3px_solid_rgb:fff,c_scale,h_26,r_1/v1463643337/synaccord/images/TwitterLogo__55acee.png" alt="Twitter.com/Synaccord" /></a>
+              <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/v1463688303/synaccord/images/twitter-logo-38x32.png" alt="Twitter.com/Synaccord" /></a>
               <a href="https://www.facebook.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/Synaccord" /></a>
             </div>
           </div>
@@ -104,8 +104,8 @@ class About extends React.Component {
                 <div className="civil-pursuit-text-block email_form cf">
                   <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll">
-                      <input className="civil_pursuit-text-block email-input" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                      <input className="civil_pursutt-text-block email-button" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
+                      <input className="civil-pursuit-text-block" type="email" defaultValue name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                      <input className="civil-pursuit-text-block" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
                     </div>
                   </form>
                 </div>
