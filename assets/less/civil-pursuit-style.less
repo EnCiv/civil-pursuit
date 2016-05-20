@@ -101,8 +101,12 @@ background:#888;
   }
 
   .news-headline {
+    position: relative;
     display: table-cell; 
     vertical-align: middle;
+    text-align: middle;
+    width: 100%;
+    margin: auto;
   }
 
   .news-headline-inner {
@@ -112,12 +116,15 @@ background:#888;
     padding-right: 1%; 
     padding-left: 1%; 
     padding-bottom:0.5%;
+    vertical-align: middle;
     width: auto;
+    z-index: 1;
+    text-align: center;
   }
 
   .news-headline-text {
-    display: block;
     position: relative;
+    display: block;
     color: black;
     font-size: 250%;
     font-weight: 700;
