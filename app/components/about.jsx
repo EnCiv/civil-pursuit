@@ -28,14 +28,14 @@ class About extends React.Component {
                   <a href="https://www.facebook.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/Synaccord" /></a>
                 </div>
               </div>
-            </div>
-
-            <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-title">
                 <div className="civil-pursuit-title inner">
                   <h2>About</h2>
                 </div>
-              </div>
+              </div>              
+            </div>
+
+            <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block">
                   <h2>What&#39;s Wrong?</h2>
