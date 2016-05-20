@@ -55,8 +55,8 @@ background:#888;
     vertical-align: baseline;          
 
     display: table;
-    box-sizing: border-box; /** so calc below works right */
-    width: ~"calc(100vw)"; 
+    box-sizing: border-box; 
+    width: ~"calc(100vw)"; /** this width includes the scroll bar if present. Causes some problems not yet fixed */
     position: relative;
     left: ~"calc(-50vw + 50%)"; 
     top: -10px;
@@ -84,7 +84,7 @@ background:#888;
     margin: .3em;
     position: absolute;
     vertical-align: top;
-    left: 0;
+    left: 1%;
     top: 0;
     width: auto;
 
