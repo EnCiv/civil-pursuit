@@ -15,7 +15,7 @@ class About extends React.Component {
     const page = (
       <section>
         <div className="civil-pursuit">
-          <div className="civil-pursuit start">
+          <div className="civil-pursuit wide-box">
             <div className="civil-pursuit conteiner">
               <div className="civil-pursuit bg-image">
                 <div className="civil-pursuit news-headline">
