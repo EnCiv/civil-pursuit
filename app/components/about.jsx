@@ -5,21 +5,16 @@ import React from 'react';
 class About extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- constructor (props) {
-    super(props);
 
-    this.state = { about: true };
-
-  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     console.info("About:", this.props);
-    return (
+    const page = (
       <section>
-        <div className="civil-pursuit">
+        <div className="civil-pursuit start">
           <div className="civil-pursuit conteiner">
             <div className="civil-pursuit bg-image">
               <div className="civil-pursuit news-headline">
@@ -133,6 +128,7 @@ class About extends React.Component {
         </div>
       </section>
     );
+    return ( page );
   }
 }
 
