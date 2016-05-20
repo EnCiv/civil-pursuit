@@ -52,10 +52,14 @@ background:#888;
     vertical-align: baseline;          
 
     display: table;
-    width: ~calc"(100vw - 10px)";
+    width: ~"calc(100vw - 10px)";
     position: relative;
     left: ~"calc(-50vw + 50%)";
     top: -10px;
+
+    @media (max-width: screen-phone) {
+      top: -5px;
+    }
   }
 
   .conteiner {
