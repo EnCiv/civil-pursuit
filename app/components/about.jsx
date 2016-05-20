@@ -20,7 +20,7 @@ class About extends React.Component {
               <div className="civil-pursuit bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
-                    <div className="civil-pursuit news-headline-text">Democracy Needs You</div>
+                    <div className="civil-pursuit news-headline-text">Together We Make The World a Better Place</div>
                   </div>
                 </div>
                 <div className="civil-pursuit social-bar">
