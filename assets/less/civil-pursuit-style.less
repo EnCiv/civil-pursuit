@@ -55,9 +55,10 @@ background:#888;
     vertical-align: baseline;          
 
     display: table;
-    width: ~"calc(100vw - 17px)"; /** experimentaly determined **/
+    box-sizing: border-box; /** so calc below works right */
+    width: ~"calc(100vw)"; 
     position: relative;
-    left: ~"calc(-50vw + 50% + 8px)"; /** experimentaly determined **/
+    left: ~"calc(-50vw + 50%)"; 
     top: -10px;
 
     @media (max-width: @screen-phone) {
@@ -197,9 +198,9 @@ background:#888;
   h2 {
     font-size: 175%;
     color: #444;
-    padding-bottom: .25em;
+    padding-bottom: .1em;
     margin-bottom: .25em;
-  
+
   }
 
   h3 {
