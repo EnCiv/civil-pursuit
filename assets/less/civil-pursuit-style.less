@@ -36,6 +36,9 @@ background:#888;
 }
 
 
+
+
+
 .civil-pursuit {
   font-family: 'Oswald';
   background: transparent;      
@@ -52,12 +55,12 @@ background:#888;
     vertical-align: baseline;          
 
     display: table;
-    width: ~"calc(100vw - 10px)";
+    width: ~"calc(100vw - 17px)"; /** experimentaly determined **/
     position: relative;
-    left: ~"calc(-50vw + 50%)";
+    left: ~"calc(-50vw + 50% + 8px)"; /** experimentaly determined **/
     top: -10px;
 
-    @media (max-width: screen-phone) {
+    @media (max-width: @screen-phone) {
       top: -5px;
     }
   }
@@ -77,8 +80,6 @@ background:#888;
   .social-bar {
     display: block;
     margin: .3em;
-    margin-left: .6em;
-    z-index: 2;
     position: absolute;
     vertical-align: top;
     left: 0;
@@ -125,7 +126,6 @@ background:#888;
     padding-bottom:0.5%;
     vertical-align: middle;
     width: auto;
-    z-index: 1;
     text-align: center;
   }
 
@@ -195,15 +195,17 @@ background:#888;
   padding-bottom: 0;
 
   h2 {
-  font-size: 175%;
-  color: #444;
-  padding-bottom: .25em;
+    font-size: 175%;
+    color: #444;
+    padding-bottom: .25em;
+    margin-bottom: .25em;
+  
   }
 
   h3 {
-  font-size: 125%;
-  color: #444;
-  padding-bottom: .25em;
+    font-size: 125%;
+    color: #444;
+    padding-bottom: .25em;
   }
 
   p {
