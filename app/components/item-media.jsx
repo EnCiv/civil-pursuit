@@ -21,13 +21,12 @@ class ItemMedia extends React.Component {
       media = ( <YouTube item={ item } /> );
     }
 
-    else if ( item.image && /^http/.test(item.image) ) {
-      media = ( <Image src={ item.image } responsive /> );
-    }
-
     else if ( item.image == publicConfig['default item image'])
     { media = "";
 
+    }
+    else if ( item.image && /^http/.test(item.image) ) {
+      media = ( <Image src={ item.image } responsive /> );
     }
     else {
       /** don't show image if
