@@ -6,6 +6,7 @@ import MaritalStatus                    from '../marital-status';
 import Employment                       from '../employment';
 import Education                        from '../education';
 import PoliticalParty                   from '../political-party';
+import PoliticalTendency                from '../political-tendency';
 import Country                          from '../country';
 import State                            from '../state';
 
@@ -77,6 +78,8 @@ class Schema extends Mungo.Model {
       "registered_voter"  :     Boolean,
 
       "party"             :     PoliticalParty,
+
+      "tendency"          :     PoliticalTendency,
 
       "city"              :     String,
 
