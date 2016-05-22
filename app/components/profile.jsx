@@ -60,7 +60,6 @@ class Profile extends React.Component {
         ])
         .then(
           results => {
-            console.info("profile.get.results:",{ results });
             let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency ] = results;
             this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency });
           }
@@ -69,7 +68,7 @@ class Profile extends React.Component {
   }
 
   render() {
-
+    console.info("profile.render:",this.props, this.state);
     let content = (
       <div className={ Component.classList(this, 'text-center', 'gutter', 'muted') }>
         <Icon icon="circle-o-notch" spin={ true } size={ 4 } />
