@@ -52,13 +52,16 @@ class Profile extends React.Component {
           }),
           new Promise((ok, ko) => {
             window.socket.emit('get political parties', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get political tendency', ok)
           })
         ])
         .then(
           results => {
             console.info({ results });
-            let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties ] = results;
-            this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties });
+            let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency ] = results;
+            this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency });
           }
         );
     }

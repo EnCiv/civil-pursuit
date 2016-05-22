@@ -1,1 +1,10 @@
-[{"name":"Democrat"},{"name":"Republican"},{"name":"Independent"},{"name":"Other"}]
+[
+	{"name":"Conservative"},
+	{"name":"Liberal"},
+	{"name":"Somewhat Conservative"},
+	{"name":"Somewhat Liberal"},
+	{"name":"Neither Conservative nor Liberal"},
+	{"name":"Socially Liberal Fiscal Conservative"},
+	{"name":"prefer not to say right now"},
+	{"name":"Other"}
+]

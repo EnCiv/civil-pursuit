@@ -11,6 +11,7 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import politicalPartyType             from '../lib/proptypes/political-party';
+import politicalTendencyType          from '../lib/prottypes/political-tendency';
 
 class Voter extends React.Component {
 
@@ -18,7 +19,8 @@ class Voter extends React.Component {
 
   static propTypes = {
     user : userType,
-    politicalParties : React.PropTypes.arrayOf(politicalPartyType)
+    politicalParties : React.PropTypes.arrayOf(politicalPartyType),
+    politicalTendency : React.PropTypes.arrayOf(politicalTendencyType)
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,11 +45,25 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  setTendency () {
+    const tendency = React.findDOMNode(this.refs.tendency).value;
+
+    if ( tendency ) {
+      window.socket.emit('set user info', { tendency });
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
-    let { user, politicalParties } = this.props;
+    let { user, politicalParties, politicalTendency } = this.props;
 
     let parties = politicalParties.map(party => (
       <option value={ party._id } key={ party._id }>{ party.name }</option>
+    ));
+
+    let tendency = politicalTendency.map(party => (
+      <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
     ));
 
     return (
@@ -85,6 +101,19 @@ class Voter extends React.Component {
             </Select>
           </Column>
         </Row>
+
+        <Row baseline className="gutter">
+          <Column span="25">
+            Political Tendency
+          </Column>
+          <Column span="75">
+            <Select block medium ref="tendency" defaultValue={ user.tendency } onChange={ this.setTendency.bind(this) }>
+              <option value=''>Choose one</option>
+              { tendency }
+            </Select>
+          </Column>
+        </Row>
+
       </section>
     );
   }
