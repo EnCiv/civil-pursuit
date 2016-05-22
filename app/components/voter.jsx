@@ -56,6 +56,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    console.info("voter.render:",this);
     let { user, politicalParties, politicalTendency } = this.props;
 
     let parties = politicalParties.map(party => (

@@ -27,6 +27,7 @@ class Profile extends React.Component {
 
   get () {
     if ( typeof window !== 'undefined' ) {
+      console.info("profile.get.promise");
       Promise
         .all([
           new Promise((ok, ko) => {
@@ -59,7 +60,7 @@ class Profile extends React.Component {
         ])
         .then(
           results => {
-            console.info({ results });
+            console.info("profile.get.results:",{ results });
             let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency ] = results;
             this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties, politicalTendency });
           }
