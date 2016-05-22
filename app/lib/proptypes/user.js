@@ -32,6 +32,7 @@ const user          =   shape({
   dob               :   instanceOf(Date),
   registered_voter  :   bool,
   party             :   string,
+  tendency          :   string,
   city              :   string,
   state             :   string,
   zip               :   string,
