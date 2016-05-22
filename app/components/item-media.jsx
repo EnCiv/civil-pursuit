@@ -12,6 +12,7 @@ class ItemMedia extends React.Component {
   };
 
   render () {
+    console.info("ItemMedia.render", this.props, publicConfig);
     let { item } = this.props;
 
     let media;
@@ -24,7 +25,10 @@ class ItemMedia extends React.Component {
       media = ( <Image src={ item.image } responsive /> );
     }
 
+    else if ( item.image == publicConfig['default item image'])
+    { media = "";
 
+    }
     else {
       /** don't show image if
       media = ( <Image src={ publicConfig['default item image'] } responsive /> ); **/
