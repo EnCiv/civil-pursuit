@@ -94,7 +94,7 @@ class Item extends React.Component {
          .findDOMNode(this.refs.media)
          .querySelector('.video-container');
       }
-      else {
+      else if (image) {
         media = image;
       }
 
@@ -112,7 +112,10 @@ class Item extends React.Component {
         let buttons       =   item.querySelector('.item-buttons');
 
         let onLoad = () => {
-          let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
+          let mediaHeight = 40;
+          if (media) {
+              mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
+          }
 
           let limit;
 
