@@ -11,7 +11,7 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import politicalPartyType             from '../lib/proptypes/political-party';
-import politicalTendencyType          from '../lib/prottypes/political-tendency';
+import politicalTendencyType          from '../lib/proptypes/political-tendency';
 
 class Voter extends React.Component {
 
