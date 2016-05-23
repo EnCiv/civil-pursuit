@@ -263,7 +263,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <h5 className="item-tendency" style={ user && user.tendency ? { display : 'block' } : { display : 'none' } } >
-                { user && user.tendency ? Political-Tendency: user.tendency  :  '' }
+                { user && user.tendency ? user.tendency  :  '' }
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
