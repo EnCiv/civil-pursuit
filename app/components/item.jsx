@@ -8,7 +8,7 @@ class Item extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = { userInfo };
+    this.state = { userInfo : null };
 
     this.getUserInfo();
   }
