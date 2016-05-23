@@ -287,7 +287,7 @@ class PanelItems extends React.Component {
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
                   item    =   { item }
-
+                  user    =   { user }
                   buttons =   { (
                     <ItemStore item={ item }>
                       <ItemButtons
