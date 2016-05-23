@@ -5,6 +5,14 @@ import ItemMedia        from './item-media';
 
 class Item extends React.Component {
 
+  constructor (props) {
+    super(props);
+
+    this.state = { userInfo };
+
+    this.getUserInfo();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    *  @description      Break a given text into lines, themselves into words
@@ -189,6 +197,26 @@ class Item extends React.Component {
     }
   }
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ getUserInfo () {
+    if ( typeof window !== 'undefined' ) {
+      console.info("item.getUserInfo.promise");
+      Promise
+        .all([
+          new Promise((ok, ko) => {
+            window.socket.emit('get user info', ok);
+          })
+        ])
+        .then(
+          results => {
+            let [ userInfo ] = results;
+            this.setState({ userInfo });
+          }
+        );
+    }
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -262,8 +290,8 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h5 className="item-tendency" style={ user && user.tendency ? { display : 'block' } : { display : 'none' } } >
-                { user && user.tendency ? user.tendency  :  '' }
+              <h5 className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
+                { this.state.userInfo && this.state.userInfo.tendency ? this.state.userInfo.tendency  :  '' }
               </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
