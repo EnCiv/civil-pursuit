@@ -78,7 +78,7 @@ componentDidUpdate () {
                 <span> of </span>
                 <span className="limit">{ limit }</span>
               </h2>
-              <h4>Evaluate each item below</h4>
+              <h4>Which of these is most important?</h4>
             </header>
           ),
 
