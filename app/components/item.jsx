@@ -192,7 +192,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { item, buttons, footer, collapsed } = this.props;
+    const { item, user, buttons, footer, collapsed } = this.props;
 
     console.info("item.render:", this.props, this.state)
 
@@ -262,6 +262,8 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
+              <h5 className="item-tendency" style={ user && user.tendency ? { display : 'block' } : { display : 'none' } } >
+                { user && user.tendency ? Political-Tendency: user.tendency  :  '' }
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
