@@ -207,12 +207,15 @@ class Item extends React.Component {
         .all([
           new Promise((ok, ko) => {
             window.socket.emit('get user info', ok);
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get political tendency', ok)
           })
         ])
         .then(
           results => {
-            let [ userInfo ] = results;
-            this.setState({ userInfo });
+            let [ userInfo, politicalTendency ] = results;
+            this.setState({ userInfo, politicalTendency });
           }
         );
     }
@@ -291,7 +294,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <h5 className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
-                { this.state.userInfo && this.state.userInfo.tendency ? this.state.userInfo.tendency  :  '' }
+                { this.state.userInfo && this.state.userInfo.tendency ? this.state.politicalTendency[this.state.userInfo.tendency].name  :  '' }
               </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
