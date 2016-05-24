@@ -229,9 +229,11 @@ class Item extends React.Component {
 
     const tendencyChoice = [];
 
+    console.info(this.state.politicalTendency ? "tendency true " : "tendency false");
     if(this.state.politicalTendency) {
       var tend;
       for( tend in this.state.politicalTendency) {
+        console.info("tend.name": tend.name)
         tendencyChoice[tend._id]=tend.name;
       }
     }
