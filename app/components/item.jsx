@@ -236,7 +236,7 @@ class Item extends React.Component {
       }
     }
 
-    console.info("item.render:", this.props, this.state, tendency)
+    console.info("item.render:", this.props, this.state, tendencyChoice);
 
     let rendereditem = {};
 
