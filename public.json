@@ -21,7 +21,7 @@
     }
   },
 
-  "navigator batch size": 6,
+  "navigator batch size": 10,
 
   "google analytics": {
     "key": "UA-55807209-1"
