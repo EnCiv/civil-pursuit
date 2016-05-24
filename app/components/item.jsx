@@ -225,7 +225,16 @@ class Item extends React.Component {
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    console.info("item.render:", this.props, this.state)
+    let tendency[];
+
+    if(this.state.politicalTendency) {
+
+      tendency[] = politicalTendency.map( tendency => (
+        {  tendency._id ,  tendency.name }
+      ));
+   }
+
+    console.info("item.render:", this.props, this.state, tendency)
 
     let rendereditem = {};
 
