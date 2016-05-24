@@ -118,6 +118,7 @@ class Item extends React.Component {
         let description   =   item.querySelector('.item-description');
         let reference     =   item.querySelector('.item-reference a');
         let buttons       =   item.querySelector('.item-buttons');
+        let tendency      =   item.querySelector('.item-tendency');
 
         let onLoad = () => {
           let mediaHeight = 50; // minimum height for the item
@@ -307,11 +308,10 @@ class Item extends React.Component {
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
-              <div className="item-description pre-text">{ item.description }
+              <div className="item-description pre-text">{ item.description }</div>
                 <div className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
-                  { this.state.userInfo && '-'+this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
+                  - { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
                 </div>
-              </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
