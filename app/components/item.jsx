@@ -216,8 +216,8 @@ class Item extends React.Component {
         ])
         .then(
           results => {
-            let [ userInfo, tendency ] = results;
-            this.setState({ userInfo, tendency });
+            let [ userInfo, politicalTendency ] = results;
+            this.setState({ userInfo, politicalTendency });
           }
         );
     }
@@ -229,9 +229,9 @@ class Item extends React.Component {
 
     const tendencyChoice = [];
 
-    if(this.state.tendency) {
+    if(this.state.politicalTendency) {
       var tend;
-      for( tend in tendency) {
+      for( tend in this.state.politicalTendency) {
         tendencyChoice[tend._id]=tend.name;
       }
     }
