@@ -118,6 +118,7 @@ class Item extends React.Component {
         let description   =   item.querySelector('.item-description');
         let reference     =   item.querySelector('.item-reference a');
         let buttons       =   item.querySelector('.item-buttons');
+        let tendency      =   item.querySelector('.item-tendency');
 
         let onLoad = () => {
           let mediaHeight = 50; // minimum height for the item
@@ -146,6 +147,7 @@ class Item extends React.Component {
           Item.paint(subject, limit);
           Item.paint(reference, limit);
           Item.paint(description, limit);
+          Item.paint(tendency, limit);
 
           if ( ! item.querySelector('.word.hide') ) {
             more.style.display = 'none';
@@ -225,14 +227,13 @@ class Item extends React.Component {
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    let tendency[];
+    const tendency;
 
     if(this.state.politicalTendency) {
-
-      tendency[] = politicalTendency.map( tendency => (
-        {  tendency._id ,  tendency.name }
-      ));
-   }
+      for each (tend in politicalTendency) {
+        tendency[tend._id]=tend.name;
+      }
+    }
 
     console.info("item.render:", this.props, this.state, tendency)
 
@@ -267,6 +268,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
+                { this.state.userInfo && this.state.userInfo.tendency ? tendency[this.state.userInfo.tendency]  :  '' }
+              <div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
@@ -302,9 +306,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h5 className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
-                { this.state.userInfo && this.state.userInfo.tendency ? this.state.politicalTendency[this.state.userInfo.tendency].name  :  '' }
-              </h5>
+              <div className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
+                { this.state.userInfo && this.state.userInfo.tendency ? tendency[this.state.userInfo.tendency]  :  '' }
+              <div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
