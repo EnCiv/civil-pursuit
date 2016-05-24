@@ -274,7 +274,7 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h6 className="item-tendency" } >
+              <h6 className="item-tendency" >
                 { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
               </h6>
               <div className="item-read-more" ref="more">
@@ -312,7 +312,7 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h6 className="item-tendency" } >
+              <h6 className="item-tendency" >
                    { this.state.userInfo && this.state.userInfo.tendency ? '-' + tendencyChoice[this.state.userInfo.tendency]  :  '' }
               </h6>
               <div className="item-read-more" ref="more">
