@@ -232,8 +232,8 @@ class Item extends React.Component {
     console.info("item.render", this.state, this.state.politicalTendency ? "tendency true " : "tendency false");
     if(this.state.politicalTendency) {
       this.state.politicalTendency.forEach( choice => {
-        console.info("item in loop", choice, this.state.politicalTendency[choice].name);
-        tendencyChoice[this.state.politicalTendency[choice]._id]=this.state.politicalTendency[choice].name;
+        console.info("item in loop", choice );
+        tendencyChoice[choice._id]=choice.name;
       } );
     }
 
