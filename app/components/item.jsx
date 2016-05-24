@@ -185,9 +185,11 @@ class Item extends React.Component {
 
   readMore (e) {
     e.preventDefault();
+    let item = React.findDOMNode(this.refs.item);
 
-    let truncatable =  React.findDOMNode(this.refs.item)
-      .querySelector('.item-truncatable');
+    let truncatable =  item.querySelector('.item-truncatable');
+
+    let tendency    =  item.querySelector('.item-tendency');
 
     truncatable.classList.toggle('expand');
 
@@ -197,9 +199,11 @@ class Item extends React.Component {
 
     if ( this.expanded ) {
       text.innerText = 'less';
+      tendency.style.display='block';
     }
     else {
       text.innerText = 'more';
+      tendency.style.display='none';
     }
   }
 
@@ -274,9 +278,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h6 className="item-tendency" >
+              <div className="item-tendency" style={{display: 'none'}>
                 { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
-              </h6>
+              </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
@@ -312,9 +316,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <h6 className="item-tendency" >
+              <div className="item-tendency" style={{display: 'none'}>
                    { this.state.userInfo && this.state.userInfo.tendency ? '-' + tendencyChoice[this.state.userInfo.tendency]  :  '' }
-              </h6>
+              </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
