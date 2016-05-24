@@ -274,9 +274,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <div className="item-tendency pre-text" } >
+              <h6 className="item-tendency" } >
                 { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
-              </div>
+              </h6>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
@@ -303,7 +303,7 @@ class Item extends React.Component {
           </section>
 
           <section className="item-text">
-            <div className="item-truncatable">
+            <div className="item-truncatable">  
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
@@ -312,9 +312,9 @@ class Item extends React.Component {
                 <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
-              <div className="item-tendency pre-text" } >
+              <h6 className="item-tendency" } >
                    { this.state.userInfo && this.state.userInfo.tendency ? '-' + tendencyChoice[this.state.userInfo.tendency]  :  '' }
-              </div>
+              </h6>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
