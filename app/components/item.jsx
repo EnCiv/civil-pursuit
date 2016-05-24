@@ -232,7 +232,6 @@ class Item extends React.Component {
     console.info("item.render", this.state, this.state.politicalTendency ? "tendency true " : "tendency false");
     if(this.state.politicalTendency) {
       this.state.politicalTendency.forEach( choice => {
-        console.info("item in loop", choice );
         tendencyChoice[choice._id]=choice.name;
       } );
     }
@@ -310,7 +309,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
                 <div className="item-tendency" style={ this.state.userInfo && this.state.userInfo.tendency ? { display : 'block' } : { display : 'none' } } >
-                  - { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
+                   { this.state.userInfo && this.state.userInfo.tendency ? '-' + tendencyChoice[this.state.userInfo.tendency]  :  '' }
                 </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
