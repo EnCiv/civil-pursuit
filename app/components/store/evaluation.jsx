@@ -177,9 +177,9 @@ class EvaluationStore extends React.Component {
   insertUpvotes(itemId) {
     let upvotes = [];
 
-    if ( evaluation.items.length ) {
+    if ( this.state.evaluation.items.length ) {
 
-      for(itm in evaluation.items)
+      for(itm in this.state.evaluation.items)
       {   
           if(itm._id == itemId) {
             upvotes.push({
@@ -194,7 +194,7 @@ class EvaluationStore extends React.Component {
           }
       }
 
-      console.info("insertUpvotes", evalutaion.items, upvotes );
+      console.info("insertUpvotes", this.state.evalutaion, upvotes );
 
       window.socket.emit('insert upvotes', upvotes);
     }
