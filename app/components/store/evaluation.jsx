@@ -174,6 +174,35 @@ class EvaluationStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  insertUpvotes(itemId) {
+    const upvotes[];
+
+    if ( evaluation.items.length ) {
+
+      for(itm in evaluation.items)
+      {   
+          if(itm._id == itemId) {
+            upvotes.push({
+              item: itm._id,
+               value: 1
+            });
+          } else {
+            upvotes.push({
+              item: itm._id,
+              value: 0
+            });
+          }
+      }
+
+      console.info("insertUpvotes", evalutaion.items, upvotes );
+
+      window.socket.emit('insert upvotes', upvotes);
+    }
+  }
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   insertVotes(position, itemId) {
     const sliders = React.findDOMNode(this.refs.view).querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
 
@@ -223,6 +252,7 @@ class EvaluationStore extends React.Component {
 
     if ( cursor > this.state.limit ) {
       window.socket.emit('promote', this.state[position]);
+      this.insertUpvotes(this.state[position]._id);
     }
 
     this.insertVotes(opposite, this.state[opposite]._id);
