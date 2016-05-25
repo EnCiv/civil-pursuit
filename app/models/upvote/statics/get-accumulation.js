@@ -14,7 +14,7 @@ function getAccumulation (item) {
     try {
       let accumulation = {
                     total: 0,
-                    userDidUpvote: false;
+                    userDidUpvote: false,
                     values: initValues()
                   };
 
