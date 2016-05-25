@@ -175,7 +175,7 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertUpvotes(itemId) {
-    const upvotes[];
+    let upvotes[];
 
     if ( evaluation.items.length ) {
 
