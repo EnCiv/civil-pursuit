@@ -181,7 +181,7 @@ class EvaluationStore extends React.Component {
 
     if ( this.state.evaluation && this.state.evaluation.items.length ) {
 
-      for(itm in this.state.evaluation.items)
+      for(var itm in this.state.evaluation.items)
       {   
           if(itm._id == itemId) {
             upvotes.push({
