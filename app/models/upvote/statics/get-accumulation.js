@@ -27,7 +27,7 @@ function getAccumulation (item) {
 
                 let value;
 
-                else if ( upvote.value === 0 ) {
+                if ( upvote.value === 0 ) {
                   value = '+0';
                 }
 
