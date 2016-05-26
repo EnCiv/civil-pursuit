@@ -183,20 +183,20 @@ class EvaluationStore extends React.Component {
 
       for(var itm in this.state.evaluation.items)
       {   
-          if(itm == itemId) {
+          if(itm._Id == itemId) {
             upvotes.push({
-              item: itm,
+              item: itm._Id,
                value: 1
             });
           } else {
             upvotes.push({
-              item: itm,
+              item: itm._Id,
               value: 0
             });
           }
       }
 
-      console.info("insertUpvotes", this.state.evalutaion, upvotes );
+      console.info("insertUpvotes", this.state.evalutation, upvotes );
 
       window.socket.emit('insert upvotes', upvotes);
     }
