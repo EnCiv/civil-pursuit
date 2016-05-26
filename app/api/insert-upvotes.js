@@ -6,7 +6,7 @@ function insertUpvotes (upvotes) {
   Upvote
     .create(upvotes.map(upvote => {
       upvote.user = this.synuser.id;
-      upvote.date = new date();
+      upvote.date = new Date();
 
       return upvote;
     }))
