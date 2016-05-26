@@ -177,20 +177,20 @@ class EvaluationStore extends React.Component {
   insertUpvotes(itemId) {
     let upvotes = [];
 
-    console.info("insertUpvotes", this.state.evalutaion );
+    console.info("insertUpvotes", this.state, itemId );
 
     if ( this.state.evaluation && this.state.evaluation.items.length ) {
 
       for(var itm in this.state.evaluation.items)
       {   
-          if(itm._id == itemId) {
+          if(itm == itemId) {
             upvotes.push({
-              item: itm._id,
+              item: itm,
                value: 1
             });
           } else {
             upvotes.push({
-              item: itm._id,
+              item: itm,
               value: 0
             });
           }
@@ -254,7 +254,6 @@ class EvaluationStore extends React.Component {
 
     if ( cursor > this.state.limit ) {
       window.socket.emit('promote', this.state[position]);
-      this.insertUpvotes(this.state[position]._id);
     }
 
     this.insertVotes(opposite, this.state[opposite]._id);
@@ -274,6 +273,7 @@ class EvaluationStore extends React.Component {
 
     else {
       this.insertVotes(position, this.state[position]._id);
+      this.insertUpvotes(this.state[position]._id);
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('promote');
     }
