@@ -176,7 +176,7 @@ class EvaluationStore extends React.Component {
 
   insertUpvotes(itemId) {
     let upvotes = [];
-    const evaluation - this.state.evaluation.items;
+    const evaluation = this.state.evaluation.items;
 
 
     console.info("insertUpvotes", this.state, itemId );
