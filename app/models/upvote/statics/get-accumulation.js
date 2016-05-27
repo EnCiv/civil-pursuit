@@ -9,7 +9,7 @@ function initValues () {
   return values;
 }
 
-function getAccumulation (item) {
+function getAccumulation (item, userId) {
   return new Promise((ok, ko) => {
     try {
       let accumulation = {
@@ -33,6 +33,10 @@ function getAccumulation (item) {
 
                 else if ( upvote.value === 1 ) {
                   value = '+1';
+                }
+
+                if (upvote.user == userId) {
+                  accumulation.userDidUpvote= true;
                 }
 
                 
