@@ -47,6 +47,7 @@ function migrate (...models) {
                       path.resolve(__dirname, `../models/${file}`)
                     ).default;
                     // console.log({ model });
+                    console.info("migrate model", file);                    
                     model.migrate().then(ok, ko);
                   }
                   catch ( error ) {
