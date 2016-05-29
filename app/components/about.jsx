@@ -11,7 +11,6 @@ class About extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    console.info("About:", this.props);
     const page = (
       <section>
         <div className="civil-pursuit">
