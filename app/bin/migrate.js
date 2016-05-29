@@ -27,6 +27,8 @@ function migrate (...models) {
       sequencer(stack).then(
 
         () => {
+
+          console.info("migrate", models);
           fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
 
             try {
