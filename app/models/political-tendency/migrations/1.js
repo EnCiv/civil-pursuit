@@ -37,6 +37,8 @@ class PoliticalTendency extends Mungo.Migration {
 
             // Insert all fixtures
 
+            console.info("Political Tendency: migration 1" this);
+
             this.create(fixtures).then(
 
               docs =>
