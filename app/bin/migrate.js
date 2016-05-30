@@ -28,7 +28,6 @@ function migrate (...models) {
 
         () => {
 
-          console.info("migrate", models);
           fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
 
             try {
