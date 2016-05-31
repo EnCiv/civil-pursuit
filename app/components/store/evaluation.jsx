@@ -201,7 +201,7 @@ class EvaluationStore extends React.Component {
 
       console.info("insertUpvotes", this.state.evaluation, upvotes );
 
-      window.socket.emit('insert upvotes', upvotes);
+      window.socket.emit('insert upvote', upvotes);
     }
   }
 

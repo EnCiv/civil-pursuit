@@ -21,21 +21,21 @@ function getAccumulation (item, userId) {
       this
         .find({ item })
         .then(
-          upvotes => {
+          upvote => {
             try {
-              upvotes.forEach(upvote => {
+              upvote.forEach(upv => {
 
                 let value;
 
-                if ( upvote.value === 0 ) {
+                if ( upv.value === 0 ) {
                   value = '+0';
                 }
 
-                else if ( upvote.value === 1 ) {
+                else if ( upv.value === 1 ) {
                   value = '+1';
                 }
 
-                if (upvote.user == userId) {
+                if (upv.user == userId) {
                   accumulation.userDidUpvote= true;
                 }
 
