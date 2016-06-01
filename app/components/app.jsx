@@ -30,24 +30,23 @@ class App extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  getTendency () {
-      console.info("app.getTendency.promise");
-      Promise
-        .all([
-          new Promise((ok, ko) => {
-            window.socket.emit('get political tendency', ok);
-          })
-        ])
-        .then(
-          results => {
-            let [ politicalTendency ] = results;
-            console.info("app.getTendency", politicalTendency, politicalTendency ? "tendency true " : "tendency false");
-            if(politicalTendency) {
-                politicalTendency.forEach( choice => {
-                window.Synapp.tendencyChoice[choice._id]=choice.name;
-              } );
-            }
-          }
-        );
+  console.info("app.getTendency.promise");
+  Promise
+    .all([
+      new Promise((ok, ko) => {
+        window.socket.emit('get political tendency', ok);
+      })
+    ])
+    .then(
+      results => {
+//            let [ politicalTendency ] = results;
+        if(results) {
+            results.forEach( choice => {
+            window.Synapp.tendencyChoice[choice._id]=choice.name;
+          } );
+        }
+      }
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

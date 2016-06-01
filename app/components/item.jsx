@@ -5,14 +5,6 @@ import ItemMedia        from './item-media';
 
 class Item extends React.Component {
 
-  constructor (props) {
-    super(props);
-
-    this.state = { userInfo : null };
-
-    this.getUserInfo();
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    *  @description      Break a given text into lines, themselves into words
@@ -210,39 +202,12 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- getUserInfo () {
-    if ( typeof window !== 'undefined' ) {
-      console.info("item.getUserInfo.promise");
-      Promise
-        .all([
-          new Promise((ok, ko) => {
-            window.socket.emit('get political tendency', ok)
-          })
-        ])
-        .then(
-          results => {
-            let [ politicalTendency ] = results;
-            this.setState({ politicalTendency });
-          }
-        );
-    }
-  }
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
     const tendencyChoice = window.Synapp.tendencyChoice;
 
- //   console.info("item.render", this.state, tendencyChoice);
- //   if(this.state.politicalTendency) {
- //     this.state.politicalTendency.forEach( choice => {
- //       tendencyChoice[choice._id]=choice.name;
- //     } );
- //   }
-
-
-    console.info("item.render:", this.props, this.state, tendencyChoice);
+    console.info("item.render:", this.props, this.state);
 
     let rendereditem = {};
 
