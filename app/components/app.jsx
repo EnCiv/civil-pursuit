@@ -15,6 +15,37 @@ import About                            from './about';
 
 class App extends React.Component {
 
+  constructor (props) {
+    super(props);
+
+    this.getTendency();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ getTendency () {
+    if ( typeof window !== 'undefined' ) {
+      console.info("app.getTendency.promise");
+      Promise
+        .all([
+          new Promise((ok, ko) => {
+            window.socket.emit('get political tendency', ok);
+          })
+        ])
+        .then(
+          results => {
+            let [ politicalTendency ] = results;
+            console.info("app.getTendency", politicalTendency ? "tendency true " : "tendency false");
+            if(politicalTendency) {
+                politicalTendency.forEach( choice => {
+                window.tendencyChoice[choice._id]=choice.name;
+              } );
+            }
+          }
+        );
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
