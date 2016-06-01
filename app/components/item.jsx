@@ -232,14 +232,14 @@ class Item extends React.Component {
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    const tendencyChoice = [];
+    const tendencyChoice = window.Synapp.tendencyChoice;
 
-    console.info("item.render", this.state, this.state.politicalTendency ? "tendency true " : "tendency false");
-    if(this.state.politicalTendency) {
-      this.state.politicalTendency.forEach( choice => {
-        tendencyChoice[choice._id]=choice.name;
-      } );
-    }
+ //   console.info("item.render", this.state, tendencyChoice);
+ //   if(this.state.politicalTendency) {
+ //     this.state.politicalTendency.forEach( choice => {
+ //       tendencyChoice[choice._id]=choice.name;
+ //     } );
+ //   }
 
 
     console.info("item.render:", this.props, this.state, tendencyChoice);
