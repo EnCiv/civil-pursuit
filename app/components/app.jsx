@@ -18,13 +18,18 @@ class App extends React.Component {
   constructor (props) {
     super(props);
 
-    this.getTendency();
+    if ( typeof window !== 'undefined' ) {
+      if(!window.synapp) {
+        var window.synapp = {};
+        var window.synapp.tendencyChoice =[];
+        this.getTendency();
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  getTendency () {
-    if ( typeof window !== 'undefined' ) {
       console.info("app.getTendency.promise");
       Promise
         .all([
@@ -35,15 +40,14 @@ class App extends React.Component {
         .then(
           results => {
             let [ politicalTendency ] = results;
-            console.info("app.getTendency", politicalTendency ? "tendency true " : "tendency false");
+            console.info("app.getTendency", politicalTendency, politicalTendency ? "tendency true " : "tendency false");
             if(politicalTendency) {
                 politicalTendency.forEach( choice => {
-                window.tendencyChoice[choice._id]=choice.name;
+                window.synapp.tendencyChoice[choice._id]=choice.name;
               } );
             }
           }
         );
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
