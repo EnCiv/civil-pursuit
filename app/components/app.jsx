@@ -19,9 +19,9 @@ class App extends React.Component {
     super(props);
 
     if ( typeof window !== 'undefined' ) {
-      if(!window.synapp) {
-        var window.synapp = {};
-        var window.synapp.tendencyChoice =[];
+      if(!window.Synapp) {
+        var window.Synapp = {};
+        var Synapp.tendencyChoice = [];
         this.getTendency();
       }
     }
@@ -43,7 +43,7 @@ class App extends React.Component {
             console.info("app.getTendency", politicalTendency, politicalTendency ? "tendency true " : "tendency false");
             if(politicalTendency) {
                 politicalTendency.forEach( choice => {
-                window.synapp.tendencyChoice[choice._id]=choice.name;
+                window.Synapp.tendencyChoice[choice._id]=choice.name;
               } );
             }
           }
