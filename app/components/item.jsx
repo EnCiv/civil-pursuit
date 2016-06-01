@@ -112,8 +112,6 @@ class Item extends React.Component {
         let buttons       =   item.querySelector('.item-buttons');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item tendency", tendency);
-
         let onLoad = () => {
           let mediaHeight = 50; // minimum height for the item
           if (media) {
@@ -141,7 +139,6 @@ class Item extends React.Component {
           Item.paint(subject, limit);
           Item.paint(reference, limit);
           Item.paint(description, limit);
-          console.info("item limit",limit);
 
           Item.paint(tendency, limit);
 
