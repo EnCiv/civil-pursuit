@@ -179,7 +179,7 @@ class Item extends Model {
   }
 
   countUpvote (...args) {
-    return countUpvotes.apply(this, args);
+    return countUpvote.apply(this, args);
   }
   countVotes (...args) {
     return countVotes.apply(this, args);

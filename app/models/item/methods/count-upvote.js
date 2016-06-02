@@ -1,6 +1,6 @@
 'use strict';
 
-import Upote from '../../upvote';
+import Upvote from '../../upvote';
 
 function countUpvote () {
 	console.info("Item.countUpvote", { item: this}, this.synuser.id);
