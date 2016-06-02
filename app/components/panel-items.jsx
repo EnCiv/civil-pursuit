@@ -29,13 +29,14 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : null , itemhide : {} };
+  state = { active : null , itemhide : {}, upvote: {} };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
     this.props.emitter.on('show', this.show.bind(this));
+    this.getUpvote();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,6 +142,20 @@ class PanelItems extends React.Component {
     // for ( let i = 0; i < hidden.length; i++ ) {
     //   hidden[i].classList.remove('item-hidden');
     // }
+  }
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  getUpvote () {
+    console.info("getUpvote", this.item);
+     window.socket.emit('get upvote info', this.item._id, this.okGetUpvote.bind(this) );
+    }
+  }
+
+  okGetUpvote (accumulation) {
+    console.info("okGetUpvote", accumulation);
+    this.setState({ 'upvote' : accumulation });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -295,6 +310,7 @@ class PanelItems extends React.Component {
                         user    =   { user }
                         toggle  =   { this.toggle.bind(this) }
                         buttonstate = { buttonstate }
+                        upvote = { upvote }
                         />
                     </ItemStore>
                   ) }

@@ -13,11 +13,13 @@ class ItemButtons extends React.Component {
 
   render () {
 
-    const { item, panel, user, buttonstate } = this.props;
+    const { item, panel, user, buttonstate, upvote } = this.props;
 
     const buttons = [];
 
     let promote, details, subtype, harmony;
+
+    console.info("item-buttons", upvote);
 
     if (buttonstate.promote) {
       promote = (
