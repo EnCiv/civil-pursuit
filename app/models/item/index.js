@@ -10,6 +10,7 @@ import toPanelItem                      from './methods/to-panel-item';
 import getLineage                       from './methods/get-lineage';
 import countHarmony                     from './methods/count-harmony';
 import countVotes                       from './methods/count-votes';
+import countUpvote                      from './methods/count-upvote';
 import countChildren                    from './methods/count-children';
 import generateId                       from './hooks/set-id';
 import evaluate                         from './statics/evaluate';
@@ -99,6 +100,16 @@ class Item extends Model {
         "type"            :   Number,
         "index"           :   true,
         "default"         :   0
+      },
+
+      // the number ot times Item has been promoted
+      "upvote"            :   {
+        "total"           :   Number,
+        "didUpvote"       :   {
+          "type"            :   String,
+          "unique"          :   true
+          },
+        "values"          :   []
       }
     };
   }
@@ -167,6 +178,9 @@ class Item extends Model {
     return countHarmony.apply(this, args);
   }
 
+  countUpvote (...args) {
+    return countUpvotes.apply(this, args);
+  }
   countVotes (...args) {
     return countVotes.apply(this, args);
   }

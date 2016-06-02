@@ -5,6 +5,8 @@ import sequencer          from 'promise-sequencer';
 
 function toPanelItem () {
 
+  console.info("toPanelItem this:",this);
+
   return sequencer.pipe(
 
     () => this.populate(),
@@ -16,7 +18,8 @@ function toPanelItem () {
       this.$populated.type.getSubtype(),
       this.countVotes(),
       this.countChildren(),
-      this.countHarmony()
+      this.countHarmony(),
+      this.countUpvote()
     ]),
 
     results => new Promise((ok, ko) => {
@@ -52,6 +55,7 @@ function toPanelItem () {
       item.votes      =   results[2];
       item.children   =   results[3];
       item.harmony    =   results[4];
+      item.upvote     =   results[5];
 
       item.type       =   this.$populated.type;
 

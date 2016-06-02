@@ -146,16 +146,16 @@ class PanelItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  getUpvote () {
+  getUpvote (itemId) {
     if(this.props & this.props.item) {
-      console.info("getUpvote", this.props.item);
-      window.socket.emit('get upvote info', this.props.item._id, this.okGetUpvote.bind(this) );
+      console.info("getUpvote", itemId);
+      window.socket.emit('get upvote info', itemId, this.okGetUpvote.bind(this) );
     }
   }
 
   okGetUpvote (accumulation) {
     console.info("okGetUpvote", accumulation);
-    this.setState({ 'upvote' : accumulation });
+    this.setState({ upvote[accumulation.id] = accumulation });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,7 +171,6 @@ class PanelItems extends React.Component {
 
     console.info("panel-items.render", this.props, this.state);
 
-    this.getUpvote();
 
     if ( panel ) {
       loaded = true;

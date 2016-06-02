@@ -10,11 +10,12 @@ function initValues () {
 }
 
 function getAccumulation (item, userId) {
+  console.info("upvote.getAccumulation", item, userId);
   return new Promise((ok, ko) => {
     try {
       let accumulation = {
                     total: 0,
-                    userDidUpvote: false,
+                    userDidUpvote: null,
                     values: initValues()
                   };
 
@@ -36,7 +37,7 @@ function getAccumulation (item, userId) {
                 }
 
                 if (upv.user == userId) {
-                  accumulation.userDidUpvote= true;
+                  accumulation.userDidUpvote= userId;
                 }
 
                 
