@@ -36,7 +36,6 @@ class PanelItems extends React.Component {
 
   componentDidMount () {
     this.props.emitter.on('show', this.show.bind(this));
-    this.getUpvote();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,6 +170,8 @@ class PanelItems extends React.Component {
       type, parent, creator;
 
     console.info("panel-items.render", this.props, this.state);
+
+    this.getUpvote();
 
     if ( panel ) {
       loaded = true;
