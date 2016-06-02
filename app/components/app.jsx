@@ -21,9 +21,9 @@ class App extends React.Component {
     if ( typeof window !== 'undefined' ) {
       if(!window.Synapp) {
         window.Synapp = {};
-        Synapp.tendencyChoice = [];
-        this.getTendency();
       }
+      Synapp.tendencyChoice = [];
+      this.getTendency();
     }
   }
 
