@@ -149,8 +149,7 @@ class PanelItems extends React.Component {
 
   getUpvote () {
     console.info("getUpvote", this.item);
-     window.socket.emit('get upvote info', this.item._id, this.okGetUpvote.bind(this) );
-    }
+    window.socket.emit('get upvote info', this.item._id, this.okGetUpvote.bind(this) );
   }
 
   okGetUpvote (accumulation) {
