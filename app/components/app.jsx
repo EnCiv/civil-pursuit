@@ -30,7 +30,6 @@ class App extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  getTendency () {
-  console.info("app.getTendency.promise");
   Promise
     .all([
       new Promise((ok, ko) => {
