@@ -40,6 +40,7 @@ class App extends React.Component {
     .then(
       results => {
 //            let [ politicalTendency ] = results;
+        console.info("app.getTendency results", results);
         if(results) {
             results.forEach( choice => {
             window.Synapp.tendencyChoice[choice._id]=choice.name;
