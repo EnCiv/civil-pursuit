@@ -9,8 +9,9 @@ function initValues () {
   return values;
 }
 
-function getAccumulation (item, userId) {
-  console.info("upvote.getAccumulation", item, userId);
+function getAccumulation ( item ) {
+  console.info("upvote.getAccumulation", item, this.synuser.id );
+  const userId = this.synuser.id;
   return new Promise((ok, ko) => {
     try {
       let accumulation = {

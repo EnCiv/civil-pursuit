@@ -3,8 +3,8 @@
 import Upvote from '../../upvote';
 
 function countUpvote () {
-	console.info("Item.countUpvote", { item: this}, this.synuser.id);
-  return Upvote.getAccumulation( { item: this} , this.synuser.id);
+	console.info("Item.countUpvote", { item: this} );
+  return Upvote.getAccumulation( { item: this} );
 }
 
 export default countUpvote;
