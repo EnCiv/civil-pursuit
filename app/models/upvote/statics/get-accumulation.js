@@ -13,6 +13,7 @@ function getAccumulation ( item , userId) {
 
   console.info("upvote.getAccumulation", item, userId);
   return new Promise((ok, ko) => {
+    const query = { "item" : { "$oid" : item._id };
     try {
       let accumulation = {
                     total: 0,
@@ -21,7 +22,7 @@ function getAccumulation ( item , userId) {
                   };
 
       this
-        .find({ item })
+        .find(query)
         .then(
           upvote => {
             try {
