@@ -26,20 +26,23 @@ class ItemButtons extends React.Component {
     if (buttonstate.promote) {
       promote = (
         <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.upvote.total}{ pursuit }</span>
+            <span className="civil-button-info">{ item.upvote.total }</span>
+            <span className="civil-button-text">{ pursuit }</span>
         </Button>
       );
     } else {
       if ( item.upvote.userDidUpvote) {
         promote = (
           <Button small shy className="item-promotions">
-            <span>{ item.upvote.total }{ pursuit }</span>
+            <span className="civil-button-info">{ item.upvote.total }</span>
+            <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
       } else {
         promote = (
           <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-            <span>{ item.upvote.total }{ pursuit }</span>
+            <span className="civil-button-info">{ item.upvote.total }</span>
+            <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
       }
@@ -56,15 +59,15 @@ class ItemButtons extends React.Component {
       if(buttonstate.details) {
         details = (
           <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-            <span>{ item.popularity.number + '%' } </span>
-            <Icon icon="bar-chart" />
+            <span className="civil-button-info">{ item.popularity.number + '%' }</span>
+            <span className="civil-button-text">Feedback</span>
           </Button>
         );
       } else {
         details = (
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-            <span>{ item.popularity.number + '%' } </span>
-            <Icon icon="bar-chart" />
+            <span className="civil-button-info">{ item.popularity.number + '%' }</span>
+            <span className="civil-button-text">Feedback</span>
           </Button>
         );
       }
@@ -85,8 +88,8 @@ class ItemButtons extends React.Component {
             onClick     =   { this.toggle.bind(this, 'harmony') }
             className   =   "harmony-button"
             >
-            <span>{ item.harmony.harmony + '%' } </span>
-            <Icon icon="music" />
+            <span className="civil-button-info">{ item.harmony.harmony + '%' } </span>
+            <span className="civil-button-text">Harmony</span>
           </Button>
          );
       } else {
@@ -97,8 +100,8 @@ class ItemButtons extends React.Component {
           onClick     =   { this.toggle.bind(this, 'harmony') }
           className   =   "harmony-button"
           >
-          <span>{ item.harmony.harmony + '%' } </span>
-          <Icon icon="music" />
+            <span className="civil-button-info">{ item.harmony.harmony + '%' } </span>
+            <span className="civil-button-text">Harmony</span>
         </Button>
        );
       }
@@ -114,15 +117,15 @@ class ItemButtons extends React.Component {
         if (buttonstate.subtype) {
           subtype = (
             <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span>{ (item.children ? item.children : 0 )} </span>
-              <Icon icon="level-down" />
+              <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
+              <span className="civil-button-text">Unravel</span>
             </Button>
           );
         } else {
             subtype = (
             <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span>{ (item.children ? item.children : 0)} </span>
-              <Icon icon="level-down" />
+              <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
+              <span className="civil-button-text">Unravel</span>
             </Button>
           );
         } 
@@ -130,8 +133,8 @@ class ItemButtons extends React.Component {
       {
         subtype = (
           <Button small shy inactive className="subtype-button">
-            <Icon icon="lock" />
-            <Icon icon="level-down" />
+            <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
+            <span className="civil-button-text">Unravel</span>
           </Button>
         );
       }
