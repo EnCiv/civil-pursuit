@@ -9,9 +9,9 @@ function initValues () {
   return values;
 }
 
-function getAccumulation ( item , userId) {
-  let query = { "item" : { "$oid" : item._id }};
-  console.info("upvote.getAccumulation", query, item._id, item.subject, userId);
+function getAccumulation ( itemId , userId) {
+  let query = { "item" : { "$oid" : itemId }};
+  console.info("upvote.getAccumulation", query, itemId, userId);
 
   return new Promise((ok, ko) => {
     try {
