@@ -3,6 +3,7 @@
 function initValues () {
   let values = {};
 
+  values['-1'] = 0;  
   values['+0'] = 0;
   values['+1'] = 0;
 
@@ -20,6 +21,7 @@ function getAccumulation ( itemId , userId) {
                     userDidUpvote: null,
                     values: initValues()
                   };
+      let userDidUpvoteCount=0;
 
       this
         .find(query)
@@ -35,22 +37,24 @@ function getAccumulation ( itemId , userId) {
                 if ( upv.value === 0 ) {
                   value = '+0';
                 }
-
                 else if ( upv.value === 1 ) {
                   value = '+1';
+                  accumulation.total ++;
+                  if (upv.user == userId) {
+                    userDidUpvoteCount ++;
+                  }
+                } else if ( upv.value === -1 ) {
+                  value = '-1';
+                  accumulation.total --;
+                  if (upv.user == userId) {
+                    userDidUpvoteCount --;
+                  }
                 }
-
-                if (upv.user == userId) {
-                  accumulation.userDidUpvote= userId;
-                }
-
-                
-                accumulation.total ++;
-
                 accumulation.values[value] ++;
-
               });
-
+              if(userDidUpvoteCount) {
+                 accumulation.userDidUpvote = userId;                 
+              }
               ok(accumulation);
             }
             catch ( error ) {
