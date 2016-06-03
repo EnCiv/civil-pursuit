@@ -10,7 +10,7 @@ function initValues () {
 }
 
 function getAccumulation ( item ) {
-  const userId = null;
+  let userId = null;
   if(this.synuser) {
     userId=this.synuser.id;
   }
