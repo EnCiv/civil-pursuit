@@ -26,13 +26,13 @@ class ItemButtons extends React.Component {
     if (buttonstate.promote) {
       promote = (
         <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.upvote.values['+1'] } pursuit </span>
+          <span>{ item.upvote.values['+1'] , pursuit }</span>
         </Button>
       );
     } else {
       promote = (
         <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.upvote.values['+1'] } pursuit </span>
+          <span>{ item.upvote.values['+1'] , pursuit } </span>
         </Button>
       );
     }
