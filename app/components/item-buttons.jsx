@@ -21,18 +21,18 @@ class ItemButtons extends React.Component {
 
     console.info("item-buttons", upvote);
 
+    let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
+
     if (buttonstate.promote) {
       promote = (
         <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.promotions } </span>
-          <Icon icon="thumbs-o-up" />
+          <span>{ item.upvote.values['+1'] } pursuit </span>
         </Button>
       );
     } else {
       promote = (
         <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.promotions } </span>
-          <Icon icon="thumbs-o-up" />
+          <span>{ item.upvote.values['+1'] } pursuit </span>
         </Button>
       );
     }
