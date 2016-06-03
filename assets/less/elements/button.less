@@ -31,15 +31,6 @@ button, .button {
   text-align:           center;
   border-radius:        1px;
 
-  &span{
-    font-family: 'oswald';
-    vertical-align: middle;
-    padding-left: 0.25em;
-    padding-right: 0.25em;
-    border-style: solid;
-    border-width: 1px;
-  }
-
   &:hover {
     background: @syn-muted-color;
     border-color: @syn-muted-color;
@@ -151,6 +142,13 @@ a.button {
 }
 
 .syn-button-group {
+  font-family: 'oswald';
+  vertical-align: middle;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  border-style: solid;
+  border-width: 1px;
+
   button:first-child {
     border-radius: 0;
   }
@@ -172,5 +170,6 @@ a.button {
     }
   }
 }
+
 
 /**-------------------------------------------------------------// buttons    */
