@@ -26,15 +26,23 @@ class ItemButtons extends React.Component {
     if (buttonstate.promote) {
       promote = (
         <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.upvote.total} { pursuit }</span>
+          <span>{ item.upvote.total}{ pursuit }</span>
         </Button>
       );
     } else {
-      promote = (
-        <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span>{ item.upvote.total } { pursuit } </span>
-        </Button>
-      );
+      if ( item.upvote.userDidUpvote) {
+        promote = (
+          <Button small shy className="item-promotions">
+            <span>{ item.upvote.total }{ pursuit }</span>
+          </Button>
+        );
+      } else {
+        promote = (
+          <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
+            <span>{ item.upvote.total }{ pursuit }</span>
+          </Button>
+        );
+      }
     }
     buttons.push(
       <ButtonGroup>

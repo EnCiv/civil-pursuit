@@ -31,6 +31,15 @@ button, .button {
   text-align:           center;
   border-radius:        1px;
 
+  &span{
+    font-family: 'oswald';
+    vertical-align: middle;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    border-style: solid;
+    border-width: 1px;
+  }
+
   &:hover {
     background: @syn-muted-color;
     border-color: @syn-muted-color;
@@ -143,15 +152,15 @@ a.button {
 
 .syn-button-group {
   button:first-child {
-    border-radius: 6px 0 0 6px;
+    border-radius: 0;
   }
 
   button:last-child {
-    border-radius:0 6px 6px 0;
+    border-radius: 0;
   }
 
   button:first-child:last-child {
-    border-radius: 6px;
+    border-radius: 0;
     width: 100%;
     text-align: right;
   }
