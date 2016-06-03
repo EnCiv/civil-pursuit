@@ -3,7 +3,7 @@
 import config             from '../../../../public.json';
 import sequencer          from 'promise-sequencer';
 
-function toPanelItem () {
+function toPanelItem (userId) {
 
   console.info("toPanelItem this:",this);
 
@@ -19,7 +19,7 @@ function toPanelItem () {
       this.countVotes(),
       this.countChildren(),
       this.countHarmony(),
-      this.countUpvote()
+      this.countUpvote(userId)
     ]),
 
     results => new Promise((ok, ko) => {

@@ -12,7 +12,7 @@ import publicConfig from '../../../../public.json';
  *  The loaded panel items in the batch
 */
 
-function getPanelItems (panel) {
+function getPanelItems (panel, userId) {
   const query = { type : panel.type };
 
   if ( panel.parent ) {
@@ -29,7 +29,7 @@ function getPanelItems (panel) {
     .sort({ promotions : -1, views : -1, _id : -1 })
   );
 
-  seq.push(items => Promise.all(items.map(item => item.toPanelItem())));
+  seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
   return new Promise((ok, ko) => {
     sequencer(seq)
