@@ -5,7 +5,7 @@ import sequencer          from 'promise-sequencer';
 
 function toPanelItem (userId) {
 
-  console.info("toPanelItem this:",this);
+  console.info("toPanelItem userId:",userId);
 
   return sequencer.pipe(
 

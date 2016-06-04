@@ -49,7 +49,7 @@ class ItemButtons extends React.Component {
     }
     buttons.push(
       <ButtonGroup>
-        <span className="civil-button-info">{ item.votes }</span>
+        <span className="civil-button-info">{ item.promotions }</span>
         { promote }
       </ButtonGroup>
     );
