@@ -13,7 +13,7 @@ class Button extends React.Component {
     radius            :   React.PropTypes.bool,
     'cursor-pointer'  :   React.PropTypes.bool,
     shy               :   React.PropTypes.bool,
-    muted             :   React.PropTypes.bool,
+    chosen             :   React.PropTypes.bool,
     success           :   React.PropTypes.bool,
     error             :   React.PropTypes.bool,
     warning           :   React.PropTypes.bool,

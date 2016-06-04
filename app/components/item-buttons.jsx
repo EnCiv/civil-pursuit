@@ -35,7 +35,7 @@ class ItemButtons extends React.Component {
     } else {
       if ( item.upvote.userDidUpvote) {
         promote = (
-          <Button small shy muted className="item-promotions">
+          <Button small shy chosen className="item-promotions">
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
