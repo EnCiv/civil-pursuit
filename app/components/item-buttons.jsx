@@ -28,7 +28,7 @@ class ItemButtons extends React.Component {
     if (buttonstate.promote) {
       promote = (
         <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-          <span className="civil-button-info">{ item.upvote.total }</span>
+
           <span className="civil-button-text">{ pursuit }</span>
         </Button>
       );
@@ -36,14 +36,12 @@ class ItemButtons extends React.Component {
       if ( item.upvote.userDidUpvote) {
         promote = (
           <Button small shy className="item-promotions">
-            <span className="civil-button-info">{ item.upvote.total }</span>
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
       } else {
         promote = (
           <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
-            <span className="civil-button-info">{ item.upvote.total }</span>
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
@@ -51,6 +49,7 @@ class ItemButtons extends React.Component {
     }
     buttons.push(
       <ButtonGroup>
+        <span className="civil-button-info">{ item.upvote.total }</span>
         { promote }
       </ButtonGroup>
     );
