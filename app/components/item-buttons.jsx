@@ -35,7 +35,7 @@ class ItemButtons extends React.Component {
     } else {
       if ( item.upvote.userDidUpvote) {
         promote = (
-          <Button small shy className="item-promotions">
+          <Button small shy muted className="item-promotions">
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
@@ -60,20 +60,19 @@ class ItemButtons extends React.Component {
       if(buttonstate.details) {
         details = (
           <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-            <span className="civil-button-info">{ item.popularity.number + '%' }</span>
             <span className="civil-button-text">Feedback</span>
           </Button>
         );
       } else {
         details = (
           <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
-            <span className="civil-button-info">{ item.popularity.number + '%' }</span>
             <span className="civil-button-text">Feedback</span>
           </Button>
         );
       }
       buttons.push(
         <ButtonGroup>
+        <span className="civil-button-info">{ item.popularity.number + '%' }</span>
         { details}
         </ButtonGroup>
       );
@@ -89,7 +88,6 @@ class ItemButtons extends React.Component {
             onClick     =   { this.toggle.bind(this, 'harmony') }
             className   =   "harmony-button"
             >
-            <span className="civil-button-info">{ item.harmony.harmony + '%' } </span>
             <span className="civil-button-text">Harmony</span>
           </Button>
          );
@@ -101,13 +99,13 @@ class ItemButtons extends React.Component {
           onClick     =   { this.toggle.bind(this, 'harmony') }
           className   =   "harmony-button"
           >
-            <span className="civil-button-info">{ item.harmony.harmony + '%' } </span>
             <span className="civil-button-text">Harmony</span>
         </Button>
        );
       }
       buttons.push(
         <ButtonGroup>
+           <span className="civil-button-info">{ item.harmony.harmony + '%' } </span>
           { harmony } 
         </ButtonGroup>
       );
@@ -118,14 +116,12 @@ class ItemButtons extends React.Component {
         if (buttonstate.subtype) {
           subtype = (
             <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
               <span className="civil-button-text">Unravel</span>
             </Button>
           );
         } else {
             subtype = (
             <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
               <span className="civil-button-text">Unravel</span>
             </Button>
           );
@@ -134,13 +130,13 @@ class ItemButtons extends React.Component {
       {
         subtype = (
           <Button small shy inactive className="subtype-button">
-            <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
             <span className="civil-button-text">Unravel</span>
           </Button>
         );
       }
       buttons.push(
         <ButtonGroup>
+         <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
           {subtype}
         </ButtonGroup>
         );
