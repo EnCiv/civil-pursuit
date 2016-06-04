@@ -192,7 +192,7 @@ class EvaluationStore extends React.Component {
               item: evaluation[itm]._id,
                value: 1
             });
-          window.socket.emit('promote', evaluation[itm]._id);
+            window.socket.emit('promote', evaluation[itm]._id);
           } else {
             upvotes.push({
               item: evaluation[itm]._id,
