@@ -71,11 +71,11 @@ class API extends EventEmitter {
 
   listenToDBUpdates (collection, document) {
     this.emit('message', 'DB UPDATES'.bgYellow,
-      collection, collection == 'items' ? 'true' : 'false', collection === 'items' ? 'true' : 'false'
+      collection, collection == 'items' ? 'true' : 'false', collection === 'items' ? 'true' : 'false', socket.synuser
     );
 
     if ( collection == 'items' ) {
-      this.emit('message', 'DB UPDATES', 'synuser', socket.synuser, document._id.toString().grey );
+      this.emit('message', 'DB UPDATES', 'synuser', socket.synuser );
       document.toPanelItem(socket.synuser ? socket.synuser : null ).then(
         item => {
           this.sockets.forEach(socket => {
