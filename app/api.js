@@ -74,7 +74,7 @@ class API extends EventEmitter {
       collection 
     );
 
-    if ( collection === 'items' ) {
+    if ( collection == 'items' ) {
       this.emit('message', 'DB UPDATES', 'synuser', socket.synuser, document._id.toString().grey );
       document.toPanelItem(socket.synuser ? socket.synuser : null ).then(
         item => {
