@@ -8,6 +8,7 @@ import PanelItems                   from './panel-items';
 import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
+import About                        from './about';
 
 class Home extends React.Component {
 
@@ -92,6 +93,7 @@ class Home extends React.Component {
       // const panel = this.props.panels[this.props.topLevelType];
 
       content = (
+        <About \>
         <div>
           <div id="top-level-panel">
             <PanelStore { ...panel }>
