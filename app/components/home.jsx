@@ -81,7 +81,7 @@ class Home extends React.Component {
 
     var theCookies = document.cookie.split(';');
 
-    console.info("home. cookies", theCookies, theCookies[synuser]);
+    console.info("home cookies", theCookies);
 
     if( ! this.props.user) {
       content.push(
