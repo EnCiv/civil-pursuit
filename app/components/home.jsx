@@ -82,7 +82,6 @@ class Home extends React.Component {
       content.push(
         <Loading message="Loading discussions ..." />
       );
-      content.push(loading);
     } else {
       content.push(
         <About />
