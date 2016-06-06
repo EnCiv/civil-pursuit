@@ -33,10 +33,7 @@ function home (req, res, next) {
 
         if ( typeof isIn === 'string' ) {
           isIn = JSON.parse(isIn);
-        } else {
-          isIn = null;
-        }
-
+        } 
         console.info("home.js", isIn);
     }
 
