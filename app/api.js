@@ -83,7 +83,7 @@ class API extends EventEmitter {
             this.handlers['get item details'].apply(socket, [item]);
           }
         );
-      }  
+      });  
     }
   }
 
