@@ -80,8 +80,8 @@ class About extends React.Component {
               </div>
             </div>
           </div>
+          <a name="bottom_anchor"></a>
         </div>
-        <a name="bottom_anchor" />
       </section>
     );
     return ( page );
