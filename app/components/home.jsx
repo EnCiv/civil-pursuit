@@ -8,7 +8,7 @@ import PanelItems                   from './panel-items';
 import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
-import About                        from './about';
+import Welcome                        from './welcome';
 
 class Home extends React.Component {
 
@@ -82,7 +82,7 @@ class Home extends React.Component {
 
     if( ! this.props.user) {
       content.push(
-        <About />
+        <Welcome />
       );
     }
 
