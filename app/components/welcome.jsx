@@ -64,6 +64,7 @@ class About extends React.Component {
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>It's Possible</h2>
+                    <a name="bottom_anchor"></a>
                     <p>
                      We have the internet, and smartphones so theres a path for people to come together, but we need a way to keep the conversations productive. So we take what works in realy life meetings and we do that in an app:
                      <ul>
@@ -80,7 +81,6 @@ class About extends React.Component {
               </div>
             </div>
           </div>
-          <a name="bottom_anchor"></a>
         </div>
       </section>
     );
