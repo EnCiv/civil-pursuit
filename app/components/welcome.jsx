@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import Icon  from './util/icon';
 
 class About extends React.Component {
 
@@ -24,7 +25,9 @@ class About extends React.Component {
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">
                           <button>
-                            <a href="#bottom-anchor">Begin</a>
+                            <a href="#bottom-anchor">See It
+                            <Icon icon="arrow-down"/>
+                            </a>
                           </button>
                         </div>
                       </div>
