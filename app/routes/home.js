@@ -26,16 +26,18 @@ function home (req, res, next) {
       }
     }
     
-    let isIn;
+    let isIn=null;
 
     if ( req.cookies && req.cookies.synuser ) {
         isIn = req.cookies.synuser;
 
         if ( typeof isIn === 'string' ) {
           isIn = JSON.parse(isIn);
+        } else {
+          isIn = null;
         }
 
-        console.info(isIn);
+        console.info("home.js", isIn);
     }
 
     const props       =   {
@@ -46,7 +48,7 @@ function home (req, res, next) {
       panel           :   JSON.parse(JSON.stringify(req.panel || null)),
       panels          :   JSON.parse(JSON.stringify(req.panels || null)),
       ready           :   false,
-      user            :   null,
+      user            :   isIn,
       notFound        :   req.notFound,
       error           :   res.locals.error
     };
