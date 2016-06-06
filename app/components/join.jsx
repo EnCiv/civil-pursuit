@@ -163,7 +163,10 @@ class Join extends React.Component {
           </Column>
 
           <Column span="50" text-right gutter>
-            <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" name="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
+            <a href="#" onClick={ this.agree.bind(this) } style={{ textDecoration: 'none', color: 'inherit', float: 'left', marginLeft: '1em'}}>
+              <Icon icon="square-o" size="2" ref="agree" name="agree" />
+            </a>
+             I agree to the <a href="/page/terms-of-service">Terms of Service</a>
           </Column>
         </Row>
 

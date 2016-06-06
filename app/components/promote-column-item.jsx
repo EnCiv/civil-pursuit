@@ -19,7 +19,7 @@ class ColumnItem extends React.Component {
     return (
       <Column span="50" className={ `promote-${position}` }>
         <ItemStore item={ item }>
-          <ItemMedia />
+          <ItemMedia item={ item } />
         </ItemStore>
         <Subject subject={ item.subject } position={ position } id={ item._id } />
         <Reference { ...item.references[0] } />

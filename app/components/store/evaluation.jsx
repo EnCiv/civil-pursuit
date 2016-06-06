@@ -105,15 +105,15 @@ class EvaluationStore extends React.Component {
 
       if ( evaluation.items[1] ) {
         right = evaluation.items[1];
-        window.socket.emit('add view', evaluation.items[1]);
+        // window.socket.emit('add view', evaluation.items[1]);
       }
 
       if ( evaluation.items[0] ) {
         left = evaluation.items[0];
 
-        if ( right ) {
-          window.socket.emit('add view', evaluation.items[0]);
-        }
+       // if ( right ) {
+       //   window.socket.emit('add view', evaluation.items[0]);
+       // }
       }
 
       this.setState({ evaluation, limit, left, right });
@@ -153,10 +153,10 @@ class EvaluationStore extends React.Component {
       left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
       right = this.state.evaluation.items[regular ? cursor : cursor + 1];
 
-      if ( left && right ) {
-        window.socket.emit('add view', left);
-        window.socket.emit('add view', right);
-      }
+ //     if ( left && right ) {
+ //       window.socket.emit('add view', left);
+ //       window.socket.emit('add view', right);
+  //    }
 
       this.setState({ cursor, left, right });
     }
@@ -171,6 +171,42 @@ class EvaluationStore extends React.Component {
   getScreen () {
     return window.innerWidth < screens.phone ? 'up-to-phone' : 'phone-and-up';
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  insertUpvotes(itemId) {
+    const upvotes = [];
+    const evaluation = this.state.evaluation.items;
+
+
+    console.info("insertUpvotes", this.state, itemId );
+
+    if ( this.state.evaluation && this.state.evaluation.items.length ) {
+      var itm;
+
+      for(itm in evaluation)
+      {   console.info("insetUpvotes", itm )
+          window.socket.emit('add view', evaluation[itm]._id);
+          if(evaluation[itm]._id == itemId) {
+            upvotes.push({
+              item: evaluation[itm]._id,
+               value: 1
+            });
+            window.socket.emit('promote', evaluation[itm]._id);
+          } else {
+            upvotes.push({
+              item: evaluation[itm]._id,
+              value: 0
+            });
+          }
+      }
+
+      console.info("insertUpvotes", this.state.evaluation, upvotes );
+
+      window.socket.emit('insert upvote', upvotes);
+    }
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -221,18 +257,18 @@ class EvaluationStore extends React.Component {
 
     let right = this.state.right, left = this.state.left;
 
-    if ( cursor > this.state.limit ) {
-      window.socket.emit('promote', this.state[position]);
-    }
+  //  if ( cursor > this.state.limit ) {
+ //     window.socket.emit('promote', this.state[position]);
+ //   }
 
     this.insertVotes(opposite, this.state[opposite]._id);
 
     if ( cursor <= this.state.limit ) {
 
-      if ( left && right ) {
-        window.socket.emit('add view', this.state[position]);
-        window.socket.emit('add view', this.state[opposite]);
-      }
+ //     if ( left && right ) {
+ //       window.socket.emit('add view', this.state[position]);
+ //       window.socket.emit('add view', this.state[opposite]);
+ //     }
 
       this.setState({
         cursor,
@@ -242,8 +278,10 @@ class EvaluationStore extends React.Component {
 
     else {
       this.insertVotes(position, this.state[position]._id);
+      this.insertUpvotes(this.state[position]._id);
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('promote');
+      console.info("evaluation.promote",this.props);
     }
   }
 

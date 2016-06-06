@@ -5,14 +5,6 @@ import ItemMedia        from './item-media';
 
 class Item extends React.Component {
 
-  constructor (props) {
-    super(props);
-
-    this.state = { userInfo : null };
-
-    this.getUserInfo();
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    *  @description      Break a given text into lines, themselves into words
@@ -120,8 +112,6 @@ class Item extends React.Component {
         let buttons       =   item.querySelector('.item-buttons');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item tendency", tendency);
-
         let onLoad = () => {
           let mediaHeight = 50; // minimum height for the item
           if (media) {
@@ -149,7 +139,6 @@ class Item extends React.Component {
           Item.paint(subject, limit);
           Item.paint(reference, limit);
           Item.paint(description, limit);
-          console.info("item limit",limit);
 
           Item.paint(tendency, limit);
 
@@ -210,42 +199,10 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- getUserInfo () {
-    if ( typeof window !== 'undefined' ) {
-      console.info("item.getUserInfo.promise");
-      Promise
-        .all([
-          new Promise((ok, ko) => {
-            window.socket.emit('get user info', ok);
-          }),
-          new Promise((ok, ko) => {
-            window.socket.emit('get political tendency', ok)
-          })
-        ])
-        .then(
-          results => {
-            let [ userInfo, politicalTendency ] = results;
-            this.setState({ userInfo, politicalTendency });
-          }
-        );
-    }
-  }
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    const tendencyChoice = [];
-
-    console.info("item.render", this.state, this.state.politicalTendency ? "tendency true " : "tendency false");
-    if(this.state.politicalTendency) {
-      this.state.politicalTendency.forEach( choice => {
-        tendencyChoice[choice._id]=choice.name;
-      } );
-    }
-
-
-    console.info("item.render:", this.props, this.state, tendencyChoice);
+    const tendencyChoice = window.Synapp.tendencyChoice;
 
     let rendereditem = {};
 
@@ -279,7 +236,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
-                { this.state.userInfo && this.state.userInfo.tendency ? tendencyChoice[this.state.userInfo.tendency]  :  '' }
+                { item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
@@ -317,7 +274,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
-                   { this.state.userInfo && this.state.userInfo.tendency ? '-' + tendencyChoice[this.state.userInfo.tendency]  :  '' }
+                   { item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>

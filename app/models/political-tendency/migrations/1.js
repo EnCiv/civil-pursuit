@@ -21,6 +21,7 @@ class PoliticalTendency extends Mungo.Migration {
   static schema = { name : String };
 
   static do () {
+    console.info("Political Tendency: migration 1.do", this);
     return new Promise((ok, ko) => {
       try {
 
@@ -36,6 +37,8 @@ class PoliticalTendency extends Mungo.Migration {
             }
 
             // Insert all fixtures
+
+            console.info("Political Tendency: migration 1", this);
 
             this.create(fixtures).then(
 

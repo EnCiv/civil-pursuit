@@ -143,6 +143,10 @@ class PanelItems extends React.Component {
     // }
   }
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -155,6 +159,7 @@ class PanelItems extends React.Component {
       type, parent, creator;
 
     console.info("panel-items.render", this.props, this.state);
+
 
     if ( panel ) {
       loaded = true;

@@ -6,6 +6,8 @@ function getItems (panel, cb) {
   try {
     let id        =   'panel-' + panel.type._id || panel.type;
     const query   =   { type : panel.type._id || panel.type};
+    const userId = this.synuser ? this.synuser.id : null;
+
 
     if ( panel.parent ) {
       id += '-' + panel.parent;
@@ -17,7 +19,7 @@ function getItems (panel, cb) {
     }
 
     Item
-      .getPanelItems(query)
+      .getPanelItems(query, userId)
       .then(
         results => {
           try {
