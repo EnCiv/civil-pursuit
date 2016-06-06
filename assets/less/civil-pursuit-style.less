@@ -325,4 +325,28 @@ background:#888;
     color: #FFF;
     background: linear-gradient(to bottom, #FF8F00 0%, #FF7002 51%, #FF7002 100%) repeat scroll 0% 0% transparent;
   }
+
+  .jump-button {
+    position: relative;
+    display: table-cell;
+    background-color: @syn-gold-color;
+    vertical-align: middle;
+    text-align: center;
+    color: white;
+    padding: .5em;
+
+    a, button {
+          color: white;
+          font-weight: 600;
+          border: none;
+          background: inherit;
+          padding: 0;
+          text-decoration: none;
+    }
+
+    &:hover {
+      background-color: @syn-purple-color;
+
+    }
+  }
 }
