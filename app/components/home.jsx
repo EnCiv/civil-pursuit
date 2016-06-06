@@ -79,14 +79,17 @@ class Home extends React.Component {
     console.info("Home.render", this.props, this.state);
 
     if( this.props.user) {
-      content.push = (
+      content.push(
         <Loading message="Loading discussions ..." />
       );
+      content.push(loading);
     } else {
-      content.push = (
+      content.push(
         <About />
       );
     }
+
+
 
 
     if ( discussion ) {
@@ -94,14 +97,14 @@ class Home extends React.Component {
       const now = Date.now();
 
       if ( now < deadline ) {
-        content.push = ( <Countdown discussion={ discussion } { ...this.props } /> );
+        content.push( <Countdown discussion={ discussion } { ...this.props } /> );
       }
     }
 
     else if ( panel ) {
       // const panel = this.props.panels[this.props.topLevelType];
 
-      content.push = (
+      content.push(
         <div>
           <div id="top-level-panel">
             <PanelStore { ...panel }>
