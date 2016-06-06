@@ -77,7 +77,7 @@ class API extends EventEmitter {
     if ( collection == 'items') {
       this.emit('message', 'DB UPDATES by socket');
       this.sockets.forEach(socket => {
-        document.toPanelItem(socket.synuser ? socket.synuser : null ).then(
+        document.toPanelItem(socket.synuser ? socket.synuser.id : null ).then(
           item => {
             socket.emit('item changed', item);
             this.handlers['get item details'].apply(socket, [item]);
