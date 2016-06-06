@@ -43,7 +43,7 @@ class About extends React.Component {
                   </p><p>
                     Imagine what we could accomplish if so many of us agreed on what to do about it!
                   </p><p>
-                    But there so many of us we can&#39;t get together to have a conversation - there isn&#39;t a town hall big enough. Television doen&#39;t work - that&#39;s a few people speaking to the rest of us and money and power is bound to be an influence.
+                    But there are so many of us, we can&#39t get together to figure it out - there isn&#39t a town hall big enough. Television doen&#39s work - that&#39ss a few people speaking to the rest of us and money and power are bound to be an influence.
                     And social media is not doing it either, either we tend to talk with people who agree with us or incivility seems to prevail, and here too money has an effect on who sees what.
                   </p>
                 </div>
@@ -52,14 +52,20 @@ class About extends React.Component {
                     <p>
                       Create the place where very large crowds of diverse people assemble and have productive discussion in pursuit of solutions to what divides them. 
                     </p><p>
-                      It&#39;s not about one side winning out over the other, it&#39s about finding the balance that moves us forward with acceptable risk. That&#39s what built nuclear power stations but kept us safe from radiation, that&#39s what allows us to study DNA without engineering our own destruction.  
+                      It&#39s not about one side winning out over the other, it&#39s about finding the balance that moves us forward with acceptable risk. That&#39s what built nuclear power stations but kept us safe from radiation, that&#39s what allows us to study DNA without engineering our own destruction.  
                       It&#39s what will move our country forward without compromising the values on both sides of the political spectrum.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>It&#39s Possible</h2>
                     <p>
-                      The place for everyone to get together online to participate in the fair and balanced pursuit of solutions that unite us to our democratic challenges.
+                     We have the internet, and smartphones so theres a path for people to come together, but we need a way to keep the conversations productive. So we take what works in realy life meetings and we do that in an app:
+                     <ul>
+                      <li>Divide people into small diverse groups</li>
+                      <li>Facilitate the conversation in steps that lead to a conclusion</li>
+                      <li>Allow people to discuss the pro&#39s and con&#39s of each point</li>
+                      <li>Provide feedback to people so they can learn how other&#39s react to what they say</li>
+                    </ul>
                     </p>
                     <h3>Technical:</h3>
                     <p> It’s a web app that works on your phone, tablet and desktop for structured text or video based discussion in small diverse groups.
