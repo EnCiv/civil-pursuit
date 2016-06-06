@@ -16,10 +16,10 @@ class About extends React.Component {
         <div className="civil-pursuit">
           <div className="civil-pursuit wide-box">
             <div className="civil-pursuit conteiner">
-              <div className="civil-pursuit bg-image">
+              <div className="civil-pursuit welcome-bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
-                    <div className="civil-pursuit news-headline-text">Together We Make The World a Better Place</div>
+                    <div className="civil-pursuit news-headline-text">Us Finding Solutions to What Divides Us</div>
                   </div>
                 </div>
                 <div className="civil-pursuit social-bar">
