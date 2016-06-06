@@ -72,42 +72,48 @@ class Home extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let content = (
-      <Loading message="Loading discussions ..." />
-    );
+    let content [];
 
     const { discussion, panel, items, training } = this.state;
 
     console.info("Home.render", this.props, this.state);
+
+    if( this.props.user) {
+      content.push = (
+        <Loading message="Loading discussions ..." />
+      );
+    } else {
+      content.push = (
+        <About />
+      );
+    }
+
 
     if ( discussion ) {
       const { deadline } = new Date(discussion);
       const now = Date.now();
 
       if ( now < deadline ) {
-        content = ( <Countdown discussion={ discussion } { ...this.props } /> );
+        content.push = ( <Countdown discussion={ discussion } { ...this.props } /> );
       }
     }
 
     else if ( panel ) {
       // const panel = this.props.panels[this.props.topLevelType];
 
-      content = (
+      content.push = (
         <div>
-          <About />
-          
           <div id="top-level-panel">
             <PanelStore { ...panel }>
               <PanelItems user={ this.props.user } />
             </PanelStore>
           </div>
-
           <Training instructions={ training || [] } />
         </div>
       );
     }
     console.info("Home.render end", this.props, this.state);
-    return content;
+    return (<section>{ content }</section>);
   }
 }
 
