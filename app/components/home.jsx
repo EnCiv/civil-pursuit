@@ -73,23 +73,17 @@ class Home extends React.Component {
 
   render () {
     const content = [];
+    let loading;
 
     const { discussion, panel, items, training } = this.state;
 
     console.info("Home.render", this.props, this.state);
 
-    if( this.props.user) {
-      content.push(
-        <Loading message="Loading discussions ..." />
-      );
-    } else {
+    if( ! this.props.user) {
       content.push(
         <About />
       );
     }
-
-
-
 
     if ( discussion ) {
       const { deadline } = new Date(discussion);
@@ -113,7 +107,12 @@ class Home extends React.Component {
           <Training instructions={ training || [] } />
         </div>
       );
+    } else {
+      content.push(
+        <Loading message="Loading discussions ..." />
+      );
     }
+
     console.info("Home.render end", this.props, this.state, content);
     return (<section>{ content }</section>);
   }
