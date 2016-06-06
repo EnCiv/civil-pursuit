@@ -72,7 +72,7 @@ class Home extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let content = [];
+    const content = [];
 
     const { discussion, panel, items, training } = this.state;
 
@@ -112,7 +112,7 @@ class Home extends React.Component {
         </div>
       );
     }
-    console.info("Home.render end", this.props, this.state);
+    console.info("Home.render end", this.props, this.state, content);
     return (<section>{ content }</section>);
   }
 }
