@@ -93,7 +93,9 @@ class Home extends React.Component {
       // const panel = this.props.panels[this.props.topLevelType];
 
       content = (
-        <About />
+        <section>
+          <About />
+        </section>
         <div>
           <div id="top-level-panel">
             <PanelStore { ...panel }>
