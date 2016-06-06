@@ -21,8 +21,12 @@ class About extends React.Component {
                   <div className="civil-pursuit news-headline-inner">
                     <div className="civil-pursuit news-headline-text">Us Finding Solutions to What Divides Us</div>
                     <div className="civil-pursuit news-headline-text">
-                      <div className="civil-pursuit jump-button">
-                        <a href="#bottom-anchor">Begin</a>
+                      <div className="civil-pursuit button-row"
+                        <div className="civil-pursuit jump-button">
+                          <button>
+                            <a href="#bottom-anchor">Begin</a>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -63,7 +67,6 @@ class About extends React.Component {
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>It's Possible</h2>
-                    <a name="bottom_anchor"></a>
                     <p>
                      We have the internet, and smartphones so theres a path for people to come together, but we need a way to keep the conversations productive. So we take what works in realy life meetings and we do that in an app:
                      </p>
@@ -81,6 +84,7 @@ class About extends React.Component {
             </div>
           </div>
         </div>
+        <a name="bottom-anchor"></a>
       </section>
     );
     return ( page );
