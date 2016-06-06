@@ -25,6 +25,18 @@ function home (req, res, next) {
         }
       }
     }
+    
+    let isIn;
+
+    if ( req.cookies && req.cookies.synuser ) {
+        isIn = req.cookies.synuser;
+
+        if ( typeof isIn === 'string' ) {
+          isIn = JSON.parse(isIn);
+        }
+
+        console.info(isIn);
+    }
 
     const props       =   {
       env             :   this.app.get('env'),
