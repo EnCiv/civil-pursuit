@@ -1,20 +1,13 @@
 'use strict';
 
 import React                          from 'react';
-import Row                            from './util/row';
-import Column                         from './util/column';
-import Image                          from './util/image';
-import Icon                           from './util/icon';
-import Button                         from './util/button';
-import InputGroup                     from './util/input-group';
-import TextInput                      from './util/text-input';
 import Select                         from './util/select';
-import userType                       from '../lib/proptypes/user';
 import politicalTendencyType          from '../lib/proptypes/political-tendency';
 
 class PoliTendSelector extends React.Component {
 
   constructor (props) {
+        console.info("PoliTendSelector.constructor");
     super(props);
   }
 
@@ -28,6 +21,7 @@ class PoliTendSelector extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setTendency () {
+    console.info("PoliTendSelector.constructor");
     const tendency = React.findDOMNode(this.refs.tendency).value;
 
     if ( tendency ) {
