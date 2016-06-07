@@ -7,9 +7,9 @@ class About extends React.Component {
 
   smooth(tag){
     console.info("smooth", this, tag );
-    let link=document.querySelector(tag);
-    console.info("smooth link", link, link.offsetTop);
-    document.body.animate(link.offsetTop, 500 );
+    let link=document.getElementsByName(tag);
+    console.info("smooth link", link, link[0].offsetTop);
+    document.body.animate({scrollTop: link[0].offsetTop}, 500 );
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -31,7 +31,7 @@ class About extends React.Component {
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">
                           <button>
-                            <a href="#bottom-anchor" onClick={ this.smooth.bind(this, '#bottom-anchor') } >See It
+                            <a href="#bottom-anchor" onClick={ this.smooth.bind(this, 'bottom-anchor') } >See It
                             <Icon icon="arrow-down" style={{paddingLeft: '.5em'}} />
                             </a>
                           </button>
