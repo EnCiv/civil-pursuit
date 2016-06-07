@@ -26,7 +26,7 @@ class About extends React.Component {
                         <div className="civil-pursuit jump-button">
                           <button>
                             <a href="#bottom-anchor">See It
-                            <Icon icon="arrow-down"/>
+                            <Icon icon="arrow-down" style={{paddingLeft: '.5em'}} />
                             </a>
                           </button>
                         </div>
