@@ -126,7 +126,7 @@ class Welcome extends React.Component {
             </div>
           </div>
         </div>
-        <a name="bottom-anchor" style={{marginTop: 20vh}}></a>
+        <a name="bottom-anchor" style={{marginTop : '20vh'}}></a>
       </section>
     );
     return ( page );
