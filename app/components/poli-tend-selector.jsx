@@ -40,6 +40,8 @@ class PoliTendSelector extends React.Component {
   render () {
     console.info("politicalTendency.render:",this);
     let { valueDefault } = this.props | '';
+    if(!(window.Synapp && window.Synapp.tendencyChoice)) {console.info("PoliTendSelector: tendencyChoice not ready yet"); return ({}); }
+
     const tendencyChoice = window.Synapp.tendencyChoice;
 
     let tendency = tendencyChoice.map(tendency => (
