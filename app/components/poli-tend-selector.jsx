@@ -14,6 +14,10 @@ import politicalTendencyType          from '../lib/proptypes/political-tendency'
 
 class PoliTendSelector extends React.Component {
 
+  constructor (props) {
+    super(props);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
