@@ -236,6 +236,7 @@ background:#888;
     padding-top: .25em;
     padding-bottom: .25em;
     width: auto;
+    display: table;
 
     @media (max-width: @syn-max-width-center-column ) {
       padding-left: 1em;
@@ -243,11 +244,35 @@ background:#888;
     }
   }
 
+  .signup {
+    display: table;
+    width: 100%;
+    vertical-align: middle;
+  }
+
   h2 {
     color: white;
     font-size: 200%;
+    display: table-cell;
+    vertical-align: middle;
   }
 
+  form {
+    display: table-cell;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  .email-block {
+    display: table-cell;
+    width: 100%;
+    padding-bottom: 1em;
+    float: right;
+  }
+  .email-form {
+    display: table-cell;
+    float: left;
+  }
 }
 
 .civil-pursuit-text-block {
