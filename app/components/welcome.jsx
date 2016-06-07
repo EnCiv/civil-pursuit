@@ -7,7 +7,8 @@ class About extends React.Component {
 
   smooth(tag){
     console.info("smooth", this, tag );
-    let link=document.getElementByName(tag);
+    let link=document.querySelector(tag);
+    console.info("smooth link", link, link.offsetTop);
     document.body.animate(link.offsetTop, 500 );
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
