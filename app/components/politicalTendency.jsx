@@ -57,4 +57,4 @@ class PoliticalTendency extends React.Component {
   }
 }
 
-export default Voter;
+export default PoliticalTendency;
