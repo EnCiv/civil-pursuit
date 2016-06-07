@@ -18,7 +18,7 @@ class Welcome extends React.Component {
   smoothScroll(target, time) {
     console.info("smoothScroll", target, time );
     // time when scroll starts
-    var start = new Date().getTime();
+    const start = new Date().getTime();
 
         // set an interval to update scrollTop attribute every 25 ms
         const timer = setInterval( () => {
@@ -27,7 +27,7 @@ class Welcome extends React.Component {
             var step = Math.min(1, (new Date().getTime() - start) / time);
 
             // calculate the scroll distance and update the scrollTop
-            document.body['scrollTop'] = (step * target.offsetTop);
+            document.body['scrollTop'] = (step * target);
 
             // end interval if the scroll is completed
             if (step == 1) clearInterval(timer);
