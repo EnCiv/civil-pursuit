@@ -55,7 +55,7 @@ class About extends React.Component {
                   </p><p>
                     Imagine what we could accomplish if so many of us agreed on what to do about it!
                   </p><p>
-                    But there are so many of us, we can't get together to figure it out - there isn't a town hall big enough. Television doen's work - that'ss a few people speaking to the rest of us and money and power are bound to be an influence.
+                    But there are so many of us, we can't get together to figure it out - there isn't a town hall big enough. Television doesn't work - that'ss a few people speaking to the rest of us and money and power are bound to be an influence.
                     And social media is not doing it either, either we tend to talk with people who agree with us or incivility seems to prevail, and here too money has an effect on who sees what.
                   </p>
                 </div>
