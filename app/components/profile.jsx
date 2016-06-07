@@ -124,7 +124,6 @@ class Profile extends React.Component {
           </div>
           <div className="table-right">
             <div className="text-right gutter-y">
-              <PoliTendSelector valueDefault={ user.tendency | ''} />
             </div>
           </div>
         </div>
