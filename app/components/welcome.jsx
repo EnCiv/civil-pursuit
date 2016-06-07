@@ -6,9 +6,9 @@ import Icon  from './util/icon';
 class About extends React.Component {
 
   smooth(tag){
-    console.info("smooth", this );
-    let link=document.getElementById(tag);
-    document.body.animate(link.offsetTop.top, 500 );
+    console.info("smooth", this, tag );
+    let link=document.getElementByName(tag);
+    document.body.animate(link.offsetTop, 500 );
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
