@@ -5,6 +5,10 @@ import Icon  from './util/icon';
 
 class About extends React.Component {
 
+smooth(){
+    console.info("smooth", this.attr );
+    document.body.animate( {this.attr('href').offset().top}, 500 );
+}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -25,7 +29,7 @@ class About extends React.Component {
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">
                           <button>
-                            <a href="#bottom-anchor">See It
+                            <a href="#bottom-anchor" onClick={ this.smooth.bind(this) } >See It
                             <Icon icon="arrow-down" style={{paddingLeft: '.5em'}} />
                             </a>
                           </button>
