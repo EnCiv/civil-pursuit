@@ -6,10 +6,6 @@ import politicalTendencyType          from '../lib/proptypes/political-tendency'
 
 class PoliTendSelector extends React.Component {
 
-  constructor (props) {
-        console.info("PoliTendSelector.constructor");
-    super(props);
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -18,10 +14,17 @@ class PoliTendSelector extends React.Component {
     changeHandler: React.PropTypes.func
   };
 
+
+  constructor (props) {
+    console.info("PoliTendSelector.constructor");
+    super(props);
+  }
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setTendency () {
-    console.info("PoliTendSelector.constructor");
+    console.info("PoliTendSelector.setTendency");
     const tendency = React.findDOMNode(this.refs.tendency).value;
 
     if ( tendency ) {
@@ -37,7 +40,7 @@ class PoliTendSelector extends React.Component {
 
   render () {
     console.info("politicalTendency.render:",this);
-    let { valueDefault } = this.props | '';
+    let { valueDefault } = this.props;
     if(!(window.Synapp && window.Synapp.tendencyChoice)) {console.info("PoliTendSelector: tendencyChoice not ready yet"); return ({}); }
 
     const tendencyChoice = window.Synapp.tendencyChoice;
