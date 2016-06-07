@@ -65,6 +65,8 @@ class Training extends React.Component {
 
     const tooltip       =   React.findDOMNode(this.refs.view);
 
+    tooltip.transitionDuration='.75s';
+
     let target          =   document.querySelector(instruction.element);
 
     if ( ! target ) {
@@ -253,6 +255,7 @@ class Training extends React.Component {
       setTimeout(() => {
         this.ready = true;
         view.classList.add('show');
+        view.style.transitionDuration='2s';
         this.go();
       }, 8000);
     }
