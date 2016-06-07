@@ -7,10 +7,11 @@ class About extends React.Component {
 
   smooth(tag,e){
     e.preventDefault();
-    console.info("smooth", this, tag );
+    console.info("smooth", this, tag, e );
     let link=document.getElementsByName(tag);
     console.info("smooth link", link, link[0].offsetTop);
     this.smoothScroll(link[0].offsetTop, 500);
+    document.animate({scrollTop: link[0].offsetTop}, 500);
   }
 
   smoothScroll(target, time) {
