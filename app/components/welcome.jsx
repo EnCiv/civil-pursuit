@@ -12,7 +12,7 @@ class About extends React.Component {
     smoothScroll(link[0].offsetTop, 500);
   }
 
-  function smoothScroll(target, time) {
+  smoothScroll(target, time) {
     // time when scroll starts
     var start = new Date().getTime(),
 
