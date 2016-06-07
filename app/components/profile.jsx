@@ -11,7 +11,7 @@ import Icon             from './util/icon';
 import Button           from './util/button';
 import Demographics     from './demographics';
 import Voter            from './voter';
-import PoliticalTendency from './politicalTendency';
+import PoliTendSelector from './poli-tend-selector';
 
 class Profile extends React.Component {
   constructor (props) {
@@ -124,7 +124,7 @@ class Profile extends React.Component {
           </div>
           <div className="table-right">
             <div className="text-right gutter-y">
-              <PoliticalTendency valueDefault={ user.tendency} />
+              <PoliTendSelector valueDefault={ user.tendency | ''} />
             </div>
           </div>
         </div>

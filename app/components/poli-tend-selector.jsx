@@ -12,13 +12,13 @@ import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import politicalTendencyType          from '../lib/proptypes/political-tendency';
 
-class PoliticalTendency extends React.Component {
+class PoliTendSelector extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
-    user : userType,
-    politicalTendency : React.PropTypes.arrayOf(politicalTendencyType)
+    valueDefault : React.PropTypes.arrayOf(politicalTendencyType),
+    changeHandler: React.PropTypes.func
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,8 +28,8 @@ class PoliticalTendency extends React.Component {
 
     if ( tendency ) {
 
-      if(this.props.setFunc) {
-        this.props.setFunc(tendency);
+      if(this.props.changeHandler) {
+        this.props.changeHandler(tendency);
       } else {
         window.socket.emit('set user info', { tendency });
       }
@@ -57,4 +57,4 @@ class PoliticalTendency extends React.Component {
   }
 }
 
-export default PoliticalTendency;
+export default PoliTendSelector; 

@@ -65,7 +65,6 @@ class Training extends React.Component {
 
     const tooltip       =   React.findDOMNode(this.refs.view);
 
-    tooltip.transitionDuration='.75s';
 
     let target          =   document.querySelector(instruction.element);
 
@@ -181,6 +180,8 @@ class Training extends React.Component {
   next () {
 
     const active = document.querySelectorAll('.syn-training-active-target');
+
+    React.findDOMNode(this.refs.view).style.transitionDuration='.75s';
 
     for ( let i = 0; i < active.length ; i ++ ) {
       active[i].classList.remove('syn-training-active-target');
