@@ -121,7 +121,7 @@ class Profile extends React.Component {
         <div className="table" >
           <div className="table-left">
             <h4 className="gutter">If we could get you to provide just one bit of info right now, it would be your Political Tendency. We use this in our efforts to maintain balanced participation.</h4>
-            <p>PoliTendSelector valueDefault={this.state.user.tendency} </p>
+            <p>PoliTendSelector valueDefault </p>
           </div>
           <div className="table-right">
             <div className="text-right gutter-y">
