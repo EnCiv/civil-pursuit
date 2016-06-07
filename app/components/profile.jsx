@@ -124,8 +124,10 @@ class Profile extends React.Component {
           </div>
           <div className="table-right">
             <div className="text-right gutter-y">
-            <PoliticalTendency valueDefault={ user.tendency} />
+              <PoliticalTendency valueDefault={ user.tendency} />
+            </div>
           </div>
+        </div>
 
         { content }
 
