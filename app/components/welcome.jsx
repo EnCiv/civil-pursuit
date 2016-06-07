@@ -7,7 +7,7 @@ class About extends React.Component {
 
 smooth(){
     console.info("smooth", this.attr );
-    document.body.animate( {this.attr('href').offset().top}, 500 );
+    document.body.animate(this.attr('href').offset().top, 500 );
 }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
