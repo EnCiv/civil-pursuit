@@ -28,7 +28,7 @@ class PoliTendSelector extends React.Component {
 
     return (
       <section>
-        <Select block medium ref="tendency">
+        <Select block medium ref="tendency" defaultValue={ valueDefault } >
             <option value=''>Choose one</option>
             { tendency }
         </Select>
