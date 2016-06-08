@@ -17,11 +17,11 @@ class PoliTendSelector extends React.Component {
 
     
     if ( (typeof window !== 'undefined' ) && window.Synapp && window.Synapp.tendencyChoice ) {
-       console.info("PoliTendSelector tendencyChoice defined")
- //     tendencyChoice= window.Synapp.tendencyChoice;
- //     tendency = tendencyChoice.map(tendency => (
- //       <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
- //       ));
+      console.info("PoliTendSelector tendencyChoice defined")
+      tendencyChoice= window.Synapp.tendencyChoice;
+      tendency = tendencyChoice.map(tendency => (
+        <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
+        ));
     } else {
       console.info("PoliTendSelector: tendencyChoice not ready yet");
     }
