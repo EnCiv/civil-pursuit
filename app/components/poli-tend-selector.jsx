@@ -11,15 +11,16 @@ class PoliTendSelector extends React.Component {
 
   render () {
     console.info("PoliTendSelector.render:",this.props);
-    let tendencyChoice;
+    let tendencyChoice=[];
     const { valueDefault } = this.props;
 
     
     if ( (typeof window !== 'undefined' ) && window.Synapp && window.Synapp.tendencyChoice ) {
-      tendencyChoice= window.Synapp.tendencyChoice;
-      tendency = tendencyChoice.map(tendency => (
-        <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
-        ));
+      console.info("PoliTendSelector tendencyChoice defined")
+ //     tendencyChoice= window.Synapp.tendencyChoice;
+ //     tendency = tendencyChoice.map(tendency => (
+ //       <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
+ //       ));
     } else {
       console.info("PoliTendSelector: tendencyChoice not ready yet");
     }
