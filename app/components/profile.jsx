@@ -11,7 +11,6 @@ import Icon             from './util/icon';
 import Button           from './util/button';
 import Demographics     from './demographics';
 import Voter            from './voter';
-import PoliTendSelector from './poli-tend-selector';
 
 class Profile extends React.Component {
   constructor (props) {
