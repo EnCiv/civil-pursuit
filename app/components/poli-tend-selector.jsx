@@ -9,20 +9,6 @@ class PoliTendSelector extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes = {
-    valueDefault : React.PropTypes.arrayOf(politicalTendencyType),
-    changeHandler: React.PropTypes.func
-  };
-
-
-  constructor (props) {
-    console.info("PoliTendSelector.constructor");
-    super(props);
-  }
-
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   setTendency () {
     console.info("PoliTendSelector.setTendency");
     const tendency = React.findDOMNode(this.refs.tendency).value;
