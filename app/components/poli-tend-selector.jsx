@@ -2,7 +2,7 @@
 
 import React                          from 'react';
 import Select                         from './util/select';
-import politicalTendencyType          from '../lib/proptypes/political-tendency';
+
 
 class PoliTendSelector extends React.Component {
 
@@ -25,7 +25,7 @@ class PoliTendSelector extends React.Component {
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info("politicalTendency.render:",this);
+    console.info("PoliTendSelector.render:",this);
     let { valueDefault } = this.props;
     if(!(window.Synapp && window.Synapp.tendencyChoice)) {console.info("PoliTendSelector: tendencyChoice not ready yet"); return ({}); }
 
