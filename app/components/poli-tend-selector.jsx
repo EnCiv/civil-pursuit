@@ -12,7 +12,7 @@ class PoliTendSelector extends React.Component {
   render () {
     console.info("PoliTendSelector.render:",this.props);
     let tendencyChoice=[];
-    const { valueDefault } = this.props;
+ //   const { valueDefault } = this.props;
 
     
   //  if ( (typeof window !== 'undefined' ) && window.Synapp && window.Synapp.tendencyChoice ) {
@@ -27,7 +27,7 @@ class PoliTendSelector extends React.Component {
 
     return (
       <section>
-        <Select block medium ref="tendency" defaultValue={ valueDefault }>
+        <Select block medium ref="tendency">
             <option value=''>Choose one</option>
             { tendency }
         </Select>
