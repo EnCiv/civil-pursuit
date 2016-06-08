@@ -11,10 +11,7 @@ class PoliTendSelector extends React.Component {
 
   render () {
     console.info("PoliTendSelector.render:",this);
-    
-    if(!(window.Synapp && window.Synapp.tendencyChoice)) {console.info("PoliTendSelector: tendencyChoice not ready yet"); return ({}); }
-
-
+   
     return (
       <section>
         <Select block medium ref="tendency">
