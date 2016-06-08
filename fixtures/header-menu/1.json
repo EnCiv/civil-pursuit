@@ -2,30 +2,19 @@
   {
     "title" : "Home",
     "icon" : "home",
-    "link" : "./"
+    "link" : "/"
   },
 
   {
     "title" : "About",
     "icon" : "info",
-    "link" : "./about"
-  },
-
-  {
-    "title" : "FAQ",
-    "icon" : "life-ring",
-    "link" : "http://www.synaccord.com/faq.html"
+    "link" : "/about"
   },
 
   {
     "title" : "Blog",
     "icon" : "rss",
     "link" : "https://synaccord.wordpress.com/"
-  },
-
-  {
-    "title" : "Contact",
-    "icon" : "paper-plane-o",
-    "link" : "http://www.synaccord.com/contact.html"
   }
+
 ]
