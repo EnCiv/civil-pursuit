@@ -13,7 +13,7 @@ class PoliTendSelector extends React.Component {
     console.info("PoliTendSelector.render:",this.props);
     let tendencyChoice=[];
     let tendency={};
- //   const { valueDefault } = this.props;
+    const { valueDefault } = this.props;
 
     
   //  if ( (typeof window !== 'undefined' ) && window.Synapp && window.Synapp.tendencyChoice ) {
