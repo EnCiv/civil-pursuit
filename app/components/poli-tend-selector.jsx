@@ -22,6 +22,7 @@ class PoliTendSelector extends React.Component {
       tendency = tendencyChoice.map(tendency => (
         <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
         ));
+      console.info("PoliTendSelector length", tendency.length );
     } else {
       console.info("PoliTendSelector: tendencyChoice not ready yet");
     }
@@ -29,7 +30,7 @@ class PoliTendSelector extends React.Component {
     return (
       <section>
         <Select block medium ref="tendency" defaultValue={ valueDefault } >
-            <option value=''>Choose one</option>
+            <option value=''>Political Tendency</option>
             { tendency }
         </Select>
       </section>
