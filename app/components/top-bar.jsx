@@ -244,32 +244,34 @@ class TopBar extends React.Component {
     return (
       <section>
         <header role="banner" className="syn-top_bar-wrapper">
-          <section className= "syn-top_bar">
-            <section className= "syn-top_bar-info">
-              <section className={ `${comp}-left` }>
-                <section className={ `${comp}-image` }>
-                    <a href="/">
-                      <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
-                    </a>
+          <div className="syn-top_bar-wrapper-inner">
+            <section className= "syn-top_bar">
+              <section className= "syn-top_bar-info">
+                <section className={ `${comp}-left` }>
+                  <section className={ `${comp}-image` }>
+                      <a href="/">
+                        <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
+                      </a>
+                  </section>
+                  <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
                 </section>
-                <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
-              </section>
-              <section className='syn-top_bar-center'>
-                <span>Unpolarize Politics</span>
-              </section>
-              <section className={ `${comp}-right` }>
-                <section className={ `${comp}-beta` }>Beta</section>
-                <section className={ 'syn-top_bar-hamburger'} ref="hamburger">
-                  <Button onClick={ this.headerMenuHandler.bind(this) }>
-                    <Icon icon="bars" />
-                  </Button>
+                <section className='syn-top_bar-center'>
+                  <span>Unpolarize Politics</span>
                 </section>
+                <section className={ `${comp}-right` }>
+                  <section className={ `${comp}-beta` }>Beta</section>
+                  <section className={ 'syn-top_bar-hamburger'} ref="hamburger">
+                    <Button onClick={ this.headerMenuHandler.bind(this) }>
+                      <Icon icon="bars" />
+                    </Button>
+                  </section>
+                </section>
+              </section>
+              <section className="syn-top_bar-menu-row">
+                { menustrip }
               </section>
             </section>
-            <section className="syn-top_bar-menu-row">
-              { menustrip }
-            </section>
-          </section>
+          </div>
         </header>
 
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
