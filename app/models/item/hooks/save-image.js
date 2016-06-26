@@ -27,8 +27,7 @@ function saveImage (item) {
             {
               width         :   240,
               height        :   135,
-              crop          :   'thumb',
-              gravity       :   'face'
+              crop          :   'thumb'
             }
           ]
         }
