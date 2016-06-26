@@ -218,9 +218,9 @@ class TopBar extends React.Component {
 
     let menustrip = menus.map( (menu, index) => (
       <div className="syn-top_bar-menu-item" key={ `header-menu-${index}` } >
-        <a href={ menu.link } >
-          <span> { menu.title }</span>
-        </a>
+        <button onClick={window.location.href=menu.link}>
+          <span>{ menu.title }</span>
+        </button>
       </div>
     ));
 
@@ -230,7 +230,7 @@ class TopBar extends React.Component {
     let menuViews = menus.map((menu, index) => (
       <li key={ `header-menu-${index}` }>
         <a href={ menu.link }>
-          <span> { menu.title }</span>
+          <span>{ menu.title }</span>
         </a>
       </li>
     ));
