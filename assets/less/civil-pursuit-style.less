@@ -228,7 +228,7 @@ background:#888;
 
 .civil-pursuit-title {
   background: black;
-  width: 100%;
+  width: auto;
   padding-top: .5em;
   padding-bottom: .5em;
 
@@ -269,6 +269,7 @@ background:#888;
     width: 100%;
     float: right;
     padding: 0;
+
   }
   .email-form {
     display: table-cell;
@@ -375,6 +376,11 @@ background:#888;
 
     @media (max-width: 600px) { /** manually calculated because of what's in the title**/
       width: 12em;
+    }
+
+    @media (max-width: 359px)  /** manualy calculated about when title line goes to 2 lines **/
+    {
+      float: right;
     }
   }
 
