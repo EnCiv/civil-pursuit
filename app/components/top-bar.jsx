@@ -267,9 +267,9 @@ class TopBar extends React.Component {
                   </section>
                 </section>
               </section>
-              <section className="syn-top_bar-menu-row">
-                { menustrip }
-              </section>
+            </section>
+            <section className="syn-top_bar-menu-row">
+              { menustrip }
             </section>
           </div>
         </header>
