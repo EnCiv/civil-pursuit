@@ -189,7 +189,7 @@ background:#888;
           color: white;
           font-weight: 600;
           border: none;
-          background: inherit;
+          background: @syn-gold-color;
           padding: 0;
           text-decoration: none;
     }
@@ -237,6 +237,8 @@ background:#888;
     padding-top: .25em;
     padding-bottom: .25em;
     display: table;
+    margin-left: auto;
+    margin-right: auto;
 
     @media (max-width: @syn-max-width-center-column ) {
       padding-left: 1em;
@@ -354,12 +356,12 @@ background:#888;
 
   }
   .email-form {
-    display: table;
+    display: table-cell;
     float: right;
   }
 
   input[type="email"] {
-    display: table-cell;
+    display: inline-block;
     vertical-align: bottom;
     outline: none;
     border:none;
@@ -384,7 +386,7 @@ background:#888;
   }
 
   input[type="submit"] {
-    display: table-cell;
+    display: inline-block;
     float: right;
     cursor: pointer;
     outline: medium none;
