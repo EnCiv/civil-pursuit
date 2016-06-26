@@ -52,7 +52,6 @@
   left                        :       0;
   right: 0;
   z-index                     :       9999;
-  border-bottom:              1px solid #444;
   background-color: rgba(255,255,255,0.9);
   margin: 0;
   height: 104px;
@@ -64,7 +63,7 @@
 .syn-top_bar-wrapper-inner {
   max-width: 1780px;
   margin: auto;
-  height: 104px;
+  border-bottom: 1px solid #444;
 }
 
 .syn-top_bar-left {
@@ -204,19 +203,22 @@
   padding: .5em;
 
   a, button {
-        color: white;
-        font-weight: 600;
-        border: none;
-        background: @syn-purple-color;
-        padding: 0;
-        text-decoration: none;
+    color: white;
+    font-weight: 600;
+    border: none;
+    background: @syn-purple-color;
+    padding: 0;
+    text-decoration: none;
+
+    &:hover {
+      background-color: @syn-gold-color;
+    }
   }
 
   &:hover {
     background-color: @syn-gold-color;
 
   }
-
 }
 
 .syn-top_bar-menu-row {
