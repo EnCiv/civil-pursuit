@@ -57,7 +57,7 @@ class Layout extends Document {
       panels    =   JSON.stringify(this.props.panels || null);
 
     this.add(
-      new Element('title').text('Synaccord | Bring synergy to democracy'),
+      new Element('title').text('Civil Pursuit | Solutions to what Divides Us'),
       this.uACompatible(),
       this.viewport()
     );
