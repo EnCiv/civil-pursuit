@@ -30,6 +30,16 @@ class About extends React.Component {
               <div className="civil-pursuit-title">
                 <div className="civil-pursuit-title inner">
                   <h2>About</h2>
+                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+                    <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
+                      <div className="civil-pursuit-text-block email-block">
+                        <div className="civil-pursuit-text-block email-form cf">                   
+                          <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                          <input className="civil-pursuit-text-block" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
+                        </div>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>              
             </div>

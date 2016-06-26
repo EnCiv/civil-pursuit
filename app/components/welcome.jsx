@@ -53,10 +53,9 @@ class Welcome extends React.Component {
                     <div className="civil-pursuit news-headline-text">
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">
-                          <button>
-                            <a href="#bottom-anchor" onClick={ this.smooth.bind(this, 'bottom-anchor') } >See It
+                          <button onClick={ this.smooth.bind(this, 'bottom-anchor') }>
+                            <span>See It</span>
                             <Icon icon="arrow-down" style={{paddingLeft: '.5em'}} />
-                            </a>
                           </button>
                         </div>
                       </div>
