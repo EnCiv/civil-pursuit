@@ -28,6 +28,7 @@ class Welcome extends React.Component {
 
             // calculate the scroll distance and update the scrollTop
             document.body['scrollTop'] = (step * target);
+            document.document.Element.scrollTop=(step * target); //this if for IE!!
 
             // end interval if the scroll is completed
             if (step == 1) clearInterval(timer);
