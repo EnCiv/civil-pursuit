@@ -69,7 +69,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/training.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css'),
-        new Script('polyfill.js'),
+        new Script('/assets/js/polyfill.min.js')
       );
     }
     else {
@@ -79,7 +79,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/training.min.css'),
         // new Stylesheet(publicConfig['font awesome'].cdn)
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.min.css'),
-        new Script('polyfill.js'),
+        new Script('/assets/js/polyfill.min.js')
       );
     }
 
