@@ -103,8 +103,9 @@ class TopBar extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  goToHref (href) {
-    location.href = href;
+  goToHref (link) {
+    console.info("goToHref:", link);
+    location.href = link;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,7 +224,7 @@ class TopBar extends React.Component {
 
     let menustrip = menus.map( (menu, index) => (
       <div className="syn-top_bar-menu-item" key={ `header-menu-${index}` } >
-        <button onClick={this.goToHref.bind(menu.link)}>
+        <button onClick={this.goToHref.bind(this,menu.link)}>
           <span>{ menu.title }</span>
         </button>
       </div>
