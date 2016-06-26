@@ -218,7 +218,7 @@ class TopBar extends React.Component {
 
     let menustrip = menus.map( (menu, index) => (
       <div className="syn-top_bar-menu-item" key={ `header-menu-${index}` } >
-        <button onClick={window.location.href=menu.link}>
+        <button onClick={ 'window.location.href='+menu.link }>
           <span>{ menu.title }</span>
         </button>
       </div>
