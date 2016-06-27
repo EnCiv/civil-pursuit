@@ -38,7 +38,7 @@ class Subtype extends React.Component {
     }
 
     return (
-      <section className={`item-subtype gutter-top ${this.props.className}`}>
+      <section className={`item-subtype ${this.props.className}`}>
         { content }
       </section>
     );
