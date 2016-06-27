@@ -29,7 +29,6 @@
   width                 :     20%;
   max-width             :     150px;
   margin-right          :     @item-visual-gap; 
-  padding-top           :     0.13em; /** because font oswald seems to have space above **/
   padding-bottom        :     @item-visual-gap;
 }
 
@@ -56,6 +55,7 @@
 
 .item-subject {
   margin: 0;
+  margin-top: -0.13em; //* the oswald font seems to have extra space in the top */
   text-align: left;
   padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
 }
@@ -75,7 +75,7 @@ blockquote {
 .item-buttons           {
   float                 :     right;
   text-align            :     right;
-  margin-top            :     calc( 2px - 0.5em ); /** @item-visual-gap is not working here **/
+  margin-top            :     calc( 2px + -0.5em ); /** @item-visual-gap is not working here **/
   margin-right          :     2px; /** Top and right margin of buttons should be 2px **/
 }
 
