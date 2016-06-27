@@ -126,7 +126,9 @@ class Vote extends React.Component {
         <Row>
           <Column span="40">
             <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
-            <h5 className="syn-votes-criteria-description" ref="description">{ criteria.description }</h5>
+            <div className="syn-votes-criteria-description" ref="description">
+              <h5>{ criteria.description }</h5>
+            </div>
           </Column>
 
           <Column span="60">
