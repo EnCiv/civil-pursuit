@@ -4,40 +4,43 @@
 @import "elements/row";
 @import "lib/screens";
 
+
+@item-visual-gap:       0.5em;
+
 .item {
   border: 1px solid #666;
   margin-top: 0px;
-  padding: 10px;
-/**  border-radius: 6px 0 0 6px; **/
+  padding: @item-visual-gap 0 @item-visual-gap @item-visual-gap;
   border-right: none;
-  padding-right: 0px;
+  margin-right: -1px; /*border on top of border*/
+  margin-bottom: -2px: /*border on top of border */
 }
 
+/**
 .item {
   @media (max-width: @screen-phone) {
     padding: 10px 0px 5px 5px;
-  }
+  } **/
 }
 
 .item-media {
   float                 :     left;
   width                 :     20%;
   max-width             :     150px;
-  margin-right          :     10px
+  margin-right          :     @item-visual-gap; 
+  padding-top           :     0.13em; /** because font oswald seems to have space above **/
+  padding-bottom        :     @item-visual-gap;
 }
 
 .item-text {
-  padding: 0 10px;
-  padding-bottom: 0;
+  padding: 0;
 }
 
 .item-truncatable {
   .word.hide {
     display: none
   }
-  margin-top: 0px;
-  margin-left: -10px;
-
+  margin: 0;
 }
 
 .item-truncatable.expand {
@@ -54,6 +57,7 @@
   margin: 0;
   text-align: left;
   font-height: 1.75vh;
+  padding: 0 0 @item-visual-gap 0;
 }
 
 blockquote {
@@ -71,11 +75,7 @@ blockquote {
 .item-buttons           {
   float                 :     right;
   text-align            :     right;
- // padding-left          :     1em;
-  text-align            :     right;
-  // padding               :     10px;
-  margin-top            :     0px;
-  // padding-right         :     5px;
+  margin-top            :     calc( 2px - @item-visual-gap);
 
 }
 
@@ -87,4 +87,8 @@ blockquote {
   text-align: right;
   font-style: italic;
   font-size: 80%;
+}
+
+.item-reference {
+  padding: 0 0 calc( @item-visual-gap * 50% ) 0;
 }
