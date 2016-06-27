@@ -10,7 +10,7 @@
 .item {
   border: 1px solid #666;
   margin-top: 0px;
-  padding: @item-visual-gap 0 @item-visual-gap @item-visual-gap;
+  padding: @item-visual-gap 0 0 @item-visual-gap;
   border-right: none;
   margin-right: -1px; /*border on top of border*/
   margin-bottom: -2px; /*border on top of border */
@@ -57,8 +57,7 @@
 .item-subject {
   margin: 0;
   text-align: left;
-  font-height: 1.75vh;
-  padding: 0 0 @item-visual-gap 0;
+  padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
 }
 
 blockquote {
@@ -76,8 +75,8 @@ blockquote {
 .item-buttons           {
   float                 :     right;
   text-align            :     right;
-  margin-top            :     calc( 2px - @item-visual-gap );
-
+  margin-top            :     calc( 2px - 0.5em ); /** @item-visual-gap is not working here **/
+  margin-right          :     2px; /** Top and right margin of buttons should be 2px **/
 }
 
 .item-hidden {
