@@ -18,7 +18,13 @@ class ItemMedia extends React.Component {
     let media;
 
     if ( YouTube.isYouTube(item) ) {
-      media = ( <YouTube item={ item } /> );
+      media = ( 
+        <section className="item-media-wrapper">
+          <section className="item-media">
+            <YouTube item={ item } /> 
+          </section>
+        </section>
+      );
     }
 
     else if ( item.image == publicConfig['default item image'])
@@ -26,7 +32,13 @@ class ItemMedia extends React.Component {
 
     }
     else if ( item.image && /^http/.test(item.image) ) {
-      media = ( <Image src={ item.image } responsive /> );
+      media = ( 
+        <section className="item-media-wrapper">
+          <section className="item-media">
+            <Image src={ item.image } responsive /> 
+          </section>
+       </section>
+        );
     }
     else {
       /** don't show image if
@@ -35,11 +47,7 @@ class ItemMedia extends React.Component {
     }
 
     return (
-      <section className="item-media-wrapper">
-        <section className="item-media">
           { media }
-        </section>
-      </section>
     );
   }
 }
