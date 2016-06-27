@@ -28,7 +28,7 @@ class ItemMedia extends React.Component {
     }
 
     else if ( item.image == publicConfig['default item image'])
-    { media = {""};
+    { media = {};
 
     }
     else if ( item.image && /^http/.test(item.image) ) {
@@ -43,7 +43,7 @@ class ItemMedia extends React.Component {
     else {
       /** don't show image if
       media = ( <Image src={ publicConfig['default item image'] } responsive /> ); **/
-      media = {""};
+      media = {};
     }
 
     return (
