@@ -10,8 +10,6 @@
     "tests"
   ],
   "dependencies": {
-    "font-awesome": "^4.2.0",
-    "d3": "^3.5.2",
-    "c3": "^0.4.8"
+    "font-awesome": "^4.2.0"
   }
 }
