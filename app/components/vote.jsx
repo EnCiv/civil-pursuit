@@ -24,6 +24,7 @@ class Vote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleDescription (e) {
+    console.info("toggleDescription", this, e);
     let description = React.findDOMNode(this.refs.description);
     console.info("toggleDescription:", description, description.classList.toggle('syn-hide'));
   }
@@ -41,6 +42,8 @@ class Vote extends React.Component {
   makeChart () {
 
     let { criteria, vote, item } = this.props;
+
+    console.info("makeChart:",this);
 
     if ( ! vote ) {
       vote = {
@@ -64,6 +67,8 @@ class Vote extends React.Component {
     }
 
     let svg = React.findDOMNode(this.refs.svg);
+
+    console.info("makeChart svg", svg);
 
     svg.id = `chart-${item._id}-${criteria._id}`;
 
