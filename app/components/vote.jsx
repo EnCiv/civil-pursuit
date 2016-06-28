@@ -9,9 +9,15 @@ import Column                         from './util/column';
 
 class Vote extends React.Component {
 
-  item = {};
+  constructor(){
 
-  total = null;
+      state = { itemId: {},
+                total: null
+              }
+
+  }
+
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -62,8 +68,8 @@ class Vote extends React.Component {
 
     this.total = vote.total;
 
-    if ( this.props.item && this.props.item._id !== this.item ) {
-      this.item = this.props.item._id;
+    if ( this.props.item && this.props.item._id !== this.state.itemId ) {
+      this.state.itemId = this.props.item._id;
     }
 
     let svg = React.findDOMNode(this.refs.svg);
