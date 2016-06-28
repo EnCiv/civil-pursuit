@@ -13,7 +13,7 @@ class Vote extends React.Component {
   constructor (props) {
     super(props);
 
-      state = { itemId: {},
+    let state = { itemId: {},
                 total: null
               };
   }
