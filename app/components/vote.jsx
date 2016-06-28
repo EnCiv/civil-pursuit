@@ -25,8 +25,8 @@ class Vote extends React.Component {
 
   toggleDescription (e) {
     console.info("toggleDescription", this, e);
-    //let description = React.findDOMNode(this.refs.description);
-    console.info("toggleDescription:", this.description, this.description.classList.toggle('syn-hide'));
+    let d = React.findDOMNode(this.description);
+    console.info("toggleDescription:", this.description, d.classList.toggle('syn-hide'));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
