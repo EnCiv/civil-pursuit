@@ -25,7 +25,7 @@ class Vote extends React.Component {
 
   toggleDescription (e) {
     let description = React.findDOMNode(this.refs.description);
-    description.classList.toggle('syn-visible');
+    description.classList.toggle('syn-hide');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,7 +126,7 @@ class Vote extends React.Component {
         <Row>
           <Column span="40">
             <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
-            <div className="syn-votes-criteria-description" ref="description">
+            <div className="syn-votes-criteria-description syn-hide" ref="description">
               <h5>{ criteria.description }</h5>
             </div>
           </Column>
