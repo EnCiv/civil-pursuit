@@ -96,6 +96,8 @@ class Vote extends React.Component {
 
     console.info("makeChart:",columns)
 
+{/* comment this out for now so we can see if this is what's messing things up. 
+
     let chart = c3.generate({
       bindto        :   '#' + svg.id,
       data          :   {
@@ -128,8 +130,8 @@ class Vote extends React.Component {
         // width       :   $(window).width() / 5
       }
     });
+*/}
 
-    console.info("makeChart: chart", chart);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
