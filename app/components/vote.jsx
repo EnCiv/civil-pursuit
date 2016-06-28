@@ -9,13 +9,14 @@ import Column                         from './util/column';
 
 class Vote extends React.Component {
 
+  state = { 
+      itemId: null,
+      total: null
+  };
 
   constructor (props) {
     super(props);
 
-    let state = { itemId: {},
-                total: null
-              };
   }
 
 
