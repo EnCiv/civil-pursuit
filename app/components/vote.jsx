@@ -63,11 +63,11 @@ class Vote extends React.Component {
       };
     }
 
-    if ( this.total !== null && vote.total === this.total ) {
+    if ( this.state.total !== null && vote.total === this.state.total ) {
       return;
     }
 
-    this.total = vote.total;
+    this.state.total = vote.total;
 
     if ( this.props.item && this.props.item._id !== this.state.itemId ) {
       this.state.itemId = this.props.item._id;
@@ -93,6 +93,8 @@ class Vote extends React.Component {
     data.forEach(function (d) {
       columns.push(d.value);
     });
+
+    console.info("makeChart:",columns)
 
     let chart = c3.generate({
       bindto        :   '#' + svg.id,
@@ -126,6 +128,8 @@ class Vote extends React.Component {
         // width       :   $(window).width() / 5
       }
     });
+
+    console.info("makeChart: chart", chart);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
