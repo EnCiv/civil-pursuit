@@ -96,7 +96,6 @@ class Layout extends Document {
 
     if ( props.env === 'development' ) {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.js'),
         new Script('/assets/js/socket.io-stream.js'),
@@ -107,7 +106,6 @@ class Layout extends Document {
 
     else {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.min.js'),
         new Script('/assets/js/assets.min.js'),
