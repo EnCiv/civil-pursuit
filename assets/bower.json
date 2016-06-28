@@ -12,5 +12,8 @@
   "dependencies": {
     "font-awesome": "^4.2.0",
     "c3": "^0.4.11"
+  },
+  "resolutions": {
+    "d3": "~3.5.0"
   }
 }
