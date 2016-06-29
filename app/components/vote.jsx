@@ -23,6 +23,8 @@ class Vote extends React.Component {
   constructor (props) {
     super(props);
 
+    this.makeChart();
+
   };
 
 
@@ -100,8 +102,6 @@ class Vote extends React.Component {
 
   render () {
     let { criteria, vote } = this.props;
-
-    this.makeChart();
 
     return (
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
