@@ -127,7 +127,7 @@ class Vote extends React.Component {
         height      :   80
       },
       bar           :   {
-        // width       :   $(window).width() / 5
+        width       :   0.95
       }
     };
 
