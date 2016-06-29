@@ -3,7 +3,14 @@
 
 import React from 'react';
 
+
+
 class Charts extends React.Component {
+
+  compareNumbers(a, b) {  
+    return a - b;
+  }
+  
   render(){
     console.info("Charts", this);
     var self = this,
