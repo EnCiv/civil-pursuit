@@ -5,6 +5,7 @@ import React from 'react';
 
 class Charts extends React.Component {
   render(){
+    console.info("Charts", this);
     var self = this,
       data = this.props.data,
       layered = this.props.grouping === 'layered' ? true : false,

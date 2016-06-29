@@ -88,6 +88,8 @@ class Vote extends React.Component {
     }
 
     this.setState({ data: data });
+
+    console.info("makeChart end", this)
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
