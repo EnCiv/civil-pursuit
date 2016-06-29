@@ -94,8 +94,7 @@ class Vote extends React.Component {
       columns.push(d.value);
     });
 
-    console.info("makeChart:",columns);
-
+    console.info("makeChart:",columns, '#' + svg.id);
 
 
     let chart = c3.generate({
