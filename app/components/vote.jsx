@@ -73,10 +73,10 @@ class Vote extends React.Component {
       return;
     }
 
-    this.state.total = vote.total;
+    this.setState({ total: vote.total };
 
     if ( this.props.item && this.props.item._id !== this.state.itemId ) {
-      this.state.itemId = this.props.item._id;
+      this.setState({itemId: this.props.item._id});
     }
 
 
