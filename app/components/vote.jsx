@@ -11,17 +11,18 @@ import Legend                         from './util/legend';
 
 class Vote extends React.Component {
 
+  state = { 
+    itemId: null,
+    total: null,
+    data: [],
+    series: ['-1', '0', '1'],
+    colors: ['#43A19E', '#7B43A1', '#F2317A']
+  };
 
 
   constructor (props) {
     super(props);
-      state = { 
-      itemId: null,
-      total: null,
-      data: [],
-      series: ['-1', '0', '1'],
-      colors: ['#43A19E', '#7B43A1', '#F2317A']
-    };
+
   };
 
 
