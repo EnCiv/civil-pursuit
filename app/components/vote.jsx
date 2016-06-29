@@ -6,6 +6,8 @@ import voteType                       from '../lib/proptypes/vote';
 import itemType                       from '../lib/proptypes/item';
 import Row                            from './util/row';
 import Column                         from './util/column';
+import Charts                         from './util/charts';
+import Legend                         from './util/legend';
 
 class Vote extends React.Component {
 
@@ -17,6 +19,11 @@ class Vote extends React.Component {
   constructor (props) {
     super(props);
 
+    state ={
+      data: [],
+      series: ['-1', '0', '1'],
+      colors: ['#43A19E', '#7B43A1', '#F2317A']
+    }
   }
 
 
@@ -73,76 +80,24 @@ class Vote extends React.Component {
       this.state.itemId = this.props.item._id;
     }
 
-    let svg = React.findDOMNode(this.refs.svg);
-
-    console.info("makeChart svg", svg);
-
-    if(!svg) { return; }
-
-    svg.id = `chart-${item._id}-${criteria._id}`;
 
     let data = [];
 
     for ( let number in vote.values ) {
-      data.push({
-        label: 'number',
-        value: vote.values[number] * 100 / vote.total
-      });
+      let tmp=[]; // data is an array of arrays or a series of arrays. in this case only 1 entry per series
+      tmp.push(vote.values[number]);
+      data.push(tmp);
     }
 
-    let columns = [`${vote.total} vote(s)`];
-
-    data.forEach(function (d) {
-      columns.push(d.value);
-    });
-
-    console.info("makeChart:",columns, '#' + svg.id);
-
-    let chartin= {
-      bindto        :   '#' + svg.id,
-      data          :   {
-        x           :   'x',
-        columns     :   [['x', -1, 0, 1], columns],
-        type        :   'bar'
-      },
-      grid          :   {
-        x           :   {
-          lines     :   3
-        }
-      },
-      axis          :   {
-        x           :   {},
-        y           :   {
-          max       :   90,
-          show      :   false,
-          tick      :   {
-            count   :   5,
-            format  :   function (y) {
-              return y;
-            }
-          }
-        }
-      },
-      size          :   {
-        height      :   80
-      },
-      bar           :   {
-        width       :   0.95
-      }
-    };
-
-    console.info("vote chart in", chartin);
-
-    let chart = c3.generate(chartin);
-
-    console.info("vote chart out", chart);
-
+    this.setState({ data: data });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let { criteria, vote } = this.props;
+
+    this.makeChart();
 
     return (
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
@@ -153,9 +108,13 @@ class Vote extends React.Component {
               <h5>{ criteria.description }</h5>
             </div>
           </Column>
-
           <Column span="60">
-            <svg className="chart" ref="svg"></svg>
+            <Charts
+              data={ this.state.data }
+              labels={ this.state.series }
+              colors={ this.state.colors }
+              height={ 80 }
+            />
           </Column>
         </Row>
       </div>
