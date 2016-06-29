@@ -11,17 +11,17 @@ import Legend                         from './util/legend';
 
 class Vote extends React.Component {
 
-  state = { 
+
+
+  constructor (props) {
+    super(props);
+      state = { 
       itemId: null,
       total: null,
       data: [],
       series: ['-1', '0', '1'],
       colors: ['#43A19E', '#7B43A1', '#F2317A']
-  };
-
-  constructor (props) {
-    super(props);
-
+    };
   };
 
 
@@ -79,10 +79,10 @@ class Vote extends React.Component {
     }
 
 
-    let data = [];
+    var data = [];
 
     for ( let number in vote.values ) {
-      let tmp=[]; // data is an array of arrays or a series of arrays. in this case only 1 entry per series
+      var tmp=[]; // data is an array of arrays or a series of arrays. in this case only 1 entry per series
       tmp.push(vote.values[number]);
       data.push(tmp);
       console.info("MakeChart for data", tmp, data);
