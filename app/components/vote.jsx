@@ -96,8 +96,7 @@ class Vote extends React.Component {
 
     console.info("makeChart:",columns, '#' + svg.id);
 
-
-    let chart = c3.generate({
+    let chartin= {
       bindto        :   '#' + svg.id,
       data          :   {
         x           :   'x',
@@ -128,8 +127,13 @@ class Vote extends React.Component {
       bar           :   {
         // width       :   $(window).width() / 5
       }
-    });
+    };
 
+    console.info("vote chart in", chartin);
+
+    let chart = c3.generate(chartin);
+
+    console.info("vote chart out", chart);
 
   }
 
