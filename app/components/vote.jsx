@@ -83,13 +83,14 @@ class Vote extends React.Component {
 
     for ( let number in vote.values ) {
       let tmp=[]; // data is an array of arrays or a series of arrays. in this case only 1 entry per series
+      console.info("makeChart for:", number);
       tmp.push(vote.values[number]);
       data.push(tmp);
     }
 
     this.setState({ data: data });
 
-    console.info("makeChart end", this)
+    console.info("makeChart end", this);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
