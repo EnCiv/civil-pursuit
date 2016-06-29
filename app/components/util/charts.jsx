@@ -76,6 +76,6 @@ class Charts extends React.Component {
       </div>
     );
   }
-});
+}
 
 export default Charts;
