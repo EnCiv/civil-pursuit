@@ -77,6 +77,8 @@ class Vote extends React.Component {
 
     console.info("makeChart svg", svg);
 
+    if(!svg) { return; }
+
     svg.id = `chart-${item._id}-${criteria._id}`;
 
     let data = [];
