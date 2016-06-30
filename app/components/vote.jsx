@@ -80,10 +80,12 @@ class Vote extends React.Component {
 
 
     var data = [];
+    var series = [];
 
     for ( let number in vote.values ) {
       var tmp=[]; // data is an array of arrays or a series of arrays. in this case only 1 entry per series
       tmp.push(vote.values[number]);
+      series.push(number);
       data.push(tmp);
       console.info("MakeChart for data", tmp, data);
     }
@@ -91,6 +93,7 @@ class Vote extends React.Component {
     console.info("makeChart data", data);
 
     this.setState({ data : data,
+                    series : series;
                     total: vote.total,
                     itemId: this.props.item._id
                    });
@@ -128,7 +131,7 @@ class Vote extends React.Component {
     return (
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
         <Row>
-          <Column span="40">
+          <Column span="40" style={ {margin, "auto"} } >
             <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
             <div className="syn-votes-criteria-description syn-hide" ref={(ref) => this.description = ref}>
               <h5>{ criteria.description }</h5>
@@ -139,7 +142,7 @@ class Vote extends React.Component {
               data={ this.state.data }
               labels={ this.state.series }
               colors={ this.state.colors }
-              height={ 80 }
+              height={ 50 }
             />
           </Column>
         </Row>
