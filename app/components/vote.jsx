@@ -74,7 +74,7 @@ class Vote extends React.Component {
       return;
     }
 
-    if ( !this.props.item || (this.state.itemId && (this.props.item._id !== this.state.itemId) ) {
+    if ( !this.props.item || (this.state.itemId && (this.props.item._id !== this.state.itemId)) ) {
       return;
     }
 
