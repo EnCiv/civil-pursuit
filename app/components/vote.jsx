@@ -102,7 +102,7 @@ class Vote extends React.Component {
 
     var data = [],
       series = 5,//getRandomInt(2, 10),
-      serieLength = 5;//getRandomInt(2, 10);
+      serieLength = 3;//getRandomInt(2, 10);
 
     for (var i = series; i--; ) {
       var tmp = [];
