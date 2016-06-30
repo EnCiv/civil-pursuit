@@ -131,7 +131,7 @@ class Vote extends React.Component {
     return (
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
         <Row>
-          <Column span="40" } >
+          <Column span="40" >
             <div className="syn-vote-criteria-wrapper" >
               <div className="syn-vote-criteria-inner" >
                 <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
