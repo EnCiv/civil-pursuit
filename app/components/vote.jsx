@@ -50,7 +50,7 @@ class Vote extends React.Component {
   }
 
   componentDidUpdate () {
-    this.makeChart();
+    ;
   }
 
   makeChart () {
