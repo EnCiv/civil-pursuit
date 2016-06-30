@@ -31,17 +31,19 @@ class Modal extends React.Component {
       <section className={ Component.classList(this, 'syn-modal') } ref="modal">
         <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
           <div className="syn-modal-container">
-            <header className="syn-modal-header">
-              <h1>{ this.props.title }</h1>
-            </header>
+            <div className="syn-modal-center">
+              <header className="syn-modal-header">
+                <h1>{ this.props.title }</h1>
+              </header>
 
-            <section>
-              { this.props.children }
-            </section>
+              <section>
+                { this.props.children }
+              </section>
 
-            <footer>
-              <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
-            </footer>
+              <footer>
+                <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
+              </footer>
+            </div>
           </div>
         </div>
       </section>

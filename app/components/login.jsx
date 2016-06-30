@@ -153,7 +153,7 @@ class Login extends React.Component {
         </div>
 
         <Row data-stack="phone-and-down">
-          <Column span="50" gutter text-left>
+          <Column span="50" text-left gutter >
             Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
           </Column>
 
