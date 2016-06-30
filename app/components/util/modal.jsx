@@ -30,8 +30,8 @@ class Modal extends React.Component {
     return (
       <section className={ Component.classList(this, 'syn-modal') } ref="modal">
         <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
-          <div className="syn-modal-container">
-            <div className="syn-modal-center">
+          <div className="syn-modal-center">
+            <div className="syn-modal-container">
               <header className="syn-modal-header">
                 <h1>{ this.props.title }</h1>
               </header>
@@ -41,7 +41,7 @@ class Modal extends React.Component {
               </section>
 
               <footer>
-                <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
+                  <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
               </footer>
             </div>
           </div>
