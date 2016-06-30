@@ -48,9 +48,9 @@ class Charts extends React.Component {
                 size = item / (stacked ? sum : max) * 100;
 
               style = {
-                backgroundColor: color,
-                {/*opacity: opaque ? 1 : (item/max + .05),
-                zIndex: item */}
+                backgroundColor: color
+                //*opacity: opaque ? 1 : (item/max + .05),
+                //zIndex: item 
               };
 
               if (self.props.horizontal) {
