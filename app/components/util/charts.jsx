@@ -49,8 +49,8 @@ class Charts extends React.Component {
 
               style = {
                 backgroundColor: color,
-                opacity: opaque ? 1 : (item/max + .05),
-                zIndex: item
+                {/*opacity: opaque ? 1 : (item/max + .05),
+                zIndex: item */}
               };
 
               if (self.props.horizontal) {
