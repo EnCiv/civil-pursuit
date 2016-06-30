@@ -15,8 +15,9 @@ class Vote extends React.Component {
     itemId: null,
     total: null,
     data: [],
-    series: ['-1', '0', '1'],
-    colors: ['#43A19E', '#7B43A1', '#F2317A']
+    series: ['France', 'Italy', 'England', 'Sweden', 'Germany'],
+    labels: ['cats', 'dogs', 'horses', 'ducks', 'cows'],
+    colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824', '#58CF6C']
   };
 
 
@@ -54,6 +55,7 @@ class Vote extends React.Component {
 
   makeChart () {
 
+{/*for now - hard code the graph
     let { criteria, vote, item } = this.props;
 
     console.info("makeChart:",this);
@@ -94,6 +96,24 @@ class Vote extends React.Component {
     this.setState({ data : data });
 
     console.info("makeChart end", this);
+  */}
+
+    var data = [],
+      series = 5,//getRandomInt(2, 10),
+      serieLength = 5;//getRandomInt(2, 10);
+
+    for (var i = series; i--; ) {
+      var tmp = [];
+
+      for (var j = serieLength; j--; ) {
+        tmp.push(getRandomInt(0, 20));
+      }
+
+      data.push(tmp);     
+    }
+
+    this.setState({ data: data });
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
