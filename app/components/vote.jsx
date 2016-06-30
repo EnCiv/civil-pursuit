@@ -96,6 +96,8 @@ class Vote extends React.Component {
     this.setState({ data : data });
 
     console.info("makeChart end", this);
+
+    Math.floor(Math.random() * (max - min)) + min;
   */}
 
     var data = [],
@@ -106,7 +108,7 @@ class Vote extends React.Component {
       var tmp = [];
 
       for (var j = serieLength; j--; ) {
-        tmp.push(getRandomInt(0, 20));
+        tmp.push(Math.floor(Math.random() * (20 - 0) + 0)); // (max - min)+min
       }
 
       data.push(tmp);     
