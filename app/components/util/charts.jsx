@@ -7,10 +7,7 @@ import React from 'react';
 
 class Charts extends React.Component {
 
-  compareNumbers(a, b) {  
-    return a - b;
-  }
-  
+
   render(){
     console.info("Charts", this);
     var self = this,
@@ -38,8 +35,8 @@ class Charts extends React.Component {
           sum = serie.reduce(function (carry, current) {
             return carry + current;
           }, 0);
-          sortedSerie.sort(compareNumbers);           
-
+          sortedSerie.sort( (a,b) => {return (a-b) );           
+ 
           return (
             <div className={ 'Charts--serie ' + (self.props.grouping) }
               key={ serieIndex }
