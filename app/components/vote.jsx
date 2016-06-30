@@ -131,7 +131,7 @@ class Vote extends React.Component {
     return (
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
         <Row>
-          <Column span="40" style={ {margin, "auto"} } >
+          <Column span="40" style={ {margin: "auto"} } >
             <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
             <div className="syn-votes-criteria-description syn-hide" ref={(ref) => this.description = ref}>
               <h5>{ criteria.description }</h5>
