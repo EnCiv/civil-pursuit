@@ -132,9 +132,13 @@ class Vote extends React.Component {
       <div className="syn-votes-criteria" id={ `criteria-vote-${criteria._id}`}>
         <Row>
           <Column span="40" style={ {margin: "auto"} } >
-            <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
-            <div className="syn-votes-criteria-description syn-hide" ref={(ref) => this.description = ref}>
-              <h5>{ criteria.description }</h5>
+            <div className="syn-vote-criteria-wrapper" >
+              <div className="syn-vote-criteria-inner" >
+                <h4 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h4>
+                <div className="syn-votes-criteria-description syn-hide" ref={(ref) => this.description = ref}>
+                  <h5>{ criteria.description }</h5>
+                </div>
+              </div>
             </div>
           </Column>
           <Column span="60">
@@ -142,7 +146,7 @@ class Vote extends React.Component {
               data={ this.state.data }
               labels={ this.state.series }
               colors={ this.state.colors }
-              height={ 50 }
+              height={ 3em }
             />
           </Column>
         </Row>
