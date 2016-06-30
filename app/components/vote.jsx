@@ -146,7 +146,7 @@ class Vote extends React.Component {
               data={ this.state.data }
               labels={ this.state.series }
               colors={ this.state.colors }
-              height={ 3em }
+              height={ '3em' }
             />
           </Column>
         </Row>
