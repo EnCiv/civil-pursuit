@@ -35,7 +35,7 @@ class Charts extends React.Component {
           sum = serie.reduce(function (carry, current) {
             return carry + current;
           }, 0);
-          sortedSerie.sort( (a,b) => {return (a-b) );           
+          sortedSerie.sort( (a,b) => {return (a-b);} );           
  
           return (
             <div className={ 'Charts--serie ' + (self.props.grouping) }
