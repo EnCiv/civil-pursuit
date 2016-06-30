@@ -93,7 +93,7 @@ class Vote extends React.Component {
     console.info("makeChart data", data);
 
     this.setState({ data : data,
-                    series : series;
+                    series : series,
                     total: vote.total,
                     itemId: this.props.item._id
                    });
