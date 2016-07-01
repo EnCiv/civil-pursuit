@@ -7,7 +7,7 @@ class Modal extends React.Component {
 
   hide (e) {
 
-    e.preventDefault();
+    //e.preventDefault();
 
     let modal = React.findDOMNode(this.refs.modal);
     console.log("Modal.hide:", this.refs.modal);
