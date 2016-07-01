@@ -171,7 +171,7 @@ class Join extends React.Component {
         </Row>
 
         <div className="syn-form-group syn-form-submit">
-          <Submit block large success radius>Join</Submit>
+          <Submit block large success>Join</Submit>
         </div>
         
       </div>
@@ -187,7 +187,7 @@ class Join extends React.Component {
 
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Join">
-        <Form handler={ this.signup.bind(this) } flash={ this.state } form-center name="join">
+        <Form handler={ this.signup.bind(this) } flash={ this.state } name="join">
           { content }
         </Form>
       </Modal>
