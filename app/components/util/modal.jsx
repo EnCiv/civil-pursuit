@@ -15,10 +15,6 @@ class Modal extends React.Component {
     modal.classList.remove('syn--visible');
   }
 
-  unclick() {
-    return false;
-  }
-
 
   render () {
 
@@ -35,20 +31,20 @@ class Modal extends React.Component {
     return (
       <section className={ Component.classList(this, 'syn-modal') } ref="modal">
         <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
-          <div className="syn-modal-center">
-            <div className="syn-modal-container" onClick={this.unclick.bind(this)} >
-              <header className="syn-modal-header">
-                <h1>{ this.props.title }</h1>
-              </header>
+        </div>
+        <div className="syn-modal-center">
+          <div className="syn-modal-container">
+            <header className="syn-modal-header">
+              <h1>{ this.props.title }</h1>
+            </header>
 
-              <section>
-                { this.props.children }
-              </section>
+            <section>
+              { this.props.children }
+            </section>
 
-              <footer>
-                  <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
-              </footer>
-            </div>
+            <footer>
+                <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
+            </footer>
           </div>
         </div>
       </section>
