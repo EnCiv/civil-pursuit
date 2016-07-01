@@ -33,7 +33,7 @@
 
 .syn-modal-cover {
   position: relative;
-  display: table;
+  display: block;
   width: 100%;
   height: 100%;
   background: rgba(155, 155, 155, 0.5);
@@ -45,22 +45,24 @@
 }
 
 .syn-modal-center {
-  display: table-cell;
-  vertical-align: middle;
+  display: block;
   text-align: center;
 }
 
 .syn-modal-container {
-  position: relative;
+  position: absolute;
   display: inline-block;
   background: #fff;
-  left: 10%;
-  right: 10%;
-  border-radius: 8px;
   box-shadow: 0 0 10px 8px rgba(100, 100, 100, 0.5);
-  padding: 10px;
-  max-height: calc(100vh - 35px);
+  padding: .5em;
+  max-height: ~"calc(100vh - 35px)";
   overflow: auto;
+  top: 50%;
+  -webkit-transform: translateY(-50%); 
+  -moz-transform: translateY(-50%); 
+  -ms-transform: translateY(-50%); 
+  -o-transform: translateY(-50%); 
+  transform: translateY(-50%);
 
   header {
     text-align: center;
@@ -68,15 +70,15 @@
 
   footer {
     text-align: right;
-    padding: 10px;
+    padding: .5em;
     padding-right: 0;
-    margin-top: 20px;
+    margin-top: 1em;
 
     a {
       text-transform: uppercase;
       letter-spacing: .6em;
       color: #999;
-      padding: 10px;
+      padding: .5em;
       border: 1px solid transparent;
       border-width: 1px 0 0 1px;
     }
