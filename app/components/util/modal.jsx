@@ -15,6 +15,11 @@ class Modal extends React.Component {
     modal.classList.remove('syn--visible');
   }
 
+  unclick() {
+    return false;
+  }
+
+
   render () {
 
     // return (
@@ -31,7 +36,7 @@ class Modal extends React.Component {
       <section className={ Component.classList(this, 'syn-modal') } ref="modal">
         <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
           <div className="syn-modal-center">
-            <div className="syn-modal-container">
+            <div className="syn-modal-container" onClick={this.unclick.bind(this)} >
               <header className="syn-modal-header">
                 <h1>{ this.props.title }</h1>
               </header>
