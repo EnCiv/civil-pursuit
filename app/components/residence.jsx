@@ -131,7 +131,12 @@ class Residence extends React.Component {
 
         <InputGroup block className="gutter">
           <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
-          <Select style={{ flexBasis: '30%'}} ref="state"  onChange={ this.setState.bind(this) } defaultValue={ user.state }>{ states }</Select>
+          <Select style={{ flexBasis: '30%'}} 
+                  ref="state"  
+                  onChange={ this.setState.bind(this) } 
+                  defaultValue={ user.state }>{ states }
+                  placeholder     =   "State"
+          </Select>
         </InputGroup>
 
         <InputGroup block className="gutter">
