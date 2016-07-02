@@ -152,7 +152,7 @@ class Login extends React.Component {
           <Submit block large success radius>Login</Submit>
         </div>
 
-        <Row data-stack="phone-and-down">
+        <Row>
           <Column span="50" gutter className="text-left">
             Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
           </Column>
