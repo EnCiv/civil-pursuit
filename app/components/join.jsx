@@ -159,7 +159,9 @@ class Join extends React.Component {
 
         <Row>
           <Column span="50" gutter className="text-left">
+            <div>
             <span>Already a user?</span></br><a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
+            </div>
           </Column>
 
           <Column span="50" text-right gutter>
