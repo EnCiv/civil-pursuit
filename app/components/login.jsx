@@ -154,7 +154,7 @@ class Login extends React.Component {
 
         <Row>
           <Column span="50" gutter className="text-left">
-            Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
+            Not yet a user? <br><a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
           </Column>
 
           <Column span="50" text-right gutter className="forgot-password">
@@ -164,7 +164,7 @@ class Login extends React.Component {
               className         =   "forgot-password-link"
               onClick           = { ::this.forgotPassword }
             >
-              Click here
+              Click here<br>
             </a>
           </Column>
         </Row>
