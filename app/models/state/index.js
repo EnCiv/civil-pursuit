@@ -10,7 +10,7 @@ class State extends Mungo.Model {
 
   static version = 2;
 
-  static migrations migrations = {
+  static migrations = {
   	1 : V1,
   	2 : V2
   };
