@@ -143,7 +143,7 @@ class Join extends React.Component {
 
           <Column span="50">
             <div className="syn-form-group">
-              <label>Confirm password</label>
+              <label>Confirm</label>
 
             </div>
           </Column>

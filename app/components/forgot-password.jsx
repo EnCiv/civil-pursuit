@@ -97,7 +97,7 @@ class ForgotPassword extends React.Component {
             success
             radius
           >
-            Send me reset password email
+            Send a reset password email
           </Submit>
         </div>
 
