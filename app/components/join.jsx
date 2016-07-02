@@ -159,14 +159,14 @@ class Join extends React.Component {
 
         <Row>
           <Column span="50" gutter className="text-left">
-            Already a user?</br> <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
+            <span>Already a user?</br></span> <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
           </Column>
 
           <Column span="50" text-right gutter>
             <a href="#" onClick={ this.agree.bind(this) } style={{ textDecoration: 'none', color: 'inherit', float: 'left', marginLeft: '1em'}}>
               <Icon icon="square-o" size="2" ref="agree" name="agree" />
             </a>
-             I agree to the </br><a href="/page/terms-of-service">Terms of Service</a>
+             <span>I agree to the </br><a href="/page/terms-of-service">Terms of Service</a></span>
           </Column>
         </Row>
 
