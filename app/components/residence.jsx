@@ -134,9 +134,11 @@ class Residence extends React.Component {
           <Select style={{ flexBasis: '30%'}} 
                   ref="state"  
                   onChange={ this.setState.bind(this) } 
-                  defaultValue={ user.state }>{ states }
-                  placeholder     =   "State"
+                  defaultValue={ user.state }>
+                  <option value="">State</option>
+                  { states }
           </Select>
+          <option value="">State</option>
         </InputGroup>
 
         <InputGroup block className="gutter">
