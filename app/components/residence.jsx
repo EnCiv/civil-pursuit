@@ -138,7 +138,6 @@ class Residence extends React.Component {
                   <option value="">State</option>
                   { states }
           </Select>
-          <option value="">State</option>
         </InputGroup>
 
         <InputGroup block className="gutter">
