@@ -16,6 +16,8 @@ class State extends Mungo.Migration {
 
   static version = 2;
 
+  static collection = 'state';
+
   static schema = { name : String };
 
   static do () {
