@@ -135,7 +135,7 @@ class ItemButtons extends React.Component {
       } else
       {
         subtype = (
-          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people pursue this, unraveling can begin">
+          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people pursue this, discussion can proceed to the next level">
             <span className="civil-button-text">Next</span>
           </Button>
         );
