@@ -251,9 +251,7 @@ class Training extends React.Component {
     else {
       media = image;
     }
-    var training = document.querySelector('#syn-training');
-    var bottomAnchor = document.querySelector('a[name*="bottom-anchor"]');
-    if(training && bottomAnchor) bottomAnchor.style.marginTop= training.clientHeight + 40 + 'px';
+
 
 
     const onLoad = () => {
@@ -261,9 +259,11 @@ class Training extends React.Component {
         this.ready = true;
         view.classList.add('show');
         view.style.transitionDuration='2s';
-        this.go();
-      }, 8000);
-    }
+        var bottomAnchor = document.querySelector('a[name*="bottom-anchor"]');
+        if(bottomAnchor) bottomAnchor.style.marginTop= view.offsetHeight + 40 + 'px';
+            this.go();
+          }, 8000);
+        }
 
     if ( image ) {
       if ( image.complete ) {
