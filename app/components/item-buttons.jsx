@@ -63,13 +63,13 @@ class ItemButtons extends React.Component {
     if( user && item.user._id == user.id) {
       if(buttonstate.details) {
         details = (
-          <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+          <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="Close the feedback view">
             <span className="civil-button-text">Feedback</span>
           </Button>
         );
       } else {
         details = (
-          <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
+          <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="View the feedback on your creation">
             <span className="civil-button-text">Feedback</span>
           </Button>
         );
@@ -91,6 +91,7 @@ class ItemButtons extends React.Component {
             success
             onClick     =   { this.toggle.bind(this, 'harmony') }
             className   =   "harmony-button"
+            title       =   "Close the harmony view"
             >
             <span className="civil-button-text">Harmony</span>
           </Button>
@@ -102,6 +103,7 @@ class ItemButtons extends React.Component {
           shy
           onClick     =   { this.toggle.bind(this, 'harmony') }
           className   =   "harmony-button"
+          title       =   "View two sided discussion of this"
           >
             <span className="civil-button-text">Harmony</span>
         </Button>
@@ -119,14 +121,14 @@ class ItemButtons extends React.Component {
       if (item.promotions > 2) {
         if (buttonstate.subtype) {
           subtype = (
-            <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
-              <span className="civil-button-text">Unravel</span>
+            <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } title="Close the next level view" className="subtype-button">
+              <span className="civil-button-text">Next</span>
             </Button>
           );
         } else {
             subtype = (
-            <Button small shy onClick={ this.toggle.bind(this, 'subtype')} title="Break it down" className="subtype-button">
-              <span className="civil-button-text">Unravel</span>
+            <Button small shy onClick={ this.toggle.bind(this, 'subtype')} title="Continue to the next level" className="subtype-button">
+              <span className="civil-button-text">Next</span>
             </Button>
           );
         } 
@@ -134,7 +136,7 @@ class ItemButtons extends React.Component {
       {
         subtype = (
           <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people pursue this, unraveling can begin">
-            <span className="civil-button-text">Unravel</span>
+            <span className="civil-button-text">Next</span>
           </Button>
         );
       }
