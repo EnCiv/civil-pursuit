@@ -50,7 +50,7 @@ class Welcome extends React.Component {
               <div className="civil-pursuit welcome-bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
-                    <div className="civil-pursuit news-headline-text">Us Finding Solutions to What Divides Us</div>
+                    <div className="civil-pursuit news-headline-text">Finding Solutions to What Divides Us</div>
                     <div className="civil-pursuit news-headline-text">
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">

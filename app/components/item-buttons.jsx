@@ -11,6 +11,10 @@ class ItemButtons extends React.Component {
     this.props.toggle(this.props.item._id, section);
   }
 
+  donothing() {
+    return false;
+  }
+
   render () {
 
     const { item, panel, user, buttonstate, upvote } = this.props;
@@ -129,7 +133,7 @@ class ItemButtons extends React.Component {
       } else
       {
         subtype = (
-          <Button small shy inactive className="subtype-button" title="When 2 more people pursue this, unraveling can begin">
+          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people pursue this, unraveling can begin">
             <span className="civil-button-text">Unravel</span>
           </Button>
         );
