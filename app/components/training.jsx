@@ -251,6 +251,10 @@ class Training extends React.Component {
     else {
       media = image;
     }
+    var training = document.querySelector('#syn-training');
+    var bottomAnchor = document.querySelector('a[name*="bottom-anchor"]');
+    if(training && bottomAnchor) bottomAnchor.style.marginTop= training.clientHeight + 40 + 'px';
+
 
     const onLoad = () => {
       setTimeout(() => {
@@ -345,6 +349,9 @@ class Training extends React.Component {
     // if ( this.state.dontShowNextTime ) {
     //   superagent.get('/settings?showtraining=0').end((err, res) => {});
     // }
+
+    var bottomAnchor = document.querySelector('a[name*="bottom-anchor"]');
+    if(bottomAnchor) bottomAnchor.style.marginTop= '0';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
