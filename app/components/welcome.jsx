@@ -92,34 +92,27 @@ class Welcome extends React.Component {
                   <p>
                     Most people (72%) agree this country is heading in the wrong direction. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
                   </p><p>
-                    Imagine what we could accomplish if so many of us agreed on what to do about it!
-                  </p><p>
-                    But there are so many of us, we can't get together to figure it out - there isn't a town hall big enough. Television doesn't work - that'ss a few people speaking to the rest of us and money and power are bound to be an influence.
-                    And social media is not doing it either, either we tend to talk with people who agree with us or incivility seems to prevail, and here too money has an effect on who sees what.
+                    And our political system is gridlocked, and most people would say it's impossible for us to agree on a right direction.
                   </p>
                 </div>
                 <div className="civil-pursuit-text-block">
-                    <h2>Mission</h2>
-                    <p>
-                      Create the place where very large crowds of diverse people assemble and have productive discussions in pursuit of solutions to what divides them. 
-                    </p><p>
-                      It's not about one side winning out over the other, it's about finding the balance that moves us forward with acceptable risk. That's what built nuclear power stations but kept us safe from radiation, that's what allows us to study DNA without engineering our own destruction.  
-                      It's what will move our country forward without compromising the values on both sides of the political spectrum.
+                    <h2>Our Mission</h2>
+                    <p>We believe that we can assemble <i>everyone</i> in productive discussion about what divides us and it will unite us, and incredible things will result.
+                    </p><p>We're not about one side winning out over the other. 
+                    </p><p>We're about finding the balance that moves us forward with carefully.
+                    </p><p>We're about creatinig the opportunity for that out of the box innovative solution that happens after seeing what everyone else has said, that makes everyone proud.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
-                    <h2>It's Possible</h2>
-                    <p>
-                     We have the internet, and smartphones so theres a path for people to come together, but we need a way to keep the conversations productive. So we take what works in realy life meetings and we do that in an app:
-                     </p>
+                    <h2>Here's How</h2>
                      <ul>
-                      <li>Divide people into small diverse groups</li>
-                      <li>Facilitate the conversation in steps that lead to a conclusion</li>
-                      <li>Allow people to discuss the pro's and con's of each point</li>
-                      <li>Provide feedback to people so they can learn how other's react to what they say</li>
+                      <li>We have the internet so we have a path for everyone to come together.</li>
+                      <li>We've seen in real life deliberative forums and living room discussions, that diverse people do come together in small groups, and they are willing to listen and talk, and they do discover new things and find agreements.</li>
+                      <li>And we have seen that there can be a wisdom in the crowd, that together can find the answer when no one alone can do it.</li>
+                      <li>So we are here to make these small deliberative discussions happen online, by the millions, and keep happening, until this country is moving in the right direction and we all agree it is.</li>
                     </ul>
                     <h3>Technical:</h3>
-                    <p> It’s a web app that works on your phone, tablet and desktop for structured text or video based discussion in small diverse groups.
+                    <p> It’s a web application that works on your phone, tablet and desktop for structured text or video based discussion with random people, where we vote up the best.
                     </p>
                 </div>
               </div>
