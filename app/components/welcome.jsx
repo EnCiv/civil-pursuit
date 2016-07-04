@@ -76,7 +76,7 @@ class Welcome extends React.Component {
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
                           <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                          <input className="civil-pursuit-text-block" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
+                          <input className="civil-pursuit-text-block" type="submit" defaultValue="Join the Pursuit" name="Subscribe" id="mc-embedded-subscribe" />
                         </div>
                       </div>
                     </div>
@@ -99,8 +99,8 @@ class Welcome extends React.Component {
                     <h2>Our Mission</h2>
                     <p>We believe that we can assemble <i>everyone</i> in productive discussion about what divides us and it will unite us, and incredible things will result.
                     </p><p>We're not about one side winning out over the other. 
-                    </p><p>We're about finding the balance that moves us forward, carefully.
-                    </p><p>We're about creatinig the opportunity for that long shot, out of the box, innovative solution that makes everyone proud, to rise up and be seen.
+                    </p><p>We're about finding the balance that moves us forward, gracefully.
+                    </p><p>This is the civil pursuit of a more perfect Union.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
