@@ -8,15 +8,12 @@ class Welcome extends React.Component {
 
   smooth(tag,e){
     e.preventDefault();
-    console.info("smooth", this, tag, e );
     let link=document.getElementsByName(tag);
-    console.info("smooth link", link, link[0].offsetTop);
     this.smoothScroll(link[0].offsetTop, 500);
     //document.body.animate({scrollTop: link[0].offsetTop}, 500);
   }
 
   smoothScroll(target, time) {
-    console.info("smoothScroll", target, time );
     // time when scroll starts
     const start = new Date().getTime();
 
@@ -33,7 +30,6 @@ class Welcome extends React.Component {
             // end interval if the scroll is completed
             if (step == 1) clearInterval(timer);
         }, 25);
-        console.info("smoothScroll interval set", start, timer);
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

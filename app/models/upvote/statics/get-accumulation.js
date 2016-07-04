@@ -12,7 +12,6 @@ function initValues () {
 
 function getAccumulation ( itemId , userId) {
   let query = { "item" :  itemId };
-  console.info("upvote.getAccumulation", query, itemId, userId);
 
   return new Promise((ok, ko) => {
     try {
@@ -28,7 +27,6 @@ function getAccumulation ( itemId , userId) {
         .then(
           upvote => {
             try {
-              console.info("upvote.getAccumulation: upvotes", upvote.length);
 
               upvote.forEach(upv => {
 

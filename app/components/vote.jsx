@@ -38,9 +38,7 @@ class Vote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleDescription (e) {
-    console.info("toggleDescription", this, e);
     let d = React.findDOMNode(this.description);
-    console.info("toggleDescription:", this.description, d.classList.toggle('syn-hide'));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,8 +54,6 @@ class Vote extends React.Component {
   makeChart () {
 
     let { criteria, vote, item } = this.props;
-
-    console.info("makeChart:",this);
 
     if ( ! vote ) {
       vote = {
@@ -87,39 +83,13 @@ class Vote extends React.Component {
       tmp.push(vote.values[number]);
       series.push(number);
       data.push(tmp);
-      console.info("MakeChart for data", tmp, data);
     }
-
-    console.info("makeChart data", data);
 
     this.setState({ data : data,
                     series : series,
                     total: vote.total,
                     itemId: this.props.item._id
                    });
-
-    console.info("makeChart end", this);
-
-
-    {/*for now - hard code the graph
-
-    var data = [],
-      series = 5,//getRandomInt(2, 10),
-      serieLength = 3;//getRandomInt(2, 10);
-
-    for (var i = series; i--; ) {
-      var tmp = [];
-
-      for (var j = serieLength; j--; ) {
-        tmp.push(Math.floor(Math.random() * (20 - 0) + 0)); // (max - min)+min
-      }
-
-      data.push(tmp);     
-    }
-
-    this.setState({ data: data });
-
-      */}
 
   }
 

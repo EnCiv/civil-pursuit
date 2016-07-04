@@ -56,7 +56,6 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info("voter.render:",this);
     let { user, politicalParties, politicalTendency } = this.props;
 
     let parties = politicalParties.map(party => (
@@ -66,7 +65,6 @@ class Voter extends React.Component {
     let tendency = politicalTendency.map(tendency => (
       <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
     ));
-    console.info("voter.render tendency", tendency);
     return (
       <section>
         <section style={{ width: '50%', float : 'left' }}>

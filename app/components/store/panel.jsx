@@ -55,7 +55,6 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetItems (panel, count, items) {
-    console.info('OK get items', panel, count, items);
     if ( makePanelId(panel) === this.id ) {
       this.setState({ panel, count, items });
     }
@@ -112,9 +111,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info("panel render", this.props, this.state);
     const panelout = this.renderChildren();
-    console.info("panel render after", this.props, this.state);
 
     return (  
       <section>

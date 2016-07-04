@@ -42,7 +42,6 @@ class Home extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetDiscussion (discussion) {
-    console.log('got discussion', discussion);
     if ( discussion ) {
       this.setState({ discussion });
     }
@@ -56,14 +55,12 @@ class Home extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetTopLevelType (type) {
-    console.log('got top level type', type);
     this.setState({ panel : { type } });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetTraining (training) {
-    console.log('got training', training);
     if ( training ) {
       this.setState({ training });
     }
@@ -76,8 +73,6 @@ class Home extends React.Component {
     let loading;
 
     const { discussion, panel, items, training } = this.state;
-
-    console.info("Home.render", this.props, this.state);
 
 
     if( ! this.props.user) {
@@ -114,7 +109,6 @@ class Home extends React.Component {
       );
     }
 
-    console.info("Home.render end", this.props, this.state, content);
     return (<section>{ content }</section>);
   }
 }

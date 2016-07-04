@@ -27,7 +27,6 @@ class Profile extends React.Component {
 
   get () {
     if ( typeof window !== 'undefined' ) {
-      console.info("profile.get.promise");
       Promise
         .all([
           new Promise((ok, ko) => {
@@ -68,7 +67,6 @@ class Profile extends React.Component {
   }
 
   render() {
-    console.info("profile.render:",this.props, this.state);
     let content = (
       <div className={ Component.classList(this, 'text-center', 'gutter', 'muted') }>
         <Icon icon="circle-o-notch" spin={ true } size={ 4 } />

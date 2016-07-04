@@ -34,7 +34,6 @@ function home (req, res, next) {
         if ( typeof isIn === 'string' ) {
           isIn = JSON.parse(isIn);
         } 
-        console.info("home.js", isIn);
     }
 
     const props       =   {

@@ -179,14 +179,11 @@ class EvaluationStore extends React.Component {
     const evaluation = this.state.evaluation.items;
 
 
-    console.info("insertUpvotes", this.state, itemId );
-
     if ( this.state.evaluation && this.state.evaluation.items.length ) {
       var itm;
 
       for(itm in evaluation)
-      {   console.info("insetUpvotes", itm )
-          window.socket.emit('add view', evaluation[itm]._id);
+      {   window.socket.emit('add view', evaluation[itm]._id);
           if(evaluation[itm]._id == itemId) {
             upvotes.push({
               item: evaluation[itm]._id,
@@ -200,8 +197,6 @@ class EvaluationStore extends React.Component {
             });
           }
       }
-
-      console.info("insertUpvotes", this.state.evaluation, upvotes );
 
       window.socket.emit('insert upvote', upvotes);
     }
@@ -226,8 +221,6 @@ class EvaluationStore extends React.Component {
         });
       }
 
-      console.log({ votes, sliders : sliders.length });
-
       window.socket.emit('insert votes', votes);
     }
   }
@@ -235,13 +228,8 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertFeedback(position, itemId) {
-    console.info("insertFeedback", position, itemId, this.refs);
-    console.info(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
-
     const feedback = React.findDOMNode(this.refs.view)
       .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
-
-    console.log('insert feedback', feedback);
 
     if ( feedback ) {
       window.socket.emit('insert feedback', this.state.evaluation.item, feedback.value);
@@ -281,7 +269,6 @@ class EvaluationStore extends React.Component {
       this.insertUpvotes(this.state[position]._id);
       this.setState({ evaluation : null, cursor : 1 });
       this.props.toggle('promote');
-      console.info("evaluation.promote",this.props);
     }
   }
 

@@ -7,7 +7,6 @@ import Icon               from './util/icon';
 
 class ItemButtons extends React.Component {
   toggle (section) {
-    console.info("ItemButtons.toggle", section);
     this.props.toggle(this.props.item._id, section);
   }
 
@@ -22,8 +21,6 @@ class ItemButtons extends React.Component {
     const buttons = [];
 
     let promote, details, subtype, harmony;
-
-    console.info("item-buttons", upvote);
 
     let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
 

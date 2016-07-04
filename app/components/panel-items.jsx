@@ -67,8 +67,6 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
-    console.info("PanelItems.toggle", itemId, section);
-
     if (
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
@@ -90,17 +88,13 @@ class PanelItems extends React.Component {
       this.collapseAroundItem(itemId);
     }
 
-    console.info("toggle", itemId, section, "mountedItems", Object.keys(this.mountedItems).length, Object.keys(this.mountedItems));
-
     this.setState({ active : { item : itemId, section }});
-
 
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   collapseAroundItem (itemId) {
-    console.info("collapseArroundItem before", itemId, this.props, this.state);
 
     if(!this.state.itemhide.length) {
       for (let itm in this.props.items) {
@@ -122,7 +116,6 @@ class PanelItems extends React.Component {
         }
       }
     }
-    console.info("collapseArroundItem after", itemId, this.props, this.state);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,8 +150,6 @@ class PanelItems extends React.Component {
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
-
-    console.info("panel-items.render", this.props, this.state);
 
 
     if ( panel ) {

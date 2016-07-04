@@ -39,7 +39,6 @@ class App extends React.Component {
     .then(
       results => {
         let [ politicalTendency ] = results;
-        console.info("app.getTendency results", politicalTendency);
         if(politicalTendency) {
             politicalTendency.forEach( choice => {
             window.Synapp.tendencyChoice[choice._id]=choice.name;
@@ -63,7 +62,6 @@ class App extends React.Component {
       error
     } = this.props;
 
-    console.info("App.render", this.props);
 
     let page = (
       <Panel heading={(<h4>Not found</h4>)} id="not-found">
@@ -76,7 +74,6 @@ class App extends React.Component {
 
     let showIntro = false;
 
-    console.info("app.render error:", error, error ? "true" : "false");
 
     if ( error ) {
       page = (
@@ -93,11 +90,8 @@ class App extends React.Component {
       if ( path === '/' ) {
         page = <Home user={ user } />;
       }
-      console.info ("app path before split", path);
 
       const paths = path.split(/\//);
-
-      console.info ("app path", paths);
 
       paths.shift();
 

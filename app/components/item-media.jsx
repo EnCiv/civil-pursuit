@@ -12,7 +12,6 @@ class ItemMedia extends React.Component {
   };
 
   render () {
-    console.info("ItemMedia.render", this.props, publicConfig);
     let { item } = this.props;
 
     let media;

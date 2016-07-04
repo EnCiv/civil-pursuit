@@ -62,7 +62,6 @@ class TopBar extends React.Component {
     let modalLogin = document.querySelector('.syn-login');
     let modalForgotP = document.querySelector('.syn-forgot-password');
 
-    console.info("Join.click", modalJoin);
     modalJoin.classList.toggle('syn--visible');
 
     modalLogin.classList.remove('syn--visible');
@@ -104,7 +103,6 @@ class TopBar extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   goToHref (link) {
-    console.info("goToHref:", link);
     location.href = link;
   }
 
@@ -134,7 +132,6 @@ class TopBar extends React.Component {
 
         const bottom = `calc(100vh - ${(78 + headerHeight)}px)`;
 
-        console.log({ bottom });
 
         headerMenu.style.bottom = bottom;
       }
