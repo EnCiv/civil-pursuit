@@ -99,8 +99,8 @@ class Welcome extends React.Component {
                     <h2>Our Mission</h2>
                     <p>We believe that we can assemble <i>everyone</i> in productive discussion about what divides us and it will unite us, and incredible things will result.
                     </p><p>We're not about one side winning out over the other. 
-                    </p><p>We're about finding the balance that moves us forward with carefully.
-                    </p><p>We're about creatinig the opportunity for that out of the box innovative solution that happens after seeing what everyone else has said, that makes everyone proud.
+                    </p><p>We're about finding the balance that moves us forward, carefully.
+                    </p><p>We're about creatinig the opportunity for that out of the box innovative solution that happens after seeing what everyone else has said, the one that makes everyone proud.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
@@ -109,10 +109,10 @@ class Welcome extends React.Component {
                       <li>We have the internet so we have a path for everyone to come together.</li>
                       <li>We've seen in real life deliberative forums and living room discussions, that diverse people do come together in small groups, and they are willing to listen and talk, and they do discover new things and find agreements.</li>
                       <li>And we have seen that there can be a wisdom in the crowd, that together can find the answer when no one alone can do it.</li>
-                      <li>So we are here to make these small deliberative discussions happen online, by the millions, and keep happening, until this country is moving in the right direction and we all agree it is.</li>
+                      <li>So we are here to make small deliberative discussions happen online, by the millions, and keep happening, until this country is moving in the right direction and we all agree it is.</li>
                     </ul>
                     <h3>Technical:</h3>
-                    <p> It’s a web application that works on your phone, tablet and desktop for structured text or video based discussion with random people, where we vote up the best.
+                    <p> It’s a web application that works on your phone, tablet and desktop for structured text or video based discussion with random people, where everone's voice is equal and we vote up the best.
                     </p>
                 </div>
               </div>
