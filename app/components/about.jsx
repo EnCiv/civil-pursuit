@@ -47,7 +47,6 @@ class About extends React.Component {
             <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block">
-                 <div className="civil-pursuit-text-block">
                     <h2>The Meaning Behind Our Name</h2>
                     <p>
                       Civil Pursuit is the web site built by Synaccord, dedicated to engaging everyone in finding the solutions to what divides us. For now it is focused on National US politics but this will expand to include local and global politics over time.
