@@ -92,7 +92,7 @@ class Welcome extends React.Component {
                   <p>
                     Most people (72%) agree this country is heading in the wrong direction. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
                   </p><p>
-                    And our political system is gridlocked, and most people would say it's impossible for us to agree on a right direction.
+                    And our political system is gridlocked, and it seems impossible for us to agree on a right direction.
                   </p>
                 </div>
                 <div className="civil-pursuit-text-block">
@@ -100,20 +100,20 @@ class Welcome extends React.Component {
                     <p>We believe that we can assemble <i>everyone</i> in productive discussion about what divides us and it will unite us, and incredible things will result.
                     </p><p>We're not about one side winning out over the other. 
                     </p><p>We're about finding the balance that moves us forward, carefully.
-                    </p><p>We're about creatinig the opportunity for that out of the box innovative solution that happens after seeing what everyone else has said, the one that makes everyone proud.
+                    </p><p>We're about creatinig the opportunity for that long shot, out of the box, innovative solution that makes everyone proud, to rise up and be seen.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>Here's How</h2>
                      <ul>
-                      <li>We have the internet so we have a path for everyone to come together.</li>
-                      <li>We've seen in real life deliberative forums and living room discussions, that diverse people do come together in small groups, and they are willing to listen and talk, and they do discover new things and find agreements.</li>
-                      <li>And we have seen that there can be a wisdom in the crowd, that together can find the answer when no one alone can do it.</li>
+                      <li>We have the internet so we have a place for everyone to come together.</li>
+                      <li>We've seen in real life deliberative forums and living room discussions, that in small groups, diverse people do come together, and are willing to listen, and they do find agreements.</li>
+                      <li>We have seen that there can be a wisdom in the crowd, that together we can find the answer when no one alone can do it.</li>
                       <li>So we are here to make small deliberative discussions happen online, by the millions, and keep happening, until this country is moving in the right direction and we all agree it is.</li>
+                      <h3>Technical:</h3>
+                      <p> It’s a web application that works on mobile and desktop for structured text or video discussion with random people, where everone's voice is equal and we vote up the best.
+                      </p>
                     </ul>
-                    <h3>Technical:</h3>
-                    <p> It’s a web application that works on your phone, tablet and desktop for structured text or video based discussion with random people, where everone's voice is equal and we vote up the best.
-                    </p>
                 </div>
               </div>
             </div>
