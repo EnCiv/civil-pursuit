@@ -19,7 +19,7 @@ class About extends React.Component {
               <div className="civil-pursuit bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
-                    <div className="civil-pursuit news-headline-text">Together We Make The World a Better Place</div>
+                    <div className="civil-pursuit news-headline-text">Finding Solutions to What Divides Us</div>
                   </div>
                 </div>
                 <div className="civil-pursuit social-bar">
@@ -47,42 +47,20 @@ class About extends React.Component {
             <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block">
-                  <h2>What&#39;s Wrong?</h2>
-                  <p>
-                    You’re rational, good-natured, and you genuinely want to find the best solution, but politics has become too hostile, deceitful, and uncivilized. You care, but you’re disengaging because it’s futile and unhealthy.
-                  </p>
-                  <p>
-                    You’re not alone, most people agree this country is heading in the wrong direction, and think we need big changes or a complete government overhaul to fix it. <a href="http://thehill.com/blogs/blog-briefing-room/news/194230-poll-public-lacks-confidence-in-government" target="_blank">The Hill</a>
-                  </p>
-                </div>
-                <div className="civil-pursuit-text-block">
-                    <h2>Mission</h2>
-                    <p>
-                      Bring The People together online, keep it civil, find the solutions that unite us, and make them happen. 
-                    </p>
-                </div>
                  <div className="civil-pursuit-text-block">
                     <h2>The Meaning Behind Our Name</h2>
                     <p>
-                      Synaccord is the a combination of the words “synergy” and “accord.”  Synergy is the beautiful thing that happens when people get together and do more than they could individually. An accord is a harmonious agreement.  We need both of these to build a democracy that works even better.
+                      Civil Pursuit is the web site built by Synaccord, dedicated to engaging everyone in finding the solutions to what divides us. For now it is focused on National US politics but this will expand to include local and global politics over time.
                     </p>
-                </div>
-                <div className="civil-pursuit-text-block">
-                    <h2>What it Is</h2>
                     <p>
-                      The place for everyone to get together online to participate in the fair and balanced pursuit of solutions that unite us to our democratic challenges.
-                    </p>
-                    <h3>Technical:</h3>
-                    <p> It’s a web app that works on your phone, tablet and desktop for structured text or video based discussion in small diverse groups.
+                      Synaccord is the business that was formed at the end of 2013 to build the web site invisioned by the founder in May of that year. Synaccord, LLC was formed in June 2015.</p>
+                    <p>The word Synaccord is the a combination of the words “synergy” and “accord.”  Synergy is the beautiful thing that happens when people get together and do more than they could individually. An accord is a harmonious agreement.  We need both of these to build a democracy that works even better.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>Why</h2>
                     <p>
-                      Most people think our country is headed in the wrong direction, and while we continue heading down this wrong track our political polarization increases and, our education, healthcare, infrastructure, justice, and economic prosperity decline relative to other countries.  
-                    </p>
-                    <p>
-                      In the US, the financial crisis of 2008, and the fiscal cliff showdown of 2011, shows how bad things can go when the government isn’t working effectively and how it can effect the whole world. And it seems like we have bigger crisis’ ahead that we have to work through.
+                    We can do better than this. Our economy, our education system, our healthcare system, our justice system, our roads and bridges, and our political system. These can all work a whole lot better. But, it's time to stop waiting for 'the government' to do something, it's time to do something, and this is it. We get together and fix it.  
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
@@ -108,27 +86,12 @@ class About extends React.Component {
                   </div>
                 </div>
                 <div className="civil-pursuit-text-block">
-                  <h2>Ways to Help</h2>
-                  <p>There are two things you can do to help this succeed.</p>
-                  <p>The first is the easiest.</p>
-                  <p>Leave your email address below. This action is huge because it shows others there&#39;s support for this mission. That means we can get the resources to build it, and we will send you occasional updates on our progress.</p>
-
-                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&id=cf9aad7e3b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                    <div id="mc_embed_signup_scroll">
-                      <div className="civil-pursuit-text-block email-block">
-                        <div className="civil-pursuit-text-block email-form cf">                   
-                          <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                          <input className="civil-pursuit-text-block" type="submit" defaultValue="We Need This" name="Subscribe" id="mc-embedded-subscribe" />
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                  <p>The second way to get involved is to apply to participate in our beta trial. You’ll get to see the first version of Synaccord and give us feedback that will help improve the experience for future users. We’re building a new user interface for democracy and you are the expert in how well it works. With your input, we can keep working to make it engaging and fun to participate in democracy, and keep it civil. All you’ve gotta do is tell us what you think.
-                  </p>
+                  <h2>Questions, Comments, Suggestions, Want to Help</h2>
+                  <p>Lets talk!</p>
                   <form action="https://www.surveymonkey.com/r/5XFFXSS" target="_blank">
                     <div className="civil-pursuit-text-block email-block">
                       <div className="civil-pursuit-text-block email-form cf">   
-                        <input className="civil-pursuit-text-block" type="submit" defaultValue="I'm an Expert" />
+                        <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" />
                       </div>
                     </div>
                   </form>
