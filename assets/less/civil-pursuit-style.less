@@ -8,7 +8,6 @@ Civil Pursuit Style
 
 @import "lib/var";
 
-
 #mce-MMERGE3:hover {
 background:#888;
 }
@@ -403,20 +402,73 @@ background:#888;
     background: linear-gradient(to bottom, #FF8F00 0%, #FF7002 51%, #FF7002 100%) repeat scroll 0% 0% transparent;
   }
 
-  .name-input {
+  input[type="email"] {
+    display: inline-block;
+    vertical-align: bottom;
+    outline: none;
+    border:none;
+    border-radius: 0;
+    border: 1px solid #a6a3af;
+    width: 19em;
+    height: 2em;
+    padding-left: .5em;
+    font-size: 1em;
+    padding-top: .1em;
+    padding-bottom: .1em;
+
+
+    @media (max-width: 600px) { /** manually calculated because of what's in the title**/
+      width: 12em;
+    }
+
+    @media (max-width: 359px)  /** manualy calculated about when title line goes to 2 lines **/
+    {
+      float: right;
+    }
+  }
+
+  input[type="text"] {
+    display: inline-block;
+    vertical-align: bottom;
+    outline: none;
+    border:none;
+    border-radius: 0;
+    border: 1px solid #a6a3af;
+    width: 19em;
+    height: 2em;
+    padding-left: .5em;
+    font-size: 1em;
+    padding-top: .1em;
+    padding-bottom: .1em;
+
+
+    @media (max-width: 600px) { /** manually calculated because of what's in the title**/
+      width: 12em;
+    }
+
+    @media (max-width: 359px)  /** manualy calculated about when title line goes to 2 lines **/
+    {
+      float: right;
+    }
+  }
+
+  .namein {
     display: inline-block;
     margin-right: 1em;
     margin-bottom: .5em;
+    radius: 0;
   }
 
-  .subject-input {
+  .subjectin {
     width: 100%;
     margin-bottom: .5em;
+    radius: 0;
   }
 
-  .message-input {
+  .messagein {
     width: 100%;
     margin-bottom: .5em;
+    height: 8em;
   }
 }
 
