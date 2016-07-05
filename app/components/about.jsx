@@ -100,10 +100,10 @@ class About extends React.Component {
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
                           <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="FNAME" class="" id="mce-FNAME"  placeholder"First name" />
-                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="LNAME" class="" id="mce-LNAME" placeholder="Last name" />
-                          <input className="civil-pursuit-text-block subject-input" type="text" value="" name="MMERGE3" class="" id="mce-MMERGE3" placeholder="Subject" />
-                          <input className="civil-pursuit-text-block message-input" type="text" value="" name="MMERGE4" class="" id="mce-MMERGE4" placeholder="Message" />
+                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="FNAME" id="mce-FNAME"  placeholder"First name" />
+                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="LNAME" id="mce-LNAME" placeholder="Last name" />
+                          <input className="civil-pursuit-text-block subject-input" type="text" value="" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
+                          <input className="civil-pursuit-text-block message-input" type="text" value="" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" />
                           <div id="mce-responses" class="clear">
                             <div className="response" id="mce-error-response" style={{display: "none"}}></div>
                             <div className="response" id="mce-success-response" style={{display: "none"}}></div>
