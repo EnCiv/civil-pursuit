@@ -6,7 +6,6 @@ class About extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  {/***
   componentWillMount() {
         const script = document.createElement("script");
 
@@ -16,7 +15,6 @@ class About extends React.Component {
         // document.body.appendChild(script);
         console.info("about: mailchimp script appended.", script);
   }
-***/}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
