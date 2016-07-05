@@ -6,6 +6,15 @@ class About extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  componentWillMount() {
+        const script = document.createElement("script");
+
+        script.src = "//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js";
+        script.async = true;
+
+        document.body.appendChild(script);
+        console.info("about: mailchimp script appended.", script);
+  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,22 +93,22 @@ class About extends React.Component {
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
-                  <h2>Questions, Comments, Suggestions, Want to Help</h2>
+                  <h2>Questions, Comments, Suggestions, Want to Help?</h2>
                   <p>Lets talk!</p>
                   <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&amp;id=8abac9c4cd" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
-                          <input className="civil-pursuit-text-block" type="text" value="" name="FNAME" class="" id="mce-FNAME" />
-                          <input className="civil-pursuit-text-block" type="text" value="" name="LNAME" class="" id="mce-LNAME" />
-                          <input className="civil-pursuit-text-block" type="text" value="" name="MMERGE3" class="" id="mce-MMERGE3" />
-                          <input className="civil-pursuit-text-block" type="text" value="" name="MMERGE4" class="" id="mce-MMERGE4"/>
                           <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="FNAME" class="" id="mce-FNAME"  placeholder"First name" />
+                          <input className="civil-pursuit-text-block name-input" type="text" value="" name="LNAME" class="" id="mce-LNAME" placeholder="Last name" />
+                          <input className="civil-pursuit-text-block subject-input" type="text" value="" name="MMERGE3" class="" id="mce-MMERGE3" placeholder="Subject" />
+                          <input className="civil-pursuit-text-block message-input" type="text" value="" name="MMERGE4" class="" id="mce-MMERGE4" placeholder="Message" />
                           <div id="mce-responses" class="clear">
                             <div className="response" id="mce-error-response" style={{display: "none"}}></div>
                             <div className="response" id="mce-success-response" style={{display: "none"}}></div>
-                          </div>    //-- real people should not fill this in and expect good things - do not remove this or risk form bot signups
-                          <div style={{position: "absolute"}, {left: "-5000px"}, {ariaHidden: "true"}}>
+                          </div>    {/*//-- real people should not fill this in and expect good things - do not remove this or risk form bot signups */}
+                          <div style={{position: "absolute", left: "-5000px", ariaHidden: "true"}}>
                             <input type="text" name="b_17742b8a9119fa21afbf394e3_8abac9c4cd" tabindex="-1" value="" />
                           </div>
                           <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
