@@ -6,16 +6,6 @@ class About extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentWillMount() {
-        const script = document.createElement("script");
-
-        script.src = "//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js";
-        script.async = true;
-
-        // document.body.appendChild(script);
-        console.info("about: mailchimp script appended.", script);
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
