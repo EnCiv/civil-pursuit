@@ -47,16 +47,6 @@ class About extends React.Component {
             <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block">
-                    <h2>The Meaning Behind Our Name</h2>
-                    <p>
-                      Civil Pursuit is the web site built by Synaccord, dedicated to engaging everyone in finding the solutions to what divides us. For now it is focused on National US politics but this will expand to include local and global politics over time.
-                    </p>
-                    <p>
-                      Synaccord is the business that was formed at the end of 2013 to build the web site invisioned by the founder in May of that year. Synaccord, LLC was formed in June 2015.</p>
-                    <p>The word Synaccord is the a combination of the words “synergy” and “accord.”  Synergy is the beautiful thing that happens when people get together and do more than they could individually. An accord is a harmonious agreement.  We need both of these to build a democracy that works even better.
-                    </p>
-                </div>
-                <div className="civil-pursuit-text-block">
                     <h2>Why</h2>
                     <p>
                     We can do better than this. Our economy, our education system, our healthcare system, our justice system, our roads and bridges, and our political system. These can all work a whole lot better. But, it's time to stop waiting for 'the government' to do something, it's time to do something, and this is it. We get together and fix it.  
@@ -85,12 +75,33 @@ class About extends React.Component {
                   </div>
                 </div>
                 <div className="civil-pursuit-text-block">
+                    <h2>What's in a Name?</h2>
+                    <p>
+                      Civil Pursuit is the web site built by Synaccord, dedicated to engaging everyone in finding the solutions to what divides us. For now it is focusing on National US politics for now but with ideals of expanding to include local and global politics over time.
+                    </p>
+                    <p>Synaccord is the organization that was formed at the end of 2013 to build the web site invisioned by the founder in May of that year. Synaccord, LLC was formed in June 2015.</p>
+                    <p>The word Synaccord is the a combination of the words “synergy” and “accord.”  Synergy is the beautiful thing that happens when people get together and do more than they could individually. An accord is a harmonious agreement.  We need both of these to build a democracy that works even better.
+                    </p>
+                </div>
+                <div className="civil-pursuit-text-block">
                   <h2>Questions, Comments, Suggestions, Want to Help</h2>
                   <p>Lets talk!</p>
-                  <form action="https://www.surveymonkey.com/r/5XFFXSS" target="_blank">
-                    <div className="civil-pursuit-text-block email-block">
-                      <div className="civil-pursuit-text-block email-form cf">   
-                        <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" />
+                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&amp;id=8abac9c4cd" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+                    <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
+                      <div className="civil-pursuit-text-block email-block">
+                        <div className="civil-pursuit-text-block email-form cf">                   
+                          <input className="civil-pursuit-text-block" type="text" value="" name="FNAME" class="" id="mce-FNAME" />
+                          <input className="civil-pursuit-text-block" type="text" value="" name="LNAME" class="" id="mce-LNAME" />
+                          <input className="civil-pursuit-text-block" type="text" value="" name="MMERGE3" class="" id="mce-MMERGE3" />
+                          <input className="civil-pursuit-text-block" type="text" value="" name="MMERGE4" class="" id="mce-MMERGE4"/>
+                          <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                          <div id="mce-responses" class="clear">
+                            <div class="response" id="mce-error-response" style="display:none"></div>
+                            <div class="response" id="mce-success-response" style="display:none"></div>
+                          </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                          <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_17742b8a9119fa21afbf394e3_8abac9c4cd" tabindex="-1" value=""></div>
+                          <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
+                        </div>
                       </div>
                     </div>
                   </form>
