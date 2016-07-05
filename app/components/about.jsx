@@ -96,8 +96,8 @@ class About extends React.Component {
                           <input className="civil-pursuit-text-block" type="text" value="" name="MMERGE4" class="" id="mce-MMERGE4"/>
                           <input className="civil-pursuit-text-block" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
                           <div id="mce-responses" class="clear">
-                            <div class="response" id="mce-error-response" style="display:none"></div>
-                            <div class="response" id="mce-success-response" style="display:none"></div>
+                            <div class="response" id="mce-error-response" style={{display: "none"}}></div>
+                            <div class="response" id="mce-success-response" style={{display: "none"}}></div>
                           </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                           <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_17742b8a9119fa21afbf394e3_8abac9c4cd" tabindex="-1" value=""></div>
                           <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
