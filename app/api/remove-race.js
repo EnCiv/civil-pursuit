@@ -22,7 +22,7 @@ function removeRace (raceId, cb) {
             this.error(error);
           }
         },
-        this.error.bind(this);
+        this.error.bind(this)
       );
   }
   catch ( error ) {
