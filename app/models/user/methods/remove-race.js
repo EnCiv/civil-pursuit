@@ -1,8 +1,9 @@
 'use strict';
 
 function removeRace (raceId) {
+  console.info("user.remove-race:", raceId, this);
 
-  this.filter('race', race => race.toString() !== raceId.toString());
+  this.race.filter(race => race.toString() !== raceId.toString());
 
   return this;
 }
