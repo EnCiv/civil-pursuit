@@ -3,6 +3,7 @@
 import User from '../models/user';
 
 function setUserInfo (set, cb) {
+  console.info("setUserInfo",set);
   try {
     User
       .updateById(this.synuser.id, set)
