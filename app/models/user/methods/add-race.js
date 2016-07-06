@@ -11,7 +11,7 @@ function addRace (raceId) {
 
   else {
     const reduce = (hasRace, _race) => {
-      if ( _race.toString() === raceId.toString() ) {
+      if ( _race && _race.toString() === raceId.toString() ) {
         hasRace = true;
       }
 

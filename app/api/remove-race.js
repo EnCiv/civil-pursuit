@@ -15,13 +15,14 @@ function removeRace (raceId, cb) {
             user
               .removeRace(raceId)
               .save()
-              .then(ok, ko);
+              .then(cb)
+              .catch(error => this.emit('error', error));
           }
           catch ( error ) {
-            ko(error);
+            this.error(error);
           }
         },
-        ko
+        this.error.bind(this);
       );
   }
   catch ( error ) {
