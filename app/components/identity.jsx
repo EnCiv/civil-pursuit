@@ -90,6 +90,8 @@ class Identity extends React.Component {
   saveCitizenship (e) {
     let citizenship = React.findDOMNode(this.refs.citizenship).value;
 
+    console.info("seveCitizenship:", this, citizenship);
+
     if ( citizenship ) {
       window.socket.emit('set citizenship', citizenship, 0)
         .on('OK set citizenship', user => { this.setState({ user })});

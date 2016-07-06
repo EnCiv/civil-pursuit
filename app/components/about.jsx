@@ -102,7 +102,7 @@ class About extends React.Component {
                           <input className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
                           <input className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
                           <input className="subjectin" type="text" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
-                          <input className="messagein" type="text" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" ref="message" />
+                          <textarea className="messagein" type="text" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" ref="message" />
                           <div id="mce-responses" class="clear">
                             <div className="response" id="mce-error-response" style={{display: "none"}}></div>
                             <div className="response" id="mce-success-response" style={{display: "none"}}></div>
