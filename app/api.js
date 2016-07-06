@@ -71,7 +71,7 @@ class API extends EventEmitter {
 
   listenToDBUpdates (collection, document) {
     this.emit('message', 'DB UPDATES'.bgYellow,
-      collection, collection == 'items' ? 'true' : 'false', collection === 'items' ? 'true' : 'false'
+      collection, document
     );
 
     if ( collection == 'items') {
