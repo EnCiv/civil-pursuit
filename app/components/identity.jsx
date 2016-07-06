@@ -93,8 +93,8 @@ class Identity extends React.Component {
     console.info("saveCitizenship:", this, citizenship);
 
     if ( citizenship ) {
-      window.socket.emit('set citizenship', citizenship, 0)
-        .on('OK set citizenship', user => { this.setState({ user })});
+      window.socket.emit('set user info', {"citizenship.0": , citizenship})
+        .on('OK set user info', user => { this.setState({ user })});
     }
   }
 
@@ -104,7 +104,7 @@ class Identity extends React.Component {
     let dualCitizenship = React.findDOMNode(this.refs.dualCitizenship).value;
 
     if ( dualCitizenship ) {
-      window.socket.emit('set citizenship', dualCitizenship, 1)
+      window.socket.emit('set user info', {"citizenship.1": , citizenship})
         .on('OK set citizenship', user => { this.setState({ user })});
     }
   }
