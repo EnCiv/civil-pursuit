@@ -15,8 +15,8 @@ function removeRace (raceId, cb) {
             user
               .removeRace(raceId)
               .save()
-              .then(cb)
-              .catch(error => this.emit('error', error));
+              .then(this.ok.bind(this, cb), this.error.bind(this));
+              console.info("removerRace after", this);
           }
           catch ( error ) {
             this.error(error);
