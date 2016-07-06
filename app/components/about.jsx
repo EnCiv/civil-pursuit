@@ -6,15 +6,6 @@ class About extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentDidMount () {
-    const message = React.findDOMNode(this.refs.message);
-    message.addEventListener('keydown', (e) => {
-      if ( e.keyCode === 13 ) {
-        e.preventDefault();
-      }
-    }, false);
-  }
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

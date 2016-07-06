@@ -2,8 +2,8 @@
 
 import User from '../models/user';
 
-function setCitizenship (event, countryId, position) {
-  console.info("setCitizenship:", event, countryId, position);
+function setCitizenship ( countryId, position, cb) {
+  console.info("setCitizenship:", cb, countryId, position);
   try {
     User
       .findById(this.synuser.id)
@@ -14,7 +14,7 @@ function setCitizenship (event, countryId, position) {
               .setCitizenship(position, countryId)
               .save()
               .then(
-                this.ok.bind(this, event),
+                this.ok.bind(this, cb),
                 this.error.bind(this),
                 console.info("setCitizenship completed.")
               );
