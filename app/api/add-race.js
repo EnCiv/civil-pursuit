@@ -2,7 +2,7 @@
 
 import User from '../models/user';
 
-function addRace (event, raceId) {
+function addRace (raceId, cb) {
   try {
     User
       .findById(this.synuser.id)
@@ -15,7 +15,7 @@ function addRace (event, raceId) {
             user
               .addRace(raceId)
               .save()
-              .then(this.ok.bind(this, event), this.error.bind(this));
+              .then(this.ok.bind(this, cb), this.error.bind(this));
           }
           catch ( error ) {
             this.error(error);

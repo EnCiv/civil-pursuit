@@ -2,7 +2,7 @@
 
 import User from '../models/user';
 
-function removeRace (event, raceId) {
+function removeRace (raceId, cb) {
   try {
     User
       .findById(this.synuser.id)
