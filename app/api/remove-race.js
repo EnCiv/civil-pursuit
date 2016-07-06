@@ -15,7 +15,7 @@ function removeRace (raceId, cb) {
             console.info("removeRace 1:", user);
             let user2= user.removeRace(raceId);
             console.info("removeRace 2:", user2);            
-            user2.save()
+            user.save(user2)
               .then(cb, this.error.bind(this));
               console.info("removerRace after", user);
           }
