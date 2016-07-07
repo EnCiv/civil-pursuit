@@ -93,7 +93,7 @@ class Identity extends React.Component {
     console.info("saveCitizenship:", this, citizenship);
 
     if ( citizenship ) {
-      window.socket.emit('set user info', { "citizenship.0" : citizenship})
+      window.socket.emit('set user info', { "citizenship" : citizenship})
         .on('OK set user info', user => { this.setState({ user })});
     }
   }
@@ -104,8 +104,8 @@ class Identity extends React.Component {
     let dualCitizenship = React.findDOMNode(this.refs.dualCitizenship).value;
 
     if ( dualCitizenship ) {
-      window.socket.emit('set user info', { "citizenship.1" : citizenship})
-        .on('OK set citizenship', user => { this.setState({ user })});
+      window.socket.emit('set user info', { "dualcitizenship" : citizenship})
+        .on('OK set user info', user => { this.setState({ user })});
     }
   }
 
@@ -115,19 +115,7 @@ class Identity extends React.Component {
 
     let { user, countries } = this.state;
 
-    let citizenship = '', dualCitizenship = '';
-
-    if ( user.citizenship ) {
-
-      if ( user.citizenship[0] ) {
-        citizenship = user.citizenship[0];
-      }
-
-      if ( user.citizenship[1] ) {
-        dualCitizenship = user.citizenship[1];
-      }
-
-    }
+    let citizenship = user.citizenship | '', dualCitizenship = user.dualcitizenship | '';
 
     let countryOptions1 = countries
 
@@ -152,7 +140,7 @@ class Identity extends React.Component {
 
       let dob_year  = dob.getFullYear();
       let dob_month = dob.getMonth() + 1;
-      let dob_day   = dob.getDate() + 1;
+      let dob_day   = dob.getDate();
 
       if ( dob_month < 10 ) {
         dob_month = "0" + dob_month;

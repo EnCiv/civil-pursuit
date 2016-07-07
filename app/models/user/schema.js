@@ -71,7 +71,9 @@ class Schema extends Mungo.Model {
 
       "education"         :     Education,
 
-      "citizenship"       :     [Country],
+      "citizenship"       :     Country,
+
+      "dualcitizenship"   :     Country,
 
       "dob"               :     Date,
 
