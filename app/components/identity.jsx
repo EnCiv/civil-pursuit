@@ -115,7 +115,7 @@ class Identity extends React.Component {
 
     let { user, countries } = this.state;
 
-    let citizenship = user.citizenship | '', dualCitizenship = user.dualcitizenship | '';
+    let citizenship = user.citizenship || '', dualCitizenship = user.dualcitizenship || '';
 
     let countryOptions1 = countries
 
