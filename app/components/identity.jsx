@@ -19,9 +19,9 @@ class Identity extends React.Component {
   constructor (props) {
     super(props);
 
-    let { user, countries } = this.props;
+    let { user } = this.props;
 
-    this.state = { user, countries };
+    this.state = { user, citizenship : user.citizenship || null };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +92,8 @@ class Identity extends React.Component {
 
     console.info("saveCitizenship:", this, citizenship);
 
+    this.setstate({citizenship: citizenship});
+
       window.socket.emit('set user info', { "citizenship" : citizenship})
         .on('OK set user info', user => { this.setState({ user })});
   }
@@ -110,9 +112,10 @@ class Identity extends React.Component {
 
   render() {
 
-    let { user, countries } = this.state;
+    let { user, citizenship } = this.state;
+    let { countries } = this.props;
 
-    let citizenship = user.citizenship || '', dualCitizenship = user.dualcitizenship || '';
+    let dualCitizenship = user.dualcitizenship || '';
 
     let countryOptions1 = countries
 
@@ -133,13 +136,11 @@ class Identity extends React.Component {
     let dobValue;
 
     if ( user.dob ) {
-      console.info("identity.user.dob",user.dob);
       let dob = new Date(user.dob);
-      console.info("idendity.dob", dob);
 
-      let dob_year  = dob.getFullYear();
-      let dob_month = dob.getMonth() + 1;
-      let dob_day   = dob.getDate();
+      let dob_year  = dob.getUTCFullYear();
+      let dob_month = dob.getUTCMonth() + 1;
+      let dob_day   = dob.getUTCDate();
 
       if ( dob_month < 10 ) {
         dob_month = "0" + dob_month;
