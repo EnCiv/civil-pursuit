@@ -92,7 +92,7 @@ class Identity extends React.Component {
 
     console.info("saveCitizenship:", this, citizenship);
 
-    this.setstate({citizenship: citizenship});
+    this.setState({citizenship: citizenship});
 
       window.socket.emit('set user info', { "citizenship" : citizenship})
         .on('OK set user info', user => { this.setState({ user })});
