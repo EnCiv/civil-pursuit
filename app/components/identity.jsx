@@ -74,7 +74,6 @@ class Identity extends React.Component {
 
   saveBirthdate () {
     let birthdate = React.findDOMNode(this.refs.birthdate).value;
-    console.info("saveBd:", birthdate);
     if ( birthdate ) {
       let dob = new Date(birthdate);
       let now = Date.now();
@@ -89,8 +88,6 @@ class Identity extends React.Component {
 
   saveCitizenship (e) {
     let citizenship = React.findDOMNode(this.refs.citizenship).value;
-
-    console.info("saveCitizenship:", this, citizenship);
 
     this.setState({citizenship: citizenship});
 
@@ -209,11 +206,11 @@ class Identity extends React.Component {
 
           <Row baseline className="gutter-y" style={ citizenship ? { } : { display : 'none' } }>
             <Column span="25">
-              Dual citizenship
+              Second Citizenship?
             </Column>
             <Column span="75">
               <Select block medium onChange={ this.saveDualCitizenship.bind(this) } ref="dualCitizenship" defaultValue={ dualCitizenship }>
-                <option value="">Choose one</option>
+                <option value="">none</option>
                 { countryOptions2 }
               </Select>
             </Column>
