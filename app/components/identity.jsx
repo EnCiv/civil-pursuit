@@ -74,7 +74,7 @@ class Identity extends React.Component {
 
   saveBirthdate () {
     let birthdate = React.findDOMNode(this.refs.birthdate).value;
-
+    console.info("saveBd:", birthdate);
     if ( birthdate ) {
       let dob = new Date(birthdate);
       let now = Date.now();
@@ -133,7 +133,9 @@ class Identity extends React.Component {
     let dobValue;
 
     if ( user.dob ) {
+      console.info("identity.user.dob",user.dob);
       let dob = new Date(user.dob);
+      console.info("idendity.dob", dob);
 
       let dob_year  = dob.getFullYear();
       let dob_month = dob.getMonth() + 1;
@@ -204,7 +206,7 @@ class Identity extends React.Component {
             </Column>
           </Row>
 
-          <Row baseline className="gutter-y">
+          <Row baseline className="gutter-y" style={ citizenship ? { } : { display : 'none' } }>
             <Column span="25">
               Dual citizenship
             </Column>
