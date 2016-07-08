@@ -20,16 +20,21 @@ class About extends React.Component {
     let lname = React.findDOMNode(this.refs.lname).value;
     let subject = React.findDOMNode(this.refs.subject).value;
     let message = React.findDOMNode(this.refs.message).value;
-    let response = React.findDOMNode(this.refs.response).value;
+    let responsenode = React.findDOMNode(this.refs.response).value;
     console.info("contactUs", email, fname, lname, subject, message);
-    results = sendEmail({
-              from      :   secret.email.user,
-              to        :   "david@synaccord.com",
-              subject   :   subject,
-              text      :   message + " --- from ---" + email
-            });
-    console.info("contactUs", results);
-    this.setState({response: results});
+
+    window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
+      if ( response.error ) {
+        let { error } = response;
+
+        this.setState({ response : error });
+      }
+      else {
+        this.setState({ response : 'Message sent! Looking forward to reading it' });
+      }
+    });
+
+    console.info("contactUs");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
