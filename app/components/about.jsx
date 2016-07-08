@@ -9,8 +9,11 @@ class About extends React.Component {
   state={response: null}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  contactUs()
+  contactUs(e)
   {
+    if ( e ) {
+      e.preventDefault();
+    }
     let results;
     let email = React.findDOMNode(this.refs.email).value;
     let fname = React.findDOMNode(this.refs.fname).value;
@@ -107,7 +110,7 @@ class About extends React.Component {
                 <div className="civil-pursuit-text-block">
                   <h2>Questions, Comments, Suggestions, Want to Help?</h2>
                   <p>Lets talk!</p>
-                  <form action="//synaccord.us3.list-manage.com/subscribe/post?u=17742b8a9119fa21afbf394e3&amp;id=8abac9c4cd" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+                  <form id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
