@@ -24,6 +24,7 @@ class About extends React.Component {
     console.info("contactUs", email, fname, lname, subject, message);
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
+      console.info("contactUs response:", response);
       if ( response.error ) {
         let { error } = response;
 
@@ -126,12 +127,12 @@ class About extends React.Component {
                           <textarea ref="message" className="messagein" type="text" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" ref="message" />
                           <div id="mce-responses" class="clear">
                             <div className="response" id="mce-error-response" style={{display: "none"}}></div>
-                            <div ref="response" className="response" style={this.state.response ? {display: "block"} :{display: "none"}}>{this.state.response}</div>
                             <div className="response" id="mce-success-response" style={{display: "none"}}></div>
                           </div>    {/*//-- real people should not fill this in and expect good things - do not remove this or risk form bot signups */}
                           <div style={{position: "absolute", left: "-5000px", ariaHidden: "true"}}>
                             <input type="text" name="b_17742b8a9119fa21afbf394e3_8abac9c4cd" tabindex="-1" value="" />
                           </div>
+                          <div ref="response" style={this.state.response ? {display: "block"} : {display: "none"} }>{this.state.response}</div>
                           <input onClick={this.contactUs.bind(this)} className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
                         </div>
                       </div>
