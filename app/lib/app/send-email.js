@@ -24,8 +24,8 @@ function sendEmail (options = {}) {
       return fail(new Error('Missing email subject'));
     }
 
-    if ( process.env.NODE_ENV !== 'production' ) {
-      console.log('Not sending emails when not in production');
+    if ( process.env.NODE_ENV != 'production' ) {
+      console.log('Not sending emails when not in production', process.env.NODE_ENV);
       return pass();
     }
 
