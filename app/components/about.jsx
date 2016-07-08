@@ -1,11 +1,33 @@
 'use strict';
 
 import React from 'react';
+import sendEmail          from '../lib/app/send-email';
+import secret             from '../../secret.json';
 
 class About extends React.Component {
 
+  state={response: null}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  contactUs()
+  {
+    let results;
+    let email = React.findDOMNode(this.refs.email).value;
+    let fname = React.findDOMNode(this.refs.fname).value;
+    let lname = React.findDOMNode(this.refs.lname).value;
+    let subject = React.findDOMNode(this.refs.subject).value;
+    let message = React.findDOMNode(this.refs.message).value;
+    let response = React.findDOMNode(this.refs.response).value;
+    console.info("contactUs", email, fname, lname, subject, message);
+    results = sendEmail({
+              from      :   secret.email.user,
+              to        :   "david@synaccord.com",
+              subject   :   subject,
+              text      :   message + " --- from ---" + email
+            });
+    console.info("contactUs", results);
+    this.setState({response: results});
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -89,19 +111,20 @@ class About extends React.Component {
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
-                          <input className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
-                          <input className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
-                          <input className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
-                          <input className="subjectin" type="text" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
-                          <textarea className="messagein" type="text" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" ref="message" />
+                          <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                          <input ref="fname" className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
+                          <input ref="lname" className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
+                          <input ref="subject" className="subjectin" type="text" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
+                          <textarea ref="message" className="messagein" type="text" name="MMERGE4" id="mce-MMERGE4" placeholder="Message" ref="message" />
                           <div id="mce-responses" class="clear">
                             <div className="response" id="mce-error-response" style={{display: "none"}}></div>
+                            <div ref="response" className="response" style={this.state.response ? {display: "block"} :{display: "none"}}>{this.state.response}</div>
                             <div className="response" id="mce-success-response" style={{display: "none"}}></div>
                           </div>    {/*//-- real people should not fill this in and expect good things - do not remove this or risk form bot signups */}
                           <div style={{position: "absolute", left: "-5000px", ariaHidden: "true"}}>
                             <input type="text" name="b_17742b8a9119fa21afbf394e3_8abac9c4cd" tabindex="-1" value="" />
                           </div>
-                          <input className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
+                          <input onClick={this.contactUs.bind(this)} className="civil-pursuit-text-block" type="submit" defaultValue="Contact" name="Subscribe" id="mc-embedded-subscribe" />
                         </div>
                       </div>
                     </div>
