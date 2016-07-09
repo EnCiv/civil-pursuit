@@ -11,6 +11,7 @@ function sendContactUs (email, fname, lname, subject, message, cb) {
 
     let results = sendEmail({
               from      :   secret.email.user,
+              replyTo   :   fname + " " + lname + " <" + email + ">",
               to        :   "david@synaccord.com",
               subject   :   subject ,
               text      :   message

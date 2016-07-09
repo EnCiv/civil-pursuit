@@ -6,6 +6,7 @@ import secret             from '../../secret.json';
 
 class About extends React.Component {
 
+
   state={response: null}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -20,8 +21,20 @@ class About extends React.Component {
     let lname = React.findDOMNode(this.refs.lname).value;
     let subject = React.findDOMNode(this.refs.subject).value;
     let message = React.findDOMNode(this.refs.message).value;
-    let responsenode = React.findDOMNode(this.refs.response).value;
-    console.info("contactUs", email, fname, lname, subject, message);
+
+    if (!validEmail(email)) {
+      this.setState({response: "Something's not right with the email address"} );
+      return;
+    }
+    if(!subject){
+      this.setState({response: "What subject would you like to talk about?"} );
+      return;
+    }
+    if(!message){
+      this.setState({response: "What's the message?"} );
+      return;
+    }
+
     this.setState({response: "Sending ...."});
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
@@ -38,6 +51,13 @@ class About extends React.Component {
 
     console.info("contactUs");
   }
+
+  // credit to http://www.w3resource.com/javascript/form/email-validation.php#
+
+  function validEmail(mail)   
+  {  
+    return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) ;  
+  }  
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
