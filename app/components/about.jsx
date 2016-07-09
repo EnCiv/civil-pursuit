@@ -54,7 +54,7 @@ class About extends React.Component {
 
   // credit to http://www.w3resource.com/javascript/form/email-validation.php#
 
-  function validEmail(mail)   
+  validEmail(mail)   
   {  
     return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) ;  
   }  
