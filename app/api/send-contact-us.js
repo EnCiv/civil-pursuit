@@ -9,14 +9,15 @@ function sendContactUs (email, fname, lname, subject, message, cb) {
   
   console.info("sendContatUs", email, fname, lname, subject, message);
 
-    return(
-            sendEmail({
+    let results = sendEmail({
               from      :   secret.email.user,
               to        :   "david@synaccord.com",
               subject   :   subject ,
               text      :   message
-            })
-            );
+            });
+    console.info("sendContactUs results", results);
+
+    return( results );
 }
 
 export default sendContactUs;
