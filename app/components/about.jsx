@@ -22,10 +22,11 @@ class About extends React.Component {
     let message = React.findDOMNode(this.refs.message).value;
     let responsenode = React.findDOMNode(this.refs.response).value;
     console.info("contactUs", email, fname, lname, subject, message);
+    this.setState({response: "Sending ...."});
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
       console.info("contactUs response:", response);
-      if ( response.error ) {
+      if ( response && response.error ) {
         let { error } = response;
 
         this.setState({ response : error });
