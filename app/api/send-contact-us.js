@@ -17,7 +17,8 @@ function sendContactUs (email, fname, lname, subject, message, cb) {
             });
     console.info("sendContactUs results", results);
 
-    return( results );
+    results.then(cb)
+      .catch(error => cb({ error : error.message }));
 }
 
 export default sendContactUs;
