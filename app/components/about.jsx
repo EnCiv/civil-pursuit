@@ -22,7 +22,7 @@ class About extends React.Component {
     let subject = React.findDOMNode(this.refs.subject).value;
     let message = React.findDOMNode(this.refs.message).value;
 
-    if (!validEmail(email)) {
+    if (!this.validEmail(email)) {
       this.setState({response: "Something's not right with the email address"} );
       return;
     }
