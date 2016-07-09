@@ -2,9 +2,13 @@
 
 function removeRace (raceId) {
 
-  this.race = this.race.filter(r => { 
+  rarray = [];
+
+  rarray = this.race.filter(r => { 
   		return(r != raceId) 
   	});
+
+  this.set('race', rarray);
 
   return this;
 }
