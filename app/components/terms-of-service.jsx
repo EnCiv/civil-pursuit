@@ -23,7 +23,7 @@ class TermsOfService extends React.Component {
       superagent
         .get('/doc/terms-of-service.md')
         .end((error, res) => {
-          console.log(error, res);
+          console.log("terms-of-service.get", error, res);
           if ( res.status === 200 ) {
             this.setState({ text : marked(res.text) });
           }

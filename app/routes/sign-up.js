@@ -9,7 +9,7 @@ function signUp (req, res, next) {
 
     let { email, password, facebook } = req.body;
 
-    console.log({ email, password, facebook });
+    console.log("sign-up", { email, password, facebook });
 
     if ( facebook ) {
       password = facebook + 'synapp';

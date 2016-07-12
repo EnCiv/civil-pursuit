@@ -17,7 +17,7 @@ class HeaderMenu extends React.Component {
 
         const bottom = `calc(100vh - ${(78 + headerHeight)}px)`;
 
-        console.log({ bottom });
+        console.log("header-menue", { bottom });
 
         headerMenu.style.bottom = bottom;
       }

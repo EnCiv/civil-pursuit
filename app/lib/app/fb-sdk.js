@@ -12,7 +12,7 @@ class Facebook extends EventEmitter {
       const _connect = () => {
         this.getUserInfo()
           .then(user => {
-            console.info({ fbUser : user });
+            console.info("fb-sdk",{ fbUser : user });
             this.logInApp(user)
               .then(() => {
                 location.reload();
@@ -39,7 +39,7 @@ class Facebook extends EventEmitter {
 
       this.getLoginStatus()
         .then(status => {
-          console.info({ status });
+          console.info("fb-sdk", { status });
           switch ( status ) {
             case 'connected' :
               _connect();
@@ -50,7 +50,7 @@ class Facebook extends EventEmitter {
               if ( auto ) {
                 this.logInFacebook()
                   .then(user => {
-                    console.info({ fbUser : user });
+                    console.info("fb-sdk", { fbUser : user });
                     _connect();
                   })
                   .catch(ko);

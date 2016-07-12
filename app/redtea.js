@@ -7,7 +7,7 @@ function read (label, stories) {
   code += `
 );`
 
-  console.log(code);
+  console.log("redtea.read", code);
 
 }
 

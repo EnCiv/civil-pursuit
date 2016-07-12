@@ -20,7 +20,7 @@ class DetailsStore extends React.Component {
 
   okGetItemdetails (details) {
     if ( details.item._id === this.props.item._id ) {
-      console.log({ details });
+      console.log("details", { details });
       this.setState({ details });
     }
   }

@@ -48,7 +48,7 @@ class HttpServer extends EventEmitter {
 
       .on('message', (...messages) => {
         if ( this.props.verbose ) {
-          console.log(...messages);
+          console.log("server.constructor", ...messages);
         }
       })
 
@@ -339,7 +339,7 @@ class HttpServer extends EventEmitter {
 
                 req.panels[panelId].items = results.items;
 
-                console.log(require('util').inspect(req.panels, { depth: null }));
+                console.log("server.getPanelPage", require('util').inspect(req.panels, { depth: null }));
 
                 next();
 

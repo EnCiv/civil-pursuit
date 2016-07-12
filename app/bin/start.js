@@ -121,14 +121,14 @@ const file = process.argv[1];
 
 if ( file === __filename || file === __filename.replace(/\.js$/, '') ) {
   start()
-    .on('message', (...messages) => console.log(...messages))
+    .on('message', (...messages) => console.log("start", ...messages))
     .on('error', error => {
-      console.log('Error'.bgRed);
+      console.log('Start: Error'.bgRed);
       if ( error.stack ) {
-        console.log(error.stack.red);
+        console.log("start:", error.stack.red);
       }
       else {
-        console.log(error);
+        console.log("start:", error);
       }
       AppError.throwError(error);
       // process.exit(8);

@@ -14,7 +14,7 @@ Mungo.connect(mongodbUrl)
         process.exit(0);
       })
       .catch(error => {
-        console.log(error.stack);
+        console.log("clear-errors:", error.stack);
         process.exit(1);
       });
   });
