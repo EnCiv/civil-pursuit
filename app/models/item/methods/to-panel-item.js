@@ -9,7 +9,6 @@ function toPanelItem (userId) {
 
   const _getLineage = () => { this.getLineage().then(item => ok(item), ko) };
 
-  }
 
   return sequencer.pipe(
 
