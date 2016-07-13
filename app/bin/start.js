@@ -12,7 +12,7 @@ import Item                     from    '../models/item';
 import Type                     from    '../models/type';
 import AppError                 from    '../models/app-error';
 
-Mungo.verbosity = 0;
+Mungo.verbosity = 1;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
