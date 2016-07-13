@@ -4,6 +4,7 @@ import Item from '../models/item';
 
 function getItems (panel, cb) {
   try {
+    console.info("getItems", panel, cb);
     let id        =   'panel-' + panel.type._id || panel.type;
     const query   =   { type : panel.type._id || panel.type};
     const userId = this.synuser ? this.synuser.id : null;
@@ -23,6 +24,7 @@ function getItems (panel, cb) {
       .then(
         results => {
           try {
+            console.info("getItems results.count", results.count);
             cb(panel, results.count, results.items);
           }
           catch ( error ) {
