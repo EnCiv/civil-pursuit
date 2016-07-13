@@ -38,7 +38,10 @@ function getPanelItems (panel, userId) {
 
   return new Promise((ok, ko) => {
     sequencer(seq)
-      .then(results => ok({ count : results[0], items : results[2] }))
+      .then(results => ok({ count : results[2].length),
+                            items : results[2] }
+                          )
+            )
       .catch(ko);
   });
 }
