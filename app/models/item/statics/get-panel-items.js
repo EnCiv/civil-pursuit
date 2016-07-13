@@ -24,7 +24,7 @@ function getPanelItems (panel, userId) {
 
   seq.push(() => this.count(query));
 
-  console.info("getPanelItems seq[0]", seq);
+  console.info("getPanelItems seq[0]", seq)
 
   seq.push(count => this.find(query)
     .skip(panel.skip || 0)
@@ -34,14 +34,11 @@ function getPanelItems (panel, userId) {
 
   seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
-  console.info("getPanelItems before promise");
+  console.info("getPanelItems before promise", seq);
 
   return new Promise((ok, ko) => {
     sequencer(seq)
-      .then(results => ok({ count : results[2].length),
-                            items : results[2] }
-                          )
-            )
+      .then(results => ok({ count : results[0], items : results[2] }))
       .catch(ko);
   });
 }
