@@ -7,6 +7,10 @@ function toPanelItem (userId) {
 
   console.info("toPanelItem userId", userId, "this.id", this.id);
 
+  const _getLineage = () => { this.getLineage().then(item => ok(item), ko) };
+
+  }
+
   return sequencer.pipe(
 
     () => this.populate(),
@@ -14,7 +18,7 @@ function toPanelItem (userId) {
     () => this.$populated.type.populate(),
 
     () => Promise.all([
-      this.getLineage(),
+      _getLineage(),
       this.$populated.type.getSubtype(),
       this.countVotes(),
       this.countChildren(),

@@ -4,6 +4,7 @@ function getLineage () {
   return new Promise((ok, ko) => {
     try {
       const Item = this.constructor;
+      console.info("getLineage", this.parent);
 
       let lineage = [];
 
