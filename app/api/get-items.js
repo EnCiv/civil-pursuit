@@ -28,6 +28,7 @@ function getItems (panel, cb) {
             cb(panel, results.count, results.items);
           }
           catch ( error ) {
+            console.info("getItems results error", error);
             ko(error);
           }
         },
