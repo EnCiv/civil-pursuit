@@ -24,8 +24,6 @@ function getPanelItems (panel, userId) {
 
   seq.push(() => this.count(query));
 
-  console.info("getPanelItems seq[0]", seq)
-
   seq.push(count => this.find(query)
     .skip(panel.skip || 0)
     .limit(panel.size || publicConfig['navigator batch size'])
@@ -34,7 +32,7 @@ function getPanelItems (panel, userId) {
 
   seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
-  console.info("getPanelItems before promise", seq);
+  console.info("getPanelItems before promise");
 
   return new Promise((ok, ko) => {
     sequencer(seq)
