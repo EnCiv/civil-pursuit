@@ -27,7 +27,7 @@ function getPanelItems (panel, userId) {
   seq.push(count => { let items =this.find(query)
                                      .skip(panel.skip || 0)
                                      .limit(panel.size || publicConfig['navigator batch size'])
-                                     .sort({ promotions : -1, views : -1, _id : -1 };); 
+                                     .sort({ promotions : -1, views : -1, _id : -1 }); 
                       console.info("getPanelItems.sort", items); 
                       return(items); 
                     }
