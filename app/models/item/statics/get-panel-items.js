@@ -24,7 +24,8 @@ function getPanelItems (panel, userId) {
 
   seq.push(() => {let count = this.count(query); console.info("getPaneItems.count", count); return(count)} );
 
-  seq.push(count => { let items =this.find(query)
+  seq.push(count => { console.info("getPanelItems.count");
+                      let items =this.find(query)
                                      .skip(panel.skip || 0)
                                      .limit(panel.size || publicConfig['navigator batch size'])
                                      .sort({ promotions : -1, views : -1, _id : -1 }); 
@@ -34,7 +35,7 @@ function getPanelItems (panel, userId) {
   );
 
   seq.push(items => { let all=Promise.all(items.map(item => item.toPanelItem(userId)));
-                          console.info("getPanelItems.all");
+                          console.info("getPanelItems.all", all);
                           return(all);
                     }
            );

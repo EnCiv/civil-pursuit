@@ -41,6 +41,7 @@ class API extends EventEmitter {
   }
 
   disconnect () {
+    console.info("api.disconnect");
     return new Promise((ok, ko) => {
 
       this.unlistenToDB();

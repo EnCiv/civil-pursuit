@@ -382,6 +382,7 @@ class HttpServer extends EventEmitter {
   }
 
   api () {
+    console.info("sever.api");
     this.app.all('/api/:handler', (req, res, next) => {
       let apiHandler;
 
