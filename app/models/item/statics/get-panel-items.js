@@ -35,9 +35,10 @@ function getPanelItems (panel, userId) {
   console.info("getPanelItems before promise");
 
   return new Promise((ok, ko) => {
+    console.info("getPanelItems: before sequencer");
     sequencer(seq)
-      .then(results => ok({ count : results[0], items : results[2] }))
-      .catch(ko);
+      .then(results => { console.info("getPanelItems sequencer then"); ok({ count : results[0], items : results[2] }); })
+      .catch( error => { console.info("getPanelItems sequencer catch"); ko });
   });
 }
 
