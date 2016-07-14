@@ -22,7 +22,7 @@ function getPanelItems (panel, userId) {
 
   const seq = [];
 
-  seq.push(() => this.count(query));
+  seq.push(() => {let count = this.count(query); console.info("getPaneItems.count", count); return(count)} );
 
   seq.push(count => this.find(query)
     .skip(panel.skip || 0)
