@@ -60,7 +60,7 @@ class Evaluator extends EventEmitter {
                 throw new Error('Item not found');
               }
               item
-                .toPanelItem()
+                .toPanelItem(this.userId)
                 .then(
                   item => {
                     try {
@@ -259,7 +259,7 @@ class Evaluator extends EventEmitter {
               .then(
                 items => {
                   Promise
-                    .all(items.map(item => item.toPanelItem()))
+                    .all(items.map(item => item.toPanelItem(this.userId)))
                     .then(ok, ko);
                 },
                 ko
