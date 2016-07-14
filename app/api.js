@@ -229,7 +229,7 @@ class API extends EventEmitter {
 
       socket.on('error', error => this.emit('error', error));
 
-      socket.on('disconnect', () => {
+      socket.on('disconnect', () => { console.info("api.socket disconnected", this);
       });
 
       this.emit('message', 'new socket connexion');
