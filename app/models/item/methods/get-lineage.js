@@ -1,6 +1,6 @@
 'use strict';
 
-function getLineage () {
+function getLineage (userId) {
   return new Promise((ok, ko) => {
     try {
       const Item = this.constructor;
@@ -19,7 +19,7 @@ function getLineage () {
                     return ok(lineage);
                   }
 
-                  item.toPanelItem().then(
+                  item.toPanelItem(userId).then(
                     item => {
                       lineage.push(item);
 
