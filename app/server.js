@@ -288,7 +288,7 @@ class HttpServer extends EventEmitter {
             if ( ! item ) {
               return next();
             }
-            item.toPanelItem().then(
+            item.toPanelItem(null).then( // will need to pass the userId toPanelItem
               item => {
                 req.panels = {};
 
@@ -387,6 +387,7 @@ class HttpServer extends EventEmitter {
 
       for ( let handler in this.socketAPI.handlers ) {
         if ( this.socketAPI.handlers[handler].slugName === req.params.handler ) {
+          console.info("server.api", req.params.handler);
           apiHandler = {
             name : handler,
             method : this.socketAPI.handlers[handler]

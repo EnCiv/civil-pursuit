@@ -86,7 +86,7 @@ function start (emitter = false) {
           ok(intro);
         }),
 
-        intro => intro.toPanelItem(),
+        intro => intro.toPanelItem(null), //user unknown at start
 
         intro => new Promise((ok, ko) => {
           try {
