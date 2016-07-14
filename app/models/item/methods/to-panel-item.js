@@ -14,7 +14,7 @@ function toPanelItem (userId) {
     () => this.$populated.type.populate(),
 
     () => Promise.all([
-      this.getLineage(),
+      this.getLineage(userId),
       this.$populated.type.getSubtype(),
       this.countVotes(),
       this.countChildren(),
