@@ -32,7 +32,7 @@ function getPanelItems (panel, userId) {
 
   seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
-  console.info("getPanelItems before promise");
+  console.info("getPanelItems before promise", seq);
 
   return new Promise((ok, ko) => {
     console.info("getPanelItems: before sequencer");
