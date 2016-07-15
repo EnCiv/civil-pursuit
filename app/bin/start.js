@@ -56,7 +56,7 @@ function start (emitter = false) {
 
         () => new Promise((ok, ko) => {
           Mungo.connect(process.env.MONGOHQ_URL)
-            .on('error', ko)
+            .on('error', error => { console.info("Mungo connection error", error); return ko;)
             .on('connected', ok);
         }),
 
