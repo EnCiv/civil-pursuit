@@ -382,13 +382,11 @@ class HttpServer extends EventEmitter {
   }
 
   api () {
-    console.info("sever.api");
     this.app.all('/api/:handler', (req, res, next) => {
       let apiHandler;
 
       for ( let handler in this.socketAPI.handlers ) {
         if ( this.socketAPI.handlers[handler].slugName === req.params.handler ) {
-          console.info("server.api", req.params.handler);
           apiHandler = {
             name : handler,
             method : this.socketAPI.handlers[handler]

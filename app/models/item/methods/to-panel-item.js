@@ -5,8 +5,6 @@ import sequencer          from 'promise-sequencer';
 
 function toPanelItem (userId) {
 
-  console.info("toPanelItem userId", userId, "this.id", this.id);
-
   return sequencer.pipe(
 
     () => this.populate(),
@@ -68,8 +66,6 @@ function toPanelItem (userId) {
       if ( typeof item.parent === 'undefined' ) {
         delete item.parent;
       }
-
-      console.info("panelItems ok", item.id);
 
       ok(item);
     })

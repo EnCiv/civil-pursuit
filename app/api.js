@@ -41,7 +41,6 @@ class API extends EventEmitter {
   }
 
   disconnect () {
-    console.info("api.disconnect");
     return new Promise((ok, ko) => {
 
       this.unlistenToDB();
@@ -229,7 +228,7 @@ class API extends EventEmitter {
 
       socket.on('error', error => this.emit('error', error));
 
-      socket.on('disconnect', (socket) => { console.info("api.socket disconnected", socket.id, socket.synuser);
+      socket.on('disconnect', () => {
       });
 
       this.emit('message', 'new socket connexion');

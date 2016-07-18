@@ -13,7 +13,6 @@ import publicConfig from '../../../../public.json';
 */
 
 function getPanelItems (panel, userId) {
-  console.info("getPanelItems", panel, userId)
   const query = { type : panel.type };
 
   if ( panel.parent ) {
@@ -22,31 +21,20 @@ function getPanelItems (panel, userId) {
 
   const seq = [];
 
-  seq.push(() => {let count = this.count(query); console.info("getPaneItems.count", count); return(count)} );
+  seq.push(() => this.count(query));
 
-  seq.push(count => { console.info("getPanelItems.count");
-                      let items =this.find(query)
-                                     .skip(panel.skip || 0)
-                                     .limit(panel.size || publicConfig['navigator batch size'])
-                                     .sort({ promotions : -1, views : -1, _id : -1 }); 
-                      console.info("getPanelItems.sort", items); 
-                      return(items); 
-                    }
+  seq.push(count => this.find(query)
+    .skip(panel.skip || 0)
+    .limit(panel.size || publicConfig['navigator batch size'])
+    .sort({ promotions : -1, views : -1, _id : -1 })
   );
 
-  seq.push(items => { let all=Promise.all(items.map(item => item.toPanelItem(userId)));
-                          console.info("getPanelItems.all", all);
-                          return(all);
-                    }
-           );
-
-  console.info("getPanelItems before promise", seq);
+  seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
   return new Promise((ok, ko) => {
-    console.info("getPanelItems: before sequencer");
     sequencer(seq)
-      .then(results => { console.info("getPanelItems sequencer then"); ok({ count : results[0], items : results[2] }); })
-      .catch( error => { console.info("getPanelItems sequencer catch"); ko });
+      .then(results => ok({ count : results[0], items : results[2] }))
+      .catch(ko);
   });
 }
 
