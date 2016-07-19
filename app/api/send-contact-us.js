@@ -7,8 +7,6 @@ import secret             from '../../secret.json';
 
 function sendContactUs (email, fname, lname, subject, message, cb) {
   
-  console.info("sendContatUs", email, fname, lname, subject, message);
-
     let results = sendEmail({
               from      :   secret.email.user,
               replyTo   :   fname + " " + lname + " <" + email + ">",
@@ -16,7 +14,6 @@ function sendContactUs (email, fname, lname, subject, message, cb) {
               subject   :   subject ,
               text      :   message
             });
-    console.info("sendContactUs results", results);
 
     results.then(cb)
       .catch(error => cb({ error : error.message }));
