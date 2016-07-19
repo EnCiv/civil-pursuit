@@ -9,6 +9,7 @@ import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
+import favicon                  from 'serve-favicon';
 
 import config                   from '../secret.json';
 
@@ -87,6 +88,8 @@ class HttpServer extends EventEmitter {
           this.api();
 
           this.cdn();
+
+          this.favicon();
 
           this.notFound();
 
@@ -358,6 +361,11 @@ class HttpServer extends EventEmitter {
 
   cdn () {
     this.app.use('/assets/',      express.static('assets'));
+  }
+
+  favicon () {
+    console.info("server.favicon", __dirname + '/images/favicon.png'); 
+    this.app.use(favicon( __dirname + '/images/favicon.png'));
   }
 
   notFound () {
