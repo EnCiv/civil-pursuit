@@ -60,8 +60,8 @@ class Welcome extends React.Component {
                   </div>
                 </div>
                 <div className="civil-pursuit social-bar">
-                  <a href="https://www.twitter.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/v1463688303/synaccord/images/twitter-logo-38x32.png" alt="Twitter.com/Synaccord" /></a>
-                  <a href="https://www.facebook.com/synaccord" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/Synaccord" /></a>
+                  <a href="https://www.twitter.com/civilpursuit" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/v1463688303/synaccord/images/twitter-logo-38x32.png" alt="Twitter.com/CivilPursuit" /></a>
+                  <a href="https://www.facebook.com/civilpursuit" target="_blank"><img src="http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_32/v1463680571/synaccord/images/FB-f-Logo__blue.png" alt="Facebook.com/CivilPursuit" /></a>
                 </div>
               </div>
               <div className="civil-pursuit-title">
