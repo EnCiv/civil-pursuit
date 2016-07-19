@@ -5,12 +5,6 @@ import publicConfig                     from '../../public.json';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-new Element('meta', {
-      'http-equiv'    :     'X-UA-Compatible',
-      content         :     'IE=edge'
-    }).close();
-  }
-
 favicon() {
   //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
   this.add(
