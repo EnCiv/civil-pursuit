@@ -5,15 +5,18 @@ import publicConfig                     from '../../public.json';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class Favicon extends Element {
-  constructor() {
-
-  //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
-  super('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} );
-  this.close();
-  super('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} );
-  this.close();
+new Element('meta', {
+      'http-equiv'    :     'X-UA-Compatible',
+      content         :     'IE=edge'
+    }).close();
   }
+
+favicon() {
+  //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
+  this.add(
+    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
+    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} ).close()
+  )
 }
 
 
