@@ -148,7 +148,7 @@ class Layout extends Document {
       new Element('link', {rel : "mask-icon", href: "/assets/images/safari-pinned-tab.svg", color: "#3f038e"} ).close(),
       new Element('link', {rel : "shortcut icon", href: "/assets/images/favicon.ico" } ).close(),
       new Element('meta', {name: "msapplication-config", content: "/assets/images/browserconfig.xml"} ).close(),
-      new Element('meta', {name: "theme-color", content="#ffffff"} ).close()
+      new Element('meta', {name: "theme-color", content: "#ffffff"} ).close()
     )
   }
 }
