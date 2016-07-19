@@ -50,6 +50,15 @@ class Welcome extends React.Component {
                     <div className="civil-pursuit news-headline-text">
                       <div className="civil-pursuit button-row">
                         <div className="civil-pursuit jump-button">
+                          <button onClick={ this.smooth.bind(this, 'read-anchor') }>
+                            <span>Read More</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="civil-pursuit news-headline-text">
+                      <div className="civil-pursuit button-row">
+                        <div className="civil-pursuit jump-button">
                           <button onClick={ this.smooth.bind(this, 'bottom-anchor') }>
                             <span>See It</span>
                             <Icon icon="arrow-down" style={{paddingLeft: '.5em'}} />
@@ -82,6 +91,7 @@ class Welcome extends React.Component {
             </div>
 
             <div className="civil-pursuit-container-outer">
+              <a name="read-anchor" ></a>
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block">
                   <h2>The Problem</h2>
