@@ -25,28 +25,35 @@ class ItemButtons extends React.Component {
     let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
 
 
-
-    if (buttonstate.promote) {
-      promote = (
-        <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="End pursuit without a choice">
-
-          <span className="civil-button-text">{ pursuit }</span>
-        </Button>
-      );
-    } else {
-      if ( item.upvote.userDidUpvote) {
+    if(user){
+      if (buttonstate.promote) {
         promote = (
-          <Button small shy inactive className="item-promotions" title="Yea! you are in pursuit of this one">
+          <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="End pursuit without a choice">
+
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
       } else {
+        if ( item.upvote.userDidUpvote) {
+          promote = (
+            <Button small shy inactive className="item-promotions" title="Yea! you are in pursuit of this one">
+              <span className="civil-button-text">{ pursuit }</span>
+            </Button>
+          );
+        } else {
+          promote = (
+            <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="Pursue this">
+              <span className="civil-button-text">{ pursuit }</span>
+            </Button>
+          );
+        }
+      }
+    } else {
         promote = (
-          <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="Pursue this">
+          <Button small shy inactive className="item-promotions" title="Join so you can pursue this discussion">
             <span className="civil-button-text">{ pursuit }</span>
           </Button>
         );
-      }
     }
     buttons.push(
       <ButtonGroup>
