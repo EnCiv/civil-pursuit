@@ -5,6 +5,19 @@ import publicConfig                     from '../../public.json';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+class Favicon extends Element {
+  constructor() {
+
+  //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
+  super('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} );
+  this.close();
+
+  }
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Stylesheet extends Element {
   constructor(href, attrs) {
     let attr = { rel : 'stylesheet', href };
@@ -58,6 +71,7 @@ class Layout extends Document {
 
     this.add(
       new Element('title').text('Civil Pursuit | Solutions to what Divides Us'),
+      new Favicon(),
       this.uACompatible(),
       this.viewport()
     );
