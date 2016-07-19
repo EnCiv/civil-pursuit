@@ -364,8 +364,8 @@ class HttpServer extends EventEmitter {
   }
 
   favicon () {
-    console.info("server.favicon", __dirname + '/images/favicon.png'); 
-    // this.app.use(favicon('/assets/images/favicon.png'));
+    console.info("server.favicon", '/assets/images/favicon.ico'); 
+    this.app.use(favicon('/assets/images/favicon.ico'));
   }
 
   notFound () {
