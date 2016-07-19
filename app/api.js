@@ -70,12 +70,7 @@ class API extends EventEmitter {
   }
 
   listenToDBUpdates (collection, document) {
-    this.emit('message', 'DB UPDATES'.bgYellow,
-      collection, document
-    );
-
     if ( collection == 'items') {
-      this.emit('message', 'DB UPDATES by socket');
       this.sockets.forEach(socket => {
         document.toPanelItem(socket.synuser ? socket.synuser.id : null ).then(
           item => {
@@ -88,9 +83,6 @@ class API extends EventEmitter {
   }
 
   listenToDBInserts (collection, document) {
-    this.emit('message', 'DB INSERTS'.bgGreen,
-      collection, document.toString().grey
-    );
 
     if ( collection === 'votes' || collection === 'feedback' ) {
       Item
@@ -249,7 +241,7 @@ class API extends EventEmitter {
           return stringified.magenta;
         });
 
-        this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
+        // this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
 
         socket.emit('OK ' + event, ...responses);
       };
