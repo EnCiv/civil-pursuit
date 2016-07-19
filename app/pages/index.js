@@ -5,14 +5,6 @@ import publicConfig                     from '../../public.json';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-favicon() {
-  //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
-  this.add(
-    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
-    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} ).close()
-  )
-}
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -69,10 +61,11 @@ class Layout extends Document {
 
     this.add(
       new Element('title').text('Civil Pursuit | Solutions to what Divides Us'),
-      new Favicon(),
       this.uACompatible(),
       this.viewport()
     );
+
+    this.favicon();
 
     if ( props.env === 'development' ) {
       this.add(
@@ -144,6 +137,14 @@ class Layout extends Document {
   container () {
     return new Element('#synapp').text(this.props.rendered);
   }
+
+  favicon() {
+  //<link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32">
+  this.add(
+    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
+    new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} ).close()
+  )
+}
 }
 
 export default Layout;
