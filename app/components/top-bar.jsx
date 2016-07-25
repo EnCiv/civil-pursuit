@@ -100,6 +100,7 @@ class TopBar extends React.Component {
   goToProfile () {
     //location.href = '/page/profile';
     this.props.path= '/page/profile';
+    console.info("top-bar.goToProfile",this.props);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
