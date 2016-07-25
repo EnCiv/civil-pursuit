@@ -25,6 +25,8 @@ class App extends React.Component {
         this.getTendency();
       }
     }
+
+    let state = { path: props.path };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,12 +57,14 @@ class App extends React.Component {
     const {
       item,
       panels,
-      path,
+      //path,
       user,
       intro,
       notFound,
       error
     } = this.props;
+
+    let path=this.state.path;
 
 
     let page = (
