@@ -68,6 +68,8 @@ class App extends React.Component {
 
     let path=this.state.path;
 
+    console.info("app.render", path, this.state);
+
 
     let page = (
       <Panel heading={(<h4>Not found</h4>)} id="not-found">
