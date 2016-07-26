@@ -240,7 +240,7 @@ class TopBar extends React.Component {
 
     menustrip.push(
       <div className="syn-top_bar-menu-item" >
-        <button onClick={this.goToHerf.bind(this, "https://synaccord.wordpress.com/")} >
+        <button onClick={this.goToHref.bind(this, "https://synaccord.wordpress.com/")} >
           <span>Blog</span>
         </button>
       </div>
@@ -270,7 +270,7 @@ class TopBar extends React.Component {
 
     menuViews.push(
       <li>
-        <a href={'https://synaccord.wordpress.com/'} onClick={this.goToPage.bind(this, 'https://synaccord.wordpress.com/')} >
+        <a href={'https://synaccord.wordpress.com/'} onClick={this.goToHref.bind(this, 'https://synaccord.wordpress.com/')} >
           <span>Blog</span>
         </a>
       </li>
