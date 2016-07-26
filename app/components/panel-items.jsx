@@ -97,10 +97,10 @@ class PanelItems extends React.Component {
   collapseAroundItem (itemId) {
 
     if(!this.state.itemhide.length) {
-      for (let itm in this.props.items) {
-        this.state.itemhide[this.props.items[itm]._id] =
+      for (let itm in this.props.panel.items) {
+        this.state.itemhide[this.props.panel.items[itm]._id] =
             (itemId) ? 
-              ((this.props.items[itm]._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
+              ((this.props.panel.items[itm]._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
             : ( { hid: false } );
         }
     } else {
@@ -152,6 +152,7 @@ class PanelItems extends React.Component {
       type, parent, creator;
 
     console.info("panel-items: panel", panel);
+    console.info("panel-items: items", items );
 
     if ( panel ) {
       loaded = true;
@@ -182,7 +183,7 @@ class PanelItems extends React.Component {
 
       title = type.name;
 
-      if ( ! items.length ) {
+      if ( ! panel.items.length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
@@ -193,7 +194,7 @@ class PanelItems extends React.Component {
       }
 
       else {
-        content = items
+        content = panel.items
           .map(item => {
             let promote, details, subtype, editItem, harmony, buttonstate={promote: false, details: false, subtype: false, harmony: false};
 
