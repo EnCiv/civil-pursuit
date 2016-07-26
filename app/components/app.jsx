@@ -149,7 +149,15 @@ class App extends React.Component {
 
           const panelId1 = this.props.panels ? Object.keys(this.props.panels)[0] : 0;
 
-          const panel = Object.assign({}, this.props.panels[panelId1]);
+          console.info("app item panelId1", panelId1);
+
+          const panelObj = Object.assign({}, this.props.panels[panelId1]);
+
+          console.info("app item panelObj", panelObj);
+
+          const panel = panelObj.panel;
+
+          console.info("app item panelObj panel", panel);
 
           panel.items = panel.items.filter(item => item.id === paths[1]);
 
