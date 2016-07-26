@@ -160,7 +160,7 @@ class TopBar extends React.Component {
       if ( user ) {
         right1 = (
             <div className="syn-top_bar-menu-item" key={ `header-menu-profile-button` } >
-              <button onClick={ this.goToProfile.bind(this) }>
+              <button onClick={ this.goToPage.bind(this, '/page/profile') }>
                 <span>Profile</span>
               </button>
             </div>
