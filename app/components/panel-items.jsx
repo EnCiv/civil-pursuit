@@ -151,6 +151,7 @@ class PanelItems extends React.Component {
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
+    console.info("panel-items: panel", panel);
 
     if ( panel ) {
       loaded = true;
@@ -158,7 +159,11 @@ class PanelItems extends React.Component {
       type = panel.type;
       parent = panel.parent;
 
-      name = `syn-panel-${type._id}`;
+      if(type) {
+        name = `syn-panel-${type._id}`;
+      } else
+      { name = 'syn-panel-no-type';
+      }
 
       if ( parent ) {
         name += `-${parent._id || parent}`;
