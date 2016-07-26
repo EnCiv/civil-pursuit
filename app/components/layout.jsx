@@ -12,13 +12,13 @@ class Layout extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { intro, user } = this.props;
+    const { intro, user, setPath } = this.props;
 
     return (
       <section>
         <div id="fb-root"></div>
 
-        <TopBar user={ user } />
+        <TopBar user={ user } setPath={setPath} />
 
         <section role="main">
           { intro ? ( <Intro intro={ intro } /> ) : ''}

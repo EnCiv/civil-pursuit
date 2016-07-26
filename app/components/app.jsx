@@ -33,6 +33,12 @@ class App extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  setPath(p) {
+    this.setState({ path: p});
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
  getTendency () {
   Promise
     .all([
@@ -169,7 +175,7 @@ class App extends React.Component {
     }
 
     return (
-      <Layout intro={ showIntro ? intro : null } user={ user }>
+      <Layout intro={ showIntro ? intro : null } user={ user } setPath={this.setPath.bind(this)} >
         { page }
       </Layout>
     );
