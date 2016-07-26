@@ -16,21 +16,13 @@ class ItemButtons extends React.Component {
 
   render () {
 
-    console.info("itemButtons.render", this.props);
-
-    const { item, panel, user, buttonstate } = this.props;
+    const { item, panel, user, buttonstate, upvote } = this.props;
 
     const buttons = [];
 
     let promote, details, subtype, harmony;
 
-    if(item.upvote)
-
-    let pursuit = "Pursue";
-
-    if(item.upvote) {
-      item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
-    }
+    let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
 
 
     if(user){
