@@ -15,6 +15,8 @@ import About                            from './about';
 
 class App extends React.Component {
 
+  let state = { path: null};
+
   constructor (props) {
     super(props);
 
@@ -26,7 +28,7 @@ class App extends React.Component {
       }
     }
 
-    let state = { path: props.path };
+    state = { path: props.path };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
