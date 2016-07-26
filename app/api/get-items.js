@@ -23,7 +23,9 @@ function getItems (panel, cb) {
       .then(
         results => {
           try {
-            cb(panel, results.count, results.items);
+            if(!panel.items) { panel.items = []; }
+            panel.items.push(results.items);
+            cb(panel, results.count);
           }
           catch ( error ) {
             ko(error);

@@ -72,7 +72,7 @@ class Home extends React.Component {
     const content = [];
     let loading;
 
-    const { discussion, panel, items, training } = this.state;
+    const { discussion, panel, training } = this.state;
 
 
     if( ! this.props.user) {

@@ -60,7 +60,7 @@ class PanelItems extends React.Component {
   loadMore (e) {
     e.preventDefault();
 
-    window.Dispatcher.emit('get more items', this.props.panel.panel);
+    window.Dispatcher.emit('get items', this.props.panel);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,13 +146,12 @@ class PanelItems extends React.Component {
 
     const { active } = this.state;
 
-    const { panel, count, items, user, emitter } = this.props;
+    const { panel, count, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
     console.info("panel-items: panel", panel);
-    console.info("panel-items: items", items );
 
     if ( panel ) {
       loaded = true;

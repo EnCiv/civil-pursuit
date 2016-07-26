@@ -43,7 +43,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   edit (item) {
-    const loaded = this.state.items.some(
+    const loaded = this.state.panel.items.some(
       panelItem => panelItem._id === item._id
     );
 
@@ -54,9 +54,9 @@ class PanelStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  okGetItems (panel, count, items) {
+  okGetItems (panel, count) {
     if ( makePanelId(panel) === this.id ) {
-      this.setState({ panel, count, items });
+      this.setState({ panel, count });
     }
   }
 
@@ -72,7 +72,7 @@ class PanelStore extends React.Component {
 
     if ( item.type._id === this.props.type._id && item.parent === parent ) {
 
-      let { items } = this.state;
+      let { items } = this.state.panel;
 
       if ( ! items ) {
         items = [];
@@ -82,7 +82,7 @@ class PanelStore extends React.Component {
 
       console.log(items.map(item => item.subject));
 
-      this.setState({ items, new : item });
+      this.setState( {panel: { items, new : item } } );
     }
   }
 
@@ -90,11 +90,11 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   collapseAroundItem (itemId) {
-    for ( let itm in this.state.items ) {
-      if ( this.state.items[itm]._id == itemId ) {
-        this.state.items[itm].hidden=false;
+    for ( let itm in this.state.panel.items ) {
+      if ( this.state.panel.items[itm]._id == itemId ) {
+        this.state.panel.items[itm].hidden=false;
       } else {
-        this.state.items[itm].hidden=true;
+        this.state.panel.items[itm].hidden=true;
       }
     }
   }  
