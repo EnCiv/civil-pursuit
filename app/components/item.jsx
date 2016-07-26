@@ -202,7 +202,11 @@ class Item extends React.Component {
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    const tendencyChoice = window.Synapp.tendencyChoice || null;
+    const tendencyChoice = null;
+
+    if(typeof window !== 'undefined' ) {
+        window.Synapp.tendencyChoice
+    };
 
     let rendereditem = {};
 
