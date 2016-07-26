@@ -159,7 +159,7 @@ class App extends React.Component {
 
           console.info("app item panelObj panel", panel);
 
-          panel.items = panel.items.filter(item => item.id === paths[1]);
+          panel.items = panelObj.items.filter(item => item.id === paths[1]);
 
           console.info("App.render item", panel);
 
