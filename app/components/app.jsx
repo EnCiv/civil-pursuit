@@ -28,7 +28,7 @@ class App extends React.Component {
       }
     }
 
-    state = { path: props.path };
+    this.state.path = props.path ;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
