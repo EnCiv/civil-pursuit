@@ -153,7 +153,7 @@ class App extends React.Component {
 
           panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          console.info("App.render item", { panel })
+          console.info("App.render item", panel);
 
           page = (
             <PanelItems { ...this.props } panel={ panel } />
