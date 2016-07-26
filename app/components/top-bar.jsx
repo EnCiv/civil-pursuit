@@ -222,21 +222,24 @@ class TopBar extends React.Component {
 
     let menustrip = [];
 
-    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-1` } >
+    menustrip.push(
+      <div className="syn-top_bar-menu-item">
         <button onClick={this.goToPage.bind(this, '/')} >
           <span>Home</span>
         </button>
       </div>
       );
 
-    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-2` } >
+    menustrip.push(
+      <div className="syn-top_bar-menu-item" >
         <button onClick={this.goToPage.bind(this, '/about')} >
           <span>About</span>
         </button>
       </div>
       );
 
-    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-3` } >
+    menustrip.push(
+      <div className="syn-top_bar-menu-item" >
         <button onClick={this.goToHerf.bind(this, "https://synaccord.wordpress.com/")} >
           <span>Blog</span>
         </button>
@@ -250,7 +253,7 @@ class TopBar extends React.Component {
     let menuViews = [];
 
     menuViews.push(
-      <li key={ `header-menu-1` }>
+      <li>
         <a href={ '/' } onClick={this.goToPage.bind(this, '/')} >
           <span>About</span>
         </a>
@@ -258,7 +261,7 @@ class TopBar extends React.Component {
       );
 
     menuViews.push(
-      <li key={ `header-menu-2` }>
+      <li>
         <a href={ '/about' } onClick={this.goToPage.bind(this, '/about')} >
           <span>About</span>
         </a>
@@ -266,18 +269,11 @@ class TopBar extends React.Component {
       );
 
     menuViews.push(
-      <li key={ `header-menu-2` }>
-        <a href={ '/about' } onClick={this.goToPage.bind(this, '/about')} >
-          <span>About</span>
+      <li>
+        <a href={'https://synaccord.wordpress.com/'} onClick={this.goToPage.bind(this, 'https://synaccord.wordpress.com/')} >
+          <span>Blog</span>
         </a>
       </li>
-      );
-
-    menuViews.push(<div className="syn-top_bar-menu-item" key={ `header-menu-2` } >
-        <button onClick={this.goToPage.bind(this, 'https://synaccord.wordpress.com/')} >
-          <span>Blog</span>
-        </button>
-      </div>
       );
 
     menuViews.push(menu1);
