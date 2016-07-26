@@ -97,10 +97,9 @@ class TopBar extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  goToProfile () {
+  goToPage (p) {
     //location.href = '/page/profile';
-    this.props.setPath('/page/profile' );
-    console.info("top-bar.goToProfile",this.props, this.state);
+    this.props.setPath(p);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,7 +174,7 @@ class TopBar extends React.Component {
         );
         menu1 = (
           <li key={ `header-menu-profile-button` }>
-            <button onClick={this.goToProfile.bind(this) }>
+            <button onClick={this.goToPage.bind(this, '/page/profile') }>
               <span>Profile</span>
             </button>
           </li>
@@ -221,29 +220,68 @@ class TopBar extends React.Component {
   
     // }
 
-    let menustrip = menus.map( (menu, index) => (
-      <div className="syn-top_bar-menu-item" key={ `header-menu-${index}` } >
-        <button onClick={this.goToHref.bind(this,menu.link)}>
-          <span>{ menu.title }</span>
+    let menustrip = [];
+
+    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-1` } >
+        <button onClick={this.goToPage.bind(this, '/')} >
+          <span>Home</span>
         </button>
       </div>
-    ));
+      );
+
+    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-2` } >
+        <button onClick={this.goToPage.bind(this, '/about')} >
+          <span>About</span>
+        </button>
+      </div>
+      );
+
+    menustrip.push(<div className="syn-top_bar-menu-item" key={ `header-menu-3` } >
+        <button onClick={this.goToHerf.bind(this, "https://synaccord.wordpress.com/")} >
+          <span>Blog</span>
+        </button>
+      </div>
+      );
+
 
     menustrip.push(right1);
     menustrip.push(right2);
 
-    let menuViews = menus.map((menu, index) => (
-      <li key={ `header-menu-${index}` }>
-        <a href={ menu.link }>
-          <span>{ menu.title }</span>
+    let menuViews = [];
+
+    menuViews.push(
+      <li key={ `header-menu-1` }>
+        <a href={ '/' } onClick={this.goToPage.bind(this, '/')} >
+          <span>About</span>
         </a>
       </li>
-    ));
+      );
+
+    menuViews.push(
+      <li key={ `header-menu-2` }>
+        <a href={ '/about' } onClick={this.goToPage.bind(this, '/about')} >
+          <span>About</span>
+        </a>
+      </li>
+      );
+
+    menuViews.push(
+      <li key={ `header-menu-2` }>
+        <a href={ '/about' } onClick={this.goToPage.bind(this, '/about')} >
+          <span>About</span>
+        </a>
+      </li>
+      );
+
+    menuViews.push(<div className="syn-top_bar-menu-item" key={ `header-menu-2` } >
+        <button onClick={this.goToPage.bind(this, 'https://synaccord.wordpress.com/')} >
+          <span>Blog</span>
+        </button>
+      </div>
+      );
 
     menuViews.push(menu1);
     menuViews.push(menu2);
-
-
 
 
     return (
