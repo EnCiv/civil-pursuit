@@ -202,7 +202,7 @@ class Item extends React.Component {
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
 
-    const tendencyChoice = window.Synapp.tendencyChoice;
+    const tendencyChoice = window.Synapp.tendencyChoice || null;
 
     let rendereditem = {};
 
@@ -236,7 +236,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
-                { item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
+                { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
@@ -274,7 +274,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
-                   { item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
+                   { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
