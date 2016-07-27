@@ -299,14 +299,14 @@ class HttpServer extends EventEmitter {
                     req.panels[panelId] = makePanel(ancestor);
                   }
 
-                  req.panels[panelId].items.push(ancestor);
+                  req.panels[panelId].panel.items.push(ancestor);
 
                   req.panels[panelId].active = `${ancestor._id}-subtype`;
                 });
 
                 req.panels[makePanelId(item)] = makePanel(item);
 
-                req.panels[makePanelId(item)].items.push(item);
+                req.panels[makePanelId(item)].panel.items.push(item);
 
                 next();
               },
