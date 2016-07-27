@@ -74,7 +74,7 @@ class App extends React.Component {
 
     let path=this.state.path;
 
-    console.info("app.render", path, this.state);
+    console.info("app.render", path, this.props);
 
 
     let page = (
@@ -164,7 +164,7 @@ class App extends React.Component {
           console.info("App.render item", panel);
 
           page = (
-            <PanelItems { ...this.props } panel={ panel } />
+            <PanelItems { ...this.props } user={ user } count = { 1 } panel={ this.props.panels[panelId1] } />
           );
 
           break;
