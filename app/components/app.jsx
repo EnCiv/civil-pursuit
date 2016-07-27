@@ -145,7 +145,7 @@ class App extends React.Component {
 
 
         case 'item':
-          console.info("item:", paths[1]);
+          console.info("app item:", paths[1]);
 
           const panelId1 = this.props.panels ? Object.keys(this.props.panels)[0] : 0;
 
@@ -154,7 +154,6 @@ class App extends React.Component {
           const panel = Object.assign({}, this.props.panels[panelId1].panel);
 
           console.info("app item panel", panel);
-
 
           panel.items = panel.items.filter(item => item.id === paths[1]);
 

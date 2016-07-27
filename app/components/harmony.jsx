@@ -35,11 +35,13 @@ class Harmony extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
+    console.info("harmony.componentWillReceiveProps", props);
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
 
       if ( props.panels ) {
         if ( ! props.panels[this.leftId] ) {
+
           window.Dispatcher.emit('get items', {
             type        :   props.item.harmony.types[0],
             parent      :   props.item._id

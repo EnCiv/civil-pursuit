@@ -60,7 +60,7 @@ class PanelItems extends React.Component {
   loadMore (e) {
     e.preventDefault();
 
-    window.Dispatcher.emit('get items', this.props.panel);
+    // window.Dispatcher.emit('get items', this.props.panel);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -6,9 +6,9 @@ function makePanel (panel) {
   const p       =   {
     panel       :   {
       skip      :   0,
-      limit     :   config['navigator batch size']
+      limit     :   config['navigator batch size'],
+      items     :   []
     },
-    items       :   [],
     active      :   null
   };
 
