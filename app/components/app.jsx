@@ -12,10 +12,13 @@ import Panel                            from './panel';
 import Icon                             from './util/icon';
 import UserStore                        from './store/user';
 import About                            from './about';
+import { EventEmitter }                 from 'events';
 
 class App extends React.Component {
 
   state = { path: null}
+
+  emitter = new EventEmitter();
 
   constructor (props) {
     super(props);
@@ -155,12 +158,12 @@ class App extends React.Component {
 
           console.info("app item panel", panel);
 
-          panel.items = panel.items.filter(item => item.id === paths[1]);
+          //panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          console.info("app item panel filtered", panel );
+          //console.info("app item panel filtered", panel );
 
           page = (
-            <PanelItems { ...this.props } user={ user } count = { 1 } panel={ panel } />
+            <PanelItems { ...this.props } user={ user } count = { 1 } panel={ panel } { emitter : this.emitter } />
           );
 
           break;
