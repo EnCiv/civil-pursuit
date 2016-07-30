@@ -163,7 +163,7 @@ class App extends React.Component {
           //console.info("app item panel filtered", panel );
 
           page = (
-            <PanelItems { ...this.props } user={ user } count = { 1 } panel={ panel } { emitter : this.emitter } />
+            <PanelItems { ...this.props } user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
           );
 
           break;
