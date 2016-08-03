@@ -150,7 +150,9 @@ class App extends React.Component {
         case 'item':
           console.info("app item:", paths[1]);
 
-          const panelId1 = this.props.panels ? Object.keys(this.props.panels)[0] : 0;
+          const last = this.props.panels.length || 0;
+
+          const panelId1 = this.props.panels ? Object.keys(this.props.panels)[last] : 0;
 
           console.info("app item panelId1", panelId1);
 
