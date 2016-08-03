@@ -13,6 +13,7 @@ class Subtype extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
+    console.info("subtype.componentWillReceiveProps", props, this.id)
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
 
