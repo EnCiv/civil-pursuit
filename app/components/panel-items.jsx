@@ -171,7 +171,7 @@ class PanelItems extends React.Component {
 
       title = (
         <Link
-          href        =   { `/items/${type.id}/${parent || ""}` }
+          href        =   { `/items/${type._id}/${parent || ""}` }
           then        =   { this.unFocus.bind(this) }
           >
           <Icon icon="angle-double-left" />
