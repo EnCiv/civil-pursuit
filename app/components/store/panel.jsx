@@ -82,7 +82,7 @@ class PanelStore extends React.Component {
 
       console.log(items.map(item => item.subject));
 
-      this.setState( {panel: { items, new : item } } );
+      this.setState( {panel: { items, new : item, type: this.props.type, parent: parent } } );
     }
   }
 
