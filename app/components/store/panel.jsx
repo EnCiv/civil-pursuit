@@ -87,7 +87,7 @@ class PanelStore extends React.Component {
   }
 
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~f
 
   collapseAroundItem (itemId) {
     for ( let itm in this.state.panel.items ) {
