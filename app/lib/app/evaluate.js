@@ -243,7 +243,7 @@ class Evaluator extends EventEmitter {
         console.info("evaluation.findOthers lineage:", this.item.parent, query);
 
         this.item.lineage.map( itm => {
-          console.info("evaluation.findOthers lineage:", itm);
+          console.info("evaluation.findOthers lineage:", itm._id);
         });
 
 
