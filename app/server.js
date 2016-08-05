@@ -291,22 +291,23 @@ class HttpServer extends EventEmitter {
             item.toPanelItem(null).then( // will need to pass the userId toPanelItem
               item => {
                 req.panels = {};
-                item.getLineage(null).then( lineage => {
-                  console.info("server lineage", lineage );
-                  lineage.forEach((ancestor, index) => {
-                    const panelId = makePanelId(ancestor);
+                if(item & item.parent) {
+                  item.getLineage(null).then( lineage => {
+                    console.info("server lineage", lineage );
+                    lineage.forEach((ancestor, index) => {
+                      const panelId = makePanelId(ancestor);
 
-                    if ( ! req.panels[panelId] ) {
-                      req.panels[panelId] = makePanel(ancestor);
-                    }
+                      if ( ! req.panels[panelId] ) {
+                        req.panels[panelId] = makePanel(ancestor);
+                      }
 
-                    req.panels[panelId].panel.items.push(ancestor);
+                      req.panels[panelId].panel.items.push(ancestor);
 
-                    req.panels[panelId].active = `${ancestor._id}-subtype`;
+                      req.panels[panelId].active = `${ancestor._id}-subtype`;
+                    });
+
                   });
-
-                });
-
+                }
                 req.panels[makePanelId(item)] = makePanel(item);
 
                 req.panels[makePanelId(item)].panel.items.push(item);
