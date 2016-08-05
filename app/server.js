@@ -291,8 +291,7 @@ class HttpServer extends EventEmitter {
             item.toPanelItem(null).then( // will need to pass the userId toPanelItem
               item => {
                 req.panels = {};
-                let lineage;
-                lineage = item.getLineage(null).then(
+                item.getLineage(null).then( lineage => {
                   lineage.forEach((ancestor, index) => {
                     const panelId = makePanelId(ancestor);
 
@@ -305,7 +304,7 @@ class HttpServer extends EventEmitter {
                     req.panels[panelId].active = `${ancestor._id}-subtype`;
                   });
 
-                );
+                });
 
                 req.panels[makePanelId(item)] = makePanel(item);
 
