@@ -24,7 +24,7 @@ class ItemButtons extends React.Component {
 
     let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
 
-    if(item && item.type & item.type.promoteMethod!="hidden") {
+    if(item.type && item.type.promoteMethod!="hidden") {
       if(user){
         if (buttonstate.promote) {
           promote = (
