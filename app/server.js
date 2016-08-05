@@ -281,7 +281,7 @@ class HttpServer extends EventEmitter {
   getItemPage () {
     console.info("getItemPage:");
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
-      console.info("getItemPage after get");
+      console.info("getItemPage after get", req.user);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
@@ -291,18 +291,21 @@ class HttpServer extends EventEmitter {
             item.toPanelItem(null).then( // will need to pass the userId toPanelItem
               item => {
                 req.panels = {};
+                let lineage;
+                lineage = item.getLineage(null).then(
+                  lineage.forEach((ancestor, index) => {
+                    const panelId = makePanelId(ancestor);
 
-                item.lineage.forEach((ancestor, index) => {
-                  const panelId = makePanelId(ancestor);
+                    if ( ! req.panels[panelId] ) {
+                      req.panels[panelId] = makePanel(ancestor);
+                    }
 
-                  if ( ! req.panels[panelId] ) {
-                    req.panels[panelId] = makePanel(ancestor);
-                  }
+                    req.panels[panelId].panel.items.push(ancestor);
 
-                  req.panels[panelId].panel.items.push(ancestor);
+                    req.panels[panelId].active = `${ancestor._id}-subtype`;
+                  });
 
-                  req.panels[panelId].active = `${ancestor._id}-subtype`;
-                });
+                );
 
                 req.panels[makePanelId(item)] = makePanel(item);
 
