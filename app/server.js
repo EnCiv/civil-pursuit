@@ -281,7 +281,7 @@ class HttpServer extends EventEmitter {
   getItemPage () {
     console.info("getItemPage:");
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
-      console.info("getItemPage after get", req.user);
+      console.info("getItemPage after get", req);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
@@ -292,6 +292,7 @@ class HttpServer extends EventEmitter {
               item => {
                 req.panels = {};
                 item.getLineage(null).then( lineage => {
+                  console.info("server lineage", lineage );
                   lineage.forEach((ancestor, index) => {
                     const panelId = makePanelId(ancestor);
 
