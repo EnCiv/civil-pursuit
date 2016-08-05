@@ -240,7 +240,11 @@ class Evaluator extends EventEmitter {
 
         query._id = { $ne : this.item._id };
 
-        console.info("evaluation.findOthers:", this.item.lineage.length, query);
+        console.info("evaluation.findOthers lineage:", this.item.parent, query);
+
+        this.item.lineage.map( itm => {
+          console.info("evaluation.findOthers lineage:", itm);
+        });
 
 
         ItemModel

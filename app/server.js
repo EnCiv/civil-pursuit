@@ -281,18 +281,19 @@ class HttpServer extends EventEmitter {
   getItemPage () {
     console.info("getItemPage:");
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
-      console.info("getItemPage after get", req);
+      let userId=req.cookies.synuser.id || null;
+      console.info("getItemPage after get", req.cookies.synuser.id);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
             if ( ! item ) {
               return next();
             }
-            item.toPanelItem(null).then( // will need to pass the userId toPanelItem
+            item.toPanelItem(userId).then(
               item => {
                 req.panels = {};
                 if(item & item.parent) {
-                  item.getLineage(null).then( lineage => {
+                  item.getLineage(userId).then( lineage => {
                     console.info("server lineage", lineage );
                     lineage.forEach((ancestor, index) => {
                       const panelId = makePanelId(ancestor);
