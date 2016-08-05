@@ -12,7 +12,6 @@ function toPanelItem (userId) {
     () => this.$populated.type.populate(),
 
     () => Promise.all([
-      this.getLineage(userId),
       this.$populated.type.getSubtype(),
       this.countVotes(),
       this.countChildren(),
@@ -48,12 +47,11 @@ function toPanelItem (userId) {
       item.image        =   item.image || config['default item image'];
       item.popularity   =   this.getPopularity();
 
-      item.lineage    =   results[0];
-      item.subtype    =   results[1];
-      item.votes      =   results[2];
-      item.children   =   results[3];
-      item.harmony    =   results[4];
-      item.upvote     =   results[5];
+      item.subtype    =   results[0];
+      item.votes      =   results[1];
+      item.children   =   results[2];
+      item.harmony    =   results[3];
+      item.upvote     =   results[4];
 
       item.type       =   this.$populated.type;
 
