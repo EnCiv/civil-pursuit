@@ -13,7 +13,9 @@ type                =   shape({
   id                :   string.isRequired,
   name              :   string.isRequired,
   harmony           :   arrayOf(string),
-  parent            :   string
+  parent            :   string,
+  createMethod		: 	string,
+  promoteMethod		: 	string
 });
 
 export default type;

@@ -352,7 +352,7 @@ class PanelItems extends React.Component {
           className   =   { name }
           ref         =   "panel"
           heading     =   {[
-            ( <h4>{ title }</h4> ), ( type && type.name=="Harmony In Democracy Meetup" ) ? (null) : 
+            ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" ) ? (null) : 
             (
               <Icon
                 icon        =   "plus"
