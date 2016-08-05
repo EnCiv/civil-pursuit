@@ -234,7 +234,7 @@ class Evaluator extends EventEmitter {
         }
 
         if(this.item.parent) {
-          query.parent = this.item.parent._id;
+          query.parent = this.item.parent;
         }
 
         query._id = { $ne : this.item._id };
