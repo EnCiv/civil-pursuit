@@ -225,27 +225,16 @@ class Evaluator extends EventEmitter {
     return new Promise((ok, ko) => {
       try {
         const query =   {
-          type      :   type || this.item.type
+          type      :   type._id || this.item.type._id
         };
 
-        if ( this.item.lineage.length ) {
-          let parent;
-
-          for ( let ancestor of this.item.lineage ) {
-            parent = ancestor;
-          }
-
-          query.parent    = parent._id;
+        if(this.item.parent) {
+          query.parent = parent._id;
         }
 
         query._id = { $ne : this.item._id };
 
-        console.info("evaluation.findOthers lineage:", this.item.parent, query);
-
-        this.item.lineage.map( itm => {
-          console.info("evaluation.findOthers lineage:", itm._id);
-        });
-
+        console.info("evaluation.findOthers lineage:", query);
 
         ItemModel
           .count(query)
