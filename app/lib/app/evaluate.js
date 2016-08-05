@@ -224,9 +224,14 @@ class Evaluator extends EventEmitter {
   findOthers (limit, type) {
     return new Promise((ok, ko) => {
       try {
-        const query =   {
-          type      :   type._id || this.item.type._id
-        };
+
+        const query =   {};
+
+        if(type) {
+          query.type = type._id;
+        } else {
+          query.type = this.item.type._id;
+        }
 
         if(this.item.parent) {
           query.parent = parent._id;
