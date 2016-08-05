@@ -43,7 +43,9 @@ class Type extends Mungo.Model {
 
       "parent"      :     Type,
 
-      "id"          :     String
+      "id"          :     String,
+      "createMethod":     String,
+      "promoteMethod":    String 
     };
   }
 
