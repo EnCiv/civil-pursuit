@@ -239,8 +239,6 @@ class Evaluator extends EventEmitter {
 
         query._id = { $ne : this.item._id };
 
-        console.info("evaluation.findOthers lineage:", query);
-
         ItemModel
           .count(query)
           // .where('user').ne(this.userId)

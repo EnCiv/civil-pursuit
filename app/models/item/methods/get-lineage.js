@@ -1,7 +1,6 @@
 'use strict';
 
 function getLineage (userId) {
-  console.info("getLineage", userId);
   return new Promise((ok, ko) => {
     try {
       const Item = this.constructor;

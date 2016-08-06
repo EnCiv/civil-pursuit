@@ -77,9 +77,6 @@ class App extends React.Component {
 
     let path=this.state.path;
 
-    console.info("app.render", path, this.props);
-
-
     let page = (
       <Panel heading={(<h4>Not found</h4>)} id="not-found">
         <section style={{ padding: 10 }}>
@@ -148,21 +145,14 @@ class App extends React.Component {
 
 
         case 'item':
-          console.info("app item:", paths[1]);
 
           if(! this.props.panels) { break; }
 
           const keylist = Object.keys(this.props.panels);
 
-          console.info("app item last", keylist );
-
           const panelId1 = keylist[keylist.length-1];
 
-          console.info("app item panelId1", panelId1);
-
           const panel = Object.assign({}, this.props.panels[panelId1].panel);
-
-          console.info("app item panel", panel);
 
           //panel.items = panel.items.filter(item => item.id === paths[1]);
 

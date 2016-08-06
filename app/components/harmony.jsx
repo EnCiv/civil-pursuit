@@ -35,7 +35,6 @@ class Harmony extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
-    console.info("harmony.componentWillReceiveProps", props);
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
 

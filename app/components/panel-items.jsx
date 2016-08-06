@@ -151,8 +151,6 @@ class PanelItems extends React.Component {
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
-    console.info("panel-items: props", this.props);
-
     if ( panel ) {
       loaded = true;
 

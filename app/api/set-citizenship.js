@@ -3,7 +3,6 @@
 import User from '../models/user';
 
 function setCitizenship ( countryId, position, cb) {
-  console.info("setCitizenship:", cb, countryId, position);
   try {
     User
       .findById(this.synuser.id)
@@ -15,8 +14,7 @@ function setCitizenship ( countryId, position, cb) {
               .save()
               .then(
                 this.ok.bind(this, cb),
-                this.error.bind(this),
-                console.info("setCitizenship completed.")
+                this.error.bind(this)
               );
           }
           catch ( error ) {

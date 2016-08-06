@@ -63,10 +63,6 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okCreateItem (item) {
-    console.info('new item', {
-      new : item,
-      props : this.props
-    });
 
     const parent = this.props.parent ? this.props.parent._id : undefined;
 
@@ -79,8 +75,6 @@ class PanelStore extends React.Component {
       }
 
       items = [item].concat(items);
-
-      console.log(items.map(item => item.subject));
 
       this.setState( {panel: { items, new : item, type: this.props.type, parent: parent } } );
     }

@@ -206,7 +206,6 @@ class HttpServer extends EventEmitter {
   }
 
   getLandingPage () {
-    console.info("getLandingPage");
     try {
       this.app.get('/',
         (req, res, next) => {
@@ -279,10 +278,8 @@ class HttpServer extends EventEmitter {
   }
 
   getItemPage () {
-    console.info("getItemPage:");
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-      console.info("getItemPage after get", userId);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
@@ -294,7 +291,6 @@ class HttpServer extends EventEmitter {
                 req.panels = {};
                 if(item & item.parent) {
                   item.getLineage(userId).then( lineage => {
-                    console.info("server lineage", lineage );
                     lineage.forEach((ancestor, index) => {
                       const panelId = makePanelId(ancestor);
 

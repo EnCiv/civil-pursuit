@@ -10,7 +10,6 @@ function insertFeedback (itemId, value) {
       feedback  :   value
     };
 
-    console.log('create', feedback)
 
     Feedback
       .create(feedback)
