@@ -225,7 +225,7 @@ class TopBar extends React.Component {
     menustrip.push(
       <div className="syn-top_bar-menu-item">
         <button onClick={this.goToPage.bind(this, '/')} >
-          <span>Home</span>
+          <span>Challenges</span>
         </button>
       </div>
       );
@@ -255,7 +255,7 @@ class TopBar extends React.Component {
     menuViews.push(
       <li>
         <a href={ '/' } onClick={this.goToPage.bind(this, '/')} >
-          <span>About</span>
+          <span>Challenges</span>
         </a>
       </li>
       );
