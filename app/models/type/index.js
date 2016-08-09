@@ -45,8 +45,13 @@ class Type extends Mungo.Model {
 
       "id"          :     String,
       "createMethod":     String,
-      "promoteMethod":    String 
-    };
+      "promoteMethod":    String,
+      "promoteButtonLabel" : {
+        "inactive"   :     String,
+        "active"     :     String
+      },
+      "evaluateQuestion" :  String
+    }
   }
 
   static inserting () {

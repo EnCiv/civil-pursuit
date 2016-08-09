@@ -15,7 +15,12 @@ type                =   shape({
   harmony           :   arrayOf(string),
   parent            :   string,
   createMethod		: 	string,
-  promoteMethod		: 	string
+  promoteMethod		: 	string,
+  promoteButtonLabel: 	shape({
+  	inactive		: 	string.isRequired,
+  	active         	:   string.isRequired
+  	}),
+  evaluateQuestion	: 	string
 });
 
 export default type;

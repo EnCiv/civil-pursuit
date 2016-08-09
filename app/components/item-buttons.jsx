@@ -22,7 +22,13 @@ class ItemButtons extends React.Component {
 
     let promote, details, subtype, harmony;
 
-    let pursuit = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
+    let promoteButtonLabel;
+
+    if( panel.type && panel.type.promoteButtonLabel) {
+      promoteButtonLabel = item.upvote.userDidUpvote ? panel.type.promoteButtonLabel.active : panel.type.promoteButtonLabel.inactive;
+    } else {
+     promoteButtonLabel = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
+    }
 
     if(item.type && item.type.promoteMethod!="hidden") {
       if(user){
@@ -30,20 +36,20 @@ class ItemButtons extends React.Component {
           promote = (
             <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="End pursuit without a choice">
 
-              <span className="civil-button-text">{ pursuit }</span>
+              <span className="civil-button-text">{ promoteButtonLabel }</span>
             </Button>
           );
         } else {
           if ( item.upvote.userDidUpvote) {
             promote = (
               <Button small shy inactive className="item-promotions" title="Yea! you are in pursuit of this one">
-                <span className="civil-button-text">{ pursuit }</span>
+                <span className="civil-button-text">{ promoteButtonLabel }</span>
               </Button>
             );
           } else {
             promote = (
               <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="Pursue this">
-                <span className="civil-button-text">{ pursuit }</span>
+                <span className="civil-button-text">{ promoteButtonLabel }</span>
               </Button>
             );
           }
@@ -51,7 +57,7 @@ class ItemButtons extends React.Component {
       } else {
           promote = (
             <Button small shy inactive className="item-promotions" title="Join so you can pursue this discussion">
-              <span className="civil-button-text">{ pursuit }</span>
+              <span className="civil-button-text">{ promoteButtonLabel }</span>
             </Button>
           );
       }

@@ -38,9 +38,14 @@ componentDidUpdate () {
     }
 
   render () {
-    const { show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
+    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
 
     const content = [];
+
+    let promoteQuestion="Which of these is most important for the community to consider?";
+    if(panel && panel.type && panel.type.promoteQuestion) {
+      promoteQuestion = panel.type.promoteQuestion;
+    }
 
     if ( show ) {
       if ( ! evaluation ) {
@@ -49,7 +54,7 @@ componentDidUpdate () {
       else {
         let foo = (
           <h5 className="text-center gutter">
-            Which of these is most important for the community to consider?
+            { promoteQuestion }
           </h5>
         );
 
@@ -78,7 +83,7 @@ componentDidUpdate () {
                 <span> of </span>
                 <span className="limit">{ limit }</span>
               </h2>
-              <h4>Which of these is most important?</h4>
+              <h4>{ promoteQuestion }</h4>
             </header>
           ),
 
