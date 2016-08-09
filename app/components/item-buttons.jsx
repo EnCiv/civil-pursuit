@@ -26,7 +26,7 @@ class ItemButtons extends React.Component {
 
     console.info("ItemButtons", panel);
 
-    if( panel & panel.type && panel.type.promoteButtonLabel) {
+    if( panel && panel.type && panel.type.promoteButtonLabel) {
       promoteButtonLabel = item.upvote.userDidUpvote ? panel.type.promoteButtonLabel.active : panel.type.promoteButtonLabel.inactive;
     } else {
      promoteButtonLabel = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
