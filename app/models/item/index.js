@@ -68,6 +68,10 @@ class Item extends Model {
         "required"        :   true
       },
 
+      "subtype"              :   {
+        "type"            :   Type
+      },
+
       "parent"            :   {
         "type"            :   this,
         "index"           :   true

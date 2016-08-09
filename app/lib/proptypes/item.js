@@ -19,6 +19,7 @@ const item          =   shape({
   subject           :   string.isRequired,
   description       :   string.isRequired,
   type              :   type.isRequired,
+  subtype           :   type,
   parent            :   string,
   from              :   string,
   user              :   user.isRequired,

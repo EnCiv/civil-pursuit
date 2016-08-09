@@ -5,7 +5,7 @@ import sequencer          from 'promise-sequencer';
 
 function toPanelItem (userId) {
 
-  console.info("toPanelItem", userId);
+  console.info("toPanelItems", userId, this.subtype);
 
   return sequencer.pipe(
 
@@ -46,10 +46,12 @@ function toPanelItem (userId) {
         parent
       };
 
+      console.info("toPanelItems.after promise", this.subtype);
+
       item.image        =   item.image || config['default item image'];
       item.popularity   =   this.getPopularity();
 
-      item.subtype    =   results[0];
+      item.subtype    =   this.subtype ? this.$populated.subtype : results[0];
       item.votes      =   results[1];
       item.children   =   results[2];
       item.harmony    =   results[3];
@@ -66,6 +68,8 @@ function toPanelItem (userId) {
       if ( typeof item.parent === 'undefined' ) {
         delete item.parent;
       }
+
+      console.info("toPanelItems. item", item.subtype);
 
       ok(item);
     })
