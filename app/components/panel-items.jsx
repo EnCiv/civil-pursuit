@@ -294,6 +294,7 @@ class PanelItems extends React.Component {
                         user    =   { user }
                         toggle  =   { this.toggle.bind(this) }
                         buttonstate = { buttonstate }
+                        panel = { panel }
                         />
                     </ItemStore>
                   ) }
