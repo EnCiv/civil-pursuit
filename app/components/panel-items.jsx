@@ -213,6 +213,7 @@ class PanelItems extends React.Component {
                       <Promote
                         ref       =   "promote"
                         show      =   { (active && active.item === item._id && active.section === 'promote') }
+                        panel     =   { panel }
                         />
                     </EvaluationStore>
                   </Accordion>
