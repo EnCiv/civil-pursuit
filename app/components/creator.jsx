@@ -116,6 +116,7 @@ class Creator extends React.Component {
     else {
       insert();
     }
+    console.info("Creator.create", this.props);
 
     this.props.toggle();
   }
@@ -219,8 +220,8 @@ class Creator extends React.Component {
           </section>
 
           <section className="item-buttons">
-            <Submit radius>
-              <Icon icon="bullhorn" />
+            <Submit>
+              <span>Post</span>
             </Submit>
           </section>
 
