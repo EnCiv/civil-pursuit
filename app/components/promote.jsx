@@ -42,9 +42,9 @@ componentDidUpdate () {
 
     const content = [];
 
-    let promoteQuestion="Which of these is most important for the community to consider?";
-    if(panel && panel.type && panel.type.promoteQuestion) {
-      promoteQuestion = panel.type.promoteQuestion;
+    let evaluateQuestion="Which of these is most important for the community to consider?";
+    if(panel && panel.type && panel.type.evaluateQuestion) {
+      evaluateQuestion = panel.type.evaluateQuestion;
     }
 
     console.info("promote.render", panel);
@@ -56,7 +56,7 @@ componentDidUpdate () {
       else {
         let foo = (
           <h5 className="text-center gutter">
-            { promoteQuestion }
+            { evaluateQuestion }
           </h5>
         );
 
@@ -85,7 +85,7 @@ componentDidUpdate () {
                 <span> of </span>
                 <span className="limit">{ limit }</span>
               </h2>
-              <h4>{ promoteQuestion }</h4>
+              <h4>{ evaluateQuestion }</h4>
             </header>
           ),
 
