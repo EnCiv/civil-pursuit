@@ -47,6 +47,8 @@ componentDidUpdate () {
       promoteQuestion = panel.type.promoteQuestion;
     }
 
+    console.info("promote.render", panel);
+
     if ( show ) {
       if ( ! evaluation ) {
         content.push( <Loading message="Loading evaluation" /> );
