@@ -1,6 +1,5 @@
 'use strict';
 
-import { Domain }         from 'domain';
 import { format }         from 'util';
 import passport           from 'passport';
 import Passport           from '../lib/app/Passport';
