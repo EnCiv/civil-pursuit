@@ -236,7 +236,7 @@ class Item extends React.Component {
                 { item.subject }
               </h4>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
+                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
@@ -274,7 +274,7 @@ class Item extends React.Component {
                 { item.subject }
               </h4>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
+                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
