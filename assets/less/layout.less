@@ -21,7 +21,6 @@
 
 html, body {
   margin: 0;
-  padding: 0;
   text-align: center;
 }
 
@@ -30,6 +29,7 @@ body {
   padding-top: calc(@syn-topbar-height + 10px);
   text-align: left;
   box-sizing: border-box;
+  font-size: 12px
 
   @media (min-width: @screen-desktop) {
     width: @screen-desktop - 10px;
@@ -40,6 +40,10 @@ body {
     padding-left: 2px;
     padding-right: 2px;
     padding-top: 65px; /** top bar is smaller on phones **/
+  }
+
+  @media (-webkit-min-device-pixel-ratio: 1.1){
+    font-size: 6px;
   }
 }
 
