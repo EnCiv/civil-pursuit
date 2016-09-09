@@ -174,6 +174,9 @@ class Item extends React.Component {
 
   readMore (e) {
     e.preventDefault();
+    e.stopPropogation();
+    e.nativeEvent.stopImmediatePropagation();
+    
     let item = React.findDOMNode(this.refs.item);
 
     let truncatable =  item.querySelector('.item-truncatable');
