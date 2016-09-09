@@ -137,8 +137,8 @@ class Item extends React.Component {
           }
 
           Item.paint(subject, limit);
-          Item.paint(reference, limit);
           Item.paint(description, limit);
+          Item.paint(reference, limit);
 
           Item.paint(tendency, limit);
 
@@ -235,13 +235,13 @@ class Item extends React.Component {
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
               </h4>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
+              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
+                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+              </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
@@ -273,13 +273,13 @@ class Item extends React.Component {
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
               </h4>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
+              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
+                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+              </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
