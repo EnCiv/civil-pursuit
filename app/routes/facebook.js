@@ -1,6 +1,5 @@
 'use strict';
 
-import { Domain }             from 'domain';
 import util                   from 'util';
 import passport               from 'passport';
 import PassportFacebook       from 'passport-facebook';
