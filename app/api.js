@@ -3,7 +3,6 @@
 import {EventEmitter}     from 'events';
 import fs                 from 'fs';
 import path               from 'path';
-import {Domain}           from 'domain';
 import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
