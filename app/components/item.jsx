@@ -112,29 +112,11 @@ class Item extends React.Component {
         let buttons       =   item.querySelector('.item-buttons');
         let tendency      =   item.querySelector('.item-tendency');
 
+        console.info("item.ComponentDidMount", truncatable, subject, description, reference, buttons, tendency);
+
         let onLoad = () => {
-          let mediaHeight = 50; // minimum height for the item
-          if (media) {
-              mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
-          }
 
-          let limit;
-
-          if ( ! buttons ) {
-            limit = mediaHeight;
-          }
-
-          else {
-            let buttonsHeight = ( buttons.offsetTop + buttons.offsetHeight - 40 );
-
-            if ( mediaHeight >= buttonsHeight  ) {
-              limit = mediaHeight;
-            }
-
-            else {
-              limit = buttonsHeight;
-            }
-          }
+          let limit = truncatable.offsetTop + trunkateable.style.minimumHeight - subject.offsetHeight - reference.offsetHeight;
 
           Item.paint(subject, limit,'div');
           Item.paint(description, limit,'div');
@@ -251,13 +233,13 @@ class Item extends React.Component {
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
               </h4>
+              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
+                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+              </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
@@ -289,13 +271,13 @@ class Item extends React.Component {
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
               </h4>
+              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
+                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+              </h5>
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
