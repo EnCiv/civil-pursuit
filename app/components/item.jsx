@@ -112,11 +112,11 @@ class Item extends React.Component {
         let buttons       =   item.querySelector('.item-buttons');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", truncatable, subject, description, reference, buttons, tendency);
+        console.info("item.ComponentDidMount", truncatable.offsetTop, truncatable.style.minimumHeight, subject.offsetHeight );
 
         let onLoad = () => {
 
-          let limit = truncatable.offsetTop + trunkateable.style.minimumHeight - subject.offsetHeight - reference.offsetHeight;
+          let limit = truncatable.offsetTop + truncatable.style.minimumHeight;
 
           Item.paint(subject, limit,'div');
           Item.paint(description, limit,'div');
