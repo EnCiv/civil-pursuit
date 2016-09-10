@@ -116,7 +116,7 @@ class Item extends React.Component {
 
         let onLoad = () => {
 
-          let limit = truncatable.offsetTop + truncatable.style.minHeight;
+          let limit = truncatable.offsetTop + 84;
 
           Item.paint(subject, limit,'div');
           Item.paint(description, limit,'div');
