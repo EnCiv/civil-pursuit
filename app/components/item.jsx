@@ -208,7 +208,7 @@ class Item extends React.Component {
 
     console.info("item.openURL", this, reference );
 
-    var win = window.open(this.props.href, '_blank');
+    let win = window.open(reference.props.href, reference.props.target);
     if (win) {
       //Browser has allowed it to be opened
       win.focus();
@@ -216,10 +216,7 @@ class Item extends React.Component {
       //Browser has blocked it
       alert('Please allow popups for this website');
     }
-
   }
-
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
