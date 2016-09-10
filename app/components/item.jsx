@@ -204,11 +204,7 @@ class Item extends React.Component {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
 
-    let reference = React.findDOMNode(this.refs.reference);
-
-    console.info("item.openURL", this, reference );
-
-    let win = window.open(reference.props.href, reference.props.target);
+    let win = window.open(this.refs.reference.props.href, this.refs.reference.props.target);
     if (win) {
       //Browser has allowed it to be opened
       win.focus();
