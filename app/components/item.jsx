@@ -79,25 +79,7 @@ class Item extends React.Component {
 
   componentDidMount () {
     if ( this.refs.item ) {
-      let media;
-
-      const image = React
-        .findDOMNode(this.refs.media)
-        .querySelector('img');
-
-      const video = React
-        .findDOMNode(this.refs.media)
-        .querySelector('iframe');
-
-      if ( video ) {
-        media = React
-         .findDOMNode(this.refs.media)
-         .querySelector('.video-container');
-      }
-      else if (image) {
-        media = image;
-      }
-
+      
       const item = React
         .findDOMNode(this.refs.item);
 
@@ -109,43 +91,24 @@ class Item extends React.Component {
         let subject       =   item.querySelector('.item-subject');
         let description   =   item.querySelector('.item-description');
         let reference     =   item.querySelector('.item-reference a');
-        let buttons       =   item.querySelector('.item-buttons');
         let tendency      =   item.querySelector('.item-tendency');
 
         console.info("item.ComponentDidMount", truncatable.style, truncatable.style.minHeight);
 
-        let onLoad = () => {
+        let limit = truncatable.offsetTop + 84;
 
-          let limit = truncatable.offsetTop + 84;
+        Item.paint(subject, limit,'div');
+        Item.paint(description, limit,'div');
+        Item.paint(reference, limit,'span');
 
-          Item.paint(subject, limit,'div');
-          Item.paint(description, limit,'div');
-          Item.paint(reference, limit,'span');
+        Item.paint(tendency, limit,'span');
 
-          Item.paint(tendency, limit,'span');
-
-          if ( ! item.querySelector('.word.hide') ) {
-            more.style.display = 'none';
-          }
-
-          if ( this.props.new ) {
+        if ( ! item.querySelector('.word.hide') ) {
+          more.style.display = 'none';
+        }
+        if ( this.props.new ) {
             this.setState({ showPromote: true });
           }
-        };
-
-        if ( image ) {
-          if ( image.complete && image.naturalWidth ) {
-            onLoad();
-          }
-
-          else {
-            image.addEventListener('load', onLoad);
-          }
-        }
-        else {
-          onLoad();
-          // video.addEventListener('load', onLoad);
-        }
 
         this.truncated = true;
       }
