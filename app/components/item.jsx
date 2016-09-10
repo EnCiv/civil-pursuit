@@ -76,7 +76,7 @@ class Item extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+{/*
   componentDidMount () {
     if ( this.refs.item ) {
       
@@ -114,6 +114,7 @@ class Item extends React.Component {
       }
     }
   }
+  */
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
