@@ -37,7 +37,7 @@ class Item extends React.Component {
   */
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static paint (container, limit) {
+  static paint (container, limit, tag) {
 
     const lines           =   Item.wordify(container.textContent);
     container.innerHTML   =   '';
@@ -51,7 +51,7 @@ class Item extends React.Component {
     }
 
     lines.forEach(line => {
-      const div = document.createElement('div');
+      const div = document.createElement(tag);
 
       container.appendChild(div);
 
@@ -136,11 +136,11 @@ class Item extends React.Component {
             }
           }
 
-          Item.paint(subject, limit);
-          Item.paint(description, limit);
-          Item.paint(reference, limit);
+          Item.paint(subject, limit,'div');
+          Item.paint(description, limit,'div');
+          Item.paint(reference, limit,'span');
 
-          Item.paint(tendency, limit);
+          Item.paint(tendency, limit,'span');
 
           if ( ! item.querySelector('.word.hide') ) {
             more.style.display = 'none';
@@ -201,7 +201,7 @@ class Item extends React.Component {
 
   openURL (e) {
     e.preventDefault();
-    e.stopPropogation();
+    e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
 
     let reference = React.findDOMNode(this.refs.reference);
