@@ -176,7 +176,7 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropogation();
     e.nativeEvent.stopImmediatePropagation();
-    
+
     let item = React.findDOMNode(this.refs.item);
 
     let truncatable =  item.querySelector('.item-truncatable');
@@ -197,6 +197,28 @@ class Item extends React.Component {
       text.innerText = 'more';
       tendency.style.display='none';
     }
+  }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  openURL (e) {
+    e.preventDefault();
+    e.stopPropogation();
+    e.nativeEvent.stopImmediatePropagation();
+
+    let reference = React.findDOMNode(this.refs.reference);
+
+    console.info("item.openURL", this, reference );
+
+    var win = window.open(this.props.href, '_blank');
+    if (win) {
+      //Browser has allowed it to be opened
+      win.focus();
+    } else {
+      //Browser has blocked it
+      alert('Please allow popups for this website');
+    }
+
   }
 
 
@@ -243,7 +265,7 @@ class Item extends React.Component {
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
@@ -281,7 +303,7 @@ class Item extends React.Component {
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
-                <a href={ referenceLink } target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
               <div className="item-read-more" ref="more">
                 <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
