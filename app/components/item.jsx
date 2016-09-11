@@ -125,22 +125,12 @@ class Item extends React.Component {
 
     let truncatable =  item.querySelector('.item-truncatable');
 
-    let tendency    =  item.querySelector('.item-tendency');
+    let description =  item.querySelector('.item-description');
 
-    truncatable.classList.toggle('expand');
+    description.classList.toggle('expand');
 
     this.expanded = ! this.expanded;
 
-    let text = React.findDOMNode(this.refs.readMoreText);
-
-    if ( this.expanded ) {
-      text.innerText = 'less';
-      tendency.style.display='block';
-    }
-    else {
-      text.innerText = 'more';
-      tendency.style.display='none';
-    }
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,9 +194,6 @@ class Item extends React.Component {
               <div className="item-tendency" style={{display: 'none'}}>
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
-              <div className="item-read-more" ref="more">
-                <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
-              </div>
             </div>
           </section>
 
@@ -241,9 +228,6 @@ class Item extends React.Component {
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
-              </div>
-              <div className="item-read-more" ref="more">
-                <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
               </div>
             </div>
           </section>

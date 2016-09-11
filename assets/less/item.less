@@ -39,6 +39,7 @@
 
 .item-truncatable {
   min-height: 7em;
+
   .word.hide {
     display: none
   }
@@ -54,6 +55,7 @@
 }
 
 .item-truncatable.expand {
+
   .word.hide {
     display: inline
   }
@@ -75,8 +77,25 @@ blockquote {
 }
 
 .item-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  line-height: 1.375em;        /* fallback */
+  max-height:  ~"calc( 1.375em * 3)";       /* fallback */
+
   .pre-text();
 }
+
+.item-description.expand {
+  overflow: visible;
+  display: block;
+  max-height:  none;       /* fallback */
+
+  .pre-text();
+}
+
 
 .item-buttons           {
   float                 :     right;
