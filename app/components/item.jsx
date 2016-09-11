@@ -127,9 +127,13 @@ class Item extends React.Component {
 
     let description =  item.querySelector('.item-description');
 
+    let bottomRight =  item.querySelector('.item-bottom-right');
+
     description.classList.toggle('expand');
 
     this.expanded = ! this.expanded;
+
+    if(this.expanded) bottomRight.classList.toggle('expand');
 
   }
 
@@ -228,6 +232,9 @@ class Item extends React.Component {
               <div className="item-description pre-text">{ item.description }</div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
+              </div>
+              <div className="item-bottom-right">
+                <span>...</span>
               </div>
             </div>
           </section>
