@@ -99,7 +99,7 @@ class Item extends React.Component {
 
         if( truncatable.offsetHeight > 84 ) {
           description.classList.add('truncated');
-          truncHint.classList.remove('expand');
+          truncHint.classList.add('expand');
           this.trunced=true;
           this.truncated = true;
         } else {
@@ -128,11 +128,11 @@ class Item extends React.Component {
       let truncHint =  item.querySelector('.item-trunc-hint');
 
       if (this.truncated) {
-        description.classList.add('truncated');
+        description.classList.remove('truncated');
         truncHint.classList.remove('expand');
         this.truncated=false;
       } else {
-        description.classList.remove('truncated');
+        description.classList.add('truncated');
         truncHint.classList.add('expand');
         this.truncated=true;
       }
@@ -200,6 +200,9 @@ class Item extends React.Component {
               <div className="item-tendency" style={{display: 'none'}}>
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
+              <div className="item-trunc-hint">
+                <span>...</span>
+              </div>
             </div>
           </section>
 
@@ -235,7 +238,7 @@ class Item extends React.Component {
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
-              <div className="item-bottom-right">
+              <div className="item-trunc-hint">
                 <span>...</span>
               </div>
             </div>
