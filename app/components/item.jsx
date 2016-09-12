@@ -102,12 +102,15 @@ class Item extends React.Component {
           truncHint.className.remove('expand');
           this.trunced=true;
           this.truncated = true;
+        } else {
+          this.truncated=false;
+          this.trunced=false;
         }
+
 
         if ( this.props.new ) {
             this.setState({ showPromote: true });
           }
-        this.truncated = true;
       }
     }
   }
@@ -117,20 +120,23 @@ class Item extends React.Component {
   readMore (e) {
     e.preventDefault();
 
-    let item = React.findDOMNode(this.refs.item);
+    if( this.trunc) {
 
-    let truncatable =  item.querySelector('.item-truncatable');
+      let item = React.findDOMNode(this.refs.item);
+      let truncatable =  item.querySelector('.item-truncatable');
+      let description =  item.querySelector('.item-description');
+      let truncHint =  item.querySelector('.item-trunc-hint');
 
-    let description =  item.querySelector('.item-description');
-
-    let truncHint =  item.querySelector('.item-trunc-hint');
-
-    description.classList.toggle('expand');
-
-    this.expanded = ! this.expanded;
-
-    if(this.expanded) truncHint.classList.toggle('expand');
-
+      if (this.truncated) {
+        description.className.add('truncated');
+        truncHint.className.remove('expand');
+        this.truncated=false;
+      } else {
+        description.className.remove('truncated');
+        truncHint.className.add('expand');
+        this.truncated=true;
+      }
+    }
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

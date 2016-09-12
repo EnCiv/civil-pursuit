@@ -62,16 +62,16 @@
   }
 }
 
-.item-bottom-right {
-  display: inline;
+.item-trunc-hint {
+  display: none;
   position: absolute;
   right: 50%;
   bottom: 0;
   font-size: 2em;
 }
 
-.item-bottom-right.expand {
-  display: none;
+.item-trunc-hint.expand {
+  display: inline;
 }
 
 .item-subject {
@@ -90,13 +90,13 @@ blockquote {
 }
 
 .item-description {
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
-  display: -webkit-box;
+  display: block;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3; /* number of lines to show */
   line-height: 1.375em;        /* fallback */
-  max-height:  ~"calc( 1.375em * 3)";       /* fallback */
+  max-height:  none;       /* fallback */
 
   .pre-text();
 }
@@ -107,6 +107,12 @@ blockquote {
   max-height:  none;       /* fallback */
 
   .pre-text();
+}
+
+.item-description.truncated {
+  overflow: hidden;
+  display: -webkit-box;
+  max-height:  ~"calc( 1.375em * 3)";       /* fallback */
 }
 
 
