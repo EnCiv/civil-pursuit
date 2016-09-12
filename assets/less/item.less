@@ -115,6 +115,12 @@ blockquote {
   max-height:  ~"calc( 1.375em * 3)";       /* fallback */
 }
 
+.item-description.truncated4 {
+  overflow: hidden;
+  display: -webkit-box;
+  max-height:  ~"calc( 1.375em * 4)";       /* fallback */
+  -webkit-line-clamp: 4; /* number of lines to show */
+}
 
 .item-buttons           {
   float                 :     right;

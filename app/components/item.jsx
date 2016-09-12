@@ -97,14 +97,14 @@ class Item extends React.Component {
 
         console.info("item.ComponentDidMount", description.style);
 
-        let lineLimit = 3;
+        this.lineLimit = 3;
         if(reference.offsetHeight == 0) { 
-          lineLimit++;
+          this.lineLimit++;
           description.style.webkitLineClamp=4;
         }
 
         if( description.offsetHeight > (lineLimit * 17) ) {
-          description.classList.add('truncated');
+          description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
           truncHint.classList.add('expand');
           this.trunced=true;
           this.truncated = true;
@@ -134,13 +134,15 @@ class Item extends React.Component {
       let truncHint =  item.querySelector('.item-trunc-hint');
 
       if (this.truncated) {
-        description.classList.remove('truncated');
+        description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.remove('expand');
         this.truncated=false;
+        this.props.toggle(this.props.item._id, 'harmony');
       } else {
-        description.classList.add('truncated');
+        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         this.truncated=true;
+        this.props.toggle(this.props.item._id, 'harmony');
       }
     }
   }
