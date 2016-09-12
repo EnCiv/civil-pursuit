@@ -26,10 +26,10 @@
 
 .item-media {
   float                 :     left;
-  width                 :     20%;
-  max-width             :     150px;
   margin-right          :     @item-visual-gap; 
   padding-bottom        :     @item-visual-gap;
+  height:                     7em;
+  max-width:                  13em;
 }
 
 .item-text {
@@ -64,8 +64,8 @@
 .item-trunc-hint {
   display: none;
   position: absolute;
-  right: 50%;
-  bottom: 0;
+  left: 50%;
+  bottom: 0.25em;
   font-size: 2em;
 }
 
@@ -90,10 +90,8 @@ blockquote {
 
 .item-description {
   overflow: visible;
-  text-overflow: ellipsis;
   display: block;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* number of lines to show */
   line-height: 1.375em;        /* fallback */
   max-height:  none;       /* fallback */
   position: relative;
@@ -112,6 +110,7 @@ blockquote {
 .item-description.truncated {
   overflow: hidden;
   display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
   max-height:  ~"calc( 1.375em * 3)";       /* fallback */
 }
 

@@ -85,6 +85,7 @@ class Item extends React.Component {
       if ( ! this.truncated ) {
         const more = React.findDOMNode(this.refs.more);
 
+        let media = item.querySelector('.item-media');
         let truncatable   =   item.querySelector('.item-truncatable');
         let truncHint   =   item.querySelector('.item-trunc-hint');
 
@@ -103,7 +104,7 @@ class Item extends React.Component {
           description.style.webkitLineClamp=4;
         }
 
-        if( description.offsetHeight > (this.lineLimit * 17) ) {
+        if( description.offsetHeight > (media.offsetHeight - subject.offsetHeight - reference.offsetHeight) ) {
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
           truncHint.classList.add('expand');
           this.trunced=true;
@@ -211,7 +212,7 @@ class Item extends React.Component {
               <div className="item-description pre-text">
                 { item.description }
                 <div className="item-trunc-hint">
-                  <span>...</span>
+                  <Icon icon="icon-ellipsis-horizontal" />
                 </div>
               </div>
               <div className="item-tendency" style={{display: 'none'}}>
