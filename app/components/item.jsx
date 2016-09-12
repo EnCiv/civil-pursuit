@@ -76,7 +76,6 @@ class Item extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/***
   componentDidMount () {
     if ( this.refs.item ) {
       
@@ -87,34 +86,31 @@ class Item extends React.Component {
         const more = React.findDOMNode(this.refs.more);
 
         let truncatable   =   item.querySelector('.item-truncatable');
+        let truncHint   =   item.querySelector('.item-bottom-right');
+
+
         // let subject       =   item.querySelector('.item-subject a');
         let subject       =   item.querySelector('.item-subject');
         let description   =   item.querySelector('.item-description');
         let reference     =   item.querySelector('.item-reference a');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", truncatable.style, truncatable.style.minHeight);
+        console.info("item.ComponentDidMount", truncatable.offsetHeight, truncatable.style.minHeight);
 
-        let limit = truncatable.offsetTop + 84;
-
-        Item.paint(subject, limit,'div');
-        Item.paint(description, limit,'div');
-        Item.paint(reference, limit,'span');
-
-        Item.paint(tendency, limit,'span');
-
-        if ( ! item.querySelector('.word.hide') ) {
-          more.style.display = 'none';
+        if( truncatable.offsetHeight > 84 ) {
+          description.className.add('truncated');
+          truncHint.className.remove('expand');
+          this.trunced=true;
+          this.truncated = true;
         }
+
         if ( this.props.new ) {
             this.setState({ showPromote: true });
           }
-
         this.truncated = true;
       }
     }
   }
-**/
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -127,13 +123,13 @@ class Item extends React.Component {
 
     let description =  item.querySelector('.item-description');
 
-    let bottomRight =  item.querySelector('.item-bottom-right');
+    let truncHint =  item.querySelector('.item-trunc-hint');
 
     description.classList.toggle('expand');
 
     this.expanded = ! this.expanded;
 
-    if(this.expanded) bottomRight.classList.toggle('expand');
+    if(this.expanded) truncHint.classList.toggle('expand');
 
   }
 
