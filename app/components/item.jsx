@@ -86,7 +86,7 @@ class Item extends React.Component {
         const more = React.findDOMNode(this.refs.more);
 
         let truncatable   =   item.querySelector('.item-truncatable');
-        let truncHint   =   item.querySelector('.item-bottom-right');
+        let truncHint   =   item.querySelector('.item-trunc-hint');
 
 
         // let subject       =   item.querySelector('.item-subject a');
@@ -98,8 +98,8 @@ class Item extends React.Component {
         console.info("item.ComponentDidMount", truncatable.offsetHeight, truncatable.style.minHeight);
 
         if( truncatable.offsetHeight > 84 ) {
-          description.className.add('truncated');
-          truncHint.className.remove('expand');
+          description.classList.add('truncated');
+          truncHint.classList.remove('expand');
           this.trunced=true;
           this.truncated = true;
         } else {
@@ -128,12 +128,12 @@ class Item extends React.Component {
       let truncHint =  item.querySelector('.item-trunc-hint');
 
       if (this.truncated) {
-        description.className.add('truncated');
-        truncHint.className.remove('expand');
+        description.classList.add('truncated');
+        truncHint.classList.remove('expand');
         this.truncated=false;
       } else {
-        description.className.remove('truncated');
-        truncHint.className.add('expand');
+        description.classList.remove('truncated');
+        truncHint.classList.add('expand');
         this.truncated=true;
       }
     }
