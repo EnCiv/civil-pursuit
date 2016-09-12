@@ -95,9 +95,11 @@ class Item extends React.Component {
         let reference     =   item.querySelector('.item-reference a');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", truncatable.offsetHeight, truncatable.style.minHeight);
+        console.info("item.ComponentDidMount", description.offsetHeight, decription.style.lineHeight, this.refs.item);
 
-        if( truncatable.offsetHeight > 84 ) {
+        let lineLimit = 3;
+
+        if( description.offsetHeight > (lineLimit * description.style.lineHeight) ) {
           description.classList.add('truncated');
           truncHint.classList.add('expand');
           this.trunced=true;
