@@ -133,6 +133,8 @@ class Item extends React.Component {
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
 
+      console.info("item.readMore",this.props);
+
       if (this.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.remove('expand');
