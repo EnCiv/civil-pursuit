@@ -103,7 +103,7 @@ class Item extends React.Component {
           description.style.webkitLineClamp=4;
         }
 
-        if( description.offsetHeight > (lineLimit * 17) ) {
+        if( description.offsetHeight > (this.lineLimit * 17) ) {
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
           truncHint.classList.add('expand');
           this.trunced=true;
