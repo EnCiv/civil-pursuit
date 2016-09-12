@@ -67,6 +67,8 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
+    if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't expand harmony on items that don't have it
+
     if (
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&

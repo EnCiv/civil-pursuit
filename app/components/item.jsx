@@ -146,6 +146,8 @@ class Item extends React.Component {
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
       }
+    } else {
+      this.props.toggle(this.props.item._id, 'harmony');
     }
   }
 
