@@ -100,7 +100,7 @@ class Item extends React.Component {
         let lineLimit = 3;
         if(reference.offsetHeight == 0) { 
           lineLimit++;
-          description.style['-webkit-line-clamp']=4;
+          description.style.webkitLineClamp=4;
         }
 
         if( description.offsetHeight > (lineLimit * 17) ) {
@@ -202,12 +202,14 @@ class Item extends React.Component {
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
-              <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-description pre-text">
+                { item.description }
+                <div className="item-trunc-hint">
+                  <span>...</span>
+                </div>
+              </div>
               <div className="item-tendency" style={{display: 'none'}}>
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
-              </div>
-              <div className="item-trunc-hint">
-                <span>...</span>
               </div>
             </div>
           </section>
@@ -240,7 +242,12 @@ class Item extends React.Component {
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'inline' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
-              <div className="item-description pre-text">{ item.description }</div>
+              <div className="item-description pre-text">
+                { item.description }
+                <div className="item-trunc-hint">
+                  <span>...</span>
+                </div>
+              </div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
