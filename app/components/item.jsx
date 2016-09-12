@@ -95,10 +95,13 @@ class Item extends React.Component {
         let reference     =   item.querySelector('.item-reference a');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", description.offsetHeight, reference.offsetHeight, description);
+        console.info("item.ComponentDidMount", description.style);
 
         let lineLimit = 3;
-        if(reference.offsetHeigh == 0) { lineLimit++; }
+        if(reference.offsetHeight == 0) { 
+          lineLimit++;
+          description.style['-webkit-line-clamp']=4;
+        }
 
         if( description.offsetHeight > (lineLimit * 17) ) {
           description.classList.add('truncated');
