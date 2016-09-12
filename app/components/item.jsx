@@ -95,7 +95,7 @@ class Item extends React.Component {
         let reference     =   item.querySelector('.item-reference a');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", description.offsetHeight, decription.style.lineHeight, this.refs.item);
+        console.info("item.ComponentDidMount", description.offsetHeight, description.style.lineHeight, this.refs.item);
 
         let lineLimit = 3;
 
