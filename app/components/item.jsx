@@ -120,7 +120,7 @@ class Item extends React.Component {
   readMore (e) {
     e.preventDefault();
 
-    if( this.trunc) {
+    if( this.trunced) {
 
       let item = React.findDOMNode(this.refs.item);
       let truncatable =  item.querySelector('.item-truncatable');
