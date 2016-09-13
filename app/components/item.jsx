@@ -131,6 +131,7 @@ class Item extends React.Component {
     if( this.trunced) {
 
       let item = React.findDOMNode(this.refs.item);
+      let subject =  item.querySelector('.item-subject');
       let truncatable =  item.querySelector('.item-truncatable');
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
@@ -140,11 +141,13 @@ class Item extends React.Component {
       if (this.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.remove('expand');
+        subject.classList.remove('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
+        subject.classList.add('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
       }

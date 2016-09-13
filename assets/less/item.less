@@ -64,9 +64,9 @@
 .item-trunc-hint {
   display: none;
   position: absolute;
-  left: ~"calc(50% - 7.5em + 2em)";  // less the half the width of the media plus half the width of the buttons
-  bottom: 0.25em;
-  font-size: 2em;
+  right: 0;
+  bottom: 0;
+  font-size: 1em;
 }
 
 .item-trunc-hint.expand {
@@ -78,6 +78,15 @@
   margin-top: -0.13em; //* the oswald font seems to have extra space in the top */
   text-align: left;
   padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+}
+
+.item-subject.expand {
+  overflow: visible;
+  white-space: normal;
 }
 
 blockquote {
