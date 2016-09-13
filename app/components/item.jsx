@@ -131,7 +131,7 @@ class Item extends React.Component {
 
       let item = React.findDOMNode(this.refs.item);
       let subject =  item.querySelector('.item-subject');
-      let subject =  item.querySelector('.item-reference a');
+      let reference =  item.querySelector('.item-reference a');
       let truncatable =  item.querySelector('.item-truncatable');
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
