@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ItemMedia        from './item-media';
+import Icon               from './util/icon';
 
 class Item extends React.Component {
 
