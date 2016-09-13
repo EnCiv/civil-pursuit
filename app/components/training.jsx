@@ -403,8 +403,8 @@ class Training extends React.Component {
     return (
       <section>
         <div id="syn-training" data-loading={ this.state.loader ? '1' : '0' } ref="view">
-          <div className="syn-training-close">
-            <Icon icon="times" onClick={ this.close.bind(this) } />
+          <div className="syn-training-close" onClick={ this.close.bind(this) }>
+            <Icon icon="times" />
           </div>
           <h4 className="syn-training-title">{ title }</h4>
 
