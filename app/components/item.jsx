@@ -94,7 +94,7 @@ class Item extends React.Component {
         // let subject       =   item.querySelector('.item-subject a');
         let subject       =   item.querySelector('.item-subject');
         let description   =   item.querySelector('.item-description');
-        let reference     =   item.querySelector('.item-reference a');
+        let reference     =   item.querySelector('.item-reference');
         let tendency      =   item.querySelector('.item-tendency');
 
         console.info("item.ComponentDidMount", description.style);
@@ -131,7 +131,7 @@ class Item extends React.Component {
 
       let item = React.findDOMNode(this.refs.item);
       let subject =  item.querySelector('.item-subject');
-      let reference =  item.querySelector('.item-reference a');
+      let reference =  item.querySelector('.item-reference');
       let truncatable =  item.querySelector('.item-truncatable');
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
