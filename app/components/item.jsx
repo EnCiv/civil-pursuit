@@ -213,7 +213,7 @@ class Item extends React.Component {
               <div className="item-description pre-text">
                 { item.description }
                 <div className="item-trunc-hint">
-                  <Icon icon="bug" />
+                  <Icon icon="ellipsis-h" />
                 </div>
               </div>
               <div className="item-tendency" style={{display: 'none'}}>
@@ -253,7 +253,7 @@ class Item extends React.Component {
               <div className="item-description pre-text">
                 { item.description }
                 <div className="item-trunc-hint">
-                  <Icon icon="bug" />
+                  <Icon icon="ellipsis-h" />
                 </div>
               </div>
               <div className="item-tendency" style={{display: 'none'}}>
