@@ -149,7 +149,7 @@ class Item extends React.Component {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
-        reference.classList.remover('expand');
+        reference.classList.remove('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
       }
