@@ -102,7 +102,6 @@ class Item extends React.Component {
         this.lineLimit = 3;
         if(reference.offsetHeight == 0) { 
           this.lineLimit++;
-          description.style.webkitLineClamp=4;
         }
 
         if( description.offsetHeight > (media.offsetHeight - subject.offsetHeight - reference.offsetHeight) ) {
@@ -132,6 +131,7 @@ class Item extends React.Component {
 
       let item = React.findDOMNode(this.refs.item);
       let subject =  item.querySelector('.item-subject');
+      let subject =  item.querySelector('.item-reference a');
       let truncatable =  item.querySelector('.item-truncatable');
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
@@ -141,13 +141,15 @@ class Item extends React.Component {
       if (this.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.remove('expand');
-        subject.classList.remove('expand');
+        subject.classList.add('expand');
+        reference.classList.add('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
-        subject.classList.add('expand');
+        subject.classList.remove('expand');
+        reference.classList.remover('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
       }
