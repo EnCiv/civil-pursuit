@@ -252,14 +252,11 @@ class Item extends React.Component {
               <div className="item-description pre-text">
                 { item.description }
                 <div className="item-trunc-hint">
-                  <span>...</span>
+                  <Icon icon="icon-ellipsis-horizontal" />
                 </div>
               </div>
               <div className="item-tendency" style={{display: 'none'}}>
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
-              </div>
-              <div className="item-trunc-hint">
-                <span>...</span>
               </div>
             </div>
           </section>
