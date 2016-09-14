@@ -94,6 +94,7 @@ class ItemButtons extends React.Component {
       );
     }
 
+{/*
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       if(buttonstate.harmony) {
         harmony = (
@@ -128,6 +129,7 @@ class ItemButtons extends React.Component {
         </ButtonGroup>
       );
     }
+*/}
 
     if ( item.subtype ) {
       if (item.promotions > 2) {
