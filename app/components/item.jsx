@@ -210,7 +210,7 @@ class Item extends React.Component {
             <div className="item-truncatable" onClick={ this.readMore.bind(this) }>
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-                { item.subject }
+                <span>{ item.subject }</span>
               </h4>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
@@ -250,7 +250,7 @@ class Item extends React.Component {
             <div className="item-truncatable" onClick={ this.readMore.bind(this) }>  
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-                { item.subject }
+                <span>{ item.subject }</span>
               </h4>
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
