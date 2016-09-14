@@ -76,12 +76,14 @@
 
 .item-subject {
   margin: 0;
-  margin-top: -0.13em; //* the oswald font seems to have extra space in the top */
+  margin-top: 0;
   text-align: left;
   padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
+  font-size: 1.375em;
 
 }
 
