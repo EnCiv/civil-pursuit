@@ -29,14 +29,14 @@ class ItemButtons extends React.Component {
     if( panel && panel.type && panel.type.promoteButtonLabel) {
       promoteButtonLabel = item.upvote.userDidUpvote ? panel.type.promoteButtonLabel.active : panel.type.promoteButtonLabel.inactive;
     } else {
-     promoteButtonLabel = item.upvote.userDidUpvote ? "Pursuing" : "Pursue" ;
+     promoteButtonLabel = item.upvote.userDidUpvote ? "Upvoted" : "Upvote" ;
     }
 
     if(item.type && item.type.promoteMethod!="hidden") {
       if(user){
         if (buttonstate.promote) {
           promote = (
-            <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="End pursuit without a choice">
+            <Button small shy success onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="End upvote without a choice">
 
               <span className="civil-button-text">{ promoteButtonLabel }</span>
             </Button>
@@ -44,13 +44,13 @@ class ItemButtons extends React.Component {
         } else {
           if ( item.upvote.userDidUpvote) {
             promote = (
-              <Button small shy inactive className="item-promotions" title="Yea! you are in pursuit of this one">
+              <Button small shy inactive className="item-promotions" title="Yea! you've upvoted this one">
                 <span className="civil-button-text">{ promoteButtonLabel }</span>
               </Button>
             );
           } else {
             promote = (
-              <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="Pursue this">
+              <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions" title="Upvote this">
                 <span className="civil-button-text">{ promoteButtonLabel }</span>
               </Button>
             );
@@ -58,7 +58,7 @@ class ItemButtons extends React.Component {
         }
       } else {
           promote = (
-            <Button small shy inactive className="item-promotions" title="Join so you can pursue this discussion">
+            <Button small shy inactive className="item-promotions" title="Join so you can upvote this discussion">
               <span className="civil-button-text">{ promoteButtonLabel }</span>
             </Button>
           );
@@ -149,7 +149,7 @@ class ItemButtons extends React.Component {
       } else
       {
         subtype = (
-          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people pursue this, discussion can delve into the next level">
+          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people upvote this, the discussion can delve into the next level">
             <span className="civil-button-text">Delve</span>
           </Button>
         );
