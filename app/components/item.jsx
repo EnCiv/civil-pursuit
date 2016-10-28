@@ -104,7 +104,9 @@ class Item extends React.Component {
           this.lineLimit++;
         }
 
-        if( description.offsetHeight > (media.offsetHeight - subject.offsetHeight - reference.offsetHeight) ) {
+        let mediaHeight = media.offsetHeight | subject.offsetHeight * 7 / 1.375; // media is 7em subject is 1.375em 
+
+        if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
           truncHint.classList.add('expand');
           this.trunced=true;
