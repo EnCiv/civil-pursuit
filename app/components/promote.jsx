@@ -9,6 +9,7 @@ import ColumnSliders            from './promote-column-sliders';
 import PromoteSmallScreenColumn from './promote-small-screen-column';
 import FinishButton             from './promote-finish-button';
 import ColumnFeedback           from './promote-feedback-column';
+import Item                     from './item';
 
 class Promote extends React.Component {
 
@@ -38,7 +39,7 @@ componentDidUpdate () {
     }
 
   render () {
-    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter } = this.props;
+    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user } = this.props;
 
     const content = [];
 
@@ -91,11 +92,14 @@ componentDidUpdate () {
 
           (
             <div data-screen="phone-and-up">
-              <Row>
-                <ColumnItem item={ left } position='left' key='item-left' />
-
-                <ColumnItem item={ right } position='right' key='item-right' />
-              </Row>
+              <div>
+                <div className="promote-column-left">
+                  <Item item={ left } user={ user } position='left' key='item-left' />
+                </div>
+                <div className="promote-column-right" >
+                  <Item item={ right } user={ user } position='right' key='item-right' />
+                </div>
+              <div>
 
               <Row>
                 <ColumnFeedback key="left-feedback" item={ left } position='left' />
