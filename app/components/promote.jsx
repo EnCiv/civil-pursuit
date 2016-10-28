@@ -99,7 +99,7 @@ componentDidUpdate () {
                 <div className="promote-column-right" >
                   <Item item={ right } user={ user } position='right' key='item-right' />
                 </div>
-              <div>
+              </div>
 
               <Row>
                 <ColumnFeedback key="left-feedback" item={ left } position='left' />
