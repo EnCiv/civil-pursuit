@@ -10,6 +10,7 @@ import PromoteSmallScreenColumn from './promote-small-screen-column';
 import FinishButton             from './promote-finish-button';
 import ColumnFeedback           from './promote-feedback-column';
 import Item                     from './item';
+import Feedback from './promote-feedback';
 
 class Promote extends React.Component {
 
@@ -100,12 +101,14 @@ componentDidUpdate () {
                   <Item item={ right } user={ user } position='right' key='item-right' />
                 </div>
               </div>
-
-              <Row>
-                <ColumnFeedback key="left-feedback" item={ left } position='left' />
-
-                <ColumnFeedback key="right-feedback" item={ right } position='right' />
-              </Row>
+              <div>
+                <div className="promote-column-left promote-left">
+                      <Feedback className="gutter-top" />
+                </div>
+                <div className="promote-column-right promote-right">
+                      <Feedback className="gutter-top" />
+                </div>
+              </div>
 
               <Row>
                 <ColumnSliders key="left-sliders"  item={ left } position='left' criterias={ evaluation.criterias } />
