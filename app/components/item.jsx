@@ -104,7 +104,7 @@ class Item extends React.Component {
           this.lineLimit++;
         }
 
-        let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5.8035); // media is 7em + 0.5 padding subject is 1.375em 
+        let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
 
         if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
