@@ -41,6 +41,10 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
+  promoteMore(e) {
+    console.info("promote.promoteMore", e, e.DOMEventTarget);
+  }
+
   expandLeft(e) {
     let ele;
     console.info("promote.expandLeft", e, e.DOMEventTarget);

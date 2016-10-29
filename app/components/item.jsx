@@ -160,6 +160,10 @@ class Item extends React.Component {
     } else {
       this.props.toggle(this.props.item._id, 'harmony');
     }
+
+    if(this.props.promoteMore) {
+      this.props.promoteMore(e);
+    }
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
