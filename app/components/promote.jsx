@@ -14,6 +14,7 @@ import Feedback from './promote-feedback';
 import Sliders from './sliders';
 
 class Promote extends React.Component {
+  state = {expanded: false};
 
 componentDidUpdate () {
     
@@ -39,6 +40,45 @@ componentDidUpdate () {
 //        }  
 //   } 
     }
+//**********************************************************
+  expandLeft(e) {
+    let ele;
+    console.info("promote.expandLeft", e, e.DOMEventTarget);
+    if (ele = e.DOMEventTarget != null) {
+      if(this.state.expanded) {
+        ele.style.marginRight= 0;
+        ele.style.zIndex=0;
+        ele.style.width= "48.5%";
+        this.state.expanded=false;
+        
+      } else {
+          ele.style.marginRight= '-41.5%';
+          ele.style.zIndex=10;
+          ele.style.width= "90%";
+          this.state.expanded=true;
+      }
+    }
+  }
+
+  expandRight(e) {
+    let ele;
+    if (ele = e.DOMEventTarget != null) {
+      if(this.state.expanded) {
+        ele.style.marginLeft= 0;
+        ele.style.zIndex=10;
+        ele.style.width= "48.5%";
+        this.state.expanded=false;
+        
+      } else {
+          ele.style.marginLeft= '-41.5%';
+          ele.style.zIndex=0;
+          ele.style.width= "90%";
+          this.state.expanded=true;
+      }
+    }
+  }
+
+
 
   render () {
     const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user } = this.props;
@@ -95,10 +135,10 @@ componentDidUpdate () {
           (
             <div data-screen="phone-and-up">
               <div>
-                <div className="promote-column-left">
+                <div className="promote-column-left" onClick={ this.expandLeft.bind(this) }>
                   <Item item={ left } user={ user } position='left' key='item-left' />
                 </div>
-                <div className="promote-column-right" >
+                <div className="promote-column-right" onClick={ this.expandRight.bind(this) } >
                   <Item item={ right } user={ user } position='right' key='item-right' />
                 </div>
               </div>
