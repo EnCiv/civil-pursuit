@@ -112,10 +112,10 @@ componentDidUpdate () {
               </div>
               <div>
                 <div className="promote-column-left promote-left">
-                    <Sliders criterias={ evaluation.criteria } className="promote-sliders" />
+                    <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
                 <div className="promote-column-right promote-right">
-                    <Sliders criterias={ evaluation.criteria } className="promote-sliders" />
+                    <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
               </div>
 
