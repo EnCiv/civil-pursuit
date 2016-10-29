@@ -130,10 +130,10 @@ componentDidUpdate () {
           (
             <div data-screen="phone-and-up">
               <div>
-                <div className="promote-column-left" onClick={ this.expandLeft.bind(this) }>
+                <div className="promote-column-left" }>
                   <Item item={ left } user={ user } position='left' key='item-left' />
                 </div>
-                <div className="promote-column-right" onClick={ this.expandRight.bind(this) } >
+                <div className="promote-column-right" } >
                   <Item item={ right } user={ user } position='right' key='item-right' />
                 </div>
               </div>
