@@ -11,6 +11,7 @@ import FinishButton             from './promote-finish-button';
 import ColumnFeedback           from './promote-feedback-column';
 import Item                     from './item';
 import Feedback from './promote-feedback';
+import Sliders from './sliders';
 
 class Promote extends React.Component {
 
@@ -109,13 +110,16 @@ componentDidUpdate () {
                       <Feedback className="gutter-top" />
                 </div>
               </div>
+              <div>
+                <div className="promote-column-left promote-left">
+                    <Sliders criterias={ evaluation.criteria } className="promote-sliders" />
+                </div>
+                <div className="promote-column-right promote-right">
+                    <Sliders criterias={ evaluation.criteria } className="promote-sliders" />
+                </div>
+              </div>
 
-              <Row>
-                <ColumnSliders key="left-sliders"  item={ left } position='left' criterias={ evaluation.criterias } />
 
-                <ColumnSliders key="right-sliders" item={ right } position='right' criterias={ evaluation.criterias } />
-
-              </Row>
 
               { foo }
 
