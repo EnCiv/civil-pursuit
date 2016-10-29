@@ -41,43 +41,34 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  promoteMore(e) {
+  toggle(e) {
     console.info("promote.promoteMore", e, e.DOMEventTarget);
-  }
-
-  expandLeft(e) {
     let ele;
-    console.info("promote.expandLeft", e, e.DOMEventTarget);
     if (ele = e.DOMEventTarget != null) {
-      if(this.state.expanded) {
-        ele.style.marginRight= 0;
-        ele.style.zIndex=0;
-        ele.style.width= "48.5%";
-        this.state.expanded=false;
-        
-      } else {
+      if(this.props.position=='left'){
+        if(this.state.expanded) {
+          ele.style.marginRight= 0;
+          ele.style.zIndex=0;
+          ele.style.width= "48.5%";
+          this.state.expanded=false;
+        } else {
           ele.style.marginRight= '-41.5%';
           ele.style.zIndex=10;
           ele.style.width= "90%";
           this.state.expanded=true;
-      }
-    }
-  }
-
-  expandRight(e) {
-    let ele;
-    if (ele = e.DOMEventTarget != null) {
-      if(this.state.expanded) {
-        ele.style.marginLeft= 0;
-        ele.style.zIndex=10;
-        ele.style.width= "48.5%";
-        this.state.expanded=false;
-        
-      } else {
+        }
+      } else if (this.props.position=='right') {
+        if(this.state.expanded) {
+          ele.style.marginLeft= 0;
+          ele.style.zIndex=10;
+          ele.style.width= "48.5%";
+          this.state.expanded=false;      
+        } else {
           ele.style.marginLeft= '-41.5%';
           ele.style.zIndex=0;
           ele.style.width= "90%";
           this.state.expanded=true;
+        }
       }
     }
   }
