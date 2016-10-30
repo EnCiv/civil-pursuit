@@ -46,7 +46,7 @@ componentDidUpdate () {
     let ele;
     if(position=='left'){
       console.info("left");
-      if (ele = getElementByName('promote-column-left') != null) {
+      if (ele = node.querySelector('.promote-column-left') != null) {
         console.info("left element", ele);
         if(this.state.expanded) {
           ele.style.marginRight= 0;
@@ -61,7 +61,7 @@ componentDidUpdate () {
         }
       } else return;
     } else if (this.props.position=='right') {
-      if (ele = getElementByName('promote-column-right') != null) {      
+      if (ele = node.querySelector('promote-column-right') != null) {      
         if(this.state.expanded) {
           ele.style.marginLeft= 0;
           ele.style.zIndex=10;
