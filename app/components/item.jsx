@@ -141,6 +141,7 @@ class Item extends React.Component {
 
   smoothOpen(target) {
     // set an interval to update scrollTop attribute every 25 ms
+    console.info("item.smoothOpen",this,target);
     const timer = setInterval( () => {
 
       if(target.style.maxHeight <= target.style.height){
@@ -177,6 +178,7 @@ class Item extends React.Component {
         reference.classList.add('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
+        smoothOpen(truncatable);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
