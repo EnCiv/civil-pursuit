@@ -42,10 +42,12 @@ componentDidUpdate () {
     }
 //**********************************************************
   toggle( itemId, panel, node) {
-    console.info("promote.promoteMore", itemId, panel, node);
+    console.info("promote.promoteMore", itemId, panel, node, this.props, this.state);
     let ele;
     if(this.props.position=='left'){
+      console.info("left");
       if (ele = getElementByName('promote-column-left') != null) {
+        console.info("left element", ele);
         if(this.state.expanded) {
           ele.style.marginRight= 0;
           ele.style.zIndex=0;
