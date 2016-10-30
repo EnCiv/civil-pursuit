@@ -41,7 +41,7 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle( itemId, panel, node) {
+  toggle( itemId, panel) {
     console.info("promote.promoteMore", itemId, panel, node, this.props, this.state);
     let ele;
     let node;
