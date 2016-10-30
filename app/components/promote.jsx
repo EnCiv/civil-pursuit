@@ -41,10 +41,10 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle( itemId, panel, node) {
-    console.info("promote.promoteMore", itemId, panel, node, this.props, this.state);
+  toggle( position, itemId, panel, node) {
+    console.info("promote.promoteMore", position, itemId, panel, node, this.props, this.state);
     let ele;
-    if(this.props.position=='left'){
+    if(position=='left'){
       console.info("left");
       if (ele = getElementByName('promote-column-left') != null) {
         console.info("left element", ele);
@@ -135,10 +135,10 @@ componentDidUpdate () {
             <div data-screen="phone-and-up">
               <div>
                 <div className="promote-column-left">
-                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this) } position='left' key='item-left' />
+                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this,'left') } position='left' key='item-left' />
                 </div>
                 <div className="promote-column-right">
-                  <Item item={ right } user={ user }toggle={ this.toggle.bind(this) } position='right' key='item-right' />
+                  <Item item={ right } user={ user }toggle={ this.toggle.bind(this,'right') } position='right' key='item-right' />
                 </div>
               </div>
               <div>
