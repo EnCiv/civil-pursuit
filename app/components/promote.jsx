@@ -47,8 +47,9 @@ componentDidUpdate () {
     if(position=='left'){
       node=React.findDOMNode(this.refs.promoteItemLeft);
       console.info("left", node);
-      if (ele = node.querySelector('.promote-column-left') != null) {
-        console.info("left element", ele);
+      ele = node.querySelector('.promote-column-left');
+      console.info("left element", ele);
+      if (ele!= null) {
         if(this.state.expanded) {
           ele.style.marginRight= 0;
           ele.style.zIndex=0;
