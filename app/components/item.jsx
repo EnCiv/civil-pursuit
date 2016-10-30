@@ -134,6 +134,7 @@ class Item extends React.Component {
       if ( ! this.truncated ) {
         smoothOpen(truncatable);
       }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
