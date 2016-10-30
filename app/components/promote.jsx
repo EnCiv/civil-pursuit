@@ -42,12 +42,11 @@ componentDidUpdate () {
     }
 //**********************************************************
   toggle( position, itemId, panel) {
-    console.info("promote.promoteMore", position, itemId, panel, this.props, this.state);
-    let ele;
-    let node;
+    console.info("promote.promoteMore", position, itemId, panel, this);
+    let ele, node;
     if(position=='left'){
       node=React.findDOMNode(this.refs.promoteItemLeft);
-      console.info("left");
+      console.info("left", node);
       if (ele = node.querySelector('.promote-column-left') != null) {
         console.info("left element", ele);
         if(this.state.expanded) {
