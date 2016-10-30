@@ -131,10 +131,10 @@ componentDidUpdate () {
             <div data-screen="phone-and-up">
               <div>
                 <div className="promote-column-left">
-                  <Item item={ left } user={ user } position='left' key='item-left' />
+                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this, left._id) } position='left' key='item-left' />
                 </div>
                 <div className="promote-column-right">
-                  <Item item={ right } user={ user } position='right' key='item-right' />
+                  <Item item={ right } user={ user }toggle={ this.toggle.bind(this, right._id) } position='right' key='item-right' />
                 </div>
               </div>
               <div>
