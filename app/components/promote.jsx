@@ -42,7 +42,7 @@ componentDidUpdate () {
     }
 //**********************************************************
   toggleLeft( itemId, panel) {
-    console.info("promote.promoteMore", position, itemId, panel, this);
+    console.info("promote.promoteMore", itemId, panel, this);
     let node=React.findDOMNode(this.refs.promoteItemLeft);
     if(this.state.expanded) {
       node.style.marginRight= 0;
