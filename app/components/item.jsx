@@ -148,17 +148,17 @@ class Item extends React.Component {
         subject.classList.add('expand');
         reference.classList.add('expand');
         this.truncated=false;
-        this.props.toggle(this.props.item._id, 'harmony');
+        this.props.toggle(this.props.item._id, 'harmony', e);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
         this.truncated=true;
-        this.props.toggle(this.props.item._id, 'harmony');
+        this.props.toggle(this.props.item._id, 'harmony', e);
       }
     } else {
-      this.props.toggle(this.props.item._id, 'harmony');
+      this.props.toggle(this.props.item._id, 'harmony', e);
     }
   }
 

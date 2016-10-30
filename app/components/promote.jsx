@@ -41,7 +41,7 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle(e) {
+  toggle(itemId, panel, e) {
     console.info("promote.promoteMore", e, e.DOMEventTarget);
     let ele;
     if (ele = e.DOMEventTarget != null) {
