@@ -141,11 +141,11 @@ class Item extends React.Component {
 
   smoothOpen(target) {
     // set an interval to update scrollTop attribute every 25 ms
-    console.info("item.smoothOpen",this,target);
+    console.info("item.smoothOpen",this,target, target.style.maxHeight, target.style.height);
     const timer = setInterval( () => {
 
       if(target.style.maxHeight <= target.style.height){
-        target.style.height+=3;
+        target.style.maxHeight+=3;
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
