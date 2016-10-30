@@ -58,7 +58,7 @@ componentDidUpdate () {
           this.state.expanded=true;
         }
       } else return;
-    else if (this.props.position=='right') {
+    } else if (this.props.position=='right') {
       if (ele = getElementByName('promote-column-right') != null) {      
         if(this.state.expanded) {
           ele.style.marginLeft= 0;
