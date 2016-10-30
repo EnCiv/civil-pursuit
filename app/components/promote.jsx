@@ -49,19 +49,17 @@ componentDidUpdate () {
       console.info("left", node);
       ele = node.querySelector('.promote-column-left');
       console.info("left element", ele);
-      if (ele!= null) {
-        if(this.state.expanded) {
-          ele.style.marginRight= 0;
-          ele.style.zIndex=0;
-          ele.style.width= "48.5%";
-          this.state.expanded=false;
-        } else {
-          ele.style.marginRight= '-41.5%';
-          ele.style.zIndex=10;
-          ele.style.width= "90%";
-          this.state.expanded=true;
-        }
-      } else return;
+      if(this.state.expanded) {
+        node.style.marginRight= 0;
+        node.style.zIndex=0;
+        node.style.width= "48.5%";
+        this.state.expanded=false;
+      } else {
+        node.style.marginRight= '-41.5%';
+        node.style.zIndex=10;
+        node.style.width= "90%";
+        this.state.expanded=true;
+      }
     } else if (position=='right') {
       node=React.findDOMNode(this.refs.promoteItemRight);
       if (ele = node.querySelector('promote-column-right') != null) {      
