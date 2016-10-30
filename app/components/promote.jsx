@@ -41,11 +41,11 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle(itemId, panel, e) {
-    console.info("promote.promoteMore", e, e.DOMEventTarget);
+  toggle( itemId, panel, node) {
+    console.info("promote.promoteMore", node);
     let ele;
-    if (ele = e.DOMEventTarget != null) {
-      if(this.props.position=='left'){
+    if(this.props.position=='left'){
+      if (ele = getElementByName('promote-column-left') != null) {
         if(this.state.expanded) {
           ele.style.marginRight= 0;
           ele.style.zIndex=0;
@@ -57,7 +57,9 @@ componentDidUpdate () {
           ele.style.width= "90%";
           this.state.expanded=true;
         }
-      } else if (this.props.position=='right') {
+      } else return;
+    else if (this.props.position=='right') {
+      if (ele = getElementByName('promote-column-right') != null) {      
         if(this.state.expanded) {
           ele.style.marginLeft= 0;
           ele.style.zIndex=10;
