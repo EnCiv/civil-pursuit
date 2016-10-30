@@ -41,42 +41,37 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle( position, itemId, panel) {
+  toggleLeft( itemId, panel) {
     console.info("promote.promoteMore", position, itemId, panel, this);
-    let ele, node;
-    if(position=='left'){
-      node=React.findDOMNode(this.refs.promoteItemLeft);
-      console.info("left", node);
-      ele = node.querySelector('.promote-column-left');
-      console.info("left element", ele);
-      if(this.state.expanded) {
-        node.style.marginRight= 0;
-        node.style.zIndex=0;
-        node.style.width= "48.5%";
-        this.state.expanded=false;
-      } else {
-        node.style.marginRight= '-41.5%';
-        node.style.zIndex=10;
-        node.style.width= "90%";
-        this.state.expanded=true;
-      }
-    } else if (position=='right') {
-      node=React.findDOMNode(this.refs.promoteItemRight);
-      if (ele = node.querySelector('promote-column-right') != null) {      
-        if(this.state.expanded) {
-          ele.style.marginLeft= 0;
-          ele.style.zIndex=10;
-          ele.style.width= "48.5%";
-          this.state.expanded=false;      
-        } else {
-          ele.style.marginLeft= '-41.5%';
-          ele.style.zIndex=0;
-          ele.style.width= "90%";
-          this.state.expanded=true;
-        }
-      }
+    let node=React.findDOMNode(this.refs.promoteItemLeft);
+    if(this.state.expanded) {
+      node.style.marginRight= 0;
+      node.style.zIndex=0;
+      node.style.width= "48.5%";
+      this.state.expanded=false;
+    } else {
+      node.style.marginRight= '-41.5%';
+      node.style.zIndex=10;
+      node.style.width= "90%";
+      this.state.expanded=true;
     }
   }
+
+  toggleRight( itemId, panel) {
+    let node=React.findDOMNode(this.refs.promoteItemRight);
+    if(this.state.expanded) {
+      node.style.marginLeft= 0;
+      node.style.zIndex=10;
+      node.style.width= "48.5%";
+      node.state.expanded=false;      
+    } else {
+      node.style.marginLeft= '-41.5%';
+      node.style.zIndex=0;
+      node.style.width= "90%";
+      this.state.expanded=true;
+    }
+  }
+
 
 
 
@@ -136,10 +131,10 @@ componentDidUpdate () {
             <div data-screen="phone-and-up">
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
-                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this,'left') } position='left' key='item-left' />
+                  <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
-                  <Item item={ right } user={ user } toggle={ this.toggle.bind(this,'right') } position='right' key='item-right' />
+                  <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
                 </div>
               </div>
               <div>

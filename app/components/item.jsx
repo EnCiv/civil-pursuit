@@ -124,6 +124,33 @@ class Item extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+  componentDidUpdate() {
+    if ( this.refs.item ) {
+      const item = React.findDOMNode(this.refs.item);
+      let truncatable   =   item.querySelector('.item-truncatable');
+      console.info("item.componenDidUpdate",this,item,truncatable);
+      if ( ! this.truncated ) {
+        smoothOpen(truncatable);
+      }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  smoothOpen(target) {
+    // set an interval to update scrollTop attribute every 25 ms
+    const timer = setInterval( () => {
+
+      if(target.style.maxHeight <= target.style.height){
+        target.style.height+=3;
+      } else {
+      // end interval if the scroll is completed
+        clearInterval(timer);
+      }
+    }, 25);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
@@ -149,6 +176,7 @@ class Item extends React.Component {
         reference.classList.add('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
+        smoothOpen(truncatable);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
