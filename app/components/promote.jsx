@@ -41,8 +41,8 @@ componentDidUpdate () {
 //   } 
     }
 //**********************************************************
-  toggle( itemId, panel) {
-    console.info("promote.promoteMore", itemId, panel, node, this.props, this.state);
+  toggle( position, itemId, panel) {
+    console.info("promote.promoteMore", position, itemId, panel, this.props, this.state);
     let ele;
     let node;
     if(position=='left'){
@@ -62,7 +62,7 @@ componentDidUpdate () {
           this.state.expanded=true;
         }
       } else return;
-    } else if (this.props.position=='right') {
+    } else if (position=='right') {
       node=React.findDOMNode(this.refs.promoteItemRight);
       if (ele = node.querySelector('promote-column-right') != null) {      
         if(this.state.expanded) {
@@ -138,10 +138,10 @@ componentDidUpdate () {
             <div data-screen="phone-and-up">
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
-                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this) } position='left' key='item-left' />
+                  <Item item={ left } user={ user } toggle={ this.toggle.bind(this,'left') } position='left' key='item-left' />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
-                  <Item item={ right } user={ user } toggle={ this.toggle.bind(this) } position='right' key='item-right' />
+                  <Item item={ right } user={ user } toggle={ this.toggle.bind(this,'right') } position='right' key='item-right' />
                 </div>
               </div>
               <div>
