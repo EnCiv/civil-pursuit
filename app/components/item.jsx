@@ -178,7 +178,7 @@ class Item extends React.Component {
         reference.classList.add('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
-        smoothOpen(truncatable);
+        this.smoothOpen(truncatable);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
