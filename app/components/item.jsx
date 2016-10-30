@@ -140,7 +140,7 @@ class Item extends React.Component {
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
 
-      console.info("item.readMore",this.props);
+      console.info("item.readMore",this.props, item.parentNode);
 
       if (this.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
@@ -148,17 +148,17 @@ class Item extends React.Component {
         subject.classList.add('expand');
         reference.classList.add('expand');
         this.truncated=false;
-        this.props.toggle(this.props.item._id, 'harmony', e);
+        this.props.toggle(this.props.item._id, 'harmony', item.parentNode);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
         this.truncated=true;
-        this.props.toggle(this.props.item._id, 'harmony', e);
+        this.props.toggle(this.props.item._id, 'harmony', item.parentNode);
       }
     } else {
-      this.props.toggle(this.props.item._id, 'harmony', e);
+      this.props.toggle(this.props.item._id, 'harmony', item.parentNode);
     }
   }
 
