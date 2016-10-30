@@ -132,7 +132,7 @@ class Item extends React.Component {
       let truncatable   =   item.querySelector('.item-truncatable');
       console.info("item.componenDidUpdate",this,item,truncatable);
       if ( ! this.truncated ) {
-        smoothOpen(truncatable);
+        this.smoothOpen(truncatable);
       }
     }
   }
