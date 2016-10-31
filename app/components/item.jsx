@@ -148,7 +148,7 @@ class Item extends React.Component {
       console.info("item.smoothOpen2 maxHeight", maxHeight);
       console.info("item.smoothOpen2 height", height);
       if( height == 0 || maxHeight <= height ){
-        target.style.maxHeight = (maxHeight + 1) + 'em';
+        target.style.maxHeight = (maxHeight + 7) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
