@@ -67,7 +67,7 @@ componentDidUpdate () {
       node.style.width= "48.5%";
       node.state.expandedR=false;      
     } else {
-      if(this.state.expandedR) { this.toggleLeft(); }
+      if(this.state.expandedL) { this.toggleLeft(); }
       node.style.marginLeft= '-41.5%';
       node.style.zIndex=0;
       node.style.width= "90%";
