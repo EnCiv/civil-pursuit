@@ -246,7 +246,7 @@ class Item extends React.Component {
           </section>
 
           <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncateable">
+            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
@@ -286,7 +286,7 @@ class Item extends React.Component {
           </section>
 
           <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncateable">  
+            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">  
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
