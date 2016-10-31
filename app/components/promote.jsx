@@ -14,7 +14,8 @@ import Feedback from './promote-feedback';
 import Sliders from './sliders';
 
 class Promote extends React.Component {
-  state = {expanded: false};
+  state = {expandedL: false,
+          expandedR: false};
 
 componentDidUpdate () {
     
@@ -44,31 +45,33 @@ componentDidUpdate () {
   toggleLeft( itemId, panel) {
     console.info("promote.promoteMore", itemId, panel, this);
     let node=React.findDOMNode(this.refs.promoteItemLeft);
-    if(this.state.expanded) {
+    if(this.state.expandedL) {
       node.style.marginRight= 0;
       node.style.zIndex=0;
       node.style.width= "48.5%";
-      this.state.expanded=false;
+      this.state.expandedL=false;
     } else {
+      if(this.state.expandedR) { this.toggleRight(); }
       node.style.marginRight= '-41.5%';
       node.style.zIndex=10;
       node.style.width= "90%";
-      this.state.expanded=true;
+      this.state.expandedL=true;
     }
   }
 
   toggleRight( itemId, panel) {
     let node=React.findDOMNode(this.refs.promoteItemRight);
-    if(this.state.expanded) {
+    if(this.state.expandedR) {
       node.style.marginLeft= 0;
       node.style.zIndex=10;
       node.style.width= "48.5%";
-      node.state.expanded=false;      
+      node.state.expandedR=false;      
     } else {
+      if(this.state.expandedR) { this.toggleLeft(); }
       node.style.marginLeft= '-41.5%';
       node.style.zIndex=0;
       node.style.width= "90%";
-      this.state.expanded=true;
+      this.state.expandedR=true;
     }
   }
 

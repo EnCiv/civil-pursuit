@@ -144,16 +144,10 @@ class Item extends React.Component {
     if (maxHeight < height) {
       target.style.maxHeight= height + 'px';
     }
-    console.info("item.smoothOpen maxHeight", target.style.maxHeight, maxHeight);
-    console.info("item.smoothOpen height", target.clientHeight);
 
     const timer = setInterval( () => {
-      console.info("item.smoothOpen maxHeight", target.style.maxHeight);
-      console.info("item.smoothOpen height", target.clientHeight);
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
-      console.info("item.smoothOpen2 maxHeight", lmaxHeight);
-      console.info("item.smoothOpen2 height", lheight);
       if( lmaxHeight <= lheight ){
         target.style.maxHeight = (lmaxHeight + 7) + 'px';
       } else {
@@ -161,7 +155,7 @@ class Item extends React.Component {
         clearInterval(timer);
         console.info("item.smoothOpen timer cleared");
       }
-    }, 500);
+    }, 50);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
