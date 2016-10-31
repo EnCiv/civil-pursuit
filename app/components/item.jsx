@@ -166,7 +166,7 @@ class Item extends React.Component {
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
 
-    console.info("smoothClose", minHeight, target.classList);
+    console.info("smoothClose", target.classList);
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
