@@ -145,6 +145,10 @@ class Item extends React.Component {
       target.style.maxHeight= height + 'px';
     }
 
+    item.style.position='relative';
+    item.style.z-index= -1;
+    target.style.overflow= 'visible';
+
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
@@ -154,6 +158,8 @@ class Item extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         target.style.overflow="visible";
+        item.style.position='static';
+        item.style.z-index= 'auto';
         console.info("item.smoothOpen timer cleared");
       }
     }, 50);
@@ -161,14 +167,17 @@ class Item extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothClose(target) {
+  smoothClose(target, item) {
     // set an interval to update scrollTop attribute every 25 ms
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
 
     console.info("smoothClose", target.classList[0]);
-    target.style.overflow="hidden";
+
+    item.style.position='relative';
+    item.style.z-index= -1;
+    target.style.overflow= 'visible';
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
@@ -178,6 +187,9 @@ class Item extends React.Component {
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
+        item.style.position='static';
+        item.style.z-index= 'auto';
+        target.style.overflow= 'hidden';
         console.info("item.smoothClose timer cleared");
       }
     }, 50);
@@ -209,7 +221,7 @@ class Item extends React.Component {
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
         console.info("item.readMore trunc", truncatable);
-        this.smoothOpen(truncatable);
+        this.smoothOpen(truncatable, item);
       } else {
         //description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
@@ -217,7 +229,7 @@ class Item extends React.Component {
         reference.classList.remove('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
-        this.smoothClose(truncatable);
+        this.smoothClose(truncatable, item);
       }
     } else {
       this.props.toggle(this.props.item._id, 'harmony');
