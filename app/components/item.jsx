@@ -165,17 +165,14 @@ class Item extends React.Component {
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
-    if (maxHeight < height) {
-      target.style.maxHeight= height + 'px';
-    }
 
     let minHeight = parseInt(target.style.minHeight,10) || 0;
-    console.info("smoothClose", minHeight)
+    console.info("smoothClose", minHeight, target.minHeight);
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
-      if( minHeight <= lmaxHeight ){
+      if( minHeight < lmaxHeight ){
         target.style.maxHeight =  ((lmaxHeight - 7) >= minHeight ? (lmaxHeight - 7) : minHeight ) + 'px';
       } else {
       // end interval if the scroll is completed
