@@ -158,6 +158,33 @@ class Item extends React.Component {
     }, 50);
   }
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  smoothClose(target) {
+    // set an interval to update scrollTop attribute every 25 ms
+
+    let maxHeight = parseInt(target.style.maxHeight,10) || 0;
+    let height= target.clientHeight;
+    if (maxHeight < height) {
+      target.style.maxHeight= height + 'px';
+    }
+
+    let minHeight = parseInt(target.style.minHeight,10) || 0;
+    console.info("smoothClose", minHeight)
+
+    const timer = setInterval( () => {
+      let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
+      let lheight= target.clientHeight;
+      if( minHeight <= lmaxHeight ){
+        target.style.maxHeight =  ((lmaxHeight - 7) >= minHeight ? (lmaxHeight - 7) : minHeight ) + 'px';
+      } else {
+      // end interval if the scroll is completed
+        clearInterval(timer);
+        console.info("item.smoothClose timer cleared");
+      }
+    }, 50);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
@@ -192,6 +219,7 @@ class Item extends React.Component {
         reference.classList.remove('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
+        this.smoothClose(truncatable);
       }
     } else {
       this.props.toggle(this.props.item._id, 'harmony');
