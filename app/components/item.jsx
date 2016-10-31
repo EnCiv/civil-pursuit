@@ -142,10 +142,10 @@ class Item extends React.Component {
     const timer = setInterval( () => {
       console.log(".");
       console.info("item.smoothOpen maxHeight", target.style.maxHeight);
-      console.info("item.smoothOpen height", target.style.clientHeight);
+      console.info("item.smoothOpen height", target.style.height);
       let maxHeight=target.style.maxHeight.match('/\d+/') || 0;
-      let height=target.style.clientHeight.match('/\d+/') || 0;
-      if( height=0 || maxHeight <= height ){
+      let height=target.style.height.match('/\d+/') || 0;
+      if( height == 0 || maxHeight <= height ){
         target.style.maxHeight = (height + 3) + 'px';
       } else {
       // end interval if the scroll is completed
