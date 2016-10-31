@@ -166,14 +166,13 @@ class Item extends React.Component {
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
 
-    let minHeight = parseInt(target.style.minHeight,10) || 0;
-    console.info("smoothClose", minHeight, target.minHeight);
+    console.info("smoothClose", minHeight, target.classList);
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
-      if( minHeight < lmaxHeight ){
-        target.style.maxHeight =  ((lmaxHeight - 7) >= minHeight ? (lmaxHeight - 7) : minHeight ) + 'px';
+      if( lmaxHeight >= lheight ){ //it's still shrinking
+        target.style.maxHeight =  ((lmaxHeight - 7) >0 ? (lmaxHeight - 7) : 0 ) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
