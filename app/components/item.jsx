@@ -151,7 +151,7 @@ class Item extends React.Component {
       console.info("item.smoothOpen maxHeight", target.style.maxHeight);
       console.info("item.smoothOpen height", target.clientHeight);
       let maxHeight = target.style.maxHeight;
-      let height= target.clientHeight, 10) || 0;
+      let height= target.clientHeight;
       console.info("item.smoothOpen2 maxHeight", maxHeight);
       console.info("item.smoothOpen2 height", height);
       if( maxHeight <= height ){
