@@ -129,7 +129,7 @@ class Item extends React.Component {
   componentDidUpdate() {
     if ( this.refs.item ) {
       const item = React.findDOMNode(this.refs.item);
-      let truncatable   =   item.querySelector('.item-truncatable');
+      let truncatable   =   React.findDOMNode(this.refs.truncatable);
       console.info("item.componenDidUpdate",this,item,truncatable.style.maxHeight);
     }
   }
@@ -169,7 +169,7 @@ class Item extends React.Component {
       let item = React.findDOMNode(this.refs.item);
       let subject =  item.querySelector('.item-subject');
       let reference =  item.querySelector('.item-reference');
-      let truncatable =  item.querySelector('.item-truncatable');
+      let truncatable =  React.findDOMNode(this.refs.truncatable);
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
 
@@ -246,7 +246,7 @@ class Item extends React.Component {
           </section>
 
           <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) }>
+            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncateable">
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
@@ -286,7 +286,7 @@ class Item extends React.Component {
           </section>
 
           <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) }>  
+            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncateable">  
               <h4 className="item-subject">
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                 { item.subject }
