@@ -130,7 +130,7 @@ class Item extends React.Component {
     if ( this.refs.item ) {
       const item = React.findDOMNode(this.refs.item);
       let truncatable   =   React.findDOMNode(this.refs.truncatable);
-      console.info("item.componenDidUpdate",this,item,truncatable.style.maxHeight);
+      console.info("item.componenDidUpdate",this,item,truncatable);
     }
   }
 
@@ -142,9 +142,9 @@ class Item extends React.Component {
     const timer = setInterval( () => {
       console.log(".");
       console.info("item.smoothOpen maxHeight", target.style.maxHeight);
-      console.info("item.smoothOpen height", target.style.height);
+      console.info("item.smoothOpen height", target.clientHeight);
       let maxHeight = parseInt(target.style.maxHeight, 10) || 0;
-      let height= parseInt(target.style.height, 10) || 0;
+      let height= parseInt(target.clientHeight, 10) || 0;
       console.info("item.smoothOpen2 maxHeight", maxHeight);
       console.info("item.smoothOpen2 height", height);
       if( height == 0 || maxHeight <= height ){
