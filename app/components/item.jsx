@@ -131,9 +131,6 @@ class Item extends React.Component {
       const item = React.findDOMNode(this.refs.item);
       let truncatable   =   item.querySelector('.item-truncatable');
       console.info("item.componenDidUpdate",this,item,truncatable);
-      if ( ! this.truncated ) {
-        this.smoothOpen(truncatable);
-      }
     }
   }
 
@@ -144,10 +141,10 @@ class Item extends React.Component {
 
     const timer = setInterval( () => {
       console.log(".");
-      let maxHeight=target.style.maxHeight.match('/\d+/') | 0;
-      let height=target.style.clientHeight.match('/\d+/') | 0;
-      console.info("item.smoothOpen maxHeight", maxHeight);
-      console.info("item.smoothOpen height", height);
+      console.info("item.smoothOpen maxHeight", target.style.maxHeight);
+      console.info("item.smoothOpen height", target.style.clientHeight);
+      let maxHeight=target.style.maxHeight.match('/\d+/') || 0;
+      let height=target.style.clientHeight.match('/\d+/') || 0;
       if( height=0 || maxHeight <= height ){
         target.style.maxHeight = (height + 3) + 'px';
       } else {
