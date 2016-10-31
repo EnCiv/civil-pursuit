@@ -142,14 +142,12 @@ class Item extends React.Component {
   smoothOpen(target) {
     // set an interval to update scrollTop attribute every 25 ms
 
-    let maxHeight=target.style.maxHeight.match('/\d+/') | 0;
-    let height=target.style.height.match('/\d+/') | 0;
-    
-    console.info("item.smoothOpen maxHeight", maxHeight);
-    console.info("item.smoothOpen height", height);
-
     const timer = setInterval( () => {
       console.log(".");
+      let maxHeight=target.style.maxHeight.match('/\d+/') | 0;
+      let height=target.style.clientHeight.match('/\d+/') | 0;
+      console.info("item.smoothOpen maxHeight", maxHeight);
+      console.info("item.smoothOpen height", height);
       if( height=0 || maxHeight <= height ){
         target.style.maxHeight = (height + 3) + 'px';
       } else {
@@ -157,7 +155,7 @@ class Item extends React.Component {
         clearInterval(timer);
         console.info("item.smoothOpen timer cleared");
       }
-    }, 25);
+    }, 500);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
