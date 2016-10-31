@@ -153,6 +153,7 @@ class Item extends React.Component {
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
+        target.style.overflow="visible";
         console.info("item.smoothOpen timer cleared");
       }
     }, 50);
@@ -167,6 +168,7 @@ class Item extends React.Component {
     let height= target.clientHeight;
 
     console.info("smoothClose", target.classList[0]);
+    target.style.overflow="hidden";
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
