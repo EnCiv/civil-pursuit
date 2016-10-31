@@ -145,8 +145,10 @@ class Item extends React.Component {
       console.info("item.smoothOpen height", target.style.height);
       let maxHeight=target.style.maxHeight.match('/\d+/') || 0;
       let height=target.style.height.match('/\d+/') || 0;
+      console.info("item.smoothOpen2 maxHeight", maxHeight);
+      console.info("item.smoothOpen2 height", height);
       if( height == 0 || maxHeight <= height ){
-        target.style.maxHeight = (height + 3) + 'px';
+        target.style.maxHeight = (maxHeight + 3) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
@@ -180,6 +182,7 @@ class Item extends React.Component {
         reference.classList.add('expand');
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
+        console.info("item.readMore trunc", truncatable.style.maxHeight)
         this.smoothOpen(truncatable);
       } else {
         description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
