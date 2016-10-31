@@ -166,7 +166,7 @@ class Item extends React.Component {
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
 
-    console.info("smoothClose", target.classList);
+    console.info("smoothClose", target.classList[0].style.minHeight);
 
     const timer = setInterval( () => {
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
@@ -209,7 +209,7 @@ class Item extends React.Component {
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable);
       } else {
-        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
+        //description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
