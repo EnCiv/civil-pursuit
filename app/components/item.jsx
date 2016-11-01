@@ -146,7 +146,7 @@ class Item extends React.Component {
     }
 
     item.style.position='relative';
-    item.style.z-index= -1;
+    item.style.zIndex= -1;
     target.style.overflow= 'visible';
 
     const timer = setInterval( () => {
@@ -159,7 +159,7 @@ class Item extends React.Component {
         clearInterval(timer);
         target.style.overflow="visible";
         item.style.position='static';
-        item.style.z-index= 'auto';
+        item.style.zIndex= 'auto';
         console.info("item.smoothOpen timer cleared");
       }
     }, 50);
@@ -176,7 +176,7 @@ class Item extends React.Component {
     console.info("smoothClose", target.classList[0]);
 
     item.style.position='relative';
-    item.style.z-index= -1;
+    item.style.zIndex= -1;
     target.style.overflow= 'visible';
 
     const timer = setInterval( () => {
@@ -188,7 +188,7 @@ class Item extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         item.style.position='static';
-        item.style.z-index= 'auto';
+        item.style.zIndex= 'auto';
         target.style.overflow= 'hidden';
         console.info("item.smoothClose timer cleared");
       }
