@@ -137,18 +137,6 @@ componentDidUpdate () {
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
-                </div>
-                <div className="promote-column-right" ref="promoteItemRight">
-                  <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
-                  <Feedback className="gutter-top solid" />
-                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
-                </div>
-              </div>
-              <div className="solid clear" style="width: 100%;">
-                { foo }
-              </div>
-              <div className="solid clear">
-                <div className="promote-column-left">
                   <PromoteBigScreenButtons
                     key               =   "left-buttons"
                     item              =   { left }
@@ -158,9 +146,13 @@ componentDidUpdate () {
                     panel-id          =   { this.props['panel-id'] }
                     panel-emitter     =   { panelEmitter }
                     emitter           =   { emitter }
-                    />
+                  />
                 </div>
-                <div className="promote-column-right">
+                <div className="promote-column-right" ref="promoteItemRight">
+                  <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
+                  <Feedback className="gutter-top solid" />
+                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
+                  <div className="promote-column-right">
                   <PromoteBigScreenButtons
                     key               =   "right-buttons"
                     item              =   { right }
@@ -172,6 +164,10 @@ componentDidUpdate () {
                     emitter           =   { emitter }
                     />
                 </div>
+                </div>
+              </div>
+              <div className="solid clear" style="width: 100%;">
+                { foo }
               </div>
             </div>
           ),
