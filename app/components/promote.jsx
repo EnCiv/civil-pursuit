@@ -132,7 +132,7 @@ componentDidUpdate () {
 
           (
             <div data-screen="phone-and-up" className="solid">
-              <div>
+              <div solid clear>
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
                   <Feedback className="gutter-top solid" />
@@ -144,7 +144,7 @@ componentDidUpdate () {
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
               </div>
-              <div className="solid clear">
+              <div className="solid clear" style="width: 100%;">
                 { foo }
               </div>
               <div className="solid clear">
