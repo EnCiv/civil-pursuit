@@ -96,7 +96,7 @@ componentDidUpdate () {
       }
       else {
         let foo = (
-          <h5 className="text-center gutter">
+          <h5 className="text-center gutter solid">
             { evaluateQuestion }
           </h5>
         );
@@ -131,7 +131,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div data-screen="phone-and-up">
+            <div data-screen="phone-and-up" className="solid">
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
