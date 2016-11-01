@@ -124,7 +124,7 @@ componentDidUpdate () {
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
-                  <PromoteBigScreenButtons
+                  <PromoteBigScreenButtons className="promote-big-button"
                     key               =   "left-buttons"
                     item              =   { left }
                     position          =   'left'
