@@ -136,8 +136,10 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothOpen(target,) {
+  smoothOpen(target, item) {
     // set an interval to update scrollTop attribute every 25 ms
+
+    let timerMax=1000;
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
@@ -149,7 +151,10 @@ class Item extends React.Component {
     item.style.zIndex= -1;
     target.style.overflow= 'visible';
 
+
+
     const timer = setInterval( () => {
+      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
       if( lmaxHeight <= lheight ){
@@ -178,8 +183,10 @@ class Item extends React.Component {
     item.style.position='relative';
     item.style.zIndex= -1;
     target.style.overflow= 'visible';
+    let timerMax=1000;
 
     const timer = setInterval( () => {
+      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
       let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
       let lheight= target.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
