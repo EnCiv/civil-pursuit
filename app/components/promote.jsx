@@ -148,7 +148,7 @@ componentDidUpdate () {
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
                   { promoteMe }
-                </div
+                </div>
                 <div className="promote-column-right" ref="promoteItemRight">
 
                   <PromoteBigScreenButtons
