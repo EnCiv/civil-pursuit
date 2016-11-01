@@ -206,7 +206,7 @@ class Item extends React.Component {
 
   readMore (e) {
     e.preventDefault();
-    //e.stopPropagation();
+    e.stopPropagation();
     //e.nativeEvent.stopImmediatePropagation();
 
     if( this.trunced) {
