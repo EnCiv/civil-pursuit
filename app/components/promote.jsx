@@ -120,7 +120,7 @@ componentDidUpdate () {
 
         content.push(
           (
-            <header className="text-center gutter-bottom">
+            <header className="text-center gutter-bottom solid">
               <h2>
                 <span className="cursor">{ cursor }</span>
                 <span> of </span>
@@ -135,12 +135,12 @@ componentDidUpdate () {
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
-                  <Feedback className="gutter-top" />
+                  <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
-                  <Feedback className="gutter-top" />
+                  <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
               </div>
@@ -203,7 +203,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div className="gutter">
+            <div className="gutter solid">
               <FinishButton
                 cursor      =   { cursor }
                 limit       =   { limit }
@@ -216,7 +216,7 @@ componentDidUpdate () {
     }
 
     return (
-      <div>{ content }</div>
+      <div className="solid">{ content }</div>
     );
   }
 }
