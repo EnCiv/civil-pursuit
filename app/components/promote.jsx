@@ -130,20 +130,23 @@ componentDidUpdate () {
               <div className="solid clear">
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    <div className="toggler harmony">
-                      <Accordion
-                        name    =   "harmony"
-                        active  =   { this.state.activeL }
-                        >
-                        <Harmony
-                          item    =   { left }
-                          ref     =   "harmony"
-                          user    =   { user }
+                    footer =  { [ (
+                      <div className="toggler harmony">
+                        <Accordion
+                          name    =   "harmony"
                           active  =   { this.state.activeL }
-                          />
-                      </Accordion>
-                    </div>
+                          >
+                          <Harmony
+                            item    =   { left }
+                            ref     =   "harmony"
+                            user    =   { user }
+                            active  =   { this.state.activeL }
+                            />
+                        </Accordion>
+                      </div>
+                     ) ] }
                    />
+
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                   <PromoteBigScreenButtons className="promote-big-button"
