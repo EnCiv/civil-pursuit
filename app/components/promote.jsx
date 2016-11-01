@@ -170,6 +170,7 @@ componentDidUpdate () {
                     emitter           =   { emitter }
                     />
                 </div>
+              </div>
             </div>
           ),
 
