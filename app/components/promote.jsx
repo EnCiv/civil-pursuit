@@ -146,7 +146,7 @@ componentDidUpdate () {
               </div>
               <div className="solid clear">
                 { foo }
-              </div
+              </div>
               <div className="solid clear">
                 <div className="promote-column-left">
                   <PromoteBigScreenButtons
