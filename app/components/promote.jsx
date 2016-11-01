@@ -105,19 +105,6 @@ componentDidUpdate () {
           foo = ( <div></div> );
         }
 
-        let promoteMe = (
-          <PromoteBigScreenButtons
-            key               =   "left-buttons"
-            item              =   { left }
-            position          =   'left'
-            opposite          =   { right }
-            evaluated         =   { evaluation.item }
-            panel-id          =   { this.props['panel-id'] }
-            panel-emitter     =   { panelEmitter }
-            emitter           =   { emitter }
-            />
-        );
-
         content.push(
           (
             <header className="text-center gutter-bottom solid">
@@ -165,10 +152,11 @@ componentDidUpdate () {
                     />
                 </div>
               </div>
+              <div className="solid clear" style={{ width : '100%' }}>
+                { foo }
+              </div>
             </div>
-            <div className="solid clear" style={{ width : '100%' }}>
-              { foo }
-            </div>
+
           ),
 
           (
@@ -213,7 +201,7 @@ componentDidUpdate () {
     }
 
     return (
-      <div className="solid">{ content }</div>
+      <div>{ content }</div>
     );
   }
 }
