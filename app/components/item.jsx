@@ -136,7 +136,7 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothOpen(target, item) {
+  smoothOpen(target,) {
     // set an interval to update scrollTop attribute every 25 ms
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
@@ -158,11 +158,11 @@ class Item extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         target.style.overflow="visible";
-        item.style.position='static';
-        item.style.zIndex= 'auto';
+        //item.style.position='static';
+        item.style.zIndex= 1;
         console.info("item.smoothOpen timer cleared");
       }
-    }, 50);
+    }, 25);
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,7 +192,7 @@ class Item extends React.Component {
         target.style.overflow= 'hidden';
         console.info("item.smoothClose timer cleared");
       }
-    }, 50);
+    }, 25);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
