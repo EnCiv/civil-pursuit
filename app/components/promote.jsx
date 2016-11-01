@@ -14,8 +14,12 @@ import Feedback from './promote-feedback';
 import Sliders from './sliders';
 
 class Promote extends React.Component {
-  state = {expandedL: false,
-          expandedR: false};
+  state = {
+    expandedL: false,
+    expandedR: false,
+    activeL: false,
+    activeR: false
+  };
 
 componentDidUpdate () {
     
@@ -46,12 +50,14 @@ componentDidUpdate () {
     console.info("promote.promoteMore", itemId, panel, this);
     let node=React.findDOMNode(this.refs.promoteItemLeft);
     if(this.state.expandedL) {
+      this.state.activeL=false;
       node.style.marginRight= 0;
       node.style.zIndex=1;
       node.style.width= "48.5%";
       this.state.expandedL=false;
     } else {
       if(this.state.expandedR) { this.toggleRight(); }
+      this.state.activeL=true;
       node.style.marginRight= '-41.5%';
       node.style.zIndex=10;
       node.style.width= "90%";
@@ -62,12 +68,14 @@ componentDidUpdate () {
   toggleRight( itemId, panel) {
     let node=React.findDOMNode(this.refs.promoteItemRight);
     if(this.state.expandedR) {
+      this.state.activeR=false;
       node.style.marginLeft= 0;
       node.style.zIndex=1;
       node.style.width= "48.5%";
       this.state.expandedR=false;      
     } else {
       if(this.state.expandedL) { this.toggleLeft(); }
+      this.state.activeR=true;
       node.style.marginLeft= '-41.5%';
       node.style.zIndex=10;
       node.style.width= "90%";
@@ -121,7 +129,21 @@ componentDidUpdate () {
             <div data-screen="phone-and-up" className="solid">
               <div className="solid clear">
                 <div className="promote-column-left" ref="promoteItemLeft">
-                  <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' style={{borderRight: '1px', marginRight: 0, marginBottom: 0}} />
+                  <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
+                    <div className="toggler harmony">
+                      <Accordion
+                        name    =   "harmony"
+                        active  =   { this.state.activeL }
+                        >
+                        <Harmony
+                          item    =   { left }
+                          ref     =   "harmony"
+                          user    =   { user }
+                          active  =   { this.state.activeL }
+                          />
+                      </Accordion>
+                    </div>
+                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                   <PromoteBigScreenButtons className="promote-big-button"
