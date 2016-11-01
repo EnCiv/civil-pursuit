@@ -3,9 +3,10 @@
 @import "lib/typo";
 
 .item-promote {
+  background-color: @syn-background-color;
   border: 1px solid #666;
   border-right : none;
-  margin-top: 10px;
+  padding-top: 10px;
 
   textarea {
     height: 120px;
@@ -19,7 +20,7 @@
   padding-right: 0.5%;
   width: 48.5%;
   position: relative;
-  background-color: white;
+  background-color: @syn-background-color;
   transition: all 0.5s linear;
 }
 
@@ -30,15 +31,17 @@
   padding-right: 1%;
   width: 48.5%;
   position: relative;
-  background-color: white;
+  background-color: @syn-background-color;
   transition: all 0.5s linear;
 }
 
 .promote-sliders {
+  background-color: @syn-background-color;
   .gutter-top();
 }
 
 .promote-left {
+  background-color: @syn-background-color;
   .gutter-left();
 
   @media (max-width: @screen-phone) {
@@ -56,6 +59,7 @@
 }
 
 .promote-right {
+  background-color: @syn-background-color;
   .gutter-right();
 
   @media (max-width: @screen-phone) {
@@ -77,5 +81,6 @@
 }
 
 .promote-description {
+  background-color: @syn-background-color;
   .pre-text();
 }
