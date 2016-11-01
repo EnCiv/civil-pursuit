@@ -166,9 +166,9 @@ componentDidUpdate () {
                 </div>
                 </div>
               </div>
-              <div className="solid clear" style={{ width : '100%' }}>
-                { foo }
-              </div>
+            </div>
+            <div className="solid clear" style={{ width : '100%' }}>
+              { foo }
             </div>
           ),
 
