@@ -281,7 +281,7 @@ class Item extends React.Component {
 
     if(collapsed==true) {
       rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` }  style={{ display : 'none' }} } >
+        <article className="item" ref="item" id={ `item-${item._id}` }  style={{ display : 'none' }} >
           <ItemMedia
             item      =   { item }
             ref       =   "media"
