@@ -135,47 +135,32 @@ componentDidUpdate () {
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
+                  <Feedback className="gutter-top" />
+                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
+                  <Feedback className="gutter-top" />
+                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
               </div>
-              <div>
-                <div className="promote-column-left promote-left">
-                      <Feedback className="gutter-top" />
-                </div>
-                <div className="promote-column-right promote-right">
-                      <Feedback className="gutter-top" />
-                </div>
-              </div>
-              <div>
-                <div className="promote-column-left promote-left">
-                    <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
-                </div>
-                <div className="promote-column-right promote-right">
-                    <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
-                </div>
-              </div>
-
-
-
               { foo }
+              <div>
+                <div className="promote-column-left" ref="promoteItemLeft">
+                  { promoteMe }
 
-              <Row>
-                { promoteMe }
+                  <PromoteBigScreenButtons
+                    key               =   "right-buttons"
+                    item              =   { right }
+                    position          =   'right'
+                    evaluated         =   { evaluation.item }
+                    panel-id          =   { this.props['panel-id'] }
+                    opposite          =   { left }
+                    panel-emitter     =   { panelEmitter }
+                    emitter           =   { emitter }
+                    />
 
-                <PromoteBigScreenButtons
-                  key               =   "right-buttons"
-                  item              =   { right }
-                  position          =   'right'
-                  evaluated         =   { evaluation.item }
-                  panel-id          =   { this.props['panel-id'] }
-                  opposite          =   { left }
-                  panel-emitter     =   { panelEmitter }
-                  emitter           =   { emitter }
-                  />
-
-              </Row>
+                </div>
             </div>
           ),
 
