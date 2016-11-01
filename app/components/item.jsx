@@ -136,7 +136,7 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothOpen(target) {
+  smoothOpen(target, item) {
     // set an interval to update scrollTop attribute every 25 ms
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
