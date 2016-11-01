@@ -146,7 +146,7 @@ componentDidUpdate () {
               </div>
               { foo }
               <div>
-                <div className="promote-column-left" ref="promoteItemLeft">
+                <div className="promote-column-left">
                   <PromoteBigScreenButtons
                     key               =   "left-buttons"
                     item              =   { left }
@@ -158,7 +158,7 @@ componentDidUpdate () {
                     emitter           =   { emitter }
                     />
                 </div>
-                <div className="promote-column-right" ref="promoteItemRight">
+                <div className="promote-column-right">
                   <PromoteBigScreenButtons
                     key               =   "right-buttons"
                     item              =   { right }
