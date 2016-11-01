@@ -144,8 +144,10 @@ componentDidUpdate () {
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                 </div>
               </div>
-              { foo }
-              <div>
+              <div className="solid clear">
+                { foo }
+              </div
+              <div className="solid clear">
                 <div className="promote-column-left">
                   <PromoteBigScreenButtons
                     key               =   "left-buttons"
