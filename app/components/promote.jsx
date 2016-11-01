@@ -47,7 +47,7 @@ componentDidUpdate () {
     let node=React.findDOMNode(this.refs.promoteItemLeft);
     if(this.state.expandedL) {
       node.style.marginRight= 0;
-      node.style.zIndex=0;
+      node.style.zIndex=1;
       node.style.width= "48.5%";
       this.state.expandedL=false;
     } else {
@@ -63,7 +63,7 @@ componentDidUpdate () {
     let node=React.findDOMNode(this.refs.promoteItemRight);
     if(this.state.expandedR) {
       node.style.marginLeft= 0;
-      node.style.zIndex=0;
+      node.style.zIndex=1;
       node.style.width= "48.5%";
       this.state.expandedR=false;      
     } else {
