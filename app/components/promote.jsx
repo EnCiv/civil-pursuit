@@ -147,10 +147,18 @@ componentDidUpdate () {
               { foo }
               <div>
                 <div className="promote-column-left" ref="promoteItemLeft">
-                  { promoteMe }
+                  <PromoteBigScreenButtons
+                    key               =   "left-buttons"
+                    item              =   { left }
+                    position          =   'left'
+                    opposite          =   { right }
+                    evaluated         =   { evaluation.item }
+                    panel-id          =   { this.props['panel-id'] }
+                    panel-emitter     =   { panelEmitter }
+                    emitter           =   { emitter }
+                    />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
-
                   <PromoteBigScreenButtons
                     key               =   "right-buttons"
                     item              =   { right }
@@ -161,7 +169,6 @@ componentDidUpdate () {
                     panel-emitter     =   { panelEmitter }
                     emitter           =   { emitter }
                     />
-
                 </div>
             </div>
           ),
