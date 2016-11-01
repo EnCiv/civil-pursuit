@@ -12,6 +12,8 @@ import ColumnFeedback           from './promote-feedback-column';
 import Item                     from './item';
 import Feedback from './promote-feedback';
 import Sliders from './sliders';
+import Harmony            from './harmony';
+import Accordion          from './util/accordion';
 
 class Promote extends React.Component {
   state = {
