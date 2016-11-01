@@ -121,7 +121,7 @@ componentDidUpdate () {
             <div data-screen="phone-and-up" className="solid">
               <div className="solid clear">
                 <div className="promote-column-left" ref="promoteItemLeft">
-                  <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' />
+                  <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' style={{borderRight: '1px', marginRight: 0, marginBottom: 0}} />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                   <PromoteBigScreenButtons className="promote-big-button"
