@@ -55,6 +55,7 @@ class EvaluationStore extends React.Component {
         this.okGetEvaluation.bind(this)
       );
     }
+
     if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
         var ly = document.getElementById('left_description').offsetHeight;
         var ry = document.getElementById('right_description').offsetHeight;
@@ -147,8 +148,8 @@ class EvaluationStore extends React.Component {
     }
 
     if ( cursor <= this.state.limit ) {
-      document.getElementById('left_description').style.height = "auto";
-      document.getElementById('right_description').style.height = "auto";
+ //     document.getElementById('left_description').style.height = "auto";
+ //     document.getElementById('right_description').style.height = "auto";
 
       left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
       right = this.state.evaluation.items[regular ? cursor : cursor + 1];
