@@ -148,7 +148,10 @@ class Item extends React.Component {
     }
     console.info("smoothOpen", shadow);
 
-    shadow.style.minHeight= "100vh";
+    shadow.style.minHeight= "500px";
+    shadow.style.width = item.offsetWidth + 'px';
+    let rect=shadow.getBoundingClientRect();
+    console.info("smoothOpen.rect", rect);
     item.style.position='relative';
     item.style.zIndex= -2;
 
@@ -160,6 +163,7 @@ class Item extends React.Component {
       let lheight= target.clientHeight;
       if( lmaxHeight <= lheight ){
         target.style.maxHeight = (lmaxHeight + 7) + 'px';
+        shadow.style.minHeight = (parseInt(shadow.style.minHeight) - 7) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
