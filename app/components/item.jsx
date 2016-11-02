@@ -136,7 +136,7 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothOpen(target, item) {
+  smoothOpen(target, item, shadow) {
     // set an interval to update scrollTop attribute every 25 ms
 
     let timerMax=1000;
@@ -147,11 +147,12 @@ class Item extends React.Component {
       target.style.maxHeight= height + 'px';
     }
 
+
+    shadow.style.minHeight= "100vh";
     item.style.position='relative';
-    item.style.zIndex= -1;
+    item.style.zIndex= -2;
+
     target.style.overflow= 'visible';
-
-
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
@@ -165,6 +166,7 @@ class Item extends React.Component {
         target.style.overflow="visible";
         //item.style.position='static';
         item.style.zIndex= 1;
+        shadow.style.minHeight= 0;
         console.info("item.smoothOpen timer cleared");
       }
     }, 25);
@@ -172,7 +174,7 @@ class Item extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  smoothClose(target, item) {
+  smoothClose(target, item, shadow) {
     // set an interval to update scrollTop attribute every 25 ms
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
@@ -180,10 +182,12 @@ class Item extends React.Component {
 
     console.info("smoothClose", target.classList[0]);
 
+    shadow.style.minHeight= "100vh";
     item.style.position='relative';
-    item.style.zIndex= -1;
+    item.style.zIndex= -2;
     target.style.overflow= 'visible';
     let timerMax=1000;
+
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
@@ -197,6 +201,7 @@ class Item extends React.Component {
         item.style.position='static';
         item.style.zIndex= 'auto';
         target.style.overflow= 'hidden';
+        shadow.style.minHeight= 0;
         console.info("item.smoothClose timer cleared");
       }
     }, 25);
@@ -217,6 +222,7 @@ class Item extends React.Component {
       let truncatable =  React.findDOMNode(this.refs.truncatable);
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
+      let shadow = React.findDOMNode(this.refs.shadow);
 
       console.info("item.readMore",this.props);
 
@@ -228,7 +234,7 @@ class Item extends React.Component {
         this.truncated=false;
         this.props.toggle(this.props.item._id, 'harmony');
         console.info("item.readMore trunc", truncatable);
-        this.smoothOpen(truncatable, item);
+        this.smoothOpen(truncatable, item, shadow);
       } else {
         //description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
@@ -236,7 +242,7 @@ class Item extends React.Component {
         reference.classList.remove('expand');
         this.truncated=true;
         this.props.toggle(this.props.item._id, 'harmony');
-        this.smoothClose(truncatable, item);
+        this.smoothClose(truncatable, item, shadow);
       }
     } else {
       this.props.toggle(this.props.item._id, 'harmony');
@@ -310,6 +316,7 @@ class Item extends React.Component {
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
             </div>
+            <div className="item-truncatable-shadow" ref='shadow' />
           </section>
 
           <section style={ { clear : 'both' }}></section>
