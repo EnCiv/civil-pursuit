@@ -43,11 +43,6 @@ class PromoteBigScreenButtons extends React.Component {
 
         { promoteButton }
 
-        <PromoteEditAndGoAgainButton
-          item            =   { item }
-          panel-emitter   =   { panelEmitter }
-          />
-
       </Column>
     );
   }

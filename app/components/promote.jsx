@@ -56,10 +56,12 @@ componentDidUpdate () {
       node.style.marginRight= 0;
       node.style.zIndex=1;
       node.style.width= "48.5%";
+      node.style.box-shadow=  'none';
       this.state.expandedL=false;
     } else {
       if(this.state.expandedR) { this.toggleRight(); }
       this.setState({activeL: true});
+      node.style.box-shadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
       node.style.marginRight= '-41.5%';
       node.style.zIndex=10;
       node.style.width= "90%";
@@ -74,10 +76,12 @@ componentDidUpdate () {
       node.style.marginLeft= 0;
       node.style.zIndex=1;
       node.style.width= "48.5%";
+      node.style.box-shadow=  'none';
       this.state.expandedR=false;      
     } else {
       if(this.state.expandedL) { this.toggleLeft(); }
       this.setState({activeR: true});
+      node.style.box-shadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
       node.style.marginLeft= '-41.5%';
       node.style.zIndex=10;
       node.style.width= "90%";
