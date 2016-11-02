@@ -167,13 +167,13 @@ componentDidUpdate () {
                         <div className="toggler harmony">
                           <Accordion
                             name    =   "harmony"
-                            active  =   { this.state.activeL }
+                            active  =   { this.state.activeR }
                             >
                             <Harmony
                               item    =   { left }
                               ref     =   "harmony"
                               user    =   { user }
-                              active  =   { this.state.activeL }
+                              active  =   { this.state.activeR }
                               />
                           </Accordion>
                         </div>
