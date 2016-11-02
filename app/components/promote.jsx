@@ -128,7 +128,7 @@ componentDidUpdate () {
           ),
 
           (
-            <div data-screen="phone-and-up" className="solid">
+            <div className="solid">
               <div className="solid clear">
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
@@ -146,9 +146,8 @@ componentDidUpdate () {
                             />
                         </Accordion>
                       </div>
-                     ) ] }
-                   />
-
+                    ) ] }
+                  />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                   <PromoteBigScreenButtons className="promote-big-button"
@@ -163,7 +162,23 @@ componentDidUpdate () {
                   />
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
-                  <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right' />
+                  <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
+                    footer =  { [ (
+                        <div className="toggler harmony">
+                          <Accordion
+                            name    =   "harmony"
+                            active  =   { this.state.activeL }
+                            >
+                            <Harmony
+                              item    =   { left }
+                              ref     =   "harmony"
+                              user    =   { user }
+                              active  =   { this.state.activeL }
+                              />
+                          </Accordion>
+                        </div>
+                       ) ] }
+                  />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
                   <PromoteBigScreenButtons
@@ -183,34 +198,6 @@ componentDidUpdate () {
               </div>
             </div>
 
-          ),
-
-          (
-            <div data-screen="up-to-phone">
-              <Row data-stack="phone-and-down">
-                <PromoteSmallScreenColumn
-                  { ...this.props }
-                  key         =   "left"
-                  position    =   "left"
-                  item        =   { left }
-                  criterias   =   { evaluation.criterias }
-                  evaluated   =   { evaluation.item }
-                  other       =   { right }
-                  descid      =   "left_description"
-                  />
-
-                <PromoteSmallScreenColumn
-                  { ...this.props }
-                  key         =   "right"
-                  position    =   "right"
-                  item        =   { right }
-                  criterias   =   { evaluation.criterias }
-                  evaluated   =   { evaluation.item }
-                  other       =   { left }
-                  descid      =   "right_description"
-                  />
-              </Row>
-            </div>
           ),
 
           (
