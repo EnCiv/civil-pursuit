@@ -146,7 +146,7 @@ class Item extends React.Component {
     if (maxHeight < height) {
       target.style.maxHeight= height + 'px';
     }
-
+    console.info("smoothOpen", shadow);
 
     shadow.style.minHeight= "100vh";
     item.style.position='relative';
@@ -223,6 +223,8 @@ class Item extends React.Component {
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
       let shadow = React.findDOMNode(this.refs.shadow);
+          console.info("readMore", shadow, item.querySelector('.item-truncatable-shadow'));
+
 
       console.info("item.readMore",this.props);
 
@@ -316,7 +318,7 @@ class Item extends React.Component {
                 { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
               </div>
             </div>
-            <div className="item-truncatable-shadow" ref='shadow' />
+            <div className="item-truncatable-shadow" ref='shadow'>{}</div>
           </section>
 
           <section style={ { clear : 'both' }}></section>
