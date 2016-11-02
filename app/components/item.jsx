@@ -203,14 +203,15 @@ class Item extends React.Component {
       let lheight= target.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
         target.style.maxHeight =  ((lmaxHeight - 7) >0 ? (lmaxHeight - 7) : 0 ) + 'px';
-        shadow.style.minHeight = ((lmaxHeight -7 > 0) ? (parseInt(shadow.style.minHeight) + 7) : (parseInt(shadow.style.minHeight)) ) + 'px';
+        shadow.style.minHeight = ((lmaxHeight -7 > 0) ? (parseInt(shadow.style.minHeight) + 7) : parseInt(shadow.style.minHeight) ) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
-        item.style.position='static';
-        item.style.zIndex= 'auto';
         target.style.overflow= 'hidden';
         shadow.style.minHeight= 0;
+        item.style.position='static';
+        item.style.zIndex= 'auto';
+
         console.info("item.smoothClose timer cleared");
       }
     }, 25);
