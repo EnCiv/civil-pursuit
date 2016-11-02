@@ -151,7 +151,7 @@ class Item extends React.Component {
 
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
-    shadow.style.minHeight= (window.height() - rect.top) + 'px';
+    shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
     console.info("smoothOpen.rect", rect);
     item.style.position='relative';
     item.style.zIndex= -2;
@@ -189,7 +189,7 @@ class Item extends React.Component {
 
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
-    shadow.style.minHeight= (window.height() - rect.top) + 'px';
+    shadow.style.minHeight= (window.innerHeight  - rect.top) + 'px';
     item.style.position='relative';
     item.style.zIndex= -2;
     target.style.overflow= 'visible';
