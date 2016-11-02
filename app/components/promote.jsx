@@ -115,6 +115,44 @@ componentDidUpdate () {
           foo = ( <div></div> );
         }
 
+        let leftFooter;
+        if(left.type.harmony) {
+          leftFooter=(
+                      <div className="toggler harmony">
+                        <Accordion
+                          name    =   "harmony"
+                          active  =   { this.state.activeL }
+                          >
+                          <Harmony
+                            item    =   { left }
+                            ref     =   "harmony"
+                            user    =   { user }
+                            active  =   { this.state.activeL }
+                            />
+                        </Accordion>
+                      </div>
+                    );
+        }
+
+        let rightFooter;
+        if(right.type.harmony) {
+          rightFooter=(
+                      <div className="toggler harmony">
+                        <Accordion
+                          name    =   "harmony"
+                          active  =   { this.state.activeR }
+                          >
+                          <Harmony
+                            item    =   { right }
+                            ref     =   "harmony"
+                            user    =   { user }
+                            active  =   { this.state.activeR }
+                            />
+                        </Accordion>
+                      </div>
+                    );
+        }
+
         content.push(
           (
             <header className="text-center gutter-bottom solid">
@@ -132,21 +170,7 @@ componentDidUpdate () {
               <div className="solid clear">
                 <div className="promote-column-left" ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { [ (
-                      <div className="toggler harmony">
-                        <Accordion
-                          name    =   "harmony"
-                          active  =   { this.state.activeL }
-                          >
-                          <Harmony
-                            item    =   { left }
-                            ref     =   "harmony"
-                            user    =   { user }
-                            active  =   { this.state.activeL }
-                            />
-                        </Accordion>
-                      </div>
-                    ) ] }
+                    footer =  { leftFooter }
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
@@ -163,21 +187,7 @@ componentDidUpdate () {
                 </div>
                 <div className="promote-column-right" ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
-                    footer =  { [ (
-                        <div className="toggler harmony">
-                          <Accordion
-                            name    =   "harmony"
-                            active  =   { this.state.activeR }
-                            >
-                            <Harmony
-                              item    =   { left }
-                              ref     =   "harmony"
-                              user    =   { user }
-                              active  =   { this.state.activeR }
-                              />
-                          </Accordion>
-                        </div>
-                       ) ] }
+                    footer =  { rightFooter }
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
