@@ -148,9 +148,10 @@ class Item extends React.Component {
     }
     console.info("smoothOpen", shadow);
 
-    shadow.style.minHeight= "500px";
+
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
+    shadow.style.minHeight= (window.height() - rect.top) + 'px';
     console.info("smoothOpen.rect", rect);
     item.style.position='relative';
     item.style.zIndex= -2;
@@ -163,7 +164,7 @@ class Item extends React.Component {
       let lheight= target.clientHeight;
       if( lmaxHeight <= lheight ){
         target.style.maxHeight = (lmaxHeight + 7) + 'px';
-        shadow.style.minHeight = (parseInt(shadow.style.minHeight) - 7) + 'px';
+        shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
@@ -186,7 +187,9 @@ class Item extends React.Component {
 
     console.info("smoothClose", target.classList[0]);
 
-    shadow.style.minHeight= "100vh";
+    shadow.style.width = item.offsetWidth + 'px';
+    let rect=shadow.getBoundingClientRect();
+    shadow.style.minHeight= (window.height() - rect.top) + 'px';
     item.style.position='relative';
     item.style.zIndex= -2;
     target.style.overflow= 'visible';
@@ -199,6 +202,7 @@ class Item extends React.Component {
       let lheight= target.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
         target.style.maxHeight =  ((lmaxHeight - 7) >0 ? (lmaxHeight - 7) : 0 ) + 'px';
+        shadow.style.minHeight = (parseInt(shadow.style.minHeight) + 7) + 'px';
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
