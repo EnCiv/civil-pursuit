@@ -214,7 +214,7 @@ class Item extends React.Component {
 
         console.info("item.smoothClose timer cleared");
       }
-    }, 25);
+    }, 1000);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
