@@ -207,10 +207,10 @@ class Item extends React.Component {
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
-        target.style.overflow= 'hidden';
-        shadow.style.minHeight= 0;
-        item.style.position='static';
-        item.style.zIndex= 'auto';
+        //target.style.overflow= 'hidden';
+        //shadow.style.minHeight= 0;
+        //item.style.position='static';
+        //item.style.zIndex= 'auto';
 
         console.info("item.smoothClose timer cleared");
       }
