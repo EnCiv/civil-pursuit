@@ -63,7 +63,7 @@ class Training extends React.Component {
 
     const instruction   =   relevantInstructions[this.state.cursor];
 
-    const tooltip       =   React.findDOMNode(this.refs.view);
+    const tooltip       =   this.refs.view;
 
 
     let target          =   document.querySelector(instruction.element);
@@ -181,7 +181,7 @@ class Training extends React.Component {
 
     const active = document.querySelectorAll('.syn-training-active-target');
 
-    React.findDOMNode(this.refs.view).style.transitionDuration='.75s';
+    this.refs.view.style.transitionDuration='.75s';
 
     for ( let i = 0; i < active.length ; i ++ ) {
       active[i].classList.remove('syn-training-active-target');
@@ -239,7 +239,7 @@ class Training extends React.Component {
     { intro=document.querySelector('#syn-panel-items');
     }
 
-    const view = React.findDOMNode(this.refs.view);
+    const view = this.refs.view;
 
     const image = intro.querySelector('img');
 
@@ -286,7 +286,7 @@ class Training extends React.Component {
 
   componentDidMount () {
     if ( typeof window !== 'undefined' ) {
-      let view = React.findDOMNode(this.refs.view);
+      let view = this.refs.view;
 
       if ( view ) {
         this.init();
@@ -300,7 +300,7 @@ class Training extends React.Component {
     if ( typeof window !== 'undefined' ) {
 
       if ( ! this.ready ) {
-        let view = React.findDOMNode(this.refs.view);
+        let view = this.refs.view;
 
         if ( view ) {
           this.init();
@@ -332,7 +332,7 @@ class Training extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   close () {
-    let view = React.findDOMNode(this.refs.view);
+    let view = this.refs.view;
     view.classList.remove('show');
     const active = document.querySelectorAll('.syn-training-active-target');
 
