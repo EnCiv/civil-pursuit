@@ -1,6 +1,7 @@
 'use strict';
 
 import React              from 'react';
+import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 
@@ -15,7 +16,7 @@ window.socket.on('welcome', user => {
 
 function render (props) {
   console.log('Rendering app', props);
-  React.render(<App { ...props } />, document.getElementById('synapp'));
+  ReactDOM.render(<App { ...props } />, document.getElementById('synapp'));
 }
 
 render(reactProps);
