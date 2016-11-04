@@ -23,7 +23,6 @@ class Accordion extends React.Component {
 
     if ( this.props.active === true ) {
       this.state.attr = 'show';
-      this.smoothOpen();
     }
     else if ( this.props.active === false ) {
       this.state.attr = 'hide';
@@ -32,11 +31,15 @@ class Accordion extends React.Component {
 
   componentWillReceiveProps (props = {}) {
     if ( props.active === true ) {
-      this.setState({ attr : 'show' });
-      this.smoothOpen();
+      if(this.state.attr==='hide') {
+        this.setState({ attr : 'show' });
+        this.smoothOpen();
+      }
     }
     else if ( props.active === false ) {
-      this.smoothClose();
+      if (this.state.attr==='show') {
+          this.smoothClose();
+      }
     }
   }
 
