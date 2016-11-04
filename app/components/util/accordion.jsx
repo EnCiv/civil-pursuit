@@ -102,14 +102,15 @@ class Accordion extends React.Component {
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
+    accordion.style.maxHeight= height + 'px';
 
     shadow.style.width = accordion.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
     console.info("smoothClose", window.innerHeight - rect.top);
-    accordion.style.position='relative';
-    accordion.style.zIndex= -2;
-    accordion.style.overflow= 'visible';
+    //accordion.style.position='relative';
+    //accordion.style.zIndex= -2;
+    accordion.style.overflow= 'hidden';
     let timerMax=1000;
 
 
@@ -124,10 +125,10 @@ class Accordion extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         this.setState({ attr : 'hide' });
-        accordion.style.overflow= 'hidden';
-        accordion.style.minHeight= 0;
-        accordion.style.position='static';
-        accordion.style.zIndex= 'auto';
+        //accordion.style.overflow= 'hidden';
+        //accordion.style.minHeight= 0;
+        //accordion.style.position='static';
+        //accordion.style.zIndex= 'auto';
         shadow.style.minHeight= 0;
       }
     }, 25);
