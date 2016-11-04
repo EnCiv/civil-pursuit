@@ -203,7 +203,7 @@ class Item extends React.Component {
       let lheight= target.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
         target.style.maxHeight =  (((lmaxHeight - 7) > 0) ? (lmaxHeight - 7) : 0 ) + 'px';
-        shadow.style.minHeight =  (((lmaxHeight - 7) > 0) ? (parseInt(shadow.style.minHeight) + 7) : parseInt(shadow.style.minHeight) ) + 'px';
+        shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + px; 
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
