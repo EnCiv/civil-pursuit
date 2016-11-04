@@ -121,7 +121,7 @@ class Accordion extends React.Component {
 
   render () {
     return (
-      <section className={ `syn-accordion } ref="accordion">
+      <section className={ `syn-accordion` } ref="accordion">
             { this.props.children }
       </section>
       <div className="syn-accordion-shadow" ref="shadow">''</div>
