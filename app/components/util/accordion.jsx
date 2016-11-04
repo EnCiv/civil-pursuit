@@ -57,11 +57,14 @@ class Accordion extends React.Component {
     }
   }
 
+  inOpen='inactive';
   smoothOpen() {
     // set an interval to update scrollTop attribute every 25 ms
 
-    let accordion = React.findDOMNode(this.refs.accordion);
-    let shadow = React.findDOMNode(this.refs.shadow);
+    inOpen='active';
+    if(inClose!=="inactive") {inClose='abort'}
+    let accordion = this.refs.accordion;
+    let shadow = this.refs.shadow;
 
     let timerMax=1000;
 
@@ -80,6 +83,7 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
+      if(inOpen==='abort'){ clearInterval(timer); inOpen='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
@@ -87,6 +91,7 @@ class Accordion extends React.Component {
         shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
       } else {
       // end interval if the scroll is completed
+        inOpen='inactive';
         clearInterval(timer);
         accordion.style.maxHeight="none";
         accordion.style.overflow="visible";
@@ -98,10 +103,16 @@ class Accordion extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+  inClose='inactive'
   smoothClose() {
     // set an interval to update scrollTop attribute every 25 ms
-    let accordion = React.findDOMNode(this.refs.accordion);
-    let shadow = React.findDOMNode(this.refs.shadow);
+
+    inClose='active';
+    if(inOpen!='inactive') { inOpen='abort';}
+
+    let accordion = this.refs.accordion;
+    let shadow = this.refs.shadow;
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
@@ -120,6 +131,7 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
+      if(inClose==='abort'){ clearInterval(timer); inClose='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
@@ -127,6 +139,7 @@ class Accordion extends React.Component {
         //shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
       } else {
       // end interval if the scroll is completed
+        inClose='inactive';
         clearInterval(timer);
         this.setState({ attr : 'hide' });
         //accordion.style.overflow= 'hidden';
