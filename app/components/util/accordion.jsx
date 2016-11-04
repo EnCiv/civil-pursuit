@@ -36,7 +36,7 @@ class Accordion extends React.Component {
       this.smoothOpen();
     }
     else if ( props.active === false ) {
-      smoothClose();
+      this.smoothClose();
     }
   }
 
