@@ -55,7 +55,7 @@ function home (req, res, next) {
     delete props.react.env, props.react.rendered;
 
     props.rendered = ReactDOM.renderToString(
-      ReactDOM.createFactory(App)(props.react)
+      React.createFactory(App)(props.react)
     );
 
     res.send(new Index(props).render());
