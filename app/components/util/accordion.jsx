@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import ReactCollapse from 'react-collapse';
 
 class Accordion extends React.Component {
   // C(losed) O(pen) B(usy)
@@ -38,22 +39,22 @@ class Accordion extends React.Component {
     }
     else if ( props.active === false ) {
       if (this.state.attr==='show') {
-          this.smoothClose();
+ //         this.smoothClose();
       }
     }
   }
 
   componentDidMount() {
     console.info("accordion.componentDidMount", this.state.attr)
-    if(this.state.attr==='show') {
-        this.smoothOpen();
+ //   if(this.state.attr==='show') {
+ //       this.smoothOpen();
     }
   }
 
   componentWillUnmount() {
     console.info("accordion.componentWillUnmount", this.state.attr)
-    if(this.state.attr==='show') {
-        this.smoothClose();
+ //   if(this.state.attr==='show') {
+ //       this.smoothClose();
     }
   }
 
@@ -154,10 +155,8 @@ class Accordion extends React.Component {
   render () {
     return (
       <section>
-        <section className={ `syn-accordion` } ref="accordion">
+        <<ReactCollapse isOpened={this.state.attr==='show'} >
               { this.props.children }
-        </section>
-        <div className="syn-accordion-shadow" ref="shadow">''</div>
       </section>
     );
   }
