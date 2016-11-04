@@ -60,7 +60,7 @@
     "passport-facebook": "^2.0.0",
     "passport-twitter": "^1.0.3",
     "promise-sequencer": "^2.0.1",
-    "react": "^0.13.3",
+    "react": "^15.3.2",
     "react-collapse": "^2.3.3",
     "react-height": "^2.1.1",
     "react-motion": "^0.4.5",
