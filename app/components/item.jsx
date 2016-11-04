@@ -80,11 +80,10 @@ class Item extends React.Component {
   componentDidMount () {
     if ( this.refs.item ) {
       
-      const item = React
-        .findDOMNode(this.refs.item);
+      const item = this.refs.item;
 
       if ( ! this.truncated ) {
-        const more = React.findDOMNode(this.refs.more);
+        const more = this.refs.more;
 
         let media = item.querySelector('.item-media');
         let truncatable   =   item.querySelector('.item-truncatable');
@@ -128,8 +127,8 @@ class Item extends React.Component {
 
   componentDidUpdate() {
     if ( this.refs.item ) {
-      const item = React.findDOMNode(this.refs.item);
-      let truncatable   =   React.findDOMNode(this.refs.truncatable);
+      const item = this.refs.item;
+      let truncatable   =   this.refs.truncatable;
       console.info("item.componenDidUpdate",this,item,truncatable);
     }
   }
@@ -220,13 +219,13 @@ class Item extends React.Component {
 
     if( this.trunced) {
 
-      let item = React.findDOMNode(this.refs.item);
+      let item = this.refs.item;
       let subject =  item.querySelector('.item-subject');
       let reference =  item.querySelector('.item-reference');
-      let truncatable =  React.findDOMNode(this.refs.truncatable);
+      let truncatable =  this.refs.truncatable;
       let description =  item.querySelector('.item-description');
       let truncHint =  item.querySelector('.item-trunc-hint');
-      let shadow = React.findDOMNode(this.refs.shadow);
+      let shadow = this.refs.shadow;
           console.info("readMore", shadow, item.querySelector('.item-truncatable-shadow'));
 
 
