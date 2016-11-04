@@ -21,8 +21,8 @@
     "deploy": "bash bin/build.sh",
     "migrate": "node dist/bin/migrate",
     "reset": "node dist/bin/reset && node dist/bin/migrate",
-    "clean" : "node dist/bin/drop-sandbox-dbs.js"
-   },
+    "clean": "node dist/bin/drop-sandbox-dbs.js"
+  },
   "author": {
     "email": "francoisrvespa@gmail.com",
     "name": "francois"
@@ -60,7 +60,10 @@
     "passport-facebook": "^2.0.0",
     "passport-twitter": "^1.0.3",
     "promise-sequencer": "^2.0.1",
-    "react": "~0.13.3",
+    "react": "^0.13.3",
+    "react-collapse": "^2.3.3",
+    "react-height": "^2.1.1",
+    "react-motion": "^0.4.5",
     "redtea": "^3.4.1",
     "should": "^7.1.0",
     "socket.io": "^1.3.6",
