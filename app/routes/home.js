@@ -3,6 +3,7 @@
 import fs                       from 'fs';
 import path                     from 'path';
 import React                    from 'react';
+import ReactDOM                 from 'react-dom';
 import App                      from '../components/app';
 import Index                    from '../pages/index';
 import makeProps                from '../props';
@@ -53,8 +54,8 @@ function home (req, res, next) {
 
     delete props.react.env, props.react.rendered;
 
-    props.rendered = React.renderToString(
-      React.createFactory(App)(props.react)
+    props.rendered = ReactDOM.renderToString(
+      ReactDOM.createFactory(App)(props.react)
     );
 
     res.send(new Index(props).render());
