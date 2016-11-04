@@ -30,6 +30,7 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (props = {}) {
+       console.info("accordion.componentWillReceiveProps", props.active, this.state.attr)
     if ( props.active === true ) {
       if(this.state.attr==='hide') {
         this.setState({ attr : 'show' });
@@ -43,12 +44,14 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
+    console.info("accordion.componentDidMount", this.state.attr)
     if(this.state.attr==='show') {
         this.smoothOpen();
     }
   }
 
   componentWillUnmount() {
+    console.info("accordion.componentWillUnmount", this.state.attr)
     if(this.state.attr==='show') {
         this.smoothClose();
     }
@@ -90,7 +93,7 @@ class Accordion extends React.Component {
         accordion.style.zIndex= 1;
         shadow.style.minHeight= 0;
       }
-    }, 250);
+    }, 17);
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,6 +105,7 @@ class Accordion extends React.Component {
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
+    console.info("accordion.smoothClose", height)
     accordion.style.maxHeight= height + 'px';
 
     //shadow.style.width = accordion.offsetWidth + 'px';
