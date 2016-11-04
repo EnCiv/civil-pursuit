@@ -1,11 +1,20 @@
 .syn-accordion {
-  // display: none
-  position: absolute;
-  top: -9999px;
+  overflow: hidden;
+  max-height: 0;
+  position: static;
+  z-index: auto;
 }
 
 .syn-accordion.show {
   position: relative;
-  top: 0;
+  max-height: none;
 }
 
+
+.syn-accordion-shadow{
+  min-height: 0;
+  max-height: 0;
+  position: absolute;
+  z-index: 0;
+  background-color: @syn-background-color;
+}
