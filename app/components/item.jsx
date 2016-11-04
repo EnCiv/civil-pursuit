@@ -205,6 +205,8 @@ class Item extends React.Component {
         shadow.style.minHeight= 0;
         item.style.position='static';
         item.style.zIndex= 'auto';
+        let description =  target.querySelector('.item-description');
+        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
       }
     }, 25);
   }
@@ -240,7 +242,6 @@ class Item extends React.Component {
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
       } else {
-        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
