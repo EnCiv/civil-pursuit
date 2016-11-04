@@ -85,11 +85,12 @@ class Accordion extends React.Component {
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
+        accordion.style.maxHeight="none";
         accordion.style.overflow="visible";
         accordion.style.zIndex= 1;
         shadow.style.minHeight= 0;
       }
-    }, 25);
+    }, 250);
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
