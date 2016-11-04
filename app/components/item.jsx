@@ -146,13 +146,10 @@ class Item extends React.Component {
     if (maxHeight < height) {
       target.style.maxHeight= height + 'px';
     }
-    console.info("smoothOpen", shadow);
-
 
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-    console.info("smoothOpen.rect", rect);
     item.style.position='relative';
     item.style.zIndex= -2;
 
@@ -172,7 +169,6 @@ class Item extends React.Component {
         //item.style.position='static';
         item.style.zIndex= 1;
         shadow.style.minHeight= 0;
-        console.info("item.smoothOpen timer cleared");
       }
     }, 25);
   }
@@ -184,8 +180,6 @@ class Item extends React.Component {
 
     let maxHeight = parseInt(target.style.maxHeight,10) || 0;
     let height= target.clientHeight;
-
-    console.info("smoothClose", target.classList[0]);
 
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
@@ -207,14 +201,12 @@ class Item extends React.Component {
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
-        //target.style.overflow= 'hidden';
-        //shadow.style.minHeight= 0;
-        //item.style.position='static';
-        //item.style.zIndex= 'auto';
-
-        console.info("item.smoothClose timer cleared");
+        target.style.overflow= 'hidden';
+        shadow.style.minHeight= 0;
+        item.style.position='static';
+        item.style.zIndex= 'auto';
       }
-    }, 1000);
+    }, 25);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
