@@ -3,8 +3,7 @@
 import fs                       from 'fs';
 import path                     from 'path';
 import React                    from 'react';
-import ReactDOM                 from 'react-dom';
-import { renderToString }       from 'react-dom/server'
+import ReactDOM                 from 'react-dom/server';
 import App                      from '../components/app';
 import Index                    from '../pages/index';
 import makeProps                from '../props';
