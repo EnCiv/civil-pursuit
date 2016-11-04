@@ -71,9 +71,9 @@ class Accordion extends React.Component {
     shadow.style.width = accordion.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-    accordion.style.position='relative';
-    accordion.style.zIndex= -2;
-    accordion.style.overflow= 'visible';
+    //accordion.style.position='relative';
+    //accordion.style.zIndex= -2;
+    //accordion.style.overflow= 'visible';
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
