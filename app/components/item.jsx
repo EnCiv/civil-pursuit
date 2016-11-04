@@ -240,7 +240,7 @@ class Item extends React.Component {
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
       } else {
-        //description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
+        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
         truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
