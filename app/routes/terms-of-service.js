@@ -3,6 +3,7 @@
 import fs                       from 'fs';
 import path                     from 'path';
 import React                    from 'react';
+import ReactDOM                 from 'react-dom/server';
 
 function termsOfService (req, res, next) {
   try {
@@ -40,7 +41,7 @@ function termsOfService (req, res, next) {
 
     let app = AppFactory(props);
 
-    source = source.replace(/<!-- #synapp -->/, React.renderToString(app));
+    source = source.replace(/<!-- #synapp -->/, ReactDOM.renderToString(app));
 
     res.send(source);
   }
