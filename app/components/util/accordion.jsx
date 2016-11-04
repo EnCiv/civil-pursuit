@@ -62,7 +62,7 @@ class Accordion extends React.Component {
     accordion.style.overflow= 'visible';
 
     const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
+      if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
@@ -72,7 +72,6 @@ class Accordion extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         accordion.style.overflow="visible";
-        //item.style.position='static';
         accordion.style.zIndex= 1;
         shadow.style.minHeight= 0;
       }
@@ -89,7 +88,7 @@ class Accordion extends React.Component {
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
 
-    shadow.style.width = item.offsetWidth + 'px';
+    shadow.style.width = accordion.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
     console.info("smoothClose", window.innerHeight - rect.top);
@@ -100,7 +99,7 @@ class Accordion extends React.Component {
 
 
     const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
+      if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
