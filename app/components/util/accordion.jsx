@@ -33,13 +33,24 @@ class Accordion extends React.Component {
     if ( props.active === true ) {
       if(this.state.attr==='hide') {
         this.setState({ attr : 'show' });
-        this.smoothOpen();
       }
     }
     else if ( props.active === false ) {
       if (this.state.attr==='show') {
           this.smoothClose();
       }
+    }
+  }
+
+  componentDidMount() {
+    if(this.state.attr==='show') {
+        this.smoothOpen();
+    }
+  }
+
+  componentWillUnmount() {
+    if(this.state.attr==='show') {
+        this.smoothClose();
     }
   }
 
