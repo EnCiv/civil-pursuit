@@ -155,8 +155,9 @@ class Accordion extends React.Component {
   render () {
     return (
       <section>
-        <<ReactCollapse isOpened={this.state.attr==='show'} >
+        <ReactCollapse isOpened={this.state.attr==='show'} >
               { this.props.children }
+        </ReactCollapse>
       </section>
     );
   }
