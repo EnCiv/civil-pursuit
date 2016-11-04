@@ -40,12 +40,8 @@ class Accordion extends React.Component {
 
   render () {
     return (
-      <section className="syn-accordion" ref="view">
-        <section className={ `syn-accordion-wrapper ${this.state.attr}` } ref="wrapper">
-          <section className="syn-accordion-content" ref="content">
+      <section className={ `syn-accordion ${this.state.attr}` } ref="wrapper">
             { this.props.children }
-          </section>
-        </section>
       </section>
     );
   }
