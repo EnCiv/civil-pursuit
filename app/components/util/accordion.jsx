@@ -104,10 +104,10 @@ class Accordion extends React.Component {
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
 
-    shadow.style.width = accordion.offsetWidth + 'px';
-    let rect=shadow.getBoundingClientRect();
-    shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
-    console.info("smoothClose", window.innerHeight - rect.top);
+    //shadow.style.width = accordion.offsetWidth + 'px';
+    //let rect=shadow.getBoundingClientRect();
+    //shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
+    //console.info("smoothClose", window.innerHeight - rect.top);
     //accordion.style.position='relative';
     //accordion.style.zIndex= -2;
     accordion.style.overflow= 'hidden';
@@ -120,7 +120,7 @@ class Accordion extends React.Component {
       let lheight= accordion.clientHeight;
       if( lmaxHeight >= lheight ){ //it's still shrinking
         accordion.style.maxHeight =  (((lmaxHeight - 7) > 0) ? (lmaxHeight - 7) : 0 ) + 'px';
-        shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
+        //shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
       } else {
       // end interval if the scroll is completed
         clearInterval(timer);
@@ -129,7 +129,7 @@ class Accordion extends React.Component {
         //accordion.style.minHeight= 0;
         //accordion.style.position='static';
         //accordion.style.zIndex= 'auto';
-        shadow.style.minHeight= 0;
+        //shadow.style.minHeight= 0;
       }
     }, 25);
   }
