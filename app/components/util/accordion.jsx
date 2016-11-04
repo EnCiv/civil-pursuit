@@ -31,31 +31,31 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (props = {}) {
-       console.info("accordion.componentWillReceiveProps", props.active, this.state.attr)
+       console.info("accordion.componentWillReceiveProps", props.active, this.state.attr);
     if ( props.active === true ) {
       if(this.state.attr==='hide') {
         this.setState({ attr : 'show' });
       }
     }
-    else if ( props.active === false ) {
-      if (this.state.attr==='show') {
+//    else if ( props.active === false ) {
+ //     if (this.state.attr==='show') {
  //         this.smoothClose();
-      }
-    }
+  //    }
+ //   }
   }
 
   componentDidMount() {
     console.info("accordion.componentDidMount", this.state.attr)
  //   if(this.state.attr==='show') {
  //       this.smoothOpen();
-    }
+ //   }
   }
 
   componentWillUnmount() {
-    console.info("accordion.componentWillUnmount", this.state.attr)
+    console.info("accordion.componentWillUnmount", this.state.attr);
  //   if(this.state.attr==='show') {
  //       this.smoothClose();
-    }
+ //   }
   }
 
   inOpen='inactive';
