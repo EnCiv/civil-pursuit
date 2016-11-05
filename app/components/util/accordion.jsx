@@ -33,7 +33,7 @@ class Accordion extends React.Component {
   componentWillReceiveProps (props = {}) {
        console.info("accordion.componentWillReceiveProps", props.active, this.state.attr);
     if ( props.active === true ) {
-      if(this.state.attr==='hide') {
+      if(this.state.attr!=='show') {
         this.setState({ attr : 'show' });
       }
     }
@@ -155,7 +155,7 @@ class Accordion extends React.Component {
   render () {
     return (
       <section>
-        <ReactCollapse isOpened={this.state.attr==='show'} >
+        <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 170, damping: 26} >
               { this.props.children }
         </ReactCollapse>
       </section>

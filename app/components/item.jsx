@@ -289,50 +289,8 @@ class Item extends React.Component {
       referenceTitle = item.references[0].title;
     }
 
-    if(collapsed==true) {
       rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` }  style={{ display : 'none' }} >
-          <ItemMedia
-            item      =   { item }
-            ref       =   "media"
-            />
-
-          <section className="item-buttons">
-            { buttons }
-          </section>
-
-          <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">
-              <h4 className="item-subject">
-                { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-                { item.subject }
-              </h4>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
-                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
-              <div className="item-description pre-text">
-                { item.description }
-                <div className="item-trunc-hint">
-                  <Icon icon="ellipsis-h" />
-                </div>
-              </div>
-              <div className="item-tendency" style={{display: 'none'}}>
-                { tendencyChoice && item && item.user && item.user.tendency ? tendencyChoice[item.user.tendency]  :  '' }
-              </div>
-            </div>
-            <div className="item-truncatable-shadow" ref='shadow'>''</div>
-          </section>
-
-          <section style={ { clear : 'both' }}></section>
-
-          <section style={{ marginRight : '0px' }}>
-            { footer }
-          </section>
-        </article>
-      );
-    } else {
-      rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` } >
+        <article className="item" ref="item" id={ `item-${item._id}` } style={ collapsed ? { display : 'none' } : { display : 'block'} }>
           <ItemMedia onClick={ this.readMore.bind(this) }
             item      =   { item }
             ref       =   "media"
@@ -371,7 +329,6 @@ class Item extends React.Component {
           </section>
         </article>
       );
-    }
     return (  rendereditem );
   }
 }
