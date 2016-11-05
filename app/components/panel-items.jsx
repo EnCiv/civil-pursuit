@@ -97,7 +97,7 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   collapseAroundItem (itemId) {
-    var itemhide {};
+    let itemhide=[];
 
     if(!this.state.itemhide.length) {
       for (let itm in this.props.panel.items) {
