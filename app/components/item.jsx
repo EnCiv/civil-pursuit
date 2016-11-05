@@ -319,7 +319,7 @@ class Item extends React.Component {
                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
               </div>
             </div>
-            <div className="item-truncatable-shadow" ref='shadow'>''</div>
+            <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
           </section>
 
           <section style={ { clear : 'both' }}></section>
