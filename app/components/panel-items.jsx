@@ -97,27 +97,31 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   collapseAroundItem (itemId) {
+    var itemhide[];
 
     if(!this.state.itemhide.length) {
       for (let itm in this.props.panel.items) {
-        this.state.itemhide[this.props.panel.items[itm]._id] =
+        itemhide[this.props.panel.items[itm]._id] =
             (itemId) ? 
-              ((this.props.panel.items[itm]._id == itemId) ? ( { hid: false } ) : ( { hid: true } ) )
-            : ( { hid: false } );
+              ((this.props.panel.items[itm]._id == itemId) ? ( false ) : ( true ) )
+            : ( false  );
         }
     } else {
-      for (let itm in this.state.itemhide) {
+      itemhide = this.state.itemhide.slice();
+      for (let itm in itemhide) {
         if (itemId) {
             if (itm == itemId) {
-               this.state.itemhide[itm].hid = false; 
+               this.state.itemhide[itm] = false; 
             } else {
-              this.state.itemhide[itm].hid = true;
+              this.state.itemhide[itm] = true;
             }
           } else {
-            this.state.itemhide[itm].hid = false;
+            this.state.itemhide[itm] = false;
         }
       }
     }
+    this.setState({itemhide: itemhide});
+    console.info("collapseAroundItem", itemhide);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -308,7 +312,7 @@ class PanelItems extends React.Component {
                     ] }
 
 //                  collapsed = { this.state.itemhide ? this.state.itemhide[item._id] : false }
-                    collapsed =  { this.state.itemhide[item._id] ? this.state.itemhide[item._id].hid : false }
+                    collapsed =  { this.state.itemhide[item._id] ? this.state.itemhide[item._id] : false }
                     toggle  =   { this.toggle.bind(this) }
                   />
               </ItemStore>
