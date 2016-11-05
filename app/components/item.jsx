@@ -234,16 +234,16 @@ class Item extends React.Component {
       if (this.state.truncated) {
 //        description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
 //        truncHint.classList.remove('expand');
-        subject.classList.add('expand');
-        reference.classList.add('expand');
+//        subject.classList.add('expand');
+//        reference.classList.add('expand');
         this.setState({truncated: false});
         this.props.toggle(this.props.item._id, 'harmony');
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
       } else {
 //        truncHint.classList.add('expand');
-        subject.classList.remove('expand');
-        reference.classList.remove('expand');
+//       subject.classList.remove('expand');
+//        reference.classList.remove('expand');
         this.props.toggle(this.props.item._id, 'harmony');
         this.smoothClose(truncatable, item, shadow);
       }

@@ -153,6 +153,7 @@ class Accordion extends React.Component {
   }
 
   render () {
+    console.info("accordion attr", this.state.attr, this.state.attr==='show');
     return (
       <section className="accordion">
         <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 170, damping: 26}} keepCollapsedContent= {true} >
