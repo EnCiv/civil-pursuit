@@ -233,7 +233,7 @@ class Item extends React.Component {
 
       if (this.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
-        truncHint.classList.remove('expand');
+//        truncHint.classList.remove('expand');
         subject.classList.add('expand');
         reference.classList.add('expand');
         this.truncated=false;
@@ -241,7 +241,7 @@ class Item extends React.Component {
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
       } else {
-        truncHint.classList.add('expand');
+//        truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
         this.truncated=true;
@@ -311,7 +311,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">
                 { item.description }
-                <div className="item-trunc-hint">
+                <div className={ `item-trunc-hint ${truncated ? 'expand' : ''}}>
                   <Icon icon="ellipsis-h" />
                 </div>
               </div>
