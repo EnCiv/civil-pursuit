@@ -290,13 +290,12 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` }>
-          <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 170, damping: 26}} keepCollapsedContent= {true} >
+        <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
+          <article className="item" ref="item" id={ `item-${item._id}` }>
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
-              />
-
+            />
             <section className="item-buttons">
               { buttons }
             </section>
@@ -328,8 +327,8 @@ class Item extends React.Component {
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
-          </ReactCollapse>
-        </article>
+          </article>
+        </ReactCollapse>
       );
     return (  rendereditem );
   }
