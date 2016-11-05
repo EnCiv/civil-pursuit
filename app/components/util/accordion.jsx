@@ -155,7 +155,7 @@ class Accordion extends React.Component {
   render () {
     return (
       <section>
-        <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 170, damping: 26} >
+        <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 170, damping: 26}} >
               { this.props.children }
         </ReactCollapse>
       </section>
