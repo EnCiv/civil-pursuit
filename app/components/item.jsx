@@ -205,8 +205,7 @@ class Item extends React.Component {
         shadow.style.minHeight= 0;
         item.style.position='static';
         item.style.zIndex= 'auto';
-        let description =  target.querySelector('.item-description');
-        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
+        this.setState({truncated: true});
       }
     }, 25);
   }
@@ -233,7 +232,7 @@ class Item extends React.Component {
       console.info("item.readMore",this.props);
 
       if (this.state.truncated) {
-        description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
+//        description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
 //        truncHint.classList.remove('expand');
         subject.classList.add('expand');
         reference.classList.add('expand');
@@ -245,7 +244,6 @@ class Item extends React.Component {
 //        truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
-        this.setState({truncated: true});
         this.props.toggle(this.props.item._id, 'harmony');
         this.smoothClose(truncatable, item, shadow);
       }
@@ -310,7 +308,7 @@ class Item extends React.Component {
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
-              <div className="item-description pre-text">
+              <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''`}>
                 { item.description }
                 <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
                   <Icon icon="ellipsis-h" />
