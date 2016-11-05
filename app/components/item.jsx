@@ -308,7 +308,7 @@ class Item extends React.Component {
               <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                 <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
               </h5>
-              <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''`} }>
+              <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
                 { item.description }
                 <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
                   <Icon icon="ellipsis-h" />
