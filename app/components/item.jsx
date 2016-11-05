@@ -311,7 +311,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">
                 { item.description }
-                <div className={ `item-trunc-hint ${truncated ? 'expand' : ''}}>
+                <div className={ `item-trunc-hint ${truncated ? 'expand' : ''}`}>
                   <Icon icon="ellipsis-h" />
                 </div>
               </div>
