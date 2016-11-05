@@ -289,43 +289,45 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` } style={ collapsed ? { display : 'none' } : { display : 'block'} }>
-          <ItemMedia onClick={ this.readMore.bind(this) }
-            item      =   { item }
-            ref       =   "media"
-            />
+        <article className="item" ref="item" id={ `item-${item._id}` }>
+          <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 170, damping: 26}} keepCollapsedContent= {true} >
+            <ItemMedia onClick={ this.readMore.bind(this) }
+              item      =   { item }
+              ref       =   "media"
+              />
 
-          <section className="item-buttons">
-            { buttons }
-          </section>
+            <section className="item-buttons">
+              { buttons }
+            </section>
 
-          <section className="item-text">
-            <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">  
-              <h4 className="item-subject">
-                { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-                { item.subject }
-              </h4>
-              <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
-                <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-              </h5>
-              <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
-                { item.description }
-                <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
-                  <Icon icon="ellipsis-h" />
+            <section className="item-text">
+              <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">  
+                <h4 className="item-subject">
+                  { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
+                  { item.subject }
+                </h4>
+                <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
+                  <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+                </h5>
+                <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
+                  { item.description }
+                  <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
+                    <Icon icon="ellipsis-h" />
+                  </div>
+                </div>
+                <div className="item-tendency" style={{display: 'none'}}>
+                     { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
                 </div>
               </div>
-              <div className="item-tendency" style={{display: 'none'}}>
-                   { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
-              </div>
-            </div>
-            <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
-          </section>
+              <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
+            </section>
 
-          <section style={ { clear : 'both' }}></section>
+            <section style={ { clear : 'both' }}></section>
 
-          <section style={{ marginRight : '0px' }}>
-            { footer }
-          </section>
+            <section style={{ marginRight : '0px' }}>
+              { footer }
+            </section>
+          </ReactCollapse>
         </article>
       );
     return (  rendereditem );

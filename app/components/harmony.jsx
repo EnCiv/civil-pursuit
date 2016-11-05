@@ -66,7 +66,6 @@ class Harmony extends React.Component {
 
     let contentRight = ( <Loading message="Loading" /> );
 
-    if ( active ) {
       contentLeft = (
         <section className="harmony-pro">
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
@@ -82,7 +81,7 @@ class Harmony extends React.Component {
           </PanelStore>
         </section>
       );
-    }
+
 
     return (
       <section className={`item-harmony ${this.props.className}`}>
