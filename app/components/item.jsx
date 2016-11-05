@@ -6,6 +6,7 @@ import Icon               from './util/icon';
 
 class Item extends React.Component {
 
+  state = { truncated: false};
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    *  @description      Break a given text into lines, themselves into words
@@ -82,7 +83,7 @@ class Item extends React.Component {
       
       const item = this.refs.item;
 
-      if ( ! this.truncated ) {
+      if ( ! this.state.truncated ) {
         const more = this.refs.more;
 
         let media = item.querySelector('.item-media');
@@ -107,11 +108,11 @@ class Item extends React.Component {
 
         if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
-          truncHint.classList.add('expand');
+//          truncHint.classList.add('expand');
+          this.setState({truncated: true});
           this.trunced=true;
-          this.truncated = true;
         } else {
-          this.truncated=false;
+          this.setState({truncated: false});
           this.trunced=false;
         }
 
@@ -231,12 +232,12 @@ class Item extends React.Component {
 
       console.info("item.readMore",this.props);
 
-      if (this.truncated) {
+      if (this.state.truncated) {
         description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
 //        truncHint.classList.remove('expand');
         subject.classList.add('expand');
         reference.classList.add('expand');
-        this.truncated=false;
+        this.setState({truncated: false});
         this.props.toggle(this.props.item._id, 'harmony');
         console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
@@ -244,7 +245,7 @@ class Item extends React.Component {
 //        truncHint.classList.add('expand');
         subject.classList.remove('expand');
         reference.classList.remove('expand');
-        this.truncated=true;
+        this.setState({truncated: true});
         this.props.toggle(this.props.item._id, 'harmony');
         this.smoothClose(truncatable, item, shadow);
       }
@@ -311,7 +312,7 @@ class Item extends React.Component {
               </h5>
               <div className="item-description pre-text">
                 { item.description }
-                <div className={ `item-trunc-hint ${truncated ? 'expand' : ''}`}>
+                <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
                   <Icon icon="ellipsis-h" />
                 </div>
               </div>
