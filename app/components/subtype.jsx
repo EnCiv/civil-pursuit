@@ -29,13 +29,13 @@ class Subtype extends React.Component {
 
     let content = ( <Loading message="Loading related" /> );
 
-    if ( active ) {
+//    if ( active ) {
       content = (
         <PanelStore type={ type} parent={ parent }>
           <PanelItems user={ user } />
         </PanelStore>
       )
-    }
+//    }
 
     return (
       <section className={`item-subtype ${this.props.className}`}>
