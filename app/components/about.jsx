@@ -16,11 +16,11 @@ class About extends React.Component {
       e.preventDefault();
     }
     let results;
-    let email = React.findDOMNode(this.refs.email).value;
-    let fname = React.findDOMNode(this.refs.fname).value;
-    let lname = React.findDOMNode(this.refs.lname).value;
-    let subject = React.findDOMNode(this.refs.subject).value;
-    let message = React.findDOMNode(this.refs.message).value;
+    let email = this.refs.email;
+    let fname = this.refs.fname;
+    let lname = this.refs.lname;
+    let subject = this.refs.subject;
+    let message = this.refs.message;
 
     if (!this.validEmail(email)) {
       this.setState({response: "Something's not right with the email address"} );

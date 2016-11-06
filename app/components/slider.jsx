@@ -14,7 +14,7 @@ class Slider extends React.Component {
   };
 
   toggleDescription (e) {
-    let description = React.findDOMNode(this.refs.description);
+    let description = this.refs.description;
     description.classList.toggle('syn-visible');
   }
 

@@ -21,12 +21,12 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    const subject   =   React.findDOMNode(this.refs.subject),
-      reference     =   React.findDOMNode(this.refs.reference),
-      description   =   React.findDOMNode(this.refs.description),
-      media         =   React.findDOMNode(this.refs.uploader)
+    const subject   =   this.refs.subject,
+      reference     =   this.refs.reference,
+      description   =   this.refs.description,
+      media         =   this.refs.uploader
                           .querySelector('.syn-uploader-dropbox'),
-      creator       =   React.findDOMNode(this.refs.creator),
+      creator       =   this.refs.creator,
       mediaHeight   =   media.offsetHeight,
       inputHeight   =   subject.offsetHeight + reference.offsetHeight;
 
@@ -56,10 +56,10 @@ class Creator extends React.Component {
 
   componentWillReceiveProps (props) {
     if ( props.created && props.created.panel === this.props['panel-id'] ) {
-      React.findDOMNode(this.refs.subject).value        =   '';
-      React.findDOMNode(this.refs.description).value    =   '';
-      React.findDOMNode(this.refs.reference).value      =   '';
-      React.findDOMNode(this.refs.title).value          =   '';
+      this.refs.subject.value        =   '';
+      this.refs.description.value    =   '';
+      this.refs.reference.value      =   '';
+      this.refs.title.value          =   '';
 
       setTimeout(() => {
         window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
@@ -70,10 +70,10 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    const subject       =   React.findDOMNode(this.refs.subject).value;
-    const description   =   React.findDOMNode(this.refs.description).value;
-    const url           =   React.findDOMNode(this.refs.reference).value;
-    const title         =   React.findDOMNode(this.refs.title).value;
+    const subject       =   this.refs.subject;
+    const description   =   this.refs.description;
+    const url           =   this.refs.reference;
+    const title         =   this.refs.title;
 
     const item = { subject, description, type: this.props.type };
 
@@ -124,9 +124,9 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   getUrlTitle () {
-    let url = React.findDOMNode(this.refs.reference).value;
-    let loading = React.findDOMNode(this.refs.lookingUp);
-    let error = React.findDOMNode(this.refs.errorLookingUp);
+    let url = this.refs.reference;
+    let loading = this.refs.lookingUp;
+    let error = this.refs.errorLookingUp;
 
     if ( url && /^http/.test(url) ) {
       loading.classList.add('visible');
@@ -142,11 +142,11 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   applyTitle (title, url) {
-    let loading = React.findDOMNode(this.refs.lookingUp);
-    let error = React.findDOMNode(this.refs.errorLookingUp);
-    let reference = React.findDOMNode(this.refs.reference);
-    let editURL = React.findDOMNode(this.refs.editURL);
-    let titleHolder = React.findDOMNode(this.refs.title);
+    let loading = this.refs.lookingUp;
+    let error = this.refs.errorLookingUp;
+    let reference = this.refs.reference;
+    let editURL = this.refs.editURL;
+    let titleHolder = this.refs.title;
 
     loading.classList.remove('visible');
 
@@ -171,9 +171,9 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   editURL () {
-    let reference = React.findDOMNode(this.refs.reference);
-    let editURL = React.findDOMNode(this.refs.editURL);
-    let titleHolder = React.findDOMNode(this.refs.title);
+    let reference = this.refs.reference;
+    let editURL = this.refs.editURL;
+    let titleHolder = this.refs.title;
 
     reference.classList.remove('hide');
     reference.select();

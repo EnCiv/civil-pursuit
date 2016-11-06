@@ -43,7 +43,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setCity () {
-    let city = React.findDOMNode(this.refs.city).value;
+    let city = this.refs.city;
 
     if ( city ) {
       window.socket.emit('set user info', { city });
@@ -53,7 +53,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setState () {
-    let state = React.findDOMNode(this.refs.state).value;
+    let state = this.refs.state;
 
     if ( state ) {
       window.socket.emit('set user info', { state });
@@ -63,7 +63,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setZip () {
-    let zip = React.findDOMNode(this.refs.zip).value;
+    let zip = this.refs.zip;
 
     if ( zip ) {
       window.socket.emit('set user info', { zip });
@@ -73,7 +73,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setZip4 () {
-    let zip4 = React.findDOMNode(this.refs.zip4).value;
+    let zip4 = this.refs.zip4;
 
     if ( zip4 ) {
       window.socket.emit('set user info', { zip4 });

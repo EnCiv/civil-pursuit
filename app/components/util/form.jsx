@@ -35,7 +35,7 @@ class Form extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   validateRequired () {
-    let form = React.findDOMNode(this.refs.form);
+    let form = this.refs.form;
 
     let requiredList = form.querySelectorAll('[required]');
 
@@ -63,7 +63,7 @@ class Form extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   validateEmail () {
-    let form = React.findDOMNode(this.refs.form);
+    let form = this.refs.form;
 
     let emails = form.querySelectorAll('[type="email"]');
 

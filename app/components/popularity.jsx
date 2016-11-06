@@ -10,7 +10,7 @@ class Popularity extends React.Component {
   animate () {
     const { number } = this.props;
 
-    const bar = React.findDOMNode(this.refs.bar);
+    const bar = this.refs.bar;
 
     bar.style.width = `${number}%`;
   }

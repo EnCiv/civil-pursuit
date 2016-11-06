@@ -207,7 +207,7 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertVotes(position, itemId) {
-    const sliders = React.findDOMNode(this.refs.view).querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
+    const sliders = this.refs.view.querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
 
     if ( sliders.length ) {
       const votes = [];
@@ -229,7 +229,7 @@ class EvaluationStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   insertFeedback(position, itemId) {
-    const feedback = React.findDOMNode(this.refs.view)
+    const feedback = this.refs.view
       .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
 
     if ( feedback ) {

@@ -16,10 +16,10 @@ class Countdown extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    const remainingSeconds  =   React.findDOMNode(this.refs.remainingSeconds);
-    const remainingMinutes  =   React.findDOMNode(this.refs.remainingMinutes);
-    const remainingHours    =   React.findDOMNode(this.refs.remainingHours);
-    const remainingDays     =   React.findDOMNode(this.refs.remainingDays);
+    const remainingSeconds  =   this.refs.remainingSeconds;
+    const remainingMinutes  =   this.refs.remainingMinutes;
+    const remainingHours    =   this.refs.remainingHours;
+    const remainingDays     =   this.refs.remainingDays;
 
     this.timer = setInterval(() => {
       const remainingTime = this.countRemainingTime();

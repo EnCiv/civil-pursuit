@@ -50,7 +50,7 @@ componentDidUpdate () {
 //**********************************************************
   toggleLeft( itemId, panel) {
     console.info("promote.promoteMore", itemId, panel, this);
-    let node=React.findDOMNode(this.refs.promoteItemLeft);
+    let node=this.refs.promoteItemLeft;
     if(this.state.expandedL) {
       this.setState({activeL: false});
       node.style.marginRight= 0;
@@ -70,7 +70,7 @@ componentDidUpdate () {
   }
 
   toggleRight( itemId, panel) {
-    let node=React.findDOMNode(this.refs.promoteItemRight);
+    let node=this.refs.promoteItemRight;
     if(this.state.expandedR) {
       this.setState({activeR: false});
       node.style.marginLeft= 0;

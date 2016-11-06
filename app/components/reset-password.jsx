@@ -38,9 +38,9 @@ class ResetPassword extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   save () {
-    const password            =   React.findDOMNode(this.refs.password);
-    const confirmPassword     =   React.findDOMNode(this.refs.confirmPassword);
-    const resetKey            =   React.findDOMNode(this.refs.reset);
+    const password            =   this.refs.password;
+    const confirmPassword     =   this.refs.confirmPassword;
+    const resetKey            =   this.refs.reset;
 
     this.setState({ validationError : null });
 

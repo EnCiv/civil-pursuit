@@ -23,10 +23,10 @@ class Uploader extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    let dropbox = React.findDOMNode(this.refs.dropbox),
-      input = React.findDOMNode(this.refs.typeFile),
-      bucket = React.findDOMNode(this.refs.bucket),
-      replace = React.findDOMNode(this.refs.replace);
+    let dropbox = this.refs.dropbox,
+      input = this.refs.typeFile,
+      bucket = this.refs.bucket,
+      replace = this.refs.replace;
 
 
     this.upload = new Upload(dropbox, input, bucket, replace);
@@ -59,17 +59,17 @@ class Uploader extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   chooseFile () {
-    let input = React.findDOMNode(this.refs.typeFile);
+    let input = this.refs.typeFile;
     input.click();
   }
 
   chooseAnotherFile (e) {
     e.preventDefault();
 
-    let dropbox = React.findDOMNode(this.refs.dropbox),
-      bucket = React.findDOMNode(this.refs.bucket),
-      input = React.findDOMNode(this.refs.typeFile),
-      replace = React.findDOMNode(this.refs.replace);
+    let dropbox = this.refs.dropbox,
+      bucket = this.refs.bucket,
+      input = this.refs.typeFile,
+      replace = this.refs.replace;
 
     dropbox.style.display = 'block';
     bucket.style.display = 'none';

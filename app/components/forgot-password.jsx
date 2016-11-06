@@ -32,7 +32,7 @@ class ForgotPassword extends React.Component {
 
     this.setState({ validationError : null, info : 'One moment...' });
 
-    let email = React.findDOMNode(this.refs.email).value;
+    let email = this.refs.email;
 
     window.socket.emit('send password', email, response => {
       if ( response.error ) {

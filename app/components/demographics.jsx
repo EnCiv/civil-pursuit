@@ -20,7 +20,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setEducation () {
-    let education = React.findDOMNode(this.refs.education).value;
+    let education = this.refs.education;
 
     if ( education ) {
       window.socket.emit('set user info', { education });
@@ -30,7 +30,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setRelationship () {
-    let relationship = React.findDOMNode(this.refs.relationship).value;
+    let relationship = this.refs.relationship;
 
     if ( relationship ) {
       window.socket.emit('set user info', { married : relationship });
@@ -40,7 +40,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setEmployment () {
-    let employment = React.findDOMNode(this.refs.employment).value;
+    let employment = this.refs.employment;
 
     if ( employment ) {
       window.socket.emit('set user info', { employment });

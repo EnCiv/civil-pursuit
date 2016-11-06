@@ -114,7 +114,7 @@ class TopBar extends React.Component {
 
     this.HeaderMenuToggle().then(
       () => {
-        const hamburger = React.findDOMNode(this.refs.hamburger);
+        const hamburger = this.refs.hamburger;
         hamburger.classList.toggle('on');
       }
     );

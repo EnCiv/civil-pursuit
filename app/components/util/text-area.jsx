@@ -5,7 +5,7 @@ import autosize from 'autosize';
 
 class Textarea extends React.Component {
   componentDidMount () {
-    const view = React.findDOMNode(this.refs.view);
+    const view = this.refs.view;
     autosize(view);
   }
 

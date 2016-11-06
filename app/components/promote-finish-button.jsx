@@ -11,7 +11,7 @@ class Finish extends React.Component {
   next () {
     let { emitter } = this.props;
 
-    let view = React.findDOMNode(this.refs.view);
+    let view = this.refs.view;
 
     let parent = view.closest('.item-promote');
 

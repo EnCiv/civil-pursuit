@@ -28,10 +28,10 @@ class Join extends React.Component {
   }
 
   signup () {
-    let email = React.findDOMNode(this.refs.email).value,
-      password = React.findDOMNode(this.refs.password).value,
-      confirm = React.findDOMNode(this.refs.confirm).value,
-      agree = React.findDOMNode(this.refs.agree);
+    let email = this.refs.email,
+      password = this.refs.password,
+      confirm = this.refs.confirm,
+      agree = this.refs.agree;
 
     this.setState({ validationError : null, info : 'Logging you in...' });
 
@@ -87,7 +87,7 @@ class Join extends React.Component {
   }
 
   agree () {
-    let box = React.findDOMNode(this.refs.agree);
+    let box = this.refs.agree;
 
     if ( box.classList.contains('fa-square-o') ) {
       box.classList.remove('fa-square-o');
