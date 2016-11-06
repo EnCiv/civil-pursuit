@@ -11,8 +11,8 @@ import PanelStore                 from './store/panel';
 class Subtype extends React.Component {
 
 
-    this.status = 'iddle';
-    
+  status = 'iddle';
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
