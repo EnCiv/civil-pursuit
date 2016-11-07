@@ -73,8 +73,8 @@ class PanelItems extends React.Component {
       this.state.active &&
       ( this.state.active.item === itemId || ! itemId ) &&
       this.state.active.section === section ) {
-        this.collapseAroundItem (false);
-        return this.setState({ active : { item : itemId, section : null } });
+        //this.collapseAroundItem (false);
+        return this.setState({ active : { item : null, section : null } });
     }
 
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
@@ -87,7 +87,7 @@ class PanelItems extends React.Component {
       }
 
       this.mountedItems[itemId][section] = true;
-      this.collapseAroundItem(itemId);
+      //this.collapseAroundItem(itemId);
     }
 
     this.setState({ active : { item : itemId, section }});
@@ -311,8 +311,7 @@ class PanelItems extends React.Component {
                     promote, details, subtype, editItem, harmony
                     ] }
 
-//                  collapsed = { this.state.itemhide ? this.state.itemhide[item._id] : false }
-                    collapsed =  { this.state.itemhide[item._id] ? this.state.itemhide[item._id] : false }
+                    collapsed =  { this.state.active.item && this.state.active.item !== item._id }  //collapsed if there is an active item and it's not this one
                     toggle  =   { this.toggle.bind(this) }
                   />
               </ItemStore>
