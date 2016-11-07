@@ -16,26 +16,33 @@ class Accordion extends React.Component {
   id                =   null;
 
   state             =   {
-    attr            :   'hide'
+    attr            :   'hide',
   };
+
+  mounted = false;
 
   constructor (props) {
     super(props);
-
-    if ( this.props.active === true ) {
-      this.state.attr = 'show';
-    }
-    else if ( this.props.active === false ) {
-      this.state.attr = 'hide';
-    }
   }
 
   componentWillReceiveProps (props = {}) {
-       console.info("accordion.componentWillReceiveProps", props.active, this.state.attr);
+      console.info("accordion.componentWillReceiveProps", props.active, this.state.attr);
+      if(this.mounted) {
+        if ( this.props.active === true ) {
+          if(this.state.attr!=='show') {
+            this.setState({ attr : 'show' });
+          }
+        } else if ( this.props.active === false ) {
+          if (this.state.attr!=='hide') {
+              this.setState({attr : 'hide'});
+          }
+        }
+      }
   }
 
   componentDidMount() {
-    console.info("accordion.componentDidMount", this.state.attr)
+    console.info("accordion.componentDidMount", this.state.attr, this.mounted)
+    this.mounted=true;
     if ( this.props.active === true ) {
       if(this.state.attr!=='show') {
         this.setState({ attr : 'show' });
@@ -49,6 +56,7 @@ class Accordion extends React.Component {
   }
 
   componentWillUnmount() {
+    this.mounted=false;
     console.info("accordion.componentWillUnmount", this.state.attr);
  //   if(this.state.attr==='show') {
  //       this.smoothClose();
