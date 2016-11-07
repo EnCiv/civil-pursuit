@@ -127,16 +127,16 @@ class PanelItems extends React.Component {
         name += `-${parent._id || parent}`;
       }
 
-      title = (
-        <Link
-          href        =   { `/items/${type._id}/${parent || ""}` }
-          then        =   { this.unFocus.bind(this) }
-          >
-          <Icon icon="angle-double-left" />
-          <span> </span>
-          { type.name }
-        </Link>
-      )
+//      title = (
+//        <Link
+//          href        =   { `/items/${type._id}/${parent || ""}` }
+//          then        =   { this.unFocus.bind(this) }
+//          >
+//          <Icon icon="angle-double-left" />
+//          <span> </span>
+//          { type.name }
+//        </Link>
+//      )
 
       title = type.name;
 
