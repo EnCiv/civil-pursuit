@@ -10,11 +10,6 @@ class Accordion extends React.Component {
     active          :   React.PropTypes.bool
   };
 
-  counter           =   0;
-  height            =   null;
-  visibility        =   false;
-  id                =   null;
-
   state             =   {
     attr            :   'hide',
   };
@@ -23,10 +18,11 @@ class Accordion extends React.Component {
 
   constructor (props) {
     super(props);
+    mounted = false;
   }
 
   componentWillReceiveProps (props = {}) {
-      console.info("accordion.componentWillReceiveProps", props.active, this.state.attr);
+      console.info("accordion.componentWillReceiveProps", this.mounted ? 'mounted' : 'not mounted', props.active, this.state.attr);
       if(this.mounted) {
         if ( this.props.active === true ) {
           if(this.state.attr!=='show') {
@@ -158,7 +154,7 @@ class Accordion extends React.Component {
   }
 
   render () {
-    console.info("accordion attr", this.state.attr, this.state.attr==='show');
+    console.info("accordion attr", this.mounted, this.state.attr);
     return (
       <section className="accordion">
         <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
