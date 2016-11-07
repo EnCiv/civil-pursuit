@@ -36,7 +36,7 @@ class Accordion extends React.Component {
 
   componentDidMount() {
     console.info("accordion.componentDidMount", this.state.attr)
-    if ( props.active === true ) {
+    if ( this.props.active === true ) {
       if(this.state.attr!=='show') {
         this.setState({ attr : 'show' });
       }
