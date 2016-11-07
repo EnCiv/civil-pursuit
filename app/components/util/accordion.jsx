@@ -22,7 +22,7 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (props = {}) {
-      console.info("accordion.componentWillReceiveProps", this.mounted ? 'mounted' : 'not mounted', props.active, this.state.attr);
+      console.info("accordion.componentWillReceiveProps", this.refs.accordion, this.mounted ? 'mounted' : 'not mounted', props.active, this.state.attr);
       if(this.mounted) {
         if ( this.props.active === true ) {
           if(this.state.attr!=='show') {
@@ -37,7 +37,7 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
-    console.info("accordion.componentDidMount", this.state.attr, this.mounted)
+    console.info("accordion.componentDidMount", this.refs.accordion, this.state.attr, this.mounted)
     this.mounted=true;
     if ( this.props.active === true ) {
       if(this.state.attr!=='show') {
@@ -154,9 +154,9 @@ class Accordion extends React.Component {
   }
 
   render () {
-    console.info("accordion attr", this.mounted, this.state.attr);
+    console.info("accordion attr", this.refs.accordion, this.mounted, this.state.attr);
     return (
-      <section className="accordion">
+      <section className="accordion" ref='accordion'>
         <ReactCollapse isOpened={this.state.attr==='show'} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
               { this.props.children }
         </ReactCollapse>
