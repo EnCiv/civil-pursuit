@@ -311,7 +311,7 @@ class PanelItems extends React.Component {
                     promote, details, subtype, editItem, harmony
                     ] }
 
-                    collapsed =  { this.state.active.item && this.state.active.item !== item._id }  //collapsed if there is an active item and it's not this one
+                    collapsed =  { !item || (this.state.active.item && this.state.active.item !== item._id ) }  //collapsed if there is an active item and it's not this one
                     toggle  =   { this.toggle.bind(this) }
                   />
               </ItemStore>
