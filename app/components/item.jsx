@@ -290,7 +290,7 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
+//        <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
           <article className="item" ref="item" id={ `item-${item._id}` }>
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
@@ -328,7 +328,7 @@ class Item extends React.Component {
               { footer }
             </section>
           </article>
-        </ReactCollapse>
+//        </ReactCollapse>
       );
     return (  rendereditem );
   }
