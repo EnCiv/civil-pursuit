@@ -18,7 +18,7 @@ class Accordion extends React.Component {
 
   constructor (props) {
     super(props);
-    mounted = false;
+    this.mounted = false;
   }
 
   componentWillReceiveProps (props = {}) {
