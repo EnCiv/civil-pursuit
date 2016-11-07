@@ -29,7 +29,7 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : { item : null, section : null } , itemhide : {} };
+  state = { active : { item : null, section : null } };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,10 +69,7 @@ class PanelItems extends React.Component {
 
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't expand harmony on items that don't have it
 
-    if (
-      this.state.active &&
-      ( this.state.active.item === itemId || ! itemId ) &&
-      this.state.active.section === section ) {
+    if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
         //this.collapseAroundItem (false);
         return this.setState({ active : { item : null, section : null } });
     }
@@ -87,7 +84,6 @@ class PanelItems extends React.Component {
       }
 
       this.mountedItems[itemId][section] = true;
-      //this.collapseAroundItem(itemId);
     }
 
     this.setState({ active : { item : itemId, section }});
@@ -96,50 +92,8 @@ class PanelItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  collapseAroundItem (itemId) {
-    let itemhide=[];
-
-    if(!this.state.itemhide.length) {
-      for (let itm in this.props.panel.items) {
-        itemhide[this.props.panel.items[itm]._id] =
-            (itemId) ? 
-              ((this.props.panel.items[itm]._id == itemId) ? ( false ) : ( true ) )
-            : ( false  );
-        }
-    } else {
-      itemhide = this.state.itemhide.slice();
-      for (let itm in itemhide) {
-        if (itemId) {
-            if (itm == itemId) {
-               this.state.itemhide[itm] = false; 
-            } else {
-              this.state.itemhide[itm] = true;
-            }
-          } else {
-            this.state.itemhide[itm] = false;
-        }
-      }
-    }
-    this.setState({itemhide: itemhide});
-    console.info("collapseAroundItem", itemhide);
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   show (item, section) {
     this.toggle(item, section);
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  unFocus () {
-    // window.Dispatcher.emit('refresh');
-    // const panelId = makePanelId(this.props.panel.panel);
-    // const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
-    //
-    // for ( let i = 0; i < hidden.length; i++ ) {
-    //   hidden[i].classList.remove('item-hidden');
-    // }
   }
 
 
@@ -202,13 +156,13 @@ class PanelItems extends React.Component {
             let promote, details, subtype, editItem, harmony, buttonstate={promote: false, details: false, subtype: false, harmony: false};
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
-              buttonstate.promote=(active && active.item === item._id && active.section === 'promote');
+              buttonstate.promote=(active.item === item._id && active.section === 'promote');
               promote = (
                 <div className="toggler promote">
                   <Accordion
                     poa     =   { this.refs.item }
                     name    =   "promote"
-                    active  =   { (active && active.item === item._id && active.section === 'promote') }
+                    active  =   { (active.item === item._id && active.section === 'promote') }
                     >
                     <EvaluationStore
                       item-id     =   { item._id }
@@ -218,7 +172,7 @@ class PanelItems extends React.Component {
                       >
                       <Promote
                         ref       =   "promote"
-                        show      =   { (active && active.item === item._id && active.section === 'promote') }
+                        show      =   { (active.item === item._id && active.section === 'promote') }
                         panel     =   { panel }
                         user    =     { user }
                         />
@@ -252,14 +206,14 @@ class PanelItems extends React.Component {
                   <Accordion
                     poa     =   { this.refs.item }
                     name    =   "subtype"
-                    active  =   { (active && active.item === item._id && active.section === 'subtype') }
+                    active  =   { (active.item === item._id && active.section === 'subtype') }
                     >
                     <Subtype
                       type    =   { item.subtype }
                       parent  =   { item }
                       ref     =   "subtype"
                       user    =   { user }
-                      active  =   { (active && active.item === item._id && active.section === 'subtype') }
+                      active  =   { (active.item === item._id && active.section === 'subtype') }
                       />
                   </Accordion>
                 </div>
@@ -267,13 +221,13 @@ class PanelItems extends React.Component {
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].harmony ) {
-              buttonstate.harmony= (active && active.item === item._id && active.section === 'harmony');
+              buttonstate.harmony= (active.item === item._id && active.section === 'harmony');
               harmony = (
                 <div className="toggler harmony">
                   <Accordion
                     poa     =   { this.refs.item }
                     name    =   "harmony"
-                    active  =   { (active && active.item === item._id && active.section === 'harmony') }
+                    active  =   { (active.item === item._id && active.section === 'harmony') }
                     >
                     <Harmony
                       item    =   { item }
