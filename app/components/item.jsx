@@ -291,7 +291,7 @@ class Item extends React.Component {
 
       rendereditem = (
 //        <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
-          <article className="item" ref="item" id={ `item-${item._id}` }>
+          <article className="item" ref="item" id={ `item-${item._id}` } style={ {display: collapsed ? 'none' : 'block'}}>
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
