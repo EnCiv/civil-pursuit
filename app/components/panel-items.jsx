@@ -29,7 +29,7 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : null , itemhide : {} };
+  state = { active : { item : null, section : null } , itemhide : {} };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,11 +309,12 @@ class PanelItems extends React.Component {
 
                   footer  =   { [
                     promote, details, subtype, editItem, harmony
-                    ] }
+                    ]
+                  }
 
-                    collapsed =  { !item || (this.state.active.item && this.state.active.item !== item._id ) }  //collapsed if there is an active item and it's not this one
-                    toggle  =   { this.toggle.bind(this) }
-                  />
+                  collapsed =  { !item || (this.state.active.item && this.state.active.item !== item._id ) }  //collapsed if there is an active item and it's not this one
+                  toggle  =   { this.toggle.bind(this) }
+                />
               </ItemStore>
             );
           });
