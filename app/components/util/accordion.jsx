@@ -67,6 +67,7 @@ class Accordion extends React.Component {
     let shadow = this.refs.shadow;
 
     let timerMax=1000;
+    let waitforit= 1000/17;  // wait 1 second to give stuff a chance to appear
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
@@ -83,7 +84,7 @@ class Accordion extends React.Component {
     this.setState({ attr : 'show' });
 
     const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
+      if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
       if(this.inOpen==='abort'){ clearInterval(timer); this.inOpen='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
@@ -92,12 +93,14 @@ class Accordion extends React.Component {
         shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
       } else {
       // end interval if the scroll is completed
-        this.inOpen='inactive';
-        clearInterval(timer);
-        accordion.style.maxHeight="none";
-        accordion.style.overflow="visible";
-        accordion.style.zIndex= 1;
-        shadow.style.minHeight= 0;
+        if(--waitforit <= 0) {
+          this.inOpen='inactive';
+          clearInterval(timer);
+          accordion.style.maxHeight="none";
+          accordion.style.overflow="visible";
+          accordion.style.zIndex= 1;
+          shadow.style.minHeight= 0;
+        }
       }
     }, 17);
   }
