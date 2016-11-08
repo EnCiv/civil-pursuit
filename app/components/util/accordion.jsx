@@ -50,7 +50,7 @@ class Accordion extends React.Component {
   componentDidUpdate() {
     console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props, this.refs.accordionWrapper.clientHeight);
     if(this.props.active) {
-      if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
+      if(this.refs.accordion.clientHeight >= ( parseInt(this.refs.accordion.style.maxHeight,10) || 0 ) { this.smoothOpen(); }
         else if (this.refs.accordionWrapper.clientHeight > this.refs.accordion.clientHeight) { this.smoothOpen(); }
     }
   }
@@ -95,18 +95,19 @@ class Accordion extends React.Component {
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
-        accordion.style.maxHeight = (lmaxHeight + 7) + 'px';
+        accordion.style.maxHeight = Math.max((lmaxHeight + 7), lheight + 1) + 'px';
         shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
       } else {
       // end interval if the scroll is completed
         if(--waitforit <= 0) {
-          this.setState({ attr : 'show' });
+
           this.inOpen='inactive';
           clearInterval(timer);
           accordion.style.maxHeight="none";
           accordion.style.overflow="visible";
           accordion.style.zIndex= 1;
           shadow.style.minHeight= 0;
+          this.setState({ attr : 'show' });
         }
       }
     }, 50);
