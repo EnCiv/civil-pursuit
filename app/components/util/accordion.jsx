@@ -109,7 +109,7 @@ class Accordion extends React.Component {
           this.inOpen='inactive';
           clearInterval(timer);
           //accordion.style.maxHeight="none";
-          accordion.style.overflow="visible";
+          //accordion.style.overflow="visible";
           //accordion.style.zIndex= 1;
           shadow.style.minHeight= 0;
           this.setState({ attr : 'show' });
