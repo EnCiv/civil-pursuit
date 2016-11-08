@@ -161,7 +161,7 @@ class Accordion extends React.Component {
 
   heightCalculated(height) {
 
-    console.info("accordion height calculated".height);
+    console.info("accordion height calculated", height);
     if(height >0 ) {
       this.setState({calculated: true});
     }
@@ -172,11 +172,9 @@ class Accordion extends React.Component {
     console.info("accordion attr", this.refs.accordion, this.mounted, this.state.attr);
     return (
       <section className="accordion" ref='accordion'>
-        <ReactCollapse isOpened={this.props.active} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
           <ReactHeight hidden={ ! this.state.calculated } onHeightReady={height => this.heightCalculated(height)} >
               { this.props.children }
           </ReactHeight>
-        </ReactCollapse>
       </section>
     );
   }
