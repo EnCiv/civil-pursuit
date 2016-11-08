@@ -28,7 +28,7 @@
     "createLink" : ".click-to-create"
   },
   "accordion" : {
-    "main" : ".syn-accordion"
+    "main" : ".accordion"
   },
   "evaluation" : {
     "id" : {
