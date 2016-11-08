@@ -13,7 +13,7 @@ class Accordion extends React.Component {
 
   state             =   {
     attr            :   'hide',
-    calculated :  true
+    calculated :  false
   };
 
   mounted = false;
@@ -173,7 +173,7 @@ class Accordion extends React.Component {
     return (
       <section className="accordion" ref='accordion'>
         <ReactCollapse isOpened={this.props.active} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
-          <ReactHeight hidden={ ! this.state.calculated } onHeightReady={height => heightCalculated(height)} >
+          <ReactHeight hidden={ ! this.state.calculated } onHeightReady={height => this.heightCalculated(height)} >
               { this.props.children }
           </ReactHeight>
         </ReactCollapse>
