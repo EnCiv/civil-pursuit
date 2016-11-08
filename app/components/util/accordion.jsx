@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactCollapse from 'react-collapse';
-import ReactHeight from 'react-height';
+import ReactHeight from '../../lib/app/ReactHeight.js';
 
 class Accordion extends React.Component {
   // C(losed) O(pen) B(usy)
