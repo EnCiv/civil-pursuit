@@ -24,7 +24,7 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-      console.info("accordion.componentWillReceiveProps", nextProps);
+      console.info("accordion.componentWillReceiveProps", nextProps, this.props);
       if(this.props.active!==nextProps.active) {
         if(nextProps.active) {
           this.smoothOpen();
@@ -35,14 +35,16 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
-    console.info("accordion.componentDidMount", this.refs.accordion, this.state.attr, this.mounted);
+    console.info("accordion.componentDidMount", this.refs.accordion, this.state.attr, this.props);
+    if(this.props.active) {
+      if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
+    }
   }
 
   componentDidUpdate() {
-    console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.mounted);
+    console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props);
     if(this.props.active) {
       if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
-      else { this.smoothClose(); }
     }
   }
 
