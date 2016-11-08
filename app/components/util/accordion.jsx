@@ -71,7 +71,7 @@ class Accordion extends React.Component {
     // set an interval to update scrollTop attribute every 25 ms
 
     console.info("smooth open:", this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight);
-    if(this.inOpen='active') { return; } // dont't stutter start.
+    if(this.inOpen=='active') { console.info("smoothOpen stutter return"); return; } // dont't stutter start.
     this.inOpen='active';
     if(this.inClose!=="inactive") {this.inClose='abort'}
     let accordion = this.refs.accordion;
