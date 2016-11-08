@@ -21,7 +21,7 @@ class Subtype extends React.Component {
       this.status = 'ready';
 
       if ( ! nextProps.panels[this.id] ) {
-        window.Dispatcher.emit('get items', { type : nextProps.item.subtype, parent : nextProps.item._id });
+        window.Dispatcher.emit('get items', { type : nextProps.type, parent : nextProps.parent });
       }
     }
   }
