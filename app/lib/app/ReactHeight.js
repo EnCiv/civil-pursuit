@@ -29,10 +29,12 @@ const ReactHeight = React.createClass({
 
 
   componentDidMount() {
-    const height = this.refs.wrapperRef.clientHeight;
-    const dirty = false;
+    if(this.refs.wrapperRef) {
+      const height = this.refs.wrapperRef.clientHeight;
+      const dirty = false;
 
-    this.setState({height, dirty}, () => this.props.onHeightReady(this.state.height));
+      this.setState({height, dirty}, () => this.props.onHeightReady(this.state.height));
+    }
   },
 
 
@@ -47,13 +49,15 @@ const ReactHeight = React.createClass({
 
 
   componentDidUpdate() {
-    const height = this.refs.wrapperRef.clientHeight;
-    const dirty = false;
+    if (this.refs.wrapperRef) {
+      const height = this.refs.wrapperRef.clientHeight;
+      const dirty = false;
 
-    if (height === this.state.height) {
-      this.setState({dirty});
-    } else {
-      this.setState({height, dirty}, () => this.props.onHeightReady(this.state.height));
+      if (height === this.state.height) {
+        this.setState({dirty});
+      } else {
+        this.setState({height, dirty}, () => this.props.onHeightReady(this.state.height));
+      }
     }
   },
 
