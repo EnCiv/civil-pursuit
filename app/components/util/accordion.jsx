@@ -40,6 +40,11 @@ class Accordion extends React.Component {
 
   componentDidUpdate() {
     console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.mounted);
+    if(this.props.active) {
+      if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
+        else { this.smoothClose(); }
+      }
+    }
   }
 
   componentWillUnmount() {
