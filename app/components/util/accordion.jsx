@@ -28,12 +28,12 @@ class Accordion extends React.Component {
   componentWillReceiveProps (nextProps) {
       console.info("accordion.componentWillReceiveProps", nextProps, this.props);
       if(this.props.active!==nextProps.active) {
-        if(nextProps.active) {
-          this.smoothOpen();
-        }else {
+        if(!nextProps.active) {
           this.smoothClose();
-        }
-      }
+//        }else {
+ //         this.smoothClose();
+  //      }
+     }
   }
 
   componentDidMount() {
@@ -81,7 +81,6 @@ class Accordion extends React.Component {
     //accordion.style.position='relative';
     //accordion.style.zIndex= -2;
     //accordion.style.overflow= 'visible';
-    this.setState({ attr : 'show' });
 
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
@@ -94,6 +93,7 @@ class Accordion extends React.Component {
       } else {
       // end interval if the scroll is completed
         if(--waitforit <= 0) {
+          this.setState({ attr : 'show' });
           this.inOpen='inactive';
           clearInterval(timer);
           accordion.style.maxHeight="none";
