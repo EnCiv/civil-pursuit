@@ -11,7 +11,7 @@ class Accordion extends React.Component {
   };
 
   state             =   {
-    attr            :   'hide',
+    attr            :   'hide'
   };
 
   mounted = false;
@@ -21,10 +21,10 @@ class Accordion extends React.Component {
     this.mounted = false;
   }
 
-  componentWillReceiveProps (props) {
-      console.info("accordion.componentWillReceiveProps", this.refs.accordion, this.mounted ? 'mounted' : 'not mounted', props.active, this.state.attr);
+  componentWillReceiveProps (nextProps) {
+      console.info("accordion.componentWillReceiveProps", nextProps);
       if(this.mounted) {
-        if ( props.active === true ) {
+        if ( nextProps.active === true ) {
           if(this.state.attr!=='show') {
             this.setState({ attr : 'show' });
           }
