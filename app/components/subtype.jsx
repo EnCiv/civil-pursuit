@@ -15,21 +15,22 @@ class Subtype extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentWillReceiveProps (nextProps) {
-    console.info("subtype.componentWillReceiveProps", nextProps, this);
-    if ( this.status === 'iddle' && nextProps.active ) {
-      this.status = 'ready';
-
-      if ( ! nextProps.panels[this.id] ) {
-        window.Dispatcher.emit('get items', { type : nextProps.type, parent : nextProps.parent });
-      }
-    }
-  }
+//  componentWillReceiveProps (nextProps) {
+//   console.info("subtype.componentWillReceiveProps", nextProps, this);
+//    if ( this.status === 'iddle' && nextProps.active ) {
+//      this.status = 'ready';
+//
+//      if ( ! nextProps.panels[this.id] ) {
+//        console.info("subtype.componentWillReceiveProps.get items", nextProps.type, nextProps.parent._id);
+//        window.Dispatcher.emit('get items', { type : nextProps.type, parent : nextProps.parent._id });
+//      }
+//    }
+//  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { panel, type, user, parent, active } = this.props;
+    const { type, user, parent, active } = this.props;
 
     let content = ( <Loading message="Loading related" /> );
 
