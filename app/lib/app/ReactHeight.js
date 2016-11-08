@@ -29,7 +29,7 @@ const ReactHeight = React.createClass({
 
 
   componentDidMount() {
-    const height = this.refs.wrapper.wrapperRef.clientHeight;
+    const height = this.refs.wrapperRef.clientHeight;
     const dirty = false;
 
     this.setState({height, dirty}, () => this.props.onHeightReady(this.state.height));
