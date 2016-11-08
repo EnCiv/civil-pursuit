@@ -260,7 +260,7 @@ class Item extends React.Component {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
 
-    let win = window.open(this.refs.reference.props.href, this.refs.reference.props.target);
+    let win = window.open(this.refs.reference.href, this.refs.reference.target);
     if (win) {
       //Browser has allowed it to be opened
       win.focus();

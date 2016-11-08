@@ -300,8 +300,9 @@ class PanelItems extends React.Component {
 
       creator = (
         <Accordion
-          active    =   { (active && active.section === 'creator') }
+          active    =   { (active.section === 'creator') }
           poa       =   { this.refs.panel }
+          name      = 'creator'
           >
           { creatorPanel }
         </Accordion>

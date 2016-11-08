@@ -20,7 +20,9 @@ class Accordion extends React.Component {
 
   constructor (props) {
     super(props);
+    console.info("accordion.constructor", this.props);
     this.mounted = false;
+
   }
 
   componentWillReceiveProps (nextProps) {
@@ -35,14 +37,14 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
-    console.info("accordion.componentDidMount", this.refs.accordion, this.state.attr, this.props);
+    console.info("accordion.componentDidMount", this.refs.accordion, this.state.attr, this.props, this.refs.accordion-wrapper.clientHeight);
     if(this.props.active) {
       if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
     }
   }
 
   componentDidUpdate() {
-    console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props);
+    console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props, this.refs.accordion-wrapper.clientHeight);
     if(this.props.active) {
       if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
     }
@@ -154,8 +156,10 @@ class Accordion extends React.Component {
     console.info("accordion attr", this.refs.accordion, this.mounted, this.state.attr);
     return (
       <section className={`accordion ${this.state.attr}`} ref='accordion' >
+        <div ref='accordion-wrapper' >
           { this.props.children }
-          <div className="accordion-shadow" ref='shadow'>{false}</div>
+        </div>
+        <div className="accordion-shadow" ref='shadow'>{false}</div>
       </section>
     );
   }
