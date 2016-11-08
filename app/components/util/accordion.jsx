@@ -25,15 +25,11 @@ class Accordion extends React.Component {
 
   componentWillReceiveProps (nextProps) {
       console.info("accordion.componentWillReceiveProps", nextProps);
-      if(this.mounted) {
-        if ( nextProps.active === true ) {
-          if(this.state.attr!=='show') {
-            this.setState({ attr : 'show' });
-          }
-        } else {
-          if (this.state.attr!=='hide') {
-              this.setState({attr : 'hide'});
-          }
+      if(this.props.active!==nextProps.active) {
+        if(nextProps.active) {
+          this.smoothOpen();
+        }else {
+          this.smoothClose();
         }
       }
   }
@@ -44,21 +40,9 @@ class Accordion extends React.Component {
 
   componentDidUpdate() {
     console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.mounted);
-        this.mounted=true;
-    if ( this.props.active === true ) {
-      if(this.state.attr!=='show') {
-        this.setState({ attr : 'show' });
-      }
-    } 
-    else if ( this.props.active === false ) {
-      if (this.state.attr!=='hide') {
-          this.setState({attr : 'hide'});
-      }
-    }
   }
 
   componentWillUnmount() {
-    this.mounted=false;
     console.info("accordion.componentWillUnmount", this.state.attr);
  //   if(this.state.attr==='show') {
  //       this.smoothClose();
@@ -88,6 +72,7 @@ class Accordion extends React.Component {
     //accordion.style.position='relative';
     //accordion.style.zIndex= -2;
     //accordion.style.overflow= 'visible';
+    this.setState({ attr : 'show' });
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
@@ -159,22 +144,12 @@ class Accordion extends React.Component {
     }, 25);
   }
 
-  heightCalculated(height) {
-
-    console.info("accordion height calculated", height);
-    if(height >0 ) {
-      this.setState({calculated: true});
-    }
-  }
-
-
   render () {
     console.info("accordion attr", this.refs.accordion, this.mounted, this.state.attr);
     return (
-      <section className="accordion" ref='accordion'>
-          <ReactHeight hidden={ ! this.state.calculated } onHeightReady={height => this.heightCalculated(height)} >
-              { this.props.children }
-          </ReactHeight>
+      <section className={`accordion ${this.state.attr}`} ref='accordion' >
+          { this.props.children }
+          <div className="accordion-shadow" ref='shadow'>{false}</div>
       </section>
     );
   }
