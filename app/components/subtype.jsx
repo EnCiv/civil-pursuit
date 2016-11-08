@@ -15,13 +15,13 @@ class Subtype extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentWillReceiveProps (props) {
-    console.info("subtype.componentWillReceiveProps", props);
-    if ( this.status === 'iddle' && props.active ) {
+  componentWillReceiveProps (nextProps) {
+    console.info("subtype.componentWillReceiveProps", nextProps, this);
+    if ( this.status === 'iddle' && nextProps.active ) {
       this.status = 'ready';
 
-      if ( ! props.panels[this.id] ) {
-        window.Dispatcher.emit('get items', { type : props.item.subtype, parent : props.item._id });
+      if ( ! nextProps.panels[this.id] ) {
+        window.Dispatcher.emit('get items', { type : nextProps.item.subtype, parent : nextProps.item._id });
       }
     }
   }
