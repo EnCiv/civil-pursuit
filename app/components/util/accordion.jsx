@@ -30,7 +30,10 @@ class Accordion extends React.Component {
       if(this.props.active!==nextProps.active) {
         if(!nextProps.active) {
           this.smoothClose();
+        } else if (this.refs.accordionWrapper.clientHeight > this.refs.accordion.clientHeight) { 
+          this.smoothOpen(); 
         }
+
 //        else {
  //         this.smoothClose();
   //      }
@@ -48,6 +51,7 @@ class Accordion extends React.Component {
     console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props, this.refs.accordionWrapper.clientHeight);
     if(this.props.active) {
       if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
+        else if (this.refs.accordionWrapper.clientHeight > this.refs.accordion.clientHeight) { this.smoothOpen(); }
     }
   }
 
@@ -68,7 +72,7 @@ class Accordion extends React.Component {
     let shadow = this.refs.shadow;
 
     let timerMax=1000;
-    let waitforit= 1000/17;  // wait 1 second to give stuff a chance to appear
+    let waitforit= 1000/50;  // wait 1 second to give stuff a chance to appear
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
@@ -103,7 +107,7 @@ class Accordion extends React.Component {
           shadow.style.minHeight= 0;
         }
       }
-    }, 17);
+    }, 50);
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,7 +116,7 @@ class Accordion extends React.Component {
   inClose='inactive'
   smoothClose() {
     // set an interval to update scrollTop attribute every 25 ms
-
+    console.info("smooth open:", this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight);
     this.inClose='active';
     if(this.inOpen!='inactive') { this.inOpen='abort';}
 
@@ -135,6 +139,7 @@ class Accordion extends React.Component {
 
 
     const timer = setInterval( () => {
+      console.info(this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight);
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
       if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
