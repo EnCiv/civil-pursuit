@@ -30,7 +30,8 @@ class Accordion extends React.Component {
       if(this.props.active!==nextProps.active) {
         if(!nextProps.active) {
           this.smoothClose();
-//        }else {
+        }
+//        else {
  //         this.smoothClose();
   //      }
      }
