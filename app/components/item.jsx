@@ -3,7 +3,7 @@
 import React from 'react';
 import ItemMedia        from './item-media';
 import Icon               from './util/icon';
-import ReactCollapse from 'react-collapse';
+import Accordion          from './util/accordion';
 
 class Item extends React.Component {
 
@@ -290,8 +290,8 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-//        <ReactCollapse isOpened={!collapsed} springConfig={{stiffness: 16, damping: 12}} keepCollapsedContent= {true} >
-          <article className="item" ref="item" id={ `item-${item._id}` } style={ {display: collapsed ? 'none' : 'block'}}>
+        <Accordion active={collapsed} name='item'>
+          <article className="item" ref="item" id={ `item-${item._id}` } >
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
@@ -328,7 +328,7 @@ class Item extends React.Component {
               { footer }
             </section>
           </article>
-//        </ReactCollapse>
+        </Accordion>
       );
     return (  rendereditem );
   }
