@@ -27,7 +27,7 @@ class Accordion extends React.Component {
 
     var height;
 
-    if (window) { 
+    if (typeof window !== 'undefined' ) { 
       height = window.innerHeight
       || document.documentElement.clientHeight
       || document.body.clientHeight; 
