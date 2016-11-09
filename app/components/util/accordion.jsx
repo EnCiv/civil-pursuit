@@ -125,7 +125,7 @@ class Accordion extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-  inClose='inactive'
+  inClose='inactive';
   smoothClose() {
     // set an interval to update scrollTop attribute every 25 ms
     if(this.inClose=='active'){return;} //don't stutter the close
@@ -133,10 +133,11 @@ class Accordion extends React.Component {
     if(this.inOpen!='inactive') { this.inOpen='abort';} //override the open with a close
 
     let accordion = this.refs.accordion;
-    let shadow = this.refs.shadow;
+    //let shadow = this.refs.shadow;
 
-    let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
+    //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
+    console.info("smoothClose", height);
     accordion.style.maxHeight= height + 'px';
 
     //shadow.style.width = accordion.offsetWidth + 'px';
@@ -154,6 +155,7 @@ class Accordion extends React.Component {
       if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
+      console.info("smoothClose", lheight);
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
         accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
         //shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
