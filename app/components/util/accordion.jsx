@@ -17,7 +17,7 @@ class Accordion extends React.Component {
   };
 
   mounted = false;
-  const stepSize=0;
+  stepSize = 7;
 
   constructor (props) {
     super(props);
