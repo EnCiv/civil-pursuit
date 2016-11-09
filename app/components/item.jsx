@@ -290,7 +290,7 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <Accordion active={collapsed} name='item'>
+        <Accordion active={!collapsed} name='item'>
           <article className="item" ref="item" id={ `item-${item._id}` } >
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
