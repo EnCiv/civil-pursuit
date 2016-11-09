@@ -290,8 +290,8 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <Accordion active={!collapsed} name='item'>
-          <article className="item" ref="item" id={ `item-${item._id}` } >
+        <article className="item" ref="item" id={ `item-${item._id}` } >
+          <Accordion active={!collapsed} name='item'>
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
@@ -327,8 +327,9 @@ class Item extends React.Component {
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
-          </article>
-        </Accordion>
+          </Accordion>
+        </article>
+
       );
     return (  rendereditem );
   }
