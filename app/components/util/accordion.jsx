@@ -157,8 +157,8 @@ class Accordion extends React.Component {
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
 
     const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
-      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
+      if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
+      if(this.inClose==='abort'){ clearInterval(timer); console.info("accordion.smoothClose abort"); this.inClose='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       console.info("smoothClose", lheight);
@@ -167,6 +167,7 @@ class Accordion extends React.Component {
         //shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
       } else {
       // end interval if the scroll is completed
+        console.info("smoothClosed", lheight, lmaxHeight);
         this.inClose='inactive';
         clearInterval(timer);
         accordion.style.maxHeight=0;
