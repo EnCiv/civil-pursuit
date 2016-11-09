@@ -290,8 +290,8 @@ class Item extends React.Component {
     }
 
       rendereditem = (
-        <article className="item" ref="item" id={ `item-${item._id}` } >
-          <Accordion active={!collapsed} name='item'>
+ //       <Accordion active={!collapsed} name='item'>
+          <article className="item" ref="item" id={ `item-${item._id}` } >
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
@@ -299,7 +299,6 @@ class Item extends React.Component {
             <section className="item-buttons">
               { buttons }
             </section>
-
             <section className="item-text">
               <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">  
                 <h4 className="item-subject">
@@ -327,9 +326,8 @@ class Item extends React.Component {
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
-          </Accordion>
-        </article>
-
+          </article>
+//        </Accordion>
       );
     return (  rendereditem );
   }
