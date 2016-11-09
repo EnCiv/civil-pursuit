@@ -18,6 +18,7 @@ class Accordion extends React.Component {
 
   mounted = false;
   stepSize = 7;
+  stepRate = 17; //step rate is 17mSec
 
   constructor (props) {
     super(props);
@@ -28,11 +29,10 @@ class Accordion extends React.Component {
     || document.documentElement.clientHeight
     || document.body.clientHeight;
 
-    const stepRate=17;  //step rate is 17mSec
     const stepMaxDuration= 1; //* maximum time allowed for a scroll if it were full screen in Sec
-    stepSize= ((height * stepRate) / stepMaxDuration ) / 1000 ;
+    this.stepSize= ((height * this.stepRate) / stepMaxDuration ) / 1000 ;
 
-    console.info("accordion.constructior 2", height, stepSize);
+    console.info("accordion.constructior 2", height, this.stepSize);
 
   }
 
@@ -83,7 +83,7 @@ class Accordion extends React.Component {
 //    let shadow = this.refs.shadow;
 
     let timerMax=1000;  //just in case
-    let waitforit= 1000/stepRate;  // wait 1 second to give stuff a chance to appear
+    let waitforit= 1000/this.stepRate;  // wait 1 second to give stuff a chance to appear
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
@@ -104,7 +104,7 @@ class Accordion extends React.Component {
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
-        accordion.style.maxHeight = Math.max((lmaxHeight + stepSize), lheight + 1) + 'px';
+        accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
  //       shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
       } else {
       // end interval if the scroll is completed
@@ -119,7 +119,7 @@ class Accordion extends React.Component {
           this.setState({ attr : 'show' });
         }
       }
-    }, stepRate);
+    }, this.stepRate);
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,7 +155,7 @@ class Accordion extends React.Component {
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
-        accordion.style.maxHeight =  (((lmaxHeight - stepSize) > 0) ? (lmaxHeight - stepSize) : 0 ) + 'px';
+        accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
         //shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
       } else {
       // end interval if the scroll is completed
@@ -169,7 +169,7 @@ class Accordion extends React.Component {
         //accordion.style.zIndex= 'auto';
         //shadow.style.minHeight= 0;
       }
-    }, stepRate);
+    }, this.stepRate);
   }
 
   render () {
