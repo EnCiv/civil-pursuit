@@ -63,7 +63,7 @@ class Accordion extends React.Component {
     console.info("accordion.componentDidUpdate", this.refs.accordion, this.state.attr, this.props, this.refs.accordionWrapper.clientHeight);
     if(this.props.active) {
       let maxHeight=parseInt(this.refs.accordion.style.maxHeight,10) || 0 ;
-      if((this.refs.accordion.clientHeight >=  maxHeight) && (inOpen!='active'))  { // it's expanded for some reason
+      if((this.refs.accordion.clientHeight >=  maxHeight) && (this.inOpen!='active'))  { // it's expanded for some reason
           console.info("componentDidUpdate 1",this.refs.accordion.clientHeight, maxHeight); 
           this.smoothOpen(); 
       } else if (this.refs.accordionWrapper.clientHeight > this.refs.accordion.clientHeight) { // what's in the wrapper has grown  
