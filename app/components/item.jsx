@@ -214,6 +214,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
+    console.info("readmore",e);
     e.preventDefault();
     e.stopPropagation();
     //e.nativeEvent.stopImmediatePropagation();
@@ -290,7 +291,7 @@ class Item extends React.Component {
     }
 
       rendereditem = (
- //       <Accordion active={!collapsed} name='item'>
+        <Accordion active={!collapsed} name='item'>
           <article className="item" ref="item" id={ `item-${item._id}` } >
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
@@ -327,7 +328,7 @@ class Item extends React.Component {
               { footer }
             </section>
           </article>
-//        </Accordion>
+        </Accordion>
       );
     return (  rendereditem );
   }
