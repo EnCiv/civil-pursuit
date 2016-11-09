@@ -25,9 +25,15 @@ class Accordion extends React.Component {
     console.info("accordion.constructor", this.props);
     this.mounted = false;
 
-    var height = window.innerHeight
-    || document.documentElement.clientHeight
-    || document.body.clientHeight;
+    var height;
+
+    if (window) { 
+      height = window.innerHeight
+      || document.documentElement.clientHeight
+      || document.body.clientHeight; 
+    } else {
+      height=1024; // this is running on the server, guess the height of the screen this will be displayed on
+    } 
 
     const stepMaxDuration= 1; //* maximum time allowed for a scroll if it were full screen in Sec
     this.stepSize= ((height * this.stepRate) / stepMaxDuration ) / 1000 ;
