@@ -36,7 +36,7 @@ class Accordion extends React.Component {
     } 
 
     const stepMaxDuration= 1; //* maximum time allowed for a scroll if it were full screen in Sec
-    this.stepSize= ((height * this.stepRate) / stepMaxDuration ) / 1000 ;
+    this.stepSize= Math.round(((height * this.stepRate) / stepMaxDuration ) / 1000 );  //needs to be an int
 
     console.info("accordion.constructior 2", height, this.stepSize);
 
