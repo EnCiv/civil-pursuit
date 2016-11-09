@@ -118,6 +118,7 @@ class Accordion extends React.Component {
         if(--waitforit <= 0) {
 
           this.inOpen='inactive';
+          accordion.style.maxHeight=null;
           clearInterval(timer);
           //accordion.style.maxHeight="none";
           //accordion.style.overflow="visible";
