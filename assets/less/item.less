@@ -78,7 +78,7 @@
 .item-trunc-hint {
   display: none;
   position: absolute;
-  right: 0;
+  left: 50%;
   bottom: 0;
   font-size: 1em;
   padding-left: 0.5em;
@@ -136,14 +136,14 @@ blockquote {
 }
 
 .item-description.truncated {
-  overflow: hidden;
+//  overflow: hidden; /* parent had overflow hidden */
 //  display: -webkit-box;
 //  -webkit-line-clamp: 3; /* number of lines to show */
   max-height:  ~"calc( 1.375em * 3)";       /* fallback */
 }
 
 .item-description.truncated4 {
-  overflow: hidden;
+// overflow: hidden;
 //  display: -webkit-box;
   max-height:  ~"calc( 1.375em * 4)";       /* fallback */
 //  -webkit-line-clamp: 4; /* number of lines to show */
