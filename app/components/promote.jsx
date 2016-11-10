@@ -104,7 +104,7 @@ componentDidUpdate () {
 
     console.info("promote.render", panel);
 
-    if ( show ) {
+    if ( true ) {
       if ( ! evaluation ) {
         content.push( <Loading message="Loading evaluation" /> );
       }
