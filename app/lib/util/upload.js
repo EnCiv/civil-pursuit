@@ -13,6 +13,10 @@ class Upload extends EventEmitter {
     this.fileInput    =   fileInput;
     this.thumbnail    =   thumbnail;
     this.replace      =   replace;
+    this.dragoverListener=null;
+    this.dragleaveListener=null;
+    this.dropListener=null;
+    this.fileInputListener=null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
