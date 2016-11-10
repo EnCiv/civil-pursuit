@@ -72,8 +72,6 @@ class Upload extends EventEmitter {
   handler (e) {
     this.hover(e);
 
-    console.info('upload.handler',e);
-
     var files = e.target.files || e.dataTransfer.files || e.originalEvent.dataTransfer.files;
 
     for (var i = 0, f; f = files[i]; i++) {

@@ -71,10 +71,10 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    const subject       =   this.refs.subject;
-    const description   =   this.refs.description;
-    const url           =   this.refs.reference;
-    const title         =   this.refs.title;
+    const subject       =   ReactDOM.findDOMNode(this.refs.subject);
+    const description   =   ReactDOM.findDOMNode(this.refs.description);
+    const url           =   ReactDOM.findDOMNode(this.refs.reference);
+    const title         =   ReactDOM.findDOMNode(this.refs.title);
 
     const item = { subject, description, type: this.props.type };
 
@@ -125,9 +125,9 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   getUrlTitle () {
-    let url = this.refs.reference;
-    let loading = this.refs.lookingUp;
-    let error = this.refs.errorLookingUp;
+    let url = ReactDOM.findDOMNode(this.refs.reference);
+    let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
+    let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
 
     if ( url && /^http/.test(url) ) {
       loading.classList.add('visible');
@@ -143,11 +143,11 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   applyTitle (title, url) {
-    let loading = this.refs.lookingUp;
-    let error = this.refs.errorLookingUp;
-    let reference = this.refs.reference;
-    let editURL = this.refs.editURL;
-    let titleHolder = this.refs.title;
+    let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
+    let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
+    let reference = ReactDOM.findDOMNode(this.refs.reference);
+    let editURL = ReactDOM.findDOMNode(this.refs.editURL);
+    let titleHolder = ReactDOM.findDOMNode(this.refs.title);
 
     loading.classList.remove('visible');
 
@@ -172,9 +172,9 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   editURL () {
-    let reference = this.refs.reference;
-    let editURL = this.refs.editURL;
-    let titleHolder = this.refs.title;
+    let reference = ReactDOM.findDOMNode(this.refs.reference);
+    let editURL = ReactDOM.findDOMNode(this.refs.editURL);
+    let titleHolder = ReactDOM.findDOMNode(this.refs.title);
 
     reference.classList.remove('hide');
     reference.select();
