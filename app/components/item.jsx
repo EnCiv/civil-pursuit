@@ -154,7 +154,7 @@ class Item extends React.Component {
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-    item.style.position='relative';
+//    item.style.position='relative';
     item.style.zIndex= -2;
 
     target.style.overflow= 'visible';
@@ -189,7 +189,7 @@ class Item extends React.Component {
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
     console.info("smoothClose", window.innerHeight - rect.top);
-    item.style.position='relative';
+//    item.style.position='relative';
     item.style.zIndex= -2;
     target.style.overflow= 'visible';
     let timerMax=1000;
@@ -207,7 +207,7 @@ class Item extends React.Component {
         clearInterval(timer);
         target.style.overflow= 'hidden';
         shadow.style.minHeight= 0;
-        item.style.position='static';
+//        item.style.position='static';
         item.style.zIndex= 'auto';
         this.setState({truncated: true});
       }
