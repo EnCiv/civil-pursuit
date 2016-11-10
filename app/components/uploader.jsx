@@ -24,7 +24,7 @@ class Uploader extends React.Component {
 
   componentDidMount () {
     let dropbox = this.refs.dropbox,
-      input = this.refs.typeFile,
+      input = ReactDOM.findDOMNode(this.refs.typeFile), //this is a ref to a react component
       bucket = this.refs.bucket,
       replace = this.refs.replace;
 
