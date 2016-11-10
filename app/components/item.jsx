@@ -263,6 +263,7 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
+    if(this.truncated) { this.readMore(e); }
 
     let win = window.open(this.refs.reference.href, this.refs.reference.target);
     if (win) {
@@ -314,9 +315,9 @@ class Item extends React.Component {
                 </h5>
                 <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
                   { item.description }
-                  <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
-                    <Icon icon="ellipsis-h" />
-                  </div>
+                </div>
+                <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
+                  <Icon icon="ellipsis-h" />
                 </div>
                 <div className="item-tendency" style={{display: 'none'}}>
                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
