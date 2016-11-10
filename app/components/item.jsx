@@ -81,39 +81,13 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   checkTruncate(item) {
     if ( ! this.state.truncated ) {
-//      const more = this.refs.more;
-
- //     let media = item.querySelector('.item-media');
- //     let truncatable   =   item.querySelector('.item-truncatable');
- //     let truncHint   =   item.querySelector('.item-trunc-hint');
-
-
-      // let subject       =   item.querySelector('.item-subject a');
-//      let subject       =   item.querySelector('.item-subject');
         let description   =   item.querySelector('.item-description');
-//      let reference     =   item.querySelector('.item-reference');
- //     let tendency      =   item.querySelector('.item-tendency');
-
- //     console.info("item.checkTruncate", description.style);
-
- //     this.lineLimit = 3;
- //     if(reference.offsetHeight == 0) { 
- //       this.lineLimit++;
- //     }
-
- //     let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
-
- //     console.info("item.checkTruncate", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
-
- //     if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
-
         description.classList.add(this.props.item.references.length ? 'truncated' : 'truncated4');
         this.setState({truncated: true});
         this.trunced=true;
       } else {
         this.trunced=false;
       }
-  //  }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +108,6 @@ class Item extends React.Component {
   componentDidUpdate() {
     if ( this.refs.item ) {
       const item = this.refs.item;
-      console.info("item.componenDidUpdate",this,item);
     }
   }
 
@@ -154,8 +127,6 @@ class Item extends React.Component {
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-//    item.style.position='relative';
-//    item.style.zIndex= -2;
 
     target.style.overflow= 'visible';
 
@@ -170,8 +141,6 @@ class Item extends React.Component {
       // end interval if the scroll is completed
         clearInterval(timer);
         target.style.overflow="visible";
-        //item.style.position='static';
- //       item.style.zIndex= 1;
         shadow.style.minHeight= 0;
       }
     }, 25);
@@ -188,9 +157,6 @@ class Item extends React.Component {
     shadow.style.width = item.offsetWidth + 'px';
     let rect=shadow.getBoundingClientRect();
     shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
-    console.info("smoothClose", window.innerHeight - rect.top);
-//    item.style.position='relative';
-//    item.style.zIndex= -2;
     target.style.overflow= 'visible';
     let timerMax=1000;
 
@@ -203,12 +169,9 @@ class Item extends React.Component {
         target.style.maxHeight =  (((lmaxHeight - 7) > 0) ? (lmaxHeight - 7) : 0 ) + 'px';
         shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
       } else {
-      // end interval if the scroll is completed
         clearInterval(timer);
         target.style.overflow= 'hidden';
         shadow.style.minHeight= 0;
-//        item.style.position='static';
-//        item.style.zIndex= 'auto';
         this.setState({truncated: true});
       }
     }, 25);
@@ -217,44 +180,19 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
-    console.info("readmore",e);
     e.preventDefault();
     e.stopPropagation();
-    //e.nativeEvent.stopImmediatePropagation();
-
- //   if( this.trunced) {
-
       let item = this.refs.item;
-      let subject =  item.querySelector('.item-subject');
-      let reference =  item.querySelector('.item-reference');
       let truncatable =  this.refs.truncatable;
-      let description =  item.querySelector('.item-description');
-      let truncHint =  item.querySelector('.item-trunc-hint');
       let shadow = this.refs.shadow;
-          console.info("readMore", shadow, item.querySelector('.item-truncatable-shadow'));
-
-
-      console.info("item.readMore",this.props);
-
       if (this.state.truncated) {
-//        description.classList.remove(this.lineLimit > 3 ? 'truncated4' : 'truncated');
-//        truncHint.classList.remove('expand');
-//        subject.classList.add('expand');
-//        reference.classList.add('expand');
         this.setState({truncated: false});
         this.props.toggle(this.props.item._id, 'harmony');
-        console.info("item.readMore trunc", truncatable);
         this.smoothOpen(truncatable, item, shadow);
       } else {
-//        truncHint.classList.add('expand');
-//       subject.classList.remove('expand');
-//        reference.classList.remove('expand');
         this.props.toggle(this.props.item._id, 'harmony');
         this.smoothClose(truncatable, item, shadow);
       }
-//    } else {
-//      this.props.toggle(this.props.item._id, 'harmony');
-//    }
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -263,7 +201,7 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    if(this.truncated) { return this.readMore(e); }
+    if(this.state.truncated) { return this.readMore(e); }
 
     let win = window.open(this.refs.reference.href, this.refs.reference.target);
     if (win) {
