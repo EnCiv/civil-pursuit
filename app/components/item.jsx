@@ -111,7 +111,6 @@ class Item extends React.Component {
         this.setState({truncated: true});
         this.trunced=true;
       } else {
-        this.setState({truncated: false});
         this.trunced=false;
       }
     }
