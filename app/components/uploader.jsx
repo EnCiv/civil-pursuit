@@ -1,6 +1,7 @@
 'use strict';
 
 import React            from 'react';
+import ReactDOM         from 'react-dom';
 import Upload           from '../lib/util/upload';
 import Row              from './util/row';
 import Column           from './util/column';
