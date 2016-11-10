@@ -81,39 +81,40 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   checkTruncate(item) {
     if ( ! this.state.truncated ) {
-        const more = this.refs.more;
+      const more = this.refs.more;
 
-        let media = item.querySelector('.item-media');
-        let truncatable   =   item.querySelector('.item-truncatable');
-        let truncHint   =   item.querySelector('.item-trunc-hint');
+      let media = item.querySelector('.item-media');
+      let truncatable   =   item.querySelector('.item-truncatable');
+      let truncHint   =   item.querySelector('.item-trunc-hint');
 
 
-        // let subject       =   item.querySelector('.item-subject a');
-        let subject       =   item.querySelector('.item-subject');
-        let description   =   item.querySelector('.item-description');
-        let reference     =   item.querySelector('.item-reference');
-        let tendency      =   item.querySelector('.item-tendency');
+      // let subject       =   item.querySelector('.item-subject a');
+      let subject       =   item.querySelector('.item-subject');
+      let description   =   item.querySelector('.item-description');
+      let reference     =   item.querySelector('.item-reference');
+      let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.checkTruncate", description.style);
+      console.info("item.checkTruncate", description.style);
 
-        this.lineLimit = 3;
-        if(reference.offsetHeight == 0) { 
-          this.lineLimit++;
-        }
+      this.lineLimit = 3;
+      if(reference.offsetHeight == 0) { 
+        this.lineLimit++;
+      }
 
-        let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
+      let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
 
-        console.info("item.checkTruncate", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
+      console.info("item.checkTruncate", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
 
-        if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
+      if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
 
-          description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
-          this.setState({truncated: true});
-          this.trunced=true;
-        } else {
-          this.setState({truncated: false});
-          this.trunced=false;
-        }
+        description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
+        this.setState({truncated: true});
+        this.trunced=true;
+      } else {
+        this.setState({truncated: false});
+        this.trunced=false;
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
