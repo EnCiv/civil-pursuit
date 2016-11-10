@@ -78,13 +78,9 @@ class Item extends React.Component {
     });
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  componentDidMount () {
-    if ( this.refs.item ) {
-      
-      const item = this.refs.item;
-
-      if ( ! this.state.truncated ) {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  checkTruncate(item) {
+    if ( ! this.state.truncated ) {
         const more = this.refs.more;
 
         let media = item.querySelector('.item-media');
@@ -98,7 +94,7 @@ class Item extends React.Component {
         let reference     =   item.querySelector('.item-reference');
         let tendency      =   item.querySelector('.item-tendency');
 
-        console.info("item.ComponentDidMount", description.style);
+        console.info("item.checkTruncate", description.style);
 
         this.lineLimit = 3;
         if(reference.offsetHeight == 0) { 
@@ -107,19 +103,25 @@ class Item extends React.Component {
 
         let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
 
-        console.info("item.ComponentDidMount", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
+        console.info("item.checkTruncate", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
 
         if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
 
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
-//          truncHint.classList.add('expand');
           this.setState({truncated: true});
           this.trunced=true;
         } else {
           this.setState({truncated: false});
           this.trunced=false;
         }
+  }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  componentDidMount () {
+    if ( this.refs.item ) {
+      
+      const item = this.refs.item;
+      this.checkTruncate(item);
 
         if ( this.props.new ) {
             this.setState({ showPromote: true });
@@ -133,8 +135,8 @@ class Item extends React.Component {
   componentDidUpdate() {
     if ( this.refs.item ) {
       const item = this.refs.item;
-      let truncatable   =   this.refs.truncatable;
-      console.info("item.componenDidUpdate",this,item,truncatable);
+      console.info("item.componenDidUpdate",this,item);
+      this.checkTruncate(item);
     }
   }
 
