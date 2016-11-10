@@ -17,16 +17,26 @@ class Upload extends EventEmitter {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  var dragoverListener;
+  var dragleaveListener;
+  var dropListener;
+  var fileInputListener;
+
   init () {
     if ( window.File ) {
       if ( this.dropzone ) {
-        this.dropzone.addEventListener('dragover',   this.hover.bind(this), false);
-        this.dropzone.addEventListener('dragleave',  this.hover.bind(this), false);
-        this.dropzone.addEventListener('drop',       this.handler.bind(this), false);
+        this.dragoverListener=this.hover.bind(this);
+        this.dragleaveListener=this.hover.bind(this);
+        this.dropListener=this.handler.bind(this);
+
+        this.dropzone.addEventListener('dragover', dragoverListener, false);
+        this.dropzone.addEventListener('dragleave', dragleaveListener, false);
+        this.dropzone.addEventListener('drop', dropListener, false);
       }
 
       if ( this.fileInput ) {
-        this.fileInput.addEventListener('change', this.handler.bind(this), false);
+        this.fileInputListener=this.handler.bind(this);
+        this.fileInput.addEventListener('change', fileInputListener, false);
       }
     }
 
@@ -42,13 +52,13 @@ class Upload extends EventEmitter {
   destroy () {
     if ( window.File ) {
       if ( this.dropzone ) {
-        this.dropzone.removeEventListener('dragover');
-        this.dropzone.removeEventListener('dragleave');
-        this.dropzone.removeEventListener('drop');
+        this.dropzone.removeEventListener('dragover', this.dragoverListener);
+        this.dropzone.removeEventListener('dragleave', this.dragLeaveListener);
+        this.dropzone.removeEventListener('drop', this.dropListener);
       }
 
       if ( this.fileInput ) {
-        this.fileInput.removeEventListener('change');
+        this.fileInput.removeEventListener('change', this.fileInputListener);
       }
     }
 
