@@ -263,7 +263,7 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    if(this.truncated) { this.readMore(e); }
+    if(this.truncated) { return this.readMore(e); }
 
     let win = window.open(this.refs.reference.href, this.refs.reference.target);
     if (win) {
