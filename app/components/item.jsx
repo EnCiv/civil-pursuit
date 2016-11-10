@@ -90,7 +90,7 @@ class Item extends React.Component {
 
       // let subject       =   item.querySelector('.item-subject a');
 //      let subject       =   item.querySelector('.item-subject');
-//      let description   =   item.querySelector('.item-description');
+        let description   =   item.querySelector('.item-description');
 //      let reference     =   item.querySelector('.item-reference');
  //     let tendency      =   item.querySelector('.item-tendency');
 
@@ -113,7 +113,7 @@ class Item extends React.Component {
       } else {
         this.trunced=false;
       }
-    }
+  //  }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
