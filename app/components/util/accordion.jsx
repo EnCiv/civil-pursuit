@@ -118,7 +118,7 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
-      if(this.inClose==='abort'){ clearInterval(timer);
+      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
