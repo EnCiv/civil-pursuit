@@ -57,10 +57,10 @@ class Creator extends React.Component {
 
   componentWillReceiveProps (props) {
     if ( props.created && props.created.panel === this.props['panel-id'] ) {
-      this.refs.subject.value        =   '';
-      this.refs.description.value    =   '';
-      this.refs.reference.value      =   '';
-      this.refs.title.value          =   '';
+      ReactDOM.findDOMNode(this.refs.subject).value        =   '';
+      ReactDOM.findDOMNode(this.refs.description).value    =   '';
+      ReactDOM.findDOMNode(this.refs.reference).value      =   '';
+      ReactDOM.findDOMNode(this.refs.title).value          =   '';
 
       setTimeout(() => {
         window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
@@ -71,10 +71,10 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    const subject       =   ReactDOM.findDOMNode(this.refs.subject);
-    const description   =   ReactDOM.findDOMNode(this.refs.description);
-    const url           =   ReactDOM.findDOMNode(this.refs.reference);
-    const title         =   ReactDOM.findDOMNode(this.refs.title);
+    const subject       =   ReactDOM.findDOMNode(this.refs.subject).value;
+    const description   =   ReactDOM.findDOMNode(this.refs.description).value;
+    const url           =   ReactDOM.findDOMNode(this.refs.reference).value;
+    const title         =   ReactDOM.findDOMNode(this.refs.title).value;
 
     const item = { subject, description, type: this.props.type };
 
@@ -125,7 +125,7 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   getUrlTitle () {
-    let url = ReactDOM.findDOMNode(this.refs.reference);
+    let url = ReactDOM.findDOMNode(this.refs.reference).value;
     let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
     let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
 
