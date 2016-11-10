@@ -124,9 +124,8 @@ class Item extends React.Component {
       const item = this.refs.item;
       this.checkTruncate(item);
 
-        if ( this.props.new ) {
-            this.setState({ showPromote: true });
-          }
+      if ( this.props.new ) {
+        this.setState({ showPromote: true });
       }
     }
   }
