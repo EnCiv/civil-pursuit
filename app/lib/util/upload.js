@@ -17,11 +17,6 @@ class Upload extends EventEmitter {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  var dragoverListener;
-  var dragleaveListener;
-  var dropListener;
-  var fileInputListener;
-
   init () {
     if ( window.File ) {
       if ( this.dropzone ) {
