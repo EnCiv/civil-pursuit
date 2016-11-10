@@ -107,7 +107,10 @@ class Item extends React.Component {
 
         let mediaHeight = media ? media.offsetHeight : subject.offsetHeight * (5 + 5/12); // media is 7em + 0.5 padding subject is 1.375em 
 
+        console.info("item.ComponentDidMount", description.offsetHeight, mediaHeight, subject.offsetHeight, reference.offsetHeight);
+
         if( description.offsetHeight > (mediaHeight - subject.offsetHeight - reference.offsetHeight) ) {
+
           description.classList.add(this.lineLimit > 3 ? 'truncated4' : 'truncated');
 //          truncHint.classList.add('expand');
           this.setState({truncated: true});
