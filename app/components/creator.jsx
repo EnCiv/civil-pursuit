@@ -1,6 +1,7 @@
 'use strict';
 
 import React                            from 'react';
+import ReactDOM                         from 'react-dom';
 import Uploader                         from './uploader';
 import TextInput                        from './util/text-input';
 import TextArea                         from './util/text-area';
@@ -24,7 +25,7 @@ class Creator extends React.Component {
     const subject   =   this.refs.subject,
       reference     =   this.refs.reference,
       description   =   this.refs.description,
-      media         =   this.refs.uploader
+      media         =   ReactDOM.findDOMNode(this.refs.uploader)
                           .querySelector('.syn-uploader-dropbox'),
       creator       =   this.refs.creator,
       mediaHeight   =   media.offsetHeight,
