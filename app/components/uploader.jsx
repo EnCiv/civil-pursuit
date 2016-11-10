@@ -30,7 +30,7 @@ class Uploader extends React.Component {
 
 
     this.upload = new Upload(dropbox, input, bucket, replace);
-
+    console.info("uploader.componentDidMount",input);
     this.upload.init();
 
     this.upload.on('uploaded', this.stream.bind(this));
