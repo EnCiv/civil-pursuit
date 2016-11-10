@@ -13,10 +13,6 @@ class Upload extends EventEmitter {
     this.fileInput    =   fileInput;
     this.thumbnail    =   thumbnail;
     this.replace      =   replace;
-    this.dragoverListener=null;
-    this.dragleaveListener=null;
-    this.dropListener=null;
-    this.fileInputListener=null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,14 +24,14 @@ class Upload extends EventEmitter {
         this.dragleaveListener=this.hover.bind(this);
         this.dropListener=this.handler.bind(this);
 
-        this.dropzone.addEventListener('dragover', dragoverListener, false);
-        this.dropzone.addEventListener('dragleave', dragleaveListener, false);
-        this.dropzone.addEventListener('drop', dropListener, false);
+        this.dropzone.addEventListener('dragover', this.dragoverListener, false);
+        this.dropzone.addEventListener('dragleave', this.dragleaveListener, false);
+        this.dropzone.addEventListener('drop', this.dropListener, false);
       }
 
       if ( this.fileInput ) {
         this.fileInputListener=this.handler.bind(this);
-        this.fileInput.addEventListener('change', fileInputListener, false);
+        this.fileInput.addEventListener('change', this.fileInputListener, false);
       }
     }
 
