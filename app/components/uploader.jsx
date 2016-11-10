@@ -60,7 +60,7 @@ class Uploader extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   chooseFile () {
-    let input = this.refs.typeFile;
+    let input = ReactDOM.findDOMNode(this.refs.typeFile);
     input.click();
   }
 
@@ -69,7 +69,7 @@ class Uploader extends React.Component {
 
     let dropbox = this.refs.dropbox,
       bucket = this.refs.bucket,
-      input = this.refs.typeFile,
+      input = ReactDOM.findDOMNode(this.refs.typeFile),
       replace = this.refs.replace;
 
     dropbox.style.display = 'block';
