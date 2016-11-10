@@ -22,12 +22,12 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    const subject   =   this.refs.subject,
-      reference     =   this.refs.reference,
-      description   =   this.refs.description,
+    const subject   =   ReactDOM.findDOMNode(this.refs.subject),
+      reference     =   ReactDOM.findDOMNode(this.refs.reference),
+      description   =   ReactDOM.findDOMNode(this.refs.description),
       media         =   ReactDOM.findDOMNode(this.refs.uploader)
                           .querySelector('.syn-uploader-dropbox'),
-      creator       =   this.refs.creator,
+      creator       =   ReactDOM.findDOMNode(this.refs.creator),
       mediaHeight   =   media.offsetHeight,
       inputHeight   =   subject.offsetHeight + reference.offsetHeight;
 
