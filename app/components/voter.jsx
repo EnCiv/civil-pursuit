@@ -27,7 +27,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setRegisteredVoter () {
-    const registered_voter = ReactDOM.findDOMNode(this.refs.registered);
+    const registered_voter = ReactDOM.findDOMNode(this.refs.registered).value;
 
     if ( registered_voter ) {
       window.socket.emit('set user info', { registered_voter });
@@ -37,7 +37,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setParty () {
-    const party = ReactDOM.findDOMNode(this.refs.party);
+    const party = ReactDOM.findDOMNode(this.refs.party).value;
 
     if ( party ) {
       window.socket.emit('set user info', { party });
@@ -47,7 +47,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setTendency () {
-    const tendency = ReactDOM.findDOMNode(this.refs.tendency);
+    const tendency = ReactDOM.findDOMNode(this.refs.tendency).value;
 
     if ( tendency ) {
       window.socket.emit('set user info', { tendency });

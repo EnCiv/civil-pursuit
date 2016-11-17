@@ -71,8 +71,8 @@ class Login extends React.Component {
 
     this.setState({ validationError : null, info : 'Logging you in...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email),
-      password = ReactDOM.findDOMNode(this.refs.password);
+    let email = ReactDOM.findDOMNode(this.refs.email).value,
+      password = ReactDOM.findDOMNode(this.refs.password).value;
 
     Login
       .signIn(email, password)
