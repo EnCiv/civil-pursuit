@@ -1,6 +1,7 @@
 'use strict';
 
 import React                        from 'react';
+import ReactDOM                     from 'react-dom';
 import Row                          from './util/row';
 import Column                       from './util/column';
 import Image                        from './util/image';
@@ -20,7 +21,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setEducation () {
-    let education = this.refs.education;
+    let education = ReactDOM.findDOMNode(this.refs.education);
 
     if ( education ) {
       window.socket.emit('set user info', { education });
@@ -30,7 +31,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setRelationship () {
-    let relationship = this.refs.relationship;
+    let relationship = ReactDOM.findDOMNode(this.refs.relationship);
 
     if ( relationship ) {
       window.socket.emit('set user info', { married : relationship });
@@ -40,7 +41,7 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setEmployment () {
-    let employment = this.refs.employment;
+    let employment = ReactDOM.findDOMNode(this.refs.employment);
 
     if ( employment ) {
       window.socket.emit('set user info', { employment });

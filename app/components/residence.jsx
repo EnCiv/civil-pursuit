@@ -1,6 +1,7 @@
 'use strict';
 
 import React                          from 'react';
+import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import Image                          from './util/image';
@@ -43,7 +44,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setCity () {
-    let city = this.refs.city;
+    let city = ReactDOM.findDOMNode(this.refs.city);
 
     if ( city ) {
       window.socket.emit('set user info', { city });
@@ -53,7 +54,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setState () {
-    let state = this.refs.state;
+    let state = ReactDOM.findDOMNode(this.refs.state);
 
     if ( state ) {
       window.socket.emit('set user info', { state });
@@ -63,7 +64,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setZip () {
-    let zip = this.refs.zip;
+    let zip = ReactDOM.findDOMNode(this.refs.zip);
 
     if ( zip ) {
       window.socket.emit('set user info', { zip });
@@ -73,7 +74,7 @@ class Residence extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setZip4 () {
-    let zip4 = this.refs.zip4;
+    let zip4 = ReactDOM.findDOMNode(this.refs.zip4);
 
     if ( zip4 ) {
       window.socket.emit('set user info', { zip4 });

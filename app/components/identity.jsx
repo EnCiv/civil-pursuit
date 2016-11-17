@@ -1,6 +1,7 @@
 'use strict';
 
 import React                          from 'react';
+import ReactDOM                       from 'react-com';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import InputGroup                     from './util/input-group';
@@ -33,7 +34,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveFirstName () {
-    let firstName = this.refs.firstName;
+    let firstName = ReactDOM.findDOMNode(this.refs.firstName);
 
     if ( firstName ) {
       window.socket.emit('set user info', { first_name : firstName });
@@ -43,7 +44,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveMiddleName () {
-    let middleName = this.refs.middleName;
+    let middleName = ReactDOM.findDOMNode(this.refs.middleName);
 
     if ( middleName ) {
       window.socket.emit('set user info', { middle_name : middleName });
@@ -53,7 +54,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveLastName () {
-    let lastName = this.refs.lastName;
+    let lastName = ReactDOM.findDOMNode(this.refs.lastName);
 
     if ( lastName ) {
       window.socket.emit('set user info', { last_name : lastName });
@@ -63,7 +64,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveGender () {
-    let gender = this.refs.gender;
+    let gender = ReactDOM.findDOMNode(this.refs.gender);
 
     if ( gender ) {
       window.socket.emit('set user info', { gender });
@@ -73,7 +74,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveBirthdate () {
-    let birthdate = this.refs.birthdate;
+    let birthdate = ReactDOM.findDOMNode(this.refs.birthdate);
     if ( birthdate ) {
       let dob = new Date(birthdate);
       let now = Date.now();
@@ -87,7 +88,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveCitizenship (e) {
-    let citizenship = this.refs.citizenship;
+    let citizenship = ReactDOM.findDOMNode(this.refs.citizenship);
 
     this.setState({citizenship: citizenship});
 
@@ -98,7 +99,7 @@ class Identity extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveDualCitizenship (e) {
-    let dualCitizenship = this.refs.dualCitizenship;
+    let dualCitizenship = ReactDOM.findDOMNode(this.refs.dualCitizenship);
 
       window.socket.emit('set user info', { "dualcitizenship" : dualCitizenship})
         .on('OK set user info', user => { this.setState({ user })});

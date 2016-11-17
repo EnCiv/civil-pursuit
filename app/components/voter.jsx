@@ -1,6 +1,7 @@
 'use strict';
 
 import React                          from 'react';
+import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import Image                          from './util/image';
@@ -26,7 +27,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setRegisteredVoter () {
-    const registered_voter = this.refs.registered;
+    const registered_voter = ReactDOM.findDOMNode(this.refs.registered);
 
     if ( registered_voter ) {
       window.socket.emit('set user info', { registered_voter });
@@ -36,7 +37,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setParty () {
-    const party = this.refs.party;
+    const party = ReactDOM.findDOMNode(this.refs.party);
 
     if ( party ) {
       window.socket.emit('set user info', { party });
@@ -46,7 +47,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setTendency () {
-    const tendency = this.refs.tendency;
+    const tendency = ReactDOM.findDOMNode(this.refs.tendency);
 
     if ( tendency ) {
       window.socket.emit('set user info', { tendency });
