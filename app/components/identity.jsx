@@ -1,7 +1,7 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-com';
+import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import InputGroup                     from './util/input-group';
