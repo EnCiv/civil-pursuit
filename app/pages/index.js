@@ -69,7 +69,6 @@ class Layout extends Document {
 
     if ( props.env === 'development' ) {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
         new Stylesheet('/assets/css/index.css'),
         new Stylesheet('/assets/css/training.css'),
@@ -79,7 +78,6 @@ class Layout extends Document {
     }
     else {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
         new Stylesheet('/assets/css/training.min.css'),
@@ -101,6 +99,7 @@ class Layout extends Document {
 
     if ( props.env === 'development' ) {
       this.add(
+        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.js'),
         new Script('/assets/js/socket.io-stream.js'),
@@ -111,6 +110,7 @@ class Layout extends Document {
 
     else {
       this.add(
+        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.min.js'),
         new Script('/assets/js/assets.min.js'),
