@@ -6,7 +6,7 @@
   "scripts": {
     "test": "redtea dist/test/migrate dist/test/run --fork",
     "syntest": "node dist/bin/test",
-    "start": "node dist/bin/start.js",
+    "start": "node dist/bin/start.js --debug",
     "magic-start": "npm install && npm start",
     "postinstall": "./post-install.sh",
     "build": "bash bin/bundle.sh",
