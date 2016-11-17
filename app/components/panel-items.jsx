@@ -288,7 +288,7 @@ class PanelItems extends React.Component {
 
       let creatorPanel;
 
-      if ( active && active.section === 'creator' ) {
+//      if ( active && active.section === 'creator' ) {
         creatorPanel = (
           <Creator
             type    =   { type }
@@ -296,7 +296,7 @@ class PanelItems extends React.Component {
             toggle  =   { this.toggle.bind(this, null, 'creator') }
             />
         );
-      }
+//      }
 
       creator = (
         <Accordion
