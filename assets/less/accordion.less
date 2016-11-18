@@ -4,21 +4,30 @@
   position: relative;
   z-index: auto;
 
-  .expanded {
-    overflow: hidden;
-    position: relative;
-    z-index: auto;
-    max-height: none;
-  }
-
-  .collapsed {
-    overflow: hidden;
-    position: relative;
-    z-index: auto;
-  }
-
 }
 
+.expanding {
+    z-index: 2;
+    max-height: 0;
+    display: block;
+}
+
+.expanded {
+    overflow: visible;
+    z-index: auto;
+    max-height: none;
+}
+
+.collapsing {
+  overflow: hidden;
+  z-index: 1;
+}
+
+.collapsed {
+  overflow: hidden;
+  z-index: auto;
+  display: none;
+}
 
 
 .accordion-shadow{

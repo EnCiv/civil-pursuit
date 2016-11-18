@@ -46,12 +46,14 @@ class Accordion extends React.Component {
 
   componentDidMount() {
     if(this.props.active) {
-      if(this.refs.accordion.clientHeight >= this.refs.accordion.style.maxHeight) { this.smoothOpen(); }
+      console.info("Accordion.componentDidMount",this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight);
+      let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
+      if(this.refs.accordion.clientHeight >= maxHeight) { this.smoothOpen(); }
     }
   }
 
   componentDidUpdate() {
-    if(this.props.active) {
+    if(this.props.active && this.state.attr!=='expanding' && this.state.attr!=='collapsing') {
       let maxHeight=parseInt(this.refs.accordion.style.maxHeight,10) || 0 ;
       if((this.refs.accordion.clientHeight >=  maxHeight) && (this.inOpen!='active'))  { // it's expanded for some reason
           this.smoothOpen(); 
@@ -76,6 +78,7 @@ class Accordion extends React.Component {
     if (maxHeight < height) { //minHeight may not be 0
       accordion.style.maxHeight= height + 'px';
     } 
+    this.setState({ attr : 'expanding' });
 
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
@@ -113,6 +116,7 @@ class Accordion extends React.Component {
     //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
+    this.setState({ attr : 'collapsing' });
 
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
 
