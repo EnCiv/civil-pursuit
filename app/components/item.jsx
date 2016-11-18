@@ -7,7 +7,9 @@ import Accordion          from './util/accordion';
 
 class Item extends React.Component {
 
-  state = { truncated: false};
+  state = { truncated: false,
+            hint: false
+          };
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    *  @description      Break a given text into lines, themselves into words
@@ -179,6 +181,12 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  textHint.bind(active) {
+    this.setState({ hint: active );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   readMore (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -244,7 +252,7 @@ class Item extends React.Component {
               { buttons }
             </section>
             <section className="item-text">
-              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } textShadow= { true } >  
+              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } textShadow= { true } onComplete={ this.textHint.bind(this) } >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
@@ -255,16 +263,15 @@ class Item extends React.Component {
                 <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
                   { item.description }
                 </div>
-                <div className={ `item-trunc-hint ${this.state.truncated ? 'expand' : ''}`}>
-                  <Icon icon="ellipsis-h" />
-                </div>
                 <div className="item-tendency" style={{display: 'none'}}>
                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
                 </div>
               </Accordion>
               <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
             </section>
-
+            <div className={ `item-trunc-hint ${this.state.hint ? 'expand' : ''}`}>
+                <Icon icon="ellipsis-h" />
+            </div>
             <section style={ { clear : 'both' }}></section>
 
             <section style={{ marginRight : '0px' }}>

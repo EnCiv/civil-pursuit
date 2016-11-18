@@ -7,7 +7,9 @@ class Accordion extends React.Component {
   // C(losed) O(pen) B(usy)
 
   static propTypes  =   {
-    active          :   React.PropTypes.bool
+    active          :   React.PropTypes.bool,
+    textShadow      :   React.PropTypes.bool,
+    onComplete      :   React.PropTypes.func
   };
 
   state             =   {
@@ -93,12 +95,13 @@ class Accordion extends React.Component {
           this.setState({ attr : 'expanded' });
           accordion.style.maxHeight=null;
           if(this.props.textShadow) {shadow.style.minHeight= 0;}
+          if(this.props.onComplete) { this.props.onComplete(true); }
         }
       }
     }, this.stepRate);
   }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   inClose='inactive';
@@ -139,6 +142,7 @@ class Accordion extends React.Component {
         this.setState({ attr : 'collapsed' });
         accordion.style.maxHeight=null;
         if(this.props.textShadow) { shadow.style.minHeight= 0; }
+        if(this.props.onComplete) { this.props.onComplete(false); }
       }
     }, this.stepRate);
   }
