@@ -71,6 +71,7 @@ class Accordion extends React.Component {
     } 
 
     if(this.props.textShadow) {
+      console.info("accordion.smoothOpen",height,this.refs.accordionWrapper.clientHeight);
       shadow.style.width = accordion.offsetWidth + 'px';
       let rect=shadow.getBoundingClientRect();
       shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
@@ -153,10 +154,10 @@ class Accordion extends React.Component {
 
     return (
       <section className={ Component.classList(this, ...classes) } ref='accordion' style={ this.props.style } onClick={this.props.onClick} >
+        <div className="accordion-shadow" ref='shadow'>{false}</div>
         <div ref='accordionWrapper' >
           { this.props.children }
         </div>
-      <div className="accordion-shadow" ref='shadow'>{false}</div>
       </section>
     );
   }

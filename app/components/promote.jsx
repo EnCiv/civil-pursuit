@@ -53,18 +53,18 @@ componentDidUpdate () {
     let node=this.refs.promoteItemLeft;
     if(this.state.expandedL) {
       this.setState({activeL: false});
-      node.style.marginRight= 0;
-      node.style.zIndex=1;
-      node.style.width= "48.5%";
-      node.style.boxShadow=  'none';
+      //node.style.marginRight= 0;
+      //node.style.zIndex=1;
+      //node.style.width= "48.5%";
+      //node.style.boxShadow=  'none';
       this.state.expandedL=false;
     } else {
       if(this.state.expandedR) { this.toggleRight(); }
       this.setState({activeL: true});
-      node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
-      node.style.marginRight= '-41.5%';
-      node.style.zIndex=10;
-      node.style.width= "90%";
+      //node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
+      //node.style.marginRight= '-41.5%';
+      //node.style.zIndex=10;
+      //node.style.width= "90%";
       this.state.expandedL=true;
     }
   }
@@ -73,18 +73,18 @@ componentDidUpdate () {
     let node=this.refs.promoteItemRight;
     if(this.state.expandedR) {
       this.setState({activeR: false});
-      node.style.marginLeft= 0;
-      node.style.zIndex=1;
-      node.style.width= "48.5%";
-      node.style.boxShadow=  'none';
+      //node.style.marginLeft= 0;
+      //node.style.zIndex=1;
+      //node.style.width= "48.5%";
+      //node.style.boxShadow=  'none';
       this.state.expandedR=false;      
     } else {
       if(this.state.expandedL) { this.toggleLeft(); }
       this.setState({activeR: true});
-      node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
-      node.style.marginLeft= '-41.5%';
-      node.style.zIndex=10;
-      node.style.width= "90%";
+      //node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
+      //node.style.marginLeft= '-41.5%';
+      //node.style.zIndex=10;
+      //node.style.width= "90%";
       this.state.expandedR=true;
     }
   }
@@ -172,7 +172,7 @@ componentDidUpdate () {
           (
             <div className="solid">
               <div className="solid clear">
-                <div className="promote-column-left" ref="promoteItemLeft">
+                <div className={`promote-column-left ${this.state.activeL ? 'expanded' : ''}`} ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
                     footer =  { leftFooter }
                   />
@@ -189,7 +189,7 @@ componentDidUpdate () {
                     emitter           =   { emitter }
                   />
                 </div>
-                <div className="promote-column-right" ref="promoteItemRight">
+                <div className={`promote-column-right ${this.state.activeR ? 'expanded' : '' }`} ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
                     footer =  { rightFooter }
                   />
