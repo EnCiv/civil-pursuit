@@ -116,7 +116,7 @@ class Accordion extends React.Component {
     accordion.style.maxHeight= height + 'px';
 
     if(this.props.textShadow) {
-      shadow.style.width = item.offsetWidth + 'px';
+      shadow.style.width = accordion.offsetWidth + 'px';
       let rect=shadow.getBoundingClientRect();
       shadow.style.minHeight= Math.max(window.innerHeight  - rect.top - this.stepSize, 0) + 'px';
     }
