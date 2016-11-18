@@ -38,7 +38,7 @@ class Accordion extends React.Component {
       if(this.props.active!==nextProps.active) {
         if(!nextProps.active) {
           this.smoothClose();
-        } else if (this.refs.accordionWrapper.clientHeight > this.refs.accordion.clientHeight) { 
+        } else { 
           this.smoothOpen(); 
         }
      }
@@ -48,12 +48,12 @@ class Accordion extends React.Component {
     if(this.props.active) {
       console.info("Accordion.componentDidMount",this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight);
       let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
-      if(this.refs.accordion.clientHeight >= maxHeight) { this.smoothOpen(); }
+      if(this.refs.accordionWrapper.clientHeight >= maxHeight) { this.smoothOpen(); }
     }
   }
 
   componentDidUpdate() {
-    console.info("Accordion.componentDidMount",this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight, this.state.attr, this.props.active );
+    console.info("Accordion.componentDidUpdate",this.refs.accordion.clientHeight, this.refs.accordionWrapper.clientHeight, this.state.attr, this.props.active );
     if(this.props.active && this.state.attr!=='expanding' && this.state.attr!=='collapsing') {
 //      let maxHeight=parseInt(this.refs.accordion.style.maxHeight,10) || 0 ;
 //      if((this.refs.accordion.clientHeight >=  maxHeight) && (this.inOpen!='active'))  { // it's expanded for some reason
