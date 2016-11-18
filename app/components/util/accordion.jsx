@@ -12,7 +12,7 @@ class Accordion extends React.Component {
   };
 
   state             =   {
-    attr            :   'hide',
+    attr            :   'collapsed',
   };
 
   stepSize = 7;
@@ -90,7 +90,7 @@ class Accordion extends React.Component {
 
           this.inOpen='inactive';
           clearInterval(timer);
-          this.setState({ attr : 'show' });
+          this.setState({ attr : 'expanded' });
           accordion.style.maxHeight=null;
         }
       }
@@ -126,7 +126,7 @@ class Accordion extends React.Component {
       } else {
         this.inClose='inactive';
         clearInterval(timer);
-        this.setState({ attr : 'hide' });
+        this.setState({ attr : 'collapsed' });
         accordion.style.maxHeight=null;
       }
     }, this.stepRate);
