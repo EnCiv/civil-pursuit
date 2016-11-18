@@ -57,6 +57,7 @@ class Accordion extends React.Component {
     this.inOpen='active';
     if(this.inClose!=="inactive") {this.inClose='abort'}
     let accordion = this.refs.accordion;
+    let shadow = this.refs.shadow;
 
     let timerMax=1000;  //just in case
     let waitforit= 1000/this.stepRate;  // wait 1 second to give stuff a chance to appear
@@ -66,6 +67,13 @@ class Accordion extends React.Component {
     if (maxHeight < height) { //minHeight may not be 0
       accordion.style.maxHeight= height + 'px';
     } 
+
+    if(this.props.textShadow) {
+      shadow.style.width = accordion.offsetWidth + 'px';
+      let rect=shadow.getBoundingClientRect();
+      shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
+    }
+
     this.setState({ attr : 'expanding' });
 
     const timer = setInterval( () => {
@@ -75,6 +83,7 @@ class Accordion extends React.Component {
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
         accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
+        if(this.props.textShadow) { shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - this.stepSize), 0) + 'px'; }
       } else {
       // end interval if the scroll is completed
         if(--waitforit <= 0) {
@@ -83,6 +92,7 @@ class Accordion extends React.Component {
           clearInterval(timer);
           this.setState({ attr : 'expanded' });
           accordion.style.maxHeight=null;
+          if(this.props.textShadow) {shadow.style.minHeight= 0;}
         }
       }
     }, this.stepRate);
@@ -99,11 +109,18 @@ class Accordion extends React.Component {
     if(this.inOpen!='inactive') { this.inOpen='abort';} //override the open with a close
 
     let accordion = this.refs.accordion;
-    //let shadow = this.refs.shadow;
+    let shadow = this.refs.shadow;
 
     //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
+
+    if(this.props.testShadow) {
+      shadow.style.width = item.offsetWidth + 'px';
+      let rect=shadow.getBoundingClientRect();
+      shadow.style.minHeight= Math.max(window.innerHeight  - rect.top - this.stepSize, 0) + 'px';
+    }
+
     this.setState({ attr : 'collapsing' });
 
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
@@ -115,11 +132,13 @@ class Accordion extends React.Component {
       let lheight= accordion.clientHeight;
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
         accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
+        if( this.props.textShadow) { shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; }
       } else {
         this.inClose='inactive';
         clearInterval(timer);
         this.setState({ attr : 'collapsed' });
         accordion.style.maxHeight=null;
+        if(this.props.textShadow) { shadow.style.minHeight= 0; }
       }
     }, this.stepRate);
   }
@@ -133,6 +152,7 @@ class Accordion extends React.Component {
         <div ref='accordionWrapper' >
           { this.props.children }
         </div>
+      <div className="accordion-shadow" ref='shadow'>{false}</div>
       </section>
     );
   }
