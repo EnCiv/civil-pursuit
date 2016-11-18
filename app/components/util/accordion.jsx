@@ -126,8 +126,8 @@ class Accordion extends React.Component {
       } else {
         this.inClose='inactive';
         clearInterval(timer);
-        accordion.style.maxHeight=0;
         this.setState({ attr : 'hide' });
+        accordion.style.maxHeight=null;
       }
     }, this.stepRate);
   }
