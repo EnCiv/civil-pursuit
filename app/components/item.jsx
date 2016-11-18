@@ -181,7 +181,7 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  textHint.bind(active) {
+  textHint(active) {
     this.setState({ hint: active );
   }
 
