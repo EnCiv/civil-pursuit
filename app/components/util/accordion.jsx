@@ -129,7 +129,7 @@ class Accordion extends React.Component {
     classes.push(this.state.attr);
 
     return (
-      <section className={ Component.classList(this, ...classes) } ref='accordion' style={this.props.style}>
+      <section className={ Component.classList(this, ...classes) } ref='accordion' { ...this.props } >
         <div ref='accordionWrapper' >
           { this.props.children }
         </div>

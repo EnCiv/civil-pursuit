@@ -183,15 +183,16 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropagation();
       let item = this.refs.item;
-      let truncatable =  this.refs.truncatable;
+//      let truncatable =  this.refs.truncatable;
       let shadow = this.refs.shadow;
       if (this.state.truncated) {
         this.setState({truncated: false});
         this.props.toggle(this.props.item._id, 'harmony');
-        this.smoothOpen(truncatable, item, shadow);
+ //       this.smoothOpen(truncatable, item, shadow);
       } else {
         this.props.toggle(this.props.item._id, 'harmony');
-        this.smoothClose(truncatable, item, shadow);
+//        this.smoothClose(truncatable, item, shadow);
+          this.setState({truncated: true});
       }
   }
 
@@ -243,7 +244,7 @@ class Item extends React.Component {
               { buttons }
             </section>
             <section className="item-text">
-              <div className="item-truncatable" onClick={ this.readMore.bind(this) } ref="truncatable">  
+              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
@@ -260,7 +261,7 @@ class Item extends React.Component {
                 <div className="item-tendency" style={{display: 'none'}}>
                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
                 </div>
-              </div>
+              </Accordion>
               <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
             </section>
 
