@@ -8,7 +8,7 @@ import Accordion          from './util/accordion';
 class Item extends React.Component {
 
   state = { truncated: false,
-            hint: false
+            hint: true
           };
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
@@ -182,7 +182,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textHint(active) {
-    this.setState({ hint: active } );
+    this.setState({ hint: !active } );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

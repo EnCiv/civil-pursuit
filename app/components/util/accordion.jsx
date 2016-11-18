@@ -93,9 +93,9 @@ class Accordion extends React.Component {
           this.inOpen='inactive';
           clearInterval(timer);
           this.setState({ attr : 'expanded' });
+          if(this.props.onComplete) { this.props.onComplete(true); }
           accordion.style.maxHeight=null;
           if(this.props.textShadow) {shadow.style.minHeight= 0;}
-          if(this.props.onComplete) { this.props.onComplete(true); }
         }
       }
     }, this.stepRate);
@@ -140,9 +140,9 @@ class Accordion extends React.Component {
         this.inClose='inactive';
         clearInterval(timer);
         this.setState({ attr : 'collapsed' });
+        if(this.props.onComplete) { this.props.onComplete(false); }
         accordion.style.maxHeight=null;
         if(this.props.textShadow) { shadow.style.minHeight= 0; }
-        if(this.props.onComplete) { this.props.onComplete(false); }
       }
     }, this.stepRate);
   }
