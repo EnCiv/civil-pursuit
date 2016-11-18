@@ -74,7 +74,7 @@ class Accordion extends React.Component {
       shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
     }
 
-    this.setState({ attr : 'expanding' });
+    this.setState( { attr : ` ${this.props.textShadow ? 'text-expanding' : 'expanding' } ` } );
 
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
@@ -115,13 +115,13 @@ class Accordion extends React.Component {
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
 
-    if(this.props.testShadow) {
+    if(this.props.textShadow) {
       shadow.style.width = item.offsetWidth + 'px';
       let rect=shadow.getBoundingClientRect();
       shadow.style.minHeight= Math.max(window.innerHeight  - rect.top - this.stepSize, 0) + 'px';
     }
 
-    this.setState({ attr : 'collapsing' });
+    this.setState( { attr : ` ${this.props.textShadow ? 'text-collapsing' : 'collapsing' } ` } );
 
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
 

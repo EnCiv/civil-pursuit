@@ -7,7 +7,11 @@
 }
 
 .expanding {
-    overflow: visible;
+    overflow: hidden;
+}
+
+.text-expanding {
+  overflow: visible;
 }
 
 .expanded {
@@ -19,6 +23,10 @@
   overflow: hidden;
 }
 
+.text-collapsing {
+  overflow: visible;
+}
+
 .collapsed {
   overflow: hidden;
 }
@@ -28,6 +36,6 @@
   min-height: 0;
   max-height: 0;
   position: absolute;
-  z-index: 0;
+  z-index: -1;
   background-color: @syn-background-color;
 }
