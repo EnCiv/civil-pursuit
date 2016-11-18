@@ -1,8 +1,7 @@
 'use strict';
 
 import React from 'react';
-import ReactCollapse from 'react-collapse';
-import ReactHeight from '../../lib/app/ReactHeight.js';
+import Component      from '../lib/app/component';
 
 class Accordion extends React.Component {
   // C(losed) O(pen) B(usy)
@@ -126,8 +125,11 @@ class Accordion extends React.Component {
   }
 
   render () {
+    let classes = [ 'accordion' ];
+    classes.push(this.state.attr);
+
     return (
-      <section className={`accordion ${this.state.attr}`} ref='accordion' >
+      <section className={ Component.classList(this, ...classes) } ref='accordion' style={this.props.style}>
         <div ref='accordionWrapper' >
           { this.props.children }
         </div>
