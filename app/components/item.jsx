@@ -182,7 +182,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textHint(active) {
-    this.setState({ hint: !active } );
+    if(this.state.hint === active) { this.setState({ hint: !active } ); }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +194,7 @@ class Item extends React.Component {
 //      let truncatable =  this.refs.truncatable;
       let shadow = this.refs.shadow;
       if (this.state.truncated) {
-        this.setState({truncated: false});
+        this.setState({truncated: false, hint: false});
         this.props.toggle(this.props.item._id, 'harmony');
  //       this.smoothOpen(truncatable, item, shadow);
       } else {
