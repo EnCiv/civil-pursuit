@@ -261,7 +261,7 @@ class Item extends React.Component {
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
                 </h4>
-                <h5 className="item-reference" style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
+                <h5 className={`item-reference ${this.state.truncated ? 'truncated' : ''}`} style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
                   <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
                 </h5>
                 <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
@@ -271,7 +271,6 @@ class Item extends React.Component {
                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
                 </div>
               </Accordion>
-              <div className="item-truncatable-shadow" ref='shadow'>{false}</div>
             </section>
             <div className={ `item-trunc-hint ${this.state.hint ? 'expand' : ''}`}>
                 <Icon icon="ellipsis-h" />

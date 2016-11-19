@@ -179,6 +179,20 @@ blockquote {
   white-space: nowrap;
 }
 
+.item-reference.truncated{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  a {
+  color: inherit;
+  text-decoration: none;
+
+    &:hover {
+      text-decoration: none
+    }
+  }
+
 .item-subject.expand {
   overflow: visible;
   white-space: normal;
