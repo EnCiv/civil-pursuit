@@ -2,40 +2,38 @@
   overflow: hidden;
   max-height: 0;
   position: relative;
-  z-index: auto;
 
 }
 
-.expanding {
+.accordion.expanding {
     overflow: hidden;
 }
 
-.text-expanding {
+.accordion.text-expanding {
   overflow: visible;
 }
 
-.expanded {
+.accordion.expanded {
     overflow: visible;
     max-height: none;
 }
 
-.collapsing {
+
+.accordion.collapsing {
   overflow: hidden;
 }
 
-.text-collapsing {
+.accordion.text-collapsing {
   overflow: visible;
 }
 
-.collapsed {
+.accordion.collapsed {
   overflow: hidden;
 }
-
 
 .accordion-shadow{
   min-height: 0;
   max-height: 0;
   position: absolute;
-  z-index: -1;
   background-color: @syn-background-color;
 }

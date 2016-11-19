@@ -70,12 +70,12 @@ class Accordion extends React.Component {
       accordion.style.maxHeight= height + 'px';
     } 
 
-    if(this.props.textShadow) {
-      console.info("accordion.smoothOpen",height,this.refs.accordionWrapper.clientHeight);
-      shadow.style.width = accordion.offsetWidth + 'px';
-      let rect=shadow.getBoundingClientRect();
-      shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-    }
+ //   if(this.props.textShadow) {
+ //     console.info("accordion.smoothOpen",height,this.refs.accordionWrapper.clientHeight);
+//      shadow.style.width = accordion.offsetWidth + 'px';
+//      let rect=shadow.getBoundingClientRect();
+//      shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
+//    }
 
     this.setState( { attr : ` ${this.props.textShadow ? 'text-expanding' : 'expanding' } ` } );
 
@@ -86,7 +86,10 @@ class Accordion extends React.Component {
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
         accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
-        if(this.props.textShadow) { shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - this.stepSize), 0) + 'px'; }
+ //       if(this.props.textShadow) { 
+ //         shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - this.stepSize), 0) + 'px';
+ //         shadow.style.width = accordion.offsetWidth + 'px'; // need to keep updating witdth because it may change dynamically
+ //        }
       } else {
       // end interval if the scroll is completed
         if(--waitforit <= 0) {
@@ -96,7 +99,7 @@ class Accordion extends React.Component {
           this.setState({ attr : 'expanded' });
           if(this.props.onComplete) { this.props.onComplete(true); }
           accordion.style.maxHeight=null;
-          if(this.props.textShadow) {shadow.style.minHeight= 0;}
+//          if(this.props.textShadow) {shadow.style.minHeight= 0;}
         }
       }
     }, this.stepRate);
@@ -119,11 +122,11 @@ class Accordion extends React.Component {
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
 
-    if(this.props.textShadow) {
-      shadow.style.width = accordion.offsetWidth + 'px';
-      let rect=shadow.getBoundingClientRect();
-      shadow.style.minHeight= Math.max(window.innerHeight  - rect.top - this.stepSize, 0) + 'px';
-    }
+//    if(this.props.textShadow) {
+//      shadow.style.width = accordion.offsetWidth + 'px';
+//      let rect=shadow.getBoundingClientRect();
+//      shadow.style.minHeight= Math.max(window.innerHeight  - rect.top - this.stepSize, 0) + 'px';
+//    }
 
     this.setState( { attr : ` ${this.props.textShadow ? 'text-collapsing' : 'collapsing' } ` } );
 
@@ -136,14 +139,17 @@ class Accordion extends React.Component {
       let lheight= accordion.clientHeight;
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
         accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
-        if( this.props.textShadow) { shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; }
+//        if( this.props.textShadow) { 
+//          shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px';
+//          shadow.style.width = accordion.offsetWidth + 'px'; // need to keep updating witdth because it may change dynamically
+//         }
       } else {
         this.inClose='inactive';
         clearInterval(timer);
         this.setState({ attr : 'collapsed' });
         if(this.props.onComplete) { this.props.onComplete(false); }
         accordion.style.maxHeight=null;
-        if(this.props.textShadow) { shadow.style.minHeight= 0; }
+//        if(this.props.textShadow) { shadow.style.minHeight= 0; }
       }
     }, this.stepRate);
   }
