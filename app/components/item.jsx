@@ -4,6 +4,7 @@ import React from 'react';
 import ItemMedia        from './item-media';
 import Icon               from './util/icon';
 import Accordion          from './util/accordion';
+import ClassNames          from 'classnames';
 
 class Item extends React.Component {
 
@@ -228,6 +229,9 @@ class Item extends React.Component {
 
     const tendencyChoice = null;
 
+    var itemClass = ClassNames("item", this.props.className);
+
+
     if(typeof window !== 'undefined' ) {
         window.Synapp.tendencyChoice
     };
@@ -243,7 +247,7 @@ class Item extends React.Component {
 
       rendereditem = (
         <Accordion active={!collapsed} name='item'>
-          <article className="item" ref="item" id={ `item-${item._id}` } >
+          <article className=itemClass ref="item" id={ `item-${item._id}` } >
             <ItemMedia onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"

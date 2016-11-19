@@ -174,7 +174,7 @@ componentDidUpdate () {
               <div className="solid clear">
                 <div className={`promote-column-left ${this.state.activeL ? 'expanded' : ''}`} ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { leftFooter }
+                    footer =  { leftFooter } className="whole-border"
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
