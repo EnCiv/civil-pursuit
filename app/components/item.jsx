@@ -11,75 +11,6 @@ class Item extends React.Component {
   state = { truncated: false,
             hint: true
           };
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /**
-   *  @description      Break a given text into lines, themselves into words
-   *  @arg              {String} text
-   *  @return           [[String]]
-  */
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static wordify (text) {
-    let lines = [];
-
-    text.split(/\n/).forEach(line => lines.push(line.split(/\s+/)));
-
-    lines = lines.map(line => {
-      if ( line.length === 1 && ! line[0] ) {
-        return [];
-      }
-      return line;
-    });
-
-    return lines;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /**
-   *  @description      Put all words into spans, hidding the ones who are below limit
-   *  @arg              {HTMLElement} container
-   *  @arg              {Number} limit
-   *  @return           null
-  */
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static paint (container, limit, tag) {
-
-    const lines           =   Item.wordify(container.textContent);
-    container.innerHTML   =   '';
-
-    const whiteSpace      =   () => {
-      const span          =   document.createElement('span');
-
-      span.appendChild(document.createTextNode(' '));
-
-      return span;
-    }
-
-    lines.forEach(line => {
-      const div = document.createElement(tag);
-
-      container.appendChild(div);
-
-      line.forEach(word => {
-        const span = document.createElement('span');
-
-        span.appendChild(document.createTextNode(word));
-
-        span.classList.add('word');
-
-        div.appendChild(span);
-
-        div.appendChild(whiteSpace());
-
-        const offset = span.offsetTop;
-
-        if ( offset > limit ) {
-          span.classList.add('hide');
-        }
-      });
-    });
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   checkTruncate(item) {
@@ -100,84 +31,7 @@ class Item extends React.Component {
       const item = this.refs.item;
       this.checkTruncate(item);
 
-      if ( this.props.new ) {
-        this.setState({ showPromote: true });
-      }
     }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-
-  componentDidUpdate() {
-    if ( this.refs.item ) {
-      const item = this.refs.item;
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  smoothOpen(target, item, shadow) {
-    // set an interval to update scrollTop attribute every 25 ms
-
-    let timerMax=1000;
-
-    let maxHeight = parseInt(target.style.maxHeight,10) || 0;
-    let height= target.clientHeight;
-    if (maxHeight < height) {
-      target.style.maxHeight= height + 'px';
-    }
-
-    shadow.style.width = item.offsetWidth + 'px';
-    let rect=shadow.getBoundingClientRect();
-    shadow.style.minHeight= (window.innerHeight - rect.top) + 'px';
-
-    target.style.overflow= 'visible';
-
-    const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
-      let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
-      let lheight= target.clientHeight;
-      if( lmaxHeight <= lheight ){
-        target.style.maxHeight = (lmaxHeight + 7) + 'px';
-        shadow.style.minHeight = Math.max((parseInt(shadow.style.minHeight) - 7), 0) + 'px';
-      } else {
-      // end interval if the scroll is completed
-        clearInterval(timer);
-        target.style.overflow="visible";
-        shadow.style.minHeight= 0;
-      }
-    }, 25);
-  }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  smoothClose(target, item, shadow) {
-    // set an interval to update scrollTop attribute every 25 ms
-
-    let maxHeight = parseInt(target.style.maxHeight,10) || 0;
-    let height= target.clientHeight;
-
-    shadow.style.width = item.offsetWidth + 'px';
-    let rect=shadow.getBoundingClientRect();
-    shadow.style.minHeight= (window.innerHeight  - rect.top -7) + 'px';
-    target.style.overflow= 'visible';
-    let timerMax=1000;
-
-
-    const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer); console.error("item.smoothOpen timer overflow");}
-      let lmaxHeight = parseInt(target.style.maxHeight,10) || 0;
-      let lheight= target.clientHeight;
-      if( lmaxHeight >= lheight ){ //it's still shrinking
-        target.style.maxHeight =  (((lmaxHeight - 7) > 0) ? (lmaxHeight - 7) : 0 ) + 'px';
-        shadow.style.minHeight = (window.innerHeight - shadow.getBoundingClientRect().top) + 'px'; 
-      } else {
-        clearInterval(timer);
-        target.style.overflow= 'hidden';
-        shadow.style.minHeight= 0;
-        this.setState({truncated: true});
-      }
-    }, 25);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,15 +46,11 @@ class Item extends React.Component {
     e.preventDefault();
     e.stopPropagation();
       let item = this.refs.item;
-//      let truncatable =  this.refs.truncatable;
-      let shadow = this.refs.shadow;
       if (this.state.truncated) {
         this.setState({truncated: false, hint: false});
         this.props.toggle(this.props.item._id, 'harmony');
- //       this.smoothOpen(truncatable, item, shadow);
       } else {
         this.props.toggle(this.props.item._id, 'harmony');
-//        this.smoothClose(truncatable, item, shadow);
           this.setState({truncated: true});
       }
   }
