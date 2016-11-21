@@ -35,16 +35,23 @@
 
 
   [name="subject"] {
-    border-radius: 4px 4px 0 0;
-    border-bottom: none;
+    border: none;
+    line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
+    font-size: 1.375em;
   }
 
   [name="reference"] {
-    border-radius: 0;
-    border-bottom: none;
+    border: none;
+  }
+
+  [name="url-title"] {
+    border: none;
+    font-size: 0.9em;
+    font-weight: 300;
   }
 
   [name="description"] {
-    border-radius: 0 0 4px 4px;
+    border: none;
+    line-height: 1.375em;
   }
 }

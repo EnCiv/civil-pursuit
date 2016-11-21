@@ -211,7 +211,7 @@ class Creator extends React.Component {
       <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
-            <section className="item-media" ref="media">
+            <section className="item-media" ref="media" style={{width: "calc(13em - 10px)"}}> // width as if a picture was here. Uploader has a 5px boarder on each side
               <Uploader
                 ref       =   "uploader"
                 handler   =   { this.saveImage.bind(this) }
@@ -256,6 +256,7 @@ class Creator extends React.Component {
 
                 <TextInput
                   disabled
+                  name          =   "url-title"
                   defaultValue  =   ""
                   className     =   "url-title"
                   ref           =   "title"
