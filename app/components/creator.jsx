@@ -222,6 +222,7 @@ class Creator extends React.Component {
 
           <section className="item-buttons">
             <section className="syn-button-group">
+              <span className="civil-button-info">{' '}</span>
               <Submit small shy>
                 <span className="civil-button-text">Post</span>
               </Submit>
