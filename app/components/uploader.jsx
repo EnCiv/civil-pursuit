@@ -137,11 +137,11 @@ class Uploader extends React.Component {
             </section>
           </section>
 
-          <section className="syn-uploader-uploaded --show" ref="bucket">
+          <section className="syn-uploader-uploaded show" ref="bucket">
             { media }
           </section>
 
-          <section className="syn-uploader-replace --show" ref="replace" onClick= { this.chooseAnotherFile.bind(this) }>
+          <section className="syn-uploader-replace show" ref="replace" onClick= { this.chooseAnotherFile.bind(this) }>
             <Icon icon="upload" />
             <a href="">Choose another image</a>
           </section>
