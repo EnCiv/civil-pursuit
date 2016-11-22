@@ -13,6 +13,10 @@ class YouTube extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  state= { vHeight=0,
+            vWidth=0
+  }
+
   static isYouTube (item) {
     let is = false;
 
@@ -28,6 +32,15 @@ class YouTube extends React.Component {
 
     return is;
   }
+
+  componentDidMount() {
+    container=this.refs.container;
+    console.info("youtube.js componentDidMount",container);
+    if(container.clientHeight && container.clientWidth){
+      this.setState({vHeight: container.clientHeight, vWidth: container.clientWidth});
+    }
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -49,8 +62,8 @@ class YouTube extends React.Component {
     let youTubeId = YouTube.getId(url);
 
     return (
-      <div className="video-container">
-        <iframe allowFullScreen frameBorder="0" width="300" height="175" src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
+      <div className="video-container" ref="container">
+        <iframe allowFullScreen frameBorder="0" width={this.vWidth ? this.vWidth : "192"} height={ this.vHeight ? this.vHeight : "108" } src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
         </iframe>
       </div>
     );

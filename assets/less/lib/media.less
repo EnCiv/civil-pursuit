@@ -7,16 +7,15 @@ img.syn-img-responsive {
 
 .video-container {
   position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
+  max-height: 7em;
+  max-width: 13em;
   overflow: hidden;
 
   iframe, object, embed {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
     height: 100%
+    max-width: 12.5em;
+    max-height: 7em;
   }
 }
