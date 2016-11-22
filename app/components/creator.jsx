@@ -17,7 +17,7 @@ class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  state = { blank : true };
+  state = { video: false };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -164,7 +164,7 @@ class Creator extends React.Component {
       let item = { references: [{ url }] };
 
       if ( YouTube.isYouTube(item) ) {
-        this.setState({ video : item });
+        this.setState({ video : true });
       }
     }
   }
@@ -216,7 +216,7 @@ class Creator extends React.Component {
                 ref       =   "uploader"
                 handler   =   { this.saveImage.bind(this) }
                 image     =   { image }
-                video     =   { this.props.video ? item : null } />
+                video     =   { this.state.video ? item : null } />
             </section>
           </section>
 
