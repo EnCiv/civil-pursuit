@@ -209,6 +209,8 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/',
         (req, res, next) => {
+          let settings=req.headers['user-agent'];
+          console.info("server.getLandingPage settings", settings);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
@@ -415,7 +417,6 @@ class HttpServer extends EventEmitter {
       this.emit('message', 'Server is listening', {
         port    :   this.app.get('port'),
         env     :   this.app.get('env'),
-        settings:   this.app.get('User-Agent')
       });
 
       this.emit('listening', { port : this.app.get('port') });
