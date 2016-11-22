@@ -31,6 +31,7 @@ import Item                     from './models/item';
 import Type                     from './models/type';
 
 import API                      from './api';
+import Sniffr                   from 'sniffr';
 
 
 class HttpServer extends EventEmitter {
@@ -209,8 +210,9 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/',
         (req, res, next) => {
-          let settings=req.headers['user-agent'];
-          console.info("server.getLandingPage settings", settings);
+          this.sniffr = new Sniffr();
+          this.sniffr.sniff(req.headers['user-agent']);
+          console.info("server sniffr", this.sniffr.os, this.sniffr.browser, this.sniffr.device);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
