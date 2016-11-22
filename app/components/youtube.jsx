@@ -34,7 +34,7 @@ class YouTube extends React.Component {
   }
 
   componentDidMount() {
-    container=this.refs.container;
+    let container=this.refs.container;
     console.info("youtube.js componentDidMount",container);
     if(container.clientHeight && container.clientWidth){
       this.setState({vHeight: container.clientHeight, vWidth: container.clientWidth});
