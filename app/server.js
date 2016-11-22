@@ -414,7 +414,8 @@ class HttpServer extends EventEmitter {
     this.server.listen(this.app.get('port'),  () => {
       this.emit('message', 'Server is listening', {
         port    :   this.app.get('port'),
-        env     :   this.app.get('env')
+        env     :   this.app.get('env'),
+        settings:   this.app.get('User-Agent')
       });
 
       this.emit('listening', { port : this.app.get('port') });
