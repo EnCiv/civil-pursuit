@@ -13,9 +13,9 @@ class YouTube extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  state= { vHeight=0,
-            vWidth=0
-  }
+  state= { vHeight: 0,
+            vWidth: 0
+  };
 
   static isYouTube (item) {
     let is = false;
