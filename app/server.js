@@ -32,6 +32,7 @@ import Type                     from './models/type';
 
 import API                      from './api';
 import Sniffr                   from 'sniffr';
+import Device                   from 'device';
 
 
 class HttpServer extends EventEmitter {
@@ -213,6 +214,8 @@ class HttpServer extends EventEmitter {
           this.sniffr = new Sniffr();
           this.sniffr.sniff(req.headers['user-agent']);
           console.info("server sniffr", this.sniffr.os, this.sniffr.browser, this.sniffr.device);
+          this.device = Device(req.headers['user-agent']);
+          console.info("server Device", this.device.isPhone, this.device.is('phone'), this.device);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
