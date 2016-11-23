@@ -221,7 +221,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          this.screen.width= { // Get screen info that we passed in url post data
+          this.browserConfig.screen= { // Get screen info that we passed in url post data
                 width: req.param('width'),  
                 height: req.param('height')
           };
@@ -306,7 +306,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          this.screen.width= { // Get screen info that we passed in url post data
+          this.browserConfig.screen= { // Get screen info that we passed in url post data
                 width: req.param('width'),  
                 height: req.param('height')
           };
