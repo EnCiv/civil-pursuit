@@ -61,6 +61,17 @@ class App extends React.Component {
     );
   }
 
+  componentDidMount(){
+    console.info("app componentDidMount", this.props.browser);
+
+    var topHTML = document.getElementsByName('html')[0];
+    if(this.props.browser.type==='phone') {
+      topHTML.style.fontSize='8px';
+    } else {
+      topHTML.style.fontSize='13px';
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {

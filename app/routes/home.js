@@ -47,7 +47,8 @@ function home (req, res, next) {
       ready           :   false,
       user            :   isIn,
       notFound        :   req.notFound,
-      error           :   res.locals.error
+      error           :   res.locals.error,
+      browser         :   JSON.parse(JSON.stringify(this.browser || null))
     };
 
     props.react = Object.assign({}, props);

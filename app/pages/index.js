@@ -97,9 +97,23 @@ class Layout extends Document {
 
     this.add(new Script().text(`window.env = "${props.env}"; window.synappEnv = "${process.env.SYNAPP_ENV}"`));
 
+    console.info("index browser", props.browser);
+
+    if (   ( props.browser.browser.name=="chrome" && props.browser.browser.version[0] >= 54)
+        || ( props.browser.browser.name=="safari" && props.browser.browser.version[0] >= 10)
+        || ( props.browser.browser.name=="opera" && props.browser.browser.version[0] >= 41)
+        || ( props.browser.browser.name=="firefox" && props.browser.browser.version[0] >= 50)
+       ) {
+      console.info("index browser supports ES6");
+    }else { //add polyfill only for broswers that need it
+      this.add(
+        new Script('/assets/js/polyfill.min.js')
+      )
+    }
+
+
     if ( props.env === 'development' ) {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.js'),
         new Script('/assets/js/socket.io-stream.js'),
@@ -110,7 +124,6 @@ class Layout extends Document {
 
     else {
       this.add(
-        new Script('/assets/js/polyfill.min.js'),
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.min.js'),
         new Script('/assets/js/assets.min.js'),

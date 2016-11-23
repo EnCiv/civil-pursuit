@@ -211,11 +211,16 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/',
         (req, res, next) => {
-          this.sniffr = new Sniffr();
-          this.sniffr.sniff(req.headers['user-agent']);
-          console.info("server sniffr", this.sniffr.os, this.sniffr.browser, this.sniffr.device);
-          this.device = Device(req.headers['user-agent']);
-          console.info("server Device", this.device.isPhone, this.device.is('phone'), this.device);
+          var sniffr = new Sniffr();
+          sniffr.sniff(req.headers['user-agent']);
+          console.info("server sniffr", sniffr.os, sniffr.browser, sniffr.device);
+          var device = Device(req.headers['user-agent']);
+          console.info("server Device", this.device.is('phone'), this.device);
+          this.browserConfig.os = sniffr.os;
+          this.browserConfig.browser = sniffr.browser;
+          this.browser.type = device.get_type();
+          this.browser.model = device.get_model();
+          console.info("server.getLandingPage browser", this.browser);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
