@@ -215,11 +215,11 @@ class HttpServer extends EventEmitter {
           sniffr.sniff(req.headers['user-agent']);
           console.info("server sniffr", sniffr.os, sniffr.browser, sniffr.device);
           var device = Device(req.headers['user-agent']);
-          console.info("server Device", device.is('phone'), device.get_type(), device.get_model());
+          console.info("server Device", device.is('phone'), device.typ, device.model;
           this.browserConfig.os = sniffr.os;
           this.browserConfig.browser = sniffr.browser;
-          this.browser.type = device.get_type();
-          this.browser.model = device.get_model();
+          this.browser.type = device.type;
+          this.browser.model = device.mode;
           console.info("server.getLandingPage browser", this.browser);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
