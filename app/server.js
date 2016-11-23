@@ -40,6 +40,7 @@ class HttpServer extends EventEmitter {
   sockets = {};
 
   nextSocketId = 0;
+  browserConfig = {};
 
   constructor (props) {
     super();
@@ -218,8 +219,8 @@ class HttpServer extends EventEmitter {
           console.info("server Device", device.is('phone'), device.type, device.model);
           this.browserConfig.os = sniffr.os;
           this.browserConfig.browser = sniffr.browser;
-          this.browser.type = device.type;
-          this.browser.model = device.mode;
+          this.browserConfig.type = device.type;
+          this.browserConfig.model = device.model;
           console.info("server.getLandingPage browser", this.browser);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
