@@ -214,13 +214,17 @@ class HttpServer extends EventEmitter {
         (req, res, next) => {
           var sniffr = new Sniffr();
           sniffr.sniff(req.headers['user-agent']);
-          console.info("server sniffr", sniffr.os, sniffr.browser, sniffr.device);
           var device = Device(req.headers['user-agent']);
-          console.info("server Device", device.is('phone'), device.type, device.model);
           this.browserConfig.os = sniffr.os;
           this.browserConfig.browser = sniffr.browser;
           this.browserConfig.type = device.type;
           this.browserConfig.model = device.model;
+          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+          this.screen.width= { // Get screen info that we passed in url post data
+                width: req.param('width'),  
+                height: req.param('height')
+          };
           console.info("server.getLandingPage browser", this.browser);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
@@ -293,6 +297,20 @@ class HttpServer extends EventEmitter {
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+          var sniffr = new Sniffr();
+          sniffr.sniff(req.headers['user-agent']);
+          var device = Device(req.headers['user-agent']);
+          this.browserConfig.os = sniffr.os;
+          this.browserConfig.browser = sniffr.browser;
+          this.browserConfig.type = device.type;
+          this.browserConfig.model = device.model;
+          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+          this.screen.width= { // Get screen info that we passed in url post data
+                width: req.param('width'),  
+                height: req.param('height')
+          };
+          console.info("server.getItemPage browser", this.browser);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
