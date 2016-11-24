@@ -82,7 +82,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/index.min.css'),
         new Stylesheet('/assets/css/training.min.css'),
         // new Stylesheet(publicConfig['font awesome'].cdn)
-        new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.min.css')
+        new Stylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
       );
     }
 

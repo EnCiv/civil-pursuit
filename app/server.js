@@ -221,10 +221,6 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          this.browserConfig.screen= { // Get screen info that we passed in url post data
-                width: req.param('width'),  
-                height: req.param('height')
-          };
           console.info("server.getLandingPage browser", this.browser);
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
@@ -306,10 +302,6 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          this.browserConfig.screen= { // Get screen info that we passed in url post data
-                width: req.param('width'),  
-                height: req.param('height')
-          };
           console.info("server.getItemPage browser", this.browser);
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
