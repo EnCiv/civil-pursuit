@@ -38,7 +38,21 @@ class YouTube extends React.Component {
     if(container.clientHeight && container.clientWidth){
       this.setState({vHeight: container.clientHeight, vWidth: container.clientWidth});
     }
+    let player=this.refs.player;
+    let div;
+    div = document.createElement("div");
+    div.setAttribute("data-id", player.dataset.id);
+    div.innerHTML = labnolThumb(player.dataset.id);
+    player.appendChild(div);
   }
+
+ 
+  labnolThumb(id) {
+      var thumb = '<img src="https://i.ytimg.com/vi/ID/hqdefault.jpg">',
+          play = '<div class="play"></div>';
+      return thumb.replace("ID", id) + play;
+  }
+
 
   componentDidUpdate() {
     let container=this.refs.container;
@@ -69,7 +83,7 @@ class YouTube extends React.Component {
 
     return (
       <div className="video-container" ref="container">
-        <iframe id="ytplayer" modestbranding="1" controls="0" modestbranding="1" showinfo="0" type="text/html" allowFullScreen frameBorder="0" width={this.state.vWidth ? this.state.vWidth : "192"} height={ this.state.vHeight ? this.state.vHeight : "108" } 
+        <iframe ref="player" id="ytplayer" modestbranding="1" controls="0" modestbranding="1" showinfo="0" type="text/html" allowFullScreen frameBorder="0" width={this.state.vWidth ? this.state.vWidth : "192"} height={ this.state.vHeight ? this.state.vHeight : "108" } 
          src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
         </iframe>
       </div>
