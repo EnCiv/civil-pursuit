@@ -58,7 +58,8 @@ class YouTube extends React.Component {
     let vWidth = container.clientWidth;
     let bS=0.15; //button Scale not what you were thinking
     let player=this.refs.player;
-    let playerButton=player.getElementsByClassName("ytp-icon-large-play-button-hover");
+    let innerDoc = player.contentDocument || player.contentWindow.document;
+    let playerButton=innerDoc.getElementsByClassName("ytp-icon-large-play-button-hover");
     console.info("found the youtube play button element", playerButton);
     if (playerButton.length !== 1 ) { console.info("youtube.jsx Youtube has changed the player", playerButton.length ); return }
     playerButton[0].style.width= (vWidth * bS) + 'px';
