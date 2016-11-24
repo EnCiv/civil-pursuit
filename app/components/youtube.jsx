@@ -46,7 +46,7 @@ class YouTube extends React.Component {
     if(!(container.clientHeight && container.clientWidth) ) { return }
     let vHeight = container.clientHeight;
     let vWidth = container.clientWidth;
-    if(vHeight!== this.state.vHeight || vWidth !== this.state.vWidth )){
+    if(vHeight!== this.state.vHeight || vWidth !== this.state.vWidth ){
       this.setState({vHeight: vHeight, vWidth: vWidth});
     }
     let bS=0.15; //button Scale not what you were thinking
