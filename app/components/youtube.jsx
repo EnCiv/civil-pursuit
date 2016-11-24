@@ -49,10 +49,17 @@ class YouTube extends React.Component {
     if(vHeight!== this.state.vHeight || vWidth !== this.state.vWidth ){
       this.setState({vHeight: vHeight, vWidth: vWidth});
     }
+  }
+
+  iframeDidLoad() {
+    let container=this.refs.container;
+    if(!(container.clientHeight && container.clientWidth) ) { return }
+    let vHeight = container.clientHeight;
+    let vWidth = container.clientWidth;
     let bS=0.15; //button Scale not what you were thinking
     let player=this.refs.player;
     let playerButton=player.getElementsByClassName("ytp-icon-large-play-button-hover");
-    console.info("found the youtube play button element");
+    console.info("found the youtube play button element", playerButton);
     if (playerButton.length !== 1 ) { console.info("youtube.jsx Youtube has changed the player", playerButton.length ); return }
     playerButton[0].style.width= (vWidth * bS) + 'px';
     playerButton[0].style.height= (vHeight * bS) + 'px';
@@ -83,7 +90,7 @@ class YouTube extends React.Component {
     return (
       <div className="video-container" ref="container">
         <iframe ref="player" id="ytplayer" modestbranding="1" controls="0" modestbranding="1" showinfo="0" type="text/html" allowFullScreen frameBorder="0" width={this.state.vWidth ? this.state.vWidth : "192"} height={ this.state.vHeight ? this.state.vHeight : "108" } 
-         src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
+         src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` } onLoad={this.iframeDidLoad.bind(this)} >
         </iframe>
       </div>
     );
