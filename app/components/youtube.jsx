@@ -42,7 +42,7 @@ class YouTube extends React.Component {
     let div;
     div = document.createElement("div");
     div.setAttribute("data-id", player.dataset.id);
-    div.innerHTML = labnolThumb(player.dataset.id);
+    div.innerHTML = this.labnolThumb(player.dataset.id);
     player.appendChild(div);
   }
 
