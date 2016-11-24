@@ -35,24 +35,20 @@ class YouTube extends React.Component {
 
   componentDidMount() {
     let container=this.refs.container;
-    if(container.clientHeight && container.clientWidth){
-      this.setState({vHeight: container.clientHeight, vWidth: container.clientWidth});
-    }
+    if(!(container.clientHeight && container.clientWidth) ) { return }
+    let vHeight = container.clientHeight;
+    let vWidth = container.clientWidth;
+    this.setState({vHeight: vHeight, vWidth: vWidth});
+    let bS=0.15; //button Scale not what you were thinking
     let player=this.refs.player;
-    let div;
-    div = document.createElement("div");
-    div.setAttribute("data-id", player.dataset.id);
-    div.innerHTML = this.labnolThumb(player.dataset.id);
-    player.appendChild(div);
+    let playButton=player.getElementsByClassName("ytp-icon-large-play-button-hover");
+    console.info("found the youtube play button element");
+    if (playerButton.length !== 1 ) { console.info("youtube.jsx Youtube has changed the player"); return }
+    playerButton[0].style.width= (vWidth * bS) + 'px';
+    playerButton[0].style.height= (vHeight * bS) + 'px';
+    playerButton[0].style.backgroundSize= (718 * bS)+'px '+(2186 * bS)+'px';
+    playerButton[0].style.background =  "no-repeat url(//s.ytimg.com/yts/imgbin/player-cougar-2x-vfldumApe.png) "+(-230*bS)+'px'+(-804*bS)+'px';
   }
-
- 
-  labnolThumb(id) {
-      var thumb = '<img src="https://i.ytimg.com/vi/ID/hqdefault.jpg">',
-          play = '<div class="play"></div>';
-      return thumb.replace("ID", id) + play;
-  }
-
 
   componentDidUpdate() {
     let container=this.refs.container;
