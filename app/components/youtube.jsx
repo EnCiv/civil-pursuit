@@ -39,22 +39,25 @@ class YouTube extends React.Component {
     let vHeight = container.clientHeight;
     let vWidth = container.clientWidth;
     this.setState({vHeight: vHeight, vWidth: vWidth});
-    let bS=0.15; //button Scale not what you were thinking
-    let player=this.refs.player;
-    let playerButton=player.getElementsByClassName("ytp-icon-large-play-button-hover");
-    console.info("found the youtube play button element");
-    if (playerButton.length !== 1 ) { console.info("youtube.jsx Youtube has changed the player"); return }
-    playerButton[0].style.width= (vWidth * bS) + 'px';
-    playerButton[0].style.height= (vHeight * bS) + 'px';
-    playerButton[0].style.backgroundSize= (718 * bS)+'px '+(2186 * bS)+'px';
-    playerButton[0].style.background =  "no-repeat url(//s.ytimg.com/yts/imgbin/player-cougar-2x-vfldumApe.png) "+(-230*bS)+'px'+(-804*bS)+'px';
   }
 
   componentDidUpdate() {
     let container=this.refs.container;
-    if(container.clientHeight && container.clientWidth && ( container.clientHeight!== this.state.vHeight || container.clientWidth !== this.state.vWidth )){
-      this.setState({vHeight: container.clientHeight, vWidth: container.clientWidth});
+    if(!(container.clientHeight && container.clientWidth) ) { return }
+    let vHeight = container.clientHeight;
+    let vWidth = container.clientWidth;
+    if(vHeight!== this.state.vHeight || vWidth !== this.state.vWidth )){
+      this.setState({vHeight: vHeight, vWidth: vWidth});
     }
+    let bS=0.15; //button Scale not what you were thinking
+    let player=this.refs.player;
+    let playerButton=player.getElementsByClassName("ytp-icon-large-play-button-hover");
+    console.info("found the youtube play button element");
+    if (playerButton.length !== 1 ) { console.info("youtube.jsx Youtube has changed the player", playerButton.length ); return }
+    playerButton[0].style.width= (vWidth * bS) + 'px';
+    playerButton[0].style.height= (vHeight * bS) + 'px';
+    playerButton[0].style.backgroundSize= (718 * bS)+'px '+(2186 * bS)+'px';
+    playerButton[0].style.background =  "no-repeat url(//s.ytimg.com/yts/imgbin/player-cougar-2x-vfldumApe.png) "+(-230*bS)+'px'+(-804*bS)+'px';
   }
 
 
