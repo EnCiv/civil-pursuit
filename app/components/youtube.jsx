@@ -122,7 +122,7 @@ class YouTube extends React.Component {
 
 YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 
-onYouTubePlayerAPIReady = function () {
+function onYouTubePlayerAPIReady() {
   YouTube.loadedYouTube=true;
   console.info("youtube player loaded");
 }
