@@ -69,9 +69,11 @@ class YouTube extends React.Component {
         height: vHeight,
         width: vWidth,
         videoId: this.youTubeId,
-        events: {
-          onReady: this.iframeDidLoad.bind(this),
-        }
+        playerVars: {
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+          }
       });
       console.info("YouTube mounted");
     }else {
