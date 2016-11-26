@@ -118,7 +118,7 @@ class YouTube extends React.Component {
     let { item } = this.props;
 
     return (
-      <div className="video-container" ref="container" id={`ytplayer-${item._id}`} >
+      <div className="video-container" ref="container" id={`ytplayer-${item._id}`} style={{width: 192, height: 108}} >
       </div>
     );
   }
@@ -133,7 +133,6 @@ function onYouTubePlayerAPIReady() {
   console.info("youtube player loaded");
   if(YouTube.preMountQueue.length){
     YouTube.preMountQueue.foreach( component () );
-    }
   }
 }
 
