@@ -23,7 +23,7 @@ class YouTube extends React.Component {
   }
 
   static onYouTubePlayerAPIReady() {
-    loadedYouTube=true;
+    this.loadedYouTube=true;
     console.info("youtube player loaded");
   }
 
@@ -34,7 +34,7 @@ class YouTube extends React.Component {
         let { url } = item.references[0];
         this.youTubeId = YouTube.getId(url);
 
-        if(!loadedYouTube){ 
+        if(!this.loadedYouTube){ 
           initYouTube(); 
         }
   }
