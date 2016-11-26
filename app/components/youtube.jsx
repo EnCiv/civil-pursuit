@@ -70,9 +70,7 @@ class YouTube extends React.Component {
         width: vWidth,
         videoId: this.youTubeId,
         playerVars: {
-          controls: 0,
           modestbranding: 1,
-          rel: 0,
           }
       });
       console.info("YouTube mounted");
