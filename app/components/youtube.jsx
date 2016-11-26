@@ -70,7 +70,8 @@ class YouTube extends React.Component {
         width: vWidth,
         videoId: this.youTubeId
       });
-        console.info("YouTube mounted");
+      console.info("YouTube mounted");
+      this.iframeDidLoad();
     }else {
       console.info("YouTube not mounted yet");
       YouTube.preMountQueue.push(this.componentDidMount.bind(this));
