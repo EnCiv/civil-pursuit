@@ -39,10 +39,6 @@ class YouTube extends React.Component {
    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
 
-  static onYouTubePlayerAPIReady() {
-    YouTube.loadedYouTube=true;
-    console.info("youtube player loaded");
-  }
 
   player=null;
 
@@ -67,11 +63,14 @@ class YouTube extends React.Component {
     if(!(container.clientHeight && container.clientWidth) ) { console.info("youtube did mount, no size yet"); }
     let vHeight = container.clientHeight || 108;
     let vWidth = container.clientWidth || 192;
-    this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
-      height: vHeight,
-      width: vWidth,
-      videoId: this.videoId
-    });
+    if( typeof YT !== 'undefined' ) {
+      this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
+        height: vHeight,
+        width: vWidth,
+        videoId: this.videoId
+      });
+        console.info("YouTube did not mount");
+    }
     console.info("YouTube did mount", this.player);
   }
 
@@ -122,5 +121,10 @@ class YouTube extends React.Component {
 }
 
 YouTube.regex = /youtu\.?be.+v=([^&]+)/;
+
+static onYouTubePlayerAPIReady() {
+  YouTube.loadedYouTube=true;
+  console.info("youtube player loaded");
+}
 
 export default YouTube;
