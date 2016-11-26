@@ -35,7 +35,7 @@ class YouTube extends React.Component {
         this.youTubeId = YouTube.getId(url);
 
         if(!this.loadedYouTube){ 
-          initYouTube(); 
+          this.initYouTube(); 
         }
   }
 
