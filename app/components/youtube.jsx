@@ -72,6 +72,7 @@ class YouTube extends React.Component {
       width: vWidth,
       videoId: this.videoId
     });
+    console.info("YouTube did mount", this.player);
   }
 
   componentDidUpdate() {
