@@ -74,7 +74,6 @@ class YouTube extends React.Component {
         }
       });
       console.info("YouTube mounted");
-      this.iframeDidLoad();
     }else {
       console.info("YouTube not mounted yet");
       YouTube.preMountQueue.push(this.componentDidMount.bind(this));
@@ -89,13 +88,12 @@ class YouTube extends React.Component {
   }
 
   iframeDidLoad() {
-    console.info("iframDidLoad");
-    let container=this.refs.container;
-    if(!(container.clientHeight && container.clientWidth) ) { return }
-    let vHeight = container.clientHeight;
-    let vWidth = container.clientWidth;
+    console.info("iframDidLoad", this.refs.player.a);
+    let player=this.player.a;
+    let vHeight = player.clientHeight;
+    let vWidth = player.clientWidth;
     let bS=0.15; //button Scale not what you were thinking
-    let player=this.refs.player;
+
     let innerDoc = player.contentDocument || player.contentWindow.document;
     let playerButton=innerDoc.getElementsByClassName("ytp-icon-large-play-button-hover");
     console.info("found the youtube play button element", playerButton);
