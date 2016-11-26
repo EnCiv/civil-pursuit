@@ -11,6 +11,23 @@ class YouTube extends React.Component {
     item : itemType
   };
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  constructor(props){
+        super(props);
+        let { item } = this.props;
+        let { url } = item.references[0];
+        this.youTubeId = YouTube.getId(url);
+
+        if(!YouTube.loadedYouTube){ 
+          YouTube.initYouTube(); 
+        }
+  }
+
+  state= { vHeight: 0,
+            vWidth: 0
+  };
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static loadedYouTube=false;
@@ -23,25 +40,9 @@ class YouTube extends React.Component {
   }
 
   static onYouTubePlayerAPIReady() {
-    this.loadedYouTube=true;
+    YouTube.loadedYouTube=true;
     console.info("youtube player loaded");
   }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  constructor(props){
-        super(props);
-        let { item } = this.props;
-        let { url } = item.references[0];
-        this.youTubeId = YouTube.getId(url);
-
-        if(!this.loadedYouTube){ 
-          this.initYouTube(); 
-        }
-  }
-
-  state= { vHeight: 0,
-            vWidth: 0
-  };
 
   player=null;
 
