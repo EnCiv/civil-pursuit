@@ -13,9 +13,37 @@ class YouTube extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static loadedYouTube=false;
+
+  static initYoutube {
+   var tag = document.createElement('script');
+   tag.src = "http://www.youtube.com/player_api";
+   var firstScriptTag = document.getElementsByTagName('script')[0];
+   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  }
+
+  static onYouTubePlayerAPIReady() {
+    loadedYouTube=true;
+    console.info("youtube player loaded");
+  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  constructor(props){
+        super(props);
+        let { item } = this.props;
+        let { url } = item.references[0];
+        this.youTubeId = YouTube.getId(url);
+
+        if(!loadedYouTube){ 
+          initYouTube(); 
+        }
+  }
+
   state= { vHeight: 0,
             vWidth: 0
   };
+
+  player=null;
 
   static isYouTube (item) {
     let is = false;
@@ -35,20 +63,18 @@ class YouTube extends React.Component {
 
   componentDidMount() {
     let container=this.refs.container;
-    if(!(container.clientHeight && container.clientWidth) ) { return }
+    if(!(container.clientHeight && container.clientWidth) ) { console.info("youtube did mount, no size yet"); return }
     let vHeight = container.clientHeight;
     let vWidth = container.clientWidth;
-    this.setState({vHeight: vHeight, vWidth: vWidth});
+    this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
+      height: vHeight,
+      width: vWidth,
+      videoId: this.videoId
+    });
   }
 
   componentDidUpdate() {
     let container=this.refs.container;
-    if(!(container.clientHeight && container.clientWidth) ) { return }
-    let vHeight = container.clientHeight;
-    let vWidth = container.clientWidth;
-    if(vHeight!== this.state.vHeight || vWidth !== this.state.vWidth ){
-      this.setState({vHeight: vHeight, vWidth: vWidth});
-    }
   }
 
   iframeDidLoad() {
@@ -84,15 +110,8 @@ class YouTube extends React.Component {
   render () {
     let { item } = this.props;
 
-    let { url } = item.references[0];
-
-    let youTubeId = YouTube.getId(url);
-
     return (
-      <div className="video-container" ref="container">
-        <iframe ref="player" id="ytplayer" modestbranding="1" controls="0" modestbranding="1" showinfo="0" type="text/html" allowFullScreen frameBorder="0" width={this.state.vWidth ? this.state.vWidth : "192"} height={ this.state.vHeight ? this.state.vHeight : "108" } 
-         src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` } onLoad={this.iframeDidLoad.bind(this)} >
-        </iframe>
+      <div className="video-container" ref="container" id={`ytplayer-${item._id}`} >
       </div>
     );
   }
