@@ -88,7 +88,7 @@ class YouTube extends React.Component {
   }
 
   iframeDidLoad() {
-    console.info("iframDidLoad", this.refs.player.a);
+    console.info("iframDidLoad", this.player.a);
     let player=this.player.a;
     let vHeight = player.clientHeight;
     let vWidth = player.clientWidth;
