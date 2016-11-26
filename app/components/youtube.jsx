@@ -64,9 +64,9 @@ class YouTube extends React.Component {
 
   componentDidMount() {
     let container=this.refs.container;
-    if(!(container.clientHeight && container.clientWidth) ) { console.info("youtube did mount, no size yet"); return }
-    let vHeight = container.clientHeight;
-    let vWidth = container.clientWidth;
+    if(!(container.clientHeight && container.clientWidth) ) { console.info("youtube did mount, no size yet"); }
+    let vHeight = container.clientHeight || 108;
+    let vWidth = container.clientWidth || 192;
     this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
       height: vHeight,
       width: vWidth,
