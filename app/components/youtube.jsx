@@ -15,7 +15,7 @@ class YouTube extends React.Component {
 
   static loadedYouTube=false;
 
-  static initYoutube {
+  static initYouTube() {
    var tag = document.createElement('script');
    tag.src = "http://www.youtube.com/player_api";
    var firstScriptTag = document.getElementsByTagName('script')[0];
