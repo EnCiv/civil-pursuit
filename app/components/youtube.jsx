@@ -68,7 +68,7 @@ class YouTube extends React.Component {
       this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
         height: vHeight,
         width: vWidth,
-        videoId: this.youTubeId
+        videoId: this.youTubeId,
         onReady: this.iframeDidLoad.bind(this),
         onLoad: this.iframeDidLoad.bind(this),
       });
