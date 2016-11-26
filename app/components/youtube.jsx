@@ -31,6 +31,7 @@ class YouTube extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static loadedYouTube=false;
+  static preMountQueue= [];
 
   static initYouTube() {
    var tag = document.createElement('script');
@@ -67,12 +68,17 @@ class YouTube extends React.Component {
       this.player = new YT.Player(`ytplayer-${this.props.item._id}`, {
         height: vHeight,
         width: vWidth,
-        videoId: this.videoId
+        videoId: this.youTubeId
       });
-        console.info("YouTube did not mount");
+        console.info("YouTube mounted");
+    }else {
+      console.info("YouTube not mounted yet");
+      YouTube.preMountQueue.push(this.componentDidMount.bind(this));
     }
     console.info("YouTube did mount", this.player);
   }
+
+
 
   componentDidUpdate() {
     let container=this.refs.container;
@@ -125,6 +131,10 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 function onYouTubePlayerAPIReady() {
   YouTube.loadedYouTube=true;
   console.info("youtube player loaded");
+  if(YouTube.preMountQueue.length){
+    YouTube.preMountQueue.foreach( component () );
+    }
+  }
 }
 
 export default YouTube;
