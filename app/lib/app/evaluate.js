@@ -246,12 +246,11 @@ class Evaluator extends EventEmitter {
 
             while(randomItems.length < limit){
               console.info("evaluate randomItems", randomItems.length);
-              randomItems.push( ItemModel
+              ItemModel
                 .find(query, {
                   skip      :   Math.max(0, Math.floor((number)*Math.random())),
                   limit     : 1
-                })
-              );
+                }).then(items => {randomItems.push(items[0])});
             }
             console.info("evaluate randomItems while done", randomItems.length )
             Promise.all (randomItems) 
