@@ -225,7 +225,7 @@ class Evaluator extends EventEmitter {
     console.info("evaluate findOthers", limit, type);
     return new Promise((ok, ko) => {
       try {
-        let randomItems = [];
+        const randomItems = [];
         const query =   {};
         if(type) {
           query.type = type._id;
@@ -251,7 +251,7 @@ class Evaluator extends EventEmitter {
                   skip      :   Math.max(0, Math.floor((number)*Math.random())),
                   limit     : 1
                 })[0]
-              )
+              );
             }
             console.info("evaluate randomItems while done", randomItems.length )
             Promise.all (randomItems) 
