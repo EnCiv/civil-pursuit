@@ -226,7 +226,6 @@ class Evaluator extends EventEmitter {
       try {
 
         const query =   {};
-
         if(type) {
           query.type = type._id;
         } else {
@@ -243,29 +242,19 @@ class Evaluator extends EventEmitter {
           .count(query)
           // .where('user').ne(this.userId)
           .then(number => {
-            const start = Math.max(0, Math.floor((number-limit)*Math.random()));
-
-
-            ItemModel
-
-              .find(query, {
-                skip      :   start,
-                sort      : { views: 1, created: 1 },
-                limit
-              })
-
-              .then(
-                items => {
-                  Promise
-                    .all(items.map(item => item.toPanelItem(this.userId)))
-                    .then(ok, ko);
-                },
-                ko
-              );
-
-          },
-
-          ko);
+            let randonItems = [];
+            while(randomItems.length < limit){
+              randomItems.push( ItemModel
+                .find(query, {
+                  skip      :   Math.max(0, Math.floor((number)*Math.random())),
+                  limit     : 1
+                }).then( item => { item.toPanelItem(this.userId)} )
+              )
+            }
+            Promise.all ( randomItems )
+               .then ( ok, ko )
+          }
+        );
       }
       catch ( error ) {
         ko(error);
