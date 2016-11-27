@@ -250,7 +250,7 @@ class Evaluator extends EventEmitter {
                 .find(query, {
                   skip      :   Math.max(0, Math.floor((number)*Math.random())),
                   limit     : 1
-                })[0]
+                })
               );
             }
             console.info("evaluate randomItems while done", randomItems.length )
