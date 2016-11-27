@@ -255,10 +255,9 @@ class Evaluator extends EventEmitter {
             }
             console.info("evaluate randomItems while done", randomItems.length )
             Promise.all (randomItems) 
-              .then (items => items.map(item => item.toPanelItem(this.userId) ) )
-              .then ( ok, ko )
-          }
-        );
+              .then (items => { items.map(item => { item.toPanelItem(this.userId) } )} )
+          } )
+          .then (ok, ko )
       }
       catch ( error ) {
         console.error("findOthers Error!!!");
