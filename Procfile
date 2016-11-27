@@ -1,1 +1,1 @@
-web: node --debug dist/bin/start.js
+web: node --debug-brk=5858 dist/bin/start.js
