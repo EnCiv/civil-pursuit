@@ -222,6 +222,7 @@ class Evaluator extends EventEmitter {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   findOthers (limit, type) {
+    console.info("evaluate findOthers", limit, type);
     return new Promise((ok, ko) => {
       try {
 
@@ -260,6 +261,7 @@ class Evaluator extends EventEmitter {
         );
       }
       catch ( error ) {
+        console.error("findOthers Error!!!");
         ko(error);
       }
     });
