@@ -238,12 +238,12 @@ class Evaluator extends EventEmitter {
         }
 
         query._id = { $ne : this.item._id };
-
+        let randonItems = [];
         ItemModel
           .count(query)
           // .where('user').ne(this.userId)
           .then(number => {
-            let randonItems = [];
+
             while(randomItems.length < limit){
               console.info("evaluate randomItems", randomItems.length);
               randomItems.push( ItemModel
