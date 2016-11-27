@@ -225,7 +225,7 @@ class Evaluator extends EventEmitter {
     console.info("evaluate findOthers", limit, type);
     return new Promise((ok, ko) => {
       try {
-
+        let randomItems = [];
         const query =   {};
         if(type) {
           query.type = type._id;
@@ -238,7 +238,7 @@ class Evaluator extends EventEmitter {
         }
 
         query._id = { $ne : this.item._id };
-        let randonItems = [];
+
         ItemModel
           .count(query)
           // .where('user').ne(this.userId)
