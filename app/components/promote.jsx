@@ -174,7 +174,7 @@ componentDidUpdate () {
               <div className="solid clear">
                 <div className={`promote-column-left ${this.state.activeL ? 'expanded' : ''}`} ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { leftFooter } className="whole-border"
+                    footer =  { leftFooter } className="whole-border" collapsed={ false }
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
@@ -191,7 +191,7 @@ componentDidUpdate () {
                 </div>
                 <div className={`promote-column-right ${this.state.activeR ? 'expanded' : '' }`} ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
-                    footer =  { rightFooter } className="whole-border"
+                    footer =  { rightFooter } className="whole-border" collapsed={ false }
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
