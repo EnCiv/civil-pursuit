@@ -245,7 +245,7 @@ class Evaluator extends EventEmitter {
           .then(number => {
 
             while(randomItems.length < limit){
-              console.info("evaluate randomItems", randomItems.length);
+              console.info("evaluate randomItems", randomItems.length, number);
               randomItems.push(
                 ItemModel
                   .find(query, {
@@ -256,9 +256,15 @@ class Evaluator extends EventEmitter {
             }
             console.info("evaluate randomItems while done", randomItems.length )
             Promise.all (randomItems) 
-              .then (listOfItemLists => { console.info("promises then", randomItems); listOfItemLists.map(itemList => { console.info("promises then item"); itemList[0].toPanelItem(this.userId) } )} )
+              .then (listOfItemLists => { 
+                console.info("promises then", listOfItemLists); 
+                listOfItemLists.map(itemList => {
+                  console.info("promises then item");
+                  itemList[0].toPanelItem(this.userId)
+                    .then( ok,ko) 
+                } )
+              } )
           } )
-          .then (ok, ko )
       }
       catch ( error ) {
         console.error("findOthers Error!!!");
