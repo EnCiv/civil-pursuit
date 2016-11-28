@@ -253,7 +253,7 @@ class Evaluator extends EventEmitter {
                           skip      :   Math.max(0, Math.floor((number)*Math.random())),
                           limit     : 1
                     }) ,
-                  itemList => { itemList[0].toPanelItem(this.userId).then(ok)}
+                  itemList => new Promise((ok, ko) => { itemList[0].toPanelItem(this.userId).then(ok,ko)})
                 )
               )
               console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] );
