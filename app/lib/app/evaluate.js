@@ -256,10 +256,10 @@ class Evaluator extends EventEmitter {
                   itemList => { itemList[0].toPanelItem(this.userId)}
                 )
               )
-              console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] )
+              console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] );
             }
-            console.info("evaluate randomItems while done", randomItems.length, randomItems )
-            Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok}) 
+            console.info("evaluate randomItems while done", randomItems.length, randomItems );
+            Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok});
           } )
       }
       catch ( error ) {
