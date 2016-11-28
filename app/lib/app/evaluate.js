@@ -6,6 +6,7 @@ import CriteriaModel                    from '../../models/criteria';
 import TypeModel                        from '../../models/type';
 import ItemModel                        from '../../models/item';
 import UserModel                        from '../../models/user';
+import sequencer                        from 'promise-sequencer';
 
 const OTHERS = 5;
 
@@ -247,11 +248,13 @@ class Evaluator extends EventEmitter {
             while(randomItems.length < count){
               console.info("evaluate randomItems", randomItems.length, number);
               randomItems.push(
-                ItemModel
-                  .find(query, {
-                    skip      :   Math.max(0, Math.floor((number)*Math.random())),
-                    limit     : 1
-                  }).then(itemList => { itemList[0].toPanelItem(this.userId)})
+                sequencer.pipe (
+                  () => ItemModel.find(query, {
+                          skip      :   Math.max(0, Math.floor((number)*Math.random())),
+                          limit     : 1
+                    }) ,
+                  itemList => { itemList[0].toPanelItem(this.userId)}
+                )
               )
               console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] )
             }
