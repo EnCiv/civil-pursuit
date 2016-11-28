@@ -260,9 +260,9 @@ class Evaluator extends EventEmitter {
                 console.info("promises then", listOfItemLists); 
                 listOfItemLists.map(itemList => {
                   console.info("promises then item");
-                  itemList[0].toPanelItem(this.userId)
+                  itemList[0]
+                }).toPanelItem(this.userId)
                     .then( ok,ko) 
-                } )
               } )
           } )
       }
