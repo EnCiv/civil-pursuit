@@ -243,8 +243,8 @@ class Evaluator extends EventEmitter {
           .count(query)
           // .where('user').ne(this.userId)
           .then(number => {
-
-            while(randomItems.length < limit){
+            const count = Math.min(limit, number); //don't return more items than there are in the query
+            while(randomItems.length < count){
               console.info("evaluate randomItems", randomItems.length, number);
               randomItems.push(
                 ItemModel
@@ -253,6 +253,7 @@ class Evaluator extends EventEmitter {
                     limit     : 1
                   }).then(itemList => { itemList[0].toPanelItem(this.userId)})
               )
+              console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] )
             }
             console.info("evaluate randomItems while done", randomItems.length, randomItems )
             Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok}) 
