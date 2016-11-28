@@ -251,12 +251,12 @@ class Evaluator extends EventEmitter {
                   .find(query, {
                     skip      :   Math.max(0, Math.floor((number)*Math.random())),
                     limit     : 1
-                  }).then(items => { items[0]})
+                  })
               );
             }
             console.info("evaluate randomItems while done", randomItems.length )
             Promise.all (randomItems) 
-              .then (items => { console.info("promises then", randomItems); items.map(item => { console.info("promises then item"); item.toPanelItem(this.userId) } )} )
+              .then (listOfItemLists => { console.info("promises then", randomItems); listOfItemLists.map(itemList => { console.info("promises then item"); itemList[0].toPanelItem(this.userId) } )} )
           } )
           .then (ok, ko )
       }
