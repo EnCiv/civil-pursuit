@@ -259,11 +259,11 @@ class Evaluator extends EventEmitter {
               console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] );
             }
             console.info("evaluate randomItems while done", randomItems.length, randomItems );
-            Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok});
+            Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok} , () => {console.info("evaluate promise all error"); ko } );
           } )
       }
       catch ( error ) {
-        console.error("findOthers Error!!!");
+        console.info("findOthers Error!!!");
         ko(error);
       }
     });
