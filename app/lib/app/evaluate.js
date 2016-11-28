@@ -223,7 +223,6 @@ class Evaluator extends EventEmitter {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   findOthers (limit, type) {
-    console.info("evaluate findOthers", limit, type);
     return new Promise((ok, ko) => {
       try {
         const randomItems = [];
@@ -246,7 +245,6 @@ class Evaluator extends EventEmitter {
           .then(number => {
             const count = Math.min(limit, number); //don't return more items than there are in the query
             while(randomItems.length < count){
-              console.info("evaluate randomItems", randomItems.length, number);
               randomItems.push(
                 sequencer.pipe (
                   () => ItemModel.find(query, {
@@ -256,14 +254,11 @@ class Evaluator extends EventEmitter {
                   itemList => new Promise((ok, ko) => { itemList[0].toPanelItem(this.userId).then(ok,ko)})
                 )
               )
-              console.info("randomItems[",randomItems.length - 1,"]:", randomItems[randomItems.length - 1] );
             }
-            console.info("evaluate randomItems while done", randomItems.length, randomItems );
-            Promise.all (randomItems).then( items=> {console.info("randomItems then", items); ok(items)} , (error) => {console.info("evaluate promise all error", randomItems, error); ko(error) } );
+            Promise.all (randomItems).then( ok, ko );
           } )
       }
       catch ( error ) {
-        console.info("findOthers Error!!!");
         ko(error);
       }
     });
