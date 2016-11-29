@@ -25,8 +25,6 @@ class Promote extends React.Component {
 
 //**********************************************************
   toggleLeft( itemId, panel) {
-    console.info("promote.promoteMore", itemId, panel, this);
-    let node=this.refs.promoteItemLeft;
     if(this.state.expandedL) {
       this.setState({activeL: false});
       this.state.expandedL=false;
@@ -38,7 +36,6 @@ class Promote extends React.Component {
   }
 
   toggleRight( itemId, panel) {
-    let node=this.refs.promoteItemRight;
     if(this.state.expandedR) {
       this.setState({activeR: false});
       this.state.expandedR=false;      
@@ -49,6 +46,16 @@ class Promote extends React.Component {
     }
   }
 
+  clearExpanders() {
+    if(this.state.expandedL) {
+      this.setState({activeL: false});
+      this.state.expandedL=false;
+    }
+    if(this.state.expandedR) {
+      this.setState({activeR: false});
+      this.state.expandedR=false;      
+    }
+  }
 
 
 
@@ -145,6 +152,7 @@ class Promote extends React.Component {
                     panel-id          =   { this.props['panel-id'] }
                     panel-emitter     =   { panelEmitter }
                     emitter           =   { emitter }
+                    clearExpanders    =   {this.clearExpanders.bind(this)}
                   />
                 </div>
                 <div className={`promote-column-right ${this.state.activeR ? 'expanded' : '' }`} ref="promoteItemRight">
@@ -162,6 +170,7 @@ class Promote extends React.Component {
                     opposite          =   { left }
                     panel-emitter     =   { panelEmitter }
                     emitter           =   { emitter }
+                    clearExpanders    =   {this.clearExpanders.bind(this)}
                     />
                 </div>
               </div>
@@ -178,6 +187,7 @@ class Promote extends React.Component {
                 cursor      =   { cursor }
                 limit       =   { limit }
                 emitter     =   { emitter }
+                clearExpanders    =   {this.clearExpanders.bind(this)}
                 />
             </div>
           )

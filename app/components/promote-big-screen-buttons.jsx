@@ -9,7 +9,7 @@ class PromoteBigScreenButtons extends React.Component {
 
   next () {
     const { position, emitter } = this.props;
-
+    if(this.props.clearExpanders){this.props.clearExpanders();}
     emitter.emit('promote', position);
   }
 

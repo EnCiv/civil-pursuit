@@ -15,6 +15,7 @@ class Finish extends React.Component {
 
     //let parent = view.closest('.item-promote');
 
+    if(this.props.clearExpanders) {this.props.clearExpanders();}
     emitter.emit('next');
   }
 
