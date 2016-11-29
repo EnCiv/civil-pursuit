@@ -15,7 +15,7 @@ import Reference          from './promote-reference';
 class PromoteSmallScreenColumn extends React.Component {
   next () {
     const { position, emitter } = this.props;
-
+    this.props.clearExpanders();
     emitter.emit('promote', position);
   }
 
