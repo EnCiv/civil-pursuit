@@ -16,13 +16,14 @@ truncateState=0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   checkTruncate(item) {
-    if ( ! this.state.truncated ) {
+    if ( ! this.state.truncated || this.itemDidChange ) {
         let description   =   item.querySelector('.item-description');
         description.classList.add(this.props.item.references.length ? 'truncated' : 'truncated4');
         this.setState({truncated: true});
         this.trunced=true;
       } else {
         this.trunced=false;
+        this.setState({truncated: false});
       }
   }
 
@@ -34,8 +35,10 @@ truncateState=0;
        this.setState({truncated: true});
       }
     }
+    if(this.props.item !== newProps.item) { /* the item has changed */
+      this.itemDidChange=true;
+    }
   }
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   componentDidMount () {
@@ -45,6 +48,17 @@ truncateState=0;
       this.checkTruncate(item);
 
     }
+  }
+
+  componentDidUpdate () {
+    if(this.itemDidChange)
+      if ( this.refs.item ) {
+        const item = this.refs.item;
+        let description   =   item.querySelector('.item-description');
+        description.classList.remove('truncated','truncated4');
+        this.checkTruncate(item);
+    }
+    this.itemDidChange= false;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
