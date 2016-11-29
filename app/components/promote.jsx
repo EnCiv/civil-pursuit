@@ -120,7 +120,7 @@ componentDidUpdate () {
         }
 
         let leftFooter;
-        if(left.type.harmony.types.length) {
+        if(left.type.harmony.length) {
           leftFooter=(
                       <div className="toggler harmony">
                         <Accordion
@@ -139,7 +139,7 @@ componentDidUpdate () {
         }
 
         let rightFooter;
-        if(right.type.harmony.types.length) {
+        if(right.type.harmony.length) {
           rightFooter=(
                       <div className="toggler harmony">
                         <Accordion
