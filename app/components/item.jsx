@@ -35,7 +35,7 @@ truncateState=0;
        this.setState({truncated: true});
       }
     }
-    if(this.props.item !== newProps.item) { /* the item has changed */
+    if(newProps.Item && this.props.item !== newProps.item) { /* the item has changed */
       this.itemDidChange=true;
     }
   }
@@ -103,6 +103,8 @@ truncateState=0;
 
   render () {
     const { item, user, buttons, footer, collapsed } = this.props;
+
+    if(!item) {return ({});}
 
     const tendencyChoice = null;
 
