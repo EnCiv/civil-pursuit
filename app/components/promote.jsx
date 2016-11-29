@@ -20,7 +20,9 @@ class Promote extends React.Component {
     expandedL: false,
     expandedR: false,
     activeL: false,
-    activeR: false
+    activeR: false,
+    truncateItemsLeft: 0,
+    truncateItemsRight: 0
   };
 
 //**********************************************************
@@ -48,11 +50,11 @@ class Promote extends React.Component {
 
   clearExpanders() {
     if(this.state.expandedL) {
-      this.setState({activeL: false});
+      this.setState({activeL: false, truncateItemsLeft: this.state.truncateItemsLeft +1 } );
       this.state.expandedL=false;
     }
     if(this.state.expandedR) {
-      this.setState({activeR: false});
+      this.setState({activeR: false, truncateItemsRight: this.state.truncateItemsRight+1});
       this.state.expandedR=false;      
     }
   }
@@ -139,7 +141,7 @@ class Promote extends React.Component {
               <div className="solid clear">
                 <div className={`promote-column-left ${this.state.activeL ? 'expanded' : ''}`} ref="promoteItemLeft">
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { leftFooter } className="whole-border" collapsed={ false }
+                    footer =  { leftFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsLeft}
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
@@ -157,7 +159,7 @@ class Promote extends React.Component {
                 </div>
                 <div className={`promote-column-right ${this.state.activeR ? 'expanded' : '' }`} ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
-                    footer =  { rightFooter } className="whole-border" collapsed={ false }
+                    footer =  { rightFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsRight}
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />

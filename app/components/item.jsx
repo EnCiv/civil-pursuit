@@ -9,8 +9,10 @@ import ClassNames          from 'classnames';
 class Item extends React.Component {
 
   state = { truncated: false,
-            hint: true
+            hint: true,
           };
+
+truncateState=0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   checkTruncate(item) {
@@ -23,6 +25,17 @@ class Item extends React.Component {
         this.trunced=false;
       }
   }
+
+  componentWillReceiveProps(newProps) {
+    let truncateState=newProps.truncateState || 0;
+    if(this.truncateState !== truncateState){
+      this.truncateState = truncateState;
+      if(this.state.truncated) {
+       this.setState({truncated: true});
+      }
+    }
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   componentDidMount () {
