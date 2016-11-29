@@ -28,10 +28,10 @@ truncateState=0;
   }
 
   componentWillReceiveProps(newProps) {
-    let truncateState=newProps.truncateState || 0;
-    if(this.truncateState !== truncateState){
-      this.truncateState = truncateState;
-      if(this.state.truncated) {
+    let truncateItems=newProps.truncateItems || 0;
+    if(this.truncateItems !== truncateItems){
+      this.truncateItems = truncateItems;
+      if(this.trunced && !this.state.truncated) {
        this.setState({truncated: true});
       }
     }
