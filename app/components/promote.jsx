@@ -23,48 +23,16 @@ class Promote extends React.Component {
     activeR: false
   };
 
-componentDidUpdate () {
-    
-/////////////--------------------HANS
-//    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
-//        var ly = document.getElementById('left_description').offsetHeight;
-//        var ry = document.getElementById('right_description').offsetHeight;
-//        if (ly < ry) {
-//          document.getElementById('left_description').style.height = ry + "px";
-//        }
-//        else {
-//          document.getElementById('right_description').style.height = ly + "px";
-//        }
-//    }  
-//    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
-//        var ly = document.getElementById('h5_left').offsetHeight;
-//        var ry = document.getElementById('h5_right').offsetHeight;
-//        if (ly < ry) {
-//          document.getElementById('h5_left').style.height = ry + "px";
-//        }
-//        else {
-//          document.getElementById('h5_right').style.height = ly + "px";
-//        }  
-//   } 
-    }
 //**********************************************************
   toggleLeft( itemId, panel) {
     console.info("promote.promoteMore", itemId, panel, this);
     let node=this.refs.promoteItemLeft;
     if(this.state.expandedL) {
       this.setState({activeL: false});
-      //node.style.marginRight= 0;
-      //node.style.zIndex=1;
-      //node.style.width= "48.5%";
-      //node.style.boxShadow=  'none';
       this.state.expandedL=false;
     } else {
       if(this.state.expandedR) { this.toggleRight(); }
       this.setState({activeL: true});
-      //node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
-      //node.style.marginRight= '-41.5%';
-      //node.style.zIndex=10;
-      //node.style.width= "90%";
       this.state.expandedL=true;
     }
   }
@@ -73,18 +41,10 @@ componentDidUpdate () {
     let node=this.refs.promoteItemRight;
     if(this.state.expandedR) {
       this.setState({activeR: false});
-      //node.style.marginLeft= 0;
-      //node.style.zIndex=1;
-      //node.style.width= "48.5%";
-      //node.style.boxShadow=  'none';
       this.state.expandedR=false;      
     } else {
       if(this.state.expandedL) { this.toggleLeft(); }
       this.setState({activeR: true});
-      //node.style.boxShadow=  "0 0 10px 10px rgba(0, 0, 0, 0.3)";
-      //node.style.marginLeft= '-41.5%';
-      //node.style.zIndex=10;
-      //node.style.width= "90%";
       this.state.expandedR=true;
     }
   }
@@ -101,8 +61,6 @@ componentDidUpdate () {
     if(panel && panel.type && panel.type.evaluateQuestion) {
       evaluateQuestion = panel.type.evaluateQuestion;
     }
-
-    console.info("promote.render", panel);
 
     if ( true ) {
       if ( ! evaluation ) {
