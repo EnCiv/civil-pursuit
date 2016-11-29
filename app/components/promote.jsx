@@ -87,7 +87,7 @@ class Promote extends React.Component {
         }
 
         let leftFooter;
-        if(left.type.harmony && left.type.harmony.length) {
+        if(left && left.type && left.type.harmony && left.type.harmony.length) {
           leftFooter=(
                       <div className="toggler harmony">
                         <Accordion
@@ -106,7 +106,7 @@ class Promote extends React.Component {
         }
 
         let rightFooter;
-        if(right.type.harmony && right.type.harmony.length) {
+        if(right && right.type && right.type.harmony && right.type.harmony.length) {
           rightFooter=(
                       <div className="toggler harmony">
                         <Accordion
