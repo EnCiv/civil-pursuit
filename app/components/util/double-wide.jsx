@@ -10,18 +10,18 @@ class DoubleWide extends React.Component {
     }
 
     render () {
-        var classes = ClassNames("double-wide", this.props.className);
-        if(this.props.left) { classes.push('left');}
-        if(this.props.right) { classes.push('right'); }
-        if(this.props.expanded) { classes.push('expanded'); }
+        var classes = ClassNames(this.props.className, "double-wide");
+        if(this.props.left) { classes += 'left';}
+        if(this.props.right) { classes += 'right'; }
+        if(this.props.expanded) { classes +='expanded'; }
         if(this.props.closed) {
-            classes.push('closed'); 
+            classes += 'closed'; 
             if(this.props.onComplete){
                 setTimeout(this.closed.bind(this), 500);
             }
         }
         return (
-        <section className={itemClass}  ref="double">
+        <section className={classes} ref="double" onClick={this.onClick} >
             { this.props.children }
         </section>
         );
