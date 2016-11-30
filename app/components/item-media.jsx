@@ -50,7 +50,7 @@ afterLoad() {
       media = ( 
         <section className="item-media-wrapper" ref='wrapper'>
           <section className={`item-media ${this.state.mediaThin}`} ref="media">
-            <Image src={ item.image } onload={this.afterLoad.bind(this)} responsive /> 
+            <Image src={ item.image } onLoad={this.afterLoad.bind(this)} responsive /> 
           </section>
         </section>
         );
