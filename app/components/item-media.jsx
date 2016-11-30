@@ -19,7 +19,7 @@ afterLoad() {
   let mWidth=this.refs.media.clientWidth;
   if( !mWidth || ! wWidth) { return }
   if( mWidth > (wWidth / 2)) {
-    this.setState({mediaThin: "media-thin" });
+    this.setState({mediaThin: 'media-thin' });
   }
 }
 
