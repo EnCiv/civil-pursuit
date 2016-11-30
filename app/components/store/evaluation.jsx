@@ -92,7 +92,7 @@ class EvaluationStore extends React.Component {
   okGetEvaluation (evaluation) {
     if ( evaluation.item === this.props['item-id'] ) {
 
-      let limit = this.state.limti;
+      let limit = this.state.limit;
 
       switch ( evaluation.items.length ) {
         case 1: case 2: limit = 1; break;
@@ -151,8 +151,8 @@ class EvaluationStore extends React.Component {
  //     document.getElementById('left_description').style.height = "auto";
  //     document.getElementById('right_description').style.height = "auto";
 
-      left = this.state.evaluation.items[regular ? cursor - 1 : cursor];
-      right = this.state.evaluation.items[regular ? cursor : cursor + 1];
+      left = this.state.evaluation.items[cursor - 1];
+      right = this.state.evaluation.items[cursor];
 
  //     if ( left && right ) {
  //       window.socket.emit('add view', left);
