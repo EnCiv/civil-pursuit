@@ -13,7 +13,7 @@ class Image extends React.Component {
     }
 
     return (
-      <img alt="Synappp" src={ this.props.src } className={ Component.classList(this, ...classes) } />
+      <img alt="Synappp" src={ this.props.src } className={ Component.classList(this, ...classes) } onLoad={this.props.onLoad} />
     );
   }
 }
