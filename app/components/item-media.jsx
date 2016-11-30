@@ -32,7 +32,7 @@ componentDidMount() {
     if ( YouTube.isYouTube(item) ) {
       media = ( 
         <section className="item-media-wrapper" ref='wrapper'>
-          <section className={`item-media ${mediaThin}`} ref='media' >
+          <section className={`item-media ${this.state.mediaThin}`} ref='media' >
             <YouTube item={ item } /> 
           </section>
         </section>
@@ -49,7 +49,7 @@ componentDidMount() {
     else if ( item.image && /^http/.test(item.image) ) {
       media = ( 
         <section className="item-media-wrapper" ref='wrapper'>
-          <section className={`item-media ${mediaThin}`} ref="media">
+          <section className={`item-media ${this.state.mediaThin}`} ref="media">
             <Image src={ item.image } responsive /> 
           </section>
         </section>
