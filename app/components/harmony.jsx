@@ -9,11 +9,38 @@ import makePanelId                  from '../lib/app/make-panel-id';
 import itemType                     from '../lib/proptypes/item';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
+import DoubleWide                   from './util/double-wide';
 
 class Harmony extends React.Component {
 
+  state = {
+    expandedLeft: false,
+    expandedRight: false,
+  };
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//**********************************************************
+  toggleLeft() {
+    if(this.state.expandedLeft) {
+      if(this.state.expandedRight) { this.setState({expandedLeft: false, expandedRight: false})}
+      else { this.setState({expandedLeft: false}) }
+    } else {
+      if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
+      else { this.setState({activeLeft: true}) }
+    }
+  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleRight() {
+    if(this.state.expandedRight) {
+      if(this.state.expandedLeft) { this.setState({expandedRight: false, expandedLeft: false}) }
+      else { this.setState({expandedRight: false}) }
+    } else {
+      if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
+      else { this.setState({activeRight: true}) }
+    }
+  }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
     super(props);
@@ -32,7 +59,7 @@ class Harmony extends React.Component {
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
@@ -57,7 +84,7 @@ class Harmony extends React.Component {
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     const { active, item, user } = this.props;
@@ -67,32 +94,25 @@ class Harmony extends React.Component {
     let contentRight = ( <Loading message="Loading" /> );
 
       contentLeft = (
-        <section className="harmony-pro">
+        <DoubleWide className="harmony-pro" left onclick={this.toggleLeft.bind(this)} >
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
             <PanelItems user={ user } />
           </PanelStore>
-        </section>
+        </DoubleWide>
       );
 
       contentRight = (
-        <section className="harmony-con">
+        <DoubleWide className="harmony-con" right onclick={this.toggleRight.bind(this)} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
             <PanelItems user={ user } />
           </PanelStore>
-        </section>
+        </DoubleWide>
       );
-
 
     return (
       <section className={`item-harmony ${this.props.className}`}>
-        <Row data-stack="phone-and-down">
-          <Column span="50">
-            { contentLeft }
-          </Column>
-          <Column span="50">
-            { contentRight }
-          </Column>
-        </Row>
+        { contentLeft }
+        { contentRight }
       </section>
     );
   }
