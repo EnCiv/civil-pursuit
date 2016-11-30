@@ -11,6 +11,19 @@ class ItemMedia extends React.Component {
     item : itemType
   };
 
+state={mediaThin: null };
+
+componentDidMount() {
+  if(! this.refs.wrapper || ! this.refs.media) { return }
+  let wWidth=this.refs.wrapper.clientWidth;
+  let mWidth=this.refs.media.clientWidth;
+  if( !mWidth || ! wWidth) { return }
+  if( mWidth > (wWidth / 2)) {
+    this.setState({mediaThin: "media-thin" });
+  }
+}
+
+
   render () {
     let { item } = this.props;
 
@@ -18,8 +31,8 @@ class ItemMedia extends React.Component {
 
     if ( YouTube.isYouTube(item) ) {
       media = ( 
-        <section className="item-media-wrapper">
-          <section className="item-media">
+        <section className="item-media-wrapper" ref='wrapper'>
+          <section className={`item-media ${mediaThin}`} ref='media' >
             <YouTube item={ item } /> 
           </section>
         </section>
@@ -35,8 +48,8 @@ class ItemMedia extends React.Component {
     }
     else if ( item.image && /^http/.test(item.image) ) {
       media = ( 
-        <section className="item-media-wrapper">
-          <section className="item-media">
+        <section className="item-media-wrapper" ref='wrapper'>
+          <section className={`item-media ${mediaThin}`} ref="media">
             <Image src={ item.image } responsive /> 
           </section>
         </section>

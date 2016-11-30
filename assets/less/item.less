@@ -36,7 +36,16 @@
   padding-bottom        :     @item-visual-gap;
   height:                     7em;
   max-width:                  13em;
+
+  .media-thin {
+    max-width: 7em;
+
+    img {
+      margin-left: ~calc( - ( 13em - 7em ) / 2);
+    }
+  }
 }
+
 
 .item-text {
   padding: 0;
