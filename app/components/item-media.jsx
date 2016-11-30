@@ -11,9 +11,9 @@ class ItemMedia extends React.Component {
     item : itemType
   };
 
-state={mediaThin: null };
+state={mediaThin: {} };
 
-componentDidMount() {
+afterLoad() {
   if(! this.refs.wrapper || ! this.refs.media) { return }
   let wWidth=this.refs.wrapper.clientWidth;
   let mWidth=this.refs.media.clientWidth;
@@ -50,7 +50,7 @@ componentDidMount() {
       media = ( 
         <section className="item-media-wrapper" ref='wrapper'>
           <section className={`item-media ${this.state.mediaThin}`} ref="media">
-            <Image src={ item.image } responsive /> 
+            <Image src={ item.image } onload={this.afterLoad.bind(this)} responsive /> 
           </section>
         </section>
         );
