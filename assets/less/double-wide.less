@@ -10,16 +10,18 @@
 .double-wide.left{
   float: left;
   padding-right: 0.5%;
+  text-align: inherit; /* prevent css .left from impacting this */
 }
 
 .double-wide.right{
   float: right;
   padding-left: 0.5%;
+  text-align: inherit; /* prevents css .right from impacting this */
 }
 
 .double-wide.expanded{
     box-shadow:  0 0 0.5em 0.25em rgba(0, 0, 0, 0.3);
-    width: 90%;
+    width: 97%;
     padding: 1%;
     margin: 1%;
     border-radius: 0.25em;
@@ -32,12 +34,12 @@
 
 
 .double-wide.left.expanded {
-      margin-right: -42.5%;
+      margin-right: -50%;
       margin-left: 0.5%;
 }
 
 .double-wide.right.expanded {
-      margin-left: -42.5%;
+      margin-left: -50%;
       margin-right: 0.5%;
 }
 
