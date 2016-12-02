@@ -15,6 +15,7 @@ import Sliders from './sliders';
 import Harmony            from './harmony';
 import Accordion          from './util/accordion';
 import DoubleWide                   from './util/double-wide';
+import { EventEmitter }   from 'events';
 
 class Promote extends React.Component {
   state = {
@@ -25,6 +26,36 @@ class Promote extends React.Component {
     truncateItemsLeft: 0,
     truncateItemsRight: 0
   };
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  voteEmitter = new EventEmitter();
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentDidMount () {
+    this.voteEmitter
+      .on('next', this.next.bind(this))
+      .on('promote', this.promote.bind(this));
+  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+next(){
+    this.props.emitter.emit('next');
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+promote(position){
+  this.props.emitter.emit('promote',position);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  componentWillUnmount () {
+    this.voteEmitter
+      .removeListener('next', this.next.bind(this))
+      .removeListener('promote', this.promote.bind(this));
+  }
 
 //**********************************************************
   toggleLeft( itemId, panel) {
@@ -154,7 +185,7 @@ class Promote extends React.Component {
                     evaluated         =   { evaluation.item }
                     panel-id          =   { this.props['panel-id'] }
                     panel-emitter     =   { panelEmitter }
-                    emitter           =   { emitter }
+                    emitter           =   { this.voteEmitter }
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                   />
                 </DoubleWide>
@@ -172,7 +203,7 @@ class Promote extends React.Component {
                     panel-id          =   { this.props['panel-id'] }
                     opposite          =   { left }
                     panel-emitter     =   { panelEmitter }
-                    emitter           =   { emitter }
+                    emitter           =   { this.voteEmitter }
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                     />
                 </DoubleWide>
