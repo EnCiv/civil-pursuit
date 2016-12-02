@@ -94,7 +94,7 @@ class Harmony extends React.Component {
     let contentRight = ( <Loading message="Loading" /> );
 
       contentLeft = (
-        <DoubleWide className="harmony-pro" left onClick={this.toggleLeft.bind(this)} >
+        <DoubleWide className="harmony-pro" left onClick={this.toggleLeft.bind(this)} expaneded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
             <PanelItems user={ user } />
           </PanelStore>
@@ -102,7 +102,7 @@ class Harmony extends React.Component {
       );
 
       contentRight = (
-        <DoubleWide className="harmony-con" right onClick={this.toggleRight.bind(this)} >
+        <DoubleWide className="harmony-con" right onClick={this.toggleRight.bind(this)} expaneded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
             <PanelItems user={ user } />
           </PanelStore>
