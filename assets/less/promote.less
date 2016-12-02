@@ -4,10 +4,6 @@
 @import "lib/var";
 
 
-.promote {
-  padding: 1%;
-}
-
 .promote-item-button {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -20,56 +16,12 @@
   border: 1px solid #666;
   border-right : none;
   padding-top: 10px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 
   textarea {
     height: 120px;
   }
-}
-
-.promote-column-left {
-  display: block;
-  float: left;
-  padding-left: 1%;
-  padding-right: 0.5%;
-  width: 48.5%;
-  position: relative;
-  background-color: @syn-background-color;
-  transition: all 0.5s linear;
-  z-index: 0;
-}
-
-.promote-column-left.expanded {
-      box-shadow:  0 0 10px 10px rgba(0, 0, 0, 0.3);
-      margin-right: -42.5%;
-      z-index: 10;
-      width: 90%;
-      padding-top: 1%;
-      padding-bottom: 1%;
-      padding-right: 1%;
-      border-radius: .25em;
-}
-
-.promote-column-right {
-  display: block;
-  float: right;
-  padding-left: 0.5%;
-  padding-right: 1%;
-  width: 48.5%;
-  position: relative;
-  background-color: @syn-background-color;
-  transition: all 0.5s linear;
-  z-index: 0;
-}
-
-.promote-column-right.expanded {
-      box-shadow:  0 0 10px 10px rgba(0, 0, 0, 0.3);
-      margin-left: -42.5%;
-      z-index: 10;
-      width: 90%;
-      padding-top: 1%;
-      padding-bottom: 1%;
-      padding-left: 1%;
-      border-radius: .25em;
 }
 
 .promote-sliders {

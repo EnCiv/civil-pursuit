@@ -140,7 +140,7 @@ class Promote extends React.Component {
           (
             <div className="solid">
               <div className="solid clear">
-                <DoubleWide className="promote" left expanded={this.state.activeL} ref="promoteItemLeft" >
+                <DoubleWide left expanded={this.state.activeL} >
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
                     footer =  { leftFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsLeft}
                   />
@@ -158,7 +158,7 @@ class Promote extends React.Component {
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                   />
                 </DoubleWide>
-                <DoubleWide className="promote" right expanded={this.state.activeR} ref="promoteItemRight">
+                <DoubleWide right expanded={this.state.activeR} >
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
                     footer =  { rightFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsRight}
                   />
