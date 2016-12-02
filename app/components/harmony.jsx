@@ -25,7 +25,7 @@ class Harmony extends React.Component {
       else { this.setState({expandedLeft: false}) }
     } else {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
-      else { this.setState({activeLeft: true}) }
+      else { this.setState({expandedLeft: true}) }
     }
   }
 
@@ -37,7 +37,7 @@ class Harmony extends React.Component {
       else { this.setState({expandedRight: false}) }
     } else {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
-      else { this.setState({activeRight: true}) }
+      else { this.setState({expandedRight: true}) }
     }
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
