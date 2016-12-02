@@ -19,7 +19,7 @@ class DoubleWide extends React.Component {
         }
     }
 
-    componenetDidUpdate() {
+    componentDidUpdate() {
         if(this.state.raised && this.props.expanded && !this.state.expanded ){
             this.setState({expanded: true});
         }else if(this.state.raised && ! this.props.expanded && !this.state.expanded) {
