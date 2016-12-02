@@ -14,6 +14,7 @@ import Feedback from './promote-feedback';
 import Sliders from './sliders';
 import Harmony            from './harmony';
 import Accordion          from './util/accordion';
+import DoubleWide                   from './util/double-wide';
 
 class Promote extends React.Component {
   state = {
@@ -139,7 +140,7 @@ class Promote extends React.Component {
           (
             <div className="solid">
               <div className="solid clear">
-                <div className={`promote-column-left ${this.state.activeL ? 'expanded' : ''}`} ref="promoteItemLeft">
+                <DoubleWide className="promote" left expanded={this.state.activeL} ref="promoteItemLeft" >
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
                     footer =  { leftFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsLeft}
                   />
@@ -156,8 +157,8 @@ class Promote extends React.Component {
                     emitter           =   { emitter }
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                   />
-                </div>
-                <div className={`promote-column-right ${this.state.activeR ? 'expanded' : '' }`} ref="promoteItemRight">
+                </DoubleWide>
+                <DoubleWide className="promote" right expanded={this.state.activeR} ref="promoteItemRight">
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
                     footer =  { rightFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsRight}
                   />
@@ -174,7 +175,7 @@ class Promote extends React.Component {
                     emitter           =   { emitter }
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                     />
-                </div>
+                </DoubleWide>
               </div>
               <div className="solid clear" style={{ width : '100%' }}>
                 { foo }
