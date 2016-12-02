@@ -4,7 +4,6 @@
   width: 48.5%;
   position: relative;
   background-color: @syn-background-color;
-  transition: all 0.5s linear;
   z-index: auto;
 }
 
@@ -22,13 +21,18 @@
 
 .double-wide.expanded{
     box-shadow:  0 0 10px 10px rgba(0, 0, 0, 0.3);
-    z-index: 10;
     width: 90%;
     padding-top: 1%;
     padding-bottom: 1%;
     padding-left: 1%;
     border-radius: 0.25em;
 }
+
+.double-wide.raised{
+    z-index: 10;
+    transition: all 0.5s linear;
+}
+
 
 .double-wide.left.expanded {
       margin-right: -42.5%;
