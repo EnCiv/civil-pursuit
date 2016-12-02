@@ -1,7 +1,7 @@
 
 .double-wide {
   display: block;
-  width: 48.5%;
+  width: 49.5%;
   position: relative;
   background-color: @syn-background-color;
   z-index: auto;
@@ -9,37 +9,36 @@
 
 .double-wide.left{
   float: left;
-  padding-left: 1%;
   padding-right: 0.5%;
 }
 
 .double-wide.right{
   float: right;
   padding-left: 0.5%;
-  padding-right: 1%;
 }
 
 .double-wide.expanded{
-    box-shadow:  0 0 10px 10px rgba(0, 0, 0, 0.3);
+    box-shadow:  0 0 0.5em 0.25em rgba(0, 0, 0, 0.3);
     width: 90%;
-    padding-top: 1%;
-    padding-bottom: 1%;
-    padding-left: 1%;
+    padding: 1%;
+    margin: 1%;
     border-radius: 0.25em;
 }
 
 .double-wide.raised{
-    z-index: 10;
+    z-index: 1;
     transition: all 0.5s linear;
 }
 
 
 .double-wide.left.expanded {
       margin-right: -42.5%;
+      margin-left: 0.5%;
 }
 
 .double-wide.right.expanded {
       margin-left: -42.5%;
+      margin-right: 0.5%;
 }
 
 .double-wide.closed {
