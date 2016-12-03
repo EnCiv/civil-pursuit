@@ -80,10 +80,9 @@ class Accordion extends React.Component {
       } else {
       // end interval if the scroll is completed
         if(--waitforit <= 0) {
-
           this.inOpen='inactive';
           clearInterval(timer);
-          this.setState({ attr : 'expanded' });
+          this.setState( { attr : ` ${this.props.textShadow ? 'text-expanded' : 'expanded' } ` } );
           if(this.props.onComplete) { this.props.onComplete(true); }
           accordion.style.maxHeight=null;
         }
