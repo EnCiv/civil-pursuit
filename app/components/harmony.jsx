@@ -19,25 +19,25 @@ class Harmony extends React.Component {
   };
 
 //**********************************************************
-  toggleLeft() {
-    if(this.state.expandedLeft) {
-      if(this.state.expandedRight) { this.setState({expandedLeft: false, expandedRight: false})}
-      else { this.setState({expandedLeft: false}) }
-    } else {
+  focusLeft(focused) {
+    if(focused) {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
       else { this.setState({expandedLeft: true}) }
+    } else {
+      if(this.state.expandedRight) { this.setState({expandedLeft: false, expandedRight: false})}
+      else { this.setState({expandedLeft: false}) }
     }
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  toggleRight() {
-    if(this.state.expandedRight) {
-      if(this.state.expandedLeft) { this.setState({expandedRight: false, expandedLeft: false}) }
-      else { this.setState({expandedRight: false}) }
-    } else {
+  focusRight(focused) {
+    if(focused) {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
       else { this.setState({expandedRight: true}) }
+    } else {
+      if(this.state.expandedLeft) { this.setState({expandedRight: false, expandedLeft: false}) }
+      else { this.setState({expandedRight: false}) }
     }
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,17 +94,17 @@ class Harmony extends React.Component {
     let contentRight = ( <Loading message="Loading" /> );
 
       contentLeft = (
-        <DoubleWide className="harmony-pro" left onClick={this.toggleLeft.bind(this)} expanded={this.state.expandedLeft}>
+        <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } />
+            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} />
           </PanelStore>
         </DoubleWide>
       );
 
       contentRight = (
-        <DoubleWide className="harmony-con" right onClick={this.toggleRight.bind(this)} expanded={this.state.expandedRight} >
+        <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } />
+            <PanelItems user={ user } focusAction={this.focusRight.bind(this)}/>
           </PanelStore>
         </DoubleWide>
       );

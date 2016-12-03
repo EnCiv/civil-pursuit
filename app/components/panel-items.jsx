@@ -71,6 +71,7 @@ class PanelItems extends React.Component {
 
     if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
         //this.collapseAroundItem (false);
+        if(this.props.focusAction) { this.props.focusAction(false)}
         return this.setState({ active : { item : null, section : null } });
     }
 
@@ -85,7 +86,7 @@ class PanelItems extends React.Component {
 
       this.mountedItems[itemId][section] = true;
     }
-
+    if(this.props.focusAction) { this.props.focusAction(true)}
     this.setState({ active : { item : itemId, section }});
 
   }
@@ -288,7 +289,6 @@ class PanelItems extends React.Component {
 
       let creatorPanel;
 
-//      if ( active && active.section === 'creator' ) {
         creatorPanel = (
           <Creator
             type    =   { type }
@@ -296,7 +296,6 @@ class PanelItems extends React.Component {
             toggle  =   { this.toggle.bind(this, null, 'creator') }
             />
         );
-//      }
 
       creator = (
         <Accordion
