@@ -268,7 +268,7 @@ wideRight(){
               <FinishButton
                 cursor      =   { cursor }
                 limit       =   { limit }
-                emitter     =   { emitter }
+                emitter     =   { this.voteEmitter }
                 clearExpanders    =   {this.clearExpanders.bind(this)}
                 />
             </div>

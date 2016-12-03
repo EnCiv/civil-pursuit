@@ -5,18 +5,21 @@
   position: relative;
   background-color: @syn-background-color;
   z-index: auto;
+  transition: all 0.5s linear;
 }
 
 .double-wide.left{
   float: left;
   padding-right: 0.5%;
   text-align: inherit; /* prevent css .left from impacting this */
+  right: 0;
 }
 
 .double-wide.right{
   float: right;
   padding-left: 0.5%;
   text-align: inherit; /* prevents css .right from impacting this */
+  left: 0;
 }
 
 .double-wide.expanded{
@@ -29,7 +32,6 @@
 
 .double-wide.raised{
     z-index: 1;
-    transition: all 0.5s linear;
 }
 
 
@@ -43,6 +45,10 @@
       margin-right: 0.5%;
 }
 
-.double-wide.closed {
-    width: 0;
+.double-wide.left.closed {
+    right: 100%;
+}
+
+.double-wide.right.closed {
+    left: 100%;
 }
