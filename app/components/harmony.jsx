@@ -16,6 +16,8 @@ class Harmony extends React.Component {
   state = {
     expandedLeft: false,
     expandedRight: false,
+    resetLeftView: 0,
+    resetRightView: 0
   };
 
 //**********************************************************
@@ -24,8 +26,12 @@ class Harmony extends React.Component {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
       else { this.setState({expandedLeft: true}) }
     } else {
-      if(this.state.expandedRight) { this.setState({expandedLeft: false, expandedRight: false})}
-      else { this.setState({expandedLeft: false}) }
+      let resetLeftView = this.state.resetLeftView++;
+      if(this.state.expandedRight) { 
+        let resetRightView = this.state.resetRightView++;
+        this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
+      }
+      else { this.setState({expandedLeft: false, resetLeftView: resetLeftView}) }
     }
   }
 
@@ -36,8 +42,12 @@ class Harmony extends React.Component {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
       else { this.setState({expandedRight: true}) }
     } else {
-      if(this.state.expandedLeft) { this.setState({expandedRight: false, expandedLeft: false}) }
-      else { this.setState({expandedRight: false}) }
+      let resetRightView = this.state.resetRightView++;
+      if(this.state.expandedLeft) { 
+              let resetLeftView = this.state.resetLeftView++;
+        this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
+      }
+      else { this.setState({expandedRight: false, resetRightView: resetRightView}) }
     }
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,7 +106,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} />
+            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} resetView={resetLeftView} />
           </PanelStore>
         </DoubleWide>
       );
@@ -104,7 +114,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusRight.bind(this)}/>
+            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} resetView={resetRightView} />
           </PanelStore>
         </DoubleWide>
       );
