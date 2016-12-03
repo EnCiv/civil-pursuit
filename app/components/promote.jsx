@@ -24,7 +24,9 @@ class Promote extends React.Component {
     activeL: false,
     activeR: false,
     truncateItemsLeft: 0,
-    truncateItemsRight: 0
+    truncateItemsRight: 0,
+    closedLeft: false,
+    closedRight: false
   };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,12 +44,17 @@ class Promote extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 next(){
-    this.props.emitter.emit('next');
+    this.setState({closedLeft: true, closedRight: true});
+    this.buttons={event: 'next', position: null};
 }
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 promote(position){
-  this.props.emitter.emit('promote',position);
+  this.buttons={event: 'promote', position: position};
+  if(position==='left'){this.setState({closedLeft: true})}
+  if(position==='right'){this.setState({closedRight: true})}
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +64,46 @@ promote(position){
       .removeListener('promote', this.promote.bind(this));
   }
 
+buttons={event: null, position: null, wideLeftClosed: false, wideRightClosed: false};
+
+wideLeft(){
+  if(this.state.closedLeft){
+    if(this.buttons.event==='promote') {
+      this.props.emitter.emit('promote',this.buttons.position);
+      this.buttons.event='null';
+      this.buttons.wideLeftClosed=false;
+      this.buttons.wideRightClosed=false;
+      this.setState({closedLeft: false})
+    }else if(this.buttons.event==='next' && this.buttons.wideRightClosed) {
+          this.props.emitter.emit('next');
+          this.buttons.event='null';
+          this.buttons.wideLeftClosed=false;
+          this.setState({closedRight: false, closedLeft: false});
+    }else {
+      this.buttons.wideLeftClosed=true;
+    }
+  }
+}
+
+wideRight(){
+  if(this.state.closedRight){
+    if(this.buttons.event==='promote') {
+      this.props.emitter.emit('promote',this.buttons.position);
+      this.buttons.event='null';
+      this.buttons.wideLeftClosed=false;
+      this.buttons.wideRightClosed=false;
+      this.setState({closedRight: false})
+    }else if(this.buttons.event==='next' && this.buttons.wideLeftClosed) {
+          this.props.emitter.emit('next');
+          this.buttons.event='null';
+          this.buttons.wideLeftClosed=false;
+          this.buttons.wideRightClosed=false;
+          this.setState({closedRight: false, closedLeft: false});
+    }else {
+      this.buttons.wideRightClosed=true;
+    }
+  }
+}
 //**********************************************************
   toggleLeft( itemId, panel) {
     if(this.state.expandedL) {
@@ -171,7 +218,7 @@ promote(position){
           (
             <div className="solid">
               <div className="solid clear">
-                <DoubleWide left expanded={this.state.activeL} >
+                <DoubleWide left expanded={this.state.activeL} onComplete={this.wideLeft.bind(this)} closed={this.state.closedLeft}>
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
                     footer =  { leftFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsLeft}
                   />
@@ -189,7 +236,7 @@ promote(position){
                     clearExpanders    =   {this.clearExpanders.bind(this)}
                   />
                 </DoubleWide>
-                <DoubleWide right expanded={this.state.activeR} >
+                <DoubleWide right expanded={this.state.activeR} onComplete={this.wideRight.bind(this)} closed={this.state.closedRight} >
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
                     footer =  { rightFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsRight}
                   />
