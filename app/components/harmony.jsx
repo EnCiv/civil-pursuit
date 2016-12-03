@@ -26,9 +26,9 @@ class Harmony extends React.Component {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
       else { this.setState({expandedLeft: true}) }
     } else {
-      let resetLeftView = this.state.resetLeftView++;
+      let resetLeftView = this.state.resetLeftView + 1;
       if(this.state.expandedRight) { 
-        let resetRightView = this.state.resetRightView++;
+        let resetRightView = this.state.resetRightView + 1;
         this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
       }
       else { this.setState({expandedLeft: false, resetLeftView: resetLeftView}) }
@@ -42,9 +42,9 @@ class Harmony extends React.Component {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
       else { this.setState({expandedRight: true}) }
     } else {
-      let resetRightView = this.state.resetRightView++;
+      let resetRightView = this.state.resetRightView + 1;
       if(this.state.expandedLeft) { 
-              let resetLeftView = this.state.resetLeftView++;
+              let resetLeftView = this.state.resetLeftView + 1;
         this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
       }
       else { this.setState({expandedRight: false, resetRightView: resetRightView}) }
