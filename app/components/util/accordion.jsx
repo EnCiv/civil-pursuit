@@ -1,13 +1,13 @@
 'use strict';
 
 import React from 'react';
-import Component      from '../../lib/app/component';
+import ClassNames          from 'classnames';
 
 class Accordion extends React.Component {
 
   static propTypes  =   {
     active          :   React.PropTypes.bool,
-    textShadow      :   React.PropTypes.bool,
+    text            :   React.PropTypes.bool,
     onComplete      :   React.PropTypes.func
   };
 
@@ -57,7 +57,6 @@ class Accordion extends React.Component {
     this.inOpen='active';
     if(this.inClose!=="inactive") {this.inClose='abort'}
     let accordion = this.refs.accordion;
-    let shadow = this.refs.shadow;
 
     let timerMax=1000;  //just in case
     let waitforit= 1000/this.stepRate;  // wait 1 second to give stuff a chance to appear
@@ -68,7 +67,7 @@ class Accordion extends React.Component {
       accordion.style.maxHeight= height + 'px';
     } 
 
-    this.setState( { attr : ` ${this.props.textShadow ? 'text-expanding' : 'expanding' } ` } );
+    this.setState( { attr : 'expanding'} );
 
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
@@ -82,9 +81,9 @@ class Accordion extends React.Component {
         if(--waitforit <= 0) {
           this.inOpen='inactive';
           clearInterval(timer);
-          this.setState( { attr : ` ${this.props.textShadow ? 'text-expanded' : 'expanded' } ` } );
-          if(this.props.onComplete) { this.props.onComplete(true); }
+          this.setState( { attr : 'expanded'} );
           accordion.style.maxHeight=null;
+          if(this.props.onComplete) { this.props.onComplete(true); }
         }
       }
     }, this.stepRate);
@@ -101,14 +100,12 @@ class Accordion extends React.Component {
     if(this.inOpen!='inactive') { this.inOpen='abort';} //override the open with a close
 
     let accordion = this.refs.accordion;
-    let shadow = this.refs.shadow;
 
     //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
     accordion.style.maxHeight= height + 'px';
 
-    this.setState( { attr : ` ${this.props.textShadow ? 'text-collapsing' : 'collapsing' } ` } );
-
+    this.setState( { attr : 'collapsing' } );
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
 
     const timer = setInterval( () => {
@@ -122,18 +119,23 @@ class Accordion extends React.Component {
         this.inClose='inactive';
         clearInterval(timer);
         this.setState({ attr : 'collapsed' });
-        if(this.props.onComplete) { this.props.onComplete(false); }
         accordion.style.maxHeight=null;
+        if(this.props.onComplete) { this.props.onComplete(false); }
       }
     }, this.stepRate);
   }
 
   render () {
-    let classes = [ 'accordion' ];
-    classes.push(this.state.attr);
-
+    var classes = ClassNames( 
+            this.props.className, 
+            'accordion',
+            {   
+              'text': this.props.text,
+            },
+            this.state.attr
+    );
     return (
-      <section className={ Component.classList(this, ...classes) } ref='accordion' style={ this.props.style } onClick={this.props.onClick} >
+      <section className={ classes } ref='accordion' style={ this.props.style } onClick={this.props.onClick} >
         <div ref='accordionWrapper' >
           { this.props.children }
         </div>

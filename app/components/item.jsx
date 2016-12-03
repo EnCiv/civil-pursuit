@@ -135,7 +135,7 @@ truncateState=0;
               { buttons }
             </section>
             <section className="item-text">
-              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } textShadow= { true } onComplete={ this.textHint.bind(this) } >  
+              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
