@@ -79,7 +79,7 @@ truncateState=0;
         this.props.toggle(this.props.item._id, 'harmony');
       } else {
         this.props.toggle(this.props.item._id, 'harmony');
-        if(this.props.focusAction){this.props.focusAction(true)}
+        if(this.props.focusAction){this.props.focusAction(false)}
         this.setState({truncated: true});
       }
   }
