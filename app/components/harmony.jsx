@@ -106,7 +106,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} resetView={resetLeftView} />
+            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} resetView={this.state.resetLeftView} />
           </PanelStore>
         </DoubleWide>
       );
@@ -114,7 +114,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} resetView={resetRightView} />
+            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} resetView={this.state.resetRightView} />
           </PanelStore>
         </DoubleWide>
       );
