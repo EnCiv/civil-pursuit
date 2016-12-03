@@ -53,8 +53,8 @@ next(){
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 promote(position){
   this.buttons={event: 'promote', position: position};
-  if(position==='left'){this.setState({closedLeft: true})}
-  if(position==='right'){this.setState({closedRight: true})}
+  if(position==='left'){this.setState({closedRight: true})}
+  if(position==='right'){this.setState({closedLeft: true})}
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +77,7 @@ wideLeft(){
     }else if(this.buttons.event==='next' && this.buttons.wideRightClosed) {
           this.props.emitter.emit('next');
           this.buttons.event='null';
+          this.buttons.wideRightClosed=false;
           this.buttons.wideLeftClosed=false;
           this.setState({closedRight: false, closedLeft: false});
     }else {
