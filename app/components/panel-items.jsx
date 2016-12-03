@@ -269,6 +269,7 @@ class PanelItems extends React.Component {
 
                   collapsed =  { item==null || ( (this.state.active.item !== null) && (this.state.active.item !== item._id )) }  //collapsed if there is an active item and it's not this one
                   toggle  =   { this.toggle.bind(this) }
+                  focusAction={this.props.focusAction}
                 />
               </ItemStore>
             );

@@ -75,10 +75,12 @@ truncateState=0;
       let item = this.refs.item;
       if (this.state.truncated) {
         this.setState({truncated: false, hint: false});
+        if(this.props.focusAction){this.props.focusAction(true)}
         this.props.toggle(this.props.item._id, 'harmony');
       } else {
         this.props.toggle(this.props.item._id, 'harmony');
-          this.setState({truncated: true});
+        if(this.props.focusAction){this.props.focusAction(true)}
+        this.setState({truncated: true});
       }
   }
 
