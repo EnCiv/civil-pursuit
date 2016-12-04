@@ -17,7 +17,7 @@ Mungo.verbosity = 1;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function start (emitter = false) {
-  const verbose=false;
+  var verbose=false;
 
   if ( ! emitter ) {
     emitter = new EventEmitter();
