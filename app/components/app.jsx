@@ -170,23 +170,25 @@ class App extends React.Component {
 
         case 'qsort':
 
-          if(! this.props.panels) { break; }
+          if(! this.props.panels) { break; } 
+          else {
 
-          keylist = Object.keys(this.props.panels);
+            let keylist = Object.keys(this.props.panels);
 
-          panelId1 = keylist[keylist.length-1];
+            let panelId1 = keylist[keylist.length-1];
 
-          panel = Object.assign({}, this.props.panels[panelId1].panel);
+            const qpanel = Object.assign({}, this.props.panels[panelId1].panel);
 
-          //panel.items = panel.items.filter(item => item.id === paths[1]);
+            //panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          console.info("app qsort panel", panel );
+            console.info("app qsort panel", panel );
 
-          page = (
-            <QHome { ...this.props } user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
-          );
+            page = (
+              <QHome { ...this.props } user={ user } count = { 1 } panel={ qpanel } emitter = {this.emitter } />
+            );
 
-          break;
+            break;
+          }
 
         case 'items':
 
