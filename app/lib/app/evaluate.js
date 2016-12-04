@@ -244,12 +244,26 @@ class Evaluator extends EventEmitter {
           // .where('user').ne(this.userId)
           .then(number => {
             const count = Math.min(limit, number); //don't return more items than there are in the query
-            while(randomItems.length < count){
+            const randomNumbers =[];
+            let i, rand;
+
+            while(randomNumbers.length < count ){
+              rand=Math.max(0, Math.floor((number)*Math.random()));
+              for(i=0; i<randomNumbers.length; i++) {
+                if(randomNumbers[i]===rand){
+                  rand=Math.max(0, Math.floor((number)*Math.random()));
+                  i=0; //start for again
+                }
+              }randomNumbers.push(rand);
+            }
+            console.info("evaluate.js randomNumbers", randomNumbers)
+            
+            for(i=0; i< count; i++){
               randomItems.push(
                 sequencer.pipe (
                   () => ItemModel.find(query, {
-                          skip      :   Math.max(0, Math.floor((number)*Math.random())),
-                          limit     : 1
+                          skip      :   randomNumbers[i],
+                          limit     : -1
                     }) ,
                   itemList => new Promise((ok, ko) => { itemList[0].toPanelItem(this.userId).then(ok,ko)})
                 )
