@@ -249,12 +249,15 @@ class Evaluator extends EventEmitter {
 
             while(randomNumbers.length < count ){
               rand=Math.max(0, Math.floor((number)*Math.random()));
-              for(i=0; i<randomNumbers.length; i++) {
+              i=0;
+              while(i<randomNumbers.length) {
                 if(randomNumbers[i]===rand){
                   rand=Math.max(0, Math.floor((number)*Math.random()));
-                  i=0; //start for again
+                  i= 0; //start while loop again at 0 after i++
+                }else {
+                  i++;
                 }
-              }randomNumbers.push(rand);
+              } randomNumbers.push(rand);
             }
             console.info("evaluate.js randomNumbers", randomNumbers)
             
