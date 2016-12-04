@@ -40,7 +40,6 @@ function home (req, res, next) {
     const props       =   {
       env             :   this.app.get('env'),
       path            :   req.path,
-      intro           :   JSON.parse(JSON.stringify(this.props.intro)),
       item            :   JSON.parse(JSON.stringify(req.item || null)),
       panel           :   JSON.parse(JSON.stringify(req.panel || null)),
       panels          :   JSON.parse(JSON.stringify(req.panels || null)),

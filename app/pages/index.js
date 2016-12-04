@@ -56,7 +56,6 @@ class Layout extends Document {
     this.props = props;
 
     const
-      intro     =   JSON.stringify(this.props.intro),
       panels    =   JSON.stringify(this.props.panels || null);
 
     this.add(

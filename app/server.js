@@ -63,10 +63,6 @@ class HttpServer extends EventEmitter {
 
       process.nextTick(() => {
         try {
-          if ( ! this.props.intro ) {
-            throw new Error('Missing intro');
-          }
-
           this.app = express();
 
           this.set();
@@ -181,6 +177,7 @@ class HttpServer extends EventEmitter {
     this.getSettings();
     this.getItemPage();
     this.getPanelPage();
+    this.getQSortPage();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -292,6 +289,62 @@ class HttpServer extends EventEmitter {
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
+      let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+          var sniffr = new Sniffr();
+          sniffr.sniff(req.headers['user-agent']);
+          var device = Device(req.headers['user-agent']);
+          this.browserConfig.os = sniffr.os;
+          this.browserConfig.browser = sniffr.browser;
+          this.browserConfig.type = device.type;
+          this.browserConfig.model = device.model;
+          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+          console.info("server.getItemPage browser", this.browser);
+      try {
+        Item.findOne({ id : req.params.item_short_id }).then(
+          item => {
+            if ( ! item ) {
+              return next();
+            }
+            item.toPanelItem(userId).then(
+              item => {
+                req.panels = {};
+                if(item & item.parent) {
+                  item.getLineage(userId).then( lineage => {
+                    lineage.forEach((ancestor, index) => {
+                      const panelId = makePanelId(ancestor);
+
+                      if ( ! req.panels[panelId] ) {
+                        req.panels[panelId] = makePanel(ancestor);
+                      }
+
+                      req.panels[panelId].panel.items.push(ancestor);
+
+                      req.panels[panelId].active = `${ancestor._id}-subtype`;
+                    });
+
+                  });
+                }
+                req.panels[makePanelId(item)] = makePanel(item);
+
+                req.panels[makePanelId(item)].panel.items.push(item);
+
+                next();
+              },
+              next
+            );
+          },
+          next
+        );
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, homePage.bind(this));
+  }
+
+  getQSortPage () {
+    this.app.get('/qsort/:item_short_id/:item_slug', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
           var sniffr = new Sniffr();
           sniffr.sniff(req.headers['user-agent']);

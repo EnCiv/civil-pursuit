@@ -34,7 +34,6 @@ function termsOfService (req, res, next) {
       env         : this.app.get('env'),
       path        : req.path,
       user        : false,
-      intro       : this.props.intro
     }
 
     let source = new Index(props).render();

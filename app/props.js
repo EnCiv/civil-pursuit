@@ -9,7 +9,6 @@ function makeProps (options = {}) {
       item          :   null,
       panel         :   null
     },
-    intro           :   options.intro,
     instructions    :   [],
     item            :   options.item,
     items           :   {},

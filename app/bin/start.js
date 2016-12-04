@@ -60,37 +60,10 @@ function start (emitter = false) {
             .on('connected', ok);
         }),
 
-        // Get intro type
-
-        () => Type.findOne({ name : 'Intro' }),
-
-        // Exit if no type found
-
-        type => new Promise((ok, ko) => {
-          if ( ! type ) {
-            return ko(new Error('Intro type not found'));
-          }
-          ok(type);
-        }),
-
-        // Find intro item
-
-        type => Item.findOne({ type }),
-
-        // Exit if no item found
-
-        intro => new Promise((ok, ko) => {
-          if ( ! intro ) {
-            return ko(new Error('Intro item not found'));
-          }
-          ok(intro);
-        }),
-
-        intro => intro.toPanelItem(null), //user unknown at start
-
-        intro => new Promise((ok, ko) => {
+        
+        () => new Promise((ok, ko) => {
           try {
-            new Server({ intro })
+            new Server()
               .on('listening', status => {
                 emitter.emit('message', 'HTTP server is listening'.green, status);
               })

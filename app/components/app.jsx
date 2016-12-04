@@ -13,6 +13,7 @@ import Icon                             from './util/icon';
 import UserStore                        from './store/user';
 import About                            from './about';
 import { EventEmitter }                 from 'events';
+import QHome                            from './qhome';
 
 class App extends React.Component {
 
@@ -81,7 +82,6 @@ class App extends React.Component {
       panels,
       //path,
       user,
-      intro,
       notFound,
       error
     } = this.props;
@@ -96,8 +96,6 @@ class App extends React.Component {
         </section>
       </Panel>
     );
-
-    let showIntro = false;
 
 
     if ( error ) {
@@ -125,17 +123,14 @@ class App extends React.Component {
           switch ( paths[1] ) {
             case 'profile':
               page = ( <Profile /> );
-              showIntro = false;
               break;
 
             case 'terms-of-service':
               page = ( <TermsOfService /> );
-              showIntro = false;
               break;
 
             case 'about':
               page = ( <About /> );
-              showIntro = false;
               break;
 
             case 'reset-password':
@@ -144,14 +139,12 @@ class App extends React.Component {
                   <ResetPassword user={ user } />
                 </UserStore>
               );
-              showIntro = false;
               break;
           }
           break;
           
         case 'about':
               page = ( <About /> );
-              showIntro = false;
               break;
 
 
@@ -175,6 +168,26 @@ class App extends React.Component {
 
           break;
 
+        case 'qsort':
+
+          if(! this.props.panels) { break; }
+
+          const keylist = Object.keys(this.props.panels);
+
+          const panelId1 = keylist[keylist.length-1];
+
+          const panel = Object.assign({}, this.props.panels[panelId1].panel);
+
+          //panel.items = panel.items.filter(item => item.id === paths[1]);
+
+          //console.info("app item panel filtered", panel );
+
+          page = (
+            <QHome { ...this.props } user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
+          );
+
+          break;
+
         case 'items':
 
           const panelId2 = Object.keys(this.props.panels)[0];
@@ -189,7 +202,7 @@ class App extends React.Component {
     }
 
     return (
-      <Layout intro={ showIntro ? intro : null } user={ user } setPath={this.setPath.bind(this)} >
+      <Layout user={ user } setPath={this.setPath.bind(this)} >
         { page }
       </Layout>
     );
