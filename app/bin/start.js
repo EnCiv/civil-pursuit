@@ -17,6 +17,7 @@ Mungo.verbosity = 1;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function start (emitter = false) {
+  const verbose=false;
 
   if ( ! emitter ) {
     emitter = new EventEmitter();
@@ -35,6 +36,7 @@ function start (emitter = false) {
 
     else {
       process.title = 'synappdev';
+      verbose=true;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,7 +65,7 @@ function start (emitter = false) {
         
         () => new Promise((ok, ko) => {
           try {
-            new Server()
+            new Server(verbose)
               .on('listening', status => {
                 emitter.emit('message', 'HTTP server is listening'.green, status);
               })
