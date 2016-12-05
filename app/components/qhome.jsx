@@ -4,7 +4,7 @@ import React                        from 'react';
 import Icon                         from './util/icon';
 import Loading                      from './util/loading';
 import Countdown                    from './countdown';
-import PanelItems                   from './panel-items';
+import QSortItems                   from './qsort-items';
 import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
@@ -97,10 +97,9 @@ class QHome extends React.Component {
         <div>
           <div id="top-level-panel">
             <PanelStore { ...panel }>
-              <PanelItems user={ this.props.user } />
+              <QSortItems user={ this.props.user } />
             </PanelStore>
           </div>
-          <Training instructions={ training || [] } />
         </div>
       );
     } else {

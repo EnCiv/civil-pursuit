@@ -23,7 +23,7 @@ import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
-import homePage                 from './routes/home';
+import serverReactRender         from './routes/server-react-render';
 // import errorRoutes              from './routes/error';
 
 import User                     from './models/user';
@@ -234,9 +234,9 @@ class HttpServer extends EventEmitter {
           // }
           next();
         },
-        homePage.bind(this));
+        serverReactRender.bind(this));
 
-      this.app.get('/page/:page', homePage.bind(this));
+      this.app.get('/page/:page', serverReactRender.bind(this));
     }
     catch ( error ) {
       this.emit('error', error);
@@ -340,11 +340,11 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, homePage.bind(this));
+    }, serverReactRender.bind(this));
   }
 
   getQSortPage () {
-    this.app.get('/qsort/:item_short_id/:item_slug', (req, res, next) => {
+    this.app.get('/qsort/:parent_short_id/:item_slug', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
           var sniffr = new Sniffr();
           sniffr.sniff(req.headers['user-agent']);
@@ -357,7 +357,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
           console.info("server.getItemPage browser", this.browser);
       try {
-        Item.findOne({ id : req.params.item_short_id }).then(
+        Item.findOne({ id : req.params.parent_short_id }).then(
           item => {
             if ( ! item ) {
               return next();
@@ -396,7 +396,7 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, homePage.bind(this));
+    }, serverReactRender.bind(this));
   }
 
   getPanelPage () {
@@ -430,7 +430,7 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, homePage.bind(this));
+    }, serverReactRender.bind(this));
   }
 
   cdn () {
@@ -443,7 +443,7 @@ class HttpServer extends EventEmitter {
       res.statusCode = 404;
       req.notFound = true;
       next();
-    }, homePage.bind(this));
+    }, serverReactRender.bind(this));
   }
 
   error () {
@@ -456,7 +456,7 @@ class HttpServer extends EventEmitter {
       res.locals.error = error;
 
       next();
-    }, homePage.bind(this));
+    }, serverReactRender.bind(this));
   }
 
   api () {

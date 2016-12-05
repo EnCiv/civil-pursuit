@@ -8,7 +8,7 @@ import App                      from '../components/app';
 import Index                    from '../pages/index';
 import makeProps                from '../props';
 
-function home (req, res, next) {
+function serverReactRender (req, res, next) {
   try {
     if ( this.app.get('env') === 'development' ) {
       let dir = path.resolve(__dirname, '../../dist');
@@ -65,4 +65,4 @@ function home (req, res, next) {
   }
 }
 
-export default home;
+export default serverReactRender;
