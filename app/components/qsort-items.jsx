@@ -67,6 +67,7 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
+      console.info("qsort constructor", this.QSortButtonList );
       Object.keys(this.QSortButonList).forEach(button => this.section[button]=[]);
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
@@ -74,6 +75,7 @@ class QSortItems extends React.Component {
             this.index[item._id]=i;
         });
       }
+      console.info("qsort constructed");
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
