@@ -51,11 +51,11 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
-    if(this.props.panels && this.props.panels[0] && this.props.panels[0].items) {
+    if(this.props.panel && this.props.panels.items) {
 
     const panel = {
-        parent: this.props.panels[0].items[0],
-        type: this.props.panels[0].items[0].subtype
+        parent: this.props.panel.items[0],
+        type: this.props.panel.items[0].subtype
     }
 
       content.push(
