@@ -27,10 +27,10 @@ class QHome extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    this.stage = 'waiting for discussion';
+    this.stage = 'waiting for panel type';
 
     if ( typeof window !== 'undefined' ) {
-      window.socket.emit('get discussion', this.okGetDiscussion.bind(this));
+        window.socket.emit('get panel type', this.okGetPanelType.bind(this))
     }
   }
 
@@ -39,31 +39,11 @@ class QHome extends React.Component {
   componentdidUnmount () {
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  okGetDiscussion (discussion) {
-    if ( discussion ) {
-      this.setState({ discussion });
-    }
-    else {
-      window.socket
-        .emit('get top level type', this.okGetTopLevelType.bind(this))
-        .emit('get training', this.okGetTraining.bind(this));
-    }
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  okGetTopLevelType (type) {
+  okGetPanelType (type) {
     this.setState({ panel : { type } });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  okGetTraining (training) {
-    if ( training ) {
-      this.setState({ training });
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,25 +52,9 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
-    const { discussion, panel, training } = this.state;
+    const panel = this.props.panels[0];
 
-
-    if( ! this.props.user) {
-      content.push(
-        <Welcome />
-      );
-    }
-
-    if ( discussion ) {
-      const { deadline } = new Date(discussion);
-      const now = Date.now();
-
-      if ( now < deadline ) {
-        content.push( <Countdown discussion={ discussion } { ...this.props } /> );
-      }
-    }
-
-    else if ( panel ) {
+    if ( panel ) {
       // const panel = this.props.panels[this.props.topLevelType];
 
       content.push(
