@@ -28,10 +28,9 @@ class QHome extends React.Component {
 
   componentDidMount () {
     this.stage = 'waiting for panel type';
-
-    if ( typeof window !== 'undefined' ) {
-        window.socket.emit('get panel type', this.okGetPanelType.bind(this))
-    }
+ //   if ( typeof window !== 'undefined' ) {
+ //       window.socket.emit('get panel type', this.okGetPanelType.bind(this))
+ //   }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,10 +51,12 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
-    const panel = this.props.panels[0];
+    if(this.props.panels && this.props.panels[0] && this.props.panels[0].items) {
 
-    if ( panel ) {
-      // const panel = this.props.panels[this.props.topLevelType];
+    const panel = {
+        parent: this.props.panels[0].items[0],
+        type: this.props.panels[0].items[0].subtype
+    }
 
       content.push(
         <div>
@@ -63,6 +64,7 @@ class QHome extends React.Component {
             <PanelStore { ...panel }>
               <QSortItems user={ this.props.user } />
             </PanelStore>
+
           </div>
         </div>
       );
