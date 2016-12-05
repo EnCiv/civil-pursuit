@@ -204,19 +204,20 @@ class QSortItems extends React.Component {
           });
         });
       }
-
+    }
    
-    return (
-      <section id               =     "syn-panel-qsort">
-        <Panel
-          className   =   { name }
-          ref         =   "panel"
-          heading     =   {[( <h4>{ title }</h4> )]}
-          >
-          { content }
-        </Panel>
-      </section>
-    );
+        return (
+        <section id               =     "syn-panel-qsort">
+            <Panel
+            className   =   { name }
+            ref         =   "panel"
+            heading     =   {[( <h4>{ title }</h4> )]}
+            >
+            { content }
+            </Panel>
+        </section>
+        );
+    }
 }
 
 export default QSortItems;
