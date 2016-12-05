@@ -16,7 +16,7 @@ class QSortButtons extends React.Component {
 
     const { item, buttonstate, qbuttons} = this.props;
 
-    const buttons = [];
+    let buttons = [];
 
     buttons=qbuttons.map(btn => {
         return(
