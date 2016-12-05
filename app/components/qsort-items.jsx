@@ -78,7 +78,7 @@ class QSortItems extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
-        let currentIndex = index.concat();
+        let currentIndex = this.index.concat();
         if(newProps.panel && newprops.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
                 if(!(newItem.id in index)) {
@@ -115,7 +115,7 @@ class QSortItems extends React.Component {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
     if ( itemId ) {
-        sections.forEach(
+        this.sections.forEach(
             (currentSection, currentName) => {
                 if( (i = currentSection.indexOf(itemId)) !== -1) {
                     if(currentName === section ) { 
@@ -175,7 +175,7 @@ class QSortItems extends React.Component {
       }
 
       else {
-        content = sections.forEach((section, name) => {
+        content = this.sections.forEach((section, name) => {
           section.map(itemId => {
             let buttonstate=QSortButtonItems.slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
             let item = items[this.index[itemId]];
