@@ -25,78 +25,109 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
-  new = null;
+    static QSortButtonList = { 
+        unsorted: {
+            name: 'unsorted',
+            color: '#ffffff',
+            title: {
+                active: "Yea! this is in a stack",
+                inactive: "Put this in in a stack"
+            },
 
-  mountedItems = {};
+        },
+        most: {
+            name: 'most',
+            color: '#f0f0ff',
+            title: {
+                active: "Yea! this is in the most important stack",
+                inactive: "Put this in the most important stack"
+            },
 
-  state = { active : { item : null, section : null } };
+        },
+        neutral: {
+            name: 'neutral',
+            color: '#f0f0f0',
+            title: {
+                active: "This is among the things that are neight most nor least important",
+                inactive: "Put this among the things that are neight most nor least important"
+            }
+        },
+        least: {
+            name: 'least',
+            color: '#fff0f0',
+            title: {
+                active: "This is in the least important stacko of them all",
+                inactive: "Put this in the most important stack of them all"
+            }
+        }
+    };
+  
+  sections = {};
+  index = {};
 
+  constructor(props){
+      super(props);
+      this.props.panel.items.forEach((item,i) =>{
+          sections['unsorted'].push(item._id);
+          index[item._id]=i;
+      });
+  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
+        let currentIndex = index.concat();
+        newProps.panel.items.forEach((newItem,i) => {
+                    if(!(newItem.id in index)) {
+                        sections['unsorted'].push(newItem._id);
+                        index[newItem._id]=i;
+                    }else {
+                        currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted.
+                    }
+        }); 
+    }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    this.props.emitter.on('show', this.show.bind(this));
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillUnmount () {
-    this.props.emitter.removeListener('show', this.show.bind(this));
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate () {
-    if ( this.props.new ) {
-      if ( this.props.new._id !== this.new ) {
-        this.new = this.props.new._id;
-        this.toggle(this.props.new._id, 'promote');
-      }
-    }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  loadMore (e) {
-    e.preventDefault();
-
-    // window.Dispatcher.emit('get items', this.props.panel);
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggle (itemId, section) {
-
-    if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't expand harmony on items that don't have it
-
-    if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
-        //this.collapseAroundItem (false);
-        if(this.props.focusAction) { this.props.focusAction(false)}
-        return this.setState({ active : { item : null, section : null } });
-    }
-
-    if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
-      return Join.click();
-    }
-
+    //find the section that the itemId is in, take it out, and put it in the new section
+    let i;
     if ( itemId ) {
-      if ( ! this.mountedItems[itemId] ) {
-        this.mountedItems[itemId] = {};
-      }
-
-      this.mountedItems[itemId][section] = true;
+        sections.forEach(
+            (currentSection, currentName) => {
+                if( (i = currentSection.indexOf(itemId)) !== -1) {
+                    if(currentName === section ) { 
+                        sections[currentName].splice(i,1);
+                        sections['unsorted'].unshift(itemId);
+                        return;
+                    } else { // take the i'th element out of the current section and put it at the top of the new section
+                        sections[currentName].splice(i,1);
+                        sections[section].unshift(itemId);
+                        return; //no need to continue, there's only one
+                    }
+                }
+            }
+        );
     }
-    if(this.props.focusAction) { this.props.focusAction(true)}
-    this.setState({ active : { item : itemId, section }});
-
   }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  show (item, section) {
-    this.toggle(item, section);
-  }
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -105,14 +136,13 @@ class QSortItems extends React.Component {
 
   render () {
 
-    const { active } = this.state;
-
     const { panel, count, user, emitter } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
-      type, parent, creator;
+      type, parent, items;
 
     if ( panel ) {
+      items=panel.items;
       loaded = true;
 
       type = panel.type;
@@ -128,20 +158,9 @@ class QSortItems extends React.Component {
         name += `-${parent._id || parent}`;
       }
 
-//      title = (
-//        <Link
-//          href        =   { `/items/${type._id}/${parent || ""}` }
-//          then        =   { this.unFocus.bind(this) }
-//          >
-//          <Icon icon="angle-double-left" />
-//          <span> </span>
-//          { type.name }
-//        </Link>
-//      )
-
       title = type.name;
 
-      if ( ! panel.items.length ) {
+      if ( ! sections['unsorted'].length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
@@ -152,190 +171,54 @@ class QSortItems extends React.Component {
       }
 
       else {
-        content = panel.items
-          .map(item => {
-            let promote, details, subtype, editItem, harmony, buttonstate={promote: false, details: false, subtype: false, harmony: false};
-
-            if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
-              buttonstate.promote=(active.item === item._id && active.section === 'promote');
-              promote = (
-                <div className="toggler promote">
-                  <Accordion
-                    poa     =   { this.refs.item }
-                    name    =   "promote"
-                    active  =   { (active.item === item._id && active.section === 'promote') }
-                    >
-                    <EvaluationStore
-                      item-id     =   { item._id }
-                      toggle      =   { this.toggle.bind(this, item._id) }
-                      active      =   { active }
-                      emitter     =   { emitter }
-                      >
-                      <Promote
-                        ref       =   "promote"
-                        show      =   { (active.item === item._id && active.section === 'promote') }
-                        panel     =   { panel }
-                        user    =     { user }
-                        />
-                    </EvaluationStore>
-                  </Accordion>
-                </div>
-              );
-            }
-
-            if ( this.mountedItems[item._id] && this.mountedItems[item._id].details ) {
-              buttonstate.details= (active && active.item === item._id && active.section === 'details') ;
-              details = (
-                <div className="toggler details">
-                  <Accordion
-                    poa     =   { this.refs.item }
-                    name    =   "details"
-                    active  =   { (active && active.item === item._id && active.section === 'details') }
-                    >
-                    <DetailsStore item={ item }>
-                      <Details />
-                    </DetailsStore>
-                  </Accordion>
-                </div>
-              );
-            }
-
-            if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
-              buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
-              subtype = (
-                <div className="toggler subtype">
-                  <Accordion
-                    poa     =   { this.refs.item }
-                    name    =   "subtype"
-                    active  =   { (active.item === item._id && active.section === 'subtype') }
-                    >
-                    <Subtype
-                      type    =   { item.subtype }
-                      parent  =   { item }
-                      ref     =   "subtype"
-                      user    =   { user }
-                      active  =   { (active.item === item._id && active.section === 'subtype') }
-                      />
-                  </Accordion>
-                </div>
-              );
-            }
-
-            if ( this.mountedItems[item._id] && this.mountedItems[item._id].harmony ) {
-              buttonstate.harmony= (active.item === item._id && active.section === 'harmony');
-              harmony = (
-                <div className="toggler harmony">
-                  <Accordion
-                    poa     =   { this.refs.item }
-                    name    =   "harmony"
-                    active  =   { (active.item === item._id && active.section === 'harmony') }
-                    >
-                    <Harmony
-                      item    =   { item }
-                      ref     =   "harmony"
-                      user    =   { user }
-                      active  =   { (active && active.item === item._id && active.section === 'harmony') }
-                      />
-                  </Accordion>
-                </div>
-              );
-            }
-
-            if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
-              editItem = ( <EditAndGoAgain item={ item } /> );
-            }
+        content = sections.forEach((section, name) => {
+          section.map(itemId => {
+            let buttonstate=QSortButtonItems.slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
+            let item = items[index[itemId]];
 
             return (
-              <ItemStore item={ item } key={ `item-${item._id}` }>
-                <Item
-                  item    =   { item }
-                  user    =   { user }
-                  buttons =   { (
-                    <ItemStore item={ item }>
-                      <ItemButtons
+                <div style={{backgroundColor: QSortItems.QSortButtonList[name].color}}>
+                    <ItemStore item={ item } key={ `item-${item._id}` }>
+                        <Item
                         item    =   { item }
                         user    =   { user }
+                        buttons =   { (
+                            <ItemStore item={ item }>
+                            <QSortButtons
+                                item    =   { item }
+                                user    =   { user }
+                                toggle  =   { this.toggle.bind(this) }
+                                buttonstate = { buttonstate }
+                                qsortbuttons={QSortItems.QSortButtonList.slice(1)}
+                                />
+                            </ItemStore>
+                        ) }
+                        collapsed =  { false }  //collapsed if there is an active item and it's not this one
                         toggle  =   { this.toggle.bind(this) }
-                        buttonstate = { buttonstate }
-                        panel = { panel }
+                        focusAction={this.props.focusAction}
+                        truncateItems={this.props.resetView}
                         />
                     </ItemStore>
-                  ) }
-
-                  footer  =   { [
-                    promote, details, subtype, editItem, harmony
-                    ]
-                  }
-
-                  collapsed =  { item==null || ( (this.state.active.item !== null) && (this.state.active.item !== item._id )) }  //collapsed if there is an active item and it's not this one
-                  toggle  =   { this.toggle.bind(this) }
-                  focusAction={this.props.focusAction}
-                  truncateItems={this.props.resetView}
-                />
-              </ItemStore>
+                </div>
             );
           });
-
-        const { skip, limit } = panel;
-
-        const end = skip + limit;
-
-        if ( count > limit ) {
-          loadMore = (
-            <h5 className="gutter text-center">
-              <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
-            </h5>
-          );
-        }
+        });
       }
 
-      let creatorPanel;
-
-        creatorPanel = (
-          <Creator
-            type    =   { type }
-            parent  =   { parent }
-            toggle  =   { this.toggle.bind(this, null, 'creator') }
-            />
-        );
-
-      creator = (
-        <Accordion
-          active    =   { (active.section === 'creator') }
-          poa       =   { this.refs.panel }
-          name      = 'creator'
-          >
-          { creatorPanel }
-        </Accordion>
-      );
-    }
-
+   
     return (
-      <section id               =     "syn-panel-items">
+      <section id               =     "syn-panel-qsort">
         <Panel
           className   =   { name }
           ref         =   "panel"
-          heading     =   {[
-            ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" ) ? (null) : 
-            (
-              <Icon
-                icon        =   "plus"
-                className   =   "toggle-creator"
-                onClick     =   { this.toggle.bind(this, null, 'creator') }
-              />
-            )
-          ]}
+          heading     =   {[( <h4>{ title }</h4> )]}
           >
-          { creator }
           { content }
-          { loadMore }
         </Panel>
       </section>
     );
-  }
 }
 
 export default QSortItems;
 
 import Item from './item';
-import Subtype from './subtype';

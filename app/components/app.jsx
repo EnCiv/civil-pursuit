@@ -173,6 +173,7 @@ class App extends React.Component {
           if(! this.props.panels) { break; } 
           else {
 
+
             let keylist = Object.keys(this.props.panels);
 
             let panelId1 = keylist[keylist.length-1];
