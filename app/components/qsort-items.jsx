@@ -25,7 +25,7 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
-    static QSortButtonList = { 
+    static QSortButtonList = {
         unsorted: {
             name: 'unsorted',
             color: '#ffffff',
@@ -62,11 +62,12 @@ class QSortItems extends React.Component {
         }
     };
   
-  sections = {};
-  index = {};
+  sections = [];
+  index = [];
 
   constructor(props){
       super(props);
+      Object.keys(QSortItems.QSortButonList).forEach(button => this.section[button]=[]);
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
             this.sections['unsorted'].push(item._id);
@@ -78,10 +79,10 @@ class QSortItems extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
-        let currentIndex = this.index.concat();
+        let currentIndex = Object.entries(this.index);
         if(newProps.panel && newprops.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
-                if(!(newItem.id in index)) {
+                if(!(newItem.id in this.index)) {
                     this.sections['unsorted'].push(newItem._id);
                     this.index[newItem._id]=i;
                 }else {
@@ -177,7 +178,7 @@ class QSortItems extends React.Component {
       else {
         content = this.sections.forEach((section, name) => {
           section.map(itemId => {
-            let buttonstate=QSortButtonItems.slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
+            let buttonstate=Object.keys(QSortItems.QSortButtonList).slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
             let item = items[this.index[itemId]];
 
             return (
