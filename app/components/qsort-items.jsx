@@ -25,7 +25,7 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
-    static QSortButtonList = {
+  QSortButtonList = {
         unsorted: {
             name: 'unsorted',
             color: '#ffffff',
@@ -178,11 +178,11 @@ class QSortItems extends React.Component {
       else {
         content = this.sections.forEach((section, name) => {
           section.map(itemId => {
-            let buttonstate=Object.keys(QSortButtonList).slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
+            let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
             let item = items[this.index[itemId]];
 
             return (
-                <div style={{backgroundColor: QSortButtonList[name].color}}>
+                <div style={{backgroundColor: this.QSortButtonList[name].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                         item    =   { item }
@@ -194,7 +194,7 @@ class QSortItems extends React.Component {
                                 user    =   { user }
                                 toggle  =   { this.toggle.bind(this) }
                                 buttonstate = { buttonstate }
-                                qsortbuttons={ QSortButtonList }
+                                qsortbuttons={ this.QSortButtonList }
                                 />
                             </ItemStore>
                         ) }
