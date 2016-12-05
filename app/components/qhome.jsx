@@ -51,23 +51,23 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
-    if(this.props.panel && this.props.panels.items) {
+    if(this.props.panel && this.props.panel.items) {
 
-    const panel = {
-        parent: this.props.panel.items[0],
-        type: this.props.panel.items[0].subtype
-    }
+        const panel = {
+            parent: this.props.panel.items[0],
+            type: this.props.panel.items[0].subtype
+        }
 
-      content.push(
-        <div>
-          <div id="top-level-panel">
-            <PanelStore { ...panel }>
-              <QSortItems user={ this.props.user } />
-            </PanelStore>
+        content.push(
+            <div>
+            <div id="top-level-panel">
+                <PanelStore { ...panel }>
+                <QSortItems user={ this.props.user } />
+                </PanelStore>
 
-          </div>
-        </div>
-      );
+            </div>
+            </div>
+        );
     } else {
       content.push(
         <Loading message="Loading discussions ..." />
