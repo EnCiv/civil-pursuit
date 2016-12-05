@@ -18,17 +18,17 @@ class QSortButtons extends React.Component {
 
     let buttons = [];
 
-    buttons=qbuttons.map(btn => {
+    buttons=Object.keys(buttonstate).map(btn => {
         return(
                 <ButtonGroup>
                     <Button small shy 
-                    inactive= { buttonstate[btn.name] } 
-                    onClick= { this.toggle.bind(this, btn.name) } 
-                    className= {`qsort-${btn.name}`}
-                    title= {btn.title[buttonstate[btn.name]?'active':'inactive']}
-                    style={{backgroundColor: btn.color}}
+                    inactive= { buttonstate[btn] } 
+                    onClick= { this.toggle.bind(this, qbuttons[btn].name) } 
+                    className= {`qsort-${qbuttons[btn].name}`}
+                    title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
+                    style={{backgroundColor: qbuttons[btn].color}}
                     >
-                        <span className="civil-button-text">{btn.name}</span>
+                        <span className="civil-button-text">{qbuttons[btn].name}</span>
                     </Button>
                 </ButtonGroup>
         )
