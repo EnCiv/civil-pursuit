@@ -121,7 +121,7 @@ class QSortItems extends React.Component {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
     if ( itemId ) {
-        this.sections.forEach(
+        Object.keys(this.sections).forEach(
             (currentSection, currentName) => {
                 if( (i = currentSection.indexOf(itemId)) !== -1) {
                     if(currentName === section ) { 
@@ -181,8 +181,8 @@ class QSortItems extends React.Component {
       }
 
       else {
-        content = this.sections.forEach((section, name) => {
-          section.map(itemId => {
+        content = Object.keys(this.sections).forEach((name) => {
+          this.sections[name].map(itemId => {
             let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
             let item = items[this.index[itemId]];
 
