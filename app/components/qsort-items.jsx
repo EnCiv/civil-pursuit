@@ -32,7 +32,7 @@ class QSortItems extends React.Component {
             title: {
                 active: "Yea! this is in a stack",
                 inactive: "Put this in in a stack"
-            },
+            }
 
         },
         most: {
@@ -41,7 +41,7 @@ class QSortItems extends React.Component {
             title: {
                 active: "Yea! this is in the most important stack",
                 inactive: "Put this in the most important stack"
-            },
+            }
 
         },
         neutral: {
@@ -67,8 +67,8 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      console.info("qsort constructor" );
-      let buttons = Object.keys(this.QSortButonList);
+      console.info("qsort constructor", this.QSortButtonList );
+      let buttons = Object.keys(this.QSortButtonList);
       console.info("qsort buttons", buttons);
       buttons.forEach(button => this.sections[button]=[]);
       console.info("qsort section", this.sections);
