@@ -67,24 +67,28 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      this.props.panel.items.forEach((item,i) =>{
-          sections['unsorted'].push(item._id);
-          index[item._id]=i;
-      });
+      if(props.panel && props.panel.items) {
+        props.panel.items.forEach((item,i) =>{
+            this.sections['unsorted'].push(item._id);
+            this.index[item._id]=i;
+        });
+      }
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = index.concat();
-        newProps.panel.items.forEach((newItem,i) => {
-                    if(!(newItem.id in index)) {
-                        sections['unsorted'].push(newItem._id);
-                        index[newItem._id]=i;
-                    }else {
-                        currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted.
-                    }
-        }); 
+        if(newProps.panel && newprops.panel.items) {
+            newProps.panel.items.forEach((newItem,i) => {
+                if(!(newItem.id in index)) {
+                    this.sections['unsorted'].push(newItem._id);
+                    this.index[newItem._id]=i;
+                }else {
+                    currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted on day
+                }
+            }); 
+        }
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,12 +119,12 @@ class QSortItems extends React.Component {
             (currentSection, currentName) => {
                 if( (i = currentSection.indexOf(itemId)) !== -1) {
                     if(currentName === section ) { 
-                        sections[currentName].splice(i,1);
-                        sections['unsorted'].unshift(itemId);
+                        this.sections[currentName].splice(i,1);
+                        this.sections['unsorted'].unshift(itemId);
                         return;
                     } else { // take the i'th element out of the current section and put it at the top of the new section
-                        sections[currentName].splice(i,1);
-                        sections[section].unshift(itemId);
+                        this.sections[currentName].splice(i,1);
+                        this.sections[section].unshift(itemId);
                         return; //no need to continue, there's only one
                     }
                 }
@@ -160,7 +164,7 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
-      if ( ! sections['unsorted'].length ) {
+      if ( ! this.sections['unsorted'].length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
@@ -174,7 +178,7 @@ class QSortItems extends React.Component {
         content = sections.forEach((section, name) => {
           section.map(itemId => {
             let buttonstate=QSortButtonItems.slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
-            let item = items[index[itemId]];
+            let item = items[this.index[itemId]];
 
             return (
                 <div style={{backgroundColor: QSortItems.QSortButtonList[name].color}}>
