@@ -183,7 +183,8 @@ class QSortItems extends React.Component {
       else {
                 Object.keys(this.sections).forEach((name) => {
                 this.sections[name].forEach(itemId => {
-                let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj={}; obj[button]=false; return(obj);});
+                let buttonstate= {}
+                Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
                 let item = items[this.index[itemId]];
 
                 content.push (
