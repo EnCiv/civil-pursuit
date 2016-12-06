@@ -25,6 +25,8 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
+  state = {};
+
   QSortButtonList = {
         unsorted: {
             name: 'unsorted',
@@ -120,17 +122,19 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
-    if ( itemId ) {
+    if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.sections).forEach(
             (sectionName) => {
                 if( (i = this.sections[sectionName].indexOf(itemId)) !== -1) {
                     if(sectionName === section ) { 
                         this.sections[sectionName].splice(i,1);
                         this.sections['unsorted'].unshift(itemId);
+                        this.setState({sections: this.sections} );
                         return;
                     } else { // take the i'th element out of the current section and put it at the top of the new section
                         this.sections[sectionName].splice(i,1);
                         this.sections[section].unshift(itemId);
+                        this.setState({sections: this.sections} );
                         return; //no need to continue, there's only one
                     }
                 }
@@ -182,7 +186,7 @@ class QSortItems extends React.Component {
 
       else {
                 Object.keys(this.sections).forEach((name) => {
-                this.sections[name].forEach(itemId => {
+                this.state.sections[name].forEach(itemId => {
                 let buttonstate= {}
                 Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
                 let item = items[this.index[itemId]];
