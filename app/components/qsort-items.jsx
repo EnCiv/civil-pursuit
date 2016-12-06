@@ -211,8 +211,8 @@ class QSortItems extends React.Component {
                     </ItemStore>
                 </div>
             );
-          });
-        });
+          })
+        })
       }
     }
    
