@@ -25,7 +25,7 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
-  state = {};
+  state = {sections: null};
 
   QSortButtonList = {
         unsorted: {
@@ -80,6 +80,7 @@ class QSortItems extends React.Component {
             this.index[item._id]=i;
         });
       }
+      this.setState({sections: this.sections} );
       console.info("qsort constructed");
   }
 
@@ -97,6 +98,7 @@ class QSortItems extends React.Component {
                 }
             }); 
         }
+        this.setState({sections: this.sections} );
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
