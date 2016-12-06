@@ -23,7 +23,7 @@ class QSortButtons extends React.Component {
                 <ButtonGroup>
                     <Button small shy 
                     inactive= { buttonstate[btn] } 
-                    onClick= { this.toggle.bind(this, qbuttons[btn].name) } 
+                    onClick= { this.toggle.bind(this, btn) } 
                     className= {`qsort-${qbuttons[btn].name}`}
                     title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}

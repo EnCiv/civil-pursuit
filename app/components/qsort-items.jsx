@@ -122,14 +122,14 @@ class QSortItems extends React.Component {
     let i;
     if ( itemId ) {
         Object.keys(this.sections).forEach(
-            (currentSection, currentName) => {
-                if( (i = currentSection.indexOf(itemId)) !== -1) {
-                    if(currentName === section ) { 
-                        this.sections[currentName].splice(i,1);
+            (sectionName) => {
+                if( (i = this.sections[sectionName].indexOf(itemId)) !== -1) {
+                    if(sectionName === section ) { 
+                        this.sections[sectionName].splice(i,1);
                         this.sections['unsorted'].unshift(itemId);
                         return;
                     } else { // take the i'th element out of the current section and put it at the top of the new section
-                        this.sections[currentName].splice(i,1);
+                        this.sections[sectionName].splice(i,1);
                         this.sections[section].unshift(itemId);
                         return; //no need to continue, there's only one
                     }
@@ -183,7 +183,7 @@ class QSortItems extends React.Component {
       else {
         content = Object.keys(this.sections).forEach((name) => {
           this.sections[name].map(itemId => {
-            let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj; obj[button.name]=false; return(obj);});
+            let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj; obj[button]=false; return(obj);});
             let item = items[this.index[itemId]];
 
             return (
