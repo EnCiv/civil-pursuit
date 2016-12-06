@@ -181,12 +181,12 @@ class QSortItems extends React.Component {
       }
 
       else {
-        content = Object.keys(this.sections).map((name) => {
-            let itemContent = this.sections[name].map(itemId => {
+                Object.keys(this.sections).forEach((name) => {
+                this.sections[name].forEach(itemId => {
                 let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj={}; obj[button]=false; return(obj);});
                 let item = items[this.index[itemId]];
 
-                return (
+                content.push (
                     <div style={{backgroundColor: this.QSortButtonList[name].color}}>
                         <ItemStore item={ item } key={ `item-${item._id}` }>
                             <Item
@@ -212,7 +212,6 @@ class QSortItems extends React.Component {
                     </div>
                 );
             });
-            return itemContent;
         });
       }
     }
