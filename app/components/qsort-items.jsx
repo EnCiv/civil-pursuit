@@ -200,7 +200,7 @@ class QSortItems extends React.Component {
                                     user    =   { user }
                                     toggle  =   { this.toggle.bind(this) }
                                     buttonstate = { buttonstate }
-                                    qsortbuttons={ this.QSortButtonList }
+                                    qbuttons={ this.QSortButtonList }
                                     />
                                 </ItemStore>
                             ) }
