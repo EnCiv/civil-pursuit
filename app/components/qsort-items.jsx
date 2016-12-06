@@ -10,7 +10,7 @@ import Join               from './join';
 import Accordion          from './util/accordion';
 import Promote            from './promote';
 import EvaluationStore    from './store/evaluation';
-import ItemButtons        from './item-buttons';
+import QSortButtons        from './qsort-buttons';
 import Icon               from './util/icon';
 import Creator            from './creator';
 import ItemStore          from '../components/store/item';
