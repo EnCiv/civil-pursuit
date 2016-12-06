@@ -182,37 +182,38 @@ class QSortItems extends React.Component {
 
       else {
         content = Object.keys(this.sections).map((name) => {
-          this.sections[name].map(itemId => {
-            let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj={}; obj[button]=false; return(obj);});
-            let item = items[this.index[itemId]];
+            let itemContent = this.sections[name].map(itemId => {
+                let buttonstate=Object.keys(this.QSortButtonList).slice(1).map(button => {var obj={}; obj[button]=false; return(obj);});
+                let item = items[this.index[itemId]];
 
-            return (
-                <div style={{backgroundColor: this.QSortButtonList[name].color}}>
-                    <ItemStore item={ item } key={ `item-${item._id}` }>
-                        <Item
-                        item    =   { item }
-                        user    =   { user }
-                        buttons =   { (
-                            <ItemStore item={ item }>
-                            <QSortButtons
-                                item    =   { item }
-                                user    =   { user }
-                                toggle  =   { this.toggle.bind(this) }
-                                buttonstate = { buttonstate }
-                                qsortbuttons={ this.QSortButtonList }
-                                />
-                            </ItemStore>
-                        ) }
-                        collapsed =  { false }  //collapsed if there is an active item and it's not this one
-                        toggle  =   { this.toggle.bind(this) }
-                        focusAction={this.props.focusAction}
-                        truncateItems={this.props.resetView}
-                        />
-                    </ItemStore>
-                </div>
-            );
-          })
-        })
+                return (
+                    <div style={{backgroundColor: this.QSortButtonList[name].color}}>
+                        <ItemStore item={ item } key={ `item-${item._id}` }>
+                            <Item
+                            item    =   { item }
+                            user    =   { user }
+                            buttons =   { (
+                                <ItemStore item={ item }>
+                                <QSortButtons
+                                    item    =   { item }
+                                    user    =   { user }
+                                    toggle  =   { this.toggle.bind(this) }
+                                    buttonstate = { buttonstate }
+                                    qsortbuttons={ this.QSortButtonList }
+                                    />
+                                </ItemStore>
+                            ) }
+                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            toggle  =   { this.toggle.bind(this) }
+                            focusAction={this.props.focusAction}
+                            truncateItems={this.props.resetView}
+                            />
+                        </ItemStore>
+                    </div>
+                );
+            });
+            return itemContent;
+        });
       }
     }
    
