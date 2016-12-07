@@ -10,7 +10,7 @@ import Join               from './join';
 import Accordion          from './util/accordion';
 import Promote            from './promote';
 import EvaluationStore    from './store/evaluation';
-import QSortButtons        from './qsort-buttons';
+import QSortButtons       from './qsort-buttons';
 import Icon               from './util/icon';
 import Creator            from './creator';
 import ItemStore          from '../components/store/item';
@@ -18,6 +18,7 @@ import Details            from './details';
 import DetailsStore       from './store/details';
 import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
+import update             from 'immutability-helper';
 
 class QSortItems extends React.Component {
 
@@ -67,6 +68,16 @@ class QSortItems extends React.Component {
   sections = [];
   index = [];
 
+//from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
+  cloneArray(arr) {  
+    // Deep copy arrays. Going one level deep seems to be enough.
+    var clone = [];
+    for (i=0; i<arr.length; i++) {
+        clone.push( arr[i].slice(0) )
+    }
+    return clone;
+    }
+
   constructor(props){
       super(props);
       console.info("qsort constructor", this.QSortButtonList );
@@ -94,11 +105,11 @@ class QSortItems extends React.Component {
                     this.sections['unsorted'].push(newItem._id);
                     this.index[newItem._id]=i;
                 }else {
-                    currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted on day
+                    currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted one day
                 }
-            }); 
+            });
         }
-        this.setState({sections: this.sections} );
+        this.setState({sections: {['unsorted']: this.sections['unsorted'].slice()}});
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,19 +135,23 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
+    let sectionsState=this.state.sections.slice()
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.sections).forEach(
             (sectionName) => {
                 if( (i = this.sections[sectionName].indexOf(itemId)) !== -1) {
                     if(sectionName === section ) { 
+                        //take the i'th element out of the section it is in and put it back in unsorted
                         this.sections[sectionName].splice(i,1);
                         this.sections['unsorted'].unshift(itemId);
-                        this.setState({sections: this.sections} );
+                        this.setState({sections: {[sectionName]: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
+                        this.setState({sections: {['unsorted']:  update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return;
-                    } else { // take the i'th element out of the current section and put it at the top of the new section
+                    } else { // take the i'th element out of the unsorted section and put it at the top of the new section
                         this.sections[sectionName].splice(i,1);
                         this.sections[section].unshift(itemId);
-                        this.setState({sections: this.sections} );
+                        this.setState({sections: {['unsorted']: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
+                        this.setState({sections: {[sectionName]: update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return; //no need to continue, there's only one
                     }
                 }
