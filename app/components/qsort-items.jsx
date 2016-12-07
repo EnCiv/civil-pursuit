@@ -65,7 +65,6 @@ class QSortItems extends React.Component {
         }
     };
   
-  sections = [];
   index = [];
 
 //from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
@@ -98,10 +97,10 @@ class QSortItems extends React.Component {
       });
       console.info("qsort contructor section", sectionsObj);
       stateCode=this.setState({'sections': sectionsObj});
-      console.info("qsore stateCode",stateCode);
+      console.info("qsort stateCode",stateCode);
   }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = Object.entries(this.index);
@@ -119,7 +118,7 @@ class QSortItems extends React.Component {
                 }
             });
         }
-        this.setState({'sections': {unsorted: unsorted.slice()}});
+        this.setState({'sections': {'unsorted': unsorted.slice()}});
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +144,6 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
-    let sectionsState=this.state.sections.slice() || [];
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.state.sections).forEach(
             (sectionName) => {
