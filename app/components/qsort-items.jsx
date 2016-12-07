@@ -80,36 +80,40 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
+      let unsorted= [];
       console.info("qsort constructor", this.QSortButtonList );
       let buttons = Object.keys(this.QSortButtonList);
       console.info("qsort buttons", buttons);
-      buttons.forEach(button => this.sections[button]=[]);
-      console.info("qsort section", this.sections);
+      buttons.forEach(button => {
+          this.setState({sections: {[button]: []}});
+      });
+      console.info("qsort section", this.state.sections);
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
-            this.sections['unsorted'].push(item._id);
+            unsorted.push(item._id);
             this.index[item._id]=i;
         });
       }
-      this.setState({sections: this.sections} );
-      console.info("qsort constructed");
+      this.setState({sections: {['unsorted']: unsorted.slice()}});
+      console.info("qsort constructed", this.state.sections);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = Object.entries(this.index);
+        let unsorted=this.state.sections['unsorted'].slice(); // makes a copy
         if(newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
                 if(!(newItem.id in this.index)) {
-                    this.sections['unsorted'].push(newItem._id);
+                    undorted.push(newItem._id);
                     this.index[newItem._id]=i;
                 }else {
                     currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted one day
                 }
             });
         }
-        this.setState({sections: {['unsorted']: this.sections['unsorted'].slice()}});
+        this.setState({sections: {['unsorted']: unsorted.slice()}});
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,19 +141,15 @@ class QSortItems extends React.Component {
     let i;
     let sectionsState=this.state.sections.slice()
     if ( itemId && section && section !=='harmony' ) {
-        Object.keys(this.sections).forEach(
+        Object.keys(this.state.sections).forEach(
             (sectionName) => {
-                if( (i = this.sections[sectionName].indexOf(itemId)) !== -1) {
+                if( (i = this.state.sections[sectionName].indexOf(itemId)) !== -1) {
                     if(sectionName === section ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
-                        this.sections[sectionName].splice(i,1);
-                        this.sections['unsorted'].unshift(itemId);
                         this.setState({sections: {[sectionName]: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
                         this.setState({sections: {['unsorted']:  update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return;
                     } else { // take the i'th element out of the unsorted section and put it at the top of the new section
-                        this.sections[sectionName].splice(i,1);
-                        this.sections[section].unshift(itemId);
                         this.setState({sections: {['unsorted']: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
                         this.setState({sections: {[sectionName]: update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return; //no need to continue, there's only one
@@ -191,7 +191,7 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
-      if ( ! this.sections['unsorted'].length ) {
+      if ( ! this.index.length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
@@ -202,7 +202,7 @@ class QSortItems extends React.Component {
       }
 
       else {
-                Object.keys(this.sections).forEach((name) => {
+                Object.keys(this.state.sections).forEach((name) => {
                 this.state.sections[name].forEach(itemId => {
                 let buttonstate= {}
                 Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
