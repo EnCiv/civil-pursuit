@@ -69,32 +69,34 @@ class QSortItems extends React.Component {
   index = [];
 
 //from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
-  cloneArray(arr) {  
-    // Deep copy arrays. Going one level deep seems to be enough.
-    var clone = [];
-    for (i=0; i<arr.length; i++) {
-        clone.push( arr[i].slice(0) )
-    }
-    return clone;
-    }
+  cloneSections(section) {  
+        // Deep copy arrays. Going one level deep seems to be enough.
+        var clone = {};
+        Object.keys(section).forEach(button => {
+            clone[button].push( arr[button].slice(0) );
+        });
+        return clone;
+  }
 
   constructor(props){
       super(props);
-      let unsorted= [];
-      console.info("qsort constructor", this.QSortButtonList );
-      let buttons = Object.keys(this.QSortButtonList);
-      console.info("qsort buttons", buttons);
-      buttons.forEach(button => {
-          this.setState({sections: {[button]: []}});
-      });
-      console.info("qsort section", this.state.sections);
+      let sections= {};
+      let splice=0;
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
-            unsorted.push(item._id);
+            sections['unsorted'].push(item._id);
             this.index[item._id]=i;
         });
+      }else{
+          splice=1; // skip the first button called 'unsorted'
       }
-      this.setState({sections: {['unsorted']: unsorted.slice()}});
+      let buttons = Object.keys(this.QSortButtonList).splice(splice,0);
+      console.info("qsort buttons", buttons);
+      buttons.forEach(button => {
+          sections[button]=[];
+      });
+      console.info("qsort contructor section", section);
+      this.setState({sections: sections});
       console.info("qsort constructed", this.state.sections);
   }
 
@@ -113,7 +115,7 @@ class QSortItems extends React.Component {
                 }
             });
         }
-        this.setState({sections: {['unsorted']: unsorted.slice()}});
+        this.setState({sections: {unsorted: unsorted.slice()}});
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
