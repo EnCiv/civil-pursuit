@@ -103,7 +103,7 @@ class QSortItems extends React.Component {
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = Object.entries(this.index);
-        var unsorted=this.state.sections['unsorted'].slice(); // makes a copy
+        var unsorted=this.state.sections['unsorted'].slice() || []; // makes a copy
         if(newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
                 if(!(newItem.id in this.index)) {
