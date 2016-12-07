@@ -103,7 +103,10 @@ class QSortItems extends React.Component {
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = Object.entries(this.index);
-        var unsorted=this.state.sections['unsorted'].slice() || []; // makes a copy
+        var unsorted= [];
+        if(this.state.sections!==null) {
+            unsorted=this.state.sections['unsorted'].slice() || []; // makes a copy
+        }
         if(newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
                 if(!(newItem.id in this.index)) {
@@ -140,7 +143,7 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
-    let sectionsState=this.state.sections.slice()
+    let sectionsState=this.state.sections.slice() || [];
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.state.sections).forEach(
             (sectionName) => {
