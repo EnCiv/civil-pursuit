@@ -96,7 +96,7 @@ class QSortItems extends React.Component {
           sections[button]=[];
       });
       console.info("qsort contructor section", sections);
-      this.setState({sections: sections});
+      this.setState({'sections': sections});
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,7 +117,7 @@ class QSortItems extends React.Component {
                 }
             });
         }
-        this.setState({sections: {unsorted: unsorted.slice()}});
+        this.setState({'sections': {unsorted: unsorted.slice()}});
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,12 +150,12 @@ class QSortItems extends React.Component {
                 if( (i = this.state.sections[sectionName].indexOf(itemId)) !== -1) {
                     if(sectionName === section ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
-                        this.setState({sections: {[sectionName]: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
-                        this.setState({sections: {['unsorted']:  update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
+                        this.setState({'sections': {[sectionName]: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
+                        this.setState({'sections': {['unsorted']:  update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return;
                     } else { // take the i'th element out of the unsorted section and put it at the top of the new section
-                        this.setState({sections: {['unsorted']: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
-                        this.setState({sections: {[sectionName]: update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
+                        this.setState({'sections': {['unsorted']: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
+                        this.setState({'sections': {[sectionName]: update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
                         return; //no need to continue, there's only one
                     }
                 }
