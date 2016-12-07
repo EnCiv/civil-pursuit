@@ -72,7 +72,7 @@ class ItemButtons extends React.Component {
     }
 
 
-    if( user && item.user._id == user.id) {
+    if( user && item.user && item.user._id == user.id) {
       if(buttonstate.details) {
         details = (
           <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="Close the feedback view">
