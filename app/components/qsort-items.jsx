@@ -81,21 +81,21 @@ class QSortItems extends React.Component {
   constructor(props){
       super(props);
       let sections= {};
-      let splice=0;
+      let start=0;
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
             sections['unsorted'].push(item._id);
             this.index[item._id]=i;
         });
       }else{
-          splice=1; // skip the first button called 'unsorted'
+          start=1; // skip the first button called 'unsorted'
       }
-      let buttons = Object.keys(this.QSortButtonList).splice(splice,0);
+      let buttons = Object.keys(this.QSortButtonList).slice(start);
       console.info("qsort buttons", buttons);
       buttons.forEach(button => {
           sections[button]=[];
       });
-      console.info("qsort contructor section", section);
+      console.info("qsort contructor section", sections);
       this.setState({sections: sections});
       console.info("qsort constructed", this.state.sections);
   }
@@ -204,7 +204,7 @@ class QSortItems extends React.Component {
       }
 
       else {
-                Object.keys(this.state.sections).forEach((name) => {
+                Object.keys(this.QSortButtonList).forEach((name) => {
                 this.state.sections[name].forEach(itemId => {
                 let buttonstate= {}
                 Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
