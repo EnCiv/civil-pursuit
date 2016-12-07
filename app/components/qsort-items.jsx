@@ -81,14 +81,14 @@ class QSortItems extends React.Component {
   constructor(props){
       super(props);
       let sections= {};
-      let start=0;
+      let start=1;
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
             sections['unsorted'].push(item._id);
             this.index[item._id]=i;
         });
       }else{
-          start=1; // skip the first button called 'unsorted'
+          start=0; // don't skip the first button called 'unsorted'
       }
       let buttons = Object.keys(this.QSortButtonList).slice(start);
       console.info("qsort buttons", buttons);
