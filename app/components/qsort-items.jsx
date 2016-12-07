@@ -97,7 +97,6 @@ class QSortItems extends React.Component {
       });
       console.info("qsort contructor section", sections);
       this.setState({sections: sections});
-      console.info("qsort constructed", this.state.sections);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
