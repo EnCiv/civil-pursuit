@@ -80,11 +80,12 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      var sections= {};
+      var sectionsObj= {};
       let start=1;
+      let stateCode;
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
-            sections['unsorted'].push(item._id);
+            sectionsObj['unsorted'].push(item._id);
             this.index[item._id]=i;
         });
       }else{
@@ -93,10 +94,11 @@ class QSortItems extends React.Component {
       let buttons = Object.keys(this.QSortButtonList).slice(start);
       console.info("qsort buttons", buttons);
       buttons.forEach(button => {
-          sections[button]=[];
+          sectionsObj[button]=[];
       });
-      console.info("qsort contructor section", sections);
-      this.setState({'sections': sections});
+      console.info("qsort contructor section", sectionsObj);
+      stateCode=this.setState({'sections': sectionsObj});
+      console.info("qsore stateCode",stateCode);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
