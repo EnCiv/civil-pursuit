@@ -145,20 +145,21 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
+    let done=false;
     var clone={};
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.QSortButtonList).splice(0,1).forEach(
             (sectionName) => {
-                if( (i = this.state.sections[sectionName].indexOf(itemId)) !== -1) {
+                if( !done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                     if(sectionName === section ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
                         clone[sectionName]=update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
                         clone['unsorted']=update(this.state.sections['unsorted'],  {$unshift: [itemId] });
-                        return;
+                        done=true;
                     } else { // take the i'th element out of the unsorted section and put it at the top of the new section
                         clone['unsorted']= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
                         clone[sectionName]= update(this.state.sections['unsorted'],  {$unshift: [itemId] });
-                        return; //no need to continue, there's only one
+                        done=true;
                     }
                 }else{
                     clone[sectionName]=this.state.sections[sectionName].slice();
