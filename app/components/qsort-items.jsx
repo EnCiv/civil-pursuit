@@ -73,7 +73,7 @@ class QSortItems extends React.Component {
         var clone = {};
         Object.keys(section).forEach(button => {
             clone[button]=[];
-            clone[button].push( arr[button].slice(0) );
+            clone[button].push( section[button].slice(0) );
         });
         return clone;
   }
