@@ -148,7 +148,7 @@ class QSortItems extends React.Component {
     let done=false;
     var clone={};
     if ( itemId && section && section !=='harmony' ) {
-        Object.keys(this.QSortButtonList).splice(0,1).forEach(
+        Object.keys(this.QSortButtonList).slice(1).forEach(
             (sectionName) => {
                 if( !done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                     if(sectionName === section ) { 
