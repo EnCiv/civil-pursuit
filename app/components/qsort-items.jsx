@@ -172,7 +172,7 @@ class QSortItems extends React.Component {
                 }
             }
         );
-        this.setState({'sections': clone});
+        this.setState({'sections': this.cloneSections(clone)});
     }
   }
 
