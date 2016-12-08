@@ -80,25 +80,24 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      var sectionsObj= {};
-      let start=1;
-      let stateCode;
+      var unsorted= [];
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
-            sectionsObj['unsorted'].push(item._id);
+            unsorted.push(item._id);
             this.index[item._id]=i;
         });
       }else{
           start=0; // don't skip the first button called 'unsorted'
       }
-      let buttons = Object.keys(this.QSortButtonList).slice(start);
+      let buttons = Object.keys(this.QSortButtonList);
       console.info("qsort buttons", buttons);
       buttons.forEach(button => {
-          sectionsObj[button]=[];
+          this.state.section[button]=[];
       });
-      console.info("qsort contructor section", sectionsObj);
-      stateCode=this.setState({'sections': this.cloneSections(sectionsObj)});
-      console.info("qsort stateCode",stateCode);
+      console.info("qsort contructor section", this.state);
+      if(Object.keys(unsorted).length){
+        this.setState({'sections': {'unsorted': unsorted.slice()}});
+      }
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
