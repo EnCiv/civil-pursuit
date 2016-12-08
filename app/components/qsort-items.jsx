@@ -64,6 +64,7 @@ class QSortItems extends React.Component {
     };
   
   index = [];
+  state={};
 
 //from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
   cloneSections(section) {  
