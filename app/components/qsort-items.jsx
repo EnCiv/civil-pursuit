@@ -150,7 +150,6 @@ class QSortItems extends React.Component {
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.QSortButtonList).forEach(
             (sectionName) => {
-                clone[sectionName]=[];
                 if( !done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                     if(sectionName === section ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
