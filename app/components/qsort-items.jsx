@@ -26,8 +26,6 @@ class QSortItems extends React.Component {
     panel           :   panelType
   };
 
-  state = {sections: null};
-
   QSortButtonList = {
         unsorted: {
             name: 'unsorted',
@@ -91,6 +89,7 @@ class QSortItems extends React.Component {
       }
       let buttons = Object.keys(this.QSortButtonList);
       console.info("qsort buttons", buttons);
+      this.state.sections=[];
       buttons.forEach(button => {
           this.state.sections[button]=[];
       });
