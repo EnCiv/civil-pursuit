@@ -80,8 +80,7 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      var unsorted= [];
-      unsortedLength=0;
+      var unsorted= [], unsortedLength=0;
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
             unsorted.push(item._id);
