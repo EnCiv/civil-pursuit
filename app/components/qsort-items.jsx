@@ -68,14 +68,14 @@ class QSortItems extends React.Component {
   index = [];
 
 //from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
-//  cloneSections(section) {  
-//        // Deep copy arrays. Going one level deep seems to be enough.
-//        var clone = {};
-//        Object.keys(section).forEach(button => {
-//            clone[button].push( arr[button].slice(0) );
-//        });
-//        return clone;
-//  }
+  cloneSections(section) {  
+        // Deep copy arrays. Going one level deep seems to be enough.
+        var clone = {};
+        Object.keys(section).forEach(button => {
+            clone[button].push( arr[button].slice(0) );
+        });
+        return clone;
+  }
 
   constructor(props){
       super(props);
@@ -96,7 +96,7 @@ class QSortItems extends React.Component {
           sectionsObj[button]=[];
       });
       console.info("qsort contructor section", sectionsObj);
-      stateCode=this.setState({'sections': sectionsObj});
+      stateCode=this.setState({'sections': cloneSections(sectionsObj)});
       console.info("qsort stateCode",stateCode);
   }
 
@@ -195,7 +195,7 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
-      if ( ! this.index.length ) {
+      if ( ! Object.keys(this.index).length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
