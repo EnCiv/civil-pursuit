@@ -167,7 +167,7 @@ class QSortItems extends React.Component {
                         clone[section]= update(this.state.sections[sections],  {$unshift: [itemId] });
                         done=true;
                     }
-                } else {
+                } else if (sectionName != section) {  //don't overwrite the one you are modifying
                     clone[sectionName]=this.state.sections[sectionName].slice();
                 }
             }
