@@ -147,9 +147,8 @@ class QSortItems extends React.Component {
     let i;
     let done=false;
     var clone={};
-    clone['unsorted']=[];
     if ( itemId && section && section !=='harmony' ) {
-        Object.keys(this.QSortButtonList).slice(1).forEach(
+        Object.keys(this.QSortButtonList).forEach(
             (sectionName) => {
                 clone[sectionName]=[];
                 if( !done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
@@ -158,12 +157,17 @@ class QSortItems extends React.Component {
                         clone[sectionName]=update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
                         clone['unsorted']=update(this.state.sections['unsorted'],  {$unshift: [itemId] });
                         done=true;
-                    } else { // take the i'th element out of the unsorted section and put it at the top of the new section
+                    } else if(sectionName === 'unsorted') { 
+                        // it was in unsorted, so take it out and put it where it in section
                         clone['unsorted']= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
-                        clone[sectionName]= update(this.state.sections['unsorted'],  {$unshift: [itemId] });
+                        clone[section]= update(this.state.sections[section], {$unshift: [itemId] });
+                        done = true;
+                    } else { // the item is in sectionName and should be moved to section
+                        clone[sectionName]= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
+                        clone[section]= update(this.state.sections[sections],  {$unshift: [itemId] });
                         done=true;
                     }
-                }else{
+                } else {
                     clone[sectionName]=this.state.sections[sectionName].slice();
                 }
             }
