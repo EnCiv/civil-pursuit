@@ -108,12 +108,12 @@ class QSortItems extends React.Component {
         var newObj= this.cloneSections(this.state.sections);
         if(newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
-                if(!(newItem.id in this.index)) {
+                if(!(newItem._id in this.index)) {
                     newObj['unsorted'].push(newItem._id);
                     this.index[newItem._id]=i;
                     unsortedLength++;
                 }else {
-                    currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted one day
+                    currentIndex[newItem._id]= -1; // items not marked -1 here should be deleted one day
                 }
             });
         }
