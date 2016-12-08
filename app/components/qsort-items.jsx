@@ -145,23 +145,27 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
+    clone={};
     if ( itemId && section && section !=='harmony' ) {
-        Object.keys(this.state.sections).forEach(
+        Object.keys(this.QSortButtonList).splice(0,1).forEach(
             (sectionName) => {
                 if( (i = this.state.sections[sectionName].indexOf(itemId)) !== -1) {
                     if(sectionName === section ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
-                        this.setState({'sections': {[sectionName]: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
-                        this.setState({'sections': {['unsorted']:  update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
+                        clone[sectionName]=update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
+                        clone['unsorted']=update(this.state.sections['unsorted'],  {$unshift: [itemId] });
                         return;
                     } else { // take the i'th element out of the unsorted section and put it at the top of the new section
-                        this.setState({'sections': {['unsorted']: update(this.state.sections[sectionName], {$splice:  [[i,1]]  })}});
-                        this.setState({'sections': {[sectionName]: update(this.state.sections['unsorted'],  {$unshift: [itemId] })}});
+                        clone['unsorted']= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
+                        clone[sectionName]= update(this.state.sections['unsorted'],  {$unshift: [itemId] });
                         return; //no need to continue, there's only one
                     }
+                }else{
+                    clone[sectionName]=this.state.sections[sectionName].slice();
                 }
             }
         );
+        this.setState({'sections': clone});
     }
   }
 
