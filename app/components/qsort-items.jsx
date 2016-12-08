@@ -63,7 +63,7 @@ class QSortItems extends React.Component {
         }
     };
   
-  index = [];
+  index ={};
   state={};
 
 //from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
@@ -79,24 +79,25 @@ class QSortItems extends React.Component {
 
   constructor(props){
       super(props);
-      var unsorted=[];
+      var newObj={};
       let unsortedLength=0;
-      if(props.panel && props.panel.items) {
-        props.panel.items.forEach((item,i) =>{
-            unsorted.push(item._id);
-            this.index[item._id]=i;
-            unsortedLength++;
-        });
-      }
       let buttons = Object.keys(this.QSortButtonList);
       console.info("qsort buttons", buttons);
       this.state.sections=[];
       buttons.forEach(button => {
           this.state.sections[button]=[];
+          newObj[button]=[]
       });
+      if(props.panel && props.panel.items) {
+        props.panel.items.forEach((item,i) =>{
+            newObj['unsorted'].push(item._id);
+            this.index[item._id]=i;
+            unsortedLength++;
+        });
+      }
       console.info("qsort contructor section", this.state);
       if(unsortedLength){
-        this.setState({'sections': {'unsorted': unsorted.slice()}});
+        this.setState({'sections': newObj});
       }
   }
 
@@ -104,21 +105,22 @@ class QSortItems extends React.Component {
 
     componentWillReceiveProps(newProps){ //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = Object.entries(this.index);
-        var unsorted= [];
-        if(this.state.sections!==null) {
-            unsorted=this.state.sections['unsorted'].slice() || []; // makes a copy
-        }
+        let unsortedLength=0;
+        var newObj= this.cloneSections(this.state.sections);
         if(newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem,i) => {
                 if(!(newItem.id in this.index)) {
-                    unsorted.push(newItem._id);
+                    newObj['unsorted'].push(newItem._id);
                     this.index[newItem._id]=i;
+                    unsortedLength++;
                 }else {
                     currentIndex[newItem.id]= -1; // items not marked -1 here should be deleted one day
                 }
             });
         }
-        this.setState({'sections': {'unsorted': unsorted.slice()}});
+        if(unsortedLength){
+          this.setState({'sections': this.cloneSections(newObj)});
+        }
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
