@@ -142,31 +142,31 @@ class QSortItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  toggle (itemId, section) {
+  toggle (itemId, button) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
     let done=false;
     var clone={};
-    if ( itemId && section && section !=='harmony' ) {
+    if ( itemId && button && button !=='harmony' ) {
         Object.keys(this.QSortButtonList).forEach(
             (sectionName) => {
                 if( !done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
-                    if(sectionName === section ) { 
+                    if(sectionName === button ) { 
                         //take the i'th element out of the section it is in and put it back in unsorted
-                        clone[sectionName]=update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
+                        clone[button]=update(this.state.sections[button], {$splice:  [[i,1]]  });
                         clone['unsorted']=update(this.state.sections['unsorted'],  {$unshift: [itemId] });
                         done=true;
                     } else if(sectionName === 'unsorted') { 
-                        // it was in unsorted, so take it out and put it where it in section
-                        clone['unsorted']= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
-                        clone[section]= update(this.state.sections[section], {$unshift: [itemId] });
+                        // it was in unsorted, so take it out and put it where it in the button's section
+                        clone['unsorted']= update(this.state.sections['unsorted'], {$splice:  [[i,1]]  });
+                        clone[button]= update(this.state.sections[button], {$unshift: [itemId] });
                         done = true;
-                    } else { // the item is in sectionName and should be moved to section
+                    } else { // the item is in some other sectionName and should be moved to this button's section
                         clone[sectionName]= update(this.state.sections[sectionName], {$splice:  [[i,1]]  });
-                        clone[section]= update(this.state.sections[sections],  {$unshift: [itemId] });
+                        clone[button]= update(this.state.sections[button],  {$unshift: [itemId] });
                         done=true;
                     }
-                } else if (sectionName != section) {  //don't overwrite the one you are modifying
+                } else if (sectionName != button) {  // copy over the other stction byt don't overwrite the one you are modifying
                     clone[sectionName]=this.state.sections[sectionName].slice();
                 }
             }
