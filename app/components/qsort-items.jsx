@@ -97,7 +97,7 @@ class QSortItems extends React.Component {
           sectionsObj[button]=[];
       });
       console.info("qsort contructor section", sectionsObj);
-      stateCode=this.setState({'sections': cloneSections(sectionsObj)});
+      stateCode=this.setState({'sections': this.cloneSections(sectionsObj)});
       console.info("qsort stateCode",stateCode);
   }
 
