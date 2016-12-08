@@ -145,7 +145,7 @@ class QSortItems extends React.Component {
   toggle (itemId, section) {
     //find the section that the itemId is in, take it out, and put it in the new section
     let i;
-    clone={};
+    var clone={};
     if ( itemId && section && section !=='harmony' ) {
         Object.keys(this.QSortButtonList).splice(0,1).forEach(
             (sectionName) => {
