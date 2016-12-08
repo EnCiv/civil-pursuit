@@ -72,6 +72,7 @@ class QSortItems extends React.Component {
         // Deep copy arrays. Going one level deep seems to be enough.
         var clone = {};
         Object.keys(section).forEach(button => {
+            clone[button]=[];
             clone[button].push( arr[button].slice(0) );
         });
         return clone;
