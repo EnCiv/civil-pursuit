@@ -221,8 +221,8 @@ class QSortItems extends React.Component {
                 this.state.sections[name].forEach(itemId => {
                 let buttonstate= {}
                 Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
+                if(name!='unsorted') {buttonstate[name]=true; }
                 let item = items[this.index[itemId]];
-
                 content.push (
                     <div style={{backgroundColor: this.QSortButtonList[name].color}}>
                         <ItemStore item={ item } key={ `item-${item._id}` }>
