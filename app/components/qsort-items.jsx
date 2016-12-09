@@ -248,7 +248,7 @@ class QSortItems extends React.Component {
             heading     =   {[( <h4>{ title }</h4> )]}
             >
                 <div className="top-articles">
-                    <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
+                    <FlipMove>
                        { this.renderQ(content) }
                     </FlipMove>
                 </div>
@@ -258,7 +258,7 @@ class QSortItems extends React.Component {
     }
 
     renderQ (content){
-        content.map( article => <QSortFlipItem {...article} key={article.id} /> )
+        return (content.map( article => <QSortFlipItem {...article} key={article.id} /> ));
     }
 }
 
