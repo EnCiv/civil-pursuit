@@ -38,3 +38,5 @@ class QSortFlipItem extends React.Component {
 
     }
 }
+
+export default QSortFlipItem;
