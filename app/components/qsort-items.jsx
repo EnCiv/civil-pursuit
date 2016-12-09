@@ -225,15 +225,15 @@ class QSortItems extends React.Component {
                         if(name!='unsorted') {buttonstate[name]=true; }
                             let item = items[this.index[itemId]];
                             content.push (
-                                <QSortFlipItem 
-                                    sectionName = {name}
-                                    qbuttons= {this.QSortButtonList}
-                                    user={user}
-                                    item={item}
-                                    toggle={this.toggle.bind(this)}
-                                    buttonstate = { buttonstate }
-                                    id={ item._id }
-                                 />
+                                {
+                                    sectionName:    name,
+                                    qbuttons:       this.QSortButtonList,
+                                    user:           user,
+                                    item:           item,
+                                    toggle:         this.toggle.bind(this),
+                                    buttonstate:    buttonstate,
+                                    id:             item._id
+                                }
                             );
                         });
                 });
@@ -247,7 +247,11 @@ class QSortItems extends React.Component {
             ref         =   "panel"
             heading     =   {[( <h4>{ title }</h4> )]}
             >
-                    { content }
+                <div className="top-articles">
+                    <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
+                        content.map( article => <QSortFlipItem {...article} key={article.id} />);
+                    </FlipMove>
+                </div>
             </Panel>
         </section>
         );
