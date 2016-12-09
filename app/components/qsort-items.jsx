@@ -20,6 +20,7 @@ import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
 import update             from 'immutability-helper';
 import FlipMove           from 'react-flip-move';
+import QSortFlipItem      from './qsort-flip-item'
 
 
 class QSortItems extends React.Component {
