@@ -224,29 +224,15 @@ class QSortItems extends React.Component {
                         if(name!='unsorted') {buttonstate[name]=true; }
                             let item = items[this.index[itemId]];
                             content.push (
-                                <div style={{backgroundColor: this.QSortButtonList[name].color}}>
-                                    <ItemStore item={ item } key={ `item-${item._id}` }>
-                                        <Item
-                                        item    =   { item }
-                                        user    =   { user }
-                                        buttons =   { (
-                                            <ItemStore item={ item }>
-                                            <QSortButtons
-                                                item    =   { item }
-                                                user    =   { user }
-                                                toggle  =   { this.toggle.bind(this) }
-                                                buttonstate = { buttonstate }
-                                                qbuttons={ this.QSortButtonList }
-                                                />
-                                            </ItemStore>
-                                        ) }
-                                        collapsed =  { false }  //collapsed if there is an active item and it's not this one
-                                        toggle  =   { this.toggle.bind(this) }
-                                        focusAction={this.props.focusAction}
-                                        truncateItems={this.props.resetView}
-                                        />
-                                    </ItemStore>
-                                </div>
+                                <QSortFlipItem 
+                                    sectionName = {name}
+                                    qbuttons= {this.QSortButtonList}
+                                    user={user}
+                                    item={item}
+                                    toggle={this.toggle.bind(this)}
+                                    buttonstate = { buttonstate }
+                                    id={ item._id }
+                                 />
                             );
                         });
                 });
@@ -261,9 +247,10 @@ class QSortItems extends React.Component {
             heading     =   {[( <h4>{ title }</h4> )]}
             >
                 <div className="top-articles">
-                    <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
-                        content.map( article => <article {...article} key={article.id} /> 
-                    </FlipMove>
+ //                   <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
+ //                       content.map( article => <div {...article} key={article.id} /> 
+ //                   </FlipMove>
+                    {content}
                 </div>
             </Panel>
         </section>
