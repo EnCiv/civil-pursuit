@@ -260,7 +260,11 @@ class QSortItems extends React.Component {
             ref         =   "panel"
             heading     =   {[( <h4>{ title }</h4> )]}
             >
-                <TopArticles articles={ content } />
+                <div className="top-articles">
+                    <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
+                        content.map( article => <Article {...article} key={article.id} /> 
+                    </FlipMove>
+                </div>
             </Panel>
         </section>
         );

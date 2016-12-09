@@ -17,4 +17,4 @@ class TopArticles extends Component {
       </div>
     );
   }
-}
+}   
