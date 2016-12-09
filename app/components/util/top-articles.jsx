@@ -1,3 +1,6 @@
+'use strict';
+
+import React              from 'react';
 import FlipMove from 'react-flip-move';
 
 class TopArticles extends Component {
