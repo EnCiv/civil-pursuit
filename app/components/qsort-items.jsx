@@ -249,7 +249,7 @@ class QSortItems extends React.Component {
             >
                 <div className="top-articles">
                     <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
-                        content.map( article => <QSortFlipItem {...article} key={article.id} />);
+                        content.map( article => { <QSortFlipItem {...article} key={article.id} /> });
                     </FlipMove>
                 </div>
             </Panel>
