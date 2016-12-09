@@ -19,6 +19,8 @@ import DetailsStore       from './store/details';
 import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
 import update             from 'immutability-helper';
+import FlipMove           from 'react-flip-move';
+import TopArticles        from './util/top-articles.jsz';
 
 class QSortItems extends React.Component {
 
@@ -34,20 +36,18 @@ class QSortItems extends React.Component {
                 active: "Yea! this is in a stack",
                 inactive: "Put this in in a stack"
             }
-
         },
         most: {
             name: 'most',
-            color: '#f0f0ff',
+            color: '#e0e0ff',
             title: {
                 active: "Yea! this is in the most important stack",
                 inactive: "Put this in the most important stack"
             }
-
         },
         neutral: {
             name: 'neutral',
-            color: '#f0f0f0',
+            color: '#e0e0f0',
             title: {
                 active: "This is among the things that are neight most nor least important",
                 inactive: "Put this among the things that are neight most nor least important"
@@ -55,10 +55,10 @@ class QSortItems extends React.Component {
         },
         least: {
             name: 'least',
-            color: '#fff0f0',
+            color: '#ffe0e0',
             title: {
-                active: "This is in the least important stacko of them all",
-                inactive: "Put this in the most important stack of them all"
+                active: "This is in the least important stack of them all",
+                inactive: "Put this in the least important stack of them all"
             }
         }
     };
@@ -260,7 +260,7 @@ class QSortItems extends React.Component {
             ref         =   "panel"
             heading     =   {[( <h4>{ title }</h4> )]}
             >
-            { content }
+                <TopArticles articles={ content } />
             </Panel>
         </section>
         );
