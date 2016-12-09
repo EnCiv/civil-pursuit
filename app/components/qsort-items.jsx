@@ -20,7 +20,7 @@ import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
 import update             from 'immutability-helper';
 import FlipMove           from 'react-flip-move';
-import TopArticles        from './util/top-articles.jsx';
+import TopArticles        from './util/top-articles';
 
 class QSortItems extends React.Component {
 
