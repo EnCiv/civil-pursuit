@@ -218,40 +218,40 @@ class QSortItems extends React.Component {
 
       else {
                 Object.keys(this.QSortButtonList).forEach((name) => {
-                this.state.sections[name].forEach(itemId => {
-                let buttonstate= {}
-                Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
-                if(name!='unsorted') {buttonstate[name]=true; }
-                let item = items[this.index[itemId]];
-                content.push (
-                    <div style={{backgroundColor: this.QSortButtonList[name].color}}>
-                        <ItemStore item={ item } key={ `item-${item._id}` }>
-                            <Item
-                            item    =   { item }
-                            user    =   { user }
-                            buttons =   { (
-                                <ItemStore item={ item }>
-                                <QSortButtons
-                                    item    =   { item }
-                                    user    =   { user }
-                                    toggle  =   { this.toggle.bind(this) }
-                                    buttonstate = { buttonstate }
-                                    qbuttons={ this.QSortButtonList }
-                                    />
-                                </ItemStore>
-                            ) }
-                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
-                            toggle  =   { this.toggle.bind(this) }
-                            focusAction={this.props.focusAction}
-                            truncateItems={this.props.resetView}
-                            />
-                        </ItemStore>
-                    </div>
-                );
-            });
-        });
+                    this.state.sections[name].forEach(itemId => {
+                        let buttonstate= {}
+                        Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
+                        if(name!='unsorted') {buttonstate[name]=true; }
+                            let item = items[this.index[itemId]];
+                            content.push (
+                                <div style={{backgroundColor: this.QSortButtonList[name].color}}>
+                                    <ItemStore item={ item } key={ `item-${item._id}` }>
+                                        <Item
+                                        item    =   { item }
+                                        user    =   { user }
+                                        buttons =   { (
+                                            <ItemStore item={ item }>
+                                            <QSortButtons
+                                                item    =   { item }
+                                                user    =   { user }
+                                                toggle  =   { this.toggle.bind(this) }
+                                                buttonstate = { buttonstate }
+                                                qbuttons={ this.QSortButtonList }
+                                                />
+                                            </ItemStore>
+                                        ) }
+                                        collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                                        toggle  =   { this.toggle.bind(this) }
+                                        focusAction={this.props.focusAction}
+                                        truncateItems={this.props.resetView}
+                                        />
+                                    </ItemStore>
+                                </div>
+                            );
+                        });
+                });
+            }
       }
-    }
    
         return (
         <section id               =     "syn-panel-qsort">
@@ -262,7 +262,7 @@ class QSortItems extends React.Component {
             >
                 <div className="top-articles">
                     <FlipMove easing="cubic-bezier(0, 0.7, 0.8, 0.1)">
-                        content.map( article => <Article {...article} key={article.id} /> 
+                        content.map( article => <article {...article} key={article.id} /> 
                     </FlipMove>
                 </div>
             </Panel>
