@@ -3,6 +3,7 @@
 import React              from 'react';
 import ItemStore          from '../components/store/item';
 import Item               from '../components/item';
+import QSortButtons       from './qsort-buttons';
 
 class QSortFlipItem extends React.Component {
 
@@ -18,13 +19,13 @@ class QSortFlipItem extends React.Component {
                             user    =   { user }
                             buttons =   { (
                                 <ItemStore item={ item }>
-                                <QSortButtons
-                                    item    =   { item }
-                                    user    =   { user }
-                                    toggle  =   { toggle }
-                                    buttonstate = { buttonstate }
-                                    qbuttons= { qbuttons }
-                                    />
+                                    <QSortButtons
+                                        item    =   { item }
+                                        user    =   { user }
+                                        toggle  =   { toggle }
+                                        buttonstate = { buttonstate }
+                                        qbuttons= { qbuttons }
+                                        />
                                 </ItemStore>
                             ) }
                             collapsed =  { false }  //collapsed if there is an active item and it's not this one
