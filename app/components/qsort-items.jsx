@@ -8,7 +8,7 @@ import ItemStore          from '../components/store/item';
 import update             from 'immutability-helper';
 import FlipMove           from 'react-flip-move';
 import QSortFlipItem      from './qsort-flip-item'
-import smoothScroll       from '../../lib/app/smooth-scroll';
+import smoothScroll       from '../lib/app/smooth-scroll';
 
 
 class QSortItems extends React.Component {
