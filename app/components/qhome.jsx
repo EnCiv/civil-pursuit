@@ -55,7 +55,8 @@ class QHome extends React.Component {
 
         const panel = {
             parent: this.props.panel.items[0],
-            type: this.props.panel.items[0].subtype
+            type: this.props.panel.items[0].subtype,
+            size: 100
         }
 
         content.push(
