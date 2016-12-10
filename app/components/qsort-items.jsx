@@ -63,13 +63,9 @@ class QSortItems extends React.Component {
             }
         }
     };
+
+  motionDuration=500; //500mSec
   
-  smooth(tag,e){
-    e.preventDefault();
-    let link=document.getElementsByName(tag);
-    this.smoothScroll(link[0].offsetTop, 500);
-    //document.body.animate({scrollTop: link[0].offsetTop}, 500);
-  }
 
   smoothScroll(target, time) {
     // time when scroll starts
@@ -101,9 +97,8 @@ class QSortItems extends React.Component {
   index ={};
   state={};
 
-//from http://stackoverflow.com/questions/25100714/for-a-deep-copy-of-a-javascript-multidimensional-array-going-one-level-deep-see
   cloneSections(section) {  
-        // Deep copy arrays. Going one level deep seems to be enough.
+        // Deep copy arrays.
         var clone = {};
         Object.keys(section).forEach(button => {
             clone[button]=section[button].slice(0);
@@ -129,7 +124,6 @@ class QSortItems extends React.Component {
             unsortedLength++;
         });
       }
-      console.info("qsort contructor section", this.state);
       if(unsortedLength){
         this.setState({'sections': newObj});
       }
@@ -156,23 +150,6 @@ class QSortItems extends React.Component {
           this.setState({'sections': this.cloneSections(newObj)});
         }
     }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentDidMount () {
-
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentWillUnmount () {
-
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentDidUpdate () {
-  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,9 +185,11 @@ class QSortItems extends React.Component {
         );
         this.setState({'sections': clone});
 
+        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
+        //this doesn't happen when moveing and object up, above the fold. 
         var doc = document.documentElement;
         var currentTop = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-        setTimeout(()=>{this.smoothScroll(currentTop,500)}, 600);
+        setTimeout(()=>{this.smoothScroll(currentTop,this.motionDuration)}, this.motionDuration+100);
     }
 
   }
@@ -259,7 +238,7 @@ class QSortItems extends React.Component {
       else {
                 Object.keys(this.QSortButtonList).forEach((name) => {
                     this.state.sections[name].forEach(itemId => {
-                        let buttonstate= {}
+                        var buttonstate= {};
                         Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
                         if(name!='unsorted') {buttonstate[name]=true; }
                             let item = items[this.index[itemId]];
@@ -286,8 +265,8 @@ class QSortItems extends React.Component {
             ref         =   "panel"
             heading     =   {[( <h4>{ title }</h4> )]}
             >
-                <div className="top-articles">
-                    <FlipMove>
+                <div className="qsort-flip-move-articles">
+                    <FlipMove duration={this.motionDuration} >
                        { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
                     </FlipMove>
                 </div>
