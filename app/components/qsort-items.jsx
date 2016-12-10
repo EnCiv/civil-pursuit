@@ -288,16 +288,12 @@ class QSortItems extends React.Component {
             >
                 <div className="top-articles">
                     <FlipMove>
-                       { this.renderQ(content) }
+                       { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
                     </FlipMove>
                 </div>
             </Panel>
         </section>
         );
-    }
-
-    renderQ (content){
-        return (content.map( article => <QSortFlipItem {...article} key={article.id} /> ));
     }
 }
 
