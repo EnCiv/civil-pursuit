@@ -18,6 +18,10 @@ function getItems (panel, cb) {
       query.skip = panel.skip;
     }
 
+    if(panel.size) {
+      query.size = panel.size;
+    }
+
     Item
       .getPanelItems(query, userId)
       .then(
