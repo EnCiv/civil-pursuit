@@ -26,6 +26,8 @@ class PanelStore extends React.Component {
         panel.parent = this.props.parent._id;
       }
 
+      if(this.props.size){panel.size=this.props.size}
+
       this.id = makePanelId(panel);
 
       window.socket.emit('get items', panel, this.okGetItems.bind(this));
