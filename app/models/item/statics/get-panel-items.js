@@ -29,6 +29,8 @@ function getPanelItems (panel, userId) {
     .sort({ promotions : -1, views : -1, _id : -1 })
   );
 
+  console.info("get-panel-items panel.size", panel.size || publicConfig['navigator batch size']);
+
   seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
 
   return new Promise((ok, ko) => {
