@@ -2,25 +2,13 @@
 
 import React              from 'react';
 import Panel              from './panel';
-import Loading            from './util/loading';
-import Link               from './util/link';
 import panelType          from '../lib/proptypes/panel';
-import makePanelId        from '../lib/app/make-panel-id';
-import Join               from './join';
-import Accordion          from './util/accordion';
-import Promote            from './promote';
-import EvaluationStore    from './store/evaluation';
 import QSortButtons       from './qsort-buttons';
-import Icon               from './util/icon';
-import Creator            from './creator';
 import ItemStore          from '../components/store/item';
-import Details            from './details';
-import DetailsStore       from './store/details';
-import EditAndGoAgain     from './edit-and-go-again';
-import Harmony            from './harmony';
 import update             from 'immutability-helper';
 import FlipMove           from 'react-flip-move';
 import QSortFlipItem      from './qsort-flip-item'
+import smoothScroll       from '../../lib/app/smooth-scroll';
 
 
 class QSortItems extends React.Component {
@@ -65,34 +53,6 @@ class QSortItems extends React.Component {
     };
 
   motionDuration=500; //500mSec
-  
-
-  smoothScroll(target, time) {
-    // time when scroll starts
-    const start = new Date().getTime();
-        const interval=25; //25 mSec
-    
-
-        // set an interval to update scrollTop attribute every 25 ms
-        const timer = setInterval( () => {
-
-            var doc = document.documentElement;
-            var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-            var distance = target - top; // negative if currently below target
-
-            // calculate the step, i.e the degree of completion of the smooth scroll 
-            let step = Math.min(1, (new Date().getTime() - start) / time);
-
-
-            // calculate the scroll distance and update the scrollTop
-            document.body['scrollTop'] = top + step*distance;
-            document.documentElement.scrollTop= top + step*distance; //this if for IE!!
-
-            // end interval if the scroll is completed
-            if (step == 1) clearInterval(timer);
-        }, interval);
-  }
-
 
   index ={};
   state={};
@@ -189,7 +149,7 @@ class QSortItems extends React.Component {
         //this doesn't happen when moveing and object up, above the fold. 
         var doc = document.documentElement;
         var currentTop = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-        setTimeout(()=>{this.smoothScroll(currentTop,this.motionDuration)}, this.motionDuration+100);
+        setTimeout(()=>{smoothScroll(currentTop,this.motionDuration)}, this.motionDuration+100);
     }
 
   }
