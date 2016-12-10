@@ -201,7 +201,7 @@ class QSortItems extends React.Component {
         );
         this.setState({'sections': clone});
 
-        const timer=setTimeout(()=>{this.smoothScroll(0,500)}, 600);
+        setTimeout(()=>{this.smoothScroll(0,500)}, 600);
     }
 
   }
