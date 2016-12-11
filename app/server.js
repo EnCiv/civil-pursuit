@@ -376,21 +376,22 @@ class HttpServer extends EventEmitter {
                   parent: item._id,
                   size: 100
                 };
+                console.info("server getQsortPage got item", query );
 
                 let qPanelId=makePanelId(query);
 
+                console.info("server getQsortPage got panelId", qPanelId );
+
                 req.panels[qPanelId] = makePanel(query);
 
-                console.info("server getQsortPage got item", query );
+                console.info("server getQsortPage made panel", req.panels[qPanelId] );
 
                 Item
                   .getPanelItems(query, userId)
                   .then(
                       results => {
                           console.info("server getQsortPage got panel items", results.count );
-                          req.panels[qPanelId] = makePanel(query);
-                          req.panels[qPanelId].panel.items=[];
-                          req.panels[qPanelId].panel.items.push(results.items);
+                          req.panels[qPanelId].panel.items=results.items.slice(0);
                         }, this.error.bind(this)
                     );
                 next();
