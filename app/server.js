@@ -360,49 +360,29 @@ class HttpServer extends EventEmitter {
         Item.findOne({ id : req.params.parent_short_id }).then(
           item => {
             if ( ! item ) {
-              console.info("server getQsortPage no item");
+              console.error("server getQsortPage no item");
               return next();
             }
             item.toPanelItem(userId).then(
               item => {
-                console.info("server getQsortPage got item", item.subtype );
                 if(! item.subtype) {
-                  console.info("server getQsortPage no item subtype");
+                  console.error("server getQsortPage no item subtype");
                   return next();
                 }
                 
                 const query = {
                   type: item.subtype,
                   parent: item._id,
-                  size: 3
+                  size: 100
                 };
-// make size smaller for debugging.
-
- //               let qTopId=makePanelId(item);
                 req.panels = {};
-
-//                req.panels[qTopId] = makePanel(item);
-
-//                req.panels[qTopId].panel.items.push(item);
-
-
-
-                console.info("server getQsortPage got item", query );
-
                 const qPanelId=makePanelId(query);
-
-                console.info("server getQsortPage got panelId", qPanelId );
-
                 req.panels[qPanelId] = makePanel(query);
-
-                console.info("server getQsortPage made panel", req.panels[qPanelId] );
-
                 Item
                   .getPanelItems(query, userId)
                   .then(
                       results => {
                         try {
-                          console.info("server getQsortPage got panel items", results.count );
                           req.panels[qPanelId].panel.items=results.items.slice(0);
                           next();
                         }
