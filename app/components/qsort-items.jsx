@@ -77,7 +77,6 @@ class QSortItems extends React.Component {
       this.state.sections={};
       buttons.forEach(button => {
           this.state.sections[button]=[];
-          newObj[button]=[];
       });
       if(props.panel && props.panel.items) {
         props.panel.items.forEach((item,i) =>{
@@ -87,8 +86,8 @@ class QSortItems extends React.Component {
         });
       }
       if(unsortedLength){
-        this.setState({'sections': this.cloneSections(newObj)});
-        console.info("qsortItems constructor", newObj);
+        this.state.sections=newObj['unsorted'].slice(0);
+        console.info("qsortItems constructor", this.state);
       }
   }
 
@@ -202,40 +201,40 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
-      if ( ! Object.keys(this.index).length ) {
-        content = (
-          <div className="gutter text-center">
-            <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
-              Click the + to be the first to add something here
-            </a>
-          </div>
-        );
-      }
+        if ( ! Object.keys(this.index).length ) {
+            content = (
+            <div className="gutter text-center">
+                <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
+                Click the + to be the first to add something here
+                </a>
+            </div>
+            );
+        } else {
+                    Object.keys(this.QSortButtonList).forEach((name) => {
+                        this.state.sections[name].forEach(itemId => {
+                            var buttonstate= {};
+                            Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
+                            if(name!='unsorted') {buttonstate[name]=true; }
+                                let item = items[this.index[itemId]];
+                                content.push (
+                                    {
+                                        sectionName:    name,
+                                        qbuttons:       this.QSortButtonList,
+                                        user:           user,
+                                        item:           item,
+                                        toggle:         this.toggle.bind(this),
+                                        buttonstate:    buttonstate,
+                                        id:             item._id
+                                    }
+                                );
+                            });
+                    });
+        }
 
-      else {
-                Object.keys(this.QSortButtonList).forEach((name) => {
-                    this.state.sections[name].forEach(itemId => {
-                        var buttonstate= {};
-                        Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
-                        if(name!='unsorted') {buttonstate[name]=true; }
-                            let item = items[this.index[itemId]];
-                            content.push (
-                                {
-                                    sectionName:    name,
-                                    qbuttons:       this.QSortButtonList,
-                                    user:           user,
-                                    item:           item,
-                                    toggle:         this.toggle.bind(this),
-                                    buttonstate:    buttonstate,
-                                    id:             item._id
-                                }
-                            );
-                        });
-                });
-            }
-            console.info("qsort items content", content);
-      }
-   
+        }
+
+        console.info("qsort items content", content);   
+
         return (
         <section id               =     "syn-panel-qsort">
             <Panel
