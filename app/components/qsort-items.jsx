@@ -73,7 +73,6 @@ class QSortItems extends React.Component {
       var unsortedList=[];
       let unsortedLength=0;
       let buttons = Object.keys(this.QSortButtonList);
-      console.info("qsort buttons", buttons);
       this.state.sections={};
       buttons.forEach(button => {
           this.state.sections[button]=[];
@@ -87,7 +86,6 @@ class QSortItems extends React.Component {
       }
       if(unsortedLength){
         this.state.sections['unsorted']=unsortedList.slice(0);
-        console.info("qsortItems constructor", this.state);
       }
   }
 
@@ -108,7 +106,6 @@ class QSortItems extends React.Component {
                 }
             });
         }
-        console.info("QSortItems willReceiveProps unsortedLength", unsortedLength, newObj);
         if(unsortedLength){
           this.setState({'sections': this.cloneSections(newObj)});
         }
@@ -175,12 +172,10 @@ class QSortItems extends React.Component {
 
     const { panel, count, user, emitter } = this.props;
 
-    const onServer = typeof window === 'undefined';
+    const onServer = false; //typeof window === 'undefined';
 
     let title = 'Loading items', name, loaded = false, content=[], loadMore,
       type, parent, items;
-
-    console.info("qsort Items render", panel );
 
     if ( panel ) {
       items=panel.items;
@@ -233,7 +228,6 @@ class QSortItems extends React.Component {
 
         }
 
-        console.info("qsort items content", content);   
 
         return (
         <section id               =     "syn-panel-qsort">
