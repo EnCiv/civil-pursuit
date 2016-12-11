@@ -176,8 +176,12 @@ class QSortItems extends React.Component {
 
     const { panel, count, user, emitter } = this.props;
 
+    const onServer = typeof window === 'undefined';
+
     let title = 'Loading items', name, loaded = false, content=[], loadMore,
       type, parent, items;
+
+    console.info("qsort Items render", panel );
 
     if ( panel ) {
       items=panel.items;
@@ -229,6 +233,7 @@ class QSortItems extends React.Component {
                         });
                 });
             }
+            console.info("qsort items content", content);
       }
    
         return (
@@ -239,7 +244,7 @@ class QSortItems extends React.Component {
             heading     =   {[( <h4>{ title }</h4> )]}
             >
                 <div className="qsort-flip-move-articles">
-                    <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)}>
+                    <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                        { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
                     </FlipMove>
                 </div>
