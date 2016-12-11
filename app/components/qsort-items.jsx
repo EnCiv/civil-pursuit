@@ -87,7 +87,7 @@ class QSortItems extends React.Component {
         });
       }
       if(unsortedLength){
-        this.setState({'sections': newObj});
+        this.setState({'sections': this.cloneSections(newObj)});
       }
   }
 
