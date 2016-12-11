@@ -180,10 +180,6 @@ class App extends React.Component {
 
             const qpanel = Object.assign({}, this.props.panels[panelId1].panel);
 
-            //panel.items = panel.items.filter(item => item.id === paths[1]);
-
-            console.info("app qsort panel", qpanel );
-
             page = (
               <QHome { ...this.props } user={ user } count = { 1 } panel={ qpanel } emitter = {this.emitter } />
             );

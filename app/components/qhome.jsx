@@ -51,14 +51,7 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
-    console.info("qhome props", this.props);
     if(this.props.panel && this.props.panel.items) {
-
- //       const panel = {
- //           parent: this.props.panel.items[0],
- //           type: this.props.panel.items[0].subtype,
-//            size: 100
-//        }
 
         const panel = this.props.panel;
 

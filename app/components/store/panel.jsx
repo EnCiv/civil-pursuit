@@ -15,7 +15,6 @@ class PanelStore extends React.Component {
 
   constructor(props){
     super(props);
-    console.info("panel constructor props", props);
     if(this.props.items){
       this.state.panel={};
       this.state.panel.type=this.props.type;
