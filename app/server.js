@@ -369,8 +369,9 @@ class HttpServer extends EventEmitter {
                 const query = {
                   type: item.subtype._id || item.subtype.type,
                   parent: item._id,
-                  size: 100
+                  size: 3
                 };
+// make size smaller for debugging.
 
  //               let qTopId=makePanelId(item);
                 req.panels = {};

@@ -51,6 +51,7 @@ class QHome extends React.Component {
     const content = [];
     let loading;
 
+    console.info("qhome props", this.props);
     if(this.props.panel && this.props.panel.items) {
 
  //       const panel = {
@@ -60,7 +61,7 @@ class QHome extends React.Component {
 //        }
 
         const panel = this.props.panel;
-        
+
         content.push(
             <div>
             <div id="top-level-panel">
