@@ -381,13 +381,16 @@ class HttpServer extends EventEmitter {
 
                 req.panels[qPanelId] = makePanel(query);
 
+                console.info("server getQsortPage got item", query );
+
                 Item
                   .getPanelItems(query, userId)
                   .then(
                       results => {
+                          console.info("server getQsortPage got panel items", results.count );
                           req.panels[qPanelId] = makePanel(query);
-                          req.panels[qPanelId].items=[];
-                          req.panels[qPanelId].items.push(results.items);
+                          req.panels[qPanelId].panel.items=[];
+                          req.panels[qPanelId].panel.items.push(results.items);
                         }, this.error.bind(this)
                     );
                 next();
