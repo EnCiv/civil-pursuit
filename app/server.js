@@ -405,7 +405,6 @@ class HttpServer extends EventEmitter {
                         }
                       }, this.error.bind(this)
                     );
-                next();
               },
               next
             );
