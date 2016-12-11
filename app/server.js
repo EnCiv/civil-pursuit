@@ -345,6 +345,7 @@ class HttpServer extends EventEmitter {
 
   getQSortPage () {
     this.app.get('/qsort/:parent_short_id/:item_slug', (req, res, next) => {
+      const query;
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
           var sniffr = new Sniffr();
           sniffr.sniff(req.headers['user-agent']);
@@ -371,7 +372,9 @@ class HttpServer extends EventEmitter {
 
 //                req.panels[qTopId].panel.items.push(item);
 
-                const query = {
+                console.info("server getQsortPage got item", item );
+
+                query = {
                   type: item.subType._id || item.subType.type,
                   parent: item._id,
                   size: 100
