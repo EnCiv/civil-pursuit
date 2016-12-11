@@ -56,6 +56,8 @@ class QSortItems extends React.Component {
 
   index ={};
   state={};
+  currentTop=0; //default scroll position
+  scrollBackToTop=false;
 
   cloneSections(section) {  
         // Deep copy arrays.
@@ -148,10 +150,19 @@ class QSortItems extends React.Component {
         //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
         //this doesn't happen when moveing and object up, above the fold. 
         var doc = document.documentElement;
-        var currentTop = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-        setTimeout(()=>{smoothScroll(currentTop,this.motionDuration)}, this.motionDuration+100);
+        this.currentTop = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+        this.scrollBackToTop=true;
+
+        
     }
 
+  }
+
+  onFlipMoveFinishAll(){
+      if(this.scrollBackToTop) {
+          this.scrollBackToTop=false;
+          setTimeout(()=>{smoothScroll(this.currentTop,this.motionDuration)}, 100);
+      }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +237,7 @@ class QSortItems extends React.Component {
             heading     =   {[( <h4>{ title }</h4> )]}
             >
                 <div className="qsort-flip-move-articles">
-                    <FlipMove duration={this.motionDuration} >
+                    <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)}>
                        { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
                     </FlipMove>
                 </div>
