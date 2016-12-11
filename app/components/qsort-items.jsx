@@ -86,7 +86,7 @@ class QSortItems extends React.Component {
         });
       }
       if(unsortedLength){
-        this.state.sections=unsortedList.slice(0);
+        this.state.sections['unsorted']=unsortedList.slice(0);
         console.info("qsortItems constructor", this.state);
       }
   }
