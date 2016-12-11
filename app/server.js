@@ -365,10 +365,14 @@ class HttpServer extends EventEmitter {
             }
             item.toPanelItem(userId).then(
               item => {
-                console.info("server getQsortPage got item", item, item.subType );
+                console.info("server getQsortPage got item", item.subtype );
+                if(! item.subtype) {
+                  console.info("server getQsortPage no item subtype");
+                  return next();
+                }
                 
                 const query = {
-                  type: item.type.subtype,
+                  type: item.subtype,
                   parent: item._id,
                   size: 3
                 };
