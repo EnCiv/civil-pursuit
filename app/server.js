@@ -364,27 +364,32 @@ class HttpServer extends EventEmitter {
             }
             item.toPanelItem(userId).then(
               item => {
+ //               let qTopId=makePanelId(item);
                 req.panels = {};
-                if(item & item.parent) {
-                  item.getLineage(userId).then( lineage => {
-                    lineage.forEach((ancestor, index) => {
-                      const panelId = makePanelId(ancestor);
 
-                      if ( ! req.panels[panelId] ) {
-                        req.panels[panelId] = makePanel(ancestor);
-                      }
+//                req.panels[qTopId] = makePanel(item);
 
-                      req.panels[panelId].panel.items.push(ancestor);
+//                req.panels[qTopId].panel.items.push(item);
 
-                      req.panels[panelId].active = `${ancestor._id}-subtype`;
-                    });
+                const query = {
+                  type: item.subType._id || item.subType.type,
+                  parent: item._id,
+                  size: 100
+                };
 
-                  });
-                }
-                req.panels[makePanelId(item)] = makePanel(item);
+                let qPanelId=makePanelId(query);
 
-                req.panels[makePanelId(item)].panel.items.push(item);
+                req.panels[qPanelId] = makePanel(query);
 
+                Item
+                  .getPanelItems(query, userId)
+                  .then(
+                      results => {
+                          req.panels[qPanelId] = makePanel(query);
+                          req.panels[qPanelId].items=[];
+                          req.panels[qPanelId].items.push(results.items);
+                        }, this.error.bind(this)
+                    );
                 next();
               },
               next

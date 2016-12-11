@@ -53,12 +53,14 @@ class QHome extends React.Component {
 
     if(this.props.panel && this.props.panel.items) {
 
-        const panel = {
-            parent: this.props.panel.items[0],
-            type: this.props.panel.items[0].subtype,
-            size: 100
-        }
+ //       const panel = {
+ //           parent: this.props.panel.items[0],
+ //           type: this.props.panel.items[0].subtype,
+//            size: 100
+//        }
 
+        const panel = this.props.panel;
+        
         content.push(
             <div>
             <div id="top-level-panel">

@@ -3,14 +3,27 @@
 import React            from 'react';
 import { EventEmitter } from 'events';
 import makePanelId      from '../../lib/app/make-panel-id';
+import publicConfig     from '../../../public.json';
 
 class PanelStore extends React.Component {
 
   id;
 
-  state = { panel : null, count : null, items : null, new : false };
+  state = { panel : null, count : null, new : false };
 
   emitter = new EventEmitter();
+
+  constructor(props){
+    super(props);
+    if(this.props.items){
+      this.state.panel={};
+      this.state.panel.type=this.props.type;
+      this.state.panel.parent=this.props.parent || null;
+      this.state.panel.items=this.props.items.slice(0);
+      this.state.panel.size=this.props.panel.size || publicConfig['navigator batch size'];
+    }
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -19,7 +32,7 @@ class PanelStore extends React.Component {
 
     this.emitter.on('edit', this.edit.bind(this));
 
-    if ( ! this.state.panel && this.props['auto-mount'] !== false ) {
+    if ( ! this.state.panel ) {
       const panel = { type : this.props.type };
 
       if ( this.props.parent ) {
@@ -81,20 +94,6 @@ class PanelStore extends React.Component {
       this.setState( {panel: { items, new : item, type: this.props.type, parent: parent } } );
     }
   }
-
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~f
-
-  collapseAroundItem (itemId) {
-    for ( let itm in this.state.panel.items ) {
-      if ( this.state.panel.items[itm]._id == itemId ) {
-        this.state.panel.items[itm].hidden=false;
-      } else {
-        this.state.panel.items[itm].hidden=true;
-      }
-    }
-  }  
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
