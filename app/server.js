@@ -355,7 +355,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          console.info("server.getItemPage browser", this.browser);
+          console.info("server.getQsortPage browser", this.browserConfig);
       try {
         Item.findOne({ id : req.params.parent_short_id }).then(
           item => {
@@ -364,7 +364,9 @@ class HttpServer extends EventEmitter {
             }
             item.toPanelItem(userId).then(
               item => {
-                  const query = {
+                console.info("server getQsortPage got item", item );
+
+                const query = {
                   type: item.subType._id || item.subType.type,
                   parent: item._id,
                   size: 100
@@ -377,11 +379,11 @@ class HttpServer extends EventEmitter {
 
 //                req.panels[qTopId].panel.items.push(item);
 
-                console.info("server getQsortPage got item", item );
+
 
                 console.info("server getQsortPage got item", query );
 
-                let qPanelId=makePanelId(query);
+                const qPanelId=makePanelId(query);
 
                 console.info("server getQsortPage got panelId", qPanelId );
 
