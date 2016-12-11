@@ -367,7 +367,7 @@ class HttpServer extends EventEmitter {
                 console.info("server getQsortPage got item", item );
 
                 const query = {
-                  type: item.subType._id || item.subType.type,
+                  type: item.subtype._id || item.subtype.type,
                   parent: item._id,
                   size: 100
                 };
