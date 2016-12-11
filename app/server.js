@@ -359,8 +359,8 @@ class HttpServer extends EventEmitter {
       try {
         Item.findOne({ id : req.params.parent_short_id }).then(
           item => {
-            if ( ! item  || ! item.subtype ) {
-              console.info("server getQsortPage no item or no subtype ", item);
+            if ( ! item ) {
+              console.info("server getQsortPage no item");
               return next();
             }
             item.toPanelItem(userId).then(
@@ -368,7 +368,7 @@ class HttpServer extends EventEmitter {
                 console.info("server getQsortPage got item", item, item.subType );
                 
                 const query = {
-                  type: item.subtype,
+                  type: item.type.subtype,
                   parent: item._id,
                   size: 3
                 };
