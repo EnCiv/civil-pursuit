@@ -235,6 +235,7 @@ class QSortItems extends React.Component {
             className   =   { name }
             ref         =   "panel"
             heading     =   {[( <h4>{ title }</h4> )]}
+            type        =   { type }
             >
                 <div className="qsort-flip-move-articles">
                     <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
