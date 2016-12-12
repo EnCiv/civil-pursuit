@@ -2,21 +2,23 @@
 
 import React                from 'react';
 import Component            from '../lib/app/component';
-import Icon                 from './util/icon';
-import Accordion            from './util/accordion';
-import Loading              from './util/loading';
-import Creator              from './creator';
-import Join                 from './join';
-import userType             from '../lib/proptypes/user';
-import panelType            from '../lib/proptypes/panel';
-import makePanelId          from '../lib/app/make-panel-id';
+import Instruction          from './instruction';
 
 class Panel extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className } = this.props;
+    const { heading, className, type } = this.props;
+
+    var instruction={};
+    if(type && type.instruction){
+      instruction=(
+        <Instruction >
+          {this.props.type.instruction}
+        </Instruction>
+      )
+    }
 
     return (
       <section
@@ -28,6 +30,7 @@ class Panel extends React.Component {
           { heading }
         </section>
         <section className="syn-panel-body">
+          { instruction }
           { this.props.children }
         </section>
       </section>
@@ -36,5 +39,3 @@ class Panel extends React.Component {
 }
 
 export default Panel;
-
-import Item from './item';

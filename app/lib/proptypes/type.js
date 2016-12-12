@@ -20,7 +20,8 @@ type                =   shape({
   	inactive		: 	string.isRequired,
   	active         	:   string.isRequired
   	}),
-  evaluateQuestion	: 	string
+  evaluateQuestion	: 	string,
+  instruction	: 	string
 });
 
 export default type;
