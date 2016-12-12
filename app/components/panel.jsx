@@ -9,15 +9,15 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, type } = this.props;
+    const { heading, className } = this.props;
 
-    var instruction={};
-    if(type && type.instruction){
+    var instruction=[];
+    if(this.props.type && this.props.type.instruction){
       instruction=(
         <Instruction >
           {this.props.type.instruction}
         </Instruction>
-      )
+      );
     }
 
     return (

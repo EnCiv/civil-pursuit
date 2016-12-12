@@ -31,8 +31,6 @@ class Instruction extends React.Component {
 
     var instructionClass = ClassNames("instruction", this.props.className);
 
-    let renderedInstruction = {};
-
     return (
       <section className={instructionClass} >
         <Accordion 
