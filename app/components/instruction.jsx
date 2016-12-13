@@ -32,21 +32,24 @@ class Instruction extends React.Component {
 
     return (
       <section className={instructionClass} >
-        <Accordion 
-            onClick={ this.readMore.bind(this) } 
-            active={ ! this.state.truncated } 
-            text={ true } 
-            onComplete={ this.textHint.bind(this) }
-        >
+        <Accordion
+          onClick={this.readMore.bind(this)}
+          active={!this.state.truncated}
+          text={true}
+          onComplete={this.textHint.bind(this)}
+          >
           <div className={ClassNames(this.props.classNames, "instruction-text")} >
-            { this.props.children }
+            {this.props.children}
           </div>
         </Accordion>
-        <div className={ ClassNames(this.props.classNames,'instruction-hint', (!this.state.truncated) ? 'hint-open' : '') } onClick={ this.readMore.bind(this) } >
+
+        <div className={ClassNames(this.props.classNames, 'instruction-hint', (!this.state.truncated) ? 'hint-visible' : 'hint-hidden')}>
+          <div className={ClassNames(this.props.classNames, (this.state.truncated) ? 'hint-open' : '')} onClick={this.readMore.bind(this)} >
             <Icon icon="envelope-open-o" />
-        </div>
-        <div className={ ClassNames(this.props.classNames,'instruction-hint', (this.state.truncated) ? 'hint-closed' : '') } onClick={ this.readMore.bind(this) } >
+          </div>
+          <div className={ClassNames(this.props.classNames, (!this.state.truncated) ? 'hint-closed' : '')} onClick={this.readMore.bind(this)} >
             <Icon icon="envelope-o" />
+          </div>
         </div>
       </section>
     );

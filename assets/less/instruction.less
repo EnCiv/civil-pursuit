@@ -26,29 +26,32 @@
 }
 
 .instruction-hint{
-    display: none;
+    display: inline;
+    position: absolute;
+        &:hover {
+     cursor: pointer;
+    }
+    transition: all 0.5s linear;
 }
 
-.instruction-hint.hint-open {
-    display: inline;
+.instruction-hint.hint-visible {
     position: absolute;
     left: ~"calc(50% - 1.5em)";
     bottom: 0;
+}
 
-    &:hover {
-     cursor: pointer;
-    }
+.instruction-hint.hint-hidden {
+    top: -1.25em;
+    color: white;
+    left: ~"calc(100% - 1.25em)";
+    bottom: 0.25em;
+    font-size: 1.375em;
+}
 
+.instruction-hint.hint-open {
+    display: none;
 }
 
 .instruction-hint.hint-closed {
-    display: inline;
-    position: absolute;
-    top: -1.25em;
-    color: white;
-    left: .5em;
-
-    &:hover {
-     cursor: pointer;
-    }
+    display: none;
 }
