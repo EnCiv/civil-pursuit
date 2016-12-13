@@ -205,7 +205,7 @@ class QSortItems extends React.Component {
         if(type && type.instruction){
             instruction=(
                 <Instruction >
-                    {this.props.type.instruction}
+                    {type.instruction}
                 </Instruction>
             );
         }
