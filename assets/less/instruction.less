@@ -31,20 +31,19 @@
         &:hover {
      cursor: pointer;
     }
-    transition: all 0.5s linear;
+    transition: all 0.25s linear;
 }
 
 .instruction-hint.hint-visible {
-    position: absolute;
     left: ~"calc(50% - 1.5em)";
-    bottom: 0;
+    top: ~"calc(100% - 1.5em)";
+    color: black;
 }
 
 .instruction-hint.hint-hidden {
-    top: -1.25em;
     color: white;
     left: ~"calc(100% - 1.25em)";
-    bottom: 0.25em;
+    top: -1.5em;
     font-size: 1.375em;
 }
 

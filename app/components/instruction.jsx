@@ -44,10 +44,10 @@ class Instruction extends React.Component {
         </Accordion>
 
         <div className={ClassNames(this.props.classNames, 'instruction-hint', (!this.state.truncated) ? 'hint-visible' : 'hint-hidden')}>
-          <div className={ClassNames(this.props.classNames, (this.state.truncated) ? 'hint-open' : '')} onClick={this.readMore.bind(this)} >
+          <div className={ClassNames(this.props.classNames, 'instruction-hint', (this.state.truncated) ? 'hint-open' : '')} onClick={this.readMore.bind(this)} >
             <Icon icon="envelope-open-o" />
           </div>
-          <div className={ClassNames(this.props.classNames, (!this.state.truncated) ? 'hint-closed' : '')} onClick={this.readMore.bind(this)} >
+          <div className={ClassNames(this.props.classNames, 'instruction-hint', (!this.state.truncated) ? 'hint-closed' : '')} onClick={this.readMore.bind(this)} >
             <Icon icon="envelope-o" />
           </div>
         </div>
