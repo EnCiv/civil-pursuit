@@ -262,6 +262,7 @@ class QSortItems extends React.Component {
             type        =   { type }
             >
                 { instruction }
+                { direction }
                 <div className="qsort-flip-move-articles">
                     <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                        { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
