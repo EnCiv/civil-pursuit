@@ -253,7 +253,7 @@ class QSortItems extends React.Component {
                 if (!issues) {
                     done.push(
                         <div className='instruction-text'>
-                            {Great.You have completed this task. You can review your choices or press done to continue to the next stage.}
+                            {"Great. You have completed this step. You can review your choices or press done to continue to the next step."}
                             <Button small shy
                                 onClick={this.toggle.bind(this, 'done')}
                                 className="qsort-done"
