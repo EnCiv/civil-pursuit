@@ -224,7 +224,7 @@ class QSortItems extends React.Component {
                         if(qb.max){
                             if(this.state.sections[name].length > qb.max) {
                                 direction.push(
-                                    <div className='qsort-items-direction' style={{backgroundColor: Color.darken(qb.color, 0.5)}}>
+                                    <div className='qsort-items-direction' style={{backgroundColor: Color(qb.color, 0.5).darken}}>
                                         { qb.direction }
                                     </div>
                                 )
