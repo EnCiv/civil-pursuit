@@ -211,9 +211,9 @@ class QSortItems extends React.Component {
         }
 
 
-        this.QSortButtons.forEach( button => {
+        Object.keys(this.QSortButtonList).forEach( button => {
             if(button.max){
-                if(Object.keys(this.state.sections[button]).length > button.max) {
+                if(this.state.sections[button].length > button.max) {
                     direction.push(
                         <div className='qsort-items-direction' style={{backgroundColor: Color.darken(button.color, 0.5)}}>
                             { button.direction }
