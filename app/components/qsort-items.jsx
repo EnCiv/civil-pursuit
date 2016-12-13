@@ -181,7 +181,7 @@ class QSortItems extends React.Component {
         const onServer = typeof window === 'undefined';
 
         let title = 'Loading items', name, loaded = false, content = [], loadMore,
-            type, parent, items, direction = [], instruction = [], issues = 0; done = [];
+            type, parent, items, direction = [], instruction = [], issues = 0, done = [];
 
         if (panel) {
             items = panel.items;
