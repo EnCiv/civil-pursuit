@@ -210,19 +210,6 @@ class QSortItems extends React.Component {
             );
         }
 
-
-        Object.keys(this.QSortButtonList).forEach( button => {
-            if(button.max){
-                if(this.state.sections[button].length > button.max) {
-                    direction.push(
-                        <div className='qsort-items-direction' style={{backgroundColor: Color.darken(button.color, 0.5)}}>
-                            { button.direction }
-                        </div>
-                    )
-                }
-            }
-        })
-
         if ( ! Object.keys(this.index).length ) {
             content = (
             <div className="gutter text-center">
@@ -233,6 +220,16 @@ class QSortItems extends React.Component {
             );
         } else {
                     Object.keys(this.QSortButtonList).forEach((name) => {
+                        let qb=this.QSortButtonList[name];
+                        if(qb.max){
+                            if(this.state.sections[name].length > qb.max) {
+                                direction.push(
+                                    <div className='qsort-items-direction' style={{backgroundColor: Color.darken(qb.color, 0.5)}}>
+                                        { qb.direction }
+                                    </div>
+                                )
+                            }
+                        }
                         this.state.sections[name].forEach(itemId => {
                             var buttonstate= {};
                             Object.keys(this.QSortButtonList).slice(1).forEach(button => {buttonstate[button]=false;});
