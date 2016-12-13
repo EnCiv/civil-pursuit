@@ -41,10 +41,10 @@ class Instruction extends React.Component {
         >
         { this.props.children }
         </Accordion>
-          <div className={ `instruction-hint ${ !this.state.hint ? 'hint-open' : ''}`}>
+          <div className={ `instruction-hint ${(this.state.hint) ? 'hint-open' : ''}`} onClick={ this.readMore.bind(this) } >
               <Icon icon="envelope-open-o" />
           </div>
-          <div className={ `instruction-hint ${(this.state.hint) ? 'hint-closed' : ''}`}>
+          <div className={ `instruction-hint ${(!this.state.hint) ? 'hint-closed' : ''}`} onClick={ this.readMore.bind(this) } >
               <Icon icon="envelope-o" />
           </div>
       </section>

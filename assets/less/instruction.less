@@ -8,12 +8,9 @@
 
 .instruction {
   border: 1px solid #666;
-  margin-top: 0px;
-  padding: @item-visual-gap 0 0 @item-visual-gap;
-  margin-right: 0; /* -1px;border on top of border*/
-  margin-bottom: 0; /* -2px; border on top of border */
   background-color: inherit;
   position: relative; /* otherwise things that are relative will obscure this when they move around */
+  padding: 2em;
 }
 
 .instruction-hint{
@@ -21,20 +18,18 @@
 }
 
 .instruction-hint.hint-open {
-  display: block;
-  position: absolute;
-  left: ~"calc( 50% - 1.5em)"; /* 1em representing half the width of the ellipis */
-  top: 7.175em; /* relative to the top of item-text because the box might expand with stuff below*/
-  font-size: 1rem;
-  padding: 0;
+    display: block;
+    position: absolute;
+    left: calc(50% - 1.5em);
+    font-size: 1rem;
+    bottom: 0;
 
 }
 
 .item-trunc-hint.hint-closed {
-  display: block;
-  position: absolute;
-  left: ~"calc( 50% - 1.5em)"; /* 1em representing half the width of the ellipis */
-  top: 7.175em; /* relative to the top of item-text because the box might expand with stuff below*/
-  font-size: 1rem;
-  padding: 0;
+    display: block;
+    position: absolute;
+    top: -1.25em;
+    color: white;
+    left: .25em;
 }
