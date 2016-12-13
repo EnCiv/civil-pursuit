@@ -222,7 +222,7 @@ class QSortItems extends React.Component {
                     )
                 }
             }
-        }
+        })
 
         if ( ! Object.keys(this.index).length ) {
             content = (
