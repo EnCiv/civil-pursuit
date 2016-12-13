@@ -181,7 +181,7 @@ class QSortItems extends React.Component {
     const onServer = typeof window === 'undefined';
 
     let title = 'Loading items', name, loaded = false, content=[], loadMore,
-      type, parent, items;
+      type, parent, items, direction=[], instruction=[];
 
     if ( panel ) {
       items=panel.items;
@@ -202,7 +202,6 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
-        var instruction=[];
         if(type && this.type.instruction){
             instruction=(
                 <Instruction >
@@ -211,7 +210,7 @@ class QSortItems extends React.Component {
             );
         }
 
-        var direction=[];
+
         this.QSortButtons.forEach( button => {
             if(button.max){
                 if(Object.keys(this.state.sections[button]).length > button.max) {
