@@ -7,8 +7,8 @@
 @item-visual-gap:       0.5em;
 
 .instruction {
-  border: 1px solid #666;
   background-color: inherit;
+  position: relative;
 
   &:hover {
     cursor: pointer;
@@ -19,6 +19,7 @@
   background-color: inherit;
   position: relative; /* otherwise things that are relative will obscure this when they move around */
   padding: 2em;
+  border: 1px solid #666;
 }
 
 .instruction-hint{
@@ -26,9 +27,9 @@
 }
 
 .instruction-hint.hint-open {
-    display: block;
+    display: bloinlineck;
     position: absolute;
-    left: calc(50% - 1.5em);
+    left: ~"calc(50% - 1.5em)";
     font-size: 1rem;
     bottom: 0;
 
@@ -39,7 +40,7 @@
 }
 
 .instruction-hint.hint-closed {
-    display: block;
+    display: inline;
     position: absolute;
     top: -1.25em;
     color: white;
