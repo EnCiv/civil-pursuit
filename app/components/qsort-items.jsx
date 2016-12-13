@@ -11,6 +11,7 @@ import QSortFlipItem from './qsort-flip-item'
 import smoothScroll from '../lib/app/smooth-scroll';
 import Instruction from './instruction';
 import Color from 'color';
+import Button           from './util/button';
 
 
 class QSortItems extends React.Component {
@@ -259,7 +260,7 @@ class QSortItems extends React.Component {
                                 className="qsort-done"
                                 style={{ backgroundColor: 'black', color: 'white' }}
                                 >
-                                <span className="civil-button-text">{next}</span>
+                                <span className="civil-button-text">{"next"}</span>
                             </Button>
                         </div>
                     )
