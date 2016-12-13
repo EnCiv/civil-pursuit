@@ -27,7 +27,8 @@ class QSortItems extends React.Component {
             title: {
                 active: "Yea! this is in a stack",
                 inactive: "Put this in in a stack"
-            }
+            },
+            direction: 'Great! You have completed this step. You can review your choices continue to the next step.'
         },
         most: {
             name: 'most',
@@ -254,11 +255,11 @@ class QSortItems extends React.Component {
                 if (!issues) {
                     done.push(
                         <div className='instruction-text'>
-                            {"Great. You have completed this step. You can review your choices or press done to continue to the next step."}
+                            {this.QSortButtonList['unsorted'].direction}
                             <Button small shy
                                 onClick={this.toggle.bind(this, 'done')}
                                 className="qsort-done"
-                                style={{ backgroundColor: 'black', color: 'white' }}
+                                style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                                 >
                                 <span className="civil-button-text">{"next"}</span>
                             </Button>
