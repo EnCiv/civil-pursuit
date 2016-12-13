@@ -9,6 +9,8 @@ import update             from 'immutability-helper';
 import FlipMove           from 'react-flip-move';
 import QSortFlipItem      from './qsort-flip-item'
 import smoothScroll       from '../lib/app/smooth-scroll';
+import Instruction        from './instruction';
+import Color              from 'color';
 
 
 class QSortItems extends React.Component {
@@ -32,7 +34,9 @@ class QSortItems extends React.Component {
             title: {
                 active: "Yea! this is in the most important stack",
                 inactive: "Put this in the most important stack"
-            }
+            },
+            max: 5,
+            direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks'
         },
         neutral: {
             name: 'neutral',
@@ -48,7 +52,9 @@ class QSortItems extends React.Component {
             title: {
                 active: "This is in the least important stack of them all",
                 inactive: "Put this in the least important stack of them all"
-            }
+            },
+            max: 6,
+            direction: 'We are limiting the number of things in the "least" stack to 6. Please  move some to other stacks'
         }
     };
 
@@ -196,6 +202,28 @@ class QSortItems extends React.Component {
 
       title = type.name;
 
+        var instruction=[];
+        if(type && this.type.instruction){
+            instruction=(
+                <Instruction >
+                    {this.props.type.instruction}
+                </Instruction>
+            );
+        }
+
+        var direction=[];
+        this.QSortButtons.forEach( button => {
+            if(button.max){
+                if(Object.keys(this.state.sections[button]).length > button.max) {
+                    direction.push(
+                        <div className='qsort-items-direction' style={{backgroundColor: Color.darken(button.color, 0.5)}}>
+                            { button.direction }
+                        </div>
+                    )
+                }
+            }
+        }
+
         if ( ! Object.keys(this.index).length ) {
             content = (
             <div className="gutter text-center">
@@ -237,6 +265,7 @@ class QSortItems extends React.Component {
             heading     =   {[( <h4>{ title }</h4> )]}
             type        =   { type }
             >
+                { instruction }
                 <div className="qsort-flip-move-articles">
                     <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                        { content.map( article => <QSortFlipItem {...article} key={article.id} /> ) }
@@ -249,5 +278,3 @@ class QSortItems extends React.Component {
 }
 
 export default QSortItems;
-
-import Item from './item';
