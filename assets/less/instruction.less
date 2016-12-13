@@ -20,6 +20,7 @@
   position: relative; /* otherwise things that are relative will obscure this when they move around */
   padding: 2em;
   border: 1px solid #666;
+  .pre-text();
 }
 
 .instruction-hint{
@@ -27,10 +28,9 @@
 }
 
 .instruction-hint.hint-open {
-    display: bloinlineck;
+    display: inline;
     position: absolute;
     left: ~"calc(50% - 1.5em)";
-    font-size: 1rem;
     bottom: 0;
 
     &:hover {
@@ -44,7 +44,7 @@
     position: absolute;
     top: -1.25em;
     color: white;
-    left: .25em;
+    left: .5em;
 
     &:hover {
      cursor: pointer;
