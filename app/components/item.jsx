@@ -11,7 +11,7 @@ class Item extends React.Component {
 
   constructor(props){
     super(props);
-    this.state.truncated= false;
+    this.state={truncated: false};
     this.state.hint = this.props.startUntruncated ? false : true;
   }
 
