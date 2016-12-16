@@ -271,6 +271,7 @@ class PanelItems extends React.Component {
                   toggle  =   { this.toggle.bind(this) }
                   focusAction={this.props.focusAction}
                   truncateItems={this.props.resetView}
+                  startUntruncated={count==1}
                 />
               </ItemStore>
             );

@@ -19,7 +19,7 @@ truncateState=0;
     if ( ! this.state.truncated || this.itemDidChange ) {
         let description   =   item.querySelector('.item-description');
         description.classList.add((this.props.item.references && this.props.item.references.length) ? 'truncated' : 'truncated4');
-        this.setState({truncated: true});
+        if(! this.props.startUntruncated) this.setState({truncated: true});
         this.trunced=true;
       } else {
         this.trunced=false;
