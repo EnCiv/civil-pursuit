@@ -5,12 +5,12 @@ import Type         from '../models/type';
 import Config       from '../models/config';
 import {ObjectId}   from 'mongo';
 
-function getListOfType (typeIdList, cb) {
+function getListoType (typeIdList, cb) {
   var ids = typeIdList.map(function(id) { return ObjectId(id); });
-    
+  console.info("getListoType", ids);
   Type.find({ _id :{$in: ids} })
   .then(typeList => cb(typeList.toJSON()))
   .catch(this.error.bind(this));
 }
 
-export default getListOfType;
+export default getListoType;

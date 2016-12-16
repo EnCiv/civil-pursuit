@@ -29,7 +29,7 @@ class PanelList extends React.Component {
   componentDidMount () {
     console.info("panel-list.componentDidMount onServer=", typeof window !== 'undefined');
     if ( typeof window !== 'undefined' && this.propls.panel.type.harmony) {
-        window.socket.emit('get list of type', this.props.panel.type.harmony,  this.okGetListOfType.bind(this))
+        window.socket.emit('get listo type', this.props.panel.type.harmony,  this.okGetListoType.bind(this))
     }
   }
 
@@ -41,8 +41,8 @@ class PanelList extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  okGetListOfType (typeList) {
-    console.info("okGetListOfType", typeList );
+  okGetListoType (typeList) {
+    console.info("okGetListoType", typeList );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
