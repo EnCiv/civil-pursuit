@@ -24,14 +24,14 @@ truncateState=0;
       } else {
         this.trunced=false;
         this.setState({truncated: false});
-      }
+    
   }
 
   componentWillReceiveProps(newProps) {
     let truncateItems=newProps.truncateItems || 0;
     if(this.truncateItems !== truncateItems){
       this.truncateItems = truncateItems;
-      if(this.trunced && !this.state.truncated) {
+      if(this.trunced && !this.state.truncated & !this.props.startUntruncated) {
        this.setState({truncated: true});
       }
     }
