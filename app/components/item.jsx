@@ -24,7 +24,7 @@ truncateState=0;
       } else {
         this.trunced=false;
         this.setState({truncated: false});
-    
+      }
   }
 
   componentWillReceiveProps(newProps) {
