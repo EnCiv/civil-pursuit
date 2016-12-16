@@ -14,6 +14,7 @@ import UserStore                        from './store/user';
 import About                            from './about';
 import { EventEmitter }                 from 'events';
 import QHome                            from './qhome';
+import PanelList                        from './panel-list';
 
 class App extends React.Component {
 
@@ -181,7 +182,7 @@ class App extends React.Component {
             const qpanel = Object.assign({}, this.props.panels[panelId1].panel);
 
             page = (
-              <QHome { ...this.props } user={ user } count = { 1 } panel={ qpanel } emitter = {this.emitter } />
+              <PanelList { ...this.props } user={ user } count = { 1 } panel={ qpanel } emitter = {this.emitter } />
             );
 
             break;
