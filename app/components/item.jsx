@@ -8,9 +8,12 @@ import ClassNames          from 'classnames';
 
 class Item extends React.Component {
 
-  state = { truncated: false,
-            hint: true,
-          };
+
+  constructor(props){
+    super(props);
+    this.state.truncated= false;
+    this.state.hint = this.props.startUntruncated ? false : true;
+  }
 
 truncateState=0;
 
@@ -64,7 +67,7 @@ truncateState=0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textHint(active) {
-    if(this.state.hint === active) { this.setState({ hint: !active } ); }
+    if(this.state.truncated && this.state.hint === active) { this.setState({ hint: !active } ); }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
