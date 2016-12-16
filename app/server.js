@@ -369,16 +369,19 @@ class HttpServer extends EventEmitter {
                   console.error("server getQsortPage no item subtype");
                   return next();
                 }
+
+                req.panels = {};
+                
+                const iPanelId=makePanelId(item);
+                req.panels[iPanelId]=makePanel(item);
+                req.panels[iPanelId].panel.items.push(item);
                 
                 const query = {
                   type: item.subtype,
                   parent: item._id,
                   size: 100
                 };
-                req.panels = {};
-                const iPanelId=makePanelId(item);
-                req.panels[iPanelId]=makePanel(item);
-                req.panels[iPanelId].items.push(item);
+
 
                 const qPanelId=makePanelId(query);
                 req.panels[qPanelId] = makePanel(query);
