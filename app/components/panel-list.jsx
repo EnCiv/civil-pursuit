@@ -52,11 +52,10 @@ class PanelList extends React.Component {
     let loading;
 
 
-    this.props.panel.type.harmony.forEach(pType =>{
-        console.info("panel-list ptype", ptype.name)
-    });
 
     if(this.props.panel && this.props.panel.items) {
+
+        console.info("panel-list ptype", this.props.panel.type)
 
         const panel = this.props.panel;
 
