@@ -9,7 +9,7 @@ function getListoType (typeIdList, cb) {
   var ids = typeIdList.map(function(id) { return ({ "_id": id}); });
   console.info("getListoType", ids);
   Type.find({ "_id": {$in: ids} })
-  .then(typeList => cb(typeList.toJSON()))
+  .then(typeList => cb(typeList.map(type=>type.toJSON())))
   .catch(this.error.bind(this));
 }
 
