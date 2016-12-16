@@ -376,6 +376,10 @@ class HttpServer extends EventEmitter {
                   size: 100
                 };
                 req.panels = {};
+                const iPanelId=makePanelId(item);
+                req.panels[iPanelId]=makePanel(item);
+                req.panels[iPanelId].items.push(item);
+
                 const qPanelId=makePanelId(query);
                 req.panels[qPanelId] = makePanel(query);
                 Item
