@@ -53,7 +53,9 @@ class PanelList extends React.Component {
     const content = [];
     let loading;
     let crumbs = [];
-    const { typeList } = this.state;
+    let { typeList } = this.state;
+
+    console.info("panelList state", this.state)
 
     if(typeList){ 
       typeList.forEach( type =>{
