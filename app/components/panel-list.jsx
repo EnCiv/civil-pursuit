@@ -3,12 +3,10 @@
 import React                        from 'react';
 import Icon                         from './util/icon';
 import Loading                      from './util/loading';
-import Countdown                    from './countdown';
 import QSortItems                   from './qsort-items';
-import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
-import Welcome                        from './welcome';
+import update from 'immutability-helper';
 
 class PanelList extends React.Component {
 
