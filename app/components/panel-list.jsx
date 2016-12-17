@@ -73,8 +73,8 @@ class PanelList extends React.Component {
       })
 
       crumbs=(
-            <div style={{ display: block,
-                        marginBottom: 1em,
+            <div style={{ display: "block",
+                        marginBottom: "1em",
             }}>
               {crumbs}
             </div>
