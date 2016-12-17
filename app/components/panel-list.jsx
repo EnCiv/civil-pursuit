@@ -44,7 +44,7 @@ class PanelList extends React.Component {
 
   okGetListoType (typeList) {
     console.info("okGetListoType", typeList );
-    this.setState(typeList);
+    this.setState({typeList: typeList});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
