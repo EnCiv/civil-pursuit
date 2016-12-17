@@ -60,15 +60,25 @@ class PanelList extends React.Component {
     if(typeList){ 
       typeList.forEach( type =>{
           crumbs.push(
-            <div style={{display: "inline-block",
-                         width: 100/typeList.length + "%",
-                         padding: "0.5em",
-                         border: "1px solid #666"
-                        }}>
-              {type.name}
-            </div>
+
+              <div style={{display: "inline-block",
+                          width: 100/typeList.length + "%",
+                          padding: "0.5em",
+                          border: "1px solid #666",
+                          boxSizing: "border-box"
+                          }}>
+                {type.name}
+              </div>
           )
       })
+
+      crumbs=(
+            <div style={{ display: block,
+                        marginBottom: 1em,
+            }}>
+              {crumbs}
+            </div>
+      )
     }
 
     if(this.props.panel && this.props.panel.items) {
