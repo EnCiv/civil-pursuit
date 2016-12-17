@@ -21,7 +21,8 @@ class PanelList extends React.Component {
   state = {
     discussion : null,
     topLevelType : null,
-    training : null
+    training : null,
+    typeList: []
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +44,7 @@ class PanelList extends React.Component {
 
   okGetListoType (typeList) {
     console.info("okGetListoType", typeList );
+    this.setState(typeList);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,8 +52,22 @@ class PanelList extends React.Component {
   render () {
     const content = [];
     let loading;
+    let crumbs = [];
+    const { typeList } = this.state;
 
-
+    if(typeList){ 
+      typeList.forEach( type =>{
+          crumbs.push(
+            <div style={{display: "inline-block",
+                         width: 100/typeList.length + "%",
+                         padding: "0.5em",
+                         border: "1px solid #666"
+                        }}>
+              {type.name}
+            </div>
+          )
+      })
+    }
 
     if(this.props.panel && this.props.panel.items) {
 
@@ -75,7 +91,11 @@ class PanelList extends React.Component {
       );
     }
 
-    return (<section>{ content }</section>);
+    return (<section>
+              { crumbs }
+              { content }
+            </section>
+            );
   }
 }
 
