@@ -20,6 +20,7 @@ class TypeComponent extends React.Component{
             Component=TypeComponent.components[this.props.component];
         } else if(this.props.panel & this.props.panel.type && this.props.panel.type.component) {
             Component=TypeComponent.components[this.props.panel.type.component];
+        } else {
             Component=Subtype;
         }
         return(<Component {...this.props} /> );
