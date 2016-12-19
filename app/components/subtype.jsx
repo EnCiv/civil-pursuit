@@ -30,12 +30,12 @@ class Subtype extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { type, user, parent, active } = this.props;
+    const { panel, user, active } = this.props;
 
     let content = ( <Loading message="Loading related" /> );
 
       content = (
-        <PanelStore type={ type} parent={ parent }>
+        <PanelStore { ...panel }>
           <PanelItems user={ user } />
         </PanelStore>
       );

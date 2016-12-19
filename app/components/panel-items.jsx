@@ -18,6 +18,8 @@ import Details            from './details';
 import DetailsStore       from './store/details';
 import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
+import TypeComponent      from './type-component';
+import config             from '../../public.json';
 
 class PanelItems extends React.Component {
 
@@ -202,6 +204,13 @@ class PanelItems extends React.Component {
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].subtype ) {
               buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
+              const subPanel={
+                parent: item,
+                type: item.type,
+                items: [],
+                skip      :   0,
+                limit     :   config['navigator batch size'],
+              }
               subtype = (
                 <div className="toggler subtype">
                   <Accordion
@@ -209,9 +218,8 @@ class PanelItems extends React.Component {
                     name    =   "subtype"
                     active  =   { (active.item === item._id && active.section === 'subtype') }
                     >
-                    <Subtype
-                      type    =   { item.subtype }
-                      parent  =   { item }
+                    <TypeComponent
+                      panel = { subPanel }
                       ref     =   "subtype"
                       user    =   { user }
                       active  =   { (active.item === item._id && active.section === 'subtype') }
