@@ -206,11 +206,11 @@ class PanelItems extends React.Component {
               buttonstate.subtype= (active && active.item === item._id && active.section === 'subtype');
               const subPanel={
                 parent: item,
-                type: item.type,
+                type: item.subtype,
                 items: [],
                 skip      :   0,
                 limit     :   config['navigator batch size'],
-              }
+              };
               subtype = (
                 <div className="toggler subtype">
                   <Accordion
