@@ -207,7 +207,6 @@ class PanelItems extends React.Component {
               const subPanel={
                 parent: item,
                 type: item.subtype,
-                items: [],
                 skip      :   0,
                 limit     :   config['navigator batch size'],
               };
