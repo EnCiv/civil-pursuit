@@ -9,7 +9,7 @@ import Subtype                          from './subtype'
 class TypeComponent extends React.Component{
 
     static components={
-        'PanelItems': PanelItems,
+        'PanelList': PanelList,
         'QHome': QHome,
         'Subtype': Subtype
     }
