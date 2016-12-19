@@ -15,6 +15,7 @@ import About                            from './about';
 import { EventEmitter }                 from 'events';
 import QHome                            from './qhome';
 import PanelList                        from './panel-list';
+import TypeComponent                    from './type-component';
 
 class App extends React.Component {
 
