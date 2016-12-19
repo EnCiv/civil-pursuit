@@ -51,7 +51,8 @@ class Type extends Mungo.Model {
         "active"     :     String
       },
       "evaluateQuestion" :  String,
-      "instruction"     :  String
+      "instruction"      :  String,
+      "component"        : String
     }
   }
 

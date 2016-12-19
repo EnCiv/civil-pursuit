@@ -14,14 +14,15 @@ type                =   shape({
   name              :   string.isRequired,
   harmony           :   arrayOf(string),
   parent            :   string,
-  createMethod		: 	string,
-  promoteMethod		: 	string,
+  createMethod		  : 	string,
+  promoteMethod		  : 	string,
   promoteButtonLabel: 	shape({
-  	inactive		: 	string.isRequired,
-  	active         	:   string.isRequired
+  	inactive		    : 	string.isRequired,
+  	active          :   string.isRequired
   	}),
-  evaluateQuestion	: 	string,
-  instruction	: 	string
+  evaluateQuestion  :   string,
+  instruction	      :   string,
+  component         :   string
 });
 
 export default type;
