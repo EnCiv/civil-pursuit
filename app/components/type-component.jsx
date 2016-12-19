@@ -14,22 +14,15 @@ class TypeComponent extends React.Component{
         'PanelList': PanelList
     }
 
-    Component;
-
-    constructor(props){
-        super(props);
+    render(){
+        var Component;
         if(this.props.component){
-            Component=TypeComponent.components[this.props.componentType];
+            Component=TypeComponent.components[this.props.component];
         } else {
             Component=PanelList;
         }
-    }
-
-    render(){
         return(<Component {...this.props} /> );
-
     }
-
 }
 
 export default TypeComponent;
