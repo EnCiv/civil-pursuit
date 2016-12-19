@@ -19,7 +19,7 @@ class TypeComponent extends React.Component{
     constructor(props){
         super(props);
         if(this.props.component){
-            Component=components[this.props.componentType];
+            Component=TypeComponent.components[this.props.componentType];
         } else {
             Component=PanelList;
         }
