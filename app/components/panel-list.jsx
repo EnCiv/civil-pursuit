@@ -7,6 +7,7 @@ import QSortItems from './qsort-items';
 import panelType from '../lib/proptypes/panel';
 import PanelStore from './store/panel';
 import update from 'immutability-helper';
+import TypeComponent from './type-component';
 
 class PanelList extends React.Component {
 
