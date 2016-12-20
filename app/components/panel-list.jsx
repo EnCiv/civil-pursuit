@@ -47,7 +47,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   nextPanel(){
-    if(this.state.currentPanel<(this.state.typeList.length-1){
+    if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1});
     }
   }
