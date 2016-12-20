@@ -79,7 +79,7 @@ class PanelList extends React.Component {
       )
     }
 
-    if(this.props.panel && this.props.panel.items) {
+    if(this.props.panel ) {
 
         console.info("panel-list ptype", this.props.panel.type)
 
