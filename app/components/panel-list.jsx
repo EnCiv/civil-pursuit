@@ -1,11 +1,11 @@
 'use strict';
 
-import React                        from 'react';
-import Icon                         from './util/icon';
-import Loading                      from './util/loading';
-import QSortItems                   from './qsort-items';
-import panelType                    from '../lib/proptypes/panel';
-import PanelStore                   from './store/panel';
+import React from 'react';
+import Icon from './util/icon';
+import Loading from './util/loading';
+import QSortItems from './qsort-items';
+import panelType from '../lib/proptypes/panel';
+import PanelStore from './store/panel';
 import update from 'immutability-helper';
 
 class PanelList extends React.Component {
@@ -17,37 +17,44 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   state = {
-    discussion : null,
-    topLevelType : null,
-    training : null,
+    discussion: null,
+    topLevelType: null,
+    training: null,
     typeList: []
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentDidMount () {
+  componentDidMount() {
     console.info("panel-list.componentDidMount onServer=", typeof window !== 'undefined');
-    if ( typeof window !== 'undefined' && this.props.panel.type.harmony) {
-        window.socket.emit('get listo type', this.props.panel.type.harmony,  this.okGetListoType.bind(this))
+    if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
+      window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentdidUnmount () {
-  }
-
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  okGetListoType (typeList) {
-    console.info("okGetListoType", typeList );
-    this.setState({typeList: update(typeList, {$unshift: [this.props.panel.type]})});
+  componentdidUnmount() {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  render () {
+  okGetListoType(typeList) {
+    console.info("okGetListoType", typeList);
+    this.setState({ typeList: update(typeList, { $unshift: [this.props.panel.type] }) });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  nextPanel(){
+    if(this.state.currentPanel<(this.state.typeList.length-1){
+      this.setState({currentPanel: this.state.currentPanel + 1});
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  render() {
     const content = [];
     let loading;
     let crumbs = [];
@@ -55,46 +62,47 @@ class PanelList extends React.Component {
 
     console.info("panelList state", this.state)
 
-    if(typeList){ 
-      typeList.forEach( type =>{
-          crumbs.push(
+    if (typeList) {
+      typeList.forEach(type => {
+        crumbs.push(
 
-              <div style={{display: "inline-block",
-                          width: 100/typeList.length + "%",
-                          padding: "0.5em",
-                          border: "1px solid #666",
-                          boxSizing: "border-box"
-                          }}>
-                {type.name}
-              </div>
-          )
+          <div style={{
+            display: "inline-block",
+            width: 100 / typeList.length + "%",
+            padding: "0.5em",
+            border: "1px solid #666",
+            boxSizing: "border-box"
+          }}>
+            {type.name}
+          </div>
+        )
       })
 
-      crumbs=(
-            <div style={{ display: "block",
-                        marginBottom: "1em",
-            }}>
-              {crumbs}
-            </div>
+      crumbs = (
+        <div style={{
+          display: "block",
+          marginBottom: "1em",
+        }}>
+          {crumbs}
+        </div>
       )
     }
 
-    if(this.props.panel ) {
+    if (this.props.panel) {
 
-        console.info("panel-list ptype", this.props.panel.type)
+      console.info("panel-list ptype", this.props.panel.type)
 
-        const panel = this.props.panel;
+      const panel = this.props.panel;
 
-        content.push(
-            <div>
-            <div id="top-level-panel">
-                <PanelStore { ...panel }>
-                <QSortItems user={ this.props.user } />
-                </PanelStore>
-
-            </div>
-            </div>
-        );
+      content.push(
+        <div>
+          <div id="top-level-panel">
+            <PanelStore { ...panel }>
+              <TypeComponent user={this.props.user} next={this.nextPanel.bind(this)} />
+            </PanelStore>
+          </div>
+        </div>
+      );
     } else {
       content.push(
         <Loading message="Loading discussions ..." />
@@ -102,10 +110,10 @@ class PanelList extends React.Component {
     }
 
     return (<section>
-              { crumbs }
-              { content }
-            </section>
-            );
+      {crumbs}
+      {content}
+    </section>
+    );
   }
 }
 

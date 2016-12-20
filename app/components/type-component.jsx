@@ -4,14 +4,16 @@
 import React                            from 'react';
 import QHome                            from './qhome';
 import PanelList                        from './panel-list';
-import Subtype                          from './subtype'
+import Subtype                          from './subtype';
+import QSortItems                       from './qsort-items';
 
 class TypeComponent extends React.Component{
 
     static components={
         'PanelList': PanelList,
         'QHome': QHome,
-        'Subtype': Subtype
+        'Subtype': Subtype,
+        'QSortItems': QSortItems
     }
 
     render(){
