@@ -127,6 +127,7 @@ class QSortItems extends React.Component {
         let i;
         let done = false;
         var clone = {};
+        if( button == "done" && this.props.next ){ this.props.next()}
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.QSortButtonList).forEach(
                 (sectionName) => {
