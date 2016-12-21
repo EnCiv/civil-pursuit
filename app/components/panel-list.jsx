@@ -112,17 +112,17 @@ class PanelList extends React.Component {
             );
         }
       }
-    } else {
-      content.push(
-        <Loading message="Loading discussions ..." />
-      );
     }
 
     return (<section>
       {crumbs}
-      {this.panelList.map(panelListItem => {
-        return(panelListItem.content);
-      })}
+      {this.panelList.length ? 
+          this.panelList.map(panelListItem => {
+            return(panelListItem.content);
+           }) 
+        : 
+          <Loading message="Loading discussions ..." />
+      }
     </section>
     );
   }
