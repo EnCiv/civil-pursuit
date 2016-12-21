@@ -189,7 +189,8 @@ class QSortItems extends React.Component {
             items = panel.items;
             loaded = true;
 
-            type = panel.type;
+            type = this.props.type || panel.type;  // if a type was passed, use that one rather than the panel type. We are operating on the parents matching items not ours
+
             parent = panel.parent;
 
             if (type) {

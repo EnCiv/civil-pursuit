@@ -6,8 +6,8 @@ import Loading from './util/loading';
 import QSortItems from './qsort-items';
 import panelType from '../lib/proptypes/panel';
 import PanelStore from './store/panel';
-import update from 'immutability-helper';
 import TypeComponent from './type-component';
+import makePanel  from '../lib/app/make-panel';
 
 class PanelList extends React.Component {
 
@@ -21,9 +21,11 @@ class PanelList extends React.Component {
     discussion: null,
     topLevelType: null,
     training: null,
-    typeList: []
+    typeList: [],
+    currentPanel=0
   };
 
+  panelList = [];
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount() {
@@ -42,7 +44,7 @@ class PanelList extends React.Component {
 
   okGetListoType(typeList) {
     console.info("okGetListoType", typeList);
-    this.setState({ typeList: update(typeList, { $unshift: [this.props.panel.type] }) });
+    this.setState({ typeList: typeList});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +62,7 @@ class PanelList extends React.Component {
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
+    const panel=makePanel(this.props.panel);
 
     console.info("panelList state", this.state)
 
@@ -68,8 +71,7 @@ class PanelList extends React.Component {
         crumbs.push(
 
           <div style={{
-            display: "inline-block",
-            width: 100 / typeList.length + "%",
+            display: "inline",
             padding: "0.5em",
             border: "1px solid #666",
             boxSizing: "border-box"
@@ -89,21 +91,26 @@ class PanelList extends React.Component {
       )
     }
 
-    if (this.props.panel) {
+    if (this.state.typeList.length) {
 
-      console.info("panel-list ptype", this.props.panel.type)
+      console.info("panel-list ptype", this.state)
+      var currentPanel=this.state.currentPanel;
 
-      const panel = this.props.panel;
+      console.info("PanelList panel", currentPanel, this.panelList);
 
-      content.push(
-        <div>
-          <div id="top-level-panel">
-            <PanelStore { ...panel }>
-              <TypeComponent user={this.props.user} next={this.nextPanel.bind(this)} />
-            </PanelStore>
-          </div>
-        </div>
-      );
+      if(!this.panelList[currentPanel].content){
+        this.panelList[currentPanel].content= (currentPanel)=>{
+            const cp=currentPanel; //doing this through a function so that cp can be a constant that doesn't change for this element, even after currentPanel changes to prevent unnecessary rerendering
+            return(
+              <div id="panel-list" style={{left: (cp - this.state.currentPanel) * 100 + "vw",
+                                          transition: "all 0.5s linear",
+                                          position: "relative" }} >
+                  <PanelStore { ...panel }>
+                    <TypeComponent component={this.panelList[cp].component} type={this.state.typeList[cp]} user={this.props.user} next={this.nextPanel.bind(this)} />  
+                  </PanelStore>
+              </div>
+            );
+        }
     } else {
       content.push(
         <Loading message="Loading discussions ..." />
@@ -112,7 +119,9 @@ class PanelList extends React.Component {
 
     return (<section>
       {crumbs}
-      {content}
+      {this.panelList.map(panelListItem => {
+        return(panelListItem.content);
+      })}
     </section>
     );
   }
