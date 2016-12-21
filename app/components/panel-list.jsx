@@ -99,7 +99,7 @@ class PanelList extends React.Component {
 
       console.info("PanelList panel", currentPanel, this.panelList);
 
-      if(this.panelList[currentPanel] && ){
+      if(!this.panelList[currentPanel].content ){
         this.panelList[currentPanel].content= (currentPanel)=>{
             const cp=currentPanel; //doing this through a function so that cp can be a constant that doesn't change for this element, even after currentPanel changes to prevent unnecessary rerendering
             return(
