@@ -22,7 +22,7 @@ class PanelList extends React.Component {
     topLevelType: null,
     training: null,
     typeList: [],
-    currentPanel=0
+    currentPanel: 0
   };
 
   panelList = [];
