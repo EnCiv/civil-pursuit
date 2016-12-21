@@ -111,6 +111,7 @@ class PanelList extends React.Component {
               </div>
             );
         }
+      }
     } else {
       content.push(
         <Loading message="Loading discussions ..." />
