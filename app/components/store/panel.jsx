@@ -22,6 +22,8 @@ class PanelStore extends React.Component {
       this.state.panel.items=this.props.items.slice(0);
       this.state.panel.size= this.props.size || publicConfig['navigator batch size'];
     }
+
+    console.info("PanelStore constructor", this.props);
   }
 
 

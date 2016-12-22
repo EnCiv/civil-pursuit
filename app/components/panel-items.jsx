@@ -210,6 +210,7 @@ class PanelItems extends React.Component {
                 skip      :   0,
                 limit     :   config['navigator batch size'],
               };
+              console.info("PanelItems.subtype subpanel", subPanel);
               subtype = (
                 <div className="toggler subtype">
                   <Accordion
