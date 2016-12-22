@@ -215,7 +215,7 @@ class QSortItems extends React.Component {
             }
 
             if (!Object.keys(this.index).length) {
-                content = (
+                content.push(
                     <div className="gutter text-center">
                         <a href="#" onClick={this.toggle.bind(this, null, 'creator')} className="click-to-create">
                             Click the + to be the first to add something here
