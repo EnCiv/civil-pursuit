@@ -44,7 +44,7 @@ class PanelList extends React.Component {
 
   okGetListoType(typeList) {
     console.info("okGetListoType", typeList);
-    for(let i=0; i< typeList.length; i++) { this.panelList[i]={content: {} }; }
+    for(let i=0; i< typeList.length; i++) { this.panelList[i]={content: [] }; }
     this.setState({ typeList: typeList});
   }
 
