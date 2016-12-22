@@ -105,7 +105,7 @@ class PanelList extends React.Component {
                                           transition: "all 0.5s linear",
                                           position: "relative" }} >
                   <PanelStore { ...panel }>
-                    <TypeComponent component={this.panelList[cp].component} type={this.state.typeList[cp]} user={this.props.user} next={this.nextPanel.bind(this)} />  
+                    <TypeComponent component={this.typeList[currentPanel].component} type={this.state.typeList[currentPanel]} user={this.props.user} next={this.nextPanel.bind(this)} />  
                   </PanelStore>
               </div>
         );
