@@ -184,7 +184,7 @@ class QSortItems extends React.Component {
         const onServer = typeof window === 'undefined';
 
         let title = 'Loading items', name, loaded = false, content = [], loadMore,
-            type, parent, items, direction = [], instruction = [], issues = 0, done = [];
+            type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
 
         if (panel) {
             items = panel.items;
@@ -215,7 +215,7 @@ class QSortItems extends React.Component {
             }
 
             if (!Object.keys(this.index).length) {
-                content.push(
+                loading.push(
                     <div className="gutter text-center">
                         <a href="#" onClick={this.toggle.bind(this, null, 'creator')} className="click-to-create">
                             Click the + to be the first to add something here
@@ -289,6 +289,7 @@ class QSortItems extends React.Component {
                             {content.map(article => <QSortFlipItem {...article} key={article.id} />)}
                         </FlipMove>
                     </div>
+                    {loading}
                 </Panel>
             </section>
         );
