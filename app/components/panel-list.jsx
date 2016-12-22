@@ -63,7 +63,7 @@ class PanelList extends React.Component {
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
-    const panel=makePanel(this.props.panel);
+    const panel= this.props.panel;
 
     console.info("panelList state", this.state)
 
