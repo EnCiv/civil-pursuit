@@ -259,7 +259,7 @@ class QSortItems extends React.Component {
                         <div className='instruction-text'>
                             {this.QSortButtonList['unsorted'].direction}
                             <Button small shy
-                                onClick={this.toggle.bind(this, 'done')}
+                                onClick={this.toggle.bind(this, null, 'done')}
                                 className="qsort-done"
                                 style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                                 >
