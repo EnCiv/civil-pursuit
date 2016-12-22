@@ -95,23 +95,20 @@ class PanelList extends React.Component {
     if (this.state.typeList.length) {
 
       console.info("panel-list ptype", this.state)
-      var currentPanel=this.state.currentPanel;
+      const currentPanel=this.state.currentPanel;
 
       console.info("PanelList panel", currentPanel, this.panelList);
 
       if(this.panelList[currentPanel].content.length==0 ){
-        this.panelList[currentPanel].content= (currentPanel)=>{
-            const cp=currentPanel; //doing this through a function so that cp can be a constant that doesn't change for this element, even after currentPanel changes to prevent unnecessary rerendering
-            return(
-              <div id="panel-list" style={{left: (cp - this.state.currentPanel) * 100 + "vw",
+        this.panelList[currentPanel].content= (
+              <div id="panel-list" style={{left: (currentPanel - this.state.currentPanel) * 100 + "vw",
                                           transition: "all 0.5s linear",
                                           position: "relative" }} >
                   <PanelStore { ...panel }>
                     <TypeComponent component={this.panelList[cp].component} type={this.state.typeList[cp]} user={this.props.user} next={this.nextPanel.bind(this)} />  
                   </PanelStore>
               </div>
-            );
-        }
+        );
       }
     }
 
