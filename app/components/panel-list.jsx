@@ -56,6 +56,11 @@ class PanelList extends React.Component {
     }
   }
 
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ panelListButton(i) {
+   this.setState({currentPanel: i})
+ }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
@@ -64,21 +69,36 @@ class PanelList extends React.Component {
     let crumbs = [];
     let { typeList } = this.state;
     const panel= this.props.panel;
+    var title, name;
+
+    if ( panel ) {
+
+      if(panel.type) {
+        name = `syn-panel-list--${panel.type._id}`;
+        title = type.name;
+      } else
+      { name = 'syn-panel-list-no-type';
+        title = 'untitled';
+      }
+      
+      if ( panel.parent ) {
+        name += `-${panel.parent._id || parent}`;
+      }
+    }
 
     console.info("panelList state", this.state)
 
     if (typeList) {
-      typeList.forEach(type => {
+      typeList.forEach((type, i) => {
         crumbs.push(
-
-          <div style={{
+          <button onClick={this.panelListButton.bind(this, i)} style={{
             display: "inline",
             padding: "0.5em",
             border: "1px solid #666",
             boxSizing: "border-box"
           }}>
             {type.name}
-          </div>
+          </button>
         )
       })
 
@@ -86,6 +106,7 @@ class PanelList extends React.Component {
         <div style={{
           display: "block",
           marginBottom: "1em",
+          marginTop: "1em",
         }}>
           {crumbs}
         </div>
@@ -102,26 +123,38 @@ class PanelList extends React.Component {
       if(this.panelList[currentPanel].content.length==0 ){
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
         this.panelList[currentPanel].content= (
-              <div id="panel-list" style={{left: (currentPanel - this.state.currentPanel) * 100 + "vw",
-                                          transition: "all 0.5s linear",
-                                          position: "relative" }} >
                   <PanelStore { ...panel }>
                     <TypeComponent component={this.state.typeList[currentPanel].component} type={this.state.typeList[currentPanel]} user={this.props.user} next={this.nextPanel.bind(this)} />  
                   </PanelStore>
-              </div>
         );
       }
     }
 
     return (<section>
+        <Panel
+          className   =   { name }
+          ref         =   "panel"
+          heading     =   {[( <h4>{ title }</h4> )]}
+          >
       {crumbs}
       {this.panelList.length ? 
-          this.panelList.map(panelListItem => {
-            return(panelListItem.content);
+          this.panelList.map((panelListItem, i) => {
+            return(
+              <div id={`panel-list-${i}`} 
+                   style={{
+                            left: `${(i - currentPanel) * 100} vw`,
+                            transition: "all 0.5s linear",
+                            position: "relative"
+                          }} 
+              >
+                { panelListItem.content }
+              </div>
+              );
            }) 
         : 
           <Loading message="Loading discussions ..." />
       }
+      </Panel>
     </section>
     );
   }
