@@ -90,6 +90,7 @@ class PanelList extends React.Component {
     var title, name;
     const currentPanel=this.state.currentPanel;
     const containerWidth=this.state.containerWidth;
+    const spaceBetween=100;
 
     console.info("panelList containerWidth", containerWidth);
 
@@ -165,8 +166,8 @@ class PanelList extends React.Component {
             {  this.panelList.length ? 
                   <div id='panel-list-wide' 
                         style={{
-                          width: containerWidth * this.panelList.length + 'px',
-                          left:  -currentPanel * containerWidth + 'px',
+                          width: (containerWidth + spaceBetween)* this.panelList.length + 'px',
+                          left:  -currentPanel * (containerWidth + spaceBetween) + 'px',
                           transition: "all 0.5s linear",
                           position: "relative"
                         }} 
@@ -177,6 +178,8 @@ class PanelList extends React.Component {
                             <div  id={`panel-list-${i}`}
                                   ref={`panel-list-${i}`}
                                   style={{display: "inline-block",
+                                          verticalAlign: 'top',
+                                          marginRight: spaceBetween + 'px',
                                           width: containerWidth + 'px'}}
                             >
                               { panelListItem.content }
