@@ -97,7 +97,8 @@ class PanelList extends React.Component {
             display: "inline",
             padding: "0.5em",
             border: "1px solid #666",
-            boxSizing: "border-box"
+            boxSizing: "border-box",
+            backgroundColor: this.state.currentPanel == 1 ? "#eee" : "#ddd"
           }}>
             {type.name}
           </button>
@@ -143,7 +144,8 @@ class PanelList extends React.Component {
             return(
               <div id={`panel-list-${i}`} 
                    style={{
-                            left: `${(i - currentPanel) * 100} vw`,
+                            left: (i - currentPanel * 100 + 'vw'),
+                            top: 0,
                             transition: "all 0.5s linear",
                             position: "relative"
                           }} 
