@@ -124,7 +124,7 @@ class PanelList extends React.Component {
 
       if(this.panelList[currentPanel].content.length==0 ){
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
-        this.panelList[currentPanel].content= (
+        this.panelList[currentPanel].content.push(
                   <PanelStore { ...panel }>
                     <TypeComponent component={this.state.typeList[currentPanel].component} type={this.state.typeList[currentPanel]} user={this.props.user} next={this.nextPanel.bind(this)} />  
                   </PanelStore>
@@ -141,7 +141,7 @@ class PanelList extends React.Component {
       {crumbs}
       {this.panelList.length ? 
           this.panelList.map((panelListItem, i) => {
-            if(panelListItem.content) {
+            if(panelListItem.content.length) {
               return(
                 <div id={`panel-list-${i}`} 
                     ref={`panel-list-${i}`}
