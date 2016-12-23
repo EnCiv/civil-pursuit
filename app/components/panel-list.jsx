@@ -144,11 +144,12 @@ class PanelList extends React.Component {
             if(panelListItem.content.length) {
               return(
                 <div id={`panel-list-${i}`} 
+                    ref={`panel-list-${i}`}
                     style={{
                               left: (((i - currentPanel) * 100) + 'vw'),
                               transition: "all 0.5s linear",
-                              position: "relative"
-
+                              position: "relative",
+                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
                             }} 
                 >
                   { panelListItem.content }
