@@ -88,6 +88,9 @@ class PanelList extends React.Component {
     const panel= this.props.panel;
     var title, name;
     const currentPanel=this.state.currentPanel;
+    const containerWidth=this.state.containerWidth;
+
+    console.info("panelList containerWidth", containerWidth);
 
     if ( panel ) {
 
@@ -161,8 +164,8 @@ class PanelList extends React.Component {
             {  this.panelList.length ? 
                   <div id='panel-list-wide' 
                         style={{
-                          width: (this.state.containerWidth * this.panelList.length + 'px'),
-                          left: (( -currentPanel * this.state.containerWidth) + 'px'),
+                          width: containerWidth * this.panelList.length + 'px',
+                          left:  -currentPanel * containerWidth + 'px',
                           transition: "all 0.5s linear",
                           position: "relative"
                         }} 
@@ -173,7 +176,7 @@ class PanelList extends React.Component {
                             <div  id={`panel-list-${i}`}
                                   ref={`panel-list-${i}`}
                                   style={{display: "inline-block",
-                                          width: (this.state.containerWidth + 'px')}}
+                                          width: containerWidth + 'px'}}
                             >
                               { panelListItem.content }
                             </div>
