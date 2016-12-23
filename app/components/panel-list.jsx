@@ -8,6 +8,7 @@ import panelType from '../lib/proptypes/panel';
 import PanelStore from './store/panel';
 import TypeComponent from './type-component';
 import makePanel  from '../lib/app/make-panel';
+import Panel from './panel';
 
 class PanelList extends React.Component {
 
