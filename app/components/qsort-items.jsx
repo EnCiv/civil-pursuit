@@ -170,6 +170,7 @@ class QSortItems extends React.Component {
             this.scrollBackToTop = false;
             setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
         }
+        if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

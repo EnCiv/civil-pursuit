@@ -47,7 +47,7 @@ class PanelList extends React.Component {
   componentDidUpdate() {
     let pi='panel-list-'+this.state.currentPanel;
     if(this.refs[pi]) {
-      this.refs.outer.style.maxHeight=this.refs[pi].clientHeight;
+      this.refs.outer.style.height=this.refs[pi].clientHeight + 'px';
       console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
     } else { console.info("panellist componentdidupdate undefined",pi )}
     if(this.state.containerWidth != ReactDOM.findDOMNode(this.refs.panel).clientWidth){  // could be changed by resizing the window
@@ -55,7 +55,6 @@ class PanelList extends React.Component {
           containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
         });
     }
-    
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -147,7 +146,12 @@ class PanelList extends React.Component {
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
         this.panelList[currentPanel].content.push(
                   <PanelStore { ...panel }>
-                    <TypeComponent component={this.state.typeList[currentPanel].component} type={this.state.typeList[currentPanel]} user={this.props.user} next={this.nextPanel.bind(this)} />  
+                    <TypeComponent component={this.state.typeList[currentPanel].component} 
+                                   type={this.state.typeList[currentPanel]} 
+                                   user={this.props.user} 
+                                   next={this.nextPanel.bind(this)} 
+                                   onFinishAll={this.componentDidUpdate.bind(this)}
+                    />  
                   </PanelStore>
         );
       }
