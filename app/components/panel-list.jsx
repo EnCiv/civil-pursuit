@@ -28,6 +28,9 @@ class PanelList extends React.Component {
     containerWidth: 0
   };
 
+  stepRate=25; //ms
+  inHeight='inactive';
+
   panelList = [];
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -46,16 +49,36 @@ class PanelList extends React.Component {
 
   componentDidUpdate() {
     let pi='panel-list-'+this.state.currentPanel;
-    if(this.refs[pi]) {
-      this.refs.outer.style.height=this.refs[pi].clientHeight + 'px';
-      console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
-    } else { console.info("panellist componentdidupdate undefined",pi )}
     if(this.state.containerWidth != ReactDOM.findDOMNode(this.refs.panel).clientWidth){  // could be changed by resizing the window
       this.setState({
           containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
         });
     }
   }
+
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   smoothHeight() {
+    // set an interval to update scrollTop attribute every 25 ms
+    if(this.inHeight=='active'){return;} //don't stutter the close
+    this.inHeight='active';
+
+    let outer = this.refs.outer;
+    let inner = this.refs['panel-list-'+this.state.currentPanel];
+
+    let timerMax= 2000/this.stepRate; 
+
+    const timer = setInterval( () => {
+      if(--timerMax == 0 ){ clearInterval(timer);  this.inHeight='inactive'; return; }
+      if(this.inHeight==='abort'){ clearInterval(timer); this.inHeight='inactive'; return; }
+      let outerHeight= outer.clientHeight;
+      let innerHeight= inner.clientHeight;
+      let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
+      if(outerHeight != innerHeight && outerMaxHeight != innerHeight){
+        outer.style.maxHeight=innerHeight + 'px';
+      }
+    }, this.stepRate);
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -70,6 +93,7 @@ class PanelList extends React.Component {
   nextPanel(){
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1});
+      smoothHeight();
     }
   }
 
@@ -77,6 +101,7 @@ class PanelList extends React.Component {
 
  panelListButton(i) {
    this.setState({currentPanel: i})
+   this.smoothHeight();
  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -130,6 +155,7 @@ class PanelList extends React.Component {
           display: "block",
           marginBottom: "1em",
           marginTop: "1em",
+          textAlign: "center"
         }}>
           {crumbs}
         </div>
@@ -150,7 +176,6 @@ class PanelList extends React.Component {
                                    type={this.state.typeList[currentPanel]} 
                                    user={this.props.user} 
                                    next={this.nextPanel.bind(this)} 
-                                   onFinishAll={this.componentDidUpdate.bind(this)}
                     />  
                   </PanelStore>
         );
