@@ -23,7 +23,8 @@ class PanelList extends React.Component {
     topLevelType: null,
     training: null,
     typeList: [],
-    currentPanel: 0
+    currentPanel: 0,
+    containerWidth: 0
   };
 
   panelList = [];
@@ -34,22 +35,18 @@ class PanelList extends React.Component {
     if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
       window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
     }
-  }
+    this.setState({
+        containerWidth: this.refs.panel.clientWidth
+      });
+    }
+  
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
-    let prevHeight=0, i;
-    for(i=0; i<this.panelList.length; i++) {
-      let pi='panel-list-'+i;
-      if(this.refs[pi]){
-        if(i>0){
-          this.refs[pi].style.top= -prevHeight + 'px';
-        }
-        prevHeight+=this.refs[pi].clientHeight || 0;
-      }
-      console.info("panellist componentdidupdate",i,prevHeight )
-    }
+    let pi='panel-list-'+this.state.currentPanel;
+    this.refs.outer.height=this.refs[pi].clientHeight;
+    console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,36 +140,47 @@ class PanelList extends React.Component {
       }
     }
 
-    return (<section>
+    return(
+      <section>
         <Panel
           className   =   { name }
           ref         =   "panel"
           heading     =   {[( <h4>{ title }</h4> )]}
           >
-      {crumbs}
-      {
-        this.panelList.length ? 
-          this.panelList.map((panelListItem, i) => {
-            if(panelListItem.content.length) {
-              return(
-                <div id={`panel-list-${i}`} 
-                    ref={`panel-list-${i}`}
-                    style={{
-                              left: (((i - currentPanel) * 100) + 'vw'),
-                              transition: "all 0.5s linear",
-                              position: "relative",
-                            }} 
+          {crumbs}
+          {
+            this.panelList.length ? 
+              <div ref='outer'>
+                <div id='panel-list-wide' 
+                      style={{
+                        width: (this.state.containerWidth * this.panelList.length + 'px'),
+                        left: (( -currentPanel * this.state.containerWidth) + 'px'),
+                        transition: "all 0.5s linear",
+                        position: "relative"
+                      }} 
                 >
-                  { panelListItem.content }
+                  {  this.panelList.map( (panelListItem, i) => {
+                      if(panelListItem.content.length) {
+                        return(
+                          <div  id={`panel-list-${i}`}
+                                ref={`panel-list-${i}`}
+                                style={{width: (this.state.containerWidth + 'px')}}
+                          >
+                            { panelListItem.content }
+                          </div>
+                        );
+                      } else 
+                      { return ([]);
+                      }
+                    })
+                  }
                 </div>
-                );
-            } else { return ([]);}
-           })
-        : 
-          <Loading message="Loading discussions ..." />
-      }
-      </Panel>
-    </section>
+              </div>
+            : 
+              <Loading message="Loading discussions ..." />
+          }
+        </Panel>
+      </section>
     );
   }
 }
