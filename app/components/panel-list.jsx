@@ -141,20 +141,22 @@ class PanelList extends React.Component {
       {crumbs}
       {this.panelList.length ? 
           this.panelList.map((panelListItem, i) => {
-            return(
-              <div id={`panel-list-${i}`} 
-                   ref={`panel-list-${i}`}
-                   style={{
-                            left: (((i - currentPanel) * 100) + 'vw'),
-                            transition: "all 0.5s linear",
-                            position: "relative",
-                            top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
-                          }} 
-              >
-                { panelListItem.content }
-              </div>
-              );
-           }) 
+            if(panelListItem.content) {
+              return(
+                <div id={`panel-list-${i}`} 
+                    ref={`panel-list-${i}`}
+                    style={{
+                              left: (((i - currentPanel) * 100) + 'vw'),
+                              transition: "all 0.5s linear",
+                              position: "relative",
+                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
+                            }} 
+                >
+                  { panelListItem.content }
+                </div>
+                );
+            } else { return ({});}
+           })
         : 
           <Loading message="Loading discussions ..." />
       }
