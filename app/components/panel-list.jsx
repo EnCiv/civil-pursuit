@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Icon from './util/icon';
 import Loading from './util/loading';
 import QSortItems from './qsort-items';
@@ -36,7 +37,7 @@ class PanelList extends React.Component {
       window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
     }
     this.setState({
-        containerWidth: this.refs.panel.clientWidth
+        containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
       });
     }
   
@@ -49,9 +50,9 @@ class PanelList extends React.Component {
       this.refs.outer.style.height=this.refs[pi].clientHeight;
       console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
     } else { console.info("panellist componentdidupdate undefined",pi )}
-    if(this.state.containerWidth != this.refs.panel.clientWidth){  // could be changed by resizing the window
+    if(this.state.containerWidth != ReactDOM.findDOMNode(this.refs.panel).clientWidth){  // could be changed by resizing the window
       this.setState({
-          containerWidth: this.refs.panel.clientWidth
+          containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
         });
     }
     
