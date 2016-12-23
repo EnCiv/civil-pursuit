@@ -71,6 +71,7 @@ class PanelList extends React.Component {
     let { typeList } = this.state;
     const panel= this.props.panel;
     var title, name;
+    const currentPanel=this.state.currentPanel;
 
     if ( panel ) {
 
@@ -117,7 +118,6 @@ class PanelList extends React.Component {
     if (this.state.typeList.length) {
 
       console.info("panel-list ptype", this.state)
-      const currentPanel=this.state.currentPanel;
 
       console.info("PanelList panel", currentPanel, this.panelList);
 
