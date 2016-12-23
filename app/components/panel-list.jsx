@@ -98,7 +98,7 @@ class PanelList extends React.Component {
             padding: "0.5em",
             border: "1px solid #666",
             boxSizing: "border-box",
-            backgroundColor: this.state.currentPanel == i ? "#eee" : "#ddd"
+            backgroundColor: this.state.currentPanel == i ? "#fff" : "#ddd"
           }}>
             {type.name}
           </button>
@@ -143,10 +143,12 @@ class PanelList extends React.Component {
           this.panelList.map((panelListItem, i) => {
             return(
               <div id={`panel-list-${i}`} 
+                   ref={`panel-list-${i}`}
                    style={{
                             left: (((i - currentPanel) * 100) + 'vw'),
                             transition: "all 0.5s linear",
-                            position: "relative"
+                            position: "relative",
+                            top: i > 0 ? (-(this.refs[`panel-list-${i}`].clientHeight)) : 0
                           }} 
               >
                 { panelListItem.content }
