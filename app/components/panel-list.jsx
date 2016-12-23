@@ -45,13 +45,16 @@ class PanelList extends React.Component {
 
   componentDidUpdate() {
     let pi='panel-list-'+this.state.currentPanel;
-    this.refs.outer.height=this.refs[pi].clientHeight;
+    if(this.refs[pi]) {
+      this.refs.outer.style.height=this.refs[pi].clientHeight;
+      console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
+    } else { console.info("panellist componentdidupdate undefined",pi )}
     if(this.state.containerWidth != this.refs.panel.clientWidth){  // could be changed by resizing the window
       this.setState({
           containerWidth: this.refs.panel.clientWidth
         });
     }
-    console.info("panellist componentdidupdate",this.refs[pi].clientHeight )
+    
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
