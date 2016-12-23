@@ -148,8 +148,8 @@ class PanelList extends React.Component {
                     style={{
                               left: (((i - currentPanel) * 100) + 'vw'),
                               transition: "all 0.5s linear",
-                              position: "relative",
-                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
+                              position: "relative"
+
                             }} 
                 >
                   { panelListItem.content }
@@ -165,5 +165,5 @@ class PanelList extends React.Component {
     );
   }
 }
-
+//                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
 export default PanelList;
