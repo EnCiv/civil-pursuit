@@ -74,15 +74,15 @@ class PanelList extends React.Component {
     if ( panel ) {
 
       if(panel.type) {
-        name = `syn-panel-list--${panel.type._id}`;
-        title = type.name;
+        name = `syn-panel-list--${panel.type._id || panel.type}`;
+        title = panel.type.name;
       } else
       { name = 'syn-panel-list-no-type';
         title = 'untitled';
       }
-      
+
       if ( panel.parent ) {
-        name += `-${panel.parent._id || parent}`;
+        name += `-${panel.parent._id || panel.parent}`;
       }
     }
 
