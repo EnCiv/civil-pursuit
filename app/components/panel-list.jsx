@@ -144,7 +144,6 @@ class PanelList extends React.Component {
             if(panelListItem.content.length) {
               return(
                 <div id={`panel-list-${i}`} 
-                    ref={`panel-list-${i}`}
                     style={{
                               left: (((i - currentPanel) * 100) + 'vw'),
                               transition: "all 0.5s linear",
@@ -155,7 +154,7 @@ class PanelList extends React.Component {
                   { panelListItem.content }
                 </div>
                 );
-            } else { return ({});}
+            } else { return ([]);}
            })
         : 
           <Loading message="Loading discussions ..." />
@@ -165,5 +164,6 @@ class PanelList extends React.Component {
     );
   }
 }
+//                    ref={`panel-list-${i}`}
 //                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
 export default PanelList;
