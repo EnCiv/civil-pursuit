@@ -148,7 +148,7 @@ class PanelList extends React.Component {
                             left: (((i - currentPanel) * 100) + 'vw'),
                             transition: "all 0.5s linear",
                             position: "relative",
-                            top: i > 0 ? (-(this.refs[`panel-list-${i}`].clientHeight)) : 0
+                            top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
                           }} 
               >
                 { panelListItem.content }
