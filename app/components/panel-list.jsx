@@ -38,7 +38,17 @@ class PanelList extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentdidUnmount() {
+  componentDidUpdate() {
+    let prevHeight=0, i;
+    for(i=0; i<this.panelList.length; i++) {
+      let pi='panel-list-'+i;
+      if(this.refs[pi]){
+        if(i>0){
+          this.refs[pi].style.top= -prevHeight;
+        }
+        prevHeight=this.refs[pi].clientHeight || 0;
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,7 +149,8 @@ class PanelList extends React.Component {
           heading     =   {[( <h4>{ title }</h4> )]}
           >
       {crumbs}
-      {this.panelList.length ? 
+      {
+        this.panelList.length ? 
           this.panelList.map((panelListItem, i) => {
             if(panelListItem.content.length) {
               return(
@@ -149,7 +160,6 @@ class PanelList extends React.Component {
                               left: (((i - currentPanel) * 100) + 'vw'),
                               transition: "all 0.5s linear",
                               position: "relative",
-                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
                             }} 
                 >
                   { panelListItem.content }
@@ -165,6 +175,5 @@ class PanelList extends React.Component {
     );
   }
 }
-//                    ref={`panel-list-${i}`}
-//                              top: i > 0 ? (-(this.refs['panel-list-'+i].clientHeight)) : 0
+
 export default PanelList;
