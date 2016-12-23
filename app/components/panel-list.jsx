@@ -44,7 +44,7 @@ class PanelList extends React.Component {
       let pi='panel-list-'+i;
       if(this.refs[pi]){
         if(i>0){
-          this.refs[pi].style.top= -prevHeight;
+          this.refs[pi].style.top= -prevHeight + 'px';
         }
         prevHeight+=this.refs[pi].clientHeight || 0;
       }
