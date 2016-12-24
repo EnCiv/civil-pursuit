@@ -63,13 +63,13 @@ class PanelList extends React.Component {
     this.inHeight='active';
 
     let outer = this.refs.outer;
-    let inner = this.refs['panel-list-'+this.state.currentPanel];
 
     let timerMax= parseInt(2000/this.stepRate,10); 
     console.info("smoothHeight");
     
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer);  this.inHeight='inactive'; return; }
+      let inner = this.refs['panel-list-'+this.state.currentPanel];
       let outerHeight= outer.clientHeight;
       let innerHeight= inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
