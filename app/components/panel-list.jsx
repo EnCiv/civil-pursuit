@@ -65,7 +65,7 @@ class PanelList extends React.Component {
     let outer = this.refs.outer;
     let inner = this.refs['panel-list-'+this.state.currentPanel];
 
-    let timerMax= 2000/this.stepRate; 
+    let timerMax= parseInt(2000/this.stepRate,10); 
     console.info("smoothHeight");
     
     const timer = setInterval( () => {
@@ -73,7 +73,7 @@ class PanelList extends React.Component {
       let outerHeight= outer.clientHeight;
       let innerHeight= inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
-      if(outerHeight != innerHeight && outerMaxHeight != innerHeight){
+      if(outerHeight != innerHeight || outerMaxHeight != innerHeight){
         outer.style.maxHeight=innerHeight + 'px';
       }
       console.info("smoothHeight", outerHeight, outerMaxHeight, innerHeight);
