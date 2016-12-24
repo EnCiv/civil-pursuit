@@ -66,16 +66,17 @@ class PanelList extends React.Component {
     let inner = this.refs['panel-list-'+this.state.currentPanel];
 
     let timerMax= 2000/this.stepRate; 
-
+    console.info("smoothHeight");
+    
     const timer = setInterval( () => {
-      if(--timerMax == 0 ){ clearInterval(timer);  this.inHeight='inactive'; return; }
-      if(this.inHeight==='abort'){ clearInterval(timer); this.inHeight='inactive'; return; }
+      if(--timerMax <= 0 ){ clearInterval(timer);  this.inHeight='inactive'; return; }
       let outerHeight= outer.clientHeight;
       let innerHeight= inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
       if(outerHeight != innerHeight && outerMaxHeight != innerHeight){
         outer.style.maxHeight=innerHeight + 'px';
       }
+      console.info("smoothHeight", outerHeight, outerMaxHeight, innerHeight);
     }, this.stepRate);
   }
 
@@ -93,7 +94,7 @@ class PanelList extends React.Component {
   nextPanel(){
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1});
-      smoothHeight();
+      this.smoothHeight();
     }
   }
 
