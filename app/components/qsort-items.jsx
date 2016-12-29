@@ -95,6 +95,7 @@ class QSortItems extends React.Component {
         if (unsortedLength) {
             this.state.sections['unsorted'] = unsortedList.slice(0);
         }
+        console.info("qsortItems constructor", this.props.shared);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -117,6 +118,7 @@ class QSortItems extends React.Component {
         if (unsortedLength) {
             this.setState({ 'sections': this.cloneSections(newObj) });
         }
+        console.info("qsortItems componentWillReceiveProps", this.props.shared);
     }
 
 
@@ -127,7 +129,12 @@ class QSortItems extends React.Component {
         let i;
         let done = false;
         var clone = {};
-        if( button == "done" && this.props.next ){ this.props.next()}
+        if( button == "done" && this.props.next )b{ 
+            const results={ index: this.index.slice(),
+                            sections: this.cloneSections(this.state.sections)
+            }
+            this.props.next(results)
+        }
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.QSortButtonList).forEach(
                 (sectionName) => {

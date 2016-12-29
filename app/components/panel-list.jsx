@@ -25,8 +25,10 @@ class PanelList extends React.Component {
     training: null,
     typeList: [],
     currentPanel: 0,
-    containerWidth: 0
+    containerWidth: 0,
   };
+
+  shared= {};
 
   stepRate=25; //ms
   inHeight='inactive';
@@ -91,9 +93,12 @@ class PanelList extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  nextPanel(){
+  nextPanel(results){
+    if(results){
+      Object.assign(this.shared, results);
+    }
     if(this.state.currentPanel<(this.state.typeList.length-1)){
-      this.setState({currentPanel: this.state.currentPanel + 1});
+      this.setState({currentPanel: this.state.currentPanel + 1 });
       this.smoothHeight();
     }
   }
@@ -177,6 +182,7 @@ class PanelList extends React.Component {
                                    type={this.state.typeList[currentPanel]} 
                                    user={this.props.user} 
                                    next={this.nextPanel.bind(this)} 
+                                   shared={this.shared}
                     />  
                   </PanelStore>
         );
