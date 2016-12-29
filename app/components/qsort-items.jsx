@@ -130,8 +130,8 @@ class QSortItems extends React.Component {
         let done = false;
         var clone = {};
         if( button == "done" && this.props.next ){ 
-            const results={ index: this.index.slice(),
-                            sections: this.cloneSections(this.state.sections)
+            const results={ index: this.index,
+                            sections: this.state.sections
             }
             this.props.next(results)
         }
