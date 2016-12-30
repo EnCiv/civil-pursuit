@@ -176,7 +176,7 @@ class QSortWhy extends React.Component {
                 );
             }
 
-            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections.most && !Object.keys(this.props.shared.sections.most.length))) {
+            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections.most && Object.keys(this.props.shared.sections.most.length))) {
                 // if we don't have any data to work with 
                 loading.push(
                     <div className="gutter text-center">
