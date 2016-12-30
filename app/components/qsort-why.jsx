@@ -42,6 +42,8 @@ class QSortWhy extends React.Component {
         },
     };
 
+    buttons=[];
+
     motionDuration = 500; //500mSec
 
     state = {};
@@ -60,7 +62,7 @@ class QSortWhy extends React.Component {
     constructor(props) {
         super(props);
         var unsortedList = [];
-        let buttons = Object.keys(this.ButtonList);
+        this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         buttons.forEach(button => {
             this.state.sections[button] = [];
