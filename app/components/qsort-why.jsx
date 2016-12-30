@@ -64,7 +64,7 @@ class QSortWhy extends React.Component {
         var unsortedList = [];
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
-        buttons.forEach(button => {
+        this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
         this.state.sections['unsorted'] = this.props.shared.sections['most'].slice(0);
