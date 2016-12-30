@@ -65,7 +65,7 @@ class QSortWhy extends React.Component {
         buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = this.shared.sections['most'].slice(0);
+        this.state.sections['unsorted'] = this.props.shared.sections['most'].slice(0);
         console.info("qsortWhy constructor", this.props.shared);
     }
 
@@ -201,7 +201,7 @@ class QSortWhy extends React.Component {
                         var buttonstate = {};
                         this.buttons.slice(1).forEach(button => { buttonstate[button] = false; });
                         if (name != 'unsorted') { buttonstate[name] = true; }
-                        let item = items[this.shared.index[itemId]];
+                        let item = items[this.props.shared.index[itemId]];
                         content.push(
                             {
                                 sectionName: name,
