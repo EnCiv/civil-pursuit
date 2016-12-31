@@ -176,7 +176,7 @@ class PanelList extends React.Component {
 
 
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
-        this.panelList[currentPanel].content.push(
+        this.panelList[currentPanel].content=[(
                   <PanelStore { ...panel }>
                     <TypeComponent component={this.state.typeList[currentPanel].component} 
                                    type={this.state.typeList[currentPanel]} 
@@ -185,7 +185,7 @@ class PanelList extends React.Component {
                                    shared={this.state.shared}
                     />  
                   </PanelStore>
-        );
+        )];
 
     }
 
