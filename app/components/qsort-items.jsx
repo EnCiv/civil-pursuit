@@ -131,7 +131,8 @@ class QSortItems extends React.Component {
         var clone = {};
         if( button == "done" && this.props.next ){ 
             const results={ index: this.index,
-                            sections: this.state.sections
+                            sections: this.state.sections,
+                            panel: this.props.panel
             }
             this.props.next(results)
         }

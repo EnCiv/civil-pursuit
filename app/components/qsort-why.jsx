@@ -143,7 +143,8 @@ class QSortWhy extends React.Component {
 
     render() {
 
-        const { panel, count, user, emitter } = this.props;
+        const { user } = this.props;
+        const { panel } = this.props.shared;
 
         const onServer = typeof window === 'undefined';
 
