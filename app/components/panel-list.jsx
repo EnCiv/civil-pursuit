@@ -95,7 +95,7 @@ class PanelList extends React.Component {
 
   nextPanel(results){
     if(results){
-      this.setState({shared: results});
+      this.setState({shared: Object.assign({}, this.state.shared, results)});
     }
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1 });
