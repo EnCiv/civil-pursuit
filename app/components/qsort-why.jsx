@@ -74,8 +74,18 @@ class QSortWhy extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-    componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
-        console.info("qsortItems componentWillReceiveProps", this.props, newProps, this.state);
+    componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
+        console.info("qsortWhy componentWillReceiveProps", this.props, newProps, this.state);
+        var newSections=[];
+        this.buttons.forEach(button=> newSections[button]=[] );
+
+        newProps.shared.sections['most'].forEach(itemId=>{
+            if(this.state.sections['most'].includes(itemId)){ newSections.most.push(itemId)} 
+            else{ newSections['unsorted'].push(itemId) }
+        });
+
+        this.setState({sections: newSections});
+
     }
 
 
