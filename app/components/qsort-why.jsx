@@ -12,6 +12,7 @@ import smoothScroll from '../lib/app/smooth-scroll';
 import Instruction from './instruction';
 import Color from 'color';
 import Button           from './util/button';
+import Item from './item';
 
 
 class QSortWhy extends React.Component {
