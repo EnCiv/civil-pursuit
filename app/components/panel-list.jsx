@@ -174,7 +174,7 @@ class PanelList extends React.Component {
 
       console.info("PanelList panel", currentPanel, this.panelList);
 
-      if(this.panelList[currentPanel].content.length==0 ){
+
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
         this.panelList[currentPanel].content.push(
                   <PanelStore { ...panel }>
@@ -186,7 +186,7 @@ class PanelList extends React.Component {
                     />  
                   </PanelStore>
         );
-      }
+
     }
 
     return(
