@@ -176,17 +176,28 @@ class PanelList extends React.Component {
 
 
         console.info("PanelList", panel, this.state.typeList[currentPanel]);
-        this.panelList[currentPanel].content=[(
-                  <PanelStore { ...panel }>
-                    <TypeComponent component={this.state.typeList[currentPanel].component} 
-                                   type={this.state.typeList[currentPanel]} 
-                                   user={this.props.user} 
-                                   next={this.nextPanel.bind(this)} 
-                                   shared={this.state.shared}
-                    />  
-                  </PanelStore>
-        )];
 
+        if(currentPanel===0){
+          this.panelList[currentPanel].content=[(
+                    <PanelStore { ...panel }>
+                      <TypeComponent component={this.state.typeList[currentPanel].component} 
+                                    type={this.state.typeList[currentPanel]} 
+                                    user={this.props.user} 
+                                    next={this.nextPanel.bind(this)} 
+                                    shared={this.state.shared}
+                      />  
+                    </PanelStore>
+          )];
+        } else {
+           this.panelList[currentPanel].content=[(
+                      <TypeComponent component={this.state.typeList[currentPanel].component} 
+                                    type={this.state.typeList[currentPanel]} 
+                                    user={this.props.user} 
+                                    next={this.nextPanel.bind(this)} 
+                                    shared={this.state.shared}
+                      />  
+          )];
+        }
     }
 
     return(
