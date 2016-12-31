@@ -95,7 +95,7 @@ class PanelList extends React.Component {
 
   nextPanel(results){
     if(results){
-      Object.assign(this.shared, results);
+      this.setState({shared: results});
     }
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1 });
@@ -182,7 +182,7 @@ class PanelList extends React.Component {
                                    type={this.state.typeList[currentPanel]} 
                                    user={this.props.user} 
                                    next={this.nextPanel.bind(this)} 
-                                   shared={this.shared}
+                                   shared={this.state.shared}
                     />  
                   </PanelStore>
         );
