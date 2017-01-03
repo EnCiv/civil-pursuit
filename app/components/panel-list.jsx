@@ -62,16 +62,22 @@ class PanelList extends React.Component {
    smoothHeight() {
     // set an interval to update scrollTop attribute every 25 ms
     if(this.inHeight=='active'){return;} //don't stutter the close
+    if(!this.refs['panel-list-'+this.state.currentPanel]){ // when this happens it's a bug in the parent, but don't let it overload the console with error messages.
+      console.error('PanelList.smoothHeight: refs[] does not exist:', 'panel-list-'+this.state.currentPanel); 
+      return;
+    }
     this.inHeight='active';
 
     let outer = this.refs.outer;
 
+
     let timerMax= parseInt(2000/this.stepRate,10); 
     console.info("smoothHeight");
+
     
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer);  this.inHeight='inactive'; return; }
-      let inner = this.refs['panel-list-'+this.state.currentPanel];
+      let inner = this.refs['panel-list-'+this.state.currentPanel] || null;
       let outerHeight= outer.clientHeight;
       let innerHeight= inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
