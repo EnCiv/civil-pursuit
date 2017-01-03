@@ -15,6 +15,7 @@ import Instruction from './instruction';
 import Color from 'color';
 import Button           from './util/button';
 import Item from './item';
+import Creator            from './creator';
 
 
 class QSortWhy extends React.Component {
