@@ -278,13 +278,14 @@ class QSortWhyItem extends React.Component {
 
     render(){
         const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
-        var harmony=[];
+        var creator=[];
 
         if(item.harmony && item.harmony.types[0]){
-            harmony=[
-                <PanelStore type={ item.harmony.types[0] } parent={ item }>
-                    <PanelItems user={ user } />
-                </PanelStore>
+            creator=[
+                 <Creator
+                    type    =   { item.harmony.types[0] }
+                    parent  =   { item }
+                />
             ];
         }
 
@@ -305,7 +306,7 @@ class QSortWhyItem extends React.Component {
                                         />
                                 </ItemStore>
                             ) }
-                            footer= { harmony }
+                            footer= { creator }
                             collapsed =  { false }  //collapsed if there is an active item and it's not this one
                             toggle  =   { toggle }
                             focusAction={null}
