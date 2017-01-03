@@ -296,17 +296,6 @@ class QSortWhyItem extends React.Component {
                         <Item
                             item    =   { item }
                             user    =   { user }
-                            buttons =   { (
-                                <ItemStore item={ item }>
-                                    <QSortButtons
-                                        item    =   { item }
-                                        user    =   { user }
-                                        toggle  =   { toggle }
-                                        buttonstate = { buttonstate }
-                                        qbuttons= { qbuttons }
-                                        />
-                                </ItemStore>
-                            ) }
                             footer= { creator }
                             collapsed =  { false }  //collapsed if there is an active item and it's not this one
                             toggle  =   { toggle }
