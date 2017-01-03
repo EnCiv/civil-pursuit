@@ -283,10 +283,12 @@ class QSortWhyItem extends React.Component {
 
         if(item.harmony && item.harmony.types[0]){
             creator=[
-                 <Creator
-                    type    =   { item.harmony.types[0] }
-                    parent  =   { item }
-                />
+                <PanelStore type={ item.harmony.types[0] } parent={ item } own={true} >>
+                    <QSortWhyCreate
+                        type    =   { item.harmony.types[0] }
+                        parent  =   { item }
+                    />
+                </PanelStore >
             ];
         }
 
@@ -306,6 +308,19 @@ class QSortWhyItem extends React.Component {
                 </div>
         );
 
+    }
+}
+
+class QSortWhyCreate extends React.Component {
+    render(){
+        const {type, parent, items }; // items is Object.assign'ed as a prop through PanelStore
+        return(
+                    <Creator
+                        type    =   { type }
+                        parent  =   { parent }
+                        item = { items[0] || null }  
+                    />
+        )
     }
 }
 

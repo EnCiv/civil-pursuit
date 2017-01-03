@@ -13,11 +13,17 @@ import publicConfig from '../../../../public.json';
 */
 
 function getPanelItems (panel, userId) {
-  const query = { type : panel.type };
+// const query = { type : panel.type };
+//
+//  if ( panel.parent ) {
+//    query.parent = panel.parent;
+//  }
+//
+//  if (panel.own) {
+//    query.user = userId;
+//  }
+  const query = panel;
 
-  if ( panel.parent ) {
-    query.parent = panel.parent;
-  }
 
   const seq = [];
 

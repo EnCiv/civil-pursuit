@@ -22,6 +22,14 @@ function getItems (panel, cb) {
       query.size = panel.size;
     }
 
+    if(panel.own) {
+      if(userId) {
+        query.user = userId;
+      } else {
+        cb(panel, 0); // request to get the users's own items but no user logged in so return nothing
+      }
+    }
+
     Item
       .getPanelItems(query, userId)
       .then(
