@@ -108,7 +108,7 @@ class Creator extends React.Component {
     var item = {};
     Creator.keys.forEach(key => {
       if(key==='reference') { return } // don't add it in and delete it later
-      item[key]=this.state.[key]
+      item[key]=this.state[key]
     })
     item.type= this.props.type;
     if ( this.props.parent ) {
