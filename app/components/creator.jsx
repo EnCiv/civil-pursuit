@@ -231,7 +231,7 @@ class Creator extends React.Component {
 
           <section className="item-text">
             <div className="item-inputs">
-              <TextInput block placeholder="Subject" ref="subject" required name="subject" defaultValue={ subject } />
+              <TextInput block placeholder="Subject" ref="subject" required name="subject" value={ subject } />
 
               <Row center-items>
                 <Icon
