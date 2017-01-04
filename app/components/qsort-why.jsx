@@ -320,7 +320,7 @@ class QSortWhyCreate extends React.Component {
                     <Creator
                         type    =   { type }
                         parent  =   { parent }
-                        item = { items }  
+                        item = { item }  
                     />
         );
     }
