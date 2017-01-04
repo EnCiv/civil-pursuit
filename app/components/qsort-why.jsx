@@ -319,7 +319,7 @@ class QSortWhyCreate extends React.Component {
         var item = null;
         if(panel && panel.items && panel.items.length) {
             item=panel.items[0];
-            toggle(parent._id, 'most');
+//            toggle(parent._id, 'most');
         }
         return(
                     <Creator
