@@ -314,8 +314,8 @@ class QSortWhyItem extends React.Component {
 class QSortWhyCreate extends React.Component {
     render(){
         console.info("QSortWhyCreate", this.props);
-        const {type, parent, items } = this.props; // items is Object.assign'ed as a prop through PanelStore
-        const item= items[0] || null;
+        const {type, parent, panel } = this.props; // items is Object.assign'ed as a prop through PanelStore
+        const item = panel ? (panel.items ? panel.items[0] : null ) : null;
         return(
                     <Creator
                         type    =   { type }
