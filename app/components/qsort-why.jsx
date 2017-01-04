@@ -94,8 +94,8 @@ class QSortWhy extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button) {
-        //find the section that the itemId is in, take it out, and put it in the new section
+    toggle(itemId, button, set) {
+        //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
         var clone = {};
@@ -110,12 +110,13 @@ class QSortWhy extends React.Component {
                 (sectionName) => {
                     if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                         if (sectionName === button) {
+                            if( set ) { return } // if set don't change it. just return
                             //take the i'th element out of the section it is in and put it back in unsorted
                             clone[button] = update(this.state.sections[button], { $splice: [[i, 1]] });
                             clone['unsorted'] = update(this.state.sections['unsorted'], { $unshift: [itemId] });
                             done = true;
                         } else if (sectionName === 'unsorted') {
-                            // it was in unsorted, so take it out and put it where it in the button's section
+                            // it was in unsorted, so take it out and put it in the button's section
                             clone['unsorted'] = update(this.state.sections['unsorted'], { $splice: [[i, 1]] });
                             clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
                             done = true;
@@ -285,10 +286,12 @@ class QSortWhyItem extends React.Component {
             creator=[
                 <PanelStore type={ item.harmony.types[0] } parent={ item } own={true} >
                     <QSortWhyCreate
+                        user    =   { user }
                         type    =   { item.harmony.types[0] }
                         parent  =   { item }
                         toggle  =  { toggle }
                         qbuttons = { qbuttons }
+                        sectionName = { sectionName }
                     />
                 </PanelStore >
             ];
@@ -314,24 +317,46 @@ class QSortWhyItem extends React.Component {
 }
 
 class QSortWhyCreate extends React.Component {
+    set = false;
+
     render(){
+        result=[];
         console.info("QSortWhyCreate", this.props);
-        const {type, parent, panel, toggle, qbuttons } = this.props; // items is Object.assign'ed as a prop through PanelStore
+        const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
         var item = null;
         if(panel && panel.items && panel.items.length) {
             item=panel.items[0];
-            if(!this.state.sections['most'].includes(parent._id)) {
-              toggle(parent._id, 'most');
-            }
+            if(!this.set){ 
+                this.set=true; 
+                toggle(parent._id, 'most', true ); // true = just set so we don't loop
+            } 
+        }
+        if(sectionName=='unsorted'){
+            result = [  <Creator
+                            type    =   { type }
+                            parent  =   { parent }
+                            item = { item }  
+                            toggle = {toggle}
+                        />
+            ];
+        } else {
+            result = [  <ItemStore item={ item } key={ `item-${item._id}` }>
+                            <Item
+                                item    =   { item }
+                                user    =   { user }
+                                collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                                toggle  =   { toggle }
+                                focusAction={null}
+                                truncateItems={null}
+                            />
+                        </ItemStore>                        
+            ];
         }
         return(
-                    <Creator
-                        style={{ backgroundColor: item ? qbuttons['most'].color : qbuttons['unsorted'].color }}
-                        type    =   { type }
-                        parent  =   { parent }
-                        item = { item }  
-                        toggle = {toggle}
-                    />
+            <div style={{ backgroundColor: qbuttons[sectionbName],
+                          paddingBottom: '0.5em'}} >
+                { result }
+            </div>
         );
     }
 }
