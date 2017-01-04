@@ -352,7 +352,7 @@ class QSortWhyCreate extends React.Component {
             ];
         }
         return(
-            <div style={{ backgroundColor: qbuttons[sectionbName],
+            <div style={{ backgroundColor: qbuttons[sectionName],
                           paddingBottom: '0.5em'}} >
                 { result }
             </div>
