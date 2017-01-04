@@ -15,11 +15,29 @@ import typeType                         from '../lib/proptypes/type';
 
 class Creator extends React.Component {
 
+  static keys = ['subject', 'description', 'reference', 'image'];  // not all keys in an item are input by the users these are the ones that are. 
+  //reference is what the users enters, but references[][url,title] are what's in the item record
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  state = { video: false };
+  state = {
+    video:        false,
+    title: ''
+  };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  constructor(props){
+    super(props);
+    Creator.keys.forEach(key => {this.state[key]=''}); 
+    if(this.props.item){
+      Creator.keys.forEach(key => {this.state[key]=props[key] || ''})
+    }
+    if(this.props.references && this.props.references[0]){
+      this.state.reference=this.props.references[0].url;
+      this.state.title=this.props.references[0].title;
+    }
+  }
 
   componentDidMount () {
     const subject   =   ReactDOM.findDOMNode(this.refs.subject),
@@ -46,16 +64,15 @@ class Creator extends React.Component {
       }
     }, false);
 
-    if ( reference.value && this.props.item ) {
-      const { references } = this.props.item;
-
-      this.applyTitle(references[0].title, references[0].url);
+    if ( this.state.reference && this.state.title ) {
+      this.applyTitle(this.state.title, this.state.reference);
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
+    var obj={};
     if ( props.created && props.created.panel === this.props['panel-id'] ) {
       ReactDOM.findDOMNode(this.refs.subject).value        =   '';
       ReactDOM.findDOMNode(this.refs.description).value    =   '';
@@ -66,30 +83,43 @@ class Creator extends React.Component {
         window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
       });
     }
+    if(props.item ){
+      Creator.keys.forEach(field => {
+        if(this.state[field] != props.item[field]){obj[field]=props.item[field]}
+      });
+      if(props.item.references && props.item.references[0]) {Object.assign(obj,props.item.references[0])}
+      if(obj) { this.setState(obj) }
+    }
+  }
+
+  onChangeKey(ref){
+    var obj = {}, value;
+      value=ReactDOM.findDOMNode(this.refs[ref]).value;
+      if(this.state[ref]!==value){ obj[key]=value}
+      this.setState(obj)
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    const subject       =   ReactDOM.findDOMNode(this.refs.subject).value;
-    const description   =   ReactDOM.findDOMNode(this.refs.description).value;
     const url           =   ReactDOM.findDOMNode(this.refs.reference).value;
     const title         =   ReactDOM.findDOMNode(this.refs.title).value;
 
-    const item = { subject, description, type: this.props.type };
-
+    var item = {};
+    Creator.keys.forEach(key => {
+      if(key==='reference') { return } // don't add it in and delete it later
+      item[key]=this.state.[key]
+    })
+    item.type= this.props.type;
     if ( this.props.parent ) {
       item.parent = this.props.parent;
     }
-
-    if ( url ) {
-      item.references = [{ url, title }];
+    if ( this.state.reference ) {
+      item.references = [{ url: this.state.reference, title: this.state.title }];
     }
-
     if ( this.props.item ) {
       item.from = this.props.item._id;
     }
-
     if ( this.file ) {
       item.image = this.file;
     }
@@ -110,7 +140,7 @@ class Creator extends React.Component {
 
       stream.on('end', () => {
         item.image = this.file.name;
-
+        this.setState({image: this.file.name});
         insert();
       });
     }
@@ -128,6 +158,8 @@ class Creator extends React.Component {
     let url = ReactDOM.findDOMNode(this.refs.reference).value;
     let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
     let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
+    
+    this.setState({reference: url});
 
     if ( url && /^http/.test(url) ) {
       loading.classList.add('visible');
@@ -158,14 +190,15 @@ class Creator extends React.Component {
     else if ( title ) {
       reference.classList.add('hide');
       titleHolder.classList.add('visible');
-      titleHolder.value = title;
       editURL.classList.add('visible');
 
       let item = { references: [{ url }] };
 
       if ( YouTube.isYouTube(item) ) {
-        this.setState({ video : item });
+        this.setState({ video : item, });
       }
+
+      this.setState({title: title});
     }
   }
 
@@ -192,20 +225,6 @@ class Creator extends React.Component {
 
   render () {
     console.log('RENDER creator', this.props);
-    let { item } = this.props;
-
-    let subject, description, image, url, title;
-
-    if ( item ) {
-      subject       =   item.subject;
-      description   =   item.description;
-      image         =   item.image;
-
-      if ( item.references && item.references.length ) {
-        url = item.references[0].url;
-        title = item.references[0].title;
-      }
-    }
 
     return (
       <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
@@ -215,7 +234,7 @@ class Creator extends React.Component {
               <Uploader
                 ref       =   "uploader"
                 handler   =   { this.saveImage.bind(this) }
-                image     =   { image }
+                image     =   { this.state.image }
                 video     =   { this.state.video } />
             </section>
           </section>
@@ -231,7 +250,14 @@ class Creator extends React.Component {
 
           <section className="item-text">
             <div className="item-inputs">
-              <TextInput block placeholder="Subject" ref="subject" required name="subject" value={ subject } />
+              <TextInput block 
+                placeholder="Subject" 
+                ref="subject" 
+                required 
+                name="subject" 
+                value={ this.state.subject }
+                onChange = {this.onChangeKey.bind(this,'subject')}
+                />
 
               <Row center-items>
                 <Icon
@@ -251,13 +277,13 @@ class Creator extends React.Component {
                   onBlur        =   { this.getUrlTitle.bind(this) }
                   className     =   "url-editor"
                   name          =   "reference"
-                  defaultValue  =   { url }
+                  value         =   { this.state.reference }
                   />
 
                 <TextInput
                   disabled
                   name          =   "url-title"
-                  defaultValue  =   ""
+                  value         =   {this.state.title}
                   className     =   "url-title"
                   ref           =   "title"
                   />
@@ -275,7 +301,8 @@ class Creator extends React.Component {
                 placeholder     =   "Description"
                 ref             =   "description"
                 name            =   "description"
-                defaultValue    =   { description }
+                value           =   { this.state.description }
+                onChange      =    {this.onChangeKey.bind(this,'description')}
                 block
                 required
                 ></TextArea>
