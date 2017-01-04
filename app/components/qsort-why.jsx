@@ -288,6 +288,7 @@ class QSortWhyItem extends React.Component {
                         type    =   { item.harmony.types[0] }
                         parent  =   { item }
                         toggle  =  { toggle }
+                        qbuttons = { qbuttons }
                     />
                 </PanelStore >
             ];
@@ -315,14 +316,17 @@ class QSortWhyItem extends React.Component {
 class QSortWhyCreate extends React.Component {
     render(){
         console.info("QSortWhyCreate", this.props);
-        const {type, parent, panel, toggle } = this.props; // items is Object.assign'ed as a prop through PanelStore
+        const {type, parent, panel, toggle, qbuttons } = this.props; // items is Object.assign'ed as a prop through PanelStore
         var item = null;
         if(panel && panel.items && panel.items.length) {
             item=panel.items[0];
-//            toggle(parent._id, 'most');
+            if(!this.state.sections['most'].includes(parent._id)) {
+              toggle(parent._id, 'most');
+            }
         }
         return(
                     <Creator
+                        style={{ backgroundColor: item ? qbuttons['most'].color : qbuttons['unsorted'].color }}
                         type    =   { type }
                         parent  =   { parent }
                         item = { item }  
