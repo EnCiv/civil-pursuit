@@ -94,7 +94,7 @@ class QSortWhy extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button, set) {
+    toggle(itemId, button) {
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
@@ -110,7 +110,6 @@ class QSortWhy extends React.Component {
                 (sectionName) => {
                     if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                         if (sectionName === button) {
-                            if( set ) { return } // if set don't change it. just return
                             //take the i'th element out of the section it is in and put it back in unsorted
                             clone[button] = update(this.state.sections[button], { $splice: [[i, 1]] });
                             clone['unsorted'] = update(this.state.sections['unsorted'], { $unshift: [itemId] });
@@ -225,7 +224,7 @@ class QSortWhy extends React.Component {
                                 sectionName: name,
                                 user: user,
                                 item: item,
-                                toggle: this.toggle.bind(this, item._id, name),
+                                toggle: this.toggle.bind(this, item._id, 'most'), // were just toggleing most here
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
                                 id: item._id  //FlipMove uses this Id to sort
@@ -320,7 +319,7 @@ class QSortWhyCreate extends React.Component {
     set = false;
 
     render(){
-        result=[];
+        var result=[];
         console.info("QSortWhyCreate", this.props);
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
         var item = null;
@@ -328,8 +327,8 @@ class QSortWhyCreate extends React.Component {
             item=panel.items[0];
             if(!this.set){ 
                 this.set=true; 
-                toggle(parent._id, 'most', true ); // true = just set so we don't loop
-            } 
+                toggle('most'); 
+            }
         }
         if(sectionName=='unsorted'){
             result = [  <Creator
