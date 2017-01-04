@@ -315,12 +315,17 @@ class QSortWhyCreate extends React.Component {
     render(){
         console.info("QSortWhyCreate", this.props);
         const {type, parent, panel } = this.props; // items is Object.assign'ed as a prop through PanelStore
-        const item = panel ? (panel.items ? panel.items[0] : null ) : null;
+        var item = null;
+        if(panel && panel.items && panel.items.length) {
+            item=panel.items[0];
+            this.toggle(parent.item_id, 'most');
+        }
         return(
                     <Creator
                         type    =   { type }
                         parent  =   { parent }
                         item = { item }  
+                        toggle = {this.toggle.bind(this, parent.item._id, 'most')}
                     />
         );
     }
