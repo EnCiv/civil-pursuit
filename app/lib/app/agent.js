@@ -10,7 +10,7 @@ class Agent {
 
     const request = superagent[method](url);
 
-    request.timeout(options.timeout || 1000 * 25);
+    request.timeout(options.timeout || 1000 * 8);
 
     request.set('User-Agent', options.userAgent || config['user agent']);
 
