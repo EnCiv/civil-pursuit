@@ -224,7 +224,7 @@ class QSortWhy extends React.Component {
                                 sectionName: name,
                                 user: user,
                                 item: item,
-                                toggle: this.toggle.bind(this),
+                                toggle: this.toggle.bind(this, item._id, name),
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
                                 id: item._id  //FlipMove uses this Id to sort
@@ -326,7 +326,7 @@ class QSortWhyCreate extends React.Component {
                         type    =   { type }
                         parent  =   { parent }
                         item = { item }  
-                        toggle = {toggle.bind(parent._id, 'most')}
+                        toggle = {toggle}
                     />
         );
     }
