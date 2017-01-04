@@ -22,7 +22,9 @@ class Creator extends React.Component {
 
   state = {
     video:        false,
-    title: ''
+    title: '',
+    titleLookingUp: false,
+    titleError: false
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,11 +76,6 @@ class Creator extends React.Component {
   componentWillReceiveProps (props) {
     var obj={};
     if ( props.created && props.created.panel === this.props['panel-id'] ) {
-      ReactDOM.findDOMNode(this.refs.subject).value        =   '';
-      ReactDOM.findDOMNode(this.refs.description).value    =   '';
-      ReactDOM.findDOMNode(this.refs.reference).value      =   '';
-      ReactDOM.findDOMNode(this.refs.title).value          =   '';
-
       setTimeout(() => {
         window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
       });
@@ -102,28 +99,24 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   create () {
-    const url           =   ReactDOM.findDOMNode(this.refs.reference).value;
-    const title         =   ReactDOM.findDOMNode(this.refs.title).value;
-
     var item = {};
     Creator.keys.forEach(key => {
       if(key==='reference') { return } // don't add it in and delete it later
-      item[key]=this.state[key]
+      if(this.state[key]) { item[key]=this.state[key] }
     })
+    if ( this.state.reference ) {
+      item.references = [{ url: this.state.reference, title: this.state.title }];
+    }
+
     item.type= this.props.type;
     if ( this.props.parent ) {
       item.parent = this.props.parent;
     }
-    if ( this.state.reference ) {
-      item.references = [{ url: this.state.reference, title: this.state.title }];
-    }
+
+
     if ( this.props.item ) {
       item.from = this.props.item._id;
     }
-    if ( this.file ) {
-      item.image = this.file;
-    }
-
     console.info('CREATE ITEM', item);
 
     let insert = () => {
@@ -149,23 +142,17 @@ class Creator extends React.Component {
     }
     console.info("Creator.create", this.props);
 
-    this.props.toggle();
+    if(this.props.toggle) this.props.toggle();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   getUrlTitle () {
-    let url = ReactDOM.findDOMNode(this.refs.reference).value;
-    let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
-    let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
+    let url = this.state.reference;
     
-    this.setState({reference: url});
-
     if ( url && /^http/.test(url) ) {
-      loading.classList.add('visible');
-
-      error.classList.remove('visible');
-
+      this.setState({titleLookingUp: true, 
+                     titleError: false});
       window.socket.emit('get url title', url, title => {
         this.applyTitle(title, url);
       });
@@ -175,30 +162,17 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   applyTitle (title, url) {
-    let loading = ReactDOM.findDOMNode(this.refs.lookingUp);
-    let error = ReactDOM.findDOMNode(this.refs.errorLookingUp);
-    let reference = ReactDOM.findDOMNode(this.refs.reference);
-    let editURL = ReactDOM.findDOMNode(this.refs.editURL);
-    let titleHolder = ReactDOM.findDOMNode(this.refs.title);
-
-    loading.classList.remove('visible');
-
     if ( ! title || title.error ) {
-      error.classList.add('visible');
-    }
-
-    else if ( title ) {
-      reference.classList.add('hide');
-      titleHolder.classList.add('visible');
-      editURL.classList.add('visible');
-
+      this.setState({titleLoading: false,
+                     titleError: true});
+    } else if ( title ) {
+      this.setState({ titleLoading:false,
+                      titleError: false,
+                      title: title });
       let item = { references: [{ url }] };
-
       if ( YouTube.isYouTube(item) ) {
         this.setState({ video : item, });
       }
-
-      this.setState({title: title});
     }
   }
 
@@ -206,13 +180,8 @@ class Creator extends React.Component {
 
   editURL () {
     let reference = ReactDOM.findDOMNode(this.refs.reference);
-    let editURL = ReactDOM.findDOMNode(this.refs.editURL);
-    let titleHolder = ReactDOM.findDOMNode(this.refs.title);
-
-    reference.classList.remove('hide');
     reference.select();
-    titleHolder.classList.remove('visible');
-    editURL.classList.remove('visible');
+    this.setState({title: ''});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,18 +233,19 @@ class Creator extends React.Component {
                   icon        =   "globe"
                   spin        =   { true }
                   text-muted
-                  className   =   "looking-up"
+                  className   =   {`looking-up ${this.state.lookingUp ? 'visible' : ''}`}
                   ref         =   "lookingUp"
                   />
 
-                <Icon icon="exclamation" text-warning className="error" ref="errorLookingUp" />
+                <Icon icon="exclamation" text-warning className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
 
                 <TextInput
                   block
                   placeholder   =   "http://"
                   ref           =   "reference"
+                  onChange      =   { this.onChangeKey.bind(this,'reference')}
                   onBlur        =   { this.getUrlTitle.bind(this) }
-                  className     =   "url-editor"
+                  className     =    {`url-editor ${this.state.title ? 'hide' : ''}`}
                   name          =   "reference"
                   value         =   { this.state.reference }
                   />
@@ -284,14 +254,14 @@ class Creator extends React.Component {
                   disabled
                   name          =   "url-title"
                   value         =   {this.state.title}
-                  className     =   "url-title"
+                  className     =   {`url-title ${this.state.title ? 'visible' : ''}`}
                   ref           =   "title"
                   />
 
                 <Icon
                   icon          =   "pencil"
                   mute
-                  className     =   "syn-edit-url"
+                  className     =   {`syn-edit-url ${this.state.title ? 'visible' : ''}`}
                   ref           =   "editURL"
                   onClick       =   { this.editURL.bind(this) }
                   />
