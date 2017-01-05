@@ -46,18 +46,25 @@ class QSortWhy extends React.Component {
         return clone;
     }
 
+    whyName = '';
+
     constructor(props) {
         super(props);
         var unsortedList = [];
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
-        this.ButtonList['most']=QSortButtonList['most'];
-        console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList)
+        if(this.props.type.name==="Why It's Most Important"){
+            this.whyName='most';
+        } else {
+            this.whyName='least'
+        }
+        this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
+        console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = this.props.shared.sections['most'].slice(0);
+        this.state.sections['unsorted'] = this.props.shared.sections[this.whyName].slice(0);
         console.info("qsortWhy constructor", this.props.shared);
     }
 
@@ -68,8 +75,8 @@ class QSortWhy extends React.Component {
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
-        newProps.shared.sections['most'].forEach(itemId=>{
-            if(this.state.sections['most'].includes(itemId)){ newSections.most.push(itemId)} 
+        newProps.shared.sections[this.whyName].forEach(itemId=>{
+            if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
             else{ newSections['unsorted'].push(itemId) }
         });
 
@@ -186,7 +193,7 @@ class QSortWhy extends React.Component {
                 );
             }
 
-            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections.most && Object.keys(this.props.shared.sections.most.length))) {
+            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections[this.whyName] && Object.keys(this.props.shared.sections[this.whyName].length))) {
                 // if we don't have any data to work with 
                 loading.push(
                     <div className="gutter text-center">
@@ -218,7 +225,7 @@ class QSortWhy extends React.Component {
                                 sectionName: name,
                                 user: user,
                                 item: item,
-                                toggle: this.toggle.bind(this, item._id, 'most'), // were just toggleing most here
+                                toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
                                 id: item._id  //FlipMove uses this Id to sort
@@ -291,7 +298,7 @@ class QSortWhyItem extends React.Component {
         }
 
         return(
-                <div style={{backgroundColor: qbuttons['most'].color}}>
+                <div style={{backgroundColor: qbuttons[this.whyName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
