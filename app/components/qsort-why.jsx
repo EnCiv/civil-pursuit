@@ -327,10 +327,10 @@ class QSortWhyCreate extends React.Component {
             item=panel.items[0];
             if(!this.set){ 
                 this.set=true; 
-                toggle('most'); 
+                toggle(); 
             }
         }
-        if(sectionName=='unsorted'){
+        if(sectionName=='unsorted' || !this.set ){
             result = [  <Creator
                             type    =   { type }
                             parent  =   { parent }
