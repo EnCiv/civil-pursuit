@@ -207,6 +207,7 @@ class QSortWhy extends React.Component {
                     if (this.state.sections['unsorted'].length) { issues++ }
                     let qb = this.ButtonList[name];
                     if (qb.max) {
+                        console.info("QSortWhy qb", qb, this.state)
                         if (this.state.sections[name].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
