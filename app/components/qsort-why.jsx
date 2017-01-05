@@ -228,6 +228,7 @@ class QSortWhy extends React.Component {
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
+                                whyName: this.whyName,
                                 id: item._id  //FlipMove uses this Id to sort
                             }
                         );
@@ -279,7 +280,7 @@ export default QSortWhy;
 class QSortWhyItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
+        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName } = this.props;
         var creator=[];
 
         if(item.harmony && item.harmony.types[0]){
@@ -298,7 +299,7 @@ class QSortWhyItem extends React.Component {
         }
 
         return(
-                <div style={{backgroundColor: qbuttons[this.whyName].color}}>
+                <div style={{backgroundColor: qbuttons[whyName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
