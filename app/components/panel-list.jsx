@@ -32,6 +32,7 @@ class PanelList extends React.Component {
 
   stepRate=25; //ms
   inHeight='inactive';
+  observer=null
 
   panelList = [];
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,18 +45,34 @@ class PanelList extends React.Component {
     this.setState({
         containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
       });
-    }
+    this.observer = new MutationObserver( this.mutations.bind(this) );
+  }
+
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  componentWillUnmount() {
+    this.observer.disconnect();
+  }
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  mutations(mutations){
+      mutations.forEach(function(mutation) {
+      console.log("panelList mutations",mutation.type);
+      });    
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
     let pi='panel-list-'+this.state.currentPanel;
-    if(this.state.containerWidth != ReactDOM.findDOMNode(this.refs.panel).clientWidth){  // could be changed by resizing the window
+    let target = ReactDOM.findDOMNode(this.refs.panel);
+    if(this.state.containerWidth != target.clientWidth){  // could be changed by resizing the window
       this.setState({
-          containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
+          containerWidth: target.clientWidth
         });
     }
+    this.observer.observe(target,{attributes: true, childList: true, characterData: true, subtree: true});
   }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
