@@ -55,7 +55,7 @@ class QSortWhy extends React.Component {
         if(this.props.type.name==="Why It's Most Important"){
             this.whyName='most';
         } else {
-            this.whyName='least'
+            this.whyName='least';
         }
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
@@ -94,10 +94,7 @@ class QSortWhy extends React.Component {
         let done = false;
         var clone = {};
         if( button == "done" && this.props.next ){ 
-            const results={ index: this.index,
-                            sections: this.state.sections
-            }
-            this.props.next(results)
+            this.props.next({why: this.whyName})
         }
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.ButtonList).forEach(
