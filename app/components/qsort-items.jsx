@@ -293,10 +293,14 @@ class QSortItems extends React.Component {
                     {instruction}
                     {direction}
                     {done}
-                    <div className="qsort-flip-move-articles">
-                        <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {content.map(article => <QSortFlipItem {...article} key={article.id} />)}
-                        </FlipMove>
+                    <div style={{ position: relative,
+                                  display: block,
+                    }}>
+                        <div className="qsort-flip-move-articles">
+                            <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
+                                {content.map(article => <QSortFlipItem {...article} key={article.id} />)}
+                            </FlipMove>
+                        </div>
                     </div>
                     {loading}
                 </Panel>
