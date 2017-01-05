@@ -111,7 +111,7 @@ class QSortWhy extends React.Component {
                 (sectionName) => {
                     if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                         if (sectionName === button) {
-                            if(set) { // set means don't toggle it
+                            if(set==='set') { // set means don't toggle it
                                 clone[button]=this.state.sections[button].slice();
                                 clone['unsorted']=this.state.sections['unsorted'].slice();
                                 done=true;
@@ -335,7 +335,7 @@ class QSortWhyCreate extends React.Component {
             item=panel.items[0];
             if(!this.set){ 
                 this.set=true; 
-                toggle(true); 
+                toggle('set'); 
             }
         }
         if(sectionName=='unsorted' || !this.set ){
