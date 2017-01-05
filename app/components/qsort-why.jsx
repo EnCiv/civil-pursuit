@@ -279,13 +279,14 @@ class QSortWhyItem extends React.Component {
     render(){
         const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName } = this.props;
         var creator=[];
+        const hIndex= (whyName === 'most') ? 0 : 1;
 
-        if(item.harmony && item.harmony.types[0]){
+        if(item.harmony && item.harmony.types[hIndex]){
             creator=[
-                <PanelStore type={ item.harmony.types[0] } parent={ item } own={true} >
+                <PanelStore type={ item.harmony.types[hIndex] } parent={ item } own={true} >
                     <QSortWhyCreate
                         user    =   { user }
-                        type    =   { item.harmony.types[0] }
+                        type    =   { item.harmony.types[hIndex] }
                         parent  =   { item }
                         toggle  =  { toggle }
                         qbuttons = { qbuttons }
