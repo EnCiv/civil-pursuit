@@ -1,4 +1,4 @@
-QSortButtonList = {
+const QSortButtonList = {
         unsorted: {
             name: 'unsorted',
             color: '#ffffff',
