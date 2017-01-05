@@ -58,7 +58,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations){
       mutations.forEach(function(mutation) {
-      console.log("panelList mutations",mutation.type);
+      console.log("panelList mutations",mutation);
       });    
   }
 
@@ -72,7 +72,7 @@ class PanelList extends React.Component {
           containerWidth: target.clientWidth
         });
     }
-    this.observer.observe(target,{attributes: true, childList: true, characterData: true, subtree: true});
+    this.observer.observe(target,{attributes: true, childList: true});
   }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
