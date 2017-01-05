@@ -16,6 +16,7 @@ import Color from 'color';
 import Button           from './util/button';
 import Item from './item';
 import Creator            from './creator';
+import QSortButtonList from './qsort-button-list';
 
 
 class QSortWhy extends React.Component {
@@ -24,27 +25,9 @@ class QSortWhy extends React.Component {
         panel: panelType
     };
 
-    ButtonList = {
-        unsorted: {
-            name: 'unsorted',
-            color: '#ffffff',
-            title: {
-                active: "Yea! this is in a stack",
-                inactive: "Put this in in a stack"
-            },
-            direction: 'Great! You have completed this step. You can review your choices continue to the next step.'
-        },
-        most: {
-            name: 'most',
-            color: '#e0e0ff',
-            title: {
-                active: "Yea! this is in the most important stack",
-                inactive: "Put this in the most important stack"
-            },
-            max: 5,
-            direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks'
-        },
-    };
+    ButtonList=[];
+
+ 
 
     buttons=[];
 
@@ -66,6 +49,9 @@ class QSortWhy extends React.Component {
     constructor(props) {
         super(props);
         var unsortedList = [];
+        this.ButtonList['unsorted']=QSortButtonList['unsorted'];
+        this.ButtonList['most']=QSortButtonList['most'];
+        console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList)
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         this.buttons.forEach(button => {
