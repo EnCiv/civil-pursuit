@@ -360,7 +360,7 @@ class QSortWhyCreate extends React.Component {
             ];
         }
         return(
-            <div style={{ backgroundColor: qbuttons[sectionName],
+            <div style={{ backgroundColor: qbuttons[sectionName].color,
                           marginBottom: '0.5em'}} >
                 { result }
             </div>
