@@ -305,7 +305,7 @@ class QSortWhyItem extends React.Component {
         }
 
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}}>
+                <div style={{backgroundColor: qbuttons['most'].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
@@ -361,7 +361,7 @@ class QSortWhyCreate extends React.Component {
         }
         return(
             <div style={{ backgroundColor: qbuttons[sectionName],
-                          paddingBottom: '0.5em'}} >
+                          marginBottom: '0.5em'}} >
                 { result }
             </div>
         );
