@@ -150,7 +150,7 @@ class PanelList extends React.Component {
 
   render() {
     const content = [];
-    const instruction = []
+    let instruction = []
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
