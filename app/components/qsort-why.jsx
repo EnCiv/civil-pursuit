@@ -320,6 +320,7 @@ class QSortWhyCreate extends React.Component {
 
     render(){
         var result=[];
+        var color='#fff'
         console.info("QSortWhyCreate", this.props);
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
         var item = null;
@@ -331,6 +332,7 @@ class QSortWhyCreate extends React.Component {
             }
         }
         if(sectionName=='unsorted' || !this.set ){
+            color=qbuttons['unsorted'].color;
             result = [  <Creator
                             type    =   { type }
                             parent  =   { parent }
@@ -339,6 +341,7 @@ class QSortWhyCreate extends React.Component {
                         />
             ];
         } else {
+            color=qbuttons[sectionName].color;
             result = [  <ItemStore item={ item } key={ `item-${item._id}` }>
                             <Item
                                 item    =   { item }
@@ -352,7 +355,7 @@ class QSortWhyCreate extends React.Component {
             ];
         }
         return(
-            <div style={{ backgroundColor: qbuttons[sectionName].color,
+            <div style={{ backgroundColor: color,
                           marginBottom: '0.5em'}} >
                 { result }
             </div>
