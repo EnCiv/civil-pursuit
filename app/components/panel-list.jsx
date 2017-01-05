@@ -10,6 +10,7 @@ import PanelStore from './store/panel';
 import TypeComponent from './type-component';
 import makePanel  from '../lib/app/make-panel';
 import Panel from './panel';
+import Instruction from './instruction';
 
 class PanelList extends React.Component {
 
@@ -149,6 +150,7 @@ class PanelList extends React.Component {
 
   render() {
     const content = [];
+    const instruction = []
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
@@ -173,6 +175,14 @@ class PanelList extends React.Component {
       if ( panel.parent ) {
         name += `-${panel.parent._id || panel.parent}`;
       }
+    }
+
+    if (panel.type && panel.type.instruction) {
+        instruction = (
+            <Instruction >
+                {panel.type.instruction}
+            </Instruction>
+        );
     }
 
     console.info("panelList state", this.state)
@@ -243,6 +253,7 @@ class PanelList extends React.Component {
           ref         =   "panel"
           heading     =   {[( <h4>{ title }</h4> )]}
           >
+          {instruction}
           {crumbs}
           {
             <div ref='outer'>
