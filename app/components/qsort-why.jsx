@@ -94,7 +94,8 @@ class QSortWhy extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button) {
+    toggle(itemId, button, set) {
+        console.info("QsortWhy", itemId, button, set );
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
@@ -110,6 +111,7 @@ class QSortWhy extends React.Component {
                 (sectionName) => {
                     if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
                         if (sectionName === button) {
+                            if(set) { return } // set means don't toggle it
                             //take the i'th element out of the section it is in and put it back in unsorted
                             clone[button] = update(this.state.sections[button], { $splice: [[i, 1]] });
                             clone['unsorted'] = update(this.state.sections['unsorted'], { $unshift: [itemId] });
@@ -327,7 +329,7 @@ class QSortWhyCreate extends React.Component {
             item=panel.items[0];
             if(!this.set){ 
                 this.set=true; 
-                toggle(); 
+                toggle(true); 
             }
         }
         if(sectionName=='unsorted' || !this.set ){
