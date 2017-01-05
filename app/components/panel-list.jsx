@@ -57,9 +57,11 @@ class PanelList extends React.Component {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations){
-      mutations.forEach(function(mutation) {
-      console.log("panelList mutations",mutation);
-      });
+      if(this.inHeight==='active') return;
+
+//      mutations.forEach(function(mutation) {
+//      console.log("panelList mutations",mutation);
+//      });
       let outer = this.refs.outer;
       let inner = ReactDOM.findDOMNode(this.refs['panel-list-'+this.state.currentPanel]);
       let outerHeight= outer.clientHeight;
@@ -81,7 +83,7 @@ class PanelList extends React.Component {
           containerWidth: target.clientWidth
         });
     }
-    this.observer.observe(target,{attributes: true, childList: true, subtree: true});
+    this.observer.observe(target,{attributes: true, subtree: true});
   }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
