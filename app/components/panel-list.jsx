@@ -59,7 +59,16 @@ class PanelList extends React.Component {
   mutations(mutations){
       mutations.forEach(function(mutation) {
       console.log("panelList mutations",mutation);
-      });    
+      });
+      let outer = this.refs.outer;
+      let inner = ReactDOM.findDOMNode(this.refs['panel-list-'+this.state.currentPanel]);
+      let outerHeight= outer.clientHeight;
+      let innerHeight= inner.clientHeight;
+      let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
+      if(outerHeight != innerHeight || outerMaxHeight != innerHeight){
+        console.info("panelList mutations height", outerHeight, innerHeight, outerMaxHeight );
+        this.smoothHeight();
+      }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
