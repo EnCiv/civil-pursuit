@@ -84,7 +84,7 @@ class PanelList extends React.Component {
           containerWidth: target.clientWidth
         });
     }
-    this.observer.observe(target,{attributes: true, subtree: true});
+    this.observer.observe(target,{attributes: true, childList: true, subtree: true});
   }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
