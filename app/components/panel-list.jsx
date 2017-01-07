@@ -194,7 +194,7 @@ class PanelList extends React.Component {
     if (typeList) {
       typeList.forEach((type, i) => {
         let visible= false;
-        if( this.panelStatus[i] && this.panelStatus[i].done ) { visible=true }
+        if( (i > 1) && this.panelStatus[i-1] && this.panelStatus[i-1].done ) { visible=true }
         let active= this.state.currentPanel === i;
         let buttonActive= active || visible;
         crumbs.push(
