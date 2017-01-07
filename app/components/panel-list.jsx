@@ -196,7 +196,7 @@ class PanelList extends React.Component {
         let visible= false;
         if( this.panelStatus[i] && this.panelStatus[i].done ) { visible=true }
         let active= this.state.currentPanel === i;
-        let buttonActive= active || ( i > 0 && this.panelStatus[i-1] && this.panelStatus[i-1].done );
+        let buttonActive= active || visible;
         crumbs.push(
           <button onClick={buttonActive ? this.panelListButton.bind(this, i) : null}
           className ={ !(active || visible) ? 'inactive' : ''}
@@ -205,8 +205,8 @@ class PanelList extends React.Component {
             padding: "0.5em",
             border: "1px solid #666",
             boxSizing: "border-box",
-            backgroundColor: active ? "#000" : visible ? "#fff" : "#ddd",
-            color: active ? "#000" : "#fff"
+            backgroundColor: active ? "#000" : visible ? "#fff" : null,
+            color: active ? "#fff" : "#000"
           }}>
             {type.name}
           </button>
