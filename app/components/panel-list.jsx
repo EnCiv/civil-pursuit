@@ -193,7 +193,8 @@ class PanelList extends React.Component {
 
     if (typeList) {
       typeList.forEach((type, i) => {
-        let visible= false;
+        let visible= false;(
+        if( this.panelStatus[i] && this.panelStatus[i].done) { visible=true;}
         if( (i > 1) && this.panelStatus[i-1] && this.panelStatus[i-1].done ) { visible=true }
         let active= this.state.currentPanel === i;
         let buttonActive= active || visible;
@@ -206,7 +207,7 @@ class PanelList extends React.Component {
             border: "1px solid #666",
             boxSizing: "border-box",
             backgroundColor: active ? "#000" : visible ? "#fff" : null,
-            color: active ? "#fff" : "#000"
+            color: active ? "#fff" : visible ? "#000" : null
           }}>
             {type.name}
           </button>
