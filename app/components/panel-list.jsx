@@ -30,6 +30,7 @@ class PanelList extends React.Component {
   };
 
   shared= {};
+  panelStatus=[];
 
   stepRate=25; //ms
   inHeight='inactive';
@@ -133,6 +134,7 @@ class PanelList extends React.Component {
   nextPanel(results){
     if(results){
       this.setState({shared: Object.assign({}, this.state.shared, results)});
+      this.panelStatus[this.state.currentPanel].done=true;
     }
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1 });
@@ -189,13 +191,17 @@ class PanelList extends React.Component {
 
     if (typeList) {
       typeList.forEach((type, i) => {
+        let visible= false;
+        if( this.panelStatus[i] && this.panelStatus[i].done ) { visible=true }
+        let active= this.state.currentPanel === i;
         crumbs.push(
-          <button onClick={this.panelListButton.bind(this, i)} style={{
+          <button onClick={(active || visible) ? this.panelListButton.bind(this, i) : null} style={{
             display: "inline",
             padding: "0.5em",
             border: "1px solid #666",
             boxSizing: "border-box",
-            backgroundColor: this.state.currentPanel == i ? "#fff" : "#ddd"
+            backgroundColor: active ? "#fff" : visible ? "#000" : "#ddd",
+            color: visible ? "#fff" : "#000"
           }}>
             {type.name}
           </button>
