@@ -132,7 +132,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   nextPanel(results){
-    cP=this.state.currentPanel;
+    let cP=this.state.currentPanel;
     if(!this.panelStatus[cP]) { this.panelStatus[cP]={} }
     this.panelStatus[cP].done=true;
     if(results){
