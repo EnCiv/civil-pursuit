@@ -28,7 +28,7 @@ class QVote extends Model {
     };
   }
 
-  static collection = 'upvote';
+  static collection = 'qvote';
 
   static inserted () {
     return [this.emit.bind(this, 'created')];
