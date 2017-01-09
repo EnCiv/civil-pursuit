@@ -155,11 +155,12 @@ class QSortItems extends React.Component {
                             clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
                             done = true;
                         }
-                    } else if (sectionName != button) {  // copy over the other stction byt don't overwrite the one you are modifying
+                    } else if (sectionName != button) {  // copy over the other sections but don't overwrite the one you are modifying
                         clone[sectionName] = this.state.sections[sectionName].slice();
                     }
                 }
             );
+            window.socket.emit('insert qvote', {item: itemId, criteria: button});
             this.setState({ 'sections': clone });
 
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
