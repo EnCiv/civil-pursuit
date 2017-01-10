@@ -12,6 +12,7 @@ import smoothScroll from '../lib/app/smooth-scroll';
 import Instruction from './instruction';
 import Color from 'color';
 import Button           from './util/button';
+import QSortButtonList from './qsort-button-list';
 
 
 class QSortItems extends React.Component {
@@ -20,107 +21,16 @@ class QSortItems extends React.Component {
         panel: panelType
     };
 
-    QSortButtonList = {
-        unsorted: {
-            name: 'unsorted',
-            color: '#ffffff',
-            title: {
-                active: "Yea! this is in a stack",
-                inactive: "Put this in in a stack"
-            },
-            direction: 'Great! You have completed this step. You can review your choices continue to the next step.'
-        },
-        most: {
-            name: 'most',
-            color: '#e0e0ff',
-            title: {
-                active: "Yea! this is in the most important stack",
-                inactive: "Put this in the most important stack"
-            },
-            max: 5,
-            direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks'
-        },
-        neutral: {
-            name: 'neutral',
-            color: '#e0e0f0',
-            title: {
-                active: "This is among the things that are neight most nor least important",
-                inactive: "Put this among the things that are neight most nor least important"
-            }
-        },
-        least: {
-            name: 'least',
-            color: '#ffe0e0',
-            title: {
-                active: "This is in the least important stack of them all",
-                inactive: "Put this in the least important stack of them all"
-            },
-            max: 6,
-            direction: 'We are limiting the number of things in the "least" stack to 6. Please  move some to other stacks'
-        }
-    };
-
     motionDuration = 500; //500mSec
 
-    index = {};
-    state = {};
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
 
-    cloneSections(section) {
-        // Deep copy arrays.
-        var clone = {};
-        Object.keys(section).forEach(button => {
-            clone[button] = section[button].slice(0);
-        });
-        return clone;
-    }
-
-    constructor(props) {
+    constructor(props){
         super(props);
-        var unsortedList = [];
-        let unsortedLength = 0;
-        let buttons = Object.keys(this.QSortButtonList);
-        this.state.sections = {};
-        buttons.forEach(button => {
-            this.state.sections[button] = [];
-        });
-        if (props.panel && props.panel.items) {
-            props.panel.items.forEach((item, i) => {
-                unsortedList.push(item._id);
-                this.index[item._id] = i;
-                unsortedLength++;
-            });
-        }
-        if (unsortedLength) {
-            this.state.sections['unsorted'] = unsortedList.slice(0);
-        }
-        console.info("qsortItems constructor", this.props.shared);
+        if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
+        else { this.QSortButtonList=QSortButtonList; }
     }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-
-    componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
-        let currentIndex = Object.entries(this.index);
-        let unsortedLength = 0;
-        var newObj = this.cloneSections(this.state.sections);
-        if (newProps.panel && newProps.panel.items) {
-            newProps.panel.items.forEach((newItem, i) => {
-                if (!(newItem._id in this.index)) {
-                    newObj['unsorted'].push(newItem._id);
-                    this.index[newItem._id] = i;
-                    unsortedLength++;
-                } else {
-                    currentIndex[newItem._id] = -1; // items not marked -1 here should be deleted one day
-                }
-            });
-        }
-        if (unsortedLength) {
-            this.setState({ 'sections': this.cloneSections(newObj) });
-        }
-        console.info("qsortItems componentWillReceiveProps", this.props.shared);
-    }
-
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -129,50 +39,28 @@ class QSortItems extends React.Component {
         let i;
         let done = false;
         var clone = {};
-        if( button == "done" && this.props.next ){ 
-            const results={ index: this.index,
-                            sections: this.state.sections,
-                            panel: this.props.panel
+        if (button == "done" && this.props.next) {
+            const results = {
+                index: this.props.index,
+                sections: this.props.sections,
+                panel: this.props.panel
             }
             this.props.next(results)
         }
-        if (itemId && button && button !== 'harmony') {
-            Object.keys(this.QSortButtonList).forEach(
-                (sectionName) => {
-                    if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
-                        if (sectionName === button) {
-                            //take the i'th element out of the section it is in and put it back in unsorted
-                            clone[button] = update(this.state.sections[button], { $splice: [[i, 1]] });
-                            clone['unsorted'] = update(this.state.sections['unsorted'], { $unshift: [itemId] });
-                            done = true;
-                        } else if (sectionName === 'unsorted') {
-                            // it was in unsorted, so take it out and put it where it in the button's section
-                            clone['unsorted'] = update(this.state.sections['unsorted'], { $splice: [[i, 1]] });
-                            clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
-                            done = true;
-                        } else { // the item is in some other sectionName and should be moved to this button's section
-                            clone[sectionName] = update(this.state.sections[sectionName], { $splice: [[i, 1]] });
-                            clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
-                            done = true;
-                        }
-                    } else if (sectionName != button) {  // copy over the other sections but don't overwrite the one you are modifying
-                        clone[sectionName] = this.state.sections[sectionName].slice();
-                    }
-                }
-            );
-            window.socket.emit('insert qvote', {item: itemId, criteria: button});
-            this.setState({ 'sections': clone });
+        if (button == 'harmony') { return; }
 
-            //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-            //this doesn't happen when moveing and object up, above the fold. 
-            var doc = document.documentElement;
-            this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-            this.scrollBackToTop = true;
+        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
+        //this doesn't happen when moveing and object up, above the fold. 
+        var doc = document.documentElement;
+        this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+        this.scrollBackToTop = true;
 
+        if (itemId && button) { this.props.toggle(itemId, button) }
 
-        }
+        window.socket.emit('insert qvote', { item: itemId, criteria: button });
 
     }
+}
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
@@ -224,7 +112,7 @@ class QSortItems extends React.Component {
                 );
             }
 
-            if (!Object.keys(this.index).length) {
+            if (!Object.keys(this.props.index).length) {
                 loading.push(
                     <div className="gutter text-center">
                         <a href="#" onClick={this.toggle.bind(this, null, 'creator')} className="click-to-create">
@@ -233,11 +121,11 @@ class QSortItems extends React.Component {
                     </div>
                 );
             } else {
-                if (this.state.sections['unsorted'].length) { issues++ }
+                if (this.props.sections['unsorted'].length) { issues++ }
                 Object.keys(this.QSortButtonList).forEach((name) => {
                     let qb = this.QSortButtonList[name];
                     if (qb.max) {
-                        if (this.state.sections[name].length > qb.max) {
+                        if (this.props.sections[name].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
                                     {qb.direction}
@@ -246,11 +134,11 @@ class QSortItems extends React.Component {
                             issues++;
                         }
                     }
-                    this.state.sections[name].forEach(itemId => {
+                    this.props.sections[name].forEach(itemId => {
                         var buttonstate = {};
                         Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = false; });
                         if (name != 'unsorted') { buttonstate[name] = true; }
-                        let item = items[this.index[itemId]];
+                        let item = items[this.props.index[itemId]];
                         content.push(
                             {
                                 sectionName: name,

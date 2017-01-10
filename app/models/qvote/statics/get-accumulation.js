@@ -6,31 +6,41 @@
 
 function getAccumulation (itemId, userId) {
   return new Promise((ok, ko) => {
-    var query={item: itemId};
+    var query={item: {$in: itemId }};
     if(user){ query.user = userId} // get a specific user's accumulation
     console.info("QVote.getAccumulation",query, item);
     try {
-      let accumulation = {results: {}, count: 0};
+      let accumulation = [];
       var lastUser=null;
-      var result={};
-      var users=0;
+      var lastItem=null;
 
       this
         .find(query)
-        .sort({ user : 1, _id : -1})
+        .sort({ item: 1, user : 1, _id : -1})
         .then(
           qvotes => {
             try {
               qvotes.forEach(vote => {
-                if(vote.user!==lastUser) {
-                    users++;
-                    lastUser=vote.user;
-                    if(!result[vote.criteria]){result[criteria]=1}
-                    else {result[criteria]++}
+                if(!lastItem) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
+                if(vote.item !== lastItem.item){
+                  Object.assign(lastItem, results);
+                  accumulation.push(lastItem);
+                  lastItem.item=vote.item;
+                  lastItem.results={};
+                  lastItem.ownVote=null;
+                  lastUser=null;
                 }
+                if(vote.user!==lastUser) { // only count the last vote by each user, which is the first in the list because it's sorted -1 by _id
+                    let criteria=vote.criteria;
+                    lastUser=vote.user;
+                    if(!result[criteria]){result[criteria]=1}
+                    else {result[criteria]++}
+                    if(lastUser === userId){
+                      lastItem.ownVote=criteria;
+                    }
+                } // if it is equal to the last user we just skip it because we are only counting the 
               });
-              Object.assign(accumulation.results,results);
-              accumulation.count=users;
+              
               ok(accumulation);
             }
             catch ( error ) {
