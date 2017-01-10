@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import update from 'immutability-helper';
 
 class QVoteStore extends React.Component {
 
@@ -52,7 +53,7 @@ class QVoteStore extends React.Component {
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': currentIndex.slice() });
         }
-        console.info("QVoteStore componentWillReceiveProps");
+        console.info("QVoteStore componentWillReceiveProps", newProps);
     }
 
 
