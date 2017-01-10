@@ -85,7 +85,7 @@ class QVoteStore extends React.Component {
                       clone[sectionName] = this.state.sections[sectionName].slice();
                   }
               });
-          if (!this.state.sections[criteria]) { clone[criteria] = itemId; }  // if the section for this criteria does not exist yet in state
+          if (!this.state.sections[criteria]) { clone[criteria] = [itemId]; }  // if the section for this criteria does not exist yet in state
           this.setState({ 'sections': clone });
       }
 
