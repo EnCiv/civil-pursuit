@@ -36,7 +36,7 @@ class QVoteStore extends React.Component {
     }
 
       componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
-        let currentIndex = [];
+        let currentIndex = {};
         let unsortedLength = 0;
         var newObj = this.cloneSections(this.state.sections);
         if (newProps.panel && newProps.panel.items) {
@@ -51,7 +51,7 @@ class QVoteStore extends React.Component {
         }
         if (unsortedLength) {
             this.setState({ 'sections': this.cloneSections(newObj),
-                            'index': currentIndex.slice() });
+                            'index': Object.assign({}, currentIndex)});
         }
         console.info("QVoteStore componentWillReceiveProps", newProps, currentIndex);
     }
@@ -74,11 +74,19 @@ class QVoteStore extends React.Component {
                       } else if (sectionName === 'unsorted') {
                           // it was in unsorted, so take it out and put it where it in the criteria's section
                           clone['unsorted'] = update(this.state.sections['unsorted'], { $splice: [[i, 1]] });
-                          clone[criteria] = update(this.state.sections[criteria], { $unshift: [itemId] });
+                          if(this.state.sections[criteria]){
+                             clone[criteria] = update(this.state.sections[criteria], { $unshift: [itemId] });
+                          }else{
+                             clone[criteria] = [itemId];
+                          }
                           done = true;
                       } else { // the item is in some other sectionName and should be moved to this criteria's section
                           clone[sectionName] = update(this.state.sections[sectionName], { $splice: [[i, 1]] });
-                          clone[criteria] = update(this.state.sections[criteria], { $unshift: [itemId] });
+                          if(this.state.sections[criteria]){
+                            clone[criteria] = update(this.state.sections[criteria], { $unshift: [itemId] });
+                          } else {
+                              clone[criteria] = [itemId];
+                          }
                           done = true;
                       }
                   } else if (sectionName != criteria) {  // copy over the other sections but don't overwrite the one you are modifying
