@@ -121,11 +121,12 @@ class QSortItems extends React.Component {
                     </div>
                 );
             } else {
-                if (this.props.sections['unsorted'].length) { issues++ }
-                Object.keys(this.props.sections).forEach((name) => {
-                    let qb = this.QSortButtonList[name];
+                if (this.props.sections['unsorted'].length) { issues++ }  
+                Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
+                    if(!this.props.sections[criteria]){ return; }
+                    let qb = this.QSortButtonList[criteria];
                     if (qb.max) {
-                        if (this.props.sections[name].length > qb.max) {
+                        if (this.props.sections[criteria].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
                                     {qb.direction}
@@ -134,14 +135,14 @@ class QSortItems extends React.Component {
                             issues++;
                         }
                     }
-                    this.props.sections[name].forEach(itemId => {
+                    this.props.sections[criteria].forEach(itemId => {
                         var buttonstate = {};
                         Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = false; });
-                        if (name != 'unsorted') { buttonstate[name] = true; }
+                        if (criteria != 'unsorted') { buttonstate[criteria] = true; }
                         let item = items[this.props.index[itemId]];
                         content.push(
                             {
-                                sectionName: name,
+                                sectionName: criteria,
                                 qbuttons: this.QSortButtonList,
                                 user: user,
                                 item: item,
@@ -167,6 +168,7 @@ class QSortItems extends React.Component {
                     )
                 }
             }
+
         }
 
 
