@@ -8,7 +8,7 @@ function getAccumulation (itemId, userId) {
   return new Promise((ok, ko) => {
     var query={item: {$in: itemId }};
     if(userId){ query.user = userId} // get a specific user's accumulation
-    console.info("QVote.getAccumulation",query, item);
+    console.info("QVote.getAccumulation",query, itemId);
     try {
       let accumulation = [];
       var lastUser=null;
