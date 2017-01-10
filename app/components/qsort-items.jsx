@@ -60,7 +60,6 @@ class QSortItems extends React.Component {
         window.socket.emit('insert qvote', { item: itemId, criteria: button });
 
     }
-}
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
