@@ -41,6 +41,7 @@ function getAccumulation (itemId, userId) {
                 } // if it is equal to the last user we just skip it because we are only counting the 
               });
               
+              console.info("Qvote Get Accumulation", accumulation);
               ok(accumulation);
             }
             catch ( error ) {
