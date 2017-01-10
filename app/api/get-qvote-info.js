@@ -9,7 +9,7 @@ function getQVoteInfo (itemId, own, cb) {
     .then(results => {
         if(!results){return;}  // if no data then don't do the call back
         console.info("getQVoteInfo results", results);
-        cb(JSON.stringify(results))
+        cb(results)
     })
     .catch(this.error.bind(this));
 }
