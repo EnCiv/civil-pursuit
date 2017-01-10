@@ -41,7 +41,6 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount() {
-    console.info("panel-list.componentDidMount onServer=", typeof window !== 'undefined');
     if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
       window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
     }
@@ -61,17 +60,14 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations){
       if(this.inHeight==='active') return;
-
-//      mutations.forEach(function(mutation) {
-//      console.log("panelList mutations",mutation);
-//      });
       let outer = this.refs.outer;
+      if(!this.refs['panel-list-'+this.state.currentPanel]) return;
       let inner = ReactDOM.findDOMNode(this.refs['panel-list-'+this.state.currentPanel]);
+      if(!(inner)) return;
       let outerHeight= outer.clientHeight;
       let innerHeight= inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight,10) || 0;
       if(outerHeight != innerHeight || outerMaxHeight != innerHeight){
-        console.info("panelList mutations height", outerHeight, innerHeight, outerMaxHeight );
         this.smoothHeight();
       }
   }
@@ -100,7 +96,6 @@ class PanelList extends React.Component {
 
 
     let timerMax= parseInt(2000/this.stepRate,10); 
-    console.info("smoothHeight");
 
     
     const timer = setInterval( () => {
@@ -117,7 +112,6 @@ class PanelList extends React.Component {
       if(outerHeight != innerHeight || outerMaxHeight != innerHeight){
         outer.style.maxHeight=innerHeight + 'px';
       }
-      console.info("smoothHeight", outerHeight, outerMaxHeight, innerHeight);
     }, this.stepRate);
   }
 
@@ -125,7 +119,6 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetListoType(typeList) {
-    console.info("okGetListoType", typeList);
     for(let i=0; i< typeList.length; i++) { this.panelList[i]={content: [] }; }
     this.setState({ typeList: typeList});
   }
@@ -165,8 +158,6 @@ class PanelList extends React.Component {
     const containerWidth=this.state.containerWidth;
     const spaceBetween=containerWidth * 0.25;
 
-    console.info("panelList containerWidth", containerWidth);
-
     if ( panel ) {
 
       if(panel.type) {
@@ -189,8 +180,6 @@ class PanelList extends React.Component {
             </Instruction>
         );
     }
-
-    console.info("panelList state", this.state)
 
     if (typeList) {
       typeList.forEach((type, i) => {
@@ -228,14 +217,6 @@ class PanelList extends React.Component {
     }
 
     if (this.state.typeList.length) {
-
-      console.info("panel-list ptype", this.state)
-
-      console.info("PanelList panel", currentPanel, this.panelList);
-
-
-        console.info("PanelList", panel, this.state.typeList[currentPanel]);
-
         if(currentPanel===0){
           this.panelList[currentPanel].content=[(
                 <PanelStore { ...panel }>

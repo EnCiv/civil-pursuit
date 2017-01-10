@@ -54,7 +54,6 @@ class QVoteStore extends React.Component {
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': newIndex});
         }
-        console.info("QVoteStore componentWillReceiveProps", newProps, newIndex);
     }
 
 
@@ -101,7 +100,6 @@ class QVoteStore extends React.Component {
 
   okGetQVoteInfo(accumulation) {
       if(accumulation){
-        console.info("Qvote okGet", accumulation);
         accumulation.forEach(qvote => {
             if(qvote.ownVote) {
                 this.toggle(qvote.item, qvote.ownVote);

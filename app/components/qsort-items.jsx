@@ -79,8 +79,6 @@ class QSortItems extends React.Component {
 
         const onServer = typeof window === 'undefined';
 
-        console.info("qsortItems render", this.props, this.QSortButtonList);
-
         let title = 'Loading items', name, loaded = false, content = [], loadMore,
             type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
 

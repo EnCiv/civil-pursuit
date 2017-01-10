@@ -8,7 +8,6 @@ function getAccumulation (itemId, userId) {
   return new Promise((ok, ko) => {
     var query={item: {$in: itemId }};
     if(userId){ query.user = userId} // get a specific user's accumulation
-    console.info("QVote.getAccumulation",query, itemId);
     try {
       let accumulation = [];
       var lastUser=null;
@@ -21,7 +20,6 @@ function getAccumulation (itemId, userId) {
           qvotes => {
             try {
               qvotes.forEach(vote => {
-                console.info("QVote getAcc qvote", vote);
                 if(!lastItem) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item !== lastItem.item){
                   accumulation.push(lastItem);
@@ -35,7 +33,6 @@ function getAccumulation (itemId, userId) {
                     lastUser=vote.user;
                     if(!lastItem.results[criteria]){lastItem.results[criteria]=1}
                     else {lastItem.results[criteria]++}
-                    console.info("QVote Get Acc", lastUser, userId, lastUser==userId, lastUser===userId);
                     if(lastUser == userId){
                       lastItem.ownVote=criteria;
                     }
@@ -43,7 +40,6 @@ function getAccumulation (itemId, userId) {
               });
               if(lastItem){ accumulation.push(lastItem); } // push the last one
               
-              console.info("Qvote Get Accumulation", accumulation);
               ok(accumulation);
             }
             catch ( error ) {
