@@ -11,7 +11,7 @@ import TypeComponent from './type-component';
 import makePanel  from '../lib/app/make-panel';
 import Panel from './panel';
 import Instruction from './instruction';
-import QSortStore from './store/qsort';
+import QVoteStore from './store/qvote';
 
 class PanelList extends React.Component {
 
@@ -239,14 +239,14 @@ class PanelList extends React.Component {
         if(currentPanel===0){
           this.panelList[currentPanel].content=[(
                 <PanelStore { ...panel }>
-                  <QSortStore>
+                  <QVoteStore>
                     <TypeComponent component={this.state.typeList[currentPanel].component} 
                                   type={this.state.typeList[currentPanel]} 
                                   user={this.props.user} 
                                   next={this.nextPanel.bind(this)} 
                                   shared={this.state.shared}
                     />
-                  </QSortStore>
+                  </QVoteStore>
                 </PanelStore>
           )];
         } else {
