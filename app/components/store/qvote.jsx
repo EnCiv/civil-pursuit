@@ -6,7 +6,7 @@ import update from 'immutability-helper';
 class QVoteStore extends React.Component {
 
   state = { sections : {unsorted: []},
-            index: {} };
+            index: [] };
 
   constructor(props){
       super(props);
@@ -36,7 +36,7 @@ class QVoteStore extends React.Component {
     }
 
       componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
-        let currentIndex = {};
+        let currentIndex = [];
         let unsortedLength = 0;
         var newObj = this.cloneSections(this.state.sections);
         if (newProps.panel && newProps.panel.items) {
@@ -50,7 +50,7 @@ class QVoteStore extends React.Component {
             });
         }
         if (unsortedLength) {
-            var newIndex = Object.assign({},currentIndex);
+            var newIndex = currentIndex.slice();
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': newIndex});
         }
