@@ -122,7 +122,7 @@ class QSortItems extends React.Component {
                 );
             } else {
                 if (this.props.sections['unsorted'].length) { issues++ }
-                Object.keys(this.state.sections).forEach((name) => {
+                Object.keys(this.props.sections).forEach((name) => {
                     let qb = this.QSortButtonList[name];
                     if (qb.max) {
                         if (this.props.sections[name].length > qb.max) {
