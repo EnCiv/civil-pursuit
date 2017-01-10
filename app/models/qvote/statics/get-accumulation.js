@@ -21,7 +21,7 @@ function getAccumulation (itemId, userId) {
           qvotes => {
             try {
               qvotes.forEach(vote => {
-                console.info("QVote getAcc qvote", qvote);
+                console.info("QVote getAcc qvote", vote);
                 if(!lastItem) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item !== lastItem.item){
                   accumulation.push(lastItem);
