@@ -50,8 +50,7 @@ class QVoteStore extends React.Component {
             });
         }
         if (unsortedLength) {
-            var newIndex=[]; 
-            Object.keys(currentIndex).forEach(item => newIndex[item]=currentIndex[item]);
+            var newIndex=currentIndex.slice(); 
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': newIndex});
         }
