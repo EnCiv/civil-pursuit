@@ -90,11 +90,13 @@ class QVoteStore extends React.Component {
 
 
   okGetQVoteInfo(accumulation) {
-      accumulation.forEach(qvote => {
-          if(qvote.ownVote) {
-              this.toggle(qvote.item, qvote.ownVote);
-          }
-      });
+      if(accumulation){
+        accumulation.forEach(qvote => {
+            if(qvote.ownVote) {
+                this.toggle(qvote.item, qvote.ownVote);
+            }
+        });
+      }
   }
 
   renderChildren () {
