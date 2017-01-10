@@ -35,7 +35,8 @@ function getAccumulation (itemId, userId) {
                     lastUser=vote.user;
                     if(!lastItem.results[criteria]){lastItem.results[criteria]=1}
                     else {lastItem.results[criteria]++}
-                    if(lastUser === userId){
+                    console.info("QVote Get Acc", lastUser, userId, lastUser==userId, lastUser===userId);
+                    if(lastUser == userId){
                       lastItem.ownVote=criteria;
                     }
                 } // if it is equal to the last user we just skip it because we are only counting the 
