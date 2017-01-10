@@ -12,7 +12,7 @@ class QVoteStore extends React.Component {
       super(props);
       if(this.props.panel && this.props.panel.items){
         this.props.panel.items.map((item, i)=>{ 
-                this.state.index[item].push(item._id);
+                this.state.index[item._id]=i;
                 this.state.sections['unsorted'].push(item._id);
             });
         }
@@ -53,7 +53,7 @@ class QVoteStore extends React.Component {
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': currentIndex.slice() });
         }
-        console.info("QVoteStore componentWillReceiveProps", newProps);
+        console.info("QVoteStore componentWillReceiveProps", newProps, currentIndex);
     }
 
 
@@ -103,7 +103,7 @@ class QVoteStore extends React.Component {
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>
-      React.cloneElement(child, Object.assign({},this.state, {toggle: this.toggle.bind(this)}) )
+      React.cloneElement(child, Object.assign({},this.props, this.state, {toggle: this.toggle.bind(this)}) )
     );
   }
 
