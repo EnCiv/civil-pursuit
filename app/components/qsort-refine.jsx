@@ -291,7 +291,7 @@ class QSortRefineItem extends React.Component {
         const {qbuttons, sectionName, itemId, user, type, toggle, buttonstate, whyName, show, emitter } = this.props;
         var creator=[];
         const hIndex= (whyName === 'most') ? 0 : 1;
-        const active = show ? {item: ItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
+        const active = show ? {item: itemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
         const panel={type: type};
 
         if(item.harmony && item.harmony.types[hIndex]){
