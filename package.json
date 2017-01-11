@@ -57,6 +57,7 @@
     "react-flip-move": "^2.7.2",
     "immutability-helper": "^2.0.0",
     "less": "^2.5.0",
+    "lodash": "^4.17.4",
     "marked": "^0.3.3",
     "moment": "^2.10.6",
     "mungo": "^2.0.20",

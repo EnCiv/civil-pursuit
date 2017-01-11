@@ -12,6 +12,7 @@ import makePanel  from '../lib/app/make-panel';
 import Panel from './panel';
 import Instruction from './instruction';
 import QVoteStore from './store/qvote';
+import merge from 'lodash/merge'
 
 class PanelList extends React.Component {
 
@@ -130,7 +131,9 @@ class PanelList extends React.Component {
     if(!this.panelStatus[cP]) { this.panelStatus[cP]={} }
     this.panelStatus[cP].done=true;
     if(results){
-      this.setState({shared: Object.assign({}, this.state.shared, results)});
+      const shared=merge({},this.state.shared, results);
+      console.info("panel-list shared", shared);
+      this.setState({shared: shared});
     }
     if(this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1 });
