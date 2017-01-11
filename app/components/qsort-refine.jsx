@@ -224,7 +224,8 @@ class QSortRefine extends React.Component {
                             {
                                 sectionName: name,
                                 user: user,
-                                itemId: this.props.shared.why[this.whyName][item._id],
+                                item: item
+                                whyItemId: this.props.shared.why[this.whyName][item._id],
                                 type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
@@ -288,16 +289,15 @@ export default QSortRefine;
 class QSortRefineItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, itemId, user, type, toggle, buttonstate, whyName, show, emitter } = this.props;
+        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter } = this.props;
         var creator=[];
         const hIndex= (whyName === 'most') ? 0 : 1;
-        const active = show ? {item: itemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
+        const active = show ? {item: whyItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
         const panel={type: type};
 
-        if(item.harmony && item.harmony.types[hIndex]){
             creator=[
                     <EvaluationStore
-                      item-id     =   { itemId }
+                      item-id     =   { whyItemId }
                       toggle      =   { toggle }
                       active      =   { active }
                       emitter     =   { emitter }
@@ -310,7 +310,6 @@ class QSortRefineItem extends React.Component {
                         />
                     </EvaluationStore>
             ];
-        }
 
         return(
                 <div style={{backgroundColor: qbuttons[whyName].color}}>
