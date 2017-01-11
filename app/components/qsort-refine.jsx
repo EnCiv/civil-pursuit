@@ -60,13 +60,13 @@ class QSortRefine extends React.Component {
             this.whyName='least';
         }
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
-        console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
+        console.info("qsort-refine constructor", this.props, this.whyName)
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = this.props.shared.why[this.whyName].slice(0);
+        this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
         console.info("qsortWhy constructor", this.props.shared);
     }
 
@@ -77,7 +77,7 @@ class QSortRefine extends React.Component {
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
-        newProps.shared.why[this.whyName].forEach(itemId=>{
+        Object.keys(newProps.shared.why[this.whyName]).forEach(itemId=>{
             if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
             else{ newSections['unsorted'].push(itemId) }
         });
