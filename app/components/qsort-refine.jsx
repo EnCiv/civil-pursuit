@@ -17,9 +17,11 @@ import Button           from './util/button';
 import Item from './item';
 import Creator            from './creator';
 import QSortButtonList from './qsort-button-list';
+import EvaluationStore    from './store/evaluation';
+import Promote            from './promote';
 
 
-class QSortWhy extends React.Component {
+class QSortRefine extends React.Component {
 
     static propTypes = {
         panel: panelType
@@ -34,7 +36,6 @@ class QSortWhy extends React.Component {
     motionDuration = 500; //500mSec
 
     state = {};
-    results = {sections: {}};
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
 
@@ -58,7 +59,6 @@ class QSortWhy extends React.Component {
         } else {
             this.whyName='least';
         }
-        this.results.sections[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
         this.buttons = Object.keys(this.ButtonList);
@@ -89,17 +89,14 @@ class QSortWhy extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button, set, whyItemId) {
+    toggle(itemId, button, set) {
         console.info("QsortWhy", itemId, button, set );
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
         var clone = {};
         if( button == "done" && this.props.next ){ 
-            this.props.next(this.results);
-        }
-        if(set==='set'){
-            this.results.why[this.whyName][itemId]=whyItemId;
+            this.props.next({why: this.whyName})
         }
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.ButtonList).forEach(
@@ -203,11 +200,12 @@ class QSortWhy extends React.Component {
                     </div>
                 );
             } else {
+                let topItem=true;
                 this.buttons.forEach((name) => {
                     if (this.state.sections['unsorted'].length) { issues++ }
                     let qb = this.ButtonList[name];
                     if (qb.max) {
-                        console.info("QSortWhy qb", qb, this.state)
+                        console.info("QSortRefine qb", qb, this.state)
                         if (this.state.sections[name].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
@@ -226,14 +224,18 @@ class QSortWhy extends React.Component {
                             {
                                 sectionName: name,
                                 user: user,
-                                item: item,
+                                itemId: this.shared.why[this.whyName][item._id],
+                                type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
                                 whyName: this.whyName,
+                                emitter: this.props.emitter,
+                                show: topItem,
                                 id: item._id  //FlipMove uses this Id to sort
                             }
                         );
+                        topItem=false
                     });
                 });
                 if (!issues) {
@@ -270,7 +272,7 @@ class QSortWhy extends React.Component {
                     }}>
                         <div className="qsort-flip-move-articles">
                             <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                                {content.map(article => <QSortWhyItem {...article} key={article.id} />)}
+                                {content.map(article => <QSortRefineItem {...article} key={article.id} />)}
                             </FlipMove>
                         </div>
                     </div>
@@ -281,27 +283,32 @@ class QSortWhy extends React.Component {
     }
 }
 
-export default QSortWhy;
+export default QSortRefine;
 
-class QSortWhyItem extends React.Component {
+class QSortRefineItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName } = this.props;
+        const {qbuttons, sectionName, itemId, user, type, toggle, buttonstate, whyName, show, emitter } = this.props;
         var creator=[];
         const hIndex= (whyName === 'most') ? 0 : 1;
+        const active = show ? {item: ItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
+        const panel={type: type};
 
         if(item.harmony && item.harmony.types[hIndex]){
             creator=[
-                <PanelStore type={ item.harmony.types[hIndex] } parent={ item } own={true} >
-                    <QSortWhyCreate
-                        user    =   { user }
-                        type    =   { item.harmony.types[hIndex] }
-                        parent  =   { item }
-                        toggle  =  { toggle }
-                        qbuttons = { qbuttons }
-                        sectionName = { sectionName }
-                    />
-                </PanelStore >
+                    <EvaluationStore
+                      item-id     =   { itemId }
+                      toggle      =   { toggle }
+                      active      =   { active }
+                      emitter     =   { emitter }
+                      >
+                      <Promote
+                        ref       =   "promote"
+                        show      =   { show }
+                        panel     =   { panel }
+                        user    =     { user }
+                        />
+                    </EvaluationStore>
             ];
         }
 
@@ -337,7 +344,7 @@ class QSortWhyCreate extends React.Component {
             item=panel.items[0];
             if(!this.set){ 
                 this.set=true; 
-                toggle('set', item._id); // passing the Id of the why item created
+                toggle('set'); 
             }
         }
         if(sectionName=='unsorted' || !this.set ){

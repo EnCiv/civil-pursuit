@@ -226,6 +226,7 @@ class PanelList extends React.Component {
                                   user={this.props.user} 
                                   next={this.nextPanel.bind(this)} 
                                   shared={this.state.shared}
+                                  emitter={this.props.emitter}
                     />
                   </QVoteStore>
                 </PanelStore>
@@ -237,6 +238,7 @@ class PanelList extends React.Component {
                                     user={this.props.user} 
                                     next={this.nextPanel.bind(this)} 
                                     shared={this.state.shared}
+                                    emitter={this.props.emitter}
                       />  
           )];
         }

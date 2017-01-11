@@ -7,6 +7,7 @@ import PanelList                        from './panel-list';
 import Subtype                          from './subtype';
 import QSortItems                       from './qsort-items';
 import QSortWhy                         from './qsort-why';
+import QSortRefine                      from './qsort-refine';
 
 class TypeComponent extends React.Component{
 
@@ -15,7 +16,8 @@ class TypeComponent extends React.Component{
         'QHome': QHome,
         'Subtype': Subtype,
         'QSortItems': QSortItems,
-        'QSortWhy': QSortWhy
+        'QSortWhy': QSortWhy,
+        'QSortRefine': QSortRefine
     }
 
     render(){
