@@ -34,7 +34,7 @@ class QSortWhy extends React.Component {
     motionDuration = 500; //500mSec
 
     state = {};
-    results = {sections: {}};
+    results = {why: {}};
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
 
@@ -58,7 +58,7 @@ class QSortWhy extends React.Component {
         } else {
             this.whyName='least';
         }
-        this.results.sections[this.whyName]={};
+        this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
         this.buttons = Object.keys(this.ButtonList);

@@ -66,7 +66,7 @@ class QSortRefine extends React.Component {
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = this.props.shared.sections[this.whyName].slice(0);
+        this.state.sections['unsorted'] = this.props.shared.why[this.whyName].slice(0);
         console.info("qsortWhy constructor", this.props.shared);
     }
 
@@ -77,7 +77,7 @@ class QSortRefine extends React.Component {
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
-        newProps.shared.sections[this.whyName].forEach(itemId=>{
+        newProps.shared.why[this.whyName].forEach(itemId=>{
             if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
             else{ newSections['unsorted'].push(itemId) }
         });
@@ -192,7 +192,7 @@ class QSortRefine extends React.Component {
                 );
             }
 
-            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections[this.whyName] && Object.keys(this.props.shared.sections[this.whyName].length))) {
+            if ( ! (this.props.shared && this.props.shared.why && this.props.shared.why[this.whyName] && Object.keys(this.props.shared.why[this.whyName].length))) {
                 // if we don't have any data to work with 
                 loading.push(
                     <div className="gutter text-center">
