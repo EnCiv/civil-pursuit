@@ -192,7 +192,7 @@ class QSortRefine extends React.Component {
                 );
             }
 
-            if ( ! (this.props.shared && this.props.shared.why && this.props.shared.why[this.whyName] && Object.keys(this.props.shared.why[this.whyName].length))) {
+            if ( ! (this.props.shared && this.props.shared.why && this.props.shared.why[this.whyName] && Object.keys(this.props.shared.why[this.whyName]).length)) {
                 // if we don't have any data to work with 
                 loading.push(
                     <div className="gutter text-center">
