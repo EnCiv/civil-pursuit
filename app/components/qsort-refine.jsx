@@ -54,7 +54,7 @@ class QSortRefine extends React.Component {
         super(props);
         var unsortedList = [];
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
-        if(this.props.type.name==="Why It's Most Important"){
+        if(this.props.type.name==="Refine Why It's Most Important"){
             this.whyName='most';
         } else {
             this.whyName='least';
