@@ -224,7 +224,7 @@ class QSortRefine extends React.Component {
                             {
                                 sectionName: name,
                                 user: user,
-                                item: item
+                                item: item,
                                 whyItemId: this.props.shared.why[this.whyName][item._id],
                                 type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
@@ -329,52 +329,3 @@ class QSortRefineItem extends React.Component {
 
     }
 }
-
-class QSortWhyCreate extends React.Component {
-    set = false;
-
-    render(){
-        var result=[];
-        var color='#fff'
-        console.info("QSortWhyCreate", this.props);
-        const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
-        var item = null;
-        if(panel && panel.items && panel.items.length) {
-            item=panel.items[0];
-            if(!this.set){ 
-                this.set=true; 
-                toggle('set'); 
-            }
-        }
-        if(sectionName=='unsorted' || !this.set ){
-            color=qbuttons['unsorted'].color;
-            result = [  <Creator
-                            type    =   { type }
-                            parent  =   { parent }
-                            item = { item }  
-                            toggle = {toggle}
-                        />
-            ];
-        } else {
-            color=qbuttons[sectionName].color;
-            result = [  <ItemStore item={ item } key={ `item-${item._id}` }>
-                            <Item
-                                item    =   { item }
-                                user    =   { user }
-                                collapsed =  { false }  //collapsed if there is an active item and it's not this one
-                                toggle  =   { toggle }
-                                focusAction={null}
-                                truncateItems={null}
-                            />
-                        </ItemStore>                        
-            ];
-        }
-        return(
-            <div style={{ backgroundColor: color,
-                          marginBottom: '0.5em'}} >
-                { result }
-            </div>
-        );
-    }
-}
-
