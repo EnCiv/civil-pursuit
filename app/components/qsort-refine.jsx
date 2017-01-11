@@ -96,7 +96,7 @@ class QSortRefine extends React.Component {
         let done = false;
         var clone = {};
         if( button == "done" && this.props.next ){ 
-            this.props.next({why: this.whyName})
+            this.props.next({});
         }
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.ButtonList).forEach(
