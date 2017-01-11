@@ -67,7 +67,7 @@ class QSortRefine extends React.Component {
             this.state.sections[button] = [];
         });
         this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
-        console.info("qsortWhy constructor", this.props.shared);
+        console.info("qsortWhy constructor", this.props.shared, this.state);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -224,7 +224,7 @@ class QSortRefine extends React.Component {
                             {
                                 sectionName: name,
                                 user: user,
-                                itemId: this.shared.why[this.whyName][item._id],
+                                itemId: this.props.shared.why[this.whyName][item._id],
                                 type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
