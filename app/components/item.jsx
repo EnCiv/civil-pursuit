@@ -55,7 +55,7 @@ truncateState=0;
 
     }
     truncable=ReactDom.findDOMNode(this.refs.truncable);
-    truncable.addEventListener('hover', (e) => {e.preventDefault();}, false);
+    truncable.addEventListener('mouseover', (e) => {e.preventDefault();}, false);
   }
 
   componentDidUpdate () {
