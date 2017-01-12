@@ -52,11 +52,10 @@ class Accordion extends React.Component {
   componentDidMount() {
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
-    var transparentEventListener=this.transparentEventListener=this.transparent.bind(this);
-    ['mouseover','click'].forEach( ev => {
-      console.info("accordion didMount", ev);
-      el.addEventListener(ev, tranparentEventListener, false);
-    });
+    this.transparentEventListener=this.transparent.bind(this);
+    el.addEventListener('mouseover', this.tranparentEventListener, false);
+    el.addEventListener('click', this.tranparentEventListener, false);
+
 
     if(this.props.active) {
       let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
@@ -74,10 +73,9 @@ class Accordion extends React.Component {
   componentWillUnmount(){
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
-    ['mouseover','click'].forEach( ev => {
-      console.info("accordion unmount", ev);
-      el.removeEventListener(ev, this.transparentEventListener);
-    });
+      el.removeEventListener('mouseover', this.transparentEventListener);
+      el.removeEventListener('click', this.transparentEventListener);
+
   }
 
   inOpen='inactive';
