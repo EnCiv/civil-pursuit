@@ -45,9 +45,15 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
+    el=this.refs.accordionWrapper;
+    // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
+    Object.keys(Event.prototype).forEach( ev => {
+      el.addEventListener(ev.toLowerCase(), (e) => { e.preventDefault }, false);
+    });
+
     if(this.props.active) {
       let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
-      if(this.refs.accordionWrapper.clientHeight >= maxHeight) { 
+      if(el.clientHeight >= maxHeight) { 
         console.info("Accordion componentDidMount smooth Open");
         if( typeof window !== 'undefined') {  
           this.smoothOpen(); 
