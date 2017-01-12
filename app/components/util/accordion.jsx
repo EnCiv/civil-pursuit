@@ -44,11 +44,18 @@ class Accordion extends React.Component {
      }
   }
 
+ transparentEventListener= {};
+ transparent(e){
+   e.preventDefault(); console.info("accordionWrapper event", e.type) }
+ }
+
   componentDidMount() {
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
+    this.transparentEventListener=this.transparent.bind(this);
     Object.keys(Event.prototype).forEach( ev => {
-      el.addEventListener(ev.toLowerCase(), (e) => { e.preventDefault() }, false);
+      console.info("accordion didMount", ev);
+      el.addEventListener(ev.toLowerCase(), this.tranparentEventListener, false);
     });
 
     if(this.props.active) {
@@ -62,6 +69,14 @@ class Accordion extends React.Component {
         }
       }
     }
+  }
+
+  componentWillUnmount(){
+    const el=this.refs.accordionWrapper;
+    // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
+    Object.keys(Event.prototype).forEach( ev => {
+      el.removeEventListener(ev.toLowerCase(), this.transparentEventListener);
+    });
   }
 
   inOpen='inactive';
