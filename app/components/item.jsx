@@ -44,6 +44,10 @@ truncateState=0;
     }
   }
 
+  transparentEventListener= {};
+  transparent(e){
+    e.preventDefault(); console.info("itemTrunkable event", e.type);
+  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,8 +58,16 @@ truncateState=0;
       this.checkTruncate(item);
 
     }
+    transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
-    truncable.addEventListener('mouseover', (e) => {e.preventDefault();}, false);
+    truncable.addEventListener('mouseover', this.transparentEventListener, false);
+    truncable.addEventListener('onclick', this.transparentEventListener, false);
+  }
+
+  componentWillUnmount(){
+    var truncable=ReactDOM.findDOMNode(this.refs.truncable);
+    truncable.removeEventListener('mouseover', this.transparentEventListener);
+    truncable.removeEventListener('onclick', this.transparentEventListener);
   }
 
   componentDidUpdate () {
