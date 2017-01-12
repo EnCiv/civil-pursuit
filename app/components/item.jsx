@@ -54,7 +54,7 @@ truncateState=0;
       this.checkTruncate(item);
 
     }
-    truncable=ReactDOM.findDOMNode(this.refs.truncable);
+    var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.addEventListener('mouseover', (e) => {e.preventDefault();}, false);
   }
 
