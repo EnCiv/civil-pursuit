@@ -48,7 +48,7 @@ class Accordion extends React.Component {
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
     Object.keys(Event.prototype).forEach( ev => {
-      el.addEventListener(ev.toLowerCase(), (e) => { e.preventDefault }, false);
+      el.addEventListener(ev.toLowerCase(), (e) => { e.preventDefault() }, false);
     });
 
     if(this.props.active) {
