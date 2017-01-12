@@ -46,7 +46,7 @@ class Accordion extends React.Component {
 
  transparentEventListener= {};
  transparent(e){
-   e.preventDefault(); console.info("accordionWrapper event", e.type) }
+   e.preventDefault(); console.info("accordionWrapper event", e.type);
  }
 
   componentDidMount() {
