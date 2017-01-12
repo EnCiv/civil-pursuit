@@ -91,7 +91,7 @@ class QSortRefine extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button, set, whyitem) {
+    toggle(itemId, button, set, whyItem) {
         console.info("QsortWhy", itemId, button, set );
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
