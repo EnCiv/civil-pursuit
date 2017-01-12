@@ -46,7 +46,7 @@ truncateState=0;
 
   transparentEventListener= {};
   transparent(e){
-    e.preventDefault(); console.info("itemTrunkable event", e.type);
+    e.preventDefault(); console.info("itemTrunkable event", e.type, e.target);
   }
 
 
