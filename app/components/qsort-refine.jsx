@@ -28,6 +28,7 @@ class QSortRefine extends React.Component {
     };
 
     ButtonList=[];
+    results = {refine: {}};
 
  
 
@@ -59,6 +60,7 @@ class QSortRefine extends React.Component {
         } else {
             this.whyName='least';
         }
+        this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-refine constructor", this.props, this.whyName)
         this.buttons = Object.keys(this.ButtonList);
@@ -89,14 +91,17 @@ class QSortRefine extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    toggle(itemId, button, set) {
+    toggle(itemId, button, set, whyitem) {
         console.info("QsortWhy", itemId, button, set );
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
         var clone = {};
         if( button == "done" && this.props.next ){ 
-            this.props.next({});
+            this.props.next(this.results);
+        }
+        if(set==='promote'){
+            this.results.refine[this.whyName][itemId]=whyItem;
         }
         if (itemId && button && button !== 'harmony') {
             Object.keys(this.ButtonList).forEach(
@@ -220,19 +225,22 @@ class QSortRefine extends React.Component {
                         this.buttons.slice(1).forEach(button => { buttonstate[button] = false; });
                         if (name != 'unsorted') { buttonstate[name] = true; }
                         let item = items[this.props.shared.index[itemId]];
+                        const voted = this.results[this.whyName][item._id] ? true : false;
                         content.push(
                             {
                                 sectionName: name,
                                 user: user,
                                 item: item,
                                 whyItemId: this.props.shared.why[this.whyName][item._id],
+                                voted: voted,
+                                winner: voted? this.results[this.whyName][itemId] : null,
                                 type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
                                 buttonstate: buttonstate,
                                 whyName: this.whyName,
                                 emitter: this.props.emitter,
-                                show: topItem,
+                                show: topItem && !voted,
                                 id: item._id  //FlipMove uses this Id to sort
                             }
                         );
@@ -289,12 +297,28 @@ export default QSortRefine;
 class QSortRefineItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter } = this.props;
+        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter, voted, winner } = this.props;
         var creator=[];
         const hIndex= (whyName === 'most') ? 0 : 1;
         const active = show ? {item: whyItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
         const panel={type: type};
 
+        if(voted){
+            creator=[
+                <div style={{backgroundColor: qbuttons[whyName].color}}>
+                    <ItemStore item={ winner } key={ `item-${winner._id}` }>
+                        <Item
+                            item    =   { winner }
+                            user    =   { user }
+                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            toggle  =   { toggle }
+                            focusAction={null}
+                            truncateItems={null}
+                        />
+                    </ItemStore>
+                </div>
+            ];
+        }else{
             creator=[
                     <EvaluationStore
                       item-id     =   { whyItemId }
@@ -310,7 +334,7 @@ class QSortRefineItem extends React.Component {
                         />
                     </EvaluationStore>
             ];
-
+        }
         return(
                 <div style={{backgroundColor: qbuttons[whyName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>

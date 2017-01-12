@@ -266,10 +266,11 @@ class EvaluationStore extends React.Component {
     }
 
     else {
-      this.insertVotes(position, this.state[position]._id);
-      this.insertUpvotes(this.state[position]._id);
+      const winner=this.state[position];
+      this.insertVotes(position, winner._id );
+      this.insertUpvotes(winner._id);
       this.setState({ evaluation : null, cursor : 1 });
-      this.props.toggle('promote');
+      this.props.toggle('promote', winner);
     }
   }
 
