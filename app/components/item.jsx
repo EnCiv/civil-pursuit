@@ -60,14 +60,20 @@ truncateState=0;
     }
     this.transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
+    var itemText=this.refs.itemText;
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
     truncable.addEventListener('click', this.transparentEventListener, false);
+    itemText.addEventListener('mouseover', this.transparentEventListener, false);
+    itemText.addEventListener('click', this.transparentEventListener, false);
   }
 
   componentWillUnmount(){
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
+    var itemText=this.refs.itemText;
     truncable.removeEventListener('mouseover', this.transparentEventListener);
     truncable.removeEventListener('click', this.transparentEventListener);
+    itemText.removeEventListener('mouseover', this.transparentEventListener);
+    itemText.removeEventListener('click', this.transparentEventListener);
   }
 
   componentDidUpdate () {
@@ -156,7 +162,7 @@ truncateState=0;
             <section className="item-buttons">
               { buttons }
             </section>
-            <section className="item-text">
+            <section className="item-text" ref='itemText'>
               <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
