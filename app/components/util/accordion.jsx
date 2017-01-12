@@ -53,7 +53,7 @@ class Accordion extends React.Component {
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
     this.transparentEventListener=this.transparent.bind(this);
-    Object.keys(['mouseover','click']).forEach( ev => {
+    ['mouseover','click'].forEach( ev => {
       console.info("accordion didMount", ev);
       el.addEventListener(ev, this.tranparentEventListener, false);
     });
@@ -74,7 +74,8 @@ class Accordion extends React.Component {
   componentWillUnmount(){
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
-    Object.keys(['mouseover','click']).forEach( ev => {
+    ['mouseover','click'].forEach( ev => {
+      console.info("accordion unmount", ev);
       el.removeEventListener(ev, this.transparentEventListener);
     });
   }

@@ -58,16 +58,16 @@ truncateState=0;
       this.checkTruncate(item);
 
     }
-    transparentEventListener=this.transparent.bind(this);
+    this.transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
-    truncable.addEventListener('onclick', this.transparentEventListener, false);
+    truncable.addEventListener('click', this.transparentEventListener, false);
   }
 
   componentWillUnmount(){
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.removeEventListener('mouseover', this.transparentEventListener);
-    truncable.removeEventListener('onclick', this.transparentEventListener);
+    truncable.removeEventListener('click', this.transparentEventListener);
   }
 
   componentDidUpdate () {
