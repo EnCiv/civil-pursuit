@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ItemMedia        from './item-media';
 import Icon               from './util/icon';
 import Accordion          from './util/accordion';
@@ -43,6 +44,8 @@ truncateState=0;
     }
   }
 
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   componentDidMount () {
     if ( this.refs.item ) {
@@ -51,6 +54,8 @@ truncateState=0;
       this.checkTruncate(item);
 
     }
+    truncable=ReactDom.findDOMNode(this.refs.truncable);
+    truncable.addEventListener('hover', (e) => {e.preventDefault();}, false);
   }
 
   componentDidUpdate () {
@@ -73,8 +78,8 @@ truncateState=0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
-   // e.preventDefault();
-   // e.stopPropagation();
+   e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
+   // e.stopPropagation(); // do not stop propogation so this event will propogate to the item-button
       let item = this.refs.item;
       if (this.state.truncated) {
         this.setState({truncated: false, hint: false});
@@ -140,7 +145,7 @@ truncateState=0;
               { buttons }
             </section>
             <section className="item-text">
-              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } >  
+              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
