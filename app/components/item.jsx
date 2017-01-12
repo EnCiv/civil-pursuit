@@ -73,7 +73,7 @@ truncateState=0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   readMore (e) {
-    e.preventDefault();
+   // e.preventDefault();
    // e.stopPropagation();
       let item = this.refs.item;
       if (this.state.truncated) {
