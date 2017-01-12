@@ -60,7 +60,7 @@ class QSortRefine extends React.Component {
         } else {
             this.whyName='least';
         }
-        this.results.why[this.whyName]={};
+        this.results.refine[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-refine constructor", this.props, this.whyName)
         this.buttons = Object.keys(this.ButtonList);
@@ -225,7 +225,7 @@ class QSortRefine extends React.Component {
                         this.buttons.slice(1).forEach(button => { buttonstate[button] = false; });
                         if (name != 'unsorted') { buttonstate[name] = true; }
                         let item = items[this.props.shared.index[itemId]];
-                        const voted = this.results[this.whyName][item._id] ? true : false;
+                        const voted = this.results.refine[this.whyName][item._id] ? true : false;
                         content.push(
                             {
                                 sectionName: name,
@@ -233,7 +233,7 @@ class QSortRefine extends React.Component {
                                 item: item,
                                 whyItemId: this.props.shared.why[this.whyName][item._id],
                                 voted: voted,
-                                winner: voted? this.results[this.whyName][itemId] : null,
+                                winner: voted? this.results.refine[this.whyName][itemId] : null,
                                 type: type,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
