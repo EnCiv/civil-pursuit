@@ -16,7 +16,7 @@ import merge from 'lodash/merge';
 import QVoteLocal from './store/qvote-local';
 import Accordion from  './util/accordion';
 import Item    from './item';
-import Harmony              from './Harmony';
+import Harmony              from './harmony';
 
 
 class QSortReLook extends React.Component{
