@@ -10,6 +10,7 @@ class QVoteLocal extends React.Component {
 
   constructor(props){
       super(props);
+    console.info("QVoteLocal constructor", this.props);
       if(this.props.shared && this.props.shared.sections && this.props.shared.index){
         Object.keys(this.props.shared.sections).forEach(section => this.state.sections[section]=[] );
         Object.keys(this.props.shared.index).map(itemId=>this.state.sections['unsorted'].push(itemId));
@@ -18,6 +19,7 @@ class QVoteLocal extends React.Component {
   }
 
       componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
+        console.info("QVoteLocal", this.props, this.state);
         let currentIndex = [];
         let unsortedLength = 0;
         var newObj = merge({}, this.state.sections);
@@ -96,6 +98,7 @@ class QVoteLocal extends React.Component {
   }
 
   render () {
+    console.info("QVoteLocal", this.props, this.state);
     return (
       <section>{ this.renderChildren() }</section>
     );

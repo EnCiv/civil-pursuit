@@ -17,6 +17,7 @@ import QVoteLocal from './store/qvote-local';
 
 class QSortReLook extends React.Component{
     render (){
+                console.info("QSortReLook", this.props, this.state);
             return(
 
                 <QVoteLocal {...this.props} >
@@ -88,6 +89,8 @@ class QSortHarmony extends React.Component {
     render() {
 
         const { panel, count, user, emitter } = this.props;
+
+        console.info("QSortHarmony", this.props, this.state);
 
         const onServer = typeof window === 'undefined';
 
