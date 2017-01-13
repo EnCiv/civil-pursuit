@@ -13,7 +13,7 @@ import Color from 'color';
 import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
 import merge from 'lodash/merge';
-import QVoteLocal from './store/vote-local';
+import QVoteLocal from './store/qvote-local';
 
 class QSortHarmony extends React.Component {
 
