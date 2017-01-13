@@ -44,18 +44,10 @@ class Accordion extends React.Component {
      }
   }
 
- transparentEventListener= {};
- transparent(e){
-   e.preventDefault(); console.info("accordionWrapper event", e.type);
- }
-
   componentDidMount() {
     const el=this.refs.accordionWrapper;
     // the wrapper, a div, should not intercept events and prevent them from propogating up. It should be 'transparent' to events
     this.transparentEventListener=this.transparent.bind(this);
-    el.addEventListener('mouseover', this.transparentEventListener, false);
-    el.addEventListener('click', this.transparentEventListener, false);
-
 
     if(this.props.active) {
       let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
