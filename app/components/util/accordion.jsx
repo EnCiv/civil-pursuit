@@ -47,7 +47,7 @@ class Accordion extends React.Component {
   componentDidMount() {
     if(this.props.active) {
       let maxHeight = parseInt(this.refs.accordion.style.maxHeight,10) || 0;
-      if(el.clientHeight >= maxHeight) { 
+      if(this.refs.accordionWrapper.clientHeight >= maxHeight) { 
         console.info("Accordion componentDidMount smooth Open");
         if( typeof window !== 'undefined') {  
           this.smoothOpen(); 
