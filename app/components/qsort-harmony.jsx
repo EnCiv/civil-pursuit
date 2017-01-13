@@ -27,6 +27,8 @@ class QSortReLook extends React.Component{
     }
 }
 
+export default QSortReLook;
+
 class QSortHarmony extends React.Component {
 
     static propTypes = {
