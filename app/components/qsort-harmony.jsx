@@ -89,7 +89,9 @@ class QSortHarmony extends React.Component {
 
     render() {
 
-        const { panel, count, user, emitter } = this.props;
+        const { user, emitter } = this.props;
+
+        const { panel } = this.props.shared;
 
         console.info("QSortHarmony", this.props, this.state);
 
