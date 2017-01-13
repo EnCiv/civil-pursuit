@@ -60,20 +60,15 @@ truncateState=0;
     }
     this.transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
-    var itemText=this.refs.itemText;
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
     truncable.addEventListener('click', this.transparentEventListener, false);
-    itemText.addEventListener('mouseover', this.transparentEventListener, false);
-    itemText.addEventListener('click', this.transparentEventListener, false);
   }
 
   componentWillUnmount(){
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
-    var itemText=this.refs.itemText;
     truncable.removeEventListener('mouseover', this.transparentEventListener);
     truncable.removeEventListener('click', this.transparentEventListener);
-    itemText.removeEventListener('mouseover', this.transparentEventListener);
-    itemText.removeEventListener('click', this.transparentEventListener);
+
   }
 
   componentDidUpdate () {
