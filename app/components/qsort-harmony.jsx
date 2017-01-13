@@ -26,6 +26,7 @@ class QSortReLook extends React.Component{
         );
     }
 }
+export default QSortReLook;
 
 class QSortHarmony extends React.Component {
 
@@ -210,8 +211,6 @@ class QSortHarmony extends React.Component {
         );
     }
 }
-
-export default QSortHarmony;
 
 class QSortFlipItemHarmony extends React.Component {
 
