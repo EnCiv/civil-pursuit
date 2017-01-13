@@ -162,6 +162,8 @@ a.button {
 .syn-button-group {
   padding-right: 0;
   margin-left: .1em;
+  position: relative; //
+  z-index: 1;         // put the button group above auto so the it gets click and hover even when item-text is open and overlay: visible;
 
   button:first-child {
     border-radius: 0;
