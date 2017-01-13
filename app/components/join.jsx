@@ -88,7 +88,7 @@ class Join extends React.Component {
   }
 
   agree () {
-    let box = ReactDOM.findDOMNode(this.refs.agree).value;
+    let box = ReactDOM.findDOMNode(this.refs.agree);
 
     if ( box.classList.contains('fa-square-o') ) {
       box.classList.remove('fa-square-o');
