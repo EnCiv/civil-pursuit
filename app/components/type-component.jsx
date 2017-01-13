@@ -8,7 +8,7 @@ import Subtype                          from './subtype';
 import QSortItems                       from './qsort-items';
 import QSortWhy                         from './qsort-why';
 import QSortRefine                      from './qsort-refine';
-import QSortHarmony                     from './qsort-harmony'
+import QSortReLook                      from './qsort-harmony'
 
 class TypeComponent extends React.Component{
 
@@ -19,7 +19,7 @@ class TypeComponent extends React.Component{
         'QSortItems': QSortItems,
         'QSortWhy': QSortWhy,
         'QSortRefine': QSortRefine,
-        'QSortHarmony': QSortHarmony
+        'QSortReLook': QSortReLook
     }
 
     render(){

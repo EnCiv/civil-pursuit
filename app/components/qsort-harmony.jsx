@@ -15,6 +15,17 @@ import QSortButtonList from './qsort-button-list';
 import merge from 'lodash/merge';
 import QVoteLocal from './store/qvote-local';
 
+class QSortReLook extends React.Component{
+    render (){
+            return(
+
+                <QVoteLocal {...this.props} >
+                    <QSortHarmony/>
+                </QVoteLocal>
+        );
+    }
+}
+
 class QSortHarmony extends React.Component {
 
     static propTypes = {
@@ -171,7 +182,6 @@ class QSortHarmony extends React.Component {
 
 
         return (
-        <QVoteLocal {...this.props} >
             <section id="syn-panel-qsort-harmony">
                 <Panel
                     className={name}
@@ -194,7 +204,6 @@ class QSortHarmony extends React.Component {
                     {loading}
                 </Panel>
             </section>
-        </QVoteLocal>
         );
     }
 }
