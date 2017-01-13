@@ -14,6 +14,10 @@ import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
 import merge from 'lodash/merge';
 import QVoteLocal from './store/qvote-local';
+import Accordion from  './util/accordion';
+import Item    from './item';
+import Harmony              from './Harmony';
+
 
 class QSortReLook extends React.Component{
     render (){
