@@ -6,7 +6,8 @@ import Button           from './util/button';
 import Icon               from './util/icon';
 
 class ItemButtons extends React.Component {
-  toggle (section) {
+  toggle (section, e) {
+    e.preventDefault();
     this.props.toggle(this.props.item._id, section);
   }
 
