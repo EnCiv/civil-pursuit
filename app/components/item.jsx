@@ -159,10 +159,10 @@ truncateState=0;
               item      =   { item }
               ref       =   "media"
             />
+            <section className="item-text" ref='itemText'>
             <section className="item-buttons">
               { buttons }
             </section>
-            <section className="item-text" ref='itemText'>
               <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
                 <h4 className="item-subject">
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
