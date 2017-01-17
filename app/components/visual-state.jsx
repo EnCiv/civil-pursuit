@@ -16,7 +16,7 @@ class VisualState extends React.Component {
         collapsed: ['collapsed', null ],  // not visible
         minified: ['minified', null],                      // a portion of the title or an icon is rendered
         title: ['title', null],                                  // just the title content is rendered
-        truncated: ['truncated', nuill],               // rendered with text / infor truncated to fit in a standard height
+        truncated: ['truncated', null],               // rendered with text / infor truncated to fit in a standard height
         open: ['open', null ]                                           // everything is rendered
     }
 
