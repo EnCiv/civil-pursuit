@@ -50,6 +50,8 @@ class VisualState extends React.Component {
         if (this.props.vs.depth) { this.state.vs.depth = vs.depth + 1 }
         this.state.vs.toParent = this.toMefromChild.bind(this);
         this.toChild=null;
+        
+        console.info("VisualState constructor", props);
     }
 
     renderChildren() {
@@ -77,6 +79,7 @@ class VisualState extends React.Component {
 
     render() {
         const children = this.renderChildren();
+        console.info("VisualState render", this.props, this.state);
 
         return (
             <section>

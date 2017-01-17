@@ -13,6 +13,7 @@ import VisualState     from './visual-state';
 
 class Item extends React.Component {
   render(){
+    console.info("Item render", this.props);
     return (
     <VisualState {... this.props}>
       <VSItem />
@@ -20,6 +21,7 @@ class Item extends React.Component {
     );
   }
 }
+export default Item;
 
 class VSItem extends React.Component {  
 
@@ -27,6 +29,7 @@ class VSItem extends React.Component {
   constructor(props){
     super(props);
     this.state.hint = (this.props.vs.state==='truncated');
+    console.info("VSItem constructor", props);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,6 +104,8 @@ class VSItem extends React.Component {
     const vState=vs.state;
     const cState='vs-'+vs.state;
     let noReference=true;
+
+    console.info("VSItem render", this.props);
 
     if(!item) {return ({});}
 
