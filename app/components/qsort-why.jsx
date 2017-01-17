@@ -312,7 +312,7 @@ class QSortWhyItem extends React.Component {
                             item    =   { item }
                             user    =   { user }
                             footer= { creator }
-                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            vs={{state: 'truncated'}}
                             toggle  =   { toggle }
                             focusAction={null}
                             truncateItems={null}
@@ -355,7 +355,7 @@ class QSortWhyCreate extends React.Component {
                             <Item
                                 item    =   { item }
                                 user    =   { user }
-                                collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                                vs={{state: 'truncated'}}
                                 toggle  =   { toggle }
                                 focusAction={null}
                                 truncateItems={null}

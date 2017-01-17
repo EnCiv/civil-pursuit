@@ -26,12 +26,15 @@ class Harmony extends React.Component {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
       else { this.setState({expandedLeft: true}) }
     } else {
-      let resetLeftView = this.state.resetLeftView + 1;
       if(this.state.expandedRight) { 
-        let resetRightView = this.state.resetRightView + 1;
-        this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
+        this.setState({expandedLeft: false, expandedRight: false});
+        if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
+        if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
       }
-      else { this.setState({expandedLeft: false, resetLeftView: resetLeftView}) }
+      else { 
+        this.setState({expandedLeft: false});
+        if(this.toChildRight){toChildLeft({state: 'truncated', distance: 0})}
+      }
     }
   }
 
@@ -42,12 +45,13 @@ class Harmony extends React.Component {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
       else { this.setState({expandedRight: true}) }
     } else {
-      let resetRightView = this.state.resetRightView + 1;
       if(this.state.expandedLeft) { 
-              let resetLeftView = this.state.resetLeftView + 1;
-        this.setState({expandedLeft: false, expandedRight: false, resetLeftView: resetLeftView, resetRightView: resetRightView});
+        this.setState({expandedLeft: false, expandedRight: false});
+        if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
+        if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
       }
-      else { this.setState({expandedRight: false, resetRightView: resetRightView}) }
+      else { this.setState({expandedRight: false}) 
+             if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}}
     }
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +98,17 @@ class Harmony extends React.Component {
     }
   }
 
+  toChildLeft=null;
+  toChildRight=null;
+
+  toMeFromChildLeft(vs) {
+        if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
+  }
+
+  toMeFromChildRight(vs) {
+      if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
+  }
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -106,7 +121,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} resetView={this.state.resetLeftView} />
+            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} vs={{state: 'truncated', toParent: this.toMeFromChildLeft.bind()}} />
           </PanelStore>
         </DoubleWide>
       );
@@ -114,7 +129,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} resetView={this.state.resetRightView} />
+            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} vs={{state: 'truncated', toParent: this.toMeFromChildRight.bind()}} />
           </PanelStore>
         </DoubleWide>
       );

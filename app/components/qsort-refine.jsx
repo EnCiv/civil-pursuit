@@ -310,10 +310,9 @@ class QSortRefineItem extends React.Component {
                         <Item
                             item    =   { winner }
                             user    =   { user }
-                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            vs={{state: 'truncated'}}
                             toggle  =   { toggle }
                             focusAction={null}
-                            truncateItems={null}
                         />
                     </ItemStore>
                 </div>
@@ -342,10 +341,9 @@ class QSortRefineItem extends React.Component {
                             item    =   { item }
                             user    =   { user }
                             footer= { creator }
-                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            vs={{state: 'truncated'}}
                             toggle  =   { toggle }
                             focusAction={null}
-                            truncateItems={null}
                         />
                     </ItemStore>
                 </div>

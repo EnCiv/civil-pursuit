@@ -38,6 +38,18 @@
   max-width:                  13em;
 }
 
+.item-media.vs-collapsed {
+  display: none;
+}
+.item-media.vs-minified {
+  display: none;
+}
+.item-media.vs-title {
+  display: none;
+}
+/* .item-media.vs-truncated { /* display a fixed amount */
+/* .item-media.vs-open { /* display it all */
+
 .item-media.media-thin {
     max-width: 7em;
     overflow: hidden;
@@ -65,29 +77,9 @@
     display: none
   }
 
-
-  //&:hover {
-  //  cursor: pointer;
-  //}
-
   div:empty {
     height: 1em;
   }
-}
-
-.item-truncatable.expand {
-
-  .word.hide {
-    display: inline
-  }
-}
-
-.item-truncatable-shadow{
-  min-height: 0;
-  max-height: 0;
-  position: absolute;
-  z-index: 0;
-  background-color: inherit;
 }
 
 .item-trunc-hint {
@@ -104,31 +96,7 @@
   display: inline;
 }
 
-.item-subject {
-  margin: 0;
-  margin-top: 0;
-  text-align: left;
-  padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
-  font-size: 1.375rem;
 
-}
-
-.item-subject.expand {
-  overflow: visible;
-  white-space: normal;
-}
-
-blockquote {
-  color : red
-}
-
-.item-subject a {
-  color : #000;
-}
 
 .item-description {
   overflow: visible;
@@ -142,27 +110,26 @@ blockquote {
   .pre-text();
 }
 
-.item-description.expand {
-  overflow: visible;
-  display: block;
-  max-height:  none;       /* fallback */
-
-  .pre-text();
+.item-description.vs-collapsed{ /* not visible but ready to be rendered */
+  display: none
+}
+.item-description.vs-minified{ /* a portion of the title or an icon is rendered */
+  display: none
+}
+.item-description.vs-title{ /* just the title content is rendered */
+  display: none
 }
 
-.item-description.truncated {
-//  overflow: hidden; /* parent had overflow hidden */
-//  display: -webkit-box;
-//  -webkit-line-clamp: 3; /* number of lines to show */
+.item-description.vs-truncated {
   max-height:  ~"calc( 1.375em * 3)";       /* fallback */
 }
 
-.item-description.truncated4 {
-// overflow: hidden;
-//  display: -webkit-box;
+.item-description.vs-truncated4 {
   max-height:  ~"calc( 1.375em * 4)";       /* fallback */
-//  -webkit-line-clamp: 4; /* number of lines to show */
 }
+
+/* .item-description.vs-open{ /* show everything */
+
 
 .item-buttons           {
   float                 :     right;
@@ -171,9 +138,18 @@ blockquote {
   margin-right          :     2px; /** Top and right margin of buttons should be 2px **/
 }
 
-.item-hidden {
-  display : none
+.item-buttons.vs-collapsed{ /* not visible but ready to be rendered */
+  display: none;
 }
+.item-buttons.vs-minified{ /* a portion of the title or an icon is rendered */
+  display: none;
+}
+.item-buttons.vs-title{ /* just the title content is rendered */
+  display: none;
+}
+/* .item-buttons.vs-collapsed{  /* show a minimal, standard sized amount */
+/* .item-buttons.vs-open{ /* show everything */
+
 
 .item-tendency {
   text-align: right;
@@ -191,7 +167,14 @@ blockquote {
   line-height: 1.375em;
 }
 
-.item-reference.truncated{
+/* .item-reference.vs-collapsed{  /* not visible but ready to be rendered */
+.item-reference.vs-minified{   /* a portion of the title or an icon is rendered */
+  display: none;
+}
+.item-reference.vs-title{      /* just the title content is rendered */
+  display: none;
+}
+.item-reference.vs-truncated{  /* show a minimal, standard sized amount */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -206,7 +189,47 @@ blockquote {
   }
 }
 
-.item-subject.expand {
+.item-reference.vs-none{      /* there is no reference so don't display anything */
+  display:none;
+}
+/* .item-reference.vs-open{ /* not visible but ready to be rendered */
+
+
+
+.item-subject {
+  margin: 0;
+  margin-top: 0;
+  text-align: left;
+  padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
   overflow: visible;
   white-space: normal;
+  line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
+  font-size: 1.375rem;
+
 }
+
+blockquote {
+  color : red
+}
+
+.item-subject a {
+  color : #000;
+}
+
+.item-subject.vs-collapsed{ /* not visible but ready to be rendered */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-subject.vs-minified{ /* a portion of the title or an icon is rendered */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-subject.vs-title{ /* just the title content is rendered */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* .item-subject.vs-collapsed{  /* show a minimal, standard sized amount */
+/* .item-subject.vs-open{ /* show everything */

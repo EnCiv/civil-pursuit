@@ -251,7 +251,8 @@ class PanelItems extends React.Component {
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
-
+            let vs={}
+            vs.state = (item==null || ( (this.state.active.item !== null) && (this.state.active.item !== item._id ))) ? 'collapsed' : panel.items.length==1 ? 'open' : 'truncated'; //collapsed if there is an active item and it's not this one
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
@@ -274,11 +275,10 @@ class PanelItems extends React.Component {
                     ]
                   }
 
-                  collapsed =  { item==null || ( (this.state.active.item !== null) && (this.state.active.item !== item._id )) }  //collapsed if there is an active item and it's not this one
+                  vs = {vs}
                   toggle  =   { this.toggle.bind(this) }
                   focusAction={this.props.focusAction}
                   truncateItems={this.props.resetView}
-                  startUntruncated={panel.items.length==1}
                 />
               </ItemStore>
             );

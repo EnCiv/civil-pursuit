@@ -258,10 +258,9 @@ class QSortFlipItemHarmony extends React.Component {
                                         />
                                 </ItemStore>
                             ) }
-                            collapsed =  { false }  //collapsed if there is an active item and it's not this one
+                            vs={{state: 'truncated'}}
                             toggle  =   { toggle }
                             focusAction={null}
-                            truncateItems={null}
                             footer  =   { [ harmony ] }
                         />
                     </ItemStore>

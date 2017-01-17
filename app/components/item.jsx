@@ -6,43 +6,30 @@ import ItemMedia        from './item-media';
 import Icon               from './util/icon';
 import Accordion          from './util/accordion';
 import ClassNames          from 'classnames';
+import VisualState     from './visual-state';
+
+//Item Visual State - lets other components change the visual state of an item. 
+// For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
 
 class Item extends React.Component {
+  render(){
+    return (
+    <VisualState {... this.props}>
+      <VSItem />
+    </VisualState>
+    );
+  }
+}
+
+class VSItem extends React.Component {  
 
 
   constructor(props){
     super(props);
-    this.state={truncated: false};
-    this.state.hint = this.props.startUntruncated ? false : true;
+    this.state.hint = (this.props.vs.state==='truncated');
   }
-
-truncateState=0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  checkTruncate(item) {
-    if ( ! this.state.truncated || this.itemDidChange ) {
-        let description   =   item.querySelector('.item-description');
-        description.classList.add((this.props.item.references && this.props.item.references.length) ? 'truncated' : 'truncated4');
-        if(! this.props.startUntruncated) this.setState({truncated: true});
-        this.trunced=true;
-      } else {
-        this.trunced=false;
-        this.setState({truncated: false});
-      }
-  }
-
-  componentWillReceiveProps(newProps) {
-    let truncateItems=newProps.truncateItems || 0;
-    if(this.truncateItems !== truncateItems){
-      this.truncateItems = truncateItems;
-      if(this.trunced && !this.state.truncated & !this.props.startUntruncated) {
-       this.setState({truncated: true});
-      }
-    }
-    if(newProps.Item && this.props.item !== newProps.item) { /* the item has changed */
-      this.itemDidChange=true;
-    }
-  }
 
   transparentEventListener= {};
   transparent(e){
@@ -52,12 +39,7 @@ truncateState=0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   componentDidMount () {
-    if ( this.refs.item ) {
-      
-      const item = this.refs.item;
-      this.checkTruncate(item);
 
-    }
     this.transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
@@ -68,24 +50,13 @@ truncateState=0;
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.removeEventListener('mouseover', this.transparentEventListener);
     truncable.removeEventListener('click', this.transparentEventListener);
-
   }
 
-  componentDidUpdate () {
-    if(this.itemDidChange)
-      if ( this.refs.item ) {
-        const item = this.refs.item;
-        let description   =   item.querySelector('.item-description');
-        description.classList.remove('truncated','truncated4');
-        this.checkTruncate(item);
-    }
-    this.itemDidChange= false;
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textHint(active) {
-    if(this.state.truncated && this.state.hint === active) { this.setState({ hint: !active } ); }
+    if(this.props.vs.state==='truncated' && this.state.hint === active) { this.setState({ hint: !active } ); }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,14 +65,15 @@ truncateState=0;
    e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
    // e.stopPropagation(); // do not stop propogation so this event will propogate to the item-button
       let item = this.refs.item;
-      if (this.state.truncated) {
-        this.setState({truncated: false, hint: false});
+      if (this.props.vs.state==='truncated') {
+        this.setState({hint: false});
         if(this.props.focusAction){this.props.focusAction(true)}
-        this.props.toggle(this.props.item._id, 'harmony');
+        if(this.props.vs.toParent){this.props.vs.toParent({state: 'open', distance: 0})}
+        this.props.toggle(this.props.item._id, 'harmony');  // if open show harmony
       } else {
-        this.props.toggle(this.props.item._id, 'harmony');
+        this.props.toggle(this.props.item._id, 'harmony'); // if closed don't show harmony
+        if(this.props.vs.toParent){this.props.vs.toParent({state: 'truncated', distance: 0})}
         if(this.props.focusAction){this.props.focusAction(false)}
-        this.setState({truncated: true});
       }
   }
 
@@ -111,7 +83,7 @@ truncateState=0;
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    if(this.state.truncated) { return this.readMore(e); }
+    if(this.props.vs.state==='truncated') { return this.readMore(e); }
 
     let win = window.open(this.refs.reference.href, this.refs.reference.target);
     if (win) {
@@ -125,14 +97,14 @@ truncateState=0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { item, user, buttons, footer, collapsed } = this.props;
+    const { item, user, buttons, footer, vs } = this.props;
+    const vState=vs.state;
+    const cState='vs-'+vs.state;
+    let noReference=true;
 
     if(!item) {return ({});}
 
     const tendencyChoice = null;
-
-    var itemClass = ClassNames("item", this.props.className);
-
 
     if(typeof window !== 'undefined' ) {
         window.Synapp.tendencyChoice
@@ -145,40 +117,40 @@ truncateState=0;
     if ( item.references && item.references.length ) {
       referenceLink = item.references[0].url;
       referenceTitle = item.references[0].title;
+      noReference=false;
     }
 
       rendereditem = (
-        <Accordion active={!collapsed} name='item'>
-          <article className={itemClass} ref="item" id={ `item-${item._id}` } >
-            <ItemMedia onClick={ this.readMore.bind(this) }
+        <Accordion active={vState!=='collapsed'} name='item'>
+          <article className={ClassNames("item", this.props.className, cState )} ref="item" id={ `item-${item._id}` } >
+            <ItemMedia className={ClassNames('item-media', cState)} onClick={ this.readMore.bind(this) }
               item      =   { item }
               ref       =   "media"
             />
-            <section className="item-text" ref='itemText'>
-            <section className="item-buttons">
-              { buttons }
-            </section>
-              <Accordion className="item-truncatable" onClick={ this.readMore.bind(this) } active={ ! this.state.truncated } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
-                <h4 className="item-subject">
+            <section className={ClassNames("item-text", cState)} ref='itemText'>
+              <section className={ClassNames("item-buttons", cState)}>
+                { buttons }
+              </section>
+              <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
+                <h4 className={ClassNames("item-subject",cState)} >
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
                 </h4>
-                <h5 className={`item-reference ${this.state.truncated ? 'truncated' : ''}`} style={ item.references && item.references.length ? { display : 'block' } : { display : 'none' } } >
+                <h5 className={ClassNames('item-reference', cState, {none: noReference})} >
                   <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
                 </h5>
-                <div className={`item-description pre-text ${this.state.truncated ? (this.lineLimit > 3 ? 'truncated4' : 'truncated') : ''} ` }>
+                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : '')}>
                   { item.description }
                 </div>
                 <div className="item-tendency" style={{display: 'none'}}>
-                     { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
+                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
                 </div>
               </Accordion>
             </section>
-            <div className={ `item-trunc-hint ${this.state.hint ? 'expand' : ''}`}>
+            <div className={ClassNames('item-trunc-hint', {expand: this.state.hint})}>
                 <Icon icon="ellipsis-h" />
             </div>
             <section style={ { clear : 'both' }}></section>
-
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
@@ -188,5 +160,3 @@ truncateState=0;
     return (  rendereditem );
   }
 }
-
-export default Item;

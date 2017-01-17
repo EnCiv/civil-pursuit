@@ -130,16 +130,27 @@ wideRight(){
 
   clearExpanders() {
     if(this.state.expandedL) {
-      this.setState({activeL: false, truncateItemsLeft: this.state.truncateItemsLeft +1 } );
+      this.setState({activeL: false} );
+      if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
       this.state.expandedL=false;
     }
     if(this.state.expandedR) {
       this.setState({activeR: false, truncateItemsRight: this.state.truncateItemsRight+1});
+      if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
       this.state.expandedR=false;      
     }
   }
 
+  toChildLeft=null;
+  toChildRight=null;
 
+  toMeFromChildLeft(vs) {
+        if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
+  }
+
+  toMeFromChildRight(vs) {
+      if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
+  }
 
   render () {
     const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user } = this.props;
@@ -221,7 +232,7 @@ wideRight(){
               <div className="solid clear">
                 <DoubleWide left expanded={this.state.activeL} onComplete={this.wideLeft.bind(this)} closed={this.state.closedLeft}>
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { leftFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsLeft}
+                    footer =  { leftFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildLeft.bind(this)}}
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
@@ -239,7 +250,7 @@ wideRight(){
                 </DoubleWide>
                 <DoubleWide right expanded={this.state.activeR} onComplete={this.wideRight.bind(this)} closed={this.state.closedRight} >
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
-                    footer =  { rightFooter } className="whole-border" collapsed={ false } truncateItems={this.state.truncateItemsRight}
+                    footer =  { rightFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildRight.bind(this)}}
                   />
                   <Feedback className="gutter-top solid" />
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
