@@ -10,7 +10,7 @@ import ClassNames from 'classnames';
 class VisualState extends React.Component {
 
     state = { vs: {state: null, distance: 0 }};
-    
+
     toChild=null;
 
     static vsDistance = { // state to be in based on child state and distance from the state change  null means don't change
@@ -51,7 +51,7 @@ class VisualState extends React.Component {
         console.info("VisualState constructor", props);
         if (this.props.vs.state) { this.state.vs.state = this.props.vs.state }  // set the initial state
         if (this.props.vs.depth) { this.state.vs.depth = vs.depth + 1 }
-        this.state.vs.toParent = this.toMefromChild.bind(this);
+        this.state.vs.toParent = this.toMeFromChild.bind(this);
         this.toChild=null;
         
 
