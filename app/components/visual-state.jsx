@@ -9,7 +9,8 @@ import ClassNames from 'classnames';
 
 class VisualState extends React.Component {
 
-    state = { vs: null }
+    state = { vs: {state: null, distance: 0 }};
+    
     toChild=null;
 
     static vsDistance = { // state to be in based on child state and distance from the state change  null means don't change
@@ -21,19 +22,20 @@ class VisualState extends React.Component {
     }
 
     toMeFromChild(vs) {
+    console.info("VisualState.toMeFromChild", vs);
         if (vs.toChild) { this.toChild = vs.toChild }  // child is passing up her func
         if (vs.state) { // child is passing up her state and your distance from it starting at 0
             let newState = null;
             if (vsDistance[vs.state]) {
                 let last = Math.max(VisualState.vsDistance[vs.state].length - 1, 0);
-                newState = this.vsDistance['vs.state'][vs.distance > last
-                                                        ? vsDistance['vs.state'][vs.distance]
-                                                        : vsDistance['vs.state'][last]];
+                newState = this.vsDistance[vs.state][vs.distance > last
+                                                        ? vsDistance[vs.state][vs.distance]
+                                                        : vsDistance[vs.state][last]];
             } else { newState = vs.state } // if you don't know the state, just pass it on
             if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
                 if (this.props.vs.toParent) {
                     this.setState({vs: {state: newState}}, () => {this.props.vs.toParent({state: newState, distance: vs.distance +1} )})
-                } else { this.setState({vs: {state: newState}});}
+                } else { this.setState({vs: {state: newState, distance: vs.distance}});}
             }
         }
     }
@@ -46,12 +48,13 @@ class VisualState extends React.Component {
 
     constructor(props) {
         super(props);
+        console.info("VisualState constructor", props);
         if (this.props.vs.state) { this.state.vs.state = this.props.vs.state }  // set the initial state
         if (this.props.vs.depth) { this.state.vs.depth = vs.depth + 1 }
         this.state.vs.toParent = this.toMefromChild.bind(this);
         this.toChild=null;
         
-        console.info("VisualState constructor", props);
+
     }
 
     renderChildren() {
