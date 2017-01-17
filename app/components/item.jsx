@@ -25,6 +25,7 @@ export default Item;
 
 class VSItem extends React.Component {  
 
+  state={};
 
   constructor(props){
     super(props);
