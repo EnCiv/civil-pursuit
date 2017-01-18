@@ -255,7 +255,7 @@ class PanelItems extends React.Component {
             if(this.props.vs && this.props.vs.depth) vs.depth=this.props.vs.depth + 1;
             if(item) {
               vs.state='truncated'; // items are usually truncated, except one, if it is active
-              if(this.state.active.item && this.state.active.item === item._id) vs.state='open';  // if there is one and this is the active item, then it should be open
+              if(this.state.active.item && this.state.active.item === item._id && this.state.active.section==='harmony') vs.state='open';  // if there is one and this is the active item, then it should be open
               if(panel.items.length==1) vs.state='open';  // if there is only on item in the list, then it's open
             }
             return (
@@ -283,7 +283,6 @@ class PanelItems extends React.Component {
                   vs = {vs}
                   toggle  =   { this.toggle.bind(this) }
                   focusAction={this.props.focusAction}
-                  truncateItems={this.props.resetView}
                 />
               </ItemStore>
             );
