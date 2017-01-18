@@ -85,12 +85,6 @@ class VSItem extends React.Component {
       }
   }
 
-  componentWillReceiveProps(newProps){
-    if(newProps.vs && newProps.vs.state) {
-      if(newProps.vs.state === 'open' && this.state.vs.state)
-    }
-  }
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   openURL (e) {
