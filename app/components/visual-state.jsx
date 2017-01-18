@@ -23,12 +23,13 @@ class VisualState extends React.Component {
 
     toMeFromChild(vs) {
     console.info("VisualState.toMeFromChild", vs);
+    const vsDistance=VisualState.vsDistance;
         if (vs.toChild) { this.toChild = vs.toChild }  // child is passing up her func
         if (vs.state) { // child is passing up her state and your distance from it starting at 0
             let newState = null;
             if (vsDistance[vs.state]) {
-                let last = Math.max(VisualState.vsDistance[vs.state].length - 1, 0);
-                newState = this.vsDistance[vs.state][vs.distance > last
+                let last = Math.max(vsDistance[vs.state].length - 1, 0);
+                newState = vsDistance[vs.state][vs.distance > last
                                                         ? vsDistance[vs.state][vs.distance]
                                                         : vsDistance[vs.state][last]];
             } else { newState = vs.state } // if you don't know the state, just pass it on
