@@ -18,20 +18,19 @@ class VisualState extends React.Component {
         minified: ['minified', null],                      // a portion of the title or an icon is rendered
         title: ['title', null],                                  // just the title content is rendered
         truncated: ['truncated', null],               // rendered with text / infor truncated to fit in a standard height
-        open: ['open', null ]                                           // everything is rendered
+        open: ['open', open ]                                           // everything is rendered
     }
 
     toMeFromChild(vs) {
     console.info("VisualState.toMeFromChild", vs);
     const vsDistance=VisualState.vsDistance;
+    const distance=vs.distance || 0;
+    let newState = null;
         if (vs.toChild) { this.toChild = vs.toChild }  // child is passing up her func
         if (vs.state) { // child is passing up her state and your distance from it starting at 0
-            let newState = null;
             if (vsDistance[vs.state]) {
                 let last = Math.max(vsDistance[vs.state].length - 1, 0);
-                newState = vsDistance[vs.state][vs.distance > last
-                                                        ? vsDistance[vs.state][vs.distance]
-                                                        : vsDistance[vs.state][last]];
+                newState = vsDistance[vs.state][Math.min(vs.distance,last)];
             } else { newState = vs.state } // if you don't know the state, just pass it on
             if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
                 if (this.props.vs.toParent) {
@@ -60,7 +59,7 @@ class VisualState extends React.Component {
 
     renderChildren() {
         return React.Children.map(this.props.children, child =>
-            React.cloneElement(child, Object.assign({}, this.props, this.vs, this.state))
+            React.cloneElement(child, Object.assign({}, this.props, this.state))  //vs in state override vs in props
         );
     }
 
