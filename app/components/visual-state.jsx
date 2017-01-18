@@ -34,7 +34,7 @@ class VisualState extends React.Component {
                 if(!newState) newState=this.state.vs.state;
             } else { newState = vs.state } // if you don't know the state, just pass it on
             if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
-                 this.setState({vs: object.assign({}, this.state.vs, {state: newState, distance: distance})});
+                 this.setState({vs: Object.assign({}, this.state.vs, {state: newState, distance: distance})});
             }
         }
     }
@@ -43,7 +43,7 @@ class VisualState extends React.Component {
     toMeFromParent(vs) {
         console.info("VisualState.toMeFromParent", vs, this.state.vs.depth);
         if (vs.state) { // parent is giving you a new state
-            if(this.state.vs.state !== vs.state) this.setState({vs: object.assign({}, this.state.vs, vs)});
+            if(this.state.vs.state !== vs.state) this.setState({vs: Object.assign({}, this.state.vs, vs)});
         }
     }
 
