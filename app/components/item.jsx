@@ -60,7 +60,10 @@ class VSItem extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textHint(active) {
-    if(this.props.vs.state==='truncated' && this.state.hint === active) { this.setState({ hint: !active } ); }
+    //calls on completion of Accordion collapse / expand
+    //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
+    if(this.props.vs.state==='truncated' && !this.state.hint) { this.setState({ hint: true } ); } // if truncated turn on the hint
+    if(this.props.vs.state==='open' && this.state.hint) this.setState({hint: false}); // if open, turn off the hint
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +74,7 @@ class VSItem extends React.Component {
       console.info("Item.readMore", e);
       let item = this.refs.item;
       if (this.props.vs.state==='truncated') {
-        this.setState({hint: false});
+        this.setState({hint: false});  // turn off the hint at the beginning of the sequence
         if(this.props.focusAction){this.props.focusAction(true)}
         if(this.props.vs.toParent){this.props.vs.toParent({state: 'open', distance: 0})}
         this.props.toggle(this.props.item._id, 'harmony');  // if open show harmony
@@ -80,6 +83,12 @@ class VSItem extends React.Component {
         if(this.props.vs.toParent){this.props.vs.toParent({state: 'truncated', distance: 0})}
         if(this.props.focusAction){this.props.focusAction(false)}
       }
+  }
+
+  componentWillReceiveProps(newProps){
+    if(newProps.vs && newProps.vs.state) {
+      if(newProps.vs.state === 'open' && this.state.vs.state)
+    }
   }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
