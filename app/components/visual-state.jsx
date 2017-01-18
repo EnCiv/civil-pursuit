@@ -34,16 +34,15 @@ class VisualState extends React.Component {
                 if(!newState) newState=this.state.vs.state;
             } else { newState = vs.state } // if you don't know the state, just pass it on
             if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
-                if (this.props.vs.toParent) {
-                    this.setState({vs: {state: newState}}, () => {this.props.vs.toParent({state: newState, distance: vs.distance +1} )})
-                } else { this.setState({vs: {state: newState, distance: vs.distance}});}
+                 this.setState({vs: {state: newState, distance: vs.distance, toParent: this.state.vs.toParent}});
+                }
             }
         }
     }
 
     toMeFromParent(vs) {
         if (vs.state) { // parent is giving you a new state
-            if(this.state.vs.state !== vs.state) this.setState({vs: {state: vs.state}});
+            if(this.state.vs.state !== vs.state) this.setState({vs: {state: vs.state, distance: 0, toParent: this.state.vs.toParent}});
         }
     }
 
