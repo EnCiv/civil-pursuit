@@ -69,10 +69,10 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
-    if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't expand harmony on items that don't have it
+    if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
     if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
-        //this.collapseAroundItem (false);
+        //current section of current item is active, so unactivate it
         if(this.props.focusAction) { this.props.focusAction(false)}
         return this.setState({ active : { item : null, section : null } });
     }
@@ -251,8 +251,13 @@ class PanelItems extends React.Component {
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
-            let vs={}
-            vs.state = (item==null || ( (this.state.active.item !== null) && (this.state.active.item !== item._id ))) ? 'collapsed' : panel.items.length==1 ? 'open' : 'truncated'; //collapsed if there is an active item and it's not this one
+            var vs={state: 'collapsed', depth: 0};
+            if(this.props.vs && this.props.vs.depth) vs.depth=this.props.vs.depth + 1;
+            if(item) {
+              vs.state='truncated'; // items are usually truncated, except one, if it is active
+              if(this.state.active.item && this.state.active.item === item._id) vs.state='open';  // if there is one and this is the active item, then it should be open
+              if(panel.items.length==1) vs.state='open';  // if there is only on item in the list, then it's open
+            }
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
