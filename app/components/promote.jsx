@@ -131,12 +131,12 @@ wideRight(){
   clearExpanders() {
     if(this.state.expandedL) {
       this.setState({activeL: false} );
-      if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
+      if(this.toChildLeft){this.toChildLeft({state: 'truncated', distance: 0})}
       this.state.expandedL=false;
     }
     if(this.state.expandedR) {
       this.setState({activeR: false, truncateItemsRight: this.state.truncateItemsRight+1});
-      if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
+      if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
       this.state.expandedR=false;      
     }
   }
