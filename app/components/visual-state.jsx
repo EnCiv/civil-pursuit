@@ -22,7 +22,7 @@ class VisualState extends React.Component {
     }
 
     toMeFromChild(vs) {
-        console.info("VisualState.toMeFromChild", vs);
+        console.info("VisualState.toMeFromChild", vs, this.state.vs.depth);
         const vsDistance=VisualState.vsDistance;
         const distance=vs.distance || 0;
         let newState = null;
@@ -34,15 +34,16 @@ class VisualState extends React.Component {
                 if(!newState) newState=this.state.vs.state;
             } else { newState = vs.state } // if you don't know the state, just pass it on
             if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
-                 this.setState({vs: {state: newState, distance: vs.distance, toParent: this.state.vs.toParent}});
+                 this.setState({vs: object.assign({}, this.state.vs, {state: newState, distance: distance})});
             }
         }
     }
 
 
     toMeFromParent(vs) {
+        console.info("VisualState.toMeFromParent", vs, this.state.vs.depth);
         if (vs.state) { // parent is giving you a new state
-            if(this.state.vs.state !== vs.state) this.setState({vs: {state: vs.state, distance: 0, toParent: this.state.vs.toParent}});
+            if(this.state.vs.state !== vs.state) this.setState({vs: object.assign({}, this.state.vs, vs)});
         }
     }
 
@@ -70,10 +71,14 @@ class VisualState extends React.Component {
     }
 
     componentWillReceiveProps(newProps){
-        if(this.props.vs.state != newProps.vs.state){
+        const newState=newProps.vs.state || null;
+        const distance = vs.distance || 0;
+        var stateChange={}
+        if(this.props.vs.state != newState){
+            stateChange={vs: Object.assign({}, this.state.vs, {state: newState, distance: distance})}
             if (this.props.vs.toParent) {
-                this.setState({vs: {state: newState}}, () => {this.props.vs.toParent({state: newState, distance: 0} )})
-            } else { this.setState({vs: {state: newState}});}
+                this.setState(stateChange, () => {this.props.vs.toParent({state: newState, distance: distance +1} )})
+            } else { this.setState(stateChange)}
         }
     }
 
