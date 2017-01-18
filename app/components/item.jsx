@@ -68,6 +68,7 @@ class VSItem extends React.Component {
   readMore (e) {
    e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
    // e.stopPropagation(); // do not stop propogation so this event will propogate to the item-button
+      console.info("Item.readMore", e);
       let item = this.refs.item;
       if (this.props.vs.state==='truncated') {
         this.setState({hint: false});
@@ -145,7 +146,7 @@ class VSItem extends React.Component {
                 <h5 className={ClassNames('item-reference', cState, {none: noReference})} >
                   <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
                 </h5>
-                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : '')}>
+                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)}>
                   { item.description }
                 </div>
                 <div className="item-tendency" style={{display: 'none'}}>
