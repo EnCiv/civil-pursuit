@@ -73,8 +73,8 @@ class VisualState extends React.Component {
 
     componentDidMount(){
         if (this.props.vs.toParent) {
-            this.props.vs.toParent({ toChild: this.toMeFromParent.bind(this) })
-        } // give parent your func so you can get state changes
+            this.props.vs.toParent(Object.assign({}, this.props.vs, {state: null}, { toChild: this.toMeFromParent.bind(this) }))
+        } // give parent your func so you can get state changes 
     }
 
     /** 
