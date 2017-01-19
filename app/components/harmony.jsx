@@ -153,7 +153,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, vs,  {state: 'truncated', side: 'left', depth: vs.depth +1, toParent: this.toMeFromChildLeft.bind()})} />
+            <PanelItems user={ user } vs={Object.assign({}, vs,  {state: 'truncated', side: 'left', depth: vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} />
           </PanelStore>
         </DoubleWide>
       );
@@ -161,7 +161,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, vs, {state: 'truncated', side: 'right', depth: vs.depth +1, toParent: this.toMeFromChildRight.bind()})} />
+            <PanelItems user={ user } vs={Object.assign({}, vs, {state: 'truncated', side: 'right', depth: vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} />
           </PanelStore>
         </DoubleWide>
       );
