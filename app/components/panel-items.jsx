@@ -80,27 +80,28 @@ class PanelItems extends React.Component {
   }
 
   toMeFromChild(vs) {
-        console.info("PanelItem.toMeFromChild",vs);
-        
-        if (vs.toChild && vs.itemId) { this.toChild[vs.itemId] = vs.toChild }  // child is passing up her func
-        
-        if(vs.state){
-          const itemId=vs.itemId || null;  // note it might not be an item belonging to this panel
-          const distance = vs.distance || 0;
-          if(this.lastItem && this.lastItem !== vs.itemIs && this.toChild[lastItem]) { 
-            this.toChild[lastItem](Object.assign({},vs,{state: truncated}))
-            this.lastItem=null;
-          }
-          if(vs.state=='open'){
-            if(vs.itemId) {
-              this.lastItem=vs.itemId;
-              this.setState({ active : { item : itemId, section : 'harmony' } });
-          } else {
-            this.setState({ active : { item : null, section : null } });
-          }
-          if(vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({},vs))}
-          if(this.props.vs && this.props.vs.toParent){ this.props.vs.toParent(Object.assign({},vs,{distance: distance+1}))}
-        } 
+    console.info("PanelItem.toMeFromChild", vs);
+
+    if (vs.toChild && vs.itemId) { this.toChild[vs.itemId] = vs.toChild }  // child is passing up her func
+
+    if (vs.state) {
+      const itemId = vs.itemId || null;  // note it might not be an item belonging to this panel
+      const distance = vs.distance || 0;
+      if (this.lastItem && this.lastItem !== vs.itemIs && this.toChild[lastItem]) {
+        this.toChild[lastItem](Object.assign({}, vs, { state: truncated }))
+        this.lastItem = null;
+      }
+      if (vs.state == 'open') {
+        if (vs.itemId) {
+          this.lastItem = vs.itemId;
+          this.setState({ active: { item: itemId, section: 'harmony' } });
+        } else {
+          this.setState({ active: { item: null, section: null } });
+        }
+        if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
+        if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, vs, { distance: distance + 1 })) }
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
