@@ -59,7 +59,7 @@ class VisualState extends React.Component {
                 toParent: this.toMeFromChild.bind(this)
             }, 
             this.props.vs,
-            {    depth: this.props.vs && this.props.vs.depth ? this.props.vs.depth : 0;
+            {    depth: (this.props.vs && this.props.vs.depth) ? this.props.vs.depth : 0
             }
         );
         this.toChild=null;
