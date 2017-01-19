@@ -107,10 +107,14 @@ class Harmony extends React.Component {
     console.info("harmony.toMeFromChildLeft", vs);
     if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
     if (vs.state == 'open') {
-      if (this.state.expandedRight) { this.setState({ expandedLeft: true, expandedRight: false }) }
+      if (this.state.expandedRight) { 
+        if(this.toChildRight){this.toChildRight(Object.assign({},vs, {state:'truncated'} ))}  // notify the other panel of the state change (to truncated)
+        this.setState({ expandedLeft: true, expandedRight: false }) 
+      }
       else { this.setState({ expandedLeft: true }) }
     } else {
       if (this.state.expandedRight) {
+        if(this.toChildRight){this.toChildRight(vs)}  // notify the other panel of the state change (to truncated)
         this.setState({ expandedLeft: false, expandedRight: false });
       }
       else {
@@ -123,10 +127,14 @@ class Harmony extends React.Component {
     console.info("harmony.toMeFromChildRight", vs);
     if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
     if (vs.state == 'open') {
-      if (this.state.expandedLeft) { this.setState({ expandedRight: true, expandedLeft: false }) }
+      if (this.state.expandedLeft) { 
+        if(this.toChildLeft){this.toChildLeft(Object.assign({},vs, {state:'truncated'} ))}
+        this.setState({ expandedRight: true, expandedLeft: false }) 
+      }
       else { this.setState({ expandedRight: true }) }
     } else {
       if (this.state.expandedLeft) {
+        if(this.toChildLeft){this.toChildLeft(vs)}  // notify the other panel of the state change (to truncated)
         this.setState({ expandedLeft: false, expandedRight: false });
       } else { this.setState({ expandedRight: false }) }
     }

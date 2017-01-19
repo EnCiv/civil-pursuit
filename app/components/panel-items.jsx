@@ -38,6 +38,9 @@ class PanelItems extends React.Component {
 
   componentDidMount () {
     this.props.emitter.on('show', this.show.bind(this));
+    if(this.props.vs.toParent){
+      this.props.vs.toParent({toChild: this.toMeFromParent.bind(this)})
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +70,14 @@ class PanelItems extends React.Component {
 
   toChild=[];
   lastItem=null;
+
+  toMeFromParent(vs){
+    const itemId=vs.itemId || null;
+    if(vs.state=='truncated' && active.item){
+      if(this.toChild[active.item]){this.toChild[active.item](vs)} // notify child of state change
+      return this.setState({ active : { item : null, section : null } }); // change the state here
+    }
+  }
 
   toMeFromChild(vs) {
         console.info("PanelItem.toMeFromChild",vs);
