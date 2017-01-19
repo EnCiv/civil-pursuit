@@ -65,7 +65,8 @@ class PanelItems extends React.Component {
     // window.Dispatcher.emit('get items', this.props.panel);
   }
 
-  toChild=null;
+  toChild=[];
+  lastItem=null;
 
   toMeFromChild(vs) {
         console.info("PanelItem.toMeFromChild",vs);
@@ -79,6 +80,9 @@ class PanelItems extends React.Component {
         else {
           return this.setState({ active : { item : null, section : null } });
         }
+        if(vs.state && vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({},vs))}
+        if(lastItem && this.toChild[lastItem]) { this.toChild[lastItem](Object.assign({},vs,{state: truncated}))}
+        lastItem=null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
