@@ -74,6 +74,8 @@ class PanelItems extends React.Component {
     if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
         //current section of current item is active, so unactivate it
         if(this.props.focusAction) { this.props.focusAction(false)}
+        //if all items are inactive, the visual state of the panel is 'truncated'
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent({state: 'truncated', distance: 0});
         return this.setState({ active : { item : null, section : null } });
     }
 
@@ -87,6 +89,8 @@ class PanelItems extends React.Component {
       }
 
       this.mountedItems[itemId][section] = true;
+      // if one item is active, then the visual state of the panel is open
+      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent({state: 'open', distance: 0});
     }
     if(this.props.focusAction) { this.props.focusAction(true)}
     this.setState({ active : { item : itemId, section }});
