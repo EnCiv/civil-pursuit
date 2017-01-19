@@ -77,7 +77,7 @@ class VisualState extends React.Component {
         } // give parent your func so you can get state changes
     }
 
-    {/** 
+    /** 
         componentWillReceiveProps(newProps){
             const newState=newProps.vs.state || null;
             const distance = newProps.vs.distance || 0;
@@ -87,7 +87,6 @@ class VisualState extends React.Component {
             }
         }
     **/
-    }
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
