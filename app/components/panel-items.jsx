@@ -93,7 +93,7 @@ class PanelItems extends React.Component {
     if (vs.state) {
       const itemId = vs.itemId || null;  // note it might not be an item belonging to this panel
       const distance = vs.distance || 0;
-      if (this.lastItem && this.lastItem !== vs.itemIs && this.toChild[this.lastItem]) {
+      if (this.lastItem && this.lastItem !== vs.itemId && this.toChild[this.lastItem]) {
         this.toChild[this.lastItem](Object.assign({}, vs, { state: truncated }))
         this.lastItem = null;
       }
