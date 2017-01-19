@@ -119,7 +119,7 @@ class PanelItems extends React.Component {
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
     Object.keys(this.toChild).forEach(childId=>{
-      if((this.state.active.item===itemId || ! ItemId) && this.state.active.section === section) { //we are turning off a section
+      if((this.state.active.item===itemId || ! itemId) && this.state.active.section === section) { //we are turning off a section
         if(this.state.active.item === childId) return; // no need to send state to the child
         this.toChild[childId](Object.assign({},this.vs, {state: 'truncated', distance: 0}))
       }else{ // we are turning on an item/ section collapse all the other ones
