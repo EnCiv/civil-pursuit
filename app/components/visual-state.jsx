@@ -9,7 +9,7 @@ import ClassNames from 'classnames';
 
 class VisualState extends React.Component {
 
-    state = { vs: {state: null, distance: 0 }};
+    state = { vs: {}};
 
     toChild=null;
 
@@ -22,40 +22,47 @@ class VisualState extends React.Component {
     }
 
     toMeFromChild(vs) {
-        console.info("VisualState.toMeFromChild", vs, this.state.vs.depth);
-        const vsDistance=VisualState.vsDistance;
-        const distance=vs.distance || 0;
-        let newState = null;
+        console.info("VisualState.toMeFromChild", vs, this.state.vs);
         if (vs.toChild) { this.toChild = vs.toChild }  // child is passing up her func
         if (vs.state) { // child is passing up her state and your distance from it starting at 0
+            const vsDistance=VisualState.vsDistance;
+            const distance=vs.distance || 0;
+            let newState = null;
             if (vsDistance[vs.state]) {
                 let last = Math.max(vsDistance[vs.state].length - 1, 0);
                 newState = vsDistance[vs.state][Math.min(vs.distance,last)];
                 if(!newState) newState=this.state.vs.state;
             } else { newState = vs.state } // if you don't know the state, just pass it on
-            if ( newState && (this.state.vs.state !== newState)) { // if the state has changed
-                 this.setState({vs: Object.assign({}, this.state.vs, {state: newState, distance: distance})});
+            var changeState=Object.assign({}, this.state.vs, vs, {state: newState, distance: distance} )
+            if ( this.state.vs !== changeState) { // if the state has changed
+                 this.setState({vs: Object.assign({}, this.state.vs, vs, {state: newState, distance: distance})});
+                 if(this.props.vs.toParent){
+                     this.props.toParent(Object.assign({},changeState,{distance: distance +1}))
+                 }
             }
         }
     }
 
 
     toMeFromParent(vs) {
-        console.info("VisualState.toMeFromParent", vs, this.state.vs.depth);
-        if (vs.state) { // parent is giving you a new state
-            if(this.state.vs.state !== vs.state) this.setState({vs: Object.assign({}, this.state.vs, vs)});
+        console.info("VisualState.toMeFromParent", vs, this.state.vs);
+        if (vs) { // parent is giving you a new state
+            if(this.state.vs != vs) this.setState({vs: Object.assign({}, this.state.vs, vs)});
         }
     }
 
     constructor(props) {
         super(props);
         console.info("VisualState constructor", props);
-        if (this.props.vs.state) { this.state.vs.state = this.props.vs.state }  // set the initial state
-        if (this.props.vs.depth) { this.state.vs.depth = vs.depth + 1 }
-        this.state.vs.toParent = this.toMeFromChild.bind(this);
+        this.state.vs=Object.assign({}, 
+            {   state: 'collapsed',
+                toParent: this.toMeFromChild.bind(this)
+            }, 
+            this.props.vs,
+            {    depth: this.props.vs && this.props.vs.depth ? this.props.vs.depth : 0;
+            }
+        );
         this.toChild=null;
-        
-
     }
 
     renderChildren() {
@@ -73,12 +80,9 @@ class VisualState extends React.Component {
     componentWillReceiveProps(newProps){
         const newState=newProps.vs.state || null;
         const distance = newProps.vs.distance || 0;
-        var stateChange={}
-        if(this.props.vs.state != newState || this.props.vs.distance != distance){
-            stateChange={vs: Object.assign({}, this.state.vs, {state: newState, distance: distance})}
-            if (this.props.vs.toParent) {
-                this.setState(stateChange, () => {this.props.vs.toParent({state: newState, distance: distance +1} )})
-            } else { this.setState(stateChange)}
+        var stateChange={vs: Object.assign({}, this.state.vs,  newProps.vs, {state: newState, distance: distance})}
+        if(this.state.vs != stateChange.vs){
+            this.setState(stateChange)
         }
     }
 

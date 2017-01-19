@@ -65,6 +65,22 @@ class PanelItems extends React.Component {
     // window.Dispatcher.emit('get items', this.props.panel);
   }
 
+  toChild=null;
+
+  toMeFromChild(vs) {
+        console.info("PanelItem.toMeFromChild",vs);
+        
+        if (vs.toChild && vs.itemId) { this.toChild[vs.itemId] = vs.toChild }  // child is passing up her func
+        
+        const itemId=vs.itemId || null;  // note it might not be an item belonging to this panel
+        if(vs.state=='open'){
+          if(vs.itemId) return this.setState({ active : { item : itemId, section : 'harmony' } });
+        }
+        else {
+          return this.setState({ active : { item : null, section : null } });
+        }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggle (itemId, section) {
@@ -255,12 +271,14 @@ class PanelItems extends React.Component {
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
-            var vs={state: 'collapsed', depth: 0};
-            if(this.props.vs && this.props.vs.depth) vs.depth=this.props.vs.depth + 1;
+            var iVs={state: 'collapsed', depth: 0}; // item Visual State
+            if(this.props.vs && this.props.vs.depth) iVs.depth=this.props.vs.depth + 1;
             if(item) {
-              vs.state='truncated'; // items are usually truncated, except one, if it is active
-              if(this.state.active.item && this.state.active.item === item._id && this.state.active.section==='harmony') vs.state='open';  // if there is one and this is the active item, then it should be open
-              if(panel.items.length==1) vs.state='open';  // if there is only on item in the list, then it's open
+              iVs.toParent= this.toMeFromChild.bind(this);
+              iVs.state='truncated'; // items are usually truncated, except one, if it is active
+              iVs.itemId = item._id; // adding this as a parameter in the state
+              if(this.state.active.item && this.state.active.item === item._id && this.state.active.section==='harmony') iVs.state='open';  // if there is one and this is the active item, then it should be open
+              if(panel.items.length==1) iVs.state='open';  // if there is only on item in the list, then it's open
             }
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
@@ -284,7 +302,7 @@ class PanelItems extends React.Component {
                     ]
                   }
 
-                  vs = {vs}
+                  vs = {iVs}
                   toggle  =   { this.toggle.bind(this) }
                   focusAction={this.props.focusAction}
                 />

@@ -22,18 +22,19 @@ class Harmony extends React.Component {
 
 //**********************************************************
   focusLeft(focused) {
+    console.info("harmony.focusLeft",focused);
     if(focused) {
       if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
       else { this.setState({expandedLeft: true}) }
     } else {
       if(this.state.expandedRight) { 
         this.setState({expandedLeft: false, expandedRight: false});
-        if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
-        if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
+        if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
+        if(this.toChildLeft){this.toChildLeft({state: 'truncated', distance: 0})}
       }
       else { 
         this.setState({expandedLeft: false});
-        if(this.toChildRight){toChildLeft({state: 'truncated', distance: 0})}
+        if(this.toChildRight){this.toChildLeft({state: 'truncated', distance: 0})}
       }
     }
   }
@@ -41,17 +42,18 @@ class Harmony extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   focusRight(focused) {
+    console.info("harmony.focusRight",focused);
     if(focused) {
       if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
       else { this.setState({expandedRight: true}) }
     } else {
       if(this.state.expandedLeft) { 
         this.setState({expandedLeft: false, expandedRight: false});
-        if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}
-        if(this.toChildLeft){toChildLeft({state: 'truncated', distance: 0})}
+        if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
+        if(this.toChildLeft){this.toChildLeft({state: 'truncated', distance: 0})}
       }
       else { this.setState({expandedRight: false}) 
-             if(this.toChildRight){toChildRight({state: 'truncated', distance: 0})}}
+             if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}}
     }
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,17 +104,39 @@ class Harmony extends React.Component {
   toChildRight=null;
 
   toMeFromChildLeft(vs) {
-        if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
+    console.info("harmony.toMeFromChildLeft", vs);
+    if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
+    if (vs.state == 'open') {
+      if (this.state.expandedRight) { this.setState({ expandedLeft: true, expandedRight: false }) }
+      else { this.setState({ expandedLeft: true }) }
+    } else {
+      if (this.state.expandedRight) {
+        this.setState({ expandedLeft: false, expandedRight: false });
+      }
+      else {
+        this.setState({ expandedLeft: false });
+      }
+    }
   }
 
   toMeFromChildRight(vs) {
-      if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
+    console.info("harmony.toMeFromChildRight", vs);
+    if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
+    if (vs.state == 'open') {
+      if (this.state.expandedLeft) { this.setState({ expandedRight: true, expandedLeft: false }) }
+      else { this.setState({ expandedRight: true }) }
+    } else {
+      if (this.state.expandedLeft) {
+        this.setState({ expandedLeft: false, expandedRight: false });
+      } else { this.setState({ expandedRight: false }) }
+    }
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     const { active, item, user } = this.props;
+    var vs=Object.assign({},{state: 'collapsed', depth: 0}, this.props.vs)  // initialize vs if not passed
 
     let contentLeft = ( <Loading message="Loading" /> );
 
@@ -121,7 +145,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusLeft.bind(this)} vs={{state: 'truncated', toParent: this.toMeFromChildLeft.bind()}} />
+            <PanelItems user={ user } vs={Object.assign({}, vs,  {state: 'truncated', side: 'left', depth: vs.depth +1, toParent: this.toMeFromChildLeft.bind()})} />
           </PanelStore>
         </DoubleWide>
       );
@@ -129,7 +153,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } focusAction={this.focusRight.bind(this)} vs={{state: 'truncated', toParent: this.toMeFromChildRight.bind()}} />
+            <PanelItems user={ user } vs={Object.assign({}, vs, {state: 'truncated', side: 'right', depth: vs.depth +1, toParent: this.toMeFromChildRight.bind()})} />
           </PanelStore>
         </DoubleWide>
       );
