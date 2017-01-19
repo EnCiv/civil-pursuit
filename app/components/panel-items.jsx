@@ -38,7 +38,7 @@ class PanelItems extends React.Component {
 
   componentDidMount () {
     this.props.emitter.on('show', this.show.bind(this));
-    if(this.props.vs.toParent){
+    if(this.props.vs && this.props.vs.toParent){
       this.props.vs.toParent({toChild: this.toMeFromParent.bind(this)})
     }
   }
