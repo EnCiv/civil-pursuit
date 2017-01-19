@@ -36,7 +36,7 @@ class PanelItems extends React.Component {
 
   constructor(props){
     super(props);
-    Object.assign(this.vs,{state: 'collapsed', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromParent.bind(this)})
+    Object.assign(this.vs,{state: 'collapsed', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromChild.bind(this)})
   }
 
 
@@ -114,15 +114,17 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
+    console.info("PanelItems.toggle",itemId, section);
+
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
     Object.keys(this.toChild).forEach(childId=>{
       if((this.state.active.item===itemId || ! ItemId) && this.state.active.section === section) { //we are turning off a section
         if(this.state.active.item === childId) return; // no need to send state to the child
-        this.toChild[childId](Object.assign({},this.vs, {toParent: null}, {state: 'truncated', distance: 0}))
-      }else{ // we are turning on an item/ section collapes all the other ones
+        this.toChild[childId](Object.assign({},this.vs, {state: 'truncated', distance: 0}))
+      }else{ // we are turning on an item/ section collapse all the other ones
         if(this.state.active.item === childId) return; // no need to send state to the child
-        this.toChild[childId](Object.assign({}, this.vs, {toParent: null}, {state: 'collapsed', distance: 0}))
+        this.toChild[childId](Object.assign({}, this.vs, {state: 'collapsed', distance: 0}))
       }
     });
 
@@ -308,13 +310,10 @@ class PanelItems extends React.Component {
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
-            var iVs={state: 'collapsed', depth: 0}; // item Visual State
+            var iVs=Object.assign({},this.vs) // item Visual State
             if(this.props.vs && this.props.vs.depth) iVs.depth=this.props.vs.depth + 1;
             if(item) {
-              iVs.toParent= this.toMeFromChild.bind(this);
-              iVs.state='truncated'; // items are usually truncated, except one, if it is active
               iVs.itemId = item._id; // adding this as a parameter in the state
-              if(this.state.active.item && this.state.active.item === item._id && this.state.active.section==='harmony') iVs.state='open';  // if there is one and this is the active item, then it should be open
               if(panel.items.length==1) iVs.state='open';  // if there is only on item in the list, then it's open
             }
             return (
