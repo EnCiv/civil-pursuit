@@ -76,11 +76,11 @@ class VSItem extends React.Component {
       if (this.props.vs.state==='truncated') {
         this.setState({hint: false});  // turn off the hint at the beginning of the sequence
         if(this.props.focusAction){this.props.focusAction(true)}
-        if(this.props.vs.toParent){this.props.vs.toParent({state: 'open', distance: 0})}
+        if(this.props.vs.toParent){this.props.vs.toParent(Object.assign({},this.props.vs,{state: 'open', distance: 0}))}
         this.props.toggle(this.props.item._id, 'harmony');  // if open show harmony
       } else {
         this.props.toggle(this.props.item._id, 'harmony'); // if closed don't show harmony
-        if(this.props.vs.toParent){this.props.vs.toParent({state: 'truncated', distance: 0})}
+        if(this.props.vs.toParent){this.props.vs.toParent(Object.assign({},this.props.vs,{state: 'truncated', distance: 0})}
         if(this.props.focusAction){this.props.focusAction(false)}
       }
   }
