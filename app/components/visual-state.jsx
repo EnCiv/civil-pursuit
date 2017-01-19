@@ -56,10 +56,10 @@ class VisualState extends React.Component {
         console.info("VisualState constructor", props);
         this.state.vs=Object.assign({}, 
             {   state: 'collapsed',
-                toParent: this.toMeFromChild.bind(this)
             }, 
             this.props.vs,
-            {    depth: (this.props.vs && this.props.vs.depth) ? this.props.vs.depth : 0
+            {    depth: (this.props.vs && this.props.vs.depth) ? this.props.vs.depth : 0,
+                toParent: this.toMeFromChild.bind(this)
             }
         );
         this.toChild=null;
