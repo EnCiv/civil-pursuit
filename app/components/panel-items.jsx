@@ -28,10 +28,16 @@ class PanelItems extends React.Component {
   };
 
   new = null;
+  vs={}
 
   mountedItems = {};
 
   state = { active : { item : null, section : null } };
+
+  constructor(props){
+    super(props);
+    Object.assign(this.vs,{state: 'collapsed', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromParent.bind(this)})
+  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,8 +105,8 @@ class PanelItems extends React.Component {
           this.setState({ active: { item: null, section: null } });
         }
       }
-      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
-      if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, vs, { distance: distance + 1 })) }
+      //if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) } //child already gets this state change from VisualState
+      if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, this.vs, {toParent: null}, vs, { distance: distance + 1 })) }
     }
   }
 
@@ -110,11 +116,20 @@ class PanelItems extends React.Component {
 
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
+    Object.keys(this.toChild).forEach(childId=>{
+      if((this.state.active.item===itemId || ! ItemId) && this.state.active.section === section) { //we are turning off a section
+        if(this.state.active.item === childId) return; // no need to send state to the child
+        this.toChild[childId](Object.assign({},this.vs, {toParent: null}, {state: 'truncated', distance: 0}))
+      }else{ // we are turning on an item/ section collapes all the other ones
+        if(this.state.active.item === childId) return; // no need to send state to the child
+        this.toChild[childId](Object.assign({}, this.vs, {toParent: null}, {state: 'collapsed', distance: 0}))
+      }
+    });
+
     if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
         //current section of current item is active, so unactivate it
-        if(this.props.focusAction) { this.props.focusAction(false)}
         //if all items are inactive, the visual state of the panel is 'truncated'
-        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent({state: 'truncated', distance: 0});
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
         return this.setState({ active : { item : null, section : null } });
     }
 
@@ -129,9 +144,8 @@ class PanelItems extends React.Component {
 
       this.mountedItems[itemId][section] = true;
       // if one item is active, then the visual state of the panel is open
-      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent({state: 'open', distance: 0});
+      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
     }
-    if(this.props.focusAction) { this.props.focusAction(true)}
     this.setState({ active : { item : itemId, section }});
 
   }
