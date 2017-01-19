@@ -36,7 +36,7 @@ class PanelItems extends React.Component {
 
   constructor(props){
     super(props);
-    Object.assign(this.vs,{state: 'collapsed', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromChild.bind(this)})
+    Object.assign(this.vs,{state: 'truncated', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromChild.bind(this)})
   }
 
 
