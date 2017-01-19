@@ -98,9 +98,9 @@ class PanelItems extends React.Component {
         } else {
           this.setState({ active: { item: null, section: null } });
         }
-        if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
-        if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, vs, { distance: distance + 1 })) }
       }
+      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
+      if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, vs, { distance: distance + 1 })) }
     }
   }
 
