@@ -90,7 +90,7 @@ class PanelItems extends React.Component {
 
     if (vs.toChild && vs.itemId) { this.toChild[vs.itemId] = vs.toChild }  // child is passing up her func
 
-/** 
+
     if (vs.state) {
       const itemId = vs.itemId || null;  // note it might not be an item belonging to this panel
       const distance = vs.distance || 0;
@@ -101,15 +101,15 @@ class PanelItems extends React.Component {
       if (vs.state == 'open') {
         if (vs.itemId) {
           this.lastItem = vs.itemId;
-          this.setState({ active: { item: itemId, section: 'harmony' } });
-        } else {
-          this.setState({ active: { item: null, section: null } });
-        }
+          //this.setState({ active: { item: itemId, section: 'harmony' } });
+        } //else {
+          //this.setState({ active: { item: null, section: null } });
+        //}
       }
       //if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) } //child already gets this state change from VisualState
-      if (this.props.vs && this.props.vs.toParent) { this.props.vs.toParent(Object.assign({}, this.vs, {toParent: null}, vs, { distance: distance + 1 })) }
+      
     }
-  **/
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
