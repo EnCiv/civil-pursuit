@@ -330,6 +330,7 @@ class QSortRefineItem extends React.Component {
                         show      =   { show }
                         panel     =   { panel }
                         user    =     { user }
+                        hideFeedback = {true}
                         />
                     </EvaluationStore>
             ];
