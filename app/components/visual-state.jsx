@@ -55,7 +55,7 @@ class VisualState extends React.Component {
         super(props);
         console.info("VisualState constructor", props);
         this.state.vs=Object.assign({}, 
-            {   state: 'collapsed',
+            {   state: 'truncated',
             }, 
             this.props.vs,
             {    depth: (this.props.vs && this.props.vs.depth) ? this.props.vs.depth : 0,

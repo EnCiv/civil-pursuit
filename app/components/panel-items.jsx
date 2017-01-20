@@ -118,38 +118,45 @@ class PanelItems extends React.Component {
 
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
-    Object.keys(this.toChild).forEach(childId=>{
-      if((this.state.active.item===itemId || ! itemId) && this.state.active.section === section) { //we are turning off a section
-        if(this.state.active.item === childId) return; // no need to send state to the child
-        this.toChild[childId](Object.assign({},this.vs, {state: 'truncated', distance: 0}))
-      }else{ // we are turning on an item/ section collapse all the other ones
-        if(this.state.active.item === childId) return; // no need to send state to the child
-        this.toChild[childId](Object.assign({}, this.vs, {state: 'collapsed', distance: 0}))
-      }
-    });
-
-    if ( ( this.state.active.item === itemId || ! itemId ) && this.state.active.section === section) {
-        //current section of current item is active, so unactivate it
-        //if all items are inactive, the visual state of the panel is 'truncated'
-        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
-        return this.setState({ active : { item : null, section : null } });
-    }
-
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
       return Join.click();
     }
 
-    if ( itemId ) {
-      if ( ! this.mountedItems[itemId] ) {
-        this.mountedItems[itemId] = {};
+    var showAll=showOne=changeSection=false;
+    if(!itemId){showAll=true;}  // if itemId is null, show all
+    else if(this.state.active.item === itemId && this.state.active.section === section) { showAll=true; }  // if it's active and we are toggeling it, show all
+    else if(this.state.active.item === itemId ){changeSection=true} // if changing the section (somehow) of the same id
+    else if(itemId != this.state.active.item) {showOne=true} // if focusing on this item (instead of some other item or no item) show this one
+    
+    console.info("PanelItem.toggle showAll:", showAll, " showOne:", showOne, " changeSection:", changeSection);
+     if(showAll){
+        Object.keys(this.toChild).forEach(childId=>{
+          if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: 'truncated', distance: 0}))
+          return;
+        });
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
+        return this.setState({ active : { item : null, section : null } });
+      } else
+      if(showOne){
+        Object.keys(this.toChild).forEach(childId=>{
+          if(childId===itemId){  // this is the one we are going to show
+            // if the section we are going to show is harmony send the open state, otherwise truncated
+            if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: section==='harmony' ? 'open' : 'truncated', distance: 0}))
+          }else { // this is one of the ones we are going to hide
+            if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: 'collapsed', distance: 0}))
+          }
+        });
+        if ( ! this.mountedItems[itemId] ) {
+          this.mountedItems[itemId] = {};
+        }
+        this.mountedItems[itemId][section] = true;
+        // if one item is active, then the visual state of the panel is open
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
+        this.setState({ active : { item : itemId, section }});
+      } else
+      if(changeSection){
+            this.setState({ active : { item : itemId, section }});
       }
-
-      this.mountedItems[itemId][section] = true;
-      // if one item is active, then the visual state of the panel is open
-      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
-    }
-    this.setState({ active : { item : itemId, section }});
-
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
