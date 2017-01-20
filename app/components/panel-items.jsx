@@ -160,7 +160,9 @@ class PanelItems extends React.Component {
         if(this.lastItem!==itemId || (this.lastItem===itemId && section!=='harmony')) this.lastItem=null;
       } else
       if(changeSection){
-        if(this.toChild[itemId])this.toChild[itemId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0})
+        if(this.toChild[itemId])this.toChild[itemId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0});
+        if ( ! this.mountedItems[itemId] ) this.mountedItems[itemId] = {};
+        this.mountedItems[itemId][section] = true;
         this.setState({ active : { item : itemId, section: section }});
       }
   }
