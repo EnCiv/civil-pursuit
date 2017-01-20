@@ -107,7 +107,7 @@ class PanelItems extends React.Component {
         //}
       }
       if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.state, distance: distance}) }
-      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{distance: distance +1}));
+      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: vs.state, distance: distance +1}));
     }
 
   }
