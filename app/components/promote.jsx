@@ -153,7 +153,7 @@ wideRight(){
   }
 
   render () {
-    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user } = this.props;
+    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user, hideFeedback } = this.props;
 
     const content = [];
 
@@ -215,6 +215,18 @@ wideRight(){
                     );
         }
 
+        let feedbackLeft=[], feedbackRight=[];
+        if(!hideFeedback){
+          feedbackLeft=(                  
+                [<Feedback className="gutter-top solid" />,
+                <Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
+          );
+          feedbackRight=(
+                  [<Feedback className="gutter-top solid" />],
+                  [<Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
+          );
+        }
+
         content.push(
           (
             <header className="text-center gutter-bottom solid">
@@ -234,8 +246,7 @@ wideRight(){
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
                     footer =  { leftFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildLeft.bind(this)}}
                   />
-                  <Feedback className="gutter-top solid" />
-                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
+                  {feedbackLeft}
                   <PromoteBigScreenButtons className="promote-big-button"
                     key               =   "left-buttons"
                     item              =   { left }
@@ -252,8 +263,7 @@ wideRight(){
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
                     footer =  { rightFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildRight.bind(this)}}
                   />
-                  <Feedback className="gutter-top solid" />
-                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />
+                  {feedbackRight}
                   <PromoteBigScreenButtons
                     key               =   "right-buttons"
                     item              =   { right }
