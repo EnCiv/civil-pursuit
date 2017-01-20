@@ -106,7 +106,7 @@ class PanelItems extends React.Component {
           //this.setState({ active: { item: null, section: null } });
         //}
       }
-      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.State, distance: distance}) }
+      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.state, distance: distance}) }
     }
 
   }
