@@ -18,6 +18,10 @@
   position: relative; /* otherwise things that are relative will obscure this when they move around */
 }
 
+.item.vs-title{
+  border: none;
+}
+
 .item.whole-border {
     border: 1px solid #666;
 }
@@ -80,6 +84,14 @@
   div:empty {
     height: 1em;
   }
+}
+
+.item-truncatable.vs-title{
+  padding-top: 0;
+  padding-bottom: 0.25em;
+  font-size: 1rem;
+  min-height: 1.25rem;
+  color: #888;
 }
 
 .item-trunc-hint {

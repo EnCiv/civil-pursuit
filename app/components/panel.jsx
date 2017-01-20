@@ -2,26 +2,28 @@
 
 import React                from 'react';
 import Component            from '../lib/app/component';
+import ClassNames          from 'classnames';
 
 class Panel extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className } = this.props;
-
+    const { heading, className, vs } = this.props;
+    const vState=vs ? vs.state : '';
+    const cState= vState ? 'vs-'+vState : '';
 
 
     return (
       <section
         { ...this.props }
-        className     =   { (className || '') + " syn-panel" }
+        className     =   {ClassNames((className || ''), "syn-panel", cState )}
         ref           =   "panel"
       >
-        <section className="syn-panel-heading">
+        <section className={ClassNames("syn-panel-heading", cState)}>
           { heading }
         </section>
-        <section className="syn-panel-body">
+        <section className={ClassNames("syn-panel-body", cState)}>
           { this.props.children }
         </section>
       </section>

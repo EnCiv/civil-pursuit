@@ -28,15 +28,16 @@ class PanelItems extends React.Component {
   };
 
   new = null;
-  vs={}
 
   mountedItems = {};
 
-  state = { active : { item : null, section : null } };
+  state = { active : { item : null, section : null } ,
+            vs: {}
+          };
 
   constructor(props){
     super(props);
-    Object.assign(this.vs,{state: 'truncated', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromChild.bind(this)})
+    Object.assign(this.state.vs,{state: 'truncated', distance: 0, depth: 0}, this.props.vs, {toParent: this.toMeFromChild.bind(this)})
   }
 
 
@@ -82,7 +83,11 @@ class PanelItems extends React.Component {
     const itemId=vs.itemId || null;
     if(vs.state=='truncated' && this.state.active.item){
       if(this.toChild[this.state.active.item]){this.toChild[this.state.active.item]({state: 'truncated', distance: vs.distance + 1})} // notify child of state change
-      return this.setState({ active : { item : null, section : null } }); // change the state here
+      return this.setState({ active : { item : null, section : null },
+                             vs: Object.assign({},this.state.vs,{class: vs.class})
+                     }); // change the state here
+    }else{
+      return this.setState({vs: Object.assign({},this.state.vs,{class: vs.class})}); // change the state here
     }
   }
 
@@ -108,9 +113,9 @@ class PanelItems extends React.Component {
         //}
       }
       if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.state, distance: distance}) }
-      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: vs.state, distance: distance +1}));
+      if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.state.vs,{toParent: null},{state: vs.state, distance: distance +1}));
+      this.setState({vs: Object.assign({},this.state.vs,{state: vs.state})})
     }
-
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +142,7 @@ class PanelItems extends React.Component {
           if(this.toChild[childId])this.toChild[childId]({state: 'truncated', distance: 0})
           return;
         });
-        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.state.vs,{toParent: null},{state: 'truncated', distance: 0}));
         return this.setState({ active : { item : null, section : null } });
         this.lastItem=null; //toMeFromChild needs to see that all the items have been cleared.
       } else
@@ -155,7 +160,7 @@ class PanelItems extends React.Component {
         }
         this.mountedItems[itemId][section] = true;
         // if one item is active, then the visual state of the panel is open
-        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
+        if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.state.vs,{toParent: null},{state: 'open', distance: 0}));
         this.setState({ active : { item : itemId, section: section }});
         if(this.lastItem!==itemId || (this.lastItem===itemId && section!=='harmony')) this.lastItem=null;
       } else
@@ -325,7 +330,7 @@ class PanelItems extends React.Component {
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].editItem ) {
               editItem = ( <EditAndGoAgain item={ item } /> );
             }
-            var iVs=Object.assign({},this.vs) // item Visual State
+            var iVs=Object.assign({},this.state.vs) // item Visual State
             if(this.props.vs && this.props.vs.depth) iVs.depth=this.props.vs.depth + 1;
             if(item) {
               iVs.itemId = item._id; // adding this as a parameter in the state
@@ -398,6 +403,7 @@ class PanelItems extends React.Component {
     return (
       <section id               =     "syn-panel-items">
         <Panel
+          vs = {this.state.vs}
           className   =   { name }
           ref         =   "panel"
           heading     =   {[

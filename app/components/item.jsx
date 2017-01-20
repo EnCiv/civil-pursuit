@@ -106,8 +106,9 @@ class VSItem extends React.Component {
 
   render () {
     const { item, user, buttons, footer, vs } = this.props;
-    const vState=vs.state;
-    const cState='vs-'+vs.state;
+    const vState=vs ? vs.state : '';
+    const cState= vState ? 'vs-'+vState : '';
+    
     let noReference=true;
 
     console.info("VSItem render", this.props);
