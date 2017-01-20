@@ -31,12 +31,16 @@
  background-color: @syn-background-color;
 }
 
+.syn-panel.vs-title{
+  border: none;
+}
+
 .syn-panel-heading {
   text-align: center;
   .syn-row();
   align-items: center;
   background:         @panel-heading-bg;
-  .gradient           (rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+//  .gradient           (rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
   color:              #fff;
   text-align:         center;
   vertical-align:     baseline;
@@ -44,24 +48,28 @@
 
   h4 {
     text-align: center;
-    flex-grow: 3
+    flex-grow: 3;
   }
 
   h4, i.fa-plus {
-    padding: 0 10px
+    padding: 0 10px;
   }
 
   i.fa-plus {
-    cursor: pointer
+    cursor: pointer;
   }
 
   a {
     color: #fff;
 
     i.fa {
-      display: none
+      display: none;
     }
   }
+}
+
+.synpanel-heading.vs-title{  // if titleized don't show the heading
+  display: none;
 }
 
 .syn-panel.focused .syn-panel-heading a i.fa {
