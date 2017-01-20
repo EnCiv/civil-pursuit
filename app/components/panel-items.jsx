@@ -106,7 +106,7 @@ class PanelItems extends React.Component {
           //this.setState({ active: { item: null, section: null } });
         //}
       }
-      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) } //child already gets this state change from VisualState
+      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
     }
 
   }
@@ -137,6 +137,7 @@ class PanelItems extends React.Component {
         });
         if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
         return this.setState({ active : { item : null, section : null } });
+        this.lastItem=null; //toMeFromChild needs to see that all the items have been cleared.
       } else
       if(showOne){
         Object.keys(this.toChild).forEach(childId=>{
@@ -154,6 +155,7 @@ class PanelItems extends React.Component {
         // if one item is active, then the visual state of the panel is open
         if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
         this.setState({ active : { item : itemId, section }});
+        if(this.lastItem!==ItemId || (this.lastItem===ItemId && section!='harmony')) this.lastItem=null;
       } else
       if(changeSection){
         if(this.toChild[itemId])this.toChild[itemId](Object.assign({},this.vs, {state: section==='harmony' ? 'open' : 'truncated', distance: 0}))
