@@ -95,7 +95,7 @@ class PanelItems extends React.Component {
       const itemId = vs.itemId || null;  // note it might not be an item belonging to this panel
       const distance = vs.distance || 0;
       if (this.lastItem && this.lastItem !== vs.itemId && this.toChild[this.lastItem]) {
-        this.toChild[this.lastItem](Object.assign({}, vs, { state: 'truncated' }))
+        this.toChild[this.lastItem]({ state: 'truncated', distance: distance }) // the child you are sending to is not the one that sent up the state. Don't copy over the itemId.
         this.lastItem = null;
       }
       if (vs.state == 'open') {
@@ -106,7 +106,7 @@ class PanelItems extends React.Component {
           //this.setState({ active: { item: null, section: null } });
         //}
       }
-      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) }
+      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.State, distance: distance}) }
     }
 
   }
