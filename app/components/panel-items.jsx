@@ -156,12 +156,12 @@ class PanelItems extends React.Component {
         this.mountedItems[itemId][section] = true;
         // if one item is active, then the visual state of the panel is open
         if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'open', distance: 0}));
-        this.setState({ active : { item : itemId, section }});
+        this.setState({ active : { item : itemId, section: section }});
         if(this.lastItem!==itemId || (this.lastItem===itemId && section!=='harmony')) this.lastItem=null;
       } else
       if(changeSection){
         if(this.toChild[itemId])this.toChild[itemId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0})
-        this.setState({ active : { item : itemId, section }});
+        this.setState({ active : { item : itemId, section: section }});
       }
   }
 
