@@ -155,7 +155,8 @@ class PanelItems extends React.Component {
         this.setState({ active : { item : itemId, section }});
       } else
       if(changeSection){
-            this.setState({ active : { item : itemId, section }});
+        if(this.toChild[itemId])this.toChild[itemId](Object.assign({},this.vs, {state: section==='harmony' ? 'open' : 'truncated', distance: 0}))
+        this.setState({ active : { item : itemId, section }});
       }
   }
 
