@@ -78,9 +78,10 @@ class PanelItems extends React.Component {
   lastItem=null;
 
   toMeFromParent(vs){
+    console.info("PanelItem.toMeFromParent", vs);
     const itemId=vs.itemId || null;
-    if(vs.state=='truncated' && active.item){
-      if(this.toChild[active.item]){this.toChild[active.item]({state: 'truncated', distance: vs.distance + 1})} // notify child of state change
+    if(vs.state=='truncated' && this.state.active.item){
+      if(this.toChild[this.state.active.item]){this.toChild[this.state.active.item]({state: 'truncated', distance: vs.distance + 1})} // notify child of state change
       return this.setState({ active : { item : null, section : null } }); // change the state here
     }
   }
