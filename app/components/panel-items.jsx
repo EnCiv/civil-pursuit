@@ -334,7 +334,7 @@ class PanelItems extends React.Component {
             if(this.props.vs && this.props.vs.depth) iVs.depth=this.props.vs.depth + 1;
             if(item) {
               iVs.itemId = item._id; // adding this as a parameter in the state
-              if(panel.items.length==1) iVs.state='open';  // if there is only on item in the list, then it's open
+              if(panel.items.length==1 && this.state.vs==='truncated') iVs.state='open';  // if there is only on item and in the list, and the panel is 'truncated' then render it open
             }
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
