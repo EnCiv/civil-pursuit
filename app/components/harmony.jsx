@@ -20,6 +20,8 @@ class Harmony extends React.Component {
     resetRightView: 0
   };
 
+vs={};
+
 //**********************************************************
   focusLeft(focused) {
     console.info("harmony.focusLeft",focused);
@@ -73,6 +75,7 @@ class Harmony extends React.Component {
 
       this.rightId = makePanelId( { type : harmony.types[1], parent : this.props.item._id });
     }
+    this.vs=Object.assign({},{state: 'truncated', depth: 0}, this.props.vs)  // initialize vs if not passed
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -144,7 +147,7 @@ class Harmony extends React.Component {
 
   render () {
     const { active, item, user } = this.props;
-    var vs=Object.assign({},{state: 'collapsed', depth: 0}, this.props.vs)  // initialize vs if not passed
+    
 
     let contentLeft = ( <Loading message="Loading" /> );
 
@@ -153,7 +156,7 @@ class Harmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, vs,  {state: 'truncated', side: 'left', depth: vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} />
+            <PanelItems user={ user } vs={Object.assign({}, this.vs,  { side: 'left', depth: vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} />
           </PanelStore>
         </DoubleWide>
       );
@@ -161,7 +164,7 @@ class Harmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, vs, {state: 'truncated', side: 'right', depth: vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} />
+            <PanelItems user={ user } vs={Object.assign({}, this.vs, { side: 'right', depth: vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} />
           </PanelStore>
         </DoubleWide>
       );
