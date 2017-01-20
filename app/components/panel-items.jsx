@@ -106,8 +106,7 @@ class PanelItems extends React.Component {
           //this.setState({ active: { item: null, section: null } });
         //}
       }
-      //if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) } //child already gets this state change from VisualState
-      
+      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId](Object.assign({}, vs)) } //child already gets this state change from VisualState
     }
 
   }
