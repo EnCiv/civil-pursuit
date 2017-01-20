@@ -80,7 +80,7 @@ class PanelItems extends React.Component {
   toMeFromParent(vs){
     const itemId=vs.itemId || null;
     if(vs.state=='truncated' && active.item){
-      if(this.toChild[active.item]){this.toChild[active.item](vs)} // notify child of state change
+      if(this.toChild[active.item]){this.toChild[active.item]({state: 'truncated', distance: vs.distance + 1})} // notify child of state change
       return this.setState({ active : { item : null, section : null } }); // change the state here
     }
   }
@@ -132,7 +132,7 @@ class PanelItems extends React.Component {
     console.info("PanelItem.toggle showAll:", showAll, " showOne:", showOne, " changeSection:", changeSection);
      if(showAll){
         Object.keys(this.toChild).forEach(childId=>{
-          if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: 'truncated', distance: 0}))
+          if(this.toChild[childId])this.toChild[childId]({state: 'truncated', distance: 0})
           return;
         });
         if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.vs,{toParent: null},{state: 'truncated', distance: 0}));
@@ -143,9 +143,9 @@ class PanelItems extends React.Component {
         Object.keys(this.toChild).forEach(childId=>{
           if(childId===itemId){  // this is the one we are going to show
             // if the section we are going to show is harmony send the open state, otherwise truncated
-            if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: section==='harmony' ? 'open' : 'truncated', distance: 0}))
+            if(this.toChild[childId])this.toChild[childId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0})
           }else { // this is one of the ones we are going to hide
-            if(this.toChild[childId])this.toChild[childId](Object.assign({},this.vs, {state: 'collapsed', distance: 0}))
+            if(this.toChild[childId])this.toChild[childId]({state: 'collapsed', distance: 0})
           }
         });
         if ( ! this.mountedItems[itemId] ) {
@@ -158,7 +158,7 @@ class PanelItems extends React.Component {
         if(this.lastItem!==itemId || (this.lastItem===itemId && section!=='harmony')) this.lastItem=null;
       } else
       if(changeSection){
-        if(this.toChild[itemId])this.toChild[itemId](Object.assign({},this.vs, {state: section==='harmony' ? 'open' : 'truncated', distance: 0}))
+        if(this.toChild[itemId])this.toChild[itemId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0})
         this.setState({ active : { item : itemId, section }});
       }
   }
