@@ -224,7 +224,7 @@ class PanelItems extends React.Component {
 
       if ( ! panel.items.length ) {
         content = (
-          <div className="gutter text-center">
+          <div className={`syn-panel-gutter text-center vs-${this.state.vs.state}`}>
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
               Click the + to be the first to add something here
             </a>

@@ -19,11 +19,11 @@ const QSortButtonList = {
             direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks'
         },
         neutral: {
-            name: 'neutral',
+            name: 'moderate',
             color: '#e0e0f0',
             title: {
-                active: "This is among the things that are neight most nor least important",
-                inactive: "Put this among the things that are neight most nor least important"
+                active: "This is among the things that are neighter most nor least important",
+                inactive: "Put this among the things that are neighter most nor least important"
             }
         },
         least: {
@@ -32,9 +32,7 @@ const QSortButtonList = {
             title: {
                 active: "This is in the least important stack of them all",
                 inactive: "Put this in the least important stack of them all"
-            },
-            max: 6,
-            direction: 'We are limiting the number of things in the "least" stack to 6. Please  move some to other stacks'
+            }
         }
     };
 export default QSortButtonList;
