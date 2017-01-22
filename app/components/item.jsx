@@ -66,11 +66,11 @@ class VSItem extends React.Component {
 
     if(this.props.vs.state==='truncated' && !this.state.hint) { 
       let buttons=this.refs.buttons;
-      let truncatable = ReactDOM.findDOMNode(this.refs.truncatable);
+      let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let media = ReactDOM.findDOMNode(this.refs.media);
-      let minHeight = Math.max(truncatable.offsetHeight, media.offsetHeight);
-      if (minHeight > truncatable.offsetHeight) {
-        truncatable.style.minHeight=minHeight +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+      let minHeight = Math.max(truncable.offsetHeight, media.offsetHeight);
+      if (minHeight > truncable.offsetHeight) {
+        truncable.style.minHeight=minHeight +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
       } else {
         this.setState({ hint: true } ); // if the text is bigger, turn on the hint
       }
