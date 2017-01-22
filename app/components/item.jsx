@@ -48,7 +48,7 @@ class VSItem extends React.Component {
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
     truncable.addEventListener('click', this.transparentEventListener, false);
-    textHint(); //see if we need to give a hint
+    this.textHint(); //see if we need to give a hint
   }
 
   componentWillUnmount(){
