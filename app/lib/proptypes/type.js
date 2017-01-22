@@ -22,7 +22,13 @@ type                =   shape({
   	}),
   evaluateQuestion  :   string,
   instruction	      :   string,
-  component         :   string
+  component         :   string,
+  min               :   number,
+  buttonName        :   string,
+  buttonTitle: 	shape({
+  	inactive		    : 	string.isRequired,
+  	active          :   string.isRequired
+  	}),
 });
 
 export default type;

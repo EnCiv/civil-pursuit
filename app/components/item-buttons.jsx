@@ -131,27 +131,31 @@ class ItemButtons extends React.Component {
       );
     }
 */}
-
     if ( item.subtype ) {
-      if (item.promotions > 2) {
+      var buttonName=item.subtype.buttonName || "Delve";
+      var min=item.subtype.min || 2;
+      var buttonTitle=item.subtype.buttonTitle || {active: "Delve into a deeper level of this discussion",
+                                                   inactive: "After 2 people Upvote this, the discussion can continue at a deeper level" };
+
+      if (item.promotions >= min) {
         if (buttonstate.subtype) {
           subtype = (
-            <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } title="Close the next level view and return to the higher level of this discusion" className="subtype-button">
-              <span className="civil-button-text">Delve</span>
+            <Button small shy success onClick={ this.toggle.bind(this, 'subtype') } title="Return to the higher level of this discusion" className="subtype-button">
+              <span className="civil-button-text">{buttonName}</span>
             </Button>
           );
         } else {
             subtype = (
-            <Button small shy onClick={ this.toggle.bind(this, 'subtype')} title="Delve into the next level of this discussion" className="subtype-button">
-              <span className="civil-button-text">Delve</span>
+            <Button small shy onClick={ this.toggle.bind(this, 'subtype')} title={buttonTitle.active} className="subtype-button">
+              <span className="civil-button-text">{buttonName}</span>
             </Button>
           );
         } 
       } else
       {
         subtype = (
-          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title="When 2 more people upvote this, the discussion can delve into the next level">
-            <span className="civil-button-text">Delve</span>
+          <Button small shy inactive onClick={ this.donothing.bind(this)} className="subtype-button" title={buttonTitle.inactive}>
+            <span className="civil-button-text">{buttonName}</span>
           </Button>
         );
       }

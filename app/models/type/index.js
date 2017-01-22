@@ -52,7 +52,13 @@ class Type extends Mungo.Model {
       },
       "evaluateQuestion" :  String,
       "instruction"      :  String,
-      "component"        : String
+      "component"        : String,
+      "min"              : Number,
+      "buttonName"       : String,
+      "buttonLabel" : {
+        "inactive"   :     String,
+        "active"     :     String
+      }
     }
   }
 
