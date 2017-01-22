@@ -25,11 +25,11 @@ export default Item;
 
 class VSItem extends React.Component {  
 
-  state={};
+  state={hint: false};
 
   constructor(props){
     super(props);
-    this.state.hint = (this.props.vs.state==='truncated');
+    //this.state.hint = (this.props.vs.state==='truncated');  // check this after the component did mount
     console.info("VSItem constructor", props);
   }
 
@@ -48,6 +48,7 @@ class VSItem extends React.Component {
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
     truncable.addEventListener('mouseover', this.transparentEventListener, false);
     truncable.addEventListener('click', this.transparentEventListener, false);
+    textHint(); //see if we need to give a hint
   }
 
   componentWillUnmount(){
@@ -62,7 +63,18 @@ class VSItem extends React.Component {
   textHint(active) {
     //calls on completion of Accordion collapse / expand
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
-    if(this.props.vs.state==='truncated' && !this.state.hint) { this.setState({ hint: true } ); } // if truncated turn on the hint
+
+    if(this.props.vs.state==='truncated' && !this.state.hint) { 
+      let buttons=this.refs.buttons;
+      let truncatable = ReactDOM.findDOMNode(this.refs.truncatable);
+      let media = ReactDOM.findDOMNode(this.refs.media);
+      let minHeight = Math.max(truncatable.offsetHeight, media.offsetHeight);
+      if (minHeight > truncatable.offsetHeight) {
+        truncatable.style.minHeight=minHeight +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+      } else {
+        this.setState({ hint: true } ); // if the text is bigger, turn on the hint
+      }
+    } // if truncated turn on the hint
     if(this.props.vs.state==='open' && this.state.hint) this.setState({hint: false}); // if open, turn off the hint
   }
 
@@ -139,7 +151,7 @@ class VSItem extends React.Component {
               ref       =   "media"
             />
             <section className={ClassNames("item-text", cState)} ref='itemText'>
-              <section className={ClassNames("item-buttons", cState)}>
+              <section className={ClassNames("item-buttons", cState)} ref='buttons'>
                 { buttons }
               </section>
               <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
