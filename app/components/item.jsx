@@ -65,13 +65,14 @@ class VSItem extends React.Component {
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
 
     if(this.props.vs.state==='truncated' && !this.state.hint) { 
+      let item=this.refs.item;
       let buttons=this.refs.buttons;
       let subject=this.refs.subject;
       let reference=this.refs.reference;
       let description=this.refs.description;
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let media = ReactDOM.findDOMNode(this.refs.media);
-      let minHeight = Math.max(buttons.offsetHeight, media.offsetHeight);
+      let minHeight = Math.max(buttons.offsetHeight, media.offsetHeight) - (item.clientHeight - truncable.offsetHeight); // height of buttons or media, less margin top & bottom of truncable
       let actualHeight= subject.offsetHeight + reference.offsetHeight + description.offsetHeight;
       if (actualHeight < minHeight) {
         truncable.style.minHeight=minHeight +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
