@@ -66,10 +66,14 @@ class VSItem extends React.Component {
 
     if(this.props.vs.state==='truncated' && !this.state.hint) { 
       let buttons=this.refs.buttons;
+      let subject=this.refs.subject;
+      let reference=this.refs.reference;
+      let description=this.refs.description;
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let media = ReactDOM.findDOMNode(this.refs.media);
       let minHeight = Math.max(buttons.offsetHeight, media.offsetHeight);
-      if (minHeight > truncable.offsetHeight) {
+      let actualHeight= subject.offsetHeight + reference.offsetHeight + description.offsetHeight;
+      if (actualHeight < minHeight) {
         truncable.style.minHeight=minHeight +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
       } else {
         this.setState({ hint: true } ); // if the text is bigger, turn on the hint
@@ -155,14 +159,14 @@ class VSItem extends React.Component {
                 { buttons }
               </section>
               <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
-                <h4 className={ClassNames("item-subject",cState)} >
+                <h4 className={ClassNames("item-subject",cState)} ref='subject'>
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
                 </h4>
-                <h5 className={ClassNames('item-reference', cState, {none: noReference})} >
+                <h5 className={ClassNames('item-reference', cState, {none: noReference})} ref='reference' >
                   <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
                 </h5>
-                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)}>
+                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)} ref='description'>
                   { item.description }
                 </div>
                 <div className="item-tendency" style={{display: 'none'}}>
