@@ -65,18 +65,13 @@ class VSItem extends React.Component {
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
 
     if(this.props.vs.state==='truncated' && !this.state.hint) { 
-      let itemH=this.refs.item.getBoundingClientRect().height;
-      let buttonsH=this.refs.buttons.getBoundingClientRect().height;
-      let subjectH=this.refs.subject.getBoundingClientRect().height;
-      let referenceH=this.refs.reference.getBoundingClientRect().height;
-      let descriptionH=this.refs.description.getBoundingClientRect().height;
-      let mediaH = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect().height;
+      let buttonsR=this.refs.buttons.getBoundingClientRect();
+      let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
-      let minHeight = Math.max(buttonsH, mediaH) // height of buttons or media
-                     - (itemH - truncable.getBoundingClientRect().height); //less margin top & bottom of truncable
-      let actualHeight= subjectH + referenceH + descriptionH;
-      if (actualHeight < minHeight) {
-        truncable.style.minHeight=Math.ceil(minHeight) +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+      let innerChildR=truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
+      let bottomLine=Math.max(buttonsR.bottom,mediaR.bottom);
+      if(innerChildR.bottom < bottomLine){
+        truncable.style.minHeight=Math.ceil(innerChildR.height) +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
       } else {
         this.setState({ hint: true } ); // if the text is bigger, turn on the hint
       }
