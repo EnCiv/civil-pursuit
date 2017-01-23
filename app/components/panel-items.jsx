@@ -131,7 +131,7 @@ class PanelItems extends React.Component {
     }
 
     if (section == 'creator') {
-      return this.setState({ active : { item : itemId, section: this.state.active.section === 'creator' ? null : section }});
+      return this.setState({ active : { item : itemId, section: this.state.active.section === section ? null : section }});
     }
 
     var showAll=false, showOne=false, changeSection=false;
