@@ -36,7 +36,7 @@ class PanelStore extends React.Component {
       const panel = { type : this.props.type };
 
       if ( this.props.parent ) {
-        panel.parent = this.props.parent._id;
+        panel.parent = this.props.parent; //._id;
       }
 
       if(this.props.size){panel.size=this.props.size}
@@ -83,9 +83,11 @@ class PanelStore extends React.Component {
 
   okCreateItem (item) {
 
-    const parent = this.props.parent ? this.props.parent._id : undefined;
+    const parentId = this.props.parent ? this.props.parent._id || this.props.parent : undefined;
+    const itemParentId= item.parent ? item.parent._id || item.parent : undefined;
 
-    if ( item.type._id === this.props.type._id && item.parent === parent ) {
+
+    if ( item.type._id === this.props.type._id && itemParentId === parentId ) {
 
       let { items } = this.state.panel;
 
@@ -95,7 +97,7 @@ class PanelStore extends React.Component {
 
       items = [item].concat(items);
 
-      this.setState( {panel: { items, new : item, type: this.props.type, parent: parent } } );
+      this.setState( {panel: { items, new : item, type: this.props.type, parent: this.props.parent } } );
     }
   }
 

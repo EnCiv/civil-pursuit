@@ -29,7 +29,8 @@ class ItemStore extends React.Component {
   }
 
   itemCreated (item) {
-    if ( item.parent === this.state.item._id ) {
+    if (   ( item.parent && item.parent._id && item.parent._id=== this.state.item._id)
+    || ( item.parent === this.state.item._id )) {
       const stateItem = this.state.item;
       stateItem.children ++;
       this.setState({ item : stateItem });

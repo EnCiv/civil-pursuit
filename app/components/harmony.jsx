@@ -89,14 +89,14 @@ vs={};
 
           window.Dispatcher.emit('get items', {
             type        :   props.item.harmony.types[0],
-            parent      :   props.item._id
+            parent      :   props.item
           });
         }
 
         if ( ! props.panels[this.rightId] ) {
           window.Dispatcher.emit('get items', {
             type        :   props.item.harmony.types[1],
-            parent      :   props.item._id
+            parent      :   props.item
           });
         }
       }

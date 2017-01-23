@@ -10,8 +10,9 @@ function getItems (panel, cb) {
 
 
     if ( panel.parent ) {
-      id += '-' + panel.parent;
-      query.parent = panel.parent;
+      const parentId = panel.parent._id || panel.parent; 
+      id += '-' + parentId;
+      query.parent = parentId;
     }
 
     if ( panel.skip ) {

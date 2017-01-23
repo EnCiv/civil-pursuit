@@ -200,6 +200,17 @@ class QSortItems extends React.Component {
                     className={name}
                     ref="panel"
                     heading={[(<h4>{title}</h4>)]}
+                    heading     =   {[
+                        ( <h4>{ title }</h4> ), !(user && user.id && parent && parent.user && parent.user._id && (user.id === parent.user._id) ) ? (null) : 
+                        (
+                        <Icon
+                            icon        =   "plus"
+                            className   =   "toggle-creator"
+                            onClick     =   { this.toggle.bind(this, null, 'creator') }
+                        />
+                        )
+                    ]}
+
                     type={type}
                     >
                     {creator}
