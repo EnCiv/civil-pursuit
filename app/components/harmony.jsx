@@ -156,7 +156,9 @@ vs={};
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
           <PanelStore type={ item.harmony.types[0] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, this.vs,  { side: 'left', depth: this.vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} />
+            <PanelItems user={ user } vs={Object.assign({}, this.vs,  { side: 'left', depth: this.vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} 
+                        hideFeedback = {this.props.hideFeedback}
+            />
           </PanelStore>
         </DoubleWide>
       );
@@ -164,7 +166,8 @@ vs={};
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
           <PanelStore type={ item.harmony.types[1] } parent={ item }>
-            <PanelItems user={ user } vs={Object.assign({}, this.vs, { side: 'right', depth: this.vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} />
+            <PanelItems user={ user } vs={Object.assign({}, this.vs, { side: 'right', depth: this.vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} 
+                        hideFeedback = {this.props.hideFeedback}/>
           </PanelStore>
         </DoubleWide>
       );

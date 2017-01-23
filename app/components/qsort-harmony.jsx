@@ -236,6 +236,7 @@ class QSortFlipItemHarmony extends React.Component {
                       user    =   { user }
                       active  =   { true }
                       vs      =    {{state: "title", depth: 0}}
+                      hideFeedback = {true}
                       />
                   </Accordion>
                 </div>

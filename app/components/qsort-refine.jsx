@@ -345,6 +345,7 @@ class QSortRefineItem extends React.Component {
                             vs={{state: 'truncated'}}
                             toggle  =   { toggle }
                             focusAction={null}
+                            hideFeedback = {this.props.hideFeedback}
                         />
                     </ItemStore>
                 </div>

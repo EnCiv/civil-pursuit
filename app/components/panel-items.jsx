@@ -257,6 +257,7 @@ class PanelItems extends React.Component {
                         show      =   { (active.item === item._id && active.section === 'promote') }
                         panel     =   { panel }
                         user    =     { user }
+                        hideFeedback = {this.props.hideFeedback}
                         />
                     </EvaluationStore>
                   </Accordion>
@@ -301,6 +302,7 @@ class PanelItems extends React.Component {
                       ref     =   "subtype"
                       user    =   { user }
                       active  =   { (active.item === item._id && active.section === 'subtype') }
+                      hideFeedback = {this.props.hideFeedback}
                       />
                   </Accordion>
                 </div>
@@ -321,6 +323,7 @@ class PanelItems extends React.Component {
                       ref     =   "harmony"
                       user    =   { user }
                       active  =   { (active && active.item === item._id && active.section === 'harmony') }
+                      hideFeedback = {this.props.hideFeedback}
                       />
                   </Accordion>
                 </div>
@@ -361,6 +364,7 @@ class PanelItems extends React.Component {
                   vs = {iVs}
                   toggle  =   { this.toggle.bind(this) }
                   focusAction={this.props.focusAction}
+                  hideFeedback = {this.props.hideFeedback}
                 />
               </ItemStore>
             );
