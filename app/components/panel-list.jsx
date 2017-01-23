@@ -232,7 +232,6 @@ class PanelList extends React.Component {
           this.panelList[currentPanel].content=[(
                 <PanelStore parent={panel.parent}
                             type={this.state.typeList[currentPanel]}
-                            size={100}
                 >
                   <QVoteStore>
                     <TypeComponent component={this.state.typeList[currentPanel].component} 
