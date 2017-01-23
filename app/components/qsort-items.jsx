@@ -115,11 +115,12 @@ class QSortItems extends React.Component {
             }
 
             if (!Object.keys(this.props.index).length) {
+                console.info("qsort-items creator", panel)
                 loading.push(
                     <div className="gutter text-center">
-                        <a href="#" onClick={this.toggle.bind(this, null, 'creator')} className="click-to-create">
+                        <a href="#" onClick={ this.setState.bind(this,{creator: !this.state.creator})} className="click-to-create">
                             Click the + to be the first to add something here
-                </a>
+                        </a>
                     </div>
                 );
             } else {
