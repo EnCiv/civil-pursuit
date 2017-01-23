@@ -64,21 +64,24 @@ class VSItem extends React.Component {
     //calls on completion of Accordion collapse / expand
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
 
-    if(this.props.vs.state==='truncated' && !this.state.hint) { 
+    if(this.props.vs.state==='truncated') { 
       let buttonsR=this.refs.buttons.getBoundingClientRect();
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR=truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
       let bottomLine=Math.max(buttonsR.bottom,mediaR.bottom);
-      if(  ((buttonsR.height || mediaR.height ) && (innerChildR.bottom < bottomLine)) // there is less text than the bottom of media or button
-         || (innerChildR.height < truncable.getBoundingClientRect().height) // there is or media or buttons and there is less text than the 'min' height of truncated
+      if(  (( buttonsR.height ||  mediaR.height) && (innerChildR.bottom < bottomLine)) // there is less text than the bottom of media or button
+      ||   ((!buttonsR.height && !mediaR.height) && (innerChildR.bottom < truncable.getBoundingClientRect().bottom)) // there is no media or buttons and there is less text than the 'min' height of truncated
       ){
         truncable.style.minHeight= innerChildR.height +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
-      } else {
-        this.setState({ hint: true } ); // if the text is bigger, turn on the hint
+        if(this.state.hint) this.setState({hint: false}); // if the hint is on - turn it off
+        return;
+      } else { // we are in the truncated state and there is so much text that we need to truncate it
+        if(!this.state.hint) this.setState({ hint: true } ); // if the text is bigger, turn on the hint
       }
-    } // if truncated turn on the hint
-    if(this.props.vs.state==='open' && this.state.hint) this.setState({hint: false}); // if open, turn off the hint
+    } else { // if this is not the truncated state, make sure the hint is off
+      if(this.state.hint) this.setState({hint: false}); // if open, turn off the hint
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
