@@ -207,7 +207,7 @@ class QSortItems extends React.Component {
                         <Icon
                             icon        =   "plus"
                             className   =   "toggle-creator"
-                            onClick     =   { this.toggle.bind(this, null, 'creator') }
+                            onClick     =   { this.setState.bind(this,{creator: !this.state.creator })}
                         />
                         )
                     ]}
