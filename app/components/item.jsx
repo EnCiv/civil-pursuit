@@ -65,15 +65,15 @@ class VSItem extends React.Component {
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
 
     if(this.props.vs.state==='truncated' && !this.state.hint) { 
-      let item=this.refs.item.getBoundingRect().height;
-      let buttonsH=this.refs.buttons.getBoundingRect().height;
-      let subjectH=this.refs.subject.getBoundingRect().height;
-      let referenceH=this.refs.reference.getBoundingRect().height;
-      let descriptionH=this.refs.description.getBoundingRect().height;
-      let mediaH = ReactDOM.findDOMNode(this.refs.media).getBoundingRect().height;
+      let itemH=this.refs.item.getBoundingClientRect().height;
+      let buttonsH=this.refs.buttons.getBoundingClientRect().height;
+      let subjectH=this.refs.subject.getBoundingClientRect().height;
+      let referenceH=this.refs.reference.getBoundingClientRect().height;
+      let descriptionH=this.refs.description.getBoundingClientRect().height;
+      let mediaH = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect().height;
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let minHeight = Math.max(buttonsH, mediaH) // height of buttons or media
-                     - (itemH - truncable.getBoundingRect().height); //less margin top & bottom of truncable
+                     - (itemH - truncable.getBoundingClientRect().height); //less margin top & bottom of truncable
       let actualHeight= subjectH + referenceH + descriptionH;
       if (actualHeight < minHeight) {
         truncable.style.minHeight=Math.ceil(minHeight) +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
