@@ -230,7 +230,10 @@ class PanelList extends React.Component {
         console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);
         if(currentPanel===0){
           this.panelList[currentPanel].content=[(
-                <PanelStore { ...panel }>
+                <PanelStore parent={panel.parent}
+                            type={this.state.typeList[currentPanel]}
+                            size={100}
+                >
                   <QVoteStore>
                     <TypeComponent component={this.state.typeList[currentPanel].component} 
                                   type={this.state.typeList[currentPanel]} 

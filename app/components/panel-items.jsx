@@ -411,7 +411,7 @@ class PanelItems extends React.Component {
           className   =   { name }
           ref         =   "panel"
           heading     =   {[
-            ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" ) ? (null) : 
+            ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id) )) ? (null) : 
             (
               <Icon
                 icon        =   "plus"
