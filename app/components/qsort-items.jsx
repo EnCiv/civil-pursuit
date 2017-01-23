@@ -14,6 +14,7 @@ import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
 import Creator            from './creator';
 import Accordion          from './util/accordion';
+import Icon               from './util/icon';
 
 
 class QSortItems extends React.Component {
