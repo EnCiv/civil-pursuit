@@ -12,9 +12,12 @@ import Instruction from './instruction';
 import Color from 'color';
 import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
+import Creator            from './creator';
 
 
 class QSortItems extends React.Component {
+
+    state={creator: false};
 
     static propTypes = {
         panel: panelType
@@ -79,7 +82,7 @@ class QSortItems extends React.Component {
 
         const onServer = typeof window === 'undefined';
 
-        let title = 'Loading items', name, loaded = false, content = [], loadMore,
+        let title = 'Loading items', name, loaded = false, content = [], loadMore, creator,
             type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
 
         if (panel) {
@@ -166,6 +169,25 @@ class QSortItems extends React.Component {
                     )
                 }
             }
+            let creatorPanel;
+
+            creatorPanel = (
+            <Creator
+                type    =   { type }
+                parent  =   { parent }
+                toggle  =   { this.setState.bind(this,{creator: !this.state.creator}) }
+                />
+            );
+
+            creator = (
+                <Accordion
+                active    =   { (this.state.creator) }
+                poa       =   { this.refs.panel }
+                name      = 'creator'
+                >
+                { creatorPanel }
+                </Accordion>
+            );
 
         }
 
@@ -178,6 +200,7 @@ class QSortItems extends React.Component {
                     heading={[(<h4>{title}</h4>)]}
                     type={type}
                     >
+                    {creator}
                     {instruction}
                     {direction}
                     {done}

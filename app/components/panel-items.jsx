@@ -130,6 +130,10 @@ class PanelItems extends React.Component {
       return Join.click();
     }
 
+    if (section == 'creator') {
+      return this.setState({ active : { item : itemId, section: section }});
+    }
+
     var showAll=false, showOne=false, changeSection=false;
     if(!itemId){showAll=true;}  // if itemId is null, show all
     else if(this.state.active.item === itemId && this.state.active.section === section) { showAll=true; }  // if it's active and we are toggeling it, show all
