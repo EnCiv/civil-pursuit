@@ -13,6 +13,7 @@ import Color from 'color';
 import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
 import Creator            from './creator';
+import Accordion          from './util/accordion';
 
 
 class QSortItems extends React.Component {
