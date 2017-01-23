@@ -162,6 +162,8 @@ class PanelList extends React.Component {
     const spaceBetween=containerWidth * 0.25;
 
     if ( panel ) {
+      console.info("PanelList: type", panel.type ? panel.type.name : "none");
+      console.info("PanelList: parent", panel.parent ? panel.parent.subject : "none");
 
       if(panel.type) {
         name = `syn-panel-list--${panel.type._id || panel.type}`;
@@ -220,6 +222,12 @@ class PanelList extends React.Component {
     }
 
     if (this.state.typeList.length) {
+        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
+        console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
+        console.info("PanelList list: size", panel.size || "none");
+        console.info("PanelList list: own", panel.own || "none");
+        console.info("PanelList list: typelist[",currentPanel,"]:",this.state.typeList[currentPanel].name);
+        console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);
         if(currentPanel===0){
           this.panelList[currentPanel].content=[(
                 <PanelStore { ...panel }>
