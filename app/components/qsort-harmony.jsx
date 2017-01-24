@@ -56,14 +56,18 @@ class QSortHarmony extends React.Component {
         let i;
         let done = false;
         var clone = {};
-        if (button == "done" && this.props.next) {
-            const results = {
-                index: this.props.index,
-                sections: this.props.sections,
-                panel: this.props.panel
+        if (button == "done"){
+            if( this.props.next) {
+                const results = {
+                    index: this.props.index,
+                    sections: this.props.sections,
+                    panel: this.props.panel
+                }
+                this.props.next(results)
             }
-            this.props.next(results)
+            return;
         }
+        if (button == 'creator') { return;} 
         if (button == 'harmony') { return; }
 
         //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.

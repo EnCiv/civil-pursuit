@@ -95,8 +95,11 @@ class QSortWhy extends React.Component {
         let i;
         let done = false;
         var clone = {};
-        if( button == "done" && this.props.next ){ 
-            this.props.next(this.results);
+        if( button == "done"){
+            if( this.props.next ){ 
+                this.props.next(this.results);
+            }
+            return;
         }
         if(set==='set'){
             this.results.why[this.whyName][itemId]=whyItemId;
