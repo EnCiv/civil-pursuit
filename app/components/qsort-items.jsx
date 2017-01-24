@@ -24,12 +24,7 @@ class QSortItems extends React.Component {
         <PanelStore parent={this.props.parent}
                     type={this.props.type}>
             <QVoteStore>
-                <QSortItemsQV  type={this.props.type} 
-                               user={this.props.user} 
-                               next={this.props.next} 
-                               shared={this.props.shared}
-                               emitter={this.props.emitter}
-                               panelNum={this.props.currentPanel}/>
+                <QSortItemsQV  {...this.props}/>
             </QVoteStore>
         </PanelStore>
         );
