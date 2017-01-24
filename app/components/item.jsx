@@ -46,7 +46,7 @@ class VSItem extends React.Component {
 
     this.transparentEventListener=this.transparent.bind(this);
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
-    if(truncatable){ // if item is null, only a simple div is returned.
+    if(truncable){ // if item is null, only a simple div is returned.
       truncable.addEventListener('mouseover', this.transparentEventListener, false);
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
