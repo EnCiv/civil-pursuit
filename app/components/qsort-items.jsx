@@ -26,7 +26,7 @@ class QSortItems extends React.Component {
             <QVoteStore>
                 <QSortItemsQV  type={this.props.type} 
                                user={this.props.user} 
-                               next={this.props.nextPanel} 
+                               next={this.props.next} 
                                shared={this.props.shared}
                                emitter={this.props.emitter}
                                panelNum={this.props.currentPanel}/>
