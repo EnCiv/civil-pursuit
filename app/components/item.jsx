@@ -53,10 +53,12 @@ class VSItem extends React.Component {
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount(){ // if item is null, only a simple div is returned.
     var truncable=ReactDOM.findDOMNode(this.refs.truncable);
+    if(truncable){
     truncable.removeEventListener('mouseover', this.transparentEventListener);
     truncable.removeEventListener('click', this.transparentEventListener);
+    }
   }
 
 

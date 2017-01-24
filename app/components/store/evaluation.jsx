@@ -250,7 +250,7 @@ class EvaluationStore extends React.Component {
  //     window.socket.emit('promote', this.state[position]);
  //   }
 
-    if(this.state[opposite] && this.state[opposite]._id) this.insertVotes(opposite, this.state[opposite]._id);
+    if(this.state[opposite] && this.state[opposite]._id) this.insertVotes(opposite, this.state[opposite]._id);  // it wouldn't exist if there was only one thing to vote on
 
     if ( cursor <= this.state.limit ) {
 
