@@ -99,7 +99,7 @@ class QSortWhy extends React.Component {
         var clone = {};
         if( button == "done"){
             if( this.props.next ){ 
-                this.props.next(this.props.panelNum,"done", results)
+                this.props.next(this.props.panelNum,"done", this.results)
             }
             return;
         }
