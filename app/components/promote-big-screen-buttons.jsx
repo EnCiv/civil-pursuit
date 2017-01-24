@@ -24,7 +24,7 @@ class PromoteBigScreenButtons extends React.Component {
 
     let promoteButton;
 
-    if ( opposite ) {
+//    if ( opposite ) {
       promoteButton = (
         <PromoteButton
           { ...item }
@@ -32,7 +32,7 @@ class PromoteBigScreenButtons extends React.Component {
           className =   "gutter-bottom promote-item-button"
           />
       );
-    }
+//    }
 
     return (
       <Column
