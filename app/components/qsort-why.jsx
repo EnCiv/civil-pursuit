@@ -203,7 +203,7 @@ class QSortWhy extends React.Component {
             if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections[this.whyName] && Object.keys(this.props.shared.sections[this.whyName].length))) {
                 // if we don't have any data to work with 
                 <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
-                     {`No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.`}
+                     No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
                 </div>
             } else {
                 this.buttons.forEach((name) => {
@@ -253,7 +253,7 @@ class QSortWhy extends React.Component {
                         </Button>
                     </div>
                 )
-            }
+            }else {this.props.next(this.props.panelNum,"issues")}
         }
 
 

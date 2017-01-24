@@ -190,7 +190,7 @@ class QSortHarmony extends React.Component {
                             </Button>
                         </div>
                     )
-                }
+                }else {this.props.next(this.props.panelNum,"issues")}
             }
         }
 
