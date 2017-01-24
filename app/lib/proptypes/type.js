@@ -29,6 +29,8 @@ type                =   shape({
   	inactive		    : 	string.isRequired,
   	active          :   string.isRequired
   	}),
+  mediaMethod		    : 	string,
+  referenceMethod   :   string
 });
 
 export default type;

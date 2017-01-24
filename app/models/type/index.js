@@ -58,7 +58,9 @@ class Type extends Mungo.Model {
       "buttonLabel" : {
         "inactive"   :     String,
         "active"     :     String
-      }
+      },
+      "mediaMethod":       String,
+      "referenceMethod":   String
     }
   }
 

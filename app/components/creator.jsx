@@ -45,11 +45,20 @@ class Creator extends React.Component {
     const subject   =   ReactDOM.findDOMNode(this.refs.subject),
       reference     =   ReactDOM.findDOMNode(this.refs.reference),
       description   =   ReactDOM.findDOMNode(this.refs.description),
-      media         =   ReactDOM.findDOMNode(this.refs.uploader)
-                          .querySelector('.syn-uploader-dropbox'),
       creator       =   ReactDOM.findDOMNode(this.refs.creator),
-      mediaHeight   =   media.offsetHeight,
+      media,
+      mediaHeight   = 60,
+      inputHeight   = subject.offsetHeight;
+
+    if(this.refs.media){
+      media         =   ReactDOM.findDOMNode(this.refs.uploader)
+                          .querySelector('.syn-uploader-dropbox');
+      mediaHeight   =   media.offsetHeight;
+    }
+
+    if(this.refs.reference){
       inputHeight   =   subject.offsetHeight + reference.offsetHeight;
+    }
 
     description.style.minHeight = ( mediaHeight -  inputHeight ) + 'px';
 
@@ -59,15 +68,16 @@ class Creator extends React.Component {
       }
     }, false);
 
-    reference.addEventListener('keydown', (e) => {
-      if ( e.keyCode === 13 ) {
-        e.preventDefault();
-        this.getUrlTitle();
-      }
-    }, false);
+    if(reference) { reference.addEventListener('keydown', (e) => {
+        if ( e.keyCode === 13 ) {
+          e.preventDefault();
+          this.getUrlTitle();
+        }
+      }, false);
 
-    if ( this.state.reference && this.state.title ) {
-      this.applyTitle(this.state.title, this.state.reference);
+      if ( this.state.reference && this.state.title ) {
+        this.applyTitle(this.state.title, this.state.reference);
+      }
     }
   }
 
@@ -195,9 +205,11 @@ class Creator extends React.Component {
   render () {
     console.log('RENDER creator', this.props);
 
-    return (
-      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
-        <article className="item" ref="creator">
+    var media=[];
+    var reference=[];
+
+    if(this.props.type.mediaMethod!="disabled"){
+      media=[
           <section className="item-media-wrapper">
             <section className="item-media" ref="media" style={{width: "calc(13em - 8px)"}}>
               <Uploader
@@ -207,28 +219,11 @@ class Creator extends React.Component {
                 video     =   { this.state.video } />
             </section>
           </section>
-
-          <section className="item-buttons">
-            <section className="syn-button-group">
-              <span className="civil-button-info">{' '}</span>
-              <Submit small shy>
-                <span className="civil-button-text">Post</span>
-              </Submit>
-            </section>
-          </section>
-
-          <section className="item-text">
-            <div className="item-inputs">
-              <TextInput block 
-                placeholder="Subject" 
-                ref="subject" 
-                required 
-                name="subject" 
-                value={ this.state.subject }
-                onChange = {this.onChangeKey.bind(this,'subject')}
-                />
-
-              <Row center-items>
+      ];
+    }
+    if(this.props.type.referenceMedhod!="disabled"){
+      reference=[
+                      <Row center-items>
                 <Icon
                   icon        =   "globe"
                   spin        =   { true }
@@ -266,6 +261,36 @@ class Creator extends React.Component {
                   onClick       =   { this.editURL.bind(this) }
                   />
               </Row>
+
+      ]
+    }
+  
+
+    return (
+      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
+        <article className="item" ref="creator">
+          {media}
+          <section className="item-buttons">
+            <section className="syn-button-group">
+              <span className="civil-button-info">{' '}</span>
+              <Submit small shy>
+                <span className="civil-button-text">Post</span>
+              </Submit>
+            </section>
+          </section>
+
+          <section className="item-text">
+            <div className="item-inputs">
+              <TextInput block 
+                placeholder="Subject" 
+                ref="subject" 
+                required 
+                name="subject" 
+                value={ this.state.subject }
+                onChange = {this.onChangeKey.bind(this,'subject')}
+                />
+
+              { reference }
 
               <TextArea
                 placeholder     =   "Description"
