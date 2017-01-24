@@ -2,16 +2,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Icon from './util/icon';
 import Loading from './util/loading';
-import QSortItems from './qsort-items';
-import panelType from '../lib/proptypes/panel';
-import PanelStore from './store/panel';
 import TypeComponent from './type-component';
-import makePanel  from '../lib/app/make-panel';
 import Panel from './panel';
 import Instruction from './instruction';
-import QVoteStore from './store/qvote';
 import merge from 'lodash/merge'
 
 class PanelList extends React.Component {

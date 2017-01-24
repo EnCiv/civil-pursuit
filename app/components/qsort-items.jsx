@@ -15,11 +15,12 @@ import QSortButtonList from './qsort-button-list';
 import Creator            from './creator';
 import Accordion          from './util/accordion';
 import Icon               from './util/icon';
+import PanelStore from './store/panel';
+import QVoteStore from './store/qvote';
 
 class QSortItems extends React.Component {
     render(){
         return(
-    
         <PanelStore parent={this.props.parent}
                     type={this.props.type}>
             <QVoteStore>
