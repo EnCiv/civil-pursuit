@@ -99,7 +99,7 @@ class QSortRefine extends React.Component {
         var clone = {};
         if( button == "done"){
             if(this.props.next ){ 
-                this.props.next(this.results);
+                this.props.next(this.props.panelNum,"done", results)
             }
             return;
         }

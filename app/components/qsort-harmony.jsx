@@ -63,7 +63,7 @@ class QSortHarmony extends React.Component {
                     sections: this.props.sections,
                     panel: this.props.panel
                 }
-                this.props.next(results)
+                this.props.next(this.props.panelNum,"done", results)
             }
             return;
         }

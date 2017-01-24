@@ -120,16 +120,17 @@ class PanelList extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  nextPanel(results){
+  nextPanel(panelNum,status,results){
     let cP=this.state.currentPanel;
-    if(!this.panelStatus[cP]) { this.panelStatus[cP]={} }
-    this.panelStatus[cP].done=true;
+    if(!this.panelStatus[cP]) { this.panelStatus[cP]={status: null} }
+    this.panelStatus[cP].status=status;
     if(results){
       const shared=merge({},this.state.shared, results);
       console.info("panel-list shared", shared);
       this.setState({shared: shared});
     }
-    if(this.state.currentPanel<(this.state.typeList.length-1)){
+    // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
+    if(status==='done' && panelNum === this.state.currentPanel && this.state.currentPanel<(this.state.typeList.length-1)){
       this.setState({currentPanel: this.state.currentPanel + 1 });
       this.smoothHeight();
     }
@@ -183,8 +184,8 @@ class PanelList extends React.Component {
     if (typeList) {
       typeList.forEach((type, i) => {
         let visible= false;
-        if( this.panelStatus[i] && this.panelStatus[i].done) { visible=true;}
-        if( (i > 0) && this.panelStatus[i-1] && this.panelStatus[i-1].done ) { visible=true }
+        if( this.panelStatus[i] && this.panelStatus[i].status==='done') { visible=true;}
+        if( (i > 0) && this.panelStatus[i-1] && this.panelStatus[i-1].status=='done' ) { visible=true }
         let active= this.state.currentPanel === i;
         let buttonActive= active || visible;
         crumbs.push(

@@ -52,6 +52,7 @@ class QSortWhy extends React.Component {
     constructor(props) {
         super(props);
         var unsortedList = [];
+        console.info("qsortWhy constructor", this.props.shared);
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         if(this.props.type.name==="Why It's Most Important"){
             this.whyName='most';
@@ -66,8 +67,9 @@ class QSortWhy extends React.Component {
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = this.props.shared.sections[this.whyName].slice(0);
-        console.info("qsortWhy constructor", this.props.shared);
+        if(this.props.shared.sections[this.whyName]){ // if theres nothing in the list, there might not be a list especially for Least
+            this.state.sections['unsorted'] = this.props.shared.sections[this.whyName].slice(0);
+        } else this.state.sections['unsorted'] = [];
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -97,7 +99,7 @@ class QSortWhy extends React.Component {
         var clone = {};
         if( button == "done"){
             if( this.props.next ){ 
-                this.props.next(this.results);
+                this.props.next(this.props.panelNum,"done", results)
             }
             return;
         }
