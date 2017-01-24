@@ -16,8 +16,27 @@ import Creator            from './creator';
 import Accordion          from './util/accordion';
 import Icon               from './util/icon';
 
-
 class QSortItems extends React.Component {
+    render(){
+        return(
+    
+        <PanelStore parent={this.props.parent}
+                    type={this.props.type}>
+            <QVoteStore>
+                <QSortItemsQV  type={this.props.type} 
+                               user={this.props.user} 
+                               next={this.props.nextPanel} 
+                               shared={this.props.shared}
+                               emitter={this.props.emitter}
+                               panelNum={this.props.currentPanel}/>
+            </QVoteStore>
+        </PanelStore>
+        );
+    }
+}
+
+
+class QSortItemsQV extends React.Component {
 
     state={creator: false};
 
