@@ -32,7 +32,7 @@ class Creator extends React.Component {
   constructor(props){
     super(props);
     Creator.keys.forEach(key => {this.state[key]=''}); 
-    if(this.props.item){
+    if(this.props.item  || this.props.item===null ){
       Creator.keys.forEach(key => {this.state[key]=props[key] || ''})
     }
     if(this.props.references && this.props.references[0]){
@@ -45,8 +45,8 @@ class Creator extends React.Component {
     const subject   =   ReactDOM.findDOMNode(this.refs.subject),
       reference     =   ReactDOM.findDOMNode(this.refs.reference),
       description   =   ReactDOM.findDOMNode(this.refs.description),
-      creator       =   ReactDOM.findDOMNode(this.refs.creator),
-      media,
+      creator       =   ReactDOM.findDOMNode(this.refs.creator);
+    var media = null,
       mediaHeight   = 60,
       inputHeight   = subject.offsetHeight;
 

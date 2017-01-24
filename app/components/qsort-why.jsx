@@ -335,7 +335,7 @@ class QSortWhyCreate extends React.Component {
         var color='#fff'
         console.info("QSortWhyCreate", this.props);
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
-        var item = {subject: '', description: ''};
+        var item = null;
         if(panel && panel.items && panel.items.length) {
             item=panel.items[0];
             if(!this.set){ 
