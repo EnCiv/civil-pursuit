@@ -79,13 +79,13 @@ class QSortWhy extends React.Component {
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
-        newProps.shared.sections[this.whyName].forEach(itemId=>{
-            if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
-            else{ newSections['unsorted'].push(itemId) }
-        });
-
-        this.setState({sections: newSections});
-
+        if(newProps.shared.sections[this.whyName]){
+            newProps.shared.sections[this.whyName].forEach(itemId=>{
+                if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
+                else{ newSections['unsorted'].push(itemId) }
+            });
+            this.setState({sections: newSections});
+        }
     }
 
 
