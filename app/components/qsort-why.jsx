@@ -202,11 +202,9 @@ class QSortWhy extends React.Component {
 
             if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections[this.whyName] && Object.keys(this.props.shared.sections[this.whyName].length))) {
                 // if we don't have any data to work with 
-                loading.push(
-                    <div className="gutter text-center">
-                            <p>We don't seem to have anything to work with here. Try going back to the previous task.</p>
-                    </div>
-                );
+                <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
+                     {`No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.`}
+                </div>
             } else {
                 this.buttons.forEach((name) => {
                     if (this.state.sections['unsorted'].length) { issues++ }
@@ -241,20 +239,20 @@ class QSortWhy extends React.Component {
                         );
                     });
                 });
-                if (!issues) {
-                    done.push(
-                        <div className='instruction-text'>
-                            {this.ButtonList['unsorted'].direction}
-                            <Button small shy
-                                onClick={this.toggle.bind(this, null, 'done')}
-                                className="qwhy-done"
-                                style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
-                                >
-                                <span className="civil-button-text">{"next"}</span>
-                            </Button>
-                        </div>
-                    )
-                }
+            }
+            if (!issues) {
+                done.push(
+                    <div className='instruction-text'>
+                        {this.ButtonList['unsorted'].direction}
+                        <Button small shy
+                            onClick={this.toggle.bind(this, null, 'done')}
+                            className="qwhy-done"
+                            style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
+                            >
+                            <span className="civil-button-text">{"next"}</span>
+                        </Button>
+                    </div>
+                )
             }
         }
 
