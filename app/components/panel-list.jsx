@@ -123,11 +123,16 @@ class PanelList extends React.Component {
   nextPanel(panelNum,status,results){
     let cP=this.state.currentPanel;
     var panelStatus=this.state.panelStatus.slice(0);
-    panelStatus[panelNum]=status;
+    var newState=false;
+    if(panelStatus[panelNum]!==status){panelStatus[panelNum]=status; newState=true}
     if(status !== 'done' && panelNum < (panelStatus.length-1)){  // if the panel is not done, mark all existing forward panels as that
-      for(let i=panelNum+1; i< panelStatus.length; i++) {panelStatus[i]=status}
+      for(let i=panelNum+1; i< panelStatus.length; i++) if(panelStatus[i]!==status){panelStatus[i]=status; newState=true}
     }
-    if(this.state.panelStatus.length != panelStatus.length || !this.state.panelStatus.every((value,i)=>{return(value===panelStatus[i] ? true : false)})) this.setState(panelStatus);
+    console.info("panelList nextPanel panelStatus", panelStatus)
+    if(newState) {
+      console.info("panelList nextPanel setting state", panelStatus)
+      this.setState({panelStatus: panelStatus});
+    }
     if(results){
       const shared=merge({},this.state.shared, results);
       console.info("panel-list shared", shared);
