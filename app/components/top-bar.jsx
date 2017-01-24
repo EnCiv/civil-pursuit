@@ -294,9 +294,6 @@ class TopBar extends React.Component {
                   </section>
                   <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
                 </section>
-                <section className='syn-top_bar-center'>
-                  <span>Unpolarize Politics</span>
-                </section>
                 <section className={ `${comp}-right` }>
                   <section className={ `${comp}-beta` }>Beta</section>
                   <section className={ 'syn-top_bar-hamburger'} ref="hamburger">
