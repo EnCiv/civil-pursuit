@@ -15,16 +15,14 @@ function getAccumulation (itemId, userId) {
 
       this
         .find(query)
-        .sort({ item: 1, user : 1, _id : 1})
+        .sort({ item: 1, user : 1, _id : -1})
         .then(
           qvotes => {
             try {
               qvotes.forEach(jvote => {
                 let vote=jvote.toJSON();
                 if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
-                console.info("qvote get accumulation", vote.item, lastItem.item);
                 if(vote.item != lastItem.item){
-                  console.info("qvote get accumulation !=");
                   accumulation.push(lastItem);
                   lastItem.item=vote.item;
                   lastItem.results={};
