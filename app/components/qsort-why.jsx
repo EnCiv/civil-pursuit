@@ -306,7 +306,7 @@ class QSortWhyItem extends React.Component {
         }
 
         return(
-                <div style={{backgroundColor: qbuttons[whyName].color}}>
+                <div style={{backgroundColor: qbuttons[sectionName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
