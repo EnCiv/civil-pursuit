@@ -199,11 +199,7 @@ class QSortRefine extends React.Component {
 
             if ( ! (this.props.shared && this.props.shared.why && this.props.shared.why[this.whyName] && Object.keys(this.props.shared.why[this.whyName]).length)) {
                 // if we don't have any data to work with 
-                loading.push(
-                    <div className="gutter text-center">
-                            <p>We don't seem to have anything to work with here. Try going back to the previous task.</p>
-                    </div>
-                );
+                ; 
             } else {
                 let topItem=true;
                 this.buttons.forEach((name) => {
@@ -247,20 +243,20 @@ class QSortRefine extends React.Component {
                         topItem=false
                     });
                 });
-                if (!issues) {
-                    done.push(
-                        <div className='instruction-text'>
-                            {this.ButtonList['unsorted'].direction}
-                            <Button small shy
-                                onClick={this.toggle.bind(this, null, 'done')}
-                                className="qwhy-done"
-                                style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
-                                >
-                                <span className="civil-button-text">{"next"}</span>
-                            </Button>
-                        </div>
-                    )
-                }
+            }
+            if (!issues) {
+                done.push(
+                    <div className='instruction-text'>
+                        {this.ButtonList['unsorted'].direction}
+                        <Button small shy
+                            onClick={this.toggle.bind(this, null, 'done')}
+                            className="qwhy-done"
+                            style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
+                            >
+                            <span className="civil-button-text">{"next"}</span>
+                        </Button>
+                    </div>
+                )
             }
         }
 
@@ -305,7 +301,7 @@ class QSortRefineItem extends React.Component {
 
         if(voted){
             creator=[
-                <div style={{backgroundColor: qbuttons[whyName].color}}>
+                <div style={{backgroundColor: qbuttons[sectionName].color}}>
                     <ItemStore item={ winner } key={ `item-${winner._id}` }>
                         <Item
                             item    =   { winner }
@@ -336,7 +332,7 @@ class QSortRefineItem extends React.Component {
             ];
         }
         return(
-                <div style={{backgroundColor: qbuttons[whyName].color}}>
+                <div style={{backgroundColor: qbuttons[sectionName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
