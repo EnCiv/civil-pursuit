@@ -23,7 +23,7 @@ class PanelList extends React.Component {
     typeList: [],
     currentPanel: 0,
     containerWidth: 0,
-    panelStatus: []
+    panelStatus: ["issues"]
   };
 
   shared= {};
@@ -127,7 +127,7 @@ class PanelList extends React.Component {
     if(status !== 'done' && panelNum < (panelStatus.length-1)){  // if the panel is not done, mark all existing forward panels as that
       for(let i=panelNum+1; i< panelStatus.length; i++) {panelStatus[i]=status}
     }
-    this.setState(panelStatus);
+    if(this.state.panelStatus.length != panelStatus.length || !this.state.panelStatus.every((value,i)=>{return(value===panelStatus[i] ? true : false)})) this.setState(panelStatus);
     if(results){
       const shared=merge({},this.state.shared, results);
       console.info("panel-list shared", shared);
