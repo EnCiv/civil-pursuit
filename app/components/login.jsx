@@ -121,21 +121,21 @@ class Login extends React.Component {
     console.info(e);
  }
 
- reportCapture(e){
-    console.info("capture",e);
+ reportCapture(el, e){
+    console.info("capture",el,e);
  }
-reportBubble(e){
-    console.info("bubble",e);
+reportBubble(el, e){
+    console.info("bubble",el,e);
  }
 
   componentDidMount(){
-    const ele = ['form','email','password','facebook'];
+    const ele = ['form','email','password','facebook','signup'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       if(!this.eventListeners)this.eventListeners={};
       this.eventListeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.reportCapture.bind(this),true);
-      ref.addEventListener('click',this.reportBubble.bind(this),false);
+      ref.addEventListener('click',this.reportCapture.bind(this,el),true);
+      ref.addEventListener('click',this.reportBubble.bind(this,el),false);
     });
   }
 
@@ -185,7 +185,7 @@ reportBubble(e){
 
         <Row>
           <Column span="50" gutter className="text-left">
-            <p style={{margin: 0}}>Not yet a user?</p><a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
+            <p style={{margin: 0}}>Not yet a user?</p><a href="#" onClick={ this.signUp.bind(this) } ref='signup'>Sign up</a>
           </Column>
 
           <Column span="50" text-right gutter className="forgot-password">
