@@ -129,7 +129,7 @@ class Login extends React.Component {
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       if(!this.eventListeners)this.eventListeners={};
       this.eventListeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.eventListeners[el],false);
+      ref.addEventListener('click',this.eventListeners[el],true);
     });
   }
 
