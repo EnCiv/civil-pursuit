@@ -217,15 +217,13 @@ wideRight(){
 
         let feedbackLeft=[], feedbackRight=[], finishButton=[];
         if(!hideFeedback){
-          feedbackLeft=(                  
+          feedbackLeft=                  
                 [<Feedback className="gutter-top solid" />,
-                <Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
-          );
-          feedbackRight=(
+                <Sliders criterias={ evaluation.criterias } className="promote-sliders" />];
+          feedbackRight=
                   [<Feedback className="gutter-top solid" />,
-                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
-          );
-          finishButton=(
+                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />];
+          finishButton=
             [<div className="gutter solid">
               <FinishButton
                 cursor      =   { cursor }
@@ -234,7 +232,7 @@ wideRight(){
                 clearExpanders    =   {this.clearExpanders.bind(this)}
                 />
             </div>
-           ]);
+           ];
         }
 
         content.push(
@@ -293,7 +291,8 @@ wideRight(){
             </div>
 
           ),
-          {finishButton }
+          ( {finishButton }
+          )
         );
       }
     }
