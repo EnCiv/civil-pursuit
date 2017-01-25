@@ -21,6 +21,11 @@ import Loading                      from './util/loading';
 import Facebook                     from '../lib/app/fb-sdk';
 
 class Join extends React.Component {
+    static click () {
+    let modal = document.querySelector('.syn-join');
+    modal.classList.add('syn--visible');
+  }
+
   render(){
       let classes = [ 'syn-join' ];
 
@@ -36,6 +41,7 @@ class Join extends React.Component {
 }
 
 class JoinForm extends React.Component {
+
   constructor (props) {
     super(props);
 
@@ -43,6 +49,7 @@ class JoinForm extends React.Component {
   }
 
   signup () {
+
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
       confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
@@ -116,11 +123,28 @@ class JoinForm extends React.Component {
     }
   }
 
-  static click () {
-//    document.querySelector('.syn-top_bar-join_button button').click();
-//    let modal = React.findDOMNode('.syn-join syn-modal');
-    let modal = document.querySelector('.syn-join');
-    modal.classList.add('syn--visible');
+ listeners={};
+
+ stopPropogation(e){
+    e.stopPropagation();
+ }
+
+  componentDidMount(){
+    const ele = ['email','password','confirm','agree'];
+    ele.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      this.listeners[el]=this.stopPropogation.bind(this);
+      ref.addEventListener('click',this.listener[el],false);
+    });
+  }
+
+  componentWillUnmount(){
+    const ele = ['email','password','confirm','agree'];
+    ele.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      this.listeners[el]=this.stopPropogation.bind(this);
+      ref.removeEventListener('click',this.listener[el]);
+    });
   }
 
   render () {

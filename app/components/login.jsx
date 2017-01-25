@@ -79,7 +79,7 @@ class Login extends React.Component {
       .then(
         () => {
           this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
-          setTimeout(() => location.href = '/page/profile', 800);
+          setTimeout(() => location.href = window.location.pathname, 800); //'/page/profile'
         },
         error => {
           this.setState({ validationError : error.message, info: null })
@@ -116,6 +116,30 @@ class Login extends React.Component {
     location.href = '/sign/in/twitter';
   }
 
+
+  stopPropogation(e){
+    e.stopPropagation();
+ }
+
+ listeners={};
+
+  componentDidMount(){
+    const ele = ['email','password'];
+    ele.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      this.listeners[el]=this.stopPropogation.bind(this);
+      ref.addEventListener('click',this.listener[el],false);
+    });
+  }
+
+  componentWillUnmount(){
+    const ele = ['email','password'];
+    ele.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      this.listeners[el]=this.stopPropogation.bind(this);
+      ref.removeEventListener('click',this.listener[el]);
+    });
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
