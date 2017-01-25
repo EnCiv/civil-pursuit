@@ -124,7 +124,7 @@ class Login extends React.Component {
  listeners={};
 
   componentDidMount(){
-    const ele = ['email','password'];
+    const ele = ['form'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       this.listeners[el]=this.stopPropogation.bind(this);
@@ -133,7 +133,7 @@ class Login extends React.Component {
   }
 
   componentWillUnmount(){
-    const ele = ['email','password'];
+    const ele = ['form'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       this.listeners[el]=this.stopPropogation.bind(this);
@@ -206,7 +206,7 @@ class Login extends React.Component {
 
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Login">
-        <Form handler={ this.login.bind(this) } flash={ this.state } form-center name="login">
+        <Form handler={ this.login.bind(this) } flash={ this.state } form-center name="login" ref='form'>
           { content }
         </Form>
       </Modal>
