@@ -289,10 +289,8 @@ wideRight(){
                 { foo }
               </div>
             </div>
-
           ),
-          ( {finishButton }
-          )
+          finishButton
         );
       }
     }
