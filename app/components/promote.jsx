@@ -215,7 +215,7 @@ wideRight(){
                     );
         }
 
-        let feedbackLeft=[], feedbackRight=[], finishButton;
+        let feedbackLeft=[], feedbackRight=[], finishButton=[];
         if(!hideFeedback){
           feedbackLeft=(                  
                 [<Feedback className="gutter-top solid" />,
