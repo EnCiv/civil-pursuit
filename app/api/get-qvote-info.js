@@ -3,7 +3,8 @@
 import QVote from '../models/qvote';
 
 function getQVoteInfo (itemId, own, cb) {
- const user= own ? this.synuser.id : null;
+ const user= own ? (this.synuser ? this.synuser.id : null) : null;
+ if(own && !user) return; // nothing to do here
 
   QVote.getAccumulation(itemId, user)
     .then(results => {
