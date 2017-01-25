@@ -118,18 +118,24 @@ class Login extends React.Component {
 
 
   stopPropogation(e){
-    e.stopPropagation();
     console.info(e);
  }
 
+ reportCapture(e){
+    console.info("capture",e);
+ }
+reportBubble(e){
+    console.info("bubble",e);
+ }
 
   componentDidMount(){
-    const ele = ['form'];
+    const ele = ['form','email','password','facebook'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       if(!this.eventListeners)this.eventListeners={};
       this.eventListeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.eventListeners[el],true);
+      ref.addEventListener('click',this.reportCapture.bind(this),true);
+      ref.addEventListener('click',this.reportBubble.bind(this),false);
     });
   }
 
@@ -152,7 +158,7 @@ class Login extends React.Component {
     let content = (
       <div>
         <ButtonGroup block>
-          <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook">
+          <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />
             <span className={ Component.classList(this) } inline> Facebook</span>
           </Button>
