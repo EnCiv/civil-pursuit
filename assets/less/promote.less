@@ -33,15 +33,9 @@
 .promote-left {
   background-color: @syn-background-color;
   position: relative;
-  .gutter-left();
 
   @media (max-width: @screen-phone) {
-    .gutter-right();
     .gutter-bottom();
-  }
-
-  @media (min-width: @screen-phone) {
-    .gutter-right-adjust();
   }
 
   .promote-sliders {
@@ -52,23 +46,14 @@
 .promote-right {
   background-color: @syn-background-color;
   position: relative;
-  .gutter-right();
 
   @media (max-width: @screen-phone) {
-    .gutter-left();
     .gutter-bottom();
-  }
-
-  @media (min-width: @screen-phone) {
-    .gutter-left-adjust();
   }
 
   .promote-sliders {
     .gutter-right();
 
-    @media (min-width: @screen-phone) {
-      .gutter-left-adjust();
-    }
   }
 }
 
