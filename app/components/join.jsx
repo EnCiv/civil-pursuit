@@ -103,6 +103,7 @@ class JoinForm extends React.Component {
 
   loginWithFacebook () {
     // location.href = '/sign/in/facebook/';
+    console.info("Join.loginWithFacebook");
     Facebook.connect();
   }
 

@@ -109,6 +109,7 @@ class Login extends React.Component {
 
   loginWithFacebook () {
     // location.href = '/sign/in/facebook';
+    console.info("loginWithFacebook");
     Facebook.connect();
   }
 
