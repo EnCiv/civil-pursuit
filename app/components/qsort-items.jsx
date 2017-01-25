@@ -137,7 +137,7 @@ class QSortItemsQV extends React.Component {
                 console.info("qsort-items creator", panel)
                 loading.push(
                     <div className="gutter text-center">
-                        <a href="#" onClick={ this.setState.bind(this,{creator: !this.state.creator})} className="click-to-create">
+                        <a href="#" onClick={ this.setState.bind(this,{creator: !this.state.creator},null)} className="click-to-create">
                             Click the + to be the first to add something here
                         </a>
                     </div>
@@ -196,7 +196,7 @@ class QSortItemsQV extends React.Component {
             <Creator
                 type    =   { type }
                 parent  =   { parent }
-                toggle  =   { this.setState.bind(this,{creator: !this.state.creator}) }
+                toggle  =   { this.setState.bind(this,{creator: !this.state.creator},null) }
                 />
             );
 
@@ -225,7 +225,7 @@ class QSortItemsQV extends React.Component {
                         <Icon
                             icon        =   "plus"
                             className   =   "toggle-creator"
-                            onClick     =   { this.setState.bind(this,{creator: !this.state.creator })}
+                            onClick     =   { this.setState.bind(this,{creator: !this.state.creator }, null)}
                         />
                         )
                     ]}

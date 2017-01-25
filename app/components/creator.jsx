@@ -32,9 +32,9 @@ class Creator extends React.Component {
   constructor(props){
     super(props);
     Creator.keys.forEach(key => {this.state[key]=''}); 
-    if(this.props.item  || this.props.item===null ){
+    if(this.props.item ){
       Creator.keys.forEach(key => {this.state[key]=props[key] || ''})
-    }
+    } 
     if(this.props.references && this.props.references[0]){
       this.state.reference=this.props.references[0].url;
       this.state.title=this.props.references[0].title;
@@ -96,6 +96,9 @@ class Creator extends React.Component {
       });
       if(props.item.references && props.item.references[0]) {Object.assign(obj,props.item.references[0])}
       if(obj) { this.setState(obj) }
+    }else{ // clear the state
+      Creator.keys.forEach(key => {obj[key]=''});
+      this.setState(obj);
     }
   }
 
@@ -221,7 +224,7 @@ class Creator extends React.Component {
           </section>
       ];
     }
-    if(this.props.type.referenceMedhod!="disabled"){
+    if(this.props.type.referenceMethod!="disabled"){
       reference=[
                       <Row center-items>
                 <Icon
