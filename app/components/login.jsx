@@ -128,7 +128,7 @@ class Login extends React.Component {
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       this.listeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.listener[el],false);
+      ref.addEventListener('click',this.listeners[el],false);
     });
   }
 
@@ -137,7 +137,7 @@ class Login extends React.Component {
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       this.listeners[el]=this.stopPropogation.bind(this);
-      ref.removeEventListener('click',this.listener[el]);
+      ref.removeEventListener('click',this.listeners[el]);
     });
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
