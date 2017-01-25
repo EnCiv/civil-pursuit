@@ -224,7 +224,7 @@ wideRight(){
                   [<Feedback className="gutter-top solid" />,
                   <Sliders criterias={ evaluation.criterias } className="promote-sliders" />];
           finishButton=
-            [<div className="gutter solid">
+            [<div className="gutter-top gutter-bottom solid">
               <FinishButton
                 cursor      =   { cursor }
                 limit       =   { limit }
