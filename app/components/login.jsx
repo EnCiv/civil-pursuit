@@ -120,35 +120,9 @@ class Login extends React.Component {
 
 
   stopPropagation(e){
-    console.info(e);
- }
-
- reportCapture(el, e){
-    console.info("capture",el,e);
- }
-reportBubble(el, e){
     e.stopPropagation();
-    console.info("bubble",el,e);
  }
 
-  componentDidMount(){
-/**    const ele = ['form','email','password','facebook','signup'];
-    ele.forEach(el=>{
-      let ref=ReactDOM.findDOMNode(this.refs[el]);
-      if(!this.eventListeners)this.eventListeners={};
-      this.eventListeners[el]=this.stopProagation.bind(this);
-      ref.addEventListener('click',this.reportCapture.bind(this,el),true);
-      ref.addEventListener('click',this.reportBubble.bind(this,el),false);
-    }); **/
-  }
-
-  componentWillUnmount(){
- /**   this.eventListeners.forEach(el=>{
-      let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.eventListeners[el]=this.stopPropagation.bind(this);
-      ref.removeEventListener('click',this.eventListeners[el]);
-    });**/
-  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -159,7 +133,7 @@ reportBubble(el, e){
     }
 
     let content = (
-      <div onClick={this.reportBubble.bind(this,"div")} onClickCapture={this.reportCapture.bind(this,"div")}>
+      <div onClick={this.stopPropagation.bind(this)}>
         <ButtonGroup block>
           <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />

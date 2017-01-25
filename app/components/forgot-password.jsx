@@ -67,7 +67,7 @@ class ForgotPassword extends React.Component {
     this.props.login();
   }
 
-  stopPropogation(e){
+  stopPropagation(e){
     e.stopPropagation();
  }
 
@@ -99,7 +99,7 @@ class ForgotPassword extends React.Component {
     }
 
     let content = (
-      <div>
+      <div onClick={this.stopPropagation.bind(this)>
         <div className="syn-form-group">
           <label>Email</label>
           <EmailInput
