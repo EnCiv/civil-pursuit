@@ -158,7 +158,7 @@ reportBubble(el, e){
     }
 
     let content = (
-      <div>
+      <div onClick={this.reportBubble.bind(this,"div")} onClickCapture={this.reportCapture.bind(this,"div")}>
         <ButtonGroup block>
           <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />
