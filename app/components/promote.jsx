@@ -222,11 +222,11 @@ wideRight(){
                 <Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
           );
           feedbackRight=(
-                  [<Feedback className="gutter-top solid" />],
-                  [<Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
+                  [<Feedback className="gutter-top solid" />,
+                  <Sliders criterias={ evaluation.criterias } className="promote-sliders" />]
           );
-          finishButton=[
-            <div className="gutter solid">
+          finishButton=(
+            [<div className="gutter solid">
               <FinishButton
                 cursor      =   { cursor }
                 limit       =   { limit }
@@ -234,7 +234,7 @@ wideRight(){
                 clearExpanders    =   {this.clearExpanders.bind(this)}
                 />
             </div>
-          ];
+           ]);
         }
 
         content.push(
