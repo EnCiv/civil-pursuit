@@ -71,24 +71,6 @@ class ForgotPassword extends React.Component {
     e.stopPropagation();
  }
 
-  componentDidMount(){
-    const ele = ['form'];
-    ele.forEach(el=>{
-      let ref=ReactDOM.findDOMNode(this.refs[el]);
-      if(!this.eventListeners)this.eventListeners={};
-      this.eventListeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.eventListeners[el],false);
-    });
-  }
-
-  componentWillUnmount(){
-    this.eventListeners.forEach(el=>{
-      let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.eventListeners[el]=this.stopPropogation.bind(this);
-      ref.removeEventListener('click',this.eventListeners[el]);
-    });
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
