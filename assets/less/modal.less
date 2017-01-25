@@ -30,6 +30,8 @@
   width: 100vw;
   transition: all ease-out .5s;
   z-index: 4;
+  background: rgba(155, 155, 155, 0.5);
+  text-align: center;
 }
 
 .syn-modal-cover {
@@ -45,22 +47,6 @@
   top: 0;
 }
 
-.syn-modal-center {
-  visibility: hidden; /** so you can click through it **/
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-  -o-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-}
-
 .syn-modal-container {
   visibility: visible;
   position: relative;
@@ -69,15 +55,6 @@
   box-shadow: 0 0 10px 8px rgba(100, 100, 100, 0.5);
   padding: .5em;
   overflow: auto;
-/****
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%); 
-  -moz-transform: translate(-50%, -50%); 
-  -ms-transform: translate(-50%, -50%); 
-  -o-transform: translate(-50%, -50%); 
-  transform: translate(-50%, -50%);
-  ****/
 
   label {
     display: block;

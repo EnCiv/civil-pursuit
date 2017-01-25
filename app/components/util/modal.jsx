@@ -15,32 +15,28 @@ class Modal extends React.Component {
     modal.classList.remove('syn--visible');
   }
 
+  hvcenter(){
+      let modalR=this.refs.modal.getBoundingClientRect();
+      let container=this.refs.container;
+      let containerR=container.getBoundingClientRect();
+      let left=(modalR.width - containerR.width)/2; // center horizontally
+      let top=(modalR.height - containerR.height)/2; // center vertically
+      container.style.left=left + 'px'; 
+      container.style.top=top + 'px';
+  }
+
   componentDidMount(){
-    let modalR=this.refs.modal.getBoundingClientRect();
-    let container=this.refs.container;
-    let containerR=container.getBoundingClientRect();
-    let left=(modalR.width - containerR.width)/2; // center horizontally
-    let top=(modalR.height - containerR.height)/2; // center vertically
-    container.style.left=left + 'px'; 
-    container.style.top=top + 'px';
+    this.hvcenter();
+  }
+
+  componentDidUpdate(){
+    this.hvcenter();
   }
 
   render () {
 
-    // return (
-    //   <Base classes={ classes } { ...this.props }>
-    //     <div className="syn-modal-flipper">
-    //       <Base classes={ ["syn-modal-front"] }>
-
-    //       </Base>
-    //     </div>
-    //   </Base>
-    // );
-
     return (
-      <section className={ Component.classList(this, 'syn-modal') } ref="modal">
-        <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
-        </div>
+      <section className={ Component.classList(this, 'syn-modal') } ref="modal" onClick={ this.hide.bind(this) }>
         <div className="syn-modal-container" ref='container'>
           <header className="syn-modal-header">
             <h1>{ this.props.title }</h1>
