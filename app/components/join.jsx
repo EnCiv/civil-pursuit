@@ -129,7 +129,7 @@ class JoinForm extends React.Component {
 
   render () {
     let content = (
-      <div onClick={this.stopPropagation.bind(this)>
+      <div onClick={this.stopPropagation.bind(this)}>
         <ButtonGroup block>
           <Button primary onClick={ this.loginWithFacebook } medium className="join-with-facebook">
             <Icon icon="facebook" />

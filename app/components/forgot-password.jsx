@@ -99,7 +99,7 @@ class ForgotPassword extends React.Component {
     }
 
     let content = (
-      <div onClick={this.stopPropagation.bind(this)>
+      <div onClick={this.stopPropagation.bind(this)}>
         <div className="syn-form-group">
           <label>Email</label>
           <EmailInput
