@@ -119,7 +119,7 @@ class Login extends React.Component {
   }
 
 
-  stopPropogation(e){
+  stopPropagation(e){
     console.info(e);
  }
 
@@ -127,7 +127,7 @@ class Login extends React.Component {
     console.info("capture",el,e);
  }
 reportBubble(el, e){
-    e.stopPropogation();
+    e.stopPropagation();
     console.info("bubble",el,e);
  }
 
@@ -136,7 +136,7 @@ reportBubble(el, e){
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       if(!this.eventListeners)this.eventListeners={};
-      this.eventListeners[el]=this.stopPropogation.bind(this);
+      this.eventListeners[el]=this.stopProagation.bind(this);
       ref.addEventListener('click',this.reportCapture.bind(this,el),true);
       ref.addEventListener('click',this.reportBubble.bind(this,el),false);
     }); **/
@@ -145,7 +145,7 @@ reportBubble(el, e){
   componentWillUnmount(){
  /**   this.eventListeners.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.eventListeners[el]=this.stopPropogation.bind(this);
+      this.eventListeners[el]=this.stopPropagation.bind(this);
       ref.removeEventListener('click',this.eventListeners[el]);
     });**/
   }
