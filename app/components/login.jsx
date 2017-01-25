@@ -90,6 +90,7 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   signUp (e) {
+    console.info("signup");
     e.preventDefault();
 
     this.props.join();
@@ -98,6 +99,7 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   forgotPassword (e) {
+    console.info("facebook");
     e.preventDefault();
 
     this.props['forgot-password']();
