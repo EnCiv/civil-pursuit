@@ -15,6 +15,15 @@ class Modal extends React.Component {
     modal.classList.remove('syn--visible');
   }
 
+  componentDidMount(){
+    let modalR=this.refs.modal.getBoundingClientRect();
+    let container=this.refs.container;
+    let containerR=container.getBoundingClientRect();
+    let left=(modalR.width - containerR.width)/2; // center horizontally
+    let top=(modalR.height - containerR.height)/2; // center vertically
+    container.style.left=left + 'px'; 
+    container.style.top=top + 'px';
+  }
 
   render () {
 
@@ -32,20 +41,18 @@ class Modal extends React.Component {
       <section className={ Component.classList(this, 'syn-modal') } ref="modal">
         <div className="syn-modal-cover" onClick={ this.hide.bind(this) }>
         </div>
-        <div className="syn-modal-center">
-          <div className="syn-modal-container">
-            <header className="syn-modal-header">
-              <h1>{ this.props.title }</h1>
-            </header>
+        <div className="syn-modal-container" ref='container'>
+          <header className="syn-modal-header">
+            <h1>{ this.props.title }</h1>
+          </header>
 
-            <section>
-              { this.props.children }
-            </section>
+          <section>
+            { this.props.children }
+          </section>
 
-            <footer>
-                <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
-            </footer>
-          </div>
+          <footer>
+              <a href="" onClick={ this.hide.bind(this) }>X CLOSE</a>
+          </footer>
         </div>
       </section>
     );
