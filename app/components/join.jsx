@@ -21,7 +21,19 @@ import Loading                      from './util/loading';
 import Facebook                     from '../lib/app/fb-sdk';
 
 class Join extends React.Component {
+  render(){
+      let classes = [ 'syn-join' ];
 
+      if ( this.props.show ) {
+        classes.push('syn--visible');
+      }
+      <Modal className={ Component.classList(this, ...classes) } title="Join">
+          <JoinForm {...this.props}/>
+      </Modal>
+  }
+}
+
+class JoinForm extends React.Component {
   constructor (props) {
     super(props);
 
@@ -32,7 +44,8 @@ class Join extends React.Component {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
       confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
-      agree = ReactDOM.findDOMNode(this.refs.agree);
+      agree = ReactDOM.findDOMNode(this.refs.agree),
+      path = window.location.pathname;
 
     this.setState({ validationError : null, info : 'Logging you in...' });
 
@@ -60,7 +73,8 @@ class Join extends React.Component {
           case 200:
             this.setState({ validationError : null, successMessage : 'Welcome aboard!', info: null });
             //location.href = '/page/profile';
-            location.href = '/';
+            //location.href = '/';
+            location.href=path;
             break;
 
           default:
@@ -108,12 +122,6 @@ class Join extends React.Component {
   }
 
   render () {
-    let classes = [ 'syn-join' ];
-
-    if ( this.props.show ) {
-      classes.push('syn--visible');
-    }
-
     let content = (
       <div>
         <ButtonGroup block>
@@ -186,11 +194,9 @@ class Join extends React.Component {
     }
 
     return (
-      <Modal className={ Component.classList(this, ...classes) } title="Join">
         <Form handler={ this.signup.bind(this) } flash={ this.state } name="join">
           { content }
         </Form>
-      </Modal>
     );
   }
 }
