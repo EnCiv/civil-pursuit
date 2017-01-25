@@ -135,7 +135,7 @@ class VSItem extends React.Component {
 
     console.info("VSItem render", this.props);
 
-    if(!item) {return (<div>Nothing at this time.</div>);}
+    if(!item) {return (<div style={{textAlign: "center"}}>Nothing available at this time.</div>);}
 
     const tendencyChoice = null;
 
