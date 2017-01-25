@@ -5,7 +5,6 @@ import Icon                         from './util/icon';
 import Loading                      from './util/loading';
 import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
-import Training                     from './training';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
 import Welcome                        from './welcome';
@@ -21,7 +20,6 @@ class Home extends React.Component {
   state = {
     discussion : null,
     topLevelType : null,
-    training : null
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +46,6 @@ class Home extends React.Component {
     else {
       window.socket
         .emit('get top level type', this.okGetTopLevelType.bind(this))
-        .emit('get training', this.okGetTraining.bind(this));
     }
   }
 
@@ -60,11 +57,6 @@ class Home extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  okGetTraining (training) {
-    if ( training ) {
-      this.setState({ training });
-    }
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -72,7 +64,7 @@ class Home extends React.Component {
     const content = [];
     let loading;
 
-    const { discussion, panel, training } = this.state;
+    const { discussion, panel } = this.state;
 
 
     if( ! this.props.user) {
@@ -100,7 +92,6 @@ class Home extends React.Component {
               <PanelItems user={ this.props.user } />
             </PanelStore>
           </div>
-          <Training instructions={ training || [] } />
         </div>
       );
     } else {
