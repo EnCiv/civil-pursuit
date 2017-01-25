@@ -121,23 +121,22 @@ class Login extends React.Component {
     e.stopPropagation();
  }
 
- listeners={};
 
   componentDidMount(){
     const ele = ['form'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.listeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.listeners[el],false);
+      if(!this.eventListeners)this.eventListeners={};
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.addEventListener('click',this.eventListeners[el],false);
     });
   }
 
   componentWillUnmount(){
-    const ele = ['form'];
-    ele.forEach(el=>{
+    this.eventListeners.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.listeners[el]=this.stopPropogation.bind(this);
-      ref.removeEventListener('click',this.listeners[el]);
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.removeEventListener('click',this.eventListeners[el]);
     });
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -123,27 +123,25 @@ class JoinForm extends React.Component {
     }
   }
 
- listeners={};
-
- stopPropogation(e){
+  stopPropogation(e){
     e.stopPropagation();
  }
 
   componentDidMount(){
-    const ele = ['email','password','confirm','agree'];
+    const ele = ['form'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.listeners[el]=this.stopPropogation.bind(this);
-      ref.addEventListener('click',this.listeners[el],false);
+      if(!this.eventListeners)this.eventListeners={};
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.addEventListener('click',this.eventListeners[el],false);
     });
   }
 
   componentWillUnmount(){
-    const ele = ['email','password','confirm','agree'];
-    ele.forEach(el=>{
+    this.eventListeners.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
-      this.listeners[el]=this.stopPropogation.bind(this);
-      ref.removeEventListener('click',this.listeners[el]);
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.removeEventListener('click',this.eventListeners[el]);
     });
   }
 
@@ -220,7 +218,7 @@ class JoinForm extends React.Component {
     }
 
     return (
-        <Form handler={ this.signup.bind(this) } flash={ this.state } name="join">
+        <Form handler={ this.signup.bind(this) } flash={ this.state } ref='form' name="join">
           { content }
         </Form>
     );

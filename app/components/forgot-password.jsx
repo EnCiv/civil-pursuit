@@ -66,6 +66,28 @@ class ForgotPassword extends React.Component {
     this.props.login();
   }
 
+  stopPropogation(e){
+    e.stopPropagation();
+ }
+
+  componentDidMount(){
+    const ele = ['form'];
+    ele.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      if(!this.eventListeners)this.eventListeners={};
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.addEventListener('click',this.eventListeners[el],false);
+    });
+  }
+
+  componentWillUnmount(){
+    this.eventListeners.forEach(el=>{
+      let ref=ReactDOM.findDOMNode(this.refs[el]);
+      this.eventListeners[el]=this.stopPropogation.bind(this);
+      ref.removeEventListener('click',this.eventListeners[el]);
+    });
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -139,7 +161,8 @@ class ForgotPassword extends React.Component {
           handler             =   { this.sendResetPassword.bind(this) }
           flash               =   { this.state }
           name                =   "forgot-password"
-          form-center>
+          form-center
+          ref                 = 'form'> 
           { content }
         </Form>
       </Modal>
