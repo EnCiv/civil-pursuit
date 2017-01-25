@@ -34,11 +34,7 @@ class Modal extends React.Component {
   componentDidMount(){
     this.hvcenter();
     this.observer = new MutationObserver( this.mutations.bind(this) );
-    this.observer.observe(target,{attributes: true});
-  }
-
-  componentDidUpdate(){
-    this.hvcenter();
+    this.observer.observe(this.refs.modal,{attributes: true});
   }
 
   componentWillUnmount() {
