@@ -27,9 +27,11 @@ class Join extends React.Component {
       if ( this.props.show ) {
         classes.push('syn--visible');
       }
-      <Modal className={ Component.classList(this, ...classes) } title="Join">
-          <JoinForm {...this.props}/>
-      </Modal>
+      return(
+        <Modal className={ Component.classList(this, ...classes) } title="Join">
+            <JoinForm {...this.props}/>
+        </Modal>
+      );
   }
 }
 
