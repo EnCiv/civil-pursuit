@@ -127,6 +127,7 @@ class Login extends React.Component {
     console.info("capture",el,e);
  }
 reportBubble(el, e){
+    e.stopPropogation();
     console.info("bubble",el,e);
  }
 
