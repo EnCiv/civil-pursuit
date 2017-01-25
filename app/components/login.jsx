@@ -131,22 +131,22 @@ reportBubble(el, e){
  }
 
   componentDidMount(){
-    const ele = ['form','email','password','facebook','signup'];
+/**    const ele = ['form','email','password','facebook','signup'];
     ele.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       if(!this.eventListeners)this.eventListeners={};
       this.eventListeners[el]=this.stopPropogation.bind(this);
       ref.addEventListener('click',this.reportCapture.bind(this,el),true);
       ref.addEventListener('click',this.reportBubble.bind(this,el),false);
-    });
+    }); **/
   }
 
   componentWillUnmount(){
-    this.eventListeners.forEach(el=>{
+ /**   this.eventListeners.forEach(el=>{
       let ref=ReactDOM.findDOMNode(this.refs[el]);
       this.eventListeners[el]=this.stopPropogation.bind(this);
       ref.removeEventListener('click',this.eventListeners[el]);
-    });
+    });**/
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
