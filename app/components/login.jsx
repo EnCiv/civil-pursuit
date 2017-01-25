@@ -119,6 +119,7 @@ class Login extends React.Component {
 
   stopPropogation(e){
     e.stopPropagation();
+    e.preventDefault();
  }
 
 
