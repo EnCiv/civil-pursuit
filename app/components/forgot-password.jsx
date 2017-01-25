@@ -1,6 +1,7 @@
 'use strict';
 
 import React          from 'react';
+import ReactDOM       from 'react-dom';
 import superagent     from 'superagent';
 import Component      from '../lib/app/component';
 import Modal          from './util/modal';
