@@ -241,11 +241,11 @@ class JoinForm extends React.Component {
         </Row>
 
         <ButtonGroup block>
-          <Button primary onClick={ this.login.bind(this) } medium className="syn-form-group syn-form-submit">
+          <Button primary onClick={ this.login.bind(this) } medium className="syn-form-group syn-form-submit login-button">
             <span className={ Component.classList(this) } inline> Login</span>
           </Button>
 
-          <Button info onClick={ this.signup.bind(this) } medium className="syn-form-group syn-form-submit">
+          <Button info onClick={ this.signup.bind(this) } medium className="syn-form-group syn-form-submit join-button">
             <span>Join</span>
           </Button>
         </ButtonGroup>
