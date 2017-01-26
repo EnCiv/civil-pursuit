@@ -35,7 +35,7 @@ class LoginPanel extends React.Component {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } component={typeList.type.component} panel={newPanel} />
+                <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
             )
         }
 
