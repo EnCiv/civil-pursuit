@@ -27,7 +27,7 @@ class LoginPanel extends React.Component {
         console.info("LoginPanel:",this.props, this.state);
 
         if (user) {
-            if(!this.state.typeList) return(null);
+            if(!this.state.typeList.length) return(null);
             const newPanel = {
                 parent: panel.parent,
                 type: this.state.typeList[0],
