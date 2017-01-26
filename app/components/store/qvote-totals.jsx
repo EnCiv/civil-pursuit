@@ -71,4 +71,4 @@ class QVoteTotals extends React.Component {
   }
 }
 
-export default QVoteStore;
+export default QVoteTotals;
