@@ -3,6 +3,7 @@
 import React                      from 'react';
 import {JoinForm}                 from './join';
 import Panel                      from './panel';
+import config                     from 'syn/../../public.json';
 
 class LoginPanel extends React.Component {
 
@@ -13,8 +14,8 @@ class LoginPanel extends React.Component {
             const newPanel={
                 parent: panel.parent,
                 type: panel.type.harmony[0],
-                skip      :   0,
-                limit     :   config['navigator batch size'],
+                skip      :   panel.skip || 0,
+                limit     :   panel.limit || config['navigator batch size'],
               };
         return (
             <TypeComponent component={panel.type.component} { ...this.props } panel={newPanel} />
