@@ -13,7 +13,7 @@ import VisualState     from './visual-state';
 
 class Item extends React.Component {
   render(){
-    console.info("Item render", this.props);
+    console.info("Item render");
     return (
     <VisualState {... this.props}>
       <VSItem />
@@ -30,7 +30,7 @@ class VSItem extends React.Component {
   constructor(props){
     super(props);
     //this.state.hint = (this.props.vs.state==='truncated');  // check this after the component did mount
-    console.info("VSItem constructor", props);
+    console.info("VSItem constructor");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,7 +133,7 @@ class VSItem extends React.Component {
     
     let noReference=true;
 
-    console.info("VSItem render", this.props);
+    console.info("VSItem render");
 
     if(!item) {return (<div style={{textAlign: "center"}}>Nothing available at this time.</div>);}
 

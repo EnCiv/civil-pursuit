@@ -28,6 +28,7 @@ class QVoteTotals extends React.Component {
   }
 
     componentWillReceiveProps(newProps) { //just read in the new props and through out the old ones and fetch new votes
+    console.info("qvote-totals: newProps");
       var newFinale=[];
       if(newProps.shared.panel && newProps.shared.panel.items){
         newProps.shared.panel.items.map((item, i)=>{ 

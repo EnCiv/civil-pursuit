@@ -22,7 +22,7 @@ class VisualState extends React.Component {
     }
 
     toMeFromChild(vs) {
-        console.info("VisualState.toMeFromChild", vs, this.state.vs);
+        console.info("VisualState.toMeFromChild");
         if (vs.toChild) { this.toChild = vs.toChild }  // child is passing up her func
         if (vs.state) { // child is passing up her state and your distance from it starting at 0
             const vsDistance=VisualState.vsDistance;
@@ -46,7 +46,7 @@ class VisualState extends React.Component {
 
 
     toMeFromParent(vs) {
-        console.info("VisualState.toMeFromParent", vs, this.state.vs);
+        console.info("VisualState.toMeFromParent");
         if (vs) { // parent is giving you a new state
             if(this.state.vs != vs) this.setState({vs: Object.assign({}, this.state.vs, vs)});
         }
@@ -54,7 +54,7 @@ class VisualState extends React.Component {
 
     constructor(props) {
         super(props);
-        console.info("VisualState constructor", props);
+        console.info("VisualState constructor");
         this.state.vs=Object.assign({}, 
             {   state: 'truncated',
             }, 
@@ -94,7 +94,7 @@ class VisualState extends React.Component {
 
     render() {
         const children = this.renderChildren();
-        console.info("VisualState render", this.props, this.state);
+        console.info("VisualState render");
 
         return (
             <section>
