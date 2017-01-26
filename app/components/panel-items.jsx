@@ -112,7 +112,7 @@ class PanelItems extends React.Component {
           //this.setState({ active: { item: null, section: null } });
         //}
       }
-      if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.state, distance: distance}) }
+      //if (vs.itemId && this.toChild[vs.itemId]) { this.toChild[vs.itemId]({state: vs.state, distance: distance}) } //Child sent this, don't send it back. Child will change on his own.
       if(this.props.vs && this.props.vs.toParent) this.props.vs.toParent(Object.assign({},this.state.vs,{toParent: null},{state: vs.state, distance: distance +1}));
       this.setState({vs: Object.assign({},this.state.vs,{state: vs.state})})
     }
