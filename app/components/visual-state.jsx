@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassNames from 'classnames';
-import isEqual from 'losash/isEqual';
+import isEqual from 'lodash/isEqual';
 
 //Item Visual State - lets other components change the visual state of an item. 
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
