@@ -229,7 +229,7 @@ class JoinForm extends React.Component {
 
         <Row>
           <Column span="50" gutter className="text-left">
-            <p style={{margin: 0}}>Already a user?</p><a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
+            <p style={{margin: 0}}>Already a user? Just Login</p>
           </Column>
 
           <Column span="50" text-right gutter>
