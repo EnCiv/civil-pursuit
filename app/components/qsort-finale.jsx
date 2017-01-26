@@ -113,8 +113,7 @@ class QSortFinalTotal extends React.Component {
             } else {
                     this.props.finale.forEach(qobj => {
                         var buttonstate = {};
-                        Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = 0; });
-                        if (criteria != 'unsorted') { buttonstate[criteria] = qobj[criteria] }
+                        Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = qobj[button]; });
                         let item = items[qobj.index];
                         content.push(
                             {
