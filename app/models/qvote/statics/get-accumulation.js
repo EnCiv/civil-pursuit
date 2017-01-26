@@ -13,6 +13,8 @@ function getAccumulation (itemId, userId) {
       var lastUser=null;
       var lastItem=null;
 
+      console.info("qvote qet Accumulation try", query);
+
       this
         .find(query)
         .sort({ item: 1, user : 1, _id : -1})
@@ -40,6 +42,7 @@ function getAccumulation (itemId, userId) {
                 } // if it is equal to the last user we just skip it because we are only counting the 
               });
               if(lastItem){ accumulation.push(lastItem); } // push the last one
+              console.info("qvote get accumulation", accumulation)
               
               ok(accumulation);
             }

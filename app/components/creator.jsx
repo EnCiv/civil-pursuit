@@ -206,7 +206,7 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.log('RENDER creator', this.props);
+    console.log('RENDER creator');
 
     var media=[];
     var reference=[];
