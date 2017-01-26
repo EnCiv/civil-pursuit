@@ -33,9 +33,10 @@ class VisualState extends React.Component {
                 newState = vsDistance[vs.state][Math.min(vs.distance,last)];
                 if(!newState) newState=this.state.vs.state;
             } else { newState = vs.state } // if you don't know the state, just pass it on
-            var changeState=Object.assign({}, this.state.vs, vs, {state: newState, distance: distance} )
-            if ( this.state.vs !== changeState) { // if the state has changed
-                 this.setState({vs: Object.assign({}, this.state.vs, vs, {state: newState, distance: distance})});
+            var changeState=Object.assign({}, this.state.vs, vs, {state: newState, distance: distance} );
+            if(changeState.state !== this.state.vs.state)
+            { // if the state has changed
+                 this.setState({vs: changeState});
                  if(this.props.vs.toParent){
                      this.props.vs.toParent(Object.assign({},changeState,{distance: distance +1}))
                  }
