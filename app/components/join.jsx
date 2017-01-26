@@ -209,3 +209,5 @@ class JoinForm extends React.Component {
 }
 
 export default Join;
+export {Join, JoinForm};
+
