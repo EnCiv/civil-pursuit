@@ -143,9 +143,9 @@ class QSortFinalTotal extends React.Component {
                                   display: 'block',
                     }}>
                         <div className="qsort-flip-move-articles">
-                            <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
+
                                 {content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />)}
-                            </FlipMove>
+
                         </div>
                     </div>
                     {loading}
@@ -154,6 +154,9 @@ class QSortFinalTotal extends React.Component {
         );
     }
 }
+
+//                            <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
+//                            </FlipMove>
 
 class QSortFlipItemHarmony extends React.Component {
 
