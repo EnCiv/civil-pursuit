@@ -55,7 +55,7 @@ class Type extends Mungo.Model {
       "component"        : String,
       "min"              : Number,
       "buttonName"       : String,
-      "buttonLabel" : {
+      "buttonTitle" : {
         "inactive"   :     String,
         "active"     :     String
       },
