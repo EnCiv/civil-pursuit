@@ -20,7 +20,7 @@ class PanelStore extends React.Component {
       this.state.panel.type=this.props.type;
       this.state.panel.parent=this.props.parent || null;
       this.state.panel.items=this.props.items.slice(0);
-      this.state.panel.size= this.props.size || publicConfig['navigator batch size'];
+      this.state.panel.limit= this.props.limit || publicConfig['navigator batch size'];
     }
   }
 
@@ -39,7 +39,7 @@ class PanelStore extends React.Component {
         panel.parent = this.props.parent; //._id;
       }
 
-      if(this.props.size){panel.size=this.props.size}
+      if(this.props.limit){panel.limit=this.props.limit}
 
       if(this.props.own){panel.own=this.props.own}
 

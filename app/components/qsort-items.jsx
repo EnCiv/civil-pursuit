@@ -22,7 +22,8 @@ class QSortItems extends React.Component {
     render(){
         return(
         <PanelStore parent={this.props.parent}
-                    type={this.props.type}>
+                    type={this.props.type}
+                    limit={20} >  // hard coded, but where should this be? type or item?
             <QVoteStore>
                 <QSortItemsQV  {...this.props}/>
             </QVoteStore>

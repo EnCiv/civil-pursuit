@@ -22,7 +22,9 @@ function getPanelItems (panel, userId) {
 //  if (panel.own) {
 //    query.user = userId;
 //  }
-  const query = panel;
+  var query = panel;
+  delete query.stop; // not part of the query
+  delete query.limit; // not part of the query
 
 
   const seq = [];
@@ -31,7 +33,7 @@ function getPanelItems (panel, userId) {
 
   seq.push(count => this.find(query)
     .skip(panel.skip || 0)
-    .limit(panel.size || publicConfig['navigator batch size'])
+    .limit(panel.limit || publicConfig['navigator batch size'])
     .sort({ promotions : -1, views : -1, _id : -1 })
   );
 

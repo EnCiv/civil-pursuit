@@ -19,8 +19,8 @@ function getItems (panel, cb) {
       query.skip = panel.skip;
     }
 
-    if(panel.size) {
-      query.size = panel.size;
+    if(panel.limit) {
+      query.limit = panel.limit;
     }
 
     if(panel.own) {

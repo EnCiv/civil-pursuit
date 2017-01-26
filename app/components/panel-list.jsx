@@ -228,7 +228,7 @@ class PanelList extends React.Component {
     if (this.state.typeList.length) {
         console.info("PanelList list: type", panel.type ? panel.type.name : "none");
         console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
-        console.info("PanelList list: size", panel.size || "none");
+        console.info("PanelList list: size", panel.limit || "none");
         console.info("PanelList list: own", panel.own || "none");
         console.info("PanelList list: typelist[",currentPanel,"]:",this.state.typeList[currentPanel].name);
         console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);
