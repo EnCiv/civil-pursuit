@@ -18,12 +18,14 @@ import Icon               from './util/icon';
 import PanelStore from './store/panel';
 import QVoteStore from './store/qvote';
 
+
+  // 20 is hard coded, but where should this be? type or item?
 class QSortItems extends React.Component {
     render(){
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
-                    limit={20} >  // hard coded, but where should this be? type or item?
+                    limit={20} >
             <QVoteStore>
                 <QSortItemsQV  {...this.props}/>
             </QVoteStore>
