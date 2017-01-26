@@ -141,7 +141,7 @@ class JoinForm extends React.Component {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value;
 
-    Join
+    JoinForm
       .signIn(email, password)
       .then(
         () => {
