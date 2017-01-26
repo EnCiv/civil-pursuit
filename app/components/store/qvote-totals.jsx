@@ -54,7 +54,7 @@ class QVoteTotals extends React.Component {
             })
         })
         newFinale.sort((a,b)=>{return (b.most - a.most);})  // sort so largest most is first in list
-        this.setState({finale: newfinale});
+        this.setState({finale: newFinale});
       }
   }
 
