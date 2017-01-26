@@ -23,7 +23,7 @@ function getAccumulation (itemId, userId) {
             try {
               qvotes.forEach(jvote => {
                 let vote=jvote.toJSON();
-                console.info("qvote - jvote", jvote);
+                console.info("qvote - vote", vote);
                 if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item != lastItem.item){
                   accumulation.push(lastItem);
