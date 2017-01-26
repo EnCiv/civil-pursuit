@@ -22,7 +22,7 @@ function getAccumulation (itemId, userId) {
           qvotes => {
             try {
               qvotes.forEach(jvote => {
-                let vote=jvote.toJSON();
+                var vote=jvote.toJSON();
                 console.info("qvote - vote", vote);
                 if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item != lastItem.item){
@@ -33,7 +33,7 @@ function getAccumulation (itemId, userId) {
                   lastUser=null;
                 }
                 if(vote.user!=lastUser) { // only count the last vote by each user, which is the first in the list because it's sorted -1 by _id
-                    let criteria=vote.criteria;
+                    var criteria=vote.criteria;
                     lastUser=vote.user;
                     if(!lastItem.results[criteria]){lastItem.results[criteria]=1}
                     else {lastItem.results[criteria]++}
