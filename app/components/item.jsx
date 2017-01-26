@@ -61,6 +61,18 @@ class VSItem extends React.Component {
     }
   }
 
+  shouldComponentUpdate(newProps,newState){
+    if(this.props.vs.state !== newProps.vs.state) return true;
+    if(this.state.hint !== newState.hint) return true;
+    if(this.props.item && newProps.item) {
+      if(this.props.item.subject !== newProps.item.subject) return true;
+      if(this.props.item.description !== newProps.item.description) return true;
+    }
+    console.info("item shouldn't update");
+    return false;
+  }
+
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
