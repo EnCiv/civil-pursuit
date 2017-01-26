@@ -9,8 +9,8 @@ class QVoteTotals extends React.Component {
 
   constructor(props){
       super(props);
-      if(this.props.panel && this.props.panel.items){
-        this.props.panel.items.map((item, i)=>{ 
+      if(this.props.shared.panel && this.props.shared.panel.items){
+        this.props.shared.panel.items.map((item, i)=>{ 
                 let obj={item: item._id, index: i};
                 Object.keys(this.props.shared.sections).forEach(sectionName=>{obj[sectionName]=0});
                 this.state.finale.push(obj)
@@ -20,8 +20,8 @@ class QVoteTotals extends React.Component {
 
 
   componentDidMount () {
-        if(this.props.panel && this.props.panel.items){
-            this.props.panel.items.map(item=>{ 
+        if(this.props.shared.panel && this.props.shared.panel.items){
+            this.props.shared.panel.items.map(item=>{ 
                 window.socket.emit('get qvote info', [item._id], false, this.okGetQVoteInfo.bind(this));
             });
         }
@@ -29,10 +29,10 @@ class QVoteTotals extends React.Component {
 
     componentWillReceiveProps(newProps) { //just read in the new props and through out the old ones and fetch new votes
       var newFinale=[];
-      if(this.props.panel && this.props.panel.items){
-        this.props.panel.items.map((item, i)=>{ 
+      if(newProps.shared.panel && newProps.shared.panel.items){
+        newProps.shared.panel.items.map((item, i)=>{ 
                 let obj={item: item._id, index: i};
-                Object.keys(this.props.shared.sections).forEach(sectionName=>{obj[sectionName]=0});
+                Object.keys(newProps.shared.sections).forEach(sectionName=>{obj[sectionName]=0});
                 newFinale.push(obj);
                 window.socket.emit('get qvote info', [item._id], false, this.okGetQVoteInfo.bind(this));
             });
