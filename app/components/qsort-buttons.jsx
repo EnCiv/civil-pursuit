@@ -7,7 +7,7 @@ import Icon               from './util/icon';
 
 class QSortButtons extends React.Component {
   toggle (section) {
-    this.props.toggle(this.props.item._id, section);
+    if(this.props.toggle) this.props.toggle(this.props.item._id, section);
   }
 
 
@@ -19,11 +19,14 @@ class QSortButtons extends React.Component {
     let buttons = [];
 
     buttons=Object.keys(buttonstate).map(btn => {
+        var number=[];
+        if(typeof buttonstate[btn] == 'number') number=(<span>{buttonstate[btn]}</span>);
         return(
                 <ButtonGroup>
+                    {number}
                     <Button small shy 
                     inactive= { buttonstate[btn] } 
-                    onClick= { this.toggle.bind(this, btn) } 
+                    onClick= { this.props.toggle ? this.toggle.bind(this, btn) : undefined } 
                     className= {`qsort-${qbuttons[btn].name}`}
                     title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}

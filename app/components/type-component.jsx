@@ -10,6 +10,7 @@ import QSortWhy                         from './qsort-why';
 import QSortRefine                      from './qsort-refine';
 import QSortReLook                      from './qsort-harmony';
 import LoginPanel                       from './login-panel';
+import QSortFinale                      from './qsort-finale';
 
 class TypeComponent extends React.Component{
 
@@ -21,7 +22,8 @@ class TypeComponent extends React.Component{
         'QSortWhy': QSortWhy,
         'QSortRefine': QSortRefine,
         'QSortReLook': QSortReLook,
-        'LoginPanel': LoginPanel
+        'LoginPanel': LoginPanel,
+        'QSortFinale': QSortFinale
     }
 
     render(){
