@@ -26,7 +26,8 @@ function getAccumulation (itemId, userId) {
                 console.info("qvote - vote", vote);
                 if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item != lastItem.item){
-                  accumulation.push(lastItem);
+                  const newobj=merge({},lastItem);
+                  accumulation.push(newobj);
                   lastItem.item=vote.item;
                   lastItem.results={};
                   lastItem.ownVote=null;
