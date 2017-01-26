@@ -5,6 +5,7 @@ import { JoinForm } from './join';
 import Panel from './panel';
 import config from 'syn/../../public.json';
 import TypeComponent from './type-component';
+import Instruction from './instruction';
 
 class LoginPanel extends React.Component {
 
@@ -40,15 +41,25 @@ class LoginPanel extends React.Component {
         }
 
         let title = panel.type.name || "User Registration Required";
-        let instruction = panel.type.instruction || "This discussion requsts that all users be registered.";
+        let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
+
+        if (panel.type && panel.type.instruction) {
+        instruction = (
+                <Instruction >
+                    {panel.type.instruction}
+                </Instruction>
+            );
+        }   
 
         return (
             <Panel
                 ref="panel"
                 heading={[<h4>{title}</h4>]}
                 >
-                <span>{instruction}</span>
-                <JoinForm />
+                {instruction}
+                <div className='item-login-panel'>
+                    <JoinForm />
+                </div>
             </Panel>
         );
     }
