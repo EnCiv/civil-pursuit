@@ -61,6 +61,7 @@ class VSItem extends React.Component {
     }
   }
 
+/*** This could work really well - but we need a few more event updates based on button changes, and on footer changes
   shouldComponentUpdate(newProps,newState){
     if(this.props.vs.state !== newProps.vs.state) return true;
     if(this.state.hint !== newState.hint) return true;
@@ -71,6 +72,7 @@ class VSItem extends React.Component {
     console.info("item shouldn't update");
     return false;
   }
+  ***/
 
 
 

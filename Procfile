@@ -1,1 +1,1 @@
-web: node --debug=5858 dist/bin/start.js
+web: node dist/bin/start.js
