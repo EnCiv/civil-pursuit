@@ -95,11 +95,66 @@ class JoinForm extends React.Component {
       });
   }
 
-  signIn (e) {
-    e.preventDefault();
 
-    this.props.login();
+  static signIn (email, password) {
+    return new Promise((ok, ko) => {
+      try {
+        superagent
+          .post('/sign/in')
+          .send({ email, password })
+          .end((err, res) => {
+            // if ( err ) {
+            //   return ko(err);
+            // }
+            switch ( res.status ) {
+              case 404:
+                ko(new Error('Email not found'));
+                break;
+
+                case 401:
+                  ko(new Error('Wrong password'));
+                  break;
+
+                case 200:
+                  ok();
+                  // location.href = '/page/profile';
+                  break;
+
+                default:
+                  ko(new Error('Unknown error'));
+                  break;
+            }
+          });
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  login () {
+
+    this.setState({ validationError : null, info : 'Logging you in...' });
+
+    let email = ReactDOM.findDOMNode(this.refs.email).value,
+      password = ReactDOM.findDOMNode(this.refs.password).value;
+
+    Login
+      .signIn(email, password)
+      .then(
+        () => {
+          this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
+          setTimeout(() => location.href = window.location.pathname, 800); //'/page/profile'
+        },
+        error => {
+          this.setState({ validationError : error.message, info: null })
+        }
+      );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   loginWithFacebook () {
     // location.href = '/sign/in/facebook/';
@@ -185,9 +240,15 @@ class JoinForm extends React.Component {
           </Column>
         </Row>
 
-        <div className="syn-form-group syn-form-submit">
-          <Submit block large success>Join</Submit>
-        </div>
+        <ButtonGroup block>
+          <Button primary onClick={ this.signUp.bind(this) } medium className="syn-form-group syn-form-submit">
+            <span className={ Component.classList(this) } inline> Login</span>
+          </Button>
+
+          <Button info onClick={ this.signup.bind(this) } medium className="syn-form-group syn-form-submit">
+            <span>Join</span>
+          </Button>
+        </ButtonGroup>
         
       </div>
     );
