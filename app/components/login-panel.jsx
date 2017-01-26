@@ -30,12 +30,12 @@ class LoginPanel extends React.Component {
             if(!this.state.typeList) return(null);
             const newPanel = {
                 parent: panel.parent,
-                type: this.state.typelist[0],
+                type: this.state.typeList[0],
                 skip: panel.skip || 0,
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } component={typelist.type.component} panel={newPanel} />
+                <TypeComponent  { ...this.props } component={typeList.type.component} panel={newPanel} />
             )
         }
 
