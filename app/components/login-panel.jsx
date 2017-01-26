@@ -4,6 +4,7 @@ import React                      from 'react';
 import {JoinForm}                 from './join';
 import Panel                      from './panel';
 import config                     from 'syn/../../public.json';
+import TypeComponent              from './type-component';
 
 class LoginPanel extends React.Component {
 
