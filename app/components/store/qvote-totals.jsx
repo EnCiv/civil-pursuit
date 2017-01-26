@@ -21,9 +21,9 @@ class QVoteTotals extends React.Component {
 
   componentDidMount () {
         if(this.props.shared.panel && this.props.shared.panel.items){
-            this.props.shared.panel.items.map(item=>{ 
-                window.socket.emit('get qvote info', [item._id], false, this.okGetQVoteInfo.bind(this));
-            });
+            var idList=[];
+            this.props.shared.panel.items.map(item=>idList.push(item._id));
+            window.socket.emit('get qvote info', idList, false, this.okGetQVoteInfo.bind(this));
         }
   }
 
