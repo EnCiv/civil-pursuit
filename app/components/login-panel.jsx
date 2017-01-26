@@ -2,6 +2,7 @@
 
 import React                      from 'react';
 import {JoinForm}                 from './join';
+import Panel                      from './panel';
 
 class LoginPanel extends React.Component {
 
@@ -21,13 +22,14 @@ class LoginPanel extends React.Component {
     }
 
     let title = panel.type.name  || "User Registration Required";
+    let instruction=panel.type.instruction || "This discussion requsts that all users be registered.";
 
     return (
         <Panel
           ref         =   "panel"
           heading     =   {[<h4>{ title }</h4>]}
         >
-            <span>This discussion requsts that all users be registered.</span>
+            <span>{instruction}</span>
             <JoinForm />
         </Panel>
       );
