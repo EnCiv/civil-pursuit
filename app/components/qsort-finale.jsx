@@ -13,7 +13,7 @@ import Color from 'color';
 import Button           from './util/button';
 import QSortButtonList from './qsort-button-list';
 import merge from 'lodash/merge';
-import QVoteTotals from './store/qvote-local';
+import QVoteTotals from './store/qvote-totals';
 import Accordion from  './util/accordion';
 import Item    from './item';
 import Harmony              from './harmony';
