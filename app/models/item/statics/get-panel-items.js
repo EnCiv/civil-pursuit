@@ -22,7 +22,7 @@ function getPanelItems (panel, userId) {
 //  if (panel.own) {
 //    query.user = userId;
 //  }
-  var query = panel;
+  var query = Object.assign({},panel);
   delete query.stop; // not part of the query
   delete query.limit; // not part of the query
 

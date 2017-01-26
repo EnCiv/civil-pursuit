@@ -241,6 +241,7 @@ class PanelList extends React.Component {
                                   shared={this.state.shared}
                                   emitter={this.props.emitter}
                                   panelNum={this.state.currentPanel}
+                                  limit={panel.limit}
                   />  
       )];
     }
