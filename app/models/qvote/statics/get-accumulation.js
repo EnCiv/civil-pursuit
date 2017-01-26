@@ -25,7 +25,6 @@ function getAccumulation (itemId, userId) {
             try {
               qvotes.forEach(jvote => {
                 var vote=jvote.toJSON();
-                console.info("qvote - vote", vote);
                 if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
                 if(vote.item != lastItem.item){
                   const newobj=merge({},lastItem);

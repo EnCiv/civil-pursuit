@@ -43,7 +43,7 @@ class QVoteTotals extends React.Component {
 
   okGetQVoteInfo(accumulation) {
       var newFinale=this.state.finale.slice(0);
-      console.info("QVoteTotal got qvote info length",accumulation.length);
+      console.info("QVoteTotal got qvote info length,accumulation.length");
       if(accumulation.length){
         accumulation.forEach(qvote => {
             newFinale.some((qobj, i)=>{

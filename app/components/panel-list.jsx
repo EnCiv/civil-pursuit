@@ -128,14 +128,14 @@ class PanelList extends React.Component {
     if(status !== 'done' && panelNum < (panelStatus.length-1)){  // if the panel is not done, mark all existing forward panels as that
       for(let i=panelNum+1; i< panelStatus.length; i++) if(panelStatus[i]!==status){panelStatus[i]=status; newState=true}
     }
-    console.info("panelList nextPanel panelStatus", panelStatus)
+    console.info("panelList nextPanel panelStatus")
     if(newState) {
-      console.info("panelList nextPanel setting state", panelStatus)
+      console.info("panelList nextPanel setting state")
       this.setState({panelStatus: panelStatus});
     }
     if(results){
       const shared=merge({},this.state.shared, results);
-      console.info("panel-list shared", shared);
+      console.info("panel-list shared");
       this.setState({shared: shared});
     }
     // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
@@ -166,8 +166,8 @@ class PanelList extends React.Component {
     const spaceBetween=containerWidth * 0.25;
 
     if ( panel ) {
-      console.info("PanelList: type", panel.type ? panel.type.name : "none");
-      console.info("PanelList: parent", panel.parent ? panel.parent.subject : "none");
+      console.info("PanelList: type");
+      console.info("PanelList: parent");
 
       if(panel.type) {
         name = `syn-panel-list--${panel.type._id || panel.type}`;
@@ -226,12 +226,12 @@ class PanelList extends React.Component {
     }
 
     if (this.state.typeList.length) {
-        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
+/**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
         console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
         console.info("PanelList list: size", panel.limit || "none");
         console.info("PanelList list: own", panel.own || "none");
         console.info("PanelList list: typelist[",currentPanel,"]:",this.state.typeList[currentPanel].name);
-        console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);
+        console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);**/
         this.panelList[currentPanel].content=[(
                   <TypeComponent  component={this.state.typeList[currentPanel].component}
                                   parent={panel.parent} 

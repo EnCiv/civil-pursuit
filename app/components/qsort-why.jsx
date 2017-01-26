@@ -52,7 +52,7 @@ class QSortWhy extends React.Component {
     constructor(props) {
         super(props);
         var unsortedList = [];
-        console.info("qsortWhy constructor", this.props.shared);
+        console.info("qsortWhy constructor");
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         if(this.props.type.name==="Why It's Most Important"){
             this.whyName='most';
@@ -61,7 +61,7 @@ class QSortWhy extends React.Component {
         }
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
-        console.info("qsort-why constructor buttonlist",this.ButtonList, QSortButtonList, this.whyName)
+        console.info("qsort-why constructor buttonlist")
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         this.buttons.forEach(button => {
@@ -75,7 +75,7 @@ class QSortWhy extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
-        console.info("qsortWhy componentWillReceiveProps", this.props, newProps, this.state);
+        console.info("qsortWhy componentWillReceiveProps");
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
@@ -92,7 +92,7 @@ class QSortWhy extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     toggle(itemId, button, set, whyItemId) {
-        console.info("QsortWhy", itemId, button, set );
+        console.info("QsortWhy");
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
@@ -210,7 +210,7 @@ class QSortWhy extends React.Component {
                     if (this.state.sections['unsorted'].length) { issues++ }
                     let qb = this.ButtonList[name];
                     if (qb.max) {
-                        console.info("QSortWhy qb", qb, this.state)
+                        console.info("QSortWhy qb")
                         if (this.state.sections[name].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
@@ -333,7 +333,7 @@ class QSortWhyCreate extends React.Component {
     render(){
         var result=[];
         var color='#fff'
-        console.info("QSortWhyCreate", this.props);
+        console.info("QSortWhyCreate");
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
         var item = null;
         if(panel && panel.items && panel.items.length) {

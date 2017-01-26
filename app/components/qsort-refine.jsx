@@ -62,20 +62,20 @@ class QSortRefine extends React.Component {
         }
         this.results.refine[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
-        console.info("qsort-refine constructor", this.props, this.whyName)
+        console.info("qsort-refine constructor")
         this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
         this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
-        console.info("qsortWhy constructor", this.props.shared, this.state);
+        console.info("qsortWhy constructor");
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
-        console.info("qsortWhy componentWillReceiveProps", this.props, newProps, this.state);
+        console.info("qsortWhy componentWillReceiveProps");
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
@@ -92,7 +92,7 @@ class QSortRefine extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     toggle(itemId, button, set, whyItem) {
-        console.info("QsortWhy", itemId, button, set );
+        console.info("QsortWhy" );
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
         let i;
         let done = false;
@@ -209,7 +209,7 @@ class QSortRefine extends React.Component {
                     if (this.state.sections['unsorted'].length) { issues++ }
                     let qb = this.ButtonList[name];
                     if (qb.max) {
-                        console.info("QSortRefine qb", qb, this.state)
+                        console.info("QSortRefine qb")
                         if (this.state.sections[name].length > qb.max) {
                             direction.push(
                                 <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>

@@ -99,7 +99,7 @@ class QVoteStore extends React.Component {
 
 
   okGetQVoteInfo(accumulation) {
-      console.info("QVote got qvote info length",accumulation.length);
+      console.info("QVote got qvote info length,accumulation.length");
       if(accumulation){
         accumulation.forEach(qvote => {
             if(qvote.ownVote) {

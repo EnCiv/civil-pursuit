@@ -40,7 +40,7 @@ class PanelStore extends React.Component {
       }
 
       if(this.props.limit){panel.limit=this.props.limit}
-      console.info("PanelStore limit", panel.limit)
+      console.info("PanelStore limit")
 
       if(this.props.own){panel.own=this.props.own}
 

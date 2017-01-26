@@ -21,7 +21,7 @@ import Harmony              from './harmony';
 
 class QSortFinale extends React.Component{
     render (){
-                console.info("QSortFinale", this.props, this.state);
+                console.info("QSortFinale");
             return(
 
                 <QVoteTotals {...this.props} >
@@ -69,7 +69,7 @@ class QSortFinalTotal extends React.Component {
 
         const { panel } = this.props.shared;
 
-        console.info("QSortFinale", this.props, this.state);
+        console.info("QSortFinale");
 
         const onServer = typeof window === 'undefined';
 

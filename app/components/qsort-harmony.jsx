@@ -21,7 +21,7 @@ import Harmony              from './harmony';
 
 class QSortReLook extends React.Component{
     render (){
-                console.info("QSortReLook", this.props, this.state);
+                console.info("QSortReLook");
             return(
 
                 <QVoteLocal {...this.props} >
@@ -101,7 +101,7 @@ class QSortHarmony extends React.Component {
 
         const { panel } = this.props.shared;
 
-        console.info("QSortHarmony", this.props, this.state);
+        console.info("QSortHarmony");
 
         const onServer = typeof window === 'undefined';
 

@@ -130,7 +130,7 @@ class Creator extends React.Component {
     if ( this.props.item ) {
       item.from = this.props.item._id;
     }
-    console.info('CREATE ITEM', item);
+    console.info('CREATE ITEM');
 
     let insert = () => {
       window.socket.emit('create item', item);
@@ -153,7 +153,7 @@ class Creator extends React.Component {
     else {
       insert();
     }
-    console.info("Creator.create", this.props);
+    console.info("Creator.create");
 
     if(this.props.toggle) this.props.toggle();
   }

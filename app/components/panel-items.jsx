@@ -79,7 +79,7 @@ class PanelItems extends React.Component {
   lastItem=null;
 
   toMeFromParent(vs){
-    console.info("PanelItem.toMeFromParent", vs);
+    console.info("PanelItem.toMeFromParent");
     const itemId=vs.itemId || null;
     if(vs.state=='truncated' && this.state.active.item){
       if(this.toChild[this.state.active.item]){this.toChild[this.state.active.item]({state: 'truncated', distance: vs.distance + 1})} // notify child of state change
@@ -92,7 +92,7 @@ class PanelItems extends React.Component {
   }
 
   toMeFromChild(vs) {
-    console.info("PanelItem.toMeFromChild", vs);
+    console.info("PanelItem.toMeFromChild");
 
     if (vs.toChild && vs.itemId) { this.toChild[vs.itemId] = vs.toChild }  // child is passing up her func
 
