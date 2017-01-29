@@ -194,6 +194,8 @@ class PanelItems extends React.Component {
 
     const { panel, count, user, emitter } = this.props;
 
+    let backgroundColor=this.props.backgroundColor || 'white';
+
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
@@ -346,6 +348,7 @@ class PanelItems extends React.Component {
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
+                  style   =  {{backgroundColor=backgroundColor}}
                   item    =   { item }
                   user    =   { user }
                   buttons =   { (
@@ -424,6 +427,7 @@ class PanelItems extends React.Component {
               />
             )
           ]}
+          style = {{backgroundColor: backgroundColor}}
           >
           { creator }
           { content }
