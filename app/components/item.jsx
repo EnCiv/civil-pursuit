@@ -65,6 +65,7 @@ class VSItem extends React.Component {
 
 /*** This could work really well - but we need a few more event updates based on button changes, and on footer changes **/
   shouldComponentUpdate(newProps,newState){
+    let a, b;
     if(this.props.vs.state !== newProps.vs.state) return true;
     if(this.state.hint !== newState.hint) return true;
     if(this.props.item && newProps.item) {
