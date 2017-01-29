@@ -8,7 +8,7 @@ import Accordion          from './util/accordion';
 import ClassNames          from 'classnames';
 import VisualState     from './visual-state';
 import isEqual from 'lodash/isEqual';
-import has from 'lodash/isEqual';
+import has from 'lodash/has';
 
 //Item Visual State - lets other components change the visual state of an item. 
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
@@ -65,14 +65,14 @@ class VSItem extends React.Component {
 
 /*** This could work really well - but we need a few more event updates based on button changes, and on footer changes **/
   shouldComponentUpdate(newProps,newState){
-    let a, b;
+    let a = has(this.props,'buttons.props.children.props.buttonstate'),
+        b = has(newProps,  'buttons.props.children.props.buttonstate');
+    if(a != b) return true;
     if(this.props.vs.state !== newProps.vs.state) return true;
     if(this.state.hint !== newState.hint) return true;
     if(this.props.item && newProps.item) {
       if(this.props.item.subject !== newProps.item.subject) return true;
       if(this.props.item.description !== newProps.item.description) return true;
-      if((a = has(this.props,'buttons.props.children.props.buttonstate'))             
-      != (b = has(newProps,  'buttons.props.children.props.buttonstate'))) return true;
       if(!( a && b && isEqual(this.props.buttons.props.children.props.buttonstate, newProps.buttons.props.children.props.buttonstate)
            )
        ) return true;
