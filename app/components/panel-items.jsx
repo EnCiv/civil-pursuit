@@ -348,7 +348,7 @@ class PanelItems extends React.Component {
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item
-                  style   =  {{backgroundColor=backgroundColor}}
+                  style   =  {{backgroundColor: backgroundColor}}
                   item    =   { item }
                   user    =   { user }
                   buttons =   { (
