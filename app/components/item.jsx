@@ -70,8 +70,8 @@ class VSItem extends React.Component {
     if(this.props.item && newProps.item) {
       if(this.props.item.subject !== newProps.item.subject) return true;
       if(this.props.item.description !== newProps.item.description) return true;
-      if((a = has(this.props,buttons.props.children.props.buttonstate))             
-      != (b = has(newProps,  buttons.props.children.props.buttonstate))) return true;
+      if((a = has(this.props,'buttons.props.children.props.buttonstate'))             
+      != (b = has(newProps,  'buttons.props.children.props.buttonstate'))) return true;
       if(!( a && b && isEqual(this.props.buttons.props.children.props.buttonstate, newProps.buttons.props.children.props.buttonstate)
            )
        ) return true;
