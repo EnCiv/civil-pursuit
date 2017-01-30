@@ -89,7 +89,7 @@ class Home extends React.Component {
         <div>
           <div id="top-level-panel">
             <PanelStore { ...panel }>
-              <PanelItems user={ this.props.user } />
+              <PanelItems style={{backgroundColor: "white"}} user={ this.props.user } />
             </PanelStore>
           </div>
         </div>
