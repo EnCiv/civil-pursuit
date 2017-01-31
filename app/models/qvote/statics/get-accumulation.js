@@ -12,39 +12,46 @@ function getAccumulation (itemId, userId) {
     if(userId){ query.user = userId} // get a specific user's accumulation
     try {
       let accumulation = [];
-      var lastUser=null;
-      var lastItem=null;
 
       console.info("qvote qet Accumulation try", query);
 
       this
-        .find(query)
-        .sort({ item: 1, user : 1, _id : -1})
+        .aggregate(
+          [
+              { $match: query },
+              { $sort: { item: 1, user: 1, _id: 1}},
+              { $group: { _id: {user: "$user", item: "$item"},
+                          criteria: {$last: "$criteria"}
+                        }
+              },
+              { $group: { _id: {item: "$_id.item", criteria: "$criteria"},
+                        count: {$sum: 1}
+                      }
+              },
+              {$group: { _id: {item: "$_id.item"},
+                        results: {$push: {criteria: "$_id.criteria", count: "$count"}}
+                  }
+              },
+              { $project:{"_id": 0,
+                          item: "$_id.item",
+                          results: "$results",
+                        }
+              }
+          ]
+        )
         .then(
           qvotes => {
             try {
               qvotes.forEach(jvote => {
                 var vote=jvote.toJSON();
-                if(lastItem===null) {lastItem={item: vote.item, results: {}, ownVote: null}} // first time through
-                if(vote.item != lastItem.item){
-                  const newobj=merge({},lastItem);
-                  accumulation.push(newobj);
-                  lastItem.item=vote.item;
-                  lastItem.results={};
-                  lastItem.ownVote=null;
-                  lastUser=null;
-                }
-                if(vote.user!=lastUser) { // only count the last vote by each user, which is the first in the list because it's sorted -1 by _id
-                    var criteria=vote.criteria;
-                    lastUser=vote.user;
-                    if(!lastItem.results[criteria]){lastItem.results[criteria]=1}
-                    else {lastItem.results[criteria]++}
-                    if(lastUser == userId){
-                      lastItem.ownVote=criteria;
-                    }
-                } // if it is equal to the last user we just skip it because we are only counting the 
+                console.info("qvote getacc", jvote, vote);
+                var qvote;
+                qvote.item=vote.item;
+                vote.results.forEach(r=>{qvote.results[r.criteria]=r.count});
+                if(userId && vote.results.length) qvote.ownVote=vote.results[0].criteria; 
+                else qvote.ownVote=null;
+                accumulation.push(qvote);
               });
-              if(lastItem){ accumulation.push(lastItem); } // push the last one
               console.info("qvote get accumulation", accumulation)
               
               ok(accumulation);
