@@ -9,10 +9,10 @@ import merge from 'lodash/merge'
 function getAccumulation (itemId, userId) {
   return new Promise((ok, ko) => {
     var itemA=[];
-    itemId.forEach(item=> typeof item !== 'object' ? itemA.push({"$oid": item}) : itemA.push(item) );
+    itemId.forEach(item=> typeof item !== 'object' ? itemA.push({$oid: item}) : itemA.push(item) );
     // when using mungo aggregate the filter object is passed directly to mongo. It is necessary that all id's are objects in the ObjectId from and not strings
     var query={item: {$in: itemA }};
-    if(userId){ query.user = {"$oid": userId}} // get a specific user's accumulation
+    if(userId){ query.user = {$oid: userId}} // get a specific user's accumulation
     try {
       let accumulation = [];
 
