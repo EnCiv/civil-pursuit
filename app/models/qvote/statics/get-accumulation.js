@@ -51,7 +51,7 @@ function getAccumulation (itemId, userId) {
               qvotes.forEach(jvote => {
                 var vote=jvote.toJSON();
                 console.info("qvote getacc", jvote, vote);
-                var qvote;
+                var qvote={};
                 qvote.item=vote.item;
                 vote.results.forEach(r=>{qvote.results[r.criteria]=r.count});
                 if(userId && vote.results.length) qvote.ownVote=vote.results[0].criteria; 
