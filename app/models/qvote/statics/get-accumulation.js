@@ -1,6 +1,8 @@
 'use strict';
 
 import merge from 'lodash/merge'
+import {ObjectId} from 'mongo';
+
 
 // for the item, for each QVote critera (like most, like, least), return the number of votes only counting the last vote by each users. (last is determined by largest _id of a vote)
 // if user is passed, return the user's latest vote.
@@ -12,7 +14,8 @@ function getAccumulation (itemId, userId) {
  //   itemId.forEach(item=> typeof item !== 'object' ? itemA.push({$oid: item}) : itemA.push(item) );
     // when using mungo aggregate the filter object is passed directly to mongo. It is necessary that all id's are objects in the ObjectId from and not strings
     var query={item: {$in: itemId }};
-    if(userId){ query.user = {$oid: userId}} // get a specific user's accumulation
+    if(userId){ query.user = ObjectId(userId); // get a specific user's accumulation
+    console.info("get accumulation objectId", ObjectId(userId));
     try {
       let accumulation = [];
 
