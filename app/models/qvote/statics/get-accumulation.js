@@ -15,7 +15,7 @@ function getAccumulation (itemId, userId) {
     // when using mungo aggregate the filter object is passed directly to mongo. It is necessary that all id's are objects in the ObjectId from and not strings
     var query={item: {$in: itemId }};
     if(userId){ query.user = Mungo.Type.ObjectID(userId)}; // get a specific user's accumulation
-    console.info("get accumulation objectId", Mungo.Type.ObjectID(userId));
+    console.info("get accumulation objectId", typeof userId, Mungo.Type.ObjectID.convert(userId));
     try {
       let accumulation = [];
 
