@@ -54,7 +54,7 @@ function getAccumulation (itemId, userId) {
                            results: {},
                           ownVote: null};
                 jvote.results.forEach(r=>{qvote.results[r.criteria]=r.count});
-                if(userId && jvote.results.length) qvote.ownVote=vote.results[0].criteria; 
+                if(userId && jvote.results.length) qvote.ownVote=jvote.results[0].criteria; 
                 accumulation.push(qvote);
               });
               console.info("qvote get accumulation", accumulation)
