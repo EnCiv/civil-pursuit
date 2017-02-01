@@ -19,10 +19,10 @@ class QVoteStore extends React.Component {
   }
 
   componentDidMount () {
+      var idList=[];
         if(this.props.panel && this.props.panel.items){
-            this.props.panel.items.map(item=>{ 
-                window.socket.emit('get qvote info', [item._id], true, this.okGetQVoteInfo.bind(this));
-            });
+            this.props.panel.items.map(item=>idList.push(item._id));
+            window.socket.emit('get qvote info', idList, true, this.okGetQVoteInfo.bind(this));
         }
   }
 
@@ -38,18 +38,20 @@ class QVoteStore extends React.Component {
       componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
         let currentIndex = [];
         let unsortedLength = 0;
+        var idList=[];
         var newObj = this.cloneSections(this.state.sections);
         if (newProps.panel && newProps.panel.items) {
             newProps.panel.items.forEach((newItem, i) => {
                 if (!(newItem._id in this.state.index)) {
                     newObj['unsorted'].push(newItem._id);
-                    window.socket.emit('get qvote info', [newItem._id], true, this.okGetQVoteInfo.bind(this));
+                    idList.push(newItem._id);
                 }
                 currentIndex[newItem._id] = i;
                 unsortedLength++;
             });
         }
         if (unsortedLength) {
+            window.socket.emit('get qvote info', idList, true, this.okGetQVoteInfo.bind(this));
             var newIndex=Object.assign({},currentIndex);
             this.setState({ 'sections': this.cloneSections(newObj),
                             'index': newIndex});

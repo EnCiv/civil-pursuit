@@ -30,13 +30,15 @@ class QVoteTotals extends React.Component {
     componentWillReceiveProps(newProps) { //just read in the new props and through out the old ones and fetch new votes
     console.info("qvote-totals: newProps");
       var newFinale=[];
+      var idList=[];
       if(newProps.shared.panel && newProps.shared.panel.items){
         newProps.shared.panel.items.map((item, i)=>{ 
                 let obj={item: item._id, index: i};
                 Object.keys(newProps.shared.sections).forEach(sectionName=>{obj[sectionName]=0});
                 newFinale.push(obj);
-                window.socket.emit('get qvote info', [item._id], false, this.okGetQVoteInfo.bind(this));
+                idList.push(item._id);
             });
+        window.socket.emit('get qvote info', idList, false, this.okGetQVoteInfo.bind(this));
         this.setState({finale: newFinale});
         }
     }
