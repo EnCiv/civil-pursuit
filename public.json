@@ -28,6 +28,7 @@
   },
 
   "default item image": "https://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+  "old default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
 
   "font awesome": {
     "cdn": "https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"

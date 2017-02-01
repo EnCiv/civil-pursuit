@@ -15,7 +15,7 @@ import has from 'lodash/has';
 
 class Item extends React.Component {
   render(){
-    console.info("Item render");
+ //   console.info("Item render");
     return (
     <VisualState {... this.props}>
       <VSItem />
@@ -32,7 +32,7 @@ class VSItem extends React.Component {
   constructor(props){
     super(props);
     //this.state.hint = (this.props.vs.state==='truncated');  // check this after the component did mount
-    console.info("VSItem constructor");
+//    console.info("VSItem constructor");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +77,7 @@ class VSItem extends React.Component {
            )
        ) return true;
     }
-    console.info("item shouldn't update");
+ //   console.info("item shouldn't update");
     return false;
   }
   /***/
@@ -155,7 +155,7 @@ class VSItem extends React.Component {
     
     let noReference=true;
 
-    console.info("VSItem render");
+ //   console.info("VSItem render");
 
     if(!item) {return (<div style={{textAlign: "center"}}>Nothing available at this time.</div>);}
 

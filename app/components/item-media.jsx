@@ -39,14 +39,14 @@ afterLoad() {
       );
     }
 
-    else if ( item.image == publicConfig['default item image'])
+    else if ( item.image == publicConfig['default item image'] || item.image == publicConfig['old default item image'] )
     { media = ( 
         <section className="item-media-wrapper item-hidden">
         </section>
         );
 
     }
-    else if ( item.image && /^http/.test(item.image) ) {
+    else if ( item.image && ( /^http/.test(item.image) || /^https/.test(item.image))  ) {
       media = ( 
         <section className="item-media-wrapper" ref='wrapper'>
           <section className={`item-media ${this.state.mediaThin}`} ref="media">
