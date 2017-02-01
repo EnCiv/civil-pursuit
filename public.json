@@ -5,19 +5,19 @@
     },
     "residence": {
       "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.",
-      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
+      "image": "https://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
     },
     "demographics": {
       "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
-      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
+      "image": "https://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
     },
     "voter": {
       "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.",
-      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
+      "image": "https://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
     },
     "public persona": {
       "description": "This is the information shown about you that others can see when they are evaluating your postings.",
-      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
+      "image": "https://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
     }
   },
 
@@ -27,10 +27,10 @@
     "key": "UA-55807209-1"
   },
 
-  "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+  "default item image": "https://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
 
   "font awesome": {
-    "cdn": "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+    "cdn": "https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
   },
 
   "evaluation context item position": "last",
