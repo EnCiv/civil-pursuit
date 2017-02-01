@@ -50,11 +50,11 @@ function getAccumulation (itemId, userId) {
             try {
               qvotes.forEach(jvote => {
                 console.info("qvote getacc", jvote);
-                var qvote={};
-                qvote.item=jvote.item;
+                var qvote={item: jvote.item,
+                           results: {},
+                          ownVote: null};
                 jvote.results.forEach(r=>{qvote.results[r.criteria]=r.count});
                 if(userId && jvote.results.length) qvote.ownVote=vote.results[0].criteria; 
-                else qvote.ownVote=null;
                 accumulation.push(qvote);
               });
               console.info("qvote get accumulation", accumulation)
