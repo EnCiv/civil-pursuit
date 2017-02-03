@@ -33,7 +33,7 @@ class ProfilePanel extends React.Component {
 
     setUserInfo(info){
         console.info("profile-panel set user info", info); 
-        this.setState({userInfo: Object.assign({},this.state.userInfo,info) });
+        this.setState({userInfo: Object.assign({},this.state.userInfo, info) });
     }
 
     okGetUserInfo(userInfo) {
