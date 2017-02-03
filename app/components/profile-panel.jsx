@@ -10,21 +10,30 @@ import Gender from './gender';
 
 class ProfilePanel extends React.Component {
 
-    constructor(props){
-        super(props);
-        if(this.props.user){
-            if ( typeof window !== 'undefined' ) {
-                var p1 = new Promise((ok, ko) => {
-                    window.socket.emit('get user info', ok);
-                }).then(
-                    results => {
-                        let [ userInfo ] = results;
-                        this.setState({ ready : true, userInfo });
-                    }
-                );
+  constructor (props) {
+    super(props);
+
+    this.state = { userInfo : null, ready : false };
+
+    this.get();
+  }
+
+  get () {
+    if ( typeof window !== 'undefined' ) {
+      Promise
+        .all([
+          new Promise((ok, ko) => {
+            window.socket.emit('get user info', ok);
+          }),
+        ])
+        .then(
+          results => {
+            let [ userInfo ] = results;
+            this.setState({ ready : true, userInfo });
           }
-        }
+        );
     }
+  }
 
     state = {
         typeList: [],
