@@ -10,33 +10,38 @@ import Gender from './gender';
 
 class ProfilePanel extends React.Component {
 
-state = {
+    state = {
         typeList: [],
         ready: false,
         userInfo: null
- }
-
-  constructor (props) {
-    super(props);
-    this.get();
-  }
-
-  get () {
-    if ( typeof window !== 'undefined' ) {
-      Promise
-        .all([
-          new Promise((ok, ko) => {
-            window.socket.emit('get user info', ok);
-          }),
-        ])
-        .then(
-          results => {
-            let [ userInfo ] = results;
-            this.setState({ ready : true, userInfo });
-          }
-        );
     }
-  }
+
+    constructor(props) {
+        super(props);
+        window.socket.emit('get user info', ok);
+        //this.get();
+    }
+
+    get() {
+        if (typeof window !== 'undefined') {
+            Promise
+                .all([
+                    new Promise((ok, ko) => {
+                        window.socket.emit('get user info', ok);
+                    }),
+                ])
+                .then(
+                results => {
+                    let [userInfo] = results;
+                    this.setState({ ready: true, userInfo });
+                }
+                );
+        }
+    }
+
+    okGetUserInfo(userInfo) {
+        this.setState({ ready: true, userInfo });
+    }
 
     componentDidMount() {
         console.info("ProfilePanel.cDM", this.props)
@@ -50,10 +55,10 @@ state = {
 
     render() {
         const { panel, user, active } = this.props;
-        console.info("ProfilePanel:",this.props, this.state);
+        console.info("ProfilePanel:", this.props, this.state);
 
         if (!user) {
-            if(!this.state.typeList.length) return(null);
+            if (!this.state.typeList.length) return (null);
             const newPanel = {
                 parent: panel.parent,
                 type: this.state.typeList[0],
@@ -66,35 +71,35 @@ state = {
         }
 
 
-            let title = panel.type.name || "User Registration Required";
-            let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
+        let title = panel.type.name || "User Registration Required";
+        let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
 
-            if (panel.type && panel.type.instruction) {
+        if (panel.type && panel.type.instruction) {
             instruction = (
-                    <Instruction >
-                        {panel.type.instruction}
-                    </Instruction>
-                );
-            }   
-
-            let content=[];
-            if(this.state.ready){
-                content=[
-                        <Gender split={25} user={this.state.userInfo}/>
-                ];
-            }
-            return (
-                <Panel
-                    ref="panel"
-                    heading={[<h4>{title}</h4>]}
-                    >
-                    {instruction}
-                    <div className='item-profile-panel'>
-                    {content}
-                    </div>
-                </Panel>
+                <Instruction >
+                    {panel.type.instruction}
+                </Instruction>
             );
         }
+
+        let content = [];
+        if (this.state.ready) {
+            content = [
+                <Gender split={25} user={this.state.userInfo} />
+            ];
+        }
+        return (
+            <Panel
+                ref="panel"
+                heading={[<h4>{title}</h4>]}
+            >
+                {instruction}
+                <div className='item-profile-panel'>
+                    {content}
+                </div>
+            </Panel>
+        );
+    }
 
 }
 
