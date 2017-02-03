@@ -41,7 +41,7 @@ class ProfilePanel extends React.Component {
 
     render() {
         const { panel, user, active } = this.props;
-        const {userInfo}=this.state.userInfo;
+        const {userInfo} = this.state;
         console.info("ProfilePanel:", this.props, this.state);
 
         if (!user) {
@@ -57,7 +57,7 @@ class ProfilePanel extends React.Component {
             )
         }
 
-        if (this.state.ready && userInfo.genger && userInfo.dob && userInfo.neighborhood && userInfo.member_type) {
+        if (this.state.ready && userInfo.gender && userInfo.dob && userInfo.neighborhood && userInfo.member_type) {
             if (!this.state.typeList.length) return (null);
             const newPanel = {
                 parent: panel.parent,
@@ -86,10 +86,10 @@ class ProfilePanel extends React.Component {
         if (this.state.ready) {
             content = [
                 <div className='item-profile-panel style={{maxWidth: "150em", margin: "auto"}}'>
-                    <Gender split={25} user={this.state.userInfo} />
-                    <Birthdate split={25} user={this.state.userInfo} />
-                    <Neighborhood split={25} user={this.state.userInfo} />
-                    <MemberType split={25} user={this.state.userInfo} />
+                    <Gender split={25} user={userInfo} />
+                    <Birthdate split={25} user={userInfo} />
+                    <Neighborhood split={25} user={userInfo} />
+                    <MemberType split={25} user={userInfo} />
                 </div>
             ];
         }
