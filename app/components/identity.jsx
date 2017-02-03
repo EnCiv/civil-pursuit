@@ -12,6 +12,7 @@ import Uploader                       from './uploader';
 import userType                       from '../lib/proptypes/user';
 import countryType                    from '../lib/proptypes/country';
 import selectors                      from '../../selectors.json';
+import Gender                         from './gender';
 
 class Identity extends React.Component {
 
@@ -58,16 +59,6 @@ class Identity extends React.Component {
 
     if ( lastName ) {
       window.socket.emit('set user info', { last_name : lastName });
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  saveGender () {
-    let gender = ReactDOM.findDOMNode(this.refs.gender).value;
-
-    if ( gender ) {
-      window.socket.emit('set user info', { gender });
     }
   }
 
@@ -227,17 +218,7 @@ class Identity extends React.Component {
           </Row>
 
           <Row baseline className="gutter-y">
-            <Column span="25">
-              Gender
-            </Column>
-            <Column span="75">
-              <Select block medium ref="gender" onChange={ this.saveGender.bind(this) } defaultValue={ user.gender }>
-                <option value="">Choose one</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="O">Other</option>
-              </Select>
-            </Column>
+            <Gender split={25} user={user}/>
           </Row>
         </section>
 
