@@ -13,6 +13,7 @@ import userType                       from '../lib/proptypes/user';
 import countryType                    from '../lib/proptypes/country';
 import selectors                      from '../../selectors.json';
 import Gender                         from './gender';
+import Birthdate                      from './birthdate';
 
 class Identity extends React.Component {
 
@@ -64,20 +65,6 @@ class Identity extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  saveBirthdate () {
-    let birthdate = ReactDOM.findDOMNode(this.refs.birthdate).value;
-    if ( birthdate ) {
-      let dob = new Date(birthdate);
-      let now = Date.now();
-
-      if ( now > dob ) {
-        window.socket.emit('set user info', { dob });
-      }
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   saveCitizenship (e) {
     let citizenship = ReactDOM.findDOMNode(this.refs.citizenship).value;
 
@@ -121,26 +108,6 @@ class Identity extends React.Component {
       .map(country => (
         <option value={ country._id } key={ country._id }>{ country.name }</option>
       ));
-
-    let dobValue;
-
-    if ( user.dob ) {
-      let dob = new Date(user.dob);
-
-      let dob_year  = dob.getUTCFullYear();
-      let dob_month = dob.getUTCMonth() + 1;
-      let dob_day   = dob.getUTCDate();
-
-      if ( dob_month < 10 ) {
-        dob_month = "0" + dob_month;
-      }
-
-      if ( dob_day < 10 ) {
-        dob_day = "0" + dob_day;
-      }
-
-      dobValue = [dob_year, dob_month, dob_day].join('-');
-    }
 
     return (
       <section className={ selectors.identity.selector.replace(/\./g, ' ') }>
@@ -208,15 +175,9 @@ class Identity extends React.Component {
             </Column>
           </Row>
 
-          <Row baseline className="gutter-y">
-            <Column span="25">
-              Birthdate
-            </Column>
-            <Column span="75">
-              <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } />
-            </Column>
-          </Row>   
+          <Birthdate split={25} user={user}/>  
           <Gender split={25} user={user}/>
+
         </section>
 
       </section>

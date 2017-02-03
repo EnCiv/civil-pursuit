@@ -7,6 +7,7 @@ import config from 'syn/../../public.json';
 import TypeComponent from './type-component';
 import Instruction from './instruction';
 import Gender from './gender';
+import Birthdate from './birthdate'
 
 class ProfilePanel extends React.Component {
 
@@ -18,7 +19,7 @@ class ProfilePanel extends React.Component {
 
     constructor(props) {
         super(props);
-        window.socket.emit('get user info', ok);
+        window.socket.emit('get user info', this.okGetUserInfo.bind(this));
         //this.get();
     }
 
@@ -86,6 +87,7 @@ class ProfilePanel extends React.Component {
         if (this.state.ready) {
             content = [
                 <Gender split={25} user={this.state.userInfo} />
+                <Birthdate split={25} user={this.state.userInfo} />
             ];
         }
         return (
