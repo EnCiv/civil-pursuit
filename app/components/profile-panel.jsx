@@ -82,8 +82,8 @@ class ProfilePanel extends React.Component {
                         </Button>
                     </div>
                 ];
-            } else this.firtPass=false; // the profile data wasn't ready the first time through, so wait for the user to hit done
-        }
+            } 
+        } else if (this.state.ready) this.firstPass=false;  // if the user info has been received but the profile data wasn't there the first pass is over
 
         let title = panel.type.name || "Participant Profile";
         let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);
