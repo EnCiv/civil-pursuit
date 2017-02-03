@@ -7,7 +7,7 @@ import config from 'syn/../../public.json';
 import TypeComponent from './type-component';
 import Instruction from './instruction';
 import Gender from './gender';
-import Birthdate from './birthdate'
+import Birthdate from './birthdate';
 
 class ProfilePanel extends React.Component {
 
