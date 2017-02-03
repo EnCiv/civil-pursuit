@@ -16,6 +16,7 @@ class Neighborhood extends React.Component {
 
     if ( neighborhood ) {
       window.socket.emit('set user info', { neighborhood });
+      if(this.props.emitter) this.props.emitter({neighborhood});
     }
   }
 

@@ -25,17 +25,11 @@ class ProfilePanel extends React.Component {
         super(props);
         if(typeof window !== 'undefined' && this.props.user) {
             window.socket.emit('get user info', this.okGetUserInfo.bind(this));
-            window.socket.on('OK set user info', this.okSetUserInfo.bind(this) );
-            window.socket.on('set user info', this.setUserInfo.bind(this) );
         }
         if (typeof window !== 'undefined' && this.props.panel.type.harmony) 
             window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this));
     }
 
-    okSetUserInfo(userInfo){
-        console.info("profile-panel OK set user info", userInfo); 
-        this.setState({ userInfo })
-    }
 
     setUserInfo(userInfo){
         console.info("profile-panel set user info", userInfo); 
@@ -112,11 +106,11 @@ class ProfilePanel extends React.Component {
         let content = [];
         if (this.state.ready) {
             content = [
-                <div className='item-profile-panel style={{maxWidth: "80em", margin: "auto"}}'>
-                    <Gender split={25} user={userInfo} />
-                    <Birthdate split={25} user={userInfo} />
-                    <Neighborhood split={25} user={userInfo} />
-                    <MemberType split={25} user={userInfo} />
+                <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
+                    <Gender split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                    <Birthdate split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                    <Neighborhood split={25} user={userInfo} emitter={this.setUserInfo.bind(this)} />
+                    <MemberType split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
                 </div>
             ];
         }

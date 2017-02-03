@@ -16,6 +16,7 @@ class Gender extends React.Component {
 
     if ( gender ) {
       window.socket.emit('set user info', { gender });
+      if(this.props.emitter) this.props.emitter({gender});
     }
   }
 
