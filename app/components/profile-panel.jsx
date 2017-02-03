@@ -57,7 +57,7 @@ class ProfilePanel extends React.Component {
             )
         }
 
-        if (userInfo.genger && userInfo.dob && userInfo.neighborhood && userInfo.member_type) {
+        if (this.state.ready && userInfo.genger && userInfo.dob && userInfo.neighborhood && userInfo.member_type) {
             if (!this.state.typeList.length) return (null);
             const newPanel = {
                 parent: panel.parent,
