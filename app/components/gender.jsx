@@ -2,6 +2,7 @@
 
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
+import Row                            from './util/row';
 import Column                         from './util/column';
 import Select                         from './util/select';
 
@@ -25,7 +26,7 @@ class Gender extends React.Component {
     let { user } = this.props;
 
     return (
-        <div>
+        <Row baseline className="gutter-y">
             <Column span={this.props.split}>
               Gender
             </Column>
@@ -37,7 +38,7 @@ class Gender extends React.Component {
                 <option value="O">Other</option>
               </Select>
             </Column>
-        </div>
+        </Row>
     );
   }
 }

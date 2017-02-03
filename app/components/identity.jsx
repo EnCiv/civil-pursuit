@@ -215,11 +215,8 @@ class Identity extends React.Component {
             <Column span="75">
               <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } />
             </Column>
-          </Row>
-
-          <Row baseline className="gutter-y">
-            <Gender split={25} user={user}/>
-          </Row>
+          </Row>   
+          <Gender split={25} user={user}/>
         </section>
 
       </section>
