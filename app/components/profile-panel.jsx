@@ -21,7 +21,8 @@ class ProfilePanel extends React.Component {
 
     constructor(props) {
         super(props);
-        window.socket.emit('get user info', this.okGetUserInfo.bind(this));
+        if(this.props.user)
+            window.socket.emit('get user info', this.okGetUserInfo.bind(this));
     }
 
     okGetUserInfo(userInfo) {
@@ -53,7 +54,7 @@ class ProfilePanel extends React.Component {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } component="LoginPanel" panel={newPanel} />
+                <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
             )
         }
 
@@ -61,12 +62,12 @@ class ProfilePanel extends React.Component {
             if (!this.state.typeList.length) return (null);
             const newPanel = {
                 parent: panel.parent,
-                type: this.state.typeList[0],
+                type: this.state.typeList[1],
                 skip: panel.skip || 0,
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                    <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
+                <TypeComponent  { ...this.props } component={this.state.typeList[1].component} panel={newPanel} />
             )
         }
 
