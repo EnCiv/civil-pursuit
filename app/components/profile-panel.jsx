@@ -86,8 +86,10 @@ class ProfilePanel extends React.Component {
         let content = [];
         if (this.state.ready) {
             content = [
-                <Gender split={25} user={this.state.userInfo} />
-                <Birthdate split={25} user={this.state.userInfo} />
+                <div className='item-profile-panel'>
+                    <Gender split={25} user={this.state.userInfo} />
+                    <Birthdate split={25} user={this.state.userInfo} />
+                </div>
             ];
         }
         return (
@@ -96,9 +98,7 @@ class ProfilePanel extends React.Component {
                 heading={[<h4>{title}</h4>]}
             >
                 {instruction}
-                <div className='item-profile-panel'>
-                    {content}
-                </div>
+                {content}
             </Panel>
         );
     }
