@@ -10,11 +10,14 @@ import Gender from './gender';
 
 class ProfilePanel extends React.Component {
 
+state = {
+        typeList: [],
+        ready: false,
+        userInfo: null
+ }
+
   constructor (props) {
     super(props);
-
-    this.state = { userInfo : null, ready : false };
-
     this.get();
   }
 
@@ -34,12 +37,6 @@ class ProfilePanel extends React.Component {
         );
     }
   }
-
-    state = {
-        typeList: [],
-        ready: false,
-        userInfo: null
-    }
 
     componentDidMount() {
         console.info("ProfilePanel.cDM", this.props)
@@ -68,29 +65,37 @@ class ProfilePanel extends React.Component {
             )
         }
 
-        let title = panel.type.name || "User Registration Required";
-        let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
 
-        if (panel.type && panel.type.instruction) {
-        instruction = (
-                <Instruction >
-                    {panel.type.instruction}
-                </Instruction>
+            let title = panel.type.name || "User Registration Required";
+            let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
+
+            if (panel.type && panel.type.instruction) {
+            instruction = (
+                    <Instruction >
+                        {panel.type.instruction}
+                    </Instruction>
+                );
+            }   
+
+            let content=[];
+            if(this.state.ready){
+                content=[
+                        <Gender split={25} user={this.state.userInfo}/>
+                ];
+            }
+            return (
+                <Panel
+                    ref="panel"
+                    heading={[<h4>{title}</h4>]}
+                    >
+                    {instruction}
+                    <div className='item-profile-panel'>
+                    {content}
+                    </div>
+                </Panel>
             );
-        }   
+        }
 
-        return (
-            <Panel
-                ref="panel"
-                heading={[<h4>{title}</h4>]}
-                >
-                {instruction}
-                <div className='item-profile-panel'>
-                    <Gender split={25} user={this.state.userInfo}/>
-                </div>
-            </Panel>
-        );
-    }
 }
 
 export default ProfilePanel;
