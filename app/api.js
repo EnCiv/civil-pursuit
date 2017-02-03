@@ -228,6 +228,7 @@ class API extends EventEmitter {
 
       socket.broadcast.emit('online users', this.users.length);
       socket.emit('online users', this.users.length);
+      console.info("api: connected: socket.emit  online users",this.users.length);
 
       socket.ok = (event, ...responses) => {
         const formatted = responses.map(res => {
@@ -241,7 +242,7 @@ class API extends EventEmitter {
         });
 
         // this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
-
+        console.info("api: connected: socket.ok ", event, ...responses);
         socket.emit('OK ' + event, ...responses);
       };
 
