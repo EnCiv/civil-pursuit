@@ -37,7 +37,9 @@ const user          =   shape({
   city              :   string,
   state             :   string,
   zip               :   string,
-  zip4              :   string
+  zip4              :   string,
+  neighborhood      :   string,
+  member_type       :   string
 });
 
 export default user;

@@ -89,7 +89,11 @@ class Schema extends Mungo.Model {
 
       "zip"               :     String,
 
-      "zip4"              :     String
+      "zip4"              :     String,
+
+      "neighborhood"      :     String,
+
+      "member_type"       :     String
     };
   }
 }
