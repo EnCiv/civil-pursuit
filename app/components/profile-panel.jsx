@@ -25,11 +25,21 @@ class ProfilePanel extends React.Component {
         super(props);
         if(typeof window !== 'undefined' && this.props.user) {
             window.socket.emit('get user info', this.okGetUserInfo.bind(this));
-            window.socket.on('OK set user info', userInfo => { console.info("profile-panel OK set user info", userInfo); this.setState({ userInfo })});
-            window.socket.on('set user info', userInfo => { tconsole.info("profile-panel set user info", userInfo); his.setState({userInfo: userInfo })});
+            window.socket.on('OK set user info', this.okSetUserInfo.bind(this) );
+            window.socket.on('set user info', this.setUserInfo.bind(this) );
         }
         if (typeof window !== 'undefined' && this.props.panel.type.harmony) 
             window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this));
+    }
+
+    okSetUserInfo(userInfo){
+        console.info("profile-panel OK set user info", userInfo); 
+        this.setState({ userInfo })
+    }
+
+    setUserInfo(userInfo){
+        console.info("profile-panel set user info", userInfo); 
+        this.setState({userInfo: userInfo });
     }
 
     okGetUserInfo(userInfo) {

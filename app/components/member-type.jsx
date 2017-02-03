@@ -24,7 +24,7 @@ class MemberType extends React.Component {
   render() {
 
     let { user } = this.props;
-    let memberTypes=['Golf','Non-Golf'];
+    let memberTypes=['Club/Golf','Club'];
 
     let memberTypeOptions = memberTypes.map(val=>(
             <option value={ val }>{ val }</option>
