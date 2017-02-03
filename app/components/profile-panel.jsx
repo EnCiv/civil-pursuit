@@ -6,6 +6,7 @@ import Panel from './panel';
 import config from 'syn/../../public.json';
 import TypeComponent from './type-component';
 import Instruction from './instruction';
+import Gender from './gender';
 
 class ProfilePanel extends React.Component {
 
@@ -13,7 +14,7 @@ class ProfilePanel extends React.Component {
         super(props);
         if(this.props.user){
             if ( typeof window !== 'undefined' ) {
-                new Promise((ok, ko) => {
+                var p1 = new Promise((ok, ko) => {
                     window.socket.emit('get user info', ok);
                 }).then(
                     results => {
