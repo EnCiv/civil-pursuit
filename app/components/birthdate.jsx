@@ -14,7 +14,6 @@ class Birthdate extends React.Component {
   saveBirthdate () {
             
     let birthdate = ReactDOM.findDOMNode(this.refs.birthdate).value;
-    console.info("saveBirthdate", birthdate);
     
     if ( birthdate ) {
       let dob = new Date(birthdate);
@@ -22,7 +21,6 @@ class Birthdate extends React.Component {
 
       if ( now > dob ) {
         window.socket.emit('set user info', { dob });
-        console.info("saveBirthdate ", {dob}, this.props);
         if(this.props.emitter) this.props.emitter( { dob } );
       }
     }

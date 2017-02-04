@@ -14,7 +14,7 @@ class LoginPanel extends React.Component {
     }
 
     componentDidMount() {
-        console.info("LoginPanel.cDM", this.props)
+    //    console.info("LoginPanel.cDM", this.props)
         if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
             window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
         }
@@ -25,7 +25,7 @@ class LoginPanel extends React.Component {
 
     render() {
         const { panel, user, active } = this.props;
-        console.info("LoginPanel:",this.props, this.state);
+ //       console.info("LoginPanel:",this.props, this.state);
 
         if (user) {
             if(!this.state.typeList.length) return(null);

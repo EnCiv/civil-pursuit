@@ -107,7 +107,7 @@ vs={};
   toChildRight=null;
 
   toMeFromChildLeft(vs) {
-    console.info("harmony.toMeFromChildLeft");
+    //console.info("harmony.toMeFromChildLeft");
     if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
     if (vs.state == 'open') {
       if (this.state.expandedRight) { 
@@ -127,7 +127,7 @@ vs={};
   }
 
   toMeFromChildRight(vs) {
-    console.info("harmony.toMeFromChildRight");
+    //console.info("harmony.toMeFromChildRight");
     if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
     if (vs.state == 'open') {
       if (this.state.expandedLeft) { 

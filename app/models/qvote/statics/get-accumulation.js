@@ -15,11 +15,11 @@ function getAccumulation (itemId, userId) {
     // when using mungo aggregate the filter object is passed directly to mongo. It is necessary that all id's are objects in the ObjectId from and not strings
     var query={item: {$in: itemA }};
     if(userId){ query.user = Mungo.Type.ObjectID.convert(userId)}; // get a specific user's accumulation
-    console.info("get accumulation objectId", typeof userId, Mungo.Type.ObjectID.convert(userId));
+   // console.info("get accumulation objectId", typeof userId, Mungo.Type.ObjectID.convert(userId));
     try {
       let accumulation = [];
 
-      console.info("qvote qet Accumulation try", query);
+     // console.info("qvote qet Accumulation try", query);
 
       this
         .aggregate(
@@ -49,7 +49,7 @@ function getAccumulation (itemId, userId) {
           qvotes => {
             try {
               qvotes.forEach(jvote => {
-                console.info("qvote getacc", jvote);
+                //console.info("qvote getacc", jvote);
                 var qvote={item: jvote.item,
                            results: {},
                           ownVote: null};
@@ -57,7 +57,7 @@ function getAccumulation (itemId, userId) {
                 if(userId && jvote.results.length) qvote.ownVote=jvote.results[0].criteria; 
                 accumulation.push(qvote);
               });
-              console.info("qvote get accumulation", accumulation)
+              //console.info("qvote get accumulation", accumulation)
               
               ok(accumulation);
             }

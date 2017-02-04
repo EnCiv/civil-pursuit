@@ -259,7 +259,7 @@ class Evaluator extends EventEmitter {
                 }
               } randomNumbers.push(rand);
             }
-            console.info("evaluate.js randomNumbers, randomNumbers")
+ //           console.info("evaluate.js randomNumbers, randomNumbers")
             
             for(i=0; i< count; i++){
               randomItems.push(
