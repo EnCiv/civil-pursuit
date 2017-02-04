@@ -83,7 +83,7 @@ class ProfilePanel extends React.Component {
                         <Button small shy
                             onClick={this.setState.bind(this,{done: true})}
                             className="profile-panel-done"
-                            style={{ backgroundColor: Color('black'), color: 'white', float: "right" }}
+                            style={{ backgroundColor: 'black', color: 'white', float: "right" }}
                             >
                             <span className="civil-button-text">{"next"}</span>
                         </Button>
