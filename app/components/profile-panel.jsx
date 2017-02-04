@@ -9,6 +9,7 @@ import Gender from './gender';
 import Birthdate from './birthdate';
 import MemberType from './member-type';
 import Neighborhood from './neighborhood';
+import Button           from './util/button';
 
 class ProfilePanel extends React.Component {
 
