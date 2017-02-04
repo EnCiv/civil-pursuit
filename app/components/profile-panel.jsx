@@ -81,7 +81,7 @@ class ProfilePanel extends React.Component {
                     <div className='instruction-text'>
                         Complete!
                         <Button small shy
-                            onClick={this.setState.bind(this,{done: true})}
+                            onClick={this.setState.bind(this,{done: true},null)} // null is needed here so setState doesn't complain about the mouse event that's the next parameter
                             className="profile-panel-done"
                             style={{ backgroundColor: 'black', color: 'white', float: "right" }}
                             >
