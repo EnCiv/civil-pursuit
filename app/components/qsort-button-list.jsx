@@ -20,7 +20,7 @@ const QSortButtonList = {
         },
         neutral: {
             name: 'moderate',
-            color: '#e0e0f0',
+            color: '#e0e0e0',
             title: {
                 active: "This is among the things that are neighter most nor least important",
                 inactive: "Put this among the things that are neighter most nor least important"
