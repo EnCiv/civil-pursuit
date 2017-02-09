@@ -189,7 +189,7 @@ class JoinForm extends React.Component {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
       confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
-      agree = ReactDOM.findDOMNode(this.refs.agree),
+      agree = ReactDOM.findDOMNode(this.refs.agree);
 
       if(!this.state.loginActive && email && password && !confirm) this.stateState({loginActive: true});
       if(this.state.loginActive && (!email || !password || confirm )) this.setState({loginActive: false});
