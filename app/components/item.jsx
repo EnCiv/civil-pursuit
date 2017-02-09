@@ -27,7 +27,7 @@ export default Item;
 
 class VSItem extends React.Component {  
 
-  state={hint: false};
+  state={hint: false, minHeight: null}; //
 
   constructor(props){
     super(props);
@@ -86,8 +86,8 @@ class VSItem extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  textHint(active) {
-    //calls on completion of Accordion collapse / expand
+  textHint() {
+    //called on mount and completion of Accordion collapse / expand
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
 
     if(this.props.vs.state==='truncated') { 
@@ -99,7 +99,10 @@ class VSItem extends React.Component {
       if(  (( buttonsR.height ||  mediaR.height) && (innerChildR.bottom < bottomLine)) // there is less text than the bottom of media or button
       ||   ((!buttonsR.height && !mediaR.height) && (innerChildR.bottom < truncable.getBoundingClientRect().bottom)) // there is no media or buttons and there is less text than the 'min' height of truncated
       ){
-        if(!this.props.position) truncable.style.minHeight= innerChildR.height +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+        if(!this.props.position) { 
+//          truncable.style.minHeight= innerChildR.height +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+          if(this.state.minHeight !== innerChildR.height+'px') this.setState({minHeight: innerChildR.height+'px'});  // child hieight might change after data is loaded, set state so component should update.
+        }
         if(this.state.hint) this.setState({hint: false}); // if the hint is on - turn it off
         return;
       } else { // we are in the truncated state and there is so much text that we need to truncate it
@@ -186,7 +189,7 @@ class VSItem extends React.Component {
               <section className={ClassNames("item-buttons", cState)} ref='buttons'>
                 { buttons }
               </section>
-              <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' >  
+              <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' style={{minHeight: this.state.minHeight}}>  
                 <h4 className={ClassNames("item-subject",cState)} ref='subject'>
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
                   { item.subject }
