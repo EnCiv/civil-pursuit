@@ -25,7 +25,7 @@ class Neighborhood extends React.Component {
   render() {
 
     let { user } = this.props;
-    let neighborhoods=['Arrowhead','Front Area','Lakeside','Middle Area','Island','Other'];
+    let neighborhoods=['Arrowhead','Lakeside','Island','All others'];
 
     let neighborhoodOptions = neighborhoods.map(nh=>(
             <option value={ nh }>{ nh }</option>
