@@ -45,7 +45,7 @@ class JoinForm extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = { validationError : null, successMessage : null, info : null };
+    this.state = { validationError : null, successMessage : null, info : null, joinActive: false, loginActive: false };
   }
 
   signup () {
@@ -108,11 +108,11 @@ class JoinForm extends React.Component {
             // }
             switch ( res.status ) {
               case 404:
-                ko(new Error('Email not found'));
+                ko(new Error("Email / Password Don't Match"));  // email not found but don't say that to the user
                 break;
 
                 case 401:
-                  ko(new Error('Wrong password'));
+                  ko(new Error("Email / Password Don't Match")); // Wrong Password but dont say that to the users
                   break;
 
                 case 200:
@@ -177,11 +177,27 @@ class JoinForm extends React.Component {
       box.classList.add('fa-square-o');
       box.classList.remove('fa-check-square-o');
     }
+
+    onChangeActive();
   }
 
   stopPropagation(e){
     e.stopPropagation();
  }
+
+ onChangeActive(){
+    let email = ReactDOM.findDOMNode(this.refs.email).value,
+      password = ReactDOM.findDOMNode(this.refs.password).value,
+      confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
+      agree = ReactDOM.findDOMNode(this.refs.agree),
+
+      if(!this.state.loginActive && email && password && !confirm) this.stateState({loginActive: true});
+      if(this.state.loginActive && (!email || !password || confirm )) this.setState({loginActive: false});
+      if(!this.state.joinActive && email && password && confirm && password==confirm && agree) this.setState({joinActive: true});
+      if(this.state.joinActive && (!email || !password || !confirm || password!=confirm || !agree)) this.setState({joinActive: false});
+ }
+
+
 
   render () {
     let content = (
@@ -200,7 +216,7 @@ class JoinForm extends React.Component {
 
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus medium required placeholder="Email" ref="email" name="email" />
+          <EmailInput block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)}/>
         </div>
 
         <Row>
@@ -221,8 +237,8 @@ class JoinForm extends React.Component {
         </Row>
 
         <InputGroup block>
-          <Password required placeholder="Password" ref="password" medium name="password" />
-          <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" />
+          <Password required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
+          <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
         </InputGroup>
 
 
@@ -241,11 +257,11 @@ class JoinForm extends React.Component {
         </Row>
 
         <ButtonGroup block>
-          <Button primary onClick={ this.login.bind(this) } medium className="syn-form-group syn-form-submit login-button">
+          <Button primary onClick={ this.login.bind(this) } medium inactive={this.state.loginActive} className="syn-form-group syn-form-submit login-button">
             <span className={ Component.classList(this) } inline> Login</span>
           </Button>
 
-          <Button info onClick={ this.signup.bind(this) } medium className="syn-form-group syn-form-submit join-button">
+          <Button info onClick={ this.signup.bind(this) } medium inactive={this.state.joinActive} className="syn-form-group syn-form-submit join-button">
             <span>Join</span>
           </Button>
         </ButtonGroup>

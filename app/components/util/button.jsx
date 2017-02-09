@@ -21,6 +21,10 @@ class Button extends React.Component {
     inactive          :   React.PropTypes.bool
   };
 
+  static buttonInactive(e){
+    e.stopPropagation();
+  }
+
   render () {
     const classes = [this.props.className || ''];
 
@@ -31,7 +35,7 @@ class Button extends React.Component {
     }
 
     return (
-      <button { ...this.props } type={ this.props.type || "button" } className={ classes.join(' ') }>
+      <button { ...this.props } onClick={this.props.active ? this.props.onClick : Button.buttonInactive } type={ this.props.type || "button" } className={ classes.join(' ') }>
         { this.props.children }
       </button>
     );
