@@ -178,7 +178,7 @@ class JoinForm extends React.Component {
       box.classList.remove('fa-check-square-o');
     }
 
-    onChangeActive();
+    this.onChangeActive();
   }
 
   stopPropagation(e){
@@ -189,9 +189,9 @@ class JoinForm extends React.Component {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
       confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
-      agree = ReactDOM.findDOMNode(this.refs.agree);
+      agree = ReactDOM.findDOMNode(this.refs.agree).classList.contains('fa-check-square-o'); // true if the box is checked
 
-      if(!this.state.loginActive && email && password && !confirm) this.stateState({loginActive: true});
+      if(!this.state.loginActive && email && password && !confirm) this.setState({loginActive: true});
       if(this.state.loginActive && (!email || !password || confirm )) this.setState({loginActive: false});
       if(!this.state.joinActive && email && password && confirm && password==confirm && agree) this.setState({joinActive: true});
       if(this.state.joinActive && (!email || !password || !confirm || password!=confirm || !agree)) this.setState({joinActive: false});
