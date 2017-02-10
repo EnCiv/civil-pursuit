@@ -59,7 +59,7 @@ class Birthdate extends React.Component {
               Birthdate
             </Column>
             <Column span={100 - this.props.split}>
-              <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } />
+              <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } placeholder="MM/DD/YYYY" />
             </Column>
           </Row>   
     );
