@@ -336,11 +336,13 @@ class QSortWhyCreate extends React.Component {
     }
 
     constructor(props){
+        console.info("QSortWhyCreate.constructor", props);
         super(props);
         this.setItem(props);
     }
 
     componentWillReceiveProps(newProps){
+        console.info("QSortWhyCreate.constructor", newProps);
         this.setItem(newProps);
     }
 
@@ -353,6 +355,7 @@ class QSortWhyCreate extends React.Component {
                 toggle('set', this.item._id); // passing the Id of the why item created
             }
         }
+        console.info("QsortWhyCreate.setItem:", this.item);
     }
 
     render(){
@@ -363,27 +366,17 @@ class QSortWhyCreate extends React.Component {
 
         if(sectionName=='unsorted' || !this.set ){
             color=qbuttons['unsorted'].color;
-            result = [  <Creator
-                            type    =   { type }
-                            parent  =   { parent }
-                            item = { this.item }  
-                            toggle = {toggle}
-                            toParent = {this.toMeFromChild.bind(this)}
-                        />
-            ];
         } else {
             color=qbuttons[sectionName].color;
-            result = [  <ItemStore item={ this.item } key={ `item-${this.item._id}` }>
-                            <Item
-                                user    =   { user }
-                                vs={{state: 'truncated'}}
-                                toggle  =   { toggle }
-                                focusAction={null}
-                                truncateItems={null}
-                            />
-                        </ItemStore>                        
-            ];
         }
+        result = [  <Creator
+                        type    =   { type }
+                        parent  =   { parent }
+                        item = { this.item }  
+                        toggle = {toggle}
+                        toParent = {this.toMeFromChild.bind(this)}
+                   />
+        ];
         return(
             <div style={{ backgroundColor: color,
                           marginBottom: '0.5em'}} >
