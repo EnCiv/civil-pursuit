@@ -103,33 +103,43 @@ class Creator extends React.Component {
   }
 
   onChangeKey(ref){
-    var obj = {}, value;
+    var obj = {}, value, ;
       value=ReactDOM.findDOMNode(this.refs[ref]).value;
       if(this.state[ref]!==value){ obj[ref]=value}
-      this.setState(obj)
+      this.setState(obj);
+      if(this.props.toParent){
+        var dBitem=this.makeDbItem();
+        dBitem[ref]=value;
+        this.props.toParent({results: {item: dBitem}})
+      }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~
 
-  create () {
+  makeDbItem(){
     var item = {};
     Creator.keys.forEach(key => {
-      if(key==='reference') { return } // don't add it in and delete it later
+      if(key==='reference') return; // don't add it in and delete it later
       if(this.state[key]) { item[key]=this.state[key] }
     })
     if ( this.state.reference ) {
       item.references = [{ url: this.state.reference, title: this.state.title }];
     }
-
     item.type= this.props.type;
     if ( this.props.parent ) {
       item.parent = this.props.parent;
     }
-
-
     if ( this.props.item ) {
       item.from = this.props.item._id;
     }
+    return item;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  create () {
+    var item = this.makeDbItem();
+
     console.info('CREATE ITEM');
 
     let insert = () => {

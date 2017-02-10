@@ -328,35 +328,53 @@ class QSortWhyItem extends React.Component {
 }
 
 class QSortWhyCreate extends React.Component {
-    set = false;
+    set = false; // not part of state because we don't want to rerender on seting this. And once set, it's never changed.
+    item = {};  // a local copy of the item data, passed up by the child. No need for it to be part of state - it's only being changed by the child. but we keep a copy here so we don't rerender null
+
+    toMeFromChild(results){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
+        Object.assign(this.item,results.item);
+    }
+
+    constructor(props){
+        super(props);
+        this.setItem(props);
+    }
+
+    componentWillReceiveProps(newProps){
+        this.setItem(newProps);
+    }
+
+    setItem(props){
+        const {type, parent, panel, toggle, qbuttons, sectionName, user } = props; // items is Object.assign'ed as a prop through PanelStore
+        if(panel && panel.items && panel.items.length) {
+            Object.assign(this.item,panel.items[0]);
+            if(!this.set){ 
+                this.set=true; 
+                toggle('set', this.item._id); // passing the Id of the why item created
+            }
+        }
+    }
 
     render(){
         var result=[];
         var color='#fff'
         console.info("QSortWhyCreate");
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
-        var item = null;
-        if(panel && panel.items && panel.items.length) {
-            item=panel.items[0];
-            if(!this.set){ 
-                this.set=true; 
-                toggle('set', item._id); // passing the Id of the why item created
-            }
-        }
+
         if(sectionName=='unsorted' || !this.set ){
             color=qbuttons['unsorted'].color;
             result = [  <Creator
                             type    =   { type }
                             parent  =   { parent }
-                            item = { item }  
+                            item = { this.item }  
                             toggle = {toggle}
+                            toParent = {this.toMeFromChild.bind(this)}
                         />
             ];
         } else {
             color=qbuttons[sectionName].color;
-            result = [  <ItemStore item={ item } key={ `item-${item._id}` }>
+            result = [  <ItemStore item={ this.item } key={ `item-${item._id}` }>
                             <Item
-                                item    =   { item }
                                 user    =   { user }
                                 vs={{state: 'truncated'}}
                                 toggle  =   { toggle }
