@@ -103,7 +103,7 @@ class Creator extends React.Component {
   }
 
   onChangeKey(ref){
-    var obj = {}, value, ;
+    var obj = {}, value ;
       value=ReactDOM.findDOMNode(this.refs[ref]).value;
       if(this.state[ref]!==value){ obj[ref]=value}
       this.setState(obj);
