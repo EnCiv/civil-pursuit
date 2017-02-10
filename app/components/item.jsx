@@ -70,6 +70,7 @@ class VSItem extends React.Component {
     if(a != b) return true;
     if(this.props.vs.state !== newProps.vs.state) return true;
     if(this.state.hint !== newState.hint) return true;
+    if(this.state.minHeight != newState.minHeight) return true;
     if(this.props.item && newProps.item) {
       if(this.props.item.subject !== newProps.item.subject) return true;
       if(this.props.item.description !== newProps.item.description) return true;
