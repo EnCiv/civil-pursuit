@@ -316,7 +316,6 @@ class QSortWhyItem extends React.Component {
                             user    =   { user }
                             footer= { creator }
                             vs={{state: 'truncated'}}
-                            toggle  =   { toggle }
                             focusAction={null}
                             truncateItems={null}
                         />
