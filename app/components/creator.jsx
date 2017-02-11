@@ -31,10 +31,9 @@ class Creator extends React.Component {
 
   constructor(props){
     super(props);
-    Creator.keys.forEach(key => {this.state[key]=''}); 
-    if(this.props.item ){
-      Creator.keys.forEach(key => {this.state[key]=props[key] || ''})
-    } 
+
+    if(this.props.item ) Creator.keys.forEach(key => {this.state[key]=props.item[key] || ''});
+    else Creator.keys.forEach(key => {this.state[key]=''}); 
     if(this.props.references && this.props.references[0]){
       this.state.reference=this.props.references[0].url;
       this.state.title=this.props.references[0].title;
