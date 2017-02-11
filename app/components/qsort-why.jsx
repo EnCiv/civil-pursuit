@@ -14,6 +14,7 @@ import smoothScroll from '../lib/app/smooth-scroll';
 import Instruction from './instruction';
 import Color from 'color';
 import Button           from './util/button';
+import ButtonGroup           from './util/button-group';
 import Item from './item';
 import Creator            from './creator';
 import QSortButtonList from './qsort-button-list';
@@ -371,7 +372,7 @@ class QSortWhyCreate extends React.Component {
     render(){
         var result = [];
         var color = '#fff'
-        console.info("QSortWhyCreate");
+        console.info("QSortWhyCreate", this.item);
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
         if (this.state.edit || sectionName == 'unsorted' || !this.set) {
@@ -391,14 +392,14 @@ class QSortWhyCreate extends React.Component {
                 user={user}
                 vs={{ state: 'truncated' }}
                 buttons={
-                    <section className="item-buttons">
-                        <section className="syn-button-group">
-                            <span className="civil-button-info">{' '}</span>
-                            <Button small shy onClick={this.edit.bind(this)} >
-                                <span className="civil-button-text">Edit</span>
-                            </Button>
-                        </section>
-                    </section>
+                    <ButtonGroup>
+                        <Button small shy 
+                        onClick= { this.edit.bing(this) } 
+                        title= {"click to edit this comment"}
+                        >
+                            <span className="civil-button-text">edit</span>
+                        </Button>
+                    </ButtonGroup>
                 }
                 focusAction={null}
                 truncateItems={null}
