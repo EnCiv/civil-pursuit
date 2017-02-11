@@ -394,7 +394,7 @@ class QSortWhyCreate extends React.Component {
                 buttons={
                     <ButtonGroup>
                         <Button small shy 
-                        onClick= { this.edit.bing(this) } 
+                        onClick= { this.edit.bind(this) } 
                         title= {"click to edit this comment"}
                         >
                             <span className="civil-button-text">edit</span>
