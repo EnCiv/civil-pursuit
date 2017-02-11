@@ -357,25 +357,55 @@ class QSortWhyCreate extends React.Component {
         console.info("QsortWhyCreate.setItem:", this.item);
     }
 
+    state={edit: false}
+
+    edit(){
+        this.setState({edit: true});
+    }
+
+    post(){
+        this.setState({edit: false});
+        if(this.props.toggle) this.props.toggle();
+    }
+
     render(){
-        var result=[];
-        var color='#fff'
+        var result = [];
+        var color = '#fff'
         console.info("QSortWhyCreate");
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
-        if(sectionName=='unsorted' || !this.set ){
-            color=qbuttons['unsorted'].color;
+        if (this.state.edit || sectionName == 'unsorted' || !this.set) {
+            color = qbuttons['unsorted'].color;
+            result = [<Creator
+                type={type}
+                parent={parent}
+                item={this.item}
+                toggle={this.post.bind(this)}
+                toParent={this.toMeFromChild.bind(this)}
+            />
+            ];
         } else {
-            color=qbuttons[sectionName].color;
+            color = qbuttons[sectionName].color;
+            result = [<Item
+                item={this.item}
+                user={user}
+                vs={{ state: 'truncated' }}
+                buttons={
+                    <section className="item-buttons">
+                        <section className="syn-button-group">
+                            <span className="civil-button-info">{' '}</span>
+                            <Button small shy onClick={this.edit.bind(this)} >
+                                <span className="civil-button-text">Edit</span>
+                            </Button>
+                        </section>
+                    </section>
+                }
+                focusAction={null}
+                truncateItems={null}
+            />
+            ];
         }
-        result = [  <Creator
-                        type    =   { type }
-                        parent  =   { parent }
-                        item = { this.item }  
-                        toggle = {toggle}
-                        toParent = {this.toMeFromChild.bind(this)}
-                   />
-        ];
+
         return(
             <div style={{ backgroundColor: color,
                           marginBottom: '0.5em'}} >
