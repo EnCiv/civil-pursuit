@@ -9,7 +9,7 @@ import QSortButtons from './qsort-buttons';
 import ItemStore from '../components/store/item';
 import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from './qsort-flip-item'
+import QSortFlipItem from './qsort-flip-item';
 import smoothScroll from '../lib/app/smooth-scroll';
 import Instruction from './instruction';
 import Color from 'color';
@@ -317,8 +317,6 @@ class QSortWhyItem extends React.Component {
                             user    =   { user }
                             footer= { creator }
                             vs={{state: 'truncated'}}
-                            focusAction={null}
-                            truncateItems={null}
                         />
                     </ItemStore>
                 </div>
@@ -366,7 +364,7 @@ class QSortWhyCreate extends React.Component {
 
     post(){
         this.setState({edit: false});
-        if(this.props.toggle) this.props.toggle();
+        if(!this.set && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
     }
 
     render(){
@@ -387,23 +385,24 @@ class QSortWhyCreate extends React.Component {
             ];
         } else {
             color = qbuttons[sectionName].color;
-            result = [<Item
-                item={this.item}
-                user={user}
-                vs={{ state: 'truncated' }}
-                buttons={
-                    <ButtonGroup>
-                        <Button small shy 
-                        onClick= { this.edit.bind(this) } 
-                        title= {"click to edit this comment"}
-                        >
-                            <span className="civil-button-text">edit</span>
-                        </Button>
-                    </ButtonGroup>
-                }
-                focusAction={null}
-                truncateItems={null}
-            />
+            result = [
+            
+            <ItemStore item={ this.item } key={ `item-${item._id}` }>
+                <Item
+                    user={user}
+                    vs={{ state: 'truncated' }}
+                    buttons={
+                        <ButtonGroup>
+                            <Button small shy 
+                            onClick= { this.edit.bind(this) } 
+                            title= {"click to edit this comment"}
+                            >
+                                <span className="civil-button-text">edit</span>
+                            </Button>
+                        </ButtonGroup>
+                    }
+                />
+            </ItemStore>
             ];
         }
 
