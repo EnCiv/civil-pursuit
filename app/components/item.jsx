@@ -180,7 +180,7 @@ class VSItem extends React.Component {
     }
 
       rendereditem = (
-        <Accordion active={vState!=='collapsed'} name='item'>
+        <Accordion active={vState!=='collapsed'} name='item'onComplete={ this.textHint.bind(this) }>
           <article className={ClassNames("item", this.props.className, cState )} ref="item" id={ `item-${item._id}` } >
             <ItemMedia className={ClassNames('item-media', cState)} onClick={ this.readMore.bind(this) }
               item      =   { item }
