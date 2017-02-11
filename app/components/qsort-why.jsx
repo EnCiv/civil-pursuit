@@ -387,7 +387,7 @@ class QSortWhyCreate extends React.Component {
             color = qbuttons[sectionName].color;
             result = [
             
-            <ItemStore item={ this.item } key={ `item-${item._id}` }>
+            <ItemStore item={ this.item } key={ `item-${this.item._id}` }>
                 <Item
                     user={user}
                     vs={{ state: 'truncated' }}
