@@ -225,9 +225,8 @@
   padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
   overflow: visible;
   white-space: normal;
-  line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
   font-size: 1.375rem;
-
+  line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
 }
 
 blockquote {
@@ -316,4 +315,9 @@ blockquote {
   .join-button {
       background-color: @syn-purple-color;
   }
+}
+
+
+.item .sym-creator  [name="subject"]{
+  .item-subject();
 }
