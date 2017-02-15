@@ -55,16 +55,17 @@ class QSortWhy extends React.Component {
         var unsortedList = [];
         console.info("qsortWhy constructor");
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
-        if(this.props.type.name==="Why It's Most Important"){
-            this.whyName='most';
-        } else {
-            this.whyName='least';
-        }
+        const qbuttons=Object.keys(QSortButtonList);
+        qbuttons.slice(1).forEach(button => {
+            var regex = new RegExp('./*'+button+'./*','i');
+            if(this.props.type.name.match(regex)) this.whyName=button;
+        });
+        if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortWhy button name not found in type name:", qbuttons, this.props.type.name)}
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-why constructor buttonlist")
-        this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
+        this.buttons = Object.keys(this.ButtonList);
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });

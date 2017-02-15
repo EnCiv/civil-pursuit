@@ -55,21 +55,22 @@ class QSortRefine extends React.Component {
         super(props);
         var unsortedList = [];
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
-        if(this.props.type.name==="Refine Why It's Most Important"){
-            this.whyName='most';
-        } else {
-            this.whyName='least';
-        }
+        const qbuttons=Object.keys(QSortButtonList);
+        qbuttons.slice(1).forEach(button => {
+            var regex = new RegExp('./*'+button+'./*','i');
+            if(this.props.type.name.match(regex)) this.whyName=button;
+        });
+        if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortRefine button name not found in type name:", qbuttons, this.props.type.name)}
         this.results.refine[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-refine constructor")
-        this.buttons = Object.keys(this.ButtonList);
         this.state.sections = {};
+        this.buttons = Object.keys(this.ButtonList);
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
         this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
-        console.info("qsortWhy constructor");
+        console.info("qsortRefine constructor");
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
