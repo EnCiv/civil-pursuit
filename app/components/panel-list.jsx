@@ -288,7 +288,7 @@ class PanelList extends React.Component {
                     }
                   </div>
               : 
-                <Loading message="Loading discussions ..." />
+                []
             }
             </div>
           }
