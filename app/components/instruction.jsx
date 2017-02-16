@@ -26,6 +26,16 @@ class Instruction extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  hide(){
+      this.setState({truncated: true});
+  }
+
+  componentDidMount(){
+    if(this.props.toParent){
+      this.props.toParent({hide: this.hide.bind(this)});
+    }
+  }
+
   render () {
 
     var instructionClass = ClassNames("instruction", this.props.className);

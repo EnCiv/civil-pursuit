@@ -152,12 +152,21 @@ class PanelList extends React.Component {
  panelListButton(i) {
    this.setState({currentPanel: i})
    if(this.state.currentPanel) this.smoothHeight();
+   else if(this.hideInstruction) this.hideInstruction()
  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+hideInstruction=null;
+toInstructionFromParent(result){
+  this.hideInstruction=result.hide;
+}
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     const content = [];
-    let instruction = []
+    let instruction = [];
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
@@ -186,7 +195,7 @@ class PanelList extends React.Component {
 
     if (panel.type && panel.type.instruction) {
         instruction = (
-            <Instruction >
+            <Instruction toParent={this.toInstructionFromParent.bind(this)} >
                 {panel.type.instruction}
             </Instruction>
         );
