@@ -227,7 +227,7 @@ class PanelList extends React.Component {
       )
     }
 
-    if (this.state.currentPanel !== null && this.state.typeList.length) {
+    if (currentPanel !== null && this.state.typeList.length) {
 /**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
         console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
         console.info("PanelList list: size", panel.limit || "none");
@@ -259,7 +259,7 @@ class PanelList extends React.Component {
           {crumbs}
           {
             <div ref='outer'>
-            {  this.panelList.length ? 
+            {  currentPanel && this.panelList.length ? 
                   <div id='panel-list-wide' 
                         style={{
                           width: (containerWidth + spaceBetween)* this.panelList.length + 'px',
