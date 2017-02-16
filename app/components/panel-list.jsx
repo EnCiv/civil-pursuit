@@ -150,7 +150,8 @@ class PanelList extends React.Component {
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  panelListButton(i) {
-   this.setState({currentPanel: i}, this.smoothHeight());  // do the height change after the state has been changed
+   this.setState({currentPanel: i})
+   if(this.state.currentPanel) this.smoothHeight();
  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -258,7 +259,7 @@ class PanelList extends React.Component {
           {crumbs}
           {
             <div ref='outer'>
-            {  currentPanel && this.panelList.length ? 
+            {  currentPanel!==null && this.panelList.length ? 
                   <div id='panel-list-wide' 
                         style={{
                           width: (containerWidth + spaceBetween)* this.panelList.length + 'px',
