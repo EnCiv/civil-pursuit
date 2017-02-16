@@ -21,7 +21,7 @@ class PanelList extends React.Component {
     topLevelType: null,
     training: null,
     typeList: [],
-    currentPanel: 0,
+    currentPanel: null,
     containerWidth: 0,
     panelStatus: ["issues"]
   };
@@ -55,6 +55,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations){
       if(this.inHeight==='active') return;
+      if(this.state.currentPanel===null) return;
       let outer = this.refs.outer;
       if(!this.refs['panel-list-'+this.state.currentPanel]) return;
       let inner = ReactDOM.findDOMNode(this.refs['panel-list-'+this.state.currentPanel]);
@@ -70,6 +71,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
+    if(this.state.currentPanel===null) return;   
     let pi='panel-list-'+this.state.currentPanel;
     let target = ReactDOM.findDOMNode(this.refs.panel);
     if(this.state.containerWidth != target.clientWidth){  // could be changed by resizing the window
@@ -121,7 +123,7 @@ class PanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   nextPanel(panelNum,status,results){
-    let cP=this.state.currentPanel;
+    let cP=this.state.currentPanel || 0;
     var panelStatus=this.state.panelStatus.slice(0);
     var newState=false;
     if(panelStatus[panelNum]!==status){panelStatus[panelNum]=status; newState=true}
@@ -195,7 +197,7 @@ class PanelList extends React.Component {
         let visible= false;
         if( this.state.panelStatus[i]==='done') { visible=true;}
         if( (i > 0) && this.state.panelStatus[i-1]==='done' ) { visible=true }
-        let active= this.state.currentPanel === i;
+        let active= (this.state.currentPanel === i || (this.state.currentPanel === null && i===0));
         let buttonActive= active || visible;
         crumbs.push(
           <button onClick={buttonActive ? this.panelListButton.bind(this, i) : null}
@@ -225,7 +227,7 @@ class PanelList extends React.Component {
       )
     }
 
-    if (this.state.typeList.length) {
+    if (this.state.currentPanel !== null && this.state.typeList.length) {
 /**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
         console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
         console.info("PanelList list: size", panel.limit || "none");
