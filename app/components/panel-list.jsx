@@ -150,8 +150,7 @@ class PanelList extends React.Component {
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  panelListButton(i) {
-   this.setState({currentPanel: i})
-   this.smoothHeight();
+   this.setState({currentPanel: i}, this.smoothHeight());  // do the height change after the state has been changed
  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
