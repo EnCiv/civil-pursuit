@@ -263,6 +263,7 @@ toInstructionFromParent(result){
           className   =   { name }
           ref         =   "panel"
           heading     =   {[( <h4>{ title }</h4> )]}
+          style       =  {{backgroundColor: 'white'}}
           >
           {instruction}
           {crumbs}
