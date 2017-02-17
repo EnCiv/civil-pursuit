@@ -418,7 +418,7 @@ class PanelItems extends React.Component {
     return (
       <section id               =     "syn-panel-items">
         <Panel
-          noHeading={this.state.vs.state==='open' && this.state.active.section ==='subtype'}
+          noHeading={this.state.active.item && this.state.active.section ==='subtype'}
           vs = {this.state.vs}
           className   =   { name }
           ref         =   "panel"
