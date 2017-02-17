@@ -32,9 +32,26 @@ class App extends React.Component {
         Synapp.tendencyChoice = [];
         this.getTendency();
       }
+      window.onbeforeunload = this.confirmOnPageExit.bind(this);
     }
 
     this.state.path = props.path ;
+  }
+
+  confirmOnPageExit(e) {
+      // If we haven't been passed the event get the window.event
+      e = e || window.event;
+
+      var message = "If you are ready to end this sessiion click continue.\n\nYour input has been saved and you can return at any time.\n\nIf you didn't mean to leave this discussion, click cancel";
+
+      // For IE6-8 and Firefox prior to version 4
+      if (e) 
+      {
+          e.returnValue = message;
+      }
+
+      // For Chrome, Safari, IE8+ and Opera 12+
+      return message;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
