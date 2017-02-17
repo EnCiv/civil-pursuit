@@ -318,6 +318,7 @@ class QSortWhyItem extends React.Component {
                             user    =   { user }
                             footer= { creator }
                             vs={{state: 'truncated'}}
+                            min={true}
                         />
                     </ItemStore>
                 </div>
@@ -391,6 +392,7 @@ class QSortWhyCreate extends React.Component {
                     item={this.item}
                     user={user}
                     vs={{ state: 'truncated' }}
+                    min={true}
                     buttons={
                         <ButtonGroup>
                             <Button small shy 
