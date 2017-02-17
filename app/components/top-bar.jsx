@@ -92,6 +92,7 @@ class TopBar extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   signOut () {
+    window.onbeforeunload=null; // stop the popup about navigating away
     location.href = '/sign/out';
   }
 
