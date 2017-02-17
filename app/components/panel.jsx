@@ -9,7 +9,7 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, vs } = this.props;
+    const { heading, className, vs, noHeading } = this.props;
     const vState=vs ? vs.state : '';
     const cState= vState ? 'vs-'+vState : '';
 
@@ -20,7 +20,7 @@ class Panel extends React.Component {
         className     =   {ClassNames((className || ''), "syn-panel", cState )}
         ref           =   "panel"
       >
-        <section className={ClassNames("syn-panel-heading", cState)}>
+        <section className={ClassNames("syn-panel-heading", cState, {'no-heading': noHeading})}>
           { heading }
         </section>
         <section className={ClassNames("syn-panel-body", cState)}>
