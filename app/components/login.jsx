@@ -30,6 +30,7 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static signIn (email, password) {
+    window.onbeforeunload=null; // stop the popup about navigating away
     return new Promise((ok, ko) => {
       try {
         superagent
