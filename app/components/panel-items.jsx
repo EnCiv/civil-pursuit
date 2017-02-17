@@ -197,6 +197,8 @@ class PanelItems extends React.Component {
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
 
+    let bgc='white';
+
     if ( panel ) {
       loaded = true;
 
@@ -249,6 +251,7 @@ class PanelItems extends React.Component {
                     poa     =   { this.refs.item }
                     name    =   "promote"
                     active  =   { (active.item === item._id && active.section === 'promote') }
+                    style   = {{backgroundColor: bgc}}
                     >
                     <EvaluationStore
                       item-id     =   { item._id }
@@ -277,6 +280,7 @@ class PanelItems extends React.Component {
                     poa     =   { this.refs.item }
                     name    =   "details"
                     active  =   { (active && active.item === item._id && active.section === 'details') }
+                    style   = {{backgroundColor: bgc}}
                     >
                     <DetailsStore item={ item }>
                       <Details />
@@ -300,6 +304,7 @@ class PanelItems extends React.Component {
                     poa     =   { this.refs.item }
                     name    =   "subtype"
                     active  =   { (active.item === item._id && active.section === 'subtype') }
+                    style   = {{backgroundColor: bgc}}
                     >
                     <TypeComponent
                       panel = { subPanel }
@@ -321,6 +326,7 @@ class PanelItems extends React.Component {
                     poa     =   { this.refs.item }
                     name    =   "harmony"
                     active  =   { (active.item === item._id && active.section === 'harmony') }
+                    style   = {{backgroundColor: bgc}}
                     >
                     <Harmony
                       item    =   { item }
@@ -402,6 +408,7 @@ class PanelItems extends React.Component {
           active    =   { (active.section === 'creator') }
           poa       =   { this.refs.panel }
           name      = 'creator'
+          style   = {{backgroundColor: bgc}}
           >
           { creatorPanel }
         </Accordion>
