@@ -384,13 +384,13 @@ class PanelItems extends React.Component {
 
         const end = skip + limit;
 
-        if ( count > limit ) {
-          loadMore = (
-            <h5 className="gutter text-center">
-              <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
-            </h5>
-          );
-        }
+ //       if ( count > limit ) {
+ //         loadMore = (
+ //           <h5 className="gutter text-center">
+ //             <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
+ //           </h5>
+ //         );
+ //       }
       }
 
       let creatorPanel;
