@@ -5,11 +5,12 @@ import ButtonGroup      from './util/button-group';
 import Button           from './util/button';
 import Icon               from './util/icon';
 
+// button is 'active' even if it has been pushed. By pushing it again, you can change it back to unsosrted
+
 class QSortButtons extends React.Component {
   toggle (section) {
     if(this.props.toggle) this.props.toggle(this.props.item._id, section);
   }
-
 
 
   render () {
@@ -25,7 +26,7 @@ class QSortButtons extends React.Component {
                 <ButtonGroup>
                     {number}
                     <Button small shy 
-                    inactive= { buttonstate[btn] } 
+                    inactive= { false } 
                     onClick= { this.props.toggle ? this.toggle.bind(this, btn) : undefined } 
                     className= {`qsort-${qbuttons[btn].name}`}
                     title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
