@@ -183,34 +183,34 @@ class VSItem extends React.Component {
       rendereditem = (
         <Accordion active={vState!=='collapsed'} name='item'>
           <article className={ClassNames("item", this.props.className, cState )} ref="item" id={ `item-${item._id}` } >
-            <ItemMedia className={ClassNames('item-media', cState)} onClick={ this.readMore.bind(this) }
-              item      =   { item }
-              ref       =   "media"
-            />
-            <section className={ClassNames("item-text", cState)} ref='itemText'>
-              <section className={ClassNames("item-buttons", cState)} ref='buttons'>
-                { buttons }
+              <ItemMedia className={ClassNames('item-media', cState)} onClick={ this.readMore.bind(this) }
+                item      =   { item }
+                ref       =   "media"
+              />
+              <section className={ClassNames("item-text", cState)} ref='itemText'>
+                <section className={ClassNames("item-buttons", cState)} ref='buttons'>
+                  { buttons }
+                </section>
+                <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' style={{minHeight: this.state.minHeight}}>  
+                  <h4 className={ClassNames("item-subject",cState)} ref='subject'>
+                    { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
+                    { item.subject }
+                  </h4>
+                  <h5 className={ClassNames('item-reference', cState, {none: noReference})} ref='reference' >
+                    <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+                  </h5>
+                  <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)} ref='description'>
+                    { item.description }
+                  </div>
+                  <div className="item-tendency" style={{display: 'none'}}>
+                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
+                  </div>
+                </Accordion>
               </section>
-              <Accordion className={ClassNames("item-truncatable", cState)} onClick={ this.readMore.bind(this) } active={ vState==='open' } text={ true } onComplete={ this.textHint.bind(this) } ref='truncable' style={{minHeight: this.state.minHeight}}>  
-                <h4 className={ClassNames("item-subject",cState)} ref='subject'>
-                  { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */ }
-                  { item.subject }
-                </h4>
-                <h5 className={ClassNames('item-reference', cState, {none: noReference})} ref='reference' >
-                  <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
-                </h5>
-                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)} ref='description'>
-                  { item.description }
-                </div>
-                <div className="item-tendency" style={{display: 'none'}}>
-                    { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
-                </div>
-              </Accordion>
-            </section>
-            <div className={ClassNames('item-trunc-hint', {expand: this.state.hint})}>
-                <Icon icon="ellipsis-h" />
-            </div>
-            <section style={ { clear : 'both' }}></section>
+              <div className={ClassNames('item-trunc-hint', {expand: this.state.hint})}>
+                  <Icon icon="ellipsis-h" />
+              </div>
+              <section style={ { clear : 'both' }}></section>
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
