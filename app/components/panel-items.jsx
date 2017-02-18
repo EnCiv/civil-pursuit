@@ -254,7 +254,6 @@ class PanelItems extends React.Component {
               if(panel.items.length==1 && iVs.state==='truncated') iVs.state='open';  // if there is only on item and in the list, and the panel is 'truncated' then render it open
               if(type.name==="Public Engagement Projects" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
             }
-            console.info("panel-items.map", item._id, this.state.active, iVs)
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
               buttonstate.promote=(active.item === item._id && active.section === 'promote');

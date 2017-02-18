@@ -336,13 +336,13 @@ class QSortWhyCreate extends React.Component {
     }
 
     constructor(props){
-        console.info("QSortWhyCreate.constructor", props);
+ //       console.info("QSortWhyCreate.constructor", props);
         super(props);
         this.setItem(props);
     }
 
     componentWillReceiveProps(newProps){
-        console.info("QSortWhyCreate.constructor", newProps);
+ //       console.info("QSortWhyCreate.constructor", newProps);
         this.setItem(newProps);
     }
 
@@ -355,7 +355,7 @@ class QSortWhyCreate extends React.Component {
                 toggle('set', this.item._id); // passing the Id of the why item created
             }
         }
-        console.info("QsortWhyCreate.setItem:", this.item);
+ //       console.info("QsortWhyCreate.setItem:", this.item);
     }
 
     state={edit: false}
@@ -372,7 +372,7 @@ class QSortWhyCreate extends React.Component {
     render(){
         var result = [];
         var color = '#fff'
-        console.info("QSortWhyCreate", this.item);
+//        console.info("QSortWhyCreate", this.item);
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
         if (this.state.edit || sectionName == 'unsorted' || !this.set) {
