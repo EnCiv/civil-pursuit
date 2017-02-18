@@ -183,6 +183,7 @@ class VSItem extends React.Component {
       rendereditem = (
         <Accordion active={vState!=='collapsed'} name='item'>
           <article className={ClassNames("item", this.props.className, cState )} ref="item" id={ `item-${item._id}` } >
+            <Accordion active={vState!=='ooview'}>
               <ItemMedia className={cState} onClick={ this.readMore.bind(this) }
                 item      =   { item }
                 ref       =   "media"
@@ -210,7 +211,8 @@ class VSItem extends React.Component {
               <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)}>
                   <Icon icon="ellipsis-h" />
               </div>
-              <section style={ { clear : 'both' }}></section>
+            </Accordion>
+            <section style={ { clear : 'both' }}></section>
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
