@@ -34,6 +34,11 @@
     border: 1px solid #666;
 }
 
+.item-vs-ooview{
+  border: none;
+  padding: 0;
+}
+
 /**
 .item {
   @media (max-width: @screen-phone) {
@@ -78,10 +83,11 @@
   padding: 0;
   padding-right: 0.5em;
   background-color: transparent; /* so it doesn't cover up the image and the buttons */
+  transition: height 0.5s linear;
 }
 
 .item-text.vs-ooview{
-  display: none;
+  height: 0px;
 }
 
 .item-truncatable {
@@ -92,6 +98,7 @@
   margin-bottom: 0.6em; /* space below the text before the border. */
 
   cursor: pointer;
+  transition: height 0.5s linear; 
 
   .word.hide {
     display: none
@@ -112,7 +119,7 @@
 }
 
 .item-truncatable.vs-ooview{
-  display: none;
+    height: 0px;
 }
 
 .item-trunc-hint {
@@ -149,6 +156,7 @@
   max-height:  none;       /* fallback */
   position: relative;
   margin-bottom: @item-visual-gap;
+  transition: height 0.5s linear;
 
   .pre-text();
 }
@@ -163,7 +171,7 @@
   display: none
 }
 .item-description.vs-ooview{ /* just the title content is rendered */
-  display: none
+  height: 0px;
 }
 .item-description.vs-truncated {
   max-height:  ~"calc( 1.375em * 3)";       /* fallback */
@@ -195,7 +203,7 @@
 /* .item-buttons.vs-collapsed{  /* show a minimal, standard sized amount */
 /* .item-buttons.vs-open{ /* show everything */
 .item-buttons.ooview{ /* just the title content is rendered */
-  display: none;
+  max-height: 0px;
 }
 
 .item-tendency {
@@ -241,7 +249,7 @@
 }
 /* .item-reference.vs-open{ /* not visible but ready to be rendered */
 .item-reference.vs-ooview{      /* there is no reference so don't display anything */
-  display:none;
+  max-height: 0px;
 }
 
 
@@ -284,7 +292,7 @@ blockquote {
   
 }
 .item-subject.vs-ooview{ /* just the title content is rendered */
-  display: none;
+  max-height: 0px;
 }
 
 /* .item-subject.vs-collapsed{  /* show a minimal, standard sized amount */
