@@ -125,7 +125,7 @@ class PanelItems extends React.Component {
     console.info("PanelItems.toggle",itemId, section);
 
     var ooview='truncated';
-    if(this.props.panel.type && this.props.panel.type.name && this.props.panel.type.name=="Public Engagement Projects") ooview='ooview';
+    if(this.props.panel.type && this.props.panel.type.name && this.props.panel.type.name=="Oldfield Community") ooview='ooview';
 
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
@@ -252,7 +252,7 @@ class PanelItems extends React.Component {
             if(item) {
               iVs.itemId = item._id; // adding this as a parameter in the state
               if(panel.items.length==1 && iVs.state==='truncated') iVs.state='open';  // if there is only on item and in the list, and the panel is 'truncated' then render it open
-              if(type.name==="Public Engagement Projects" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
+              if(type.name==="Oldfield Community" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
             }
 
             if ( this.mountedItems[item._id] && this.mountedItems[item._id].promote ) {
@@ -425,7 +425,7 @@ class PanelItems extends React.Component {
     return (
       <section id               =     "syn-panel-items">
         <Panel
-          noHeading={this.state.active.item && this.state.active.section ==='subtype' && type.name==="Public Engagement Projects"}
+          noHeading={this.state.active.item && this.state.active.section ==='subtype' && type.name==="Oldfield Community"}
           vs = {this.state.vs}
           className   =   { name }
           ref         =   "panel"
