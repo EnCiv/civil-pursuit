@@ -142,7 +142,7 @@ class VSItem extends React.Component {
     e.nativeEvent.stopImmediatePropagation();
     if(this.props.vs.state==='truncated') { return this.readMore(e); }
 
-    let win = window.open(this.refs.reference.href, this.refs.reference.target);
+    let win = window.open(this.refs.link.href, this.refs.link.target);
     if (win) {
       //Browser has allowed it to be opened
       win.focus();
@@ -197,7 +197,7 @@ class VSItem extends React.Component {
                     { item.subject }
                   </h4>
                   <h5 className={ClassNames('item-reference', cState, {none: noReference})} ref='reference' >
-                    <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="reference" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
+                    <a href={ referenceLink } onClick={ this.openURL.bind(this) } ref="link" target="_blank" rel="nofollow"><span>{ referenceTitle }</span></a>
                   </h5>
                   <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)} ref='description'>
                     { item.description }
