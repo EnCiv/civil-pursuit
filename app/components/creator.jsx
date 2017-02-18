@@ -294,7 +294,7 @@ class Creator extends React.Component {
           <section className="item-text">
             <div className="item-inputs">
               <TextInput block 
-                placeholder="Subject" 
+                placeholder={this.props.subjectPlaceholder || "Subject" }
                 ref="subject" 
                 required 
                 name="subject" 

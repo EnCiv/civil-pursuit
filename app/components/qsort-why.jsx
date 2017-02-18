@@ -383,6 +383,7 @@ class QSortWhyCreate extends React.Component {
                 item={this.item}
                 toggle={this.post.bind(this)}
                 toParent={this.toMeFromChild.bind(this)}
+                subjectPlaceholder="Short summary to interest others in reading more - 5 words"
             />
             ];
         } else {
