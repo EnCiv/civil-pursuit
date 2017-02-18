@@ -124,6 +124,9 @@ class PanelItems extends React.Component {
 
     console.info("PanelItems.toggle",itemId, section);
 
+    var ooview='truncated';
+    if(this.props.panel.type && this.props.panel.type.name && this.props.panel.type.name=="Public Engagement Projects") ooview='ooview';
+
     if(section == 'harmony' && (!this.props.panel.type.harmony || this.props.panel.type.harmony.length == 0)) { return true;} // don't toggle harmony on items that don't have it
 
     if ( (section === 'creator' || section === 'promote' ) && ! this.props.user ) {
@@ -154,7 +157,7 @@ class PanelItems extends React.Component {
         Object.keys(this.toChild).forEach(childId=>{
           if(childId===itemId){  // this is the one we are going to show
             // if the section we are going to show is harmony send the open state, otherwise truncated
-            if(this.toChild[childId])this.toChild[childId]({state: section==='harmony' ? 'open' : section==='subtype' ? 'ooview': 'truncated', distance: 0})
+            if(this.toChild[childId])this.toChild[childId]({state: section==='harmony' ? 'open' : section==='subtype' ? ooview : 'truncated', distance: 0})
           }else { // this is one of the ones we are going to hide
             if(this.toChild[childId])this.toChild[childId]({state: 'collapsed', distance: 0})
           }
@@ -249,7 +252,7 @@ class PanelItems extends React.Component {
             if(item) {
               iVs.itemId = item._id; // adding this as a parameter in the state
               if(panel.items.length==1 && iVs.state==='truncated') iVs.state='open';  // if there is only on item and in the list, and the panel is 'truncated' then render it open
-              if(active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
+              if(type.name==="Public Engagement Projects" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
             }
             console.info("panel-items.map", item._id, this.state.active, iVs)
 
@@ -423,7 +426,7 @@ class PanelItems extends React.Component {
     return (
       <section id               =     "syn-panel-items">
         <Panel
-          noHeading={this.state.active.item && this.state.active.section ==='subtype'}
+          noHeading={this.state.active.item && this.state.active.section ==='subtype' && type.name==="Public Engagement Projects"}
           vs = {this.state.vs}
           className   =   { name }
           ref         =   "panel"
