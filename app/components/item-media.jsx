@@ -5,6 +5,7 @@ import Image                          from './util/image';
 import YouTube                        from './youtube';
 import publicConfig                   from '../../public.json';
 import itemType                       from '../lib/proptypes/item';
+import ClassNames          from 'classnames';
 
 class ItemMedia extends React.Component {
   static propTypes = {
@@ -25,13 +26,13 @@ afterLoad() {
 
 
   render () {
-    let { item } = this.props;
+    let { item, className } = this.props;
 
     let media;
 
     if ( YouTube.isYouTube(item) ) {
       media = ( 
-        <section className="item-media-wrapper" ref='wrapper'>
+        <section className={ClassNames('item-media-wrapper', className)} ref='wrapper'>
           <section className={`item-media ${this.state.mediaThin}`} ref='media' >
             <YouTube item={ item } /> 
           </section>
@@ -41,14 +42,14 @@ afterLoad() {
 
     else if ( item.image == publicConfig['default item image'] || item.image == publicConfig['old default item image'] )
     { media = ( 
-        <section className="item-media-wrapper item-hidden">
+        <section className={ClassNames('item-media-wrapper', 'item-hidden', className)}>
         </section>
         );
 
     }
     else if ( item.image && ( /^http/.test(item.image) || /^https/.test(item.image))  ) {
       media = ( 
-        <section className="item-media-wrapper" ref='wrapper'>
+        <section className={ClassNames('item-media-wrapper', className)} ref='wrapper'>
           <section className={`item-media ${this.state.mediaThin}`} ref="media">
             <Image src={ item.image } onLoad={this.afterLoad.bind(this)} responsive /> 
           </section>
@@ -59,7 +60,7 @@ afterLoad() {
       /** don't show image if
       media = ( <Image src={ publicConfig['default item image'] } responsive /> ); **/
       media = ( 
-        <section className="item-media-wrapper item-hidden">
+        <section className={ClassNames('item-media-wrapper', 'item-hidden', className)}>
         </section>
         );
     }

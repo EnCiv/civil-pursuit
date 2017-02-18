@@ -207,7 +207,7 @@ class VSItem extends React.Component {
                   </div>
                 </Accordion>
               </section>
-              <div className={ClassNames('item-trunc-hint', {expand: this.state.hint})}>
+              <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)}>
                   <Icon icon="ellipsis-h" />
               </div>
               <section style={ { clear : 'both' }}></section>
