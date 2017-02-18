@@ -154,7 +154,7 @@ class PanelItems extends React.Component {
         Object.keys(this.toChild).forEach(childId=>{
           if(childId===itemId){  // this is the one we are going to show
             // if the section we are going to show is harmony send the open state, otherwise truncated
-            if(this.toChild[childId])this.toChild[childId]({state: section==='harmony' ? 'open' : 'truncated', distance: 0})
+            if(this.toChild[childId])this.toChild[childId]({state: section==='harmony' ? 'open' : section==='subtype' ? 'ooview': 'truncated', distance: 0})
           }else { // this is one of the ones we are going to hide
             if(this.toChild[childId])this.toChild[childId]({state: 'collapsed', distance: 0})
           }
@@ -243,6 +243,7 @@ class PanelItems extends React.Component {
           .map(item => {
             let promote, details, subtype, editItem, harmony, buttonstate={promote: false, details: false, subtype: false, harmony: false};
 
+            // note iVs is only effective on the initial render of an item. After that you have to change it with toChild()
             var iVs=Object.assign({},this.state.vs) // item Visual State
             if(this.props.vs && this.props.vs.depth) iVs.depth=this.props.vs.depth + 1;
             if(item) {
