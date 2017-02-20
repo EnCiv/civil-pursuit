@@ -239,7 +239,7 @@ class QSortFlipItemHarmony extends React.Component {
                       ref     =   "harmony"
                       user    =   { user }
                       active  =   { true }
-                      vs      =    {{state: "title", depth: 0}}
+                      vs      =    {{state: "truncated", depth: 0}}
                       hideFeedback = {true}
                       limit   = {5}
                       />
