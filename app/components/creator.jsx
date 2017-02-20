@@ -117,6 +117,7 @@ class Creator extends React.Component {
 
   makeDbItem(){
     var item = {};
+    item._id=this.props.item._id;
     Creator.keys.forEach(key => {
       if(key==='reference') return; // don't add it in and delete it later
       if(this.state[key]) { item[key]=this.state[key] }
