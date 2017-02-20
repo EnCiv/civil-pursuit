@@ -114,10 +114,11 @@
 .item-trunc-hint {
   display: none;
   position: absolute;
-  left: ~"calc( 50% - 1.5em)"; /* 1em representing half the width of the ellipis */
-  bottom: 0.25em; /* relative to the top of item-text because the box might expand with stuff below*/
+  left: ~"calc( 50% - 1.5em)"; /* representing half the width of the ellipis */
+  bottom: 0; /* relative to the bottom of the outer border */
   font-size: 1rem;
   padding: 0;
+  background: rgba(255,255,255,0.5); // a transparent white background
 }
 
 .item-trunc-hint.expand {

@@ -63,7 +63,7 @@ class VSItem extends React.Component {
     }
   }
 
-/*** This could work really well - but we need a few more event updates based on button changes, and on footer changes **/
+/*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
   shouldComponentUpdate(newProps,newState){
     let a = has(this.props,'buttons.props.children.props.buttonstate'),
         b = has(newProps,  'buttons.props.children.props.buttonstate');
@@ -131,6 +131,7 @@ class VSItem extends React.Component {
         if(this.props.toggle) this.props.toggle(this.props.item._id, 'harmony'); // if closed don't show harmony
         if(this.props.vs.toParent){this.props.vs.toParent(Object.assign({},this.props.vs,{state: 'truncated', distance: 0}))}
         if(this.props.focusAction){this.props.focusAction(false)}
+        this.textHint(); // make sure the hint is checked
       }
   }
 
