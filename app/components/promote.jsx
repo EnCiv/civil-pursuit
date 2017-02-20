@@ -153,14 +153,22 @@ wideRight(){
   }
 
   render () {
-    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user, hideFeedback } = this.props;
+    const { panel, show, cursor, limit, evaluation, left, right, emitter, panelEmitter, user } = this.props;
 
     const content = [];
+    var hideFeedback=false;
 
     let evaluateQuestion="Which of these is most important for the community to consider?";
-    if(panel && panel.type && panel.type.evaluateQuestion) {
+    if(panel && panel.type){
+      if(panel.type.evaluateQuestion) {
       evaluateQuestion = panel.type.evaluateQuestion;
-    }
+      }
+      if(panel.type.feedbackMethod) {
+        hideFeedback= panel.type.feedbackMethod === 'hidden';
+      }
+    } 
+
+
 
     if ( true ) {
       if ( ! evaluation ) {

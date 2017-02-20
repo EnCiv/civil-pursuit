@@ -232,7 +232,7 @@ class QSortFlipItemHarmony extends React.Component {
                 <div className="toggler-harmony">
                   <Accordion
                     name    =   "harmony"
-                    active  =   { true }
+                    active  =   { sectionName==='unsorted' }
                     >
                     <Harmony
                       item    =   { item }

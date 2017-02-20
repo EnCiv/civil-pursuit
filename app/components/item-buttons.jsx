@@ -72,27 +72,28 @@ class ItemButtons extends React.Component {
       );
     }
 
-
-    if( user && item.user && item.user._id == user.id) {
-      if(buttonstate.details) {
-        details = (
-          <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="Close the feedback view">
-            <span className="civil-button-text">Feedback</span>
-          </Button>
-        );
-      } else {
-        details = (
-          <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="View the feedback on your creation">
-            <span className="civil-button-text">Feedback</span>
-          </Button>
+    if(item.type && item.type.feedbackMethod!="hidden") {
+      if( user && item.user && item.user._id == user.id) {
+        if(buttonstate.details) {
+          details = (
+            <Button small shy success onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="Close the feedback view">
+              <span className="civil-button-text">Feedback</span>
+            </Button>
+          );
+        } else {
+          details = (
+            <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details" title="View the feedback on your creation">
+              <span className="civil-button-text">Feedback</span>
+            </Button>
+          );
+        }
+        buttons.push(
+          <ButtonGroup>
+          <span className="civil-button-info">{ item.popularity.number + '%' }</span>
+          { details}
+          </ButtonGroup>
         );
       }
-      buttons.push(
-        <ButtonGroup>
-        <span className="civil-button-info">{ item.popularity.number + '%' }</span>
-        { details}
-        </ButtonGroup>
-      );
     }
 
 {/*

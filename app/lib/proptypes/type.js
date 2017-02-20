@@ -19,7 +19,9 @@ type                =   shape({
   promoteButtonLabel: 	shape({
   	inactive		    : 	string.isRequired,
   	active          :   string.isRequired
-  	}),
+  }),
+  feedbackMethod		: 	string,
+  visualMethod		  : 	string,
   evaluateQuestion  :   string,
   instruction	      :   string,
   component         :   string,
