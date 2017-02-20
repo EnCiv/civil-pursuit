@@ -90,7 +90,7 @@ class VSItem extends React.Component {
   textHint() {
     //called on mount and completion of Accordion collapse / expand
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
-    console.info("textHint before", this.state);
+    console.info("textHint before", this.state, this.props.vs.state);
 
     if(this.props.vs.state==='truncated') { 
       let buttonsR=this.refs.buttons.getBoundingClientRect();
