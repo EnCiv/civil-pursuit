@@ -164,7 +164,8 @@ class QSortFlipItemHarmony extends React.Component {
     render(){
         const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
 
-        let harmony = (
+ /*** No Harmony in Finale
+  *        let harmony = (
                 <div className="toggler-harmony">
                   <Accordion
                     name    =   "harmony"
@@ -182,7 +183,8 @@ class QSortFlipItemHarmony extends React.Component {
                   </Accordion>
                 </div>
               );
-        
+  **/      
+    let harmony = [];
 
         return(
                 <div style={{backgroundColor: qbuttons['unsorted'].color}}>

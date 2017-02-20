@@ -231,7 +231,7 @@ class PanelItems extends React.Component {
 
       title = type.name;
 
-      if ( ! panel.items.length ) {
+      if ( ! panel.items.length && ! ( panel.type && panel.type.createMethod==='hidden') ) {
         content = (
           <div className={`syn-panel-gutter text-center vs-${this.state.vs.state}`}>
             <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
