@@ -131,7 +131,6 @@ class VSItem extends React.Component {
         if(this.props.toggle) this.props.toggle(this.props.item._id, 'harmony'); // if closed don't show harmony
         if(this.props.vs.toParent){this.props.vs.toParent(Object.assign({},this.props.vs,{state: 'truncated', distance: 0}))}
         if(this.props.focusAction){this.props.focusAction(false)}
-        this.textHint(); // make sure the hint is checked
       }
   }
 
@@ -212,12 +211,12 @@ class VSItem extends React.Component {
               </section>
             </Accordion>
             <section style={ { clear : 'both' }}></section>
-            <section style={{ marginRight : '0px' }}>
-              { footer }
-            </section>
             <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)}>
               <Icon icon="ellipsis-h" />
             </div>
+            <section style={{ marginRight : '0px' }}>
+              { footer }
+            </section>
           </article>
         </Accordion>
       );

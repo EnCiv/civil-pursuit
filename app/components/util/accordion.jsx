@@ -79,7 +79,7 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
-      if(this.inOpen==='abort'){ clearInterval(timer); this.inOpen='inactive'; return; }
+      if(this.inOpen==='abort'){ clearInterval(timer); this.inOpen='inactive'; console.error("accordion.smoothOpen abort due to subsiquent close"); return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( lmaxHeight <= lheight ){
@@ -118,7 +118,7 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
-      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
+      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; console.error("accordion.smoothClose abort due to subsiquent open"); return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
