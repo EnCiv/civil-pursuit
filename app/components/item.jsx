@@ -210,10 +210,11 @@ class VSItem extends React.Component {
                 </Accordion>
               </section>
             </Accordion>
-            <section style={ { clear : 'both' }}></section>
+            <section style={ { clear : 'both' }}>
             <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)}>
               <Icon icon="ellipsis-h" />
             </div>
+            </section>
             <section style={{ marginRight : '0px' }}>
               { footer }
             </section>
