@@ -180,6 +180,12 @@ class VSItem extends React.Component {
       noReference=false;
     }
 
+
+    let textHeight = null;
+    if(this.refs.itemText) this.refs.itemText.getBoundingClientRect().height;
+
+    let hintTop= 'calc('+ textHeight + 'px + 0.25em)';
+
       rendereditem = (
         <Accordion active={vState!=='collapsed'} name='item'>
           <article className={ClassNames("item", this.props.className, cState )} ref="item" id={ `item-${item._id}` } >
@@ -208,7 +214,7 @@ class VSItem extends React.Component {
                   </div>
                 </Accordion>
               </section>
-              <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)}>
+              <div className={ClassNames('item-trunc-hint', {expand: this.state.hint}, cState)} style={{top: hintTop}}>
                   <Icon icon="ellipsis-h" />
               </div>
             </Accordion>
