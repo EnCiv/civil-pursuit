@@ -62,7 +62,8 @@ class Type extends Mungo.Model {
         "active"     :     String
       },
       "mediaMethod":       String,
-      "referenceMethod":   String
+      "referenceMethod":   String,
+      "subjectPlaceholder": String
     }
   }
 

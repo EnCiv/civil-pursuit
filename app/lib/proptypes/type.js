@@ -32,7 +32,8 @@ type                =   shape({
   	active          :   string.isRequired
   	}),
   mediaMethod		    : 	string,
-  referenceMethod   :   string
+  referenceMethod   :   string,
+  subjectPlaceHolder :  string
 });
 
 export default type;
