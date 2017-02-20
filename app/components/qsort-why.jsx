@@ -331,20 +331,24 @@ class QSortWhyCreate extends React.Component {
     set = false; // not part of state because we don't want to rerender on seting this. And once set, it's never changed.
     item = {};  // a local copy of the item data, passed up by the child. No need for it to be part of state - it's only being changed by the child. but we keep a copy here so we don't rerender null
 
-    toMeFromChild(results){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
-        Object.assign(this.item,results.item);
+    toMeFromChild(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
+        if(val.results) Object.assign(this.item,val.results.item);
+        console.info("QSortWhyCreate.toMeFromChild", this.item);
     }
 
     constructor(props){
  //       console.info("QSortWhyCreate.constructor", props);
         super(props);
         this.setItem(props);
+        Object.assign(this.item, this.props.item);
     }
 
     componentWillReceiveProps(newProps){
  //       console.info("QSortWhyCreate.constructor", newProps);
         this.setItem(newProps);
+        Object.assign(this.item, newProps.item);
     }
+    
 
     setItem(props){
         const {type, parent, panel, toggle, qbuttons, sectionName, user } = props; // items is Object.assign'ed as a prop through PanelStore
