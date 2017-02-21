@@ -84,7 +84,7 @@ class VSItem extends React.Component {
   /***/
 
   componentWillReceiveProps(newProps){
-    this.textHint();
+    //this.textHint();
     setTimeout(this.textHint.bind(this), 500); // this sucks but double check the hint in 500Ms in case the environment has hanged - like you are within a double wide that's collapsing
   }
 
