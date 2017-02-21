@@ -83,6 +83,10 @@ class VSItem extends React.Component {
   }
   /***/
 
+  componentWillReceiveProps(newProps){
+    this.textHint();
+  }
+
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
