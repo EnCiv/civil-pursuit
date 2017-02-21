@@ -333,7 +333,6 @@ class QSortWhyCreate extends React.Component {
 
     toMeFromChild(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
         if(val.results) Object.assign(this.item,val.results.item);
-        console.info("QSortWhyCreate.toMeFromChild", this.item);
     }
 
     constructor(props){

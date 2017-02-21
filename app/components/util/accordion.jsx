@@ -60,14 +60,19 @@ class Accordion extends React.Component {
 
 
   inOpen='inactive';
-  smoothOpen() {
+
+  openStart=null;
+
+  smoothOpen(durationMS) {
+    if(!this.openStart) this.openStart= new Date().getTime();
+    else return; // don't stutter start
     if(this.inOpen==='active') { return; } // dont't stutter start.
     this.inOpen='active';
     if(this.inClose!=="inactive") {this.inClose='abort'}
+    var duration = durationMS || 500;
     let accordion = this.refs.accordion;
 
     let timerMax=1000;  //just in case
-    let waitforit= 1000/this.stepRate;  // wait 1 second to give stuff a chance to appear
 
     let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
@@ -76,23 +81,34 @@ class Accordion extends React.Component {
     } 
 
     this.setState( { attr : 'expanding'} );
-
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
       if(this.inOpen==='abort'){ clearInterval(timer); this.inOpen='inactive'; console.error("accordion.smoothOpen abort due to subsiquent close"); return; }
+      let now=new Date().getTime();
+      if((now - this.openStart)>duration) { // time is up
+            this.inOpen='inactive';
+            clearInterval(timer);
+            this.openStart=null;
+            this.setState( { attr : 'expanded'} );
+            accordion.style.maxHeight=null;
+            if(this.props.onComplete) { this.props.onComplete(true); }
+            return;
+      }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
-      if( lmaxHeight <= lheight ){
-        accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
-      } else {
-      // end interval if the scroll is completed
-        if(--waitforit <= 0) {
-          this.inOpen='inactive';
-          clearInterval(timer);
-          this.setState( { attr : 'expanded'} );
-          accordion.style.maxHeight=null;
-          if(this.props.onComplete) { this.props.onComplete(true); }
-        }
+      let wheight=this.refs.accordionWrapper.clientHeight;
+      console.info("accordion wheight", wheight );
+
+      if(lheight-wheight > this.stepSize ){  // wrapper has a significant height
+            // calculate the percent of the scroll duration that has been completed
+            let step = Math.min(1, (new Date().getTime() - start) / time);
+            let distance = wHeight - lHeight; // distance to go. Could be Negative
+            let newMax = lheight + (step * distance); // top of the next step
+            accordion.style.maxHeight=newMax+'px';
+      } else {  // we don't know the height of the wrapper, the data is not populated yet
+          if( lmaxHeight <= lheight ){  // if maxheight is equal to (or somehow less) increment the maxHeight another step
+            accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
+          } 
       }
     }, this.stepRate);
   }
