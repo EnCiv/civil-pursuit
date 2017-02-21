@@ -107,8 +107,9 @@ class VSItem extends React.Component {
       ||   (((!buttonsR.height && !mediaR.height) || this.props.min) && (Math.round(innerChildR.bottom) <= Math.ceil(truncableR.bottom))) // there is no media or buttons and there is less text than or equal to the 'min' height of truncated
       ){
         if(!this.props.position) { 
-//          truncable.style.minHeight= innerChildR.height +'px';  // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
-          if(this.state.minHeight !== innerChildR.height+'px') this.setState({minHeight: innerChildR.height+'px'});  // child hieight might change after data is loaded, set state so component should update.
+            // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
+          let minHeight = Math.ceil(innerChildR.height)+'px';
+          if(this.state.minHeight !== minHeight) this.setState({minHeight: minHeight});  // child hieight might change after data is loaded, set state so component should update.
         }
         if(this.state.hint) this.setState({hint: false}); // if the hint is on - turn it off
         return;
