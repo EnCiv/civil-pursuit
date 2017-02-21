@@ -102,10 +102,10 @@ class Accordion extends React.Component {
       if((wheight-lheight) > this.stepSize ){  // wrapper has a significant height
             // calculate the percent of the scroll duration that has been completed. 100% max
             let step = Math.min(1, (now - this.openStart) / duration);
-            let distance = Math.min(wheight - lheight, 1); // distance to go, but not negative
+            let distance = Math.max(wheight - lheight, 1); // distance to go, but not negative
             let newMax = lheight + (step * distance); // top of the next step
             accordion.style.maxHeight=newMax+'px';
-            console.info("accordion maxHeight", step, distance, newMax);
+            console.info("accordion maxHeight", step, distance, newMax, now-this.openStart);
       } else {  // we don't know the height of the wrapper, the data is not populated yet
           if( lmaxHeight <= lheight ){  // if maxheight is equal to (or somehow less) increment the maxHeight another step
             accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
