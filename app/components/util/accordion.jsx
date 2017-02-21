@@ -96,7 +96,7 @@ class Accordion extends React.Component {
       }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= accordion.clientHeight;
-      let wheight=this.refs.accordionWrapper.clientHeight;
+      let wheight=this.refs.accordionWrapper ? this.refs.accordionWrapper.clientHeight : 0;
       console.info("accordion wheight", wheight );
 
       if(lheight-wheight > this.stepSize ){  // wrapper has a significant height
