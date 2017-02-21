@@ -125,7 +125,7 @@ class Accordion extends React.Component {
 
     //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
-    accordion.style.maxHeight= height + 'px';
+    accordion.style.maxHeight= Math.floor(height) + 'px';
 
     this.setState( { attr : 'collapsing' } );
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
@@ -134,7 +134,7 @@ class Accordion extends React.Component {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
       if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; console.error("accordion.smoothClose abort due to subsiquent open"); return; }
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
-      let lheight= accordion.clientHeight;
+      let lheight= Math.floor(accordion.clientHeight);
       if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
         accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
       } else {
