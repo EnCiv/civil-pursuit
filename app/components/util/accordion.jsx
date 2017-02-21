@@ -82,8 +82,8 @@ class Accordion extends React.Component {
 
     this.setState( { attr : 'expanding'} );
     const timer = setInterval( () => {
-      if(--timerMax <= 0 ){ clearInterval(timer); console.error("accordion.smoothOpen timer overflow");}
-      if(this.inOpen==='abort'){ clearInterval(timer); this.inOpen='inactive'; console.error("accordion.smoothOpen abort due to subsiquent close"); return; }
+      if(--timerMax <= 0 ){ clearInterval(timer); this.openStart=null;  console.error("accordion.smoothOpen timer overflow");}
+      if(this.inOpen==='abort'){ clearInterval(timer); this.openStart=null; this.inOpen='inactive'; console.error("accordion.smoothOpen abort due to subsiquent close"); return; }
       let now=new Date().getTime();
       if((now - this.openStart)>duration) { // time is up
             this.inOpen='inactive';
@@ -99,13 +99,13 @@ class Accordion extends React.Component {
       let wheight=this.refs.accordionWrapper ? this.refs.accordionWrapper.clientHeight : 0;
       console.info("accordion wheight", lheight, wheight );
 
-      if(lheight-wheight > this.stepSize ){  // wrapper has a significant height
+      if((wheight-lheight) > this.stepSize ){  // wrapper has a significant height
             // calculate the percent of the scroll duration that has been completed. 100% max
             let step = Math.min(1, (now - this.openStart) / duration);
-            let distance = wheight - lheight; // distance to go. Could be Negative
+            let distance = Math.min(wheight - lheight, 1); // distance to go, but not negative
             let newMax = lheight + (step * distance); // top of the next step
             accordion.style.maxHeight=newMax+'px';
-            console.info("accordion maxHeight time", newMax);
+            console.info("accordion maxHeight", step, distance, newMax);
       } else {  // we don't know the height of the wrapper, the data is not populated yet
           if( lmaxHeight <= lheight ){  // if maxheight is equal to (or somehow less) increment the maxHeight another step
             accordion.style.maxHeight = Math.max((lmaxHeight + this.stepSize), lheight + 1) + 'px';
