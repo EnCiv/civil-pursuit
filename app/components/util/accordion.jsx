@@ -140,9 +140,9 @@ class Accordion extends React.Component {
       } else {
         this.inClose='inactive';
         clearInterval(timer);
-        this.setState({ attr : 'collapsed' });
+        if(this.props.onComplete) { this.setState({ attr : 'collapsed' }, () => this.props.onComplete(false)); }
+        else this.setState({ attr : 'collapsed' });
         accordion.style.maxHeight=null;
-        if(this.props.onComplete) { this.props.onComplete(false); }
       }
     }, this.stepRate);
   }
