@@ -98,7 +98,7 @@ class VSItem extends React.Component {
     //console.info("textHint before", this.state, this.props.vs.state);
 
     if(this.props.vs.state==='truncated') { 
-      let buttonsR=this.refs.buttons.getBoundingClientRect();
+      let buttonsR=this.refs.buttons ? this.refs.buttons.getBoundingClientRect() : {bottom: 0, height: 0}; // if buttons not passed, they won't exist
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR=truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
