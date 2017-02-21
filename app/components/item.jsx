@@ -96,9 +96,10 @@ class VSItem extends React.Component {
     //called on mount and completion of Accordion collapse / expand
     //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
     //console.info("textHint before", this.state, this.props.vs.state);
+    if(!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
     if(this.props.vs.state==='truncated') { 
-      let buttonsR=this.refs.buttons ? this.refs.buttons.getBoundingClientRect() : {bottom: 0, height: 0}; // if buttons not passed, they won't exist
+      let buttonsR=this.refs.buttons.getBoundingClientRect();
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR=truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
