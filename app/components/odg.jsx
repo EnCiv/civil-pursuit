@@ -67,6 +67,7 @@ class Stack extends React.Component {
 }
 
 class CDNImg extends React.Component {
+    state={width: 0};
 
     componentDidMount() {
         let width=this.refs.image.clientWidth;
