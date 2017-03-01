@@ -93,7 +93,7 @@ class CDNImg extends React.Component {
                     break;
             }
             return(<img classNames={this.props.classNames} style={this.props.style} src={src} />);
-        }else return ([]);
+        }else return (null);
     }
 }
 
