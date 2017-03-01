@@ -22,13 +22,17 @@ class CivilPursuitLogo extends React.Component {
 class Boxes extends React.Component {
 
     renderChildren (width,horizontal) {
-        return React.Children.map(this.props.children, child =>
-            <div style={{width: width+'%'}} >
-                { child }
-            </div>
-        );
+        return React.Children.map(this.props.children, child => {
+            console.info("Boxes.child",width,horizontal);
+            return(
+                <div style={{width: width+'%'}}>
+                    { child }
+                </div>
+            );
+        });
     }
     render(){
+        console.info("Boxes");
         let count=this.props.children.length;
         let horizontal= (typeof screen != 'undefined') ? screen.width > screen.height : true;
         let width = horizontal ? 100/count : 100;
@@ -46,7 +50,7 @@ class Stack extends React.Component {
             if(horizontal){
                 return (
                     <div style={{display: 'table-cell'}}>
-                        {child}
+                        { child }
                     </div>
                 );
             }else{
