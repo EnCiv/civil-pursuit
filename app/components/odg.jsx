@@ -3,7 +3,21 @@
 import React from 'react';
 import Icon  from './util/icon';
 import smoothScroll       from '../lib/app/smooth-scroll';
+import CloudinaryImage    from './util/cloudinary-image';
 
+
+class CivilPursuitLogo extends React.Component {
+    render(){
+        return(
+            <section className={ `civil-pursuit-logo-image` }>
+                <a href="/">
+                    <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
+                    <p className={ `civil-pursuit-logo-text`}>Civil Pursuit<sub>TM</sub></p>
+                </a>
+            </section>
+        );
+    }
+}
 
 class Boxes extends React.Component {
 
