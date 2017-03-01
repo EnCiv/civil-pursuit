@@ -16,6 +16,7 @@ import { EventEmitter }                 from 'events';
 import QHome                            from './qhome';
 import PanelList                        from './panel-list';
 import TypeComponent                    from './type-component';
+import OnlineDeliberationGame           from './odg';
 
 class App extends React.Component {
 
@@ -160,6 +161,10 @@ class App extends React.Component {
                   <ResetPassword user={ user } />
                 </UserStore>
               );
+              break;
+
+            case 'odg':
+              page = ( <OnlineDeliberationGame /> );
               break;
           }
           break;
