@@ -55,7 +55,7 @@ class Stack extends React.Component {
                 );
             }else{
                 return (
-                    { child }
+                    child
                 );
             }
         });
@@ -130,7 +130,7 @@ class OnlineDeliberationGame extends React.Component {
             <Boxes>
                 <Stack>
                     <Icon icon="group" />
-                    <div>Join a team of diverse americans</div>
+                    <div>Join a team of diverse Americans</div>
                 </Stack>
                     <Icon icon="arrows-alt" />
                     <div>Take on a polarized challenge</div>
