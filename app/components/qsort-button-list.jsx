@@ -6,7 +6,7 @@ const QSortButtonList = {
                 active: "Yea! this is in a stack",
                 inactive: "Put this in in a stack"
             },
-            direction: 'Great! You have completed this step. You can review your choices continue to the next step.'
+            direction: 'Great! You have completed this step. You can review your choices or continue to the next step.'
         },
         most: {
             name: 'most',
