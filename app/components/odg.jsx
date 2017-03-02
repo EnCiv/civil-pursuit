@@ -47,7 +47,7 @@ class Boxes extends React.Component {
         let width = horizontal ? 100/count : 100;
         return (
         <section className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
-            { this.renderChildren(w, horizontal) }
+            { this.renderChildren(width, horizontal) }
         </section>
         );
     }
