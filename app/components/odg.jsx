@@ -86,7 +86,7 @@ class CDNImg extends React.Component {
         if(width){
             switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
-                    parts.splice(6,['c_scale,w_'+width]);
+                    parts.splice(6,0,'c_scale,w_'+width);
                     if(parts[0]==='http:') parts[0]='https:';
                     src=parts.join('/');
                     break;
