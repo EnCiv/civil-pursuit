@@ -43,11 +43,11 @@ class Boxes extends React.Component {
             w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         }
-        let horizontal=  w > h;
-        let width = horizontal ? 100/count : 100;
+        var horizontal=  w > h;
+        var widePercent = horizontal ? 100/count : 100;
         return (
         <section className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
-            { this.renderChildren(width, horizontal) }
+            { this.renderChildren(widePercent, horizontal) }
         </section>
         );
     }
@@ -78,7 +78,7 @@ class Stack extends React.Component {
             w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         }
-        let horizontal= !(w > h);
+        var horizontal= !(w > h);
         const {className}=this.props;
         return (
         <section style={{display: horizontal ? 'table' : 'block'}}
