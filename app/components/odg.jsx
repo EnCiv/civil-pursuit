@@ -25,7 +25,7 @@ class Boxes extends React.Component {
         return React.Children.map(this.props.children, child => {
             console.info("Boxes.child",width,horizontal);
             return(
-                <div style={{width: width+'%'}}>
+                <div style={{width: width+'%', display: horizontal ? 'inline-block' : 'block'}}>
                     { child }
                 </div>
             );
@@ -82,7 +82,8 @@ class CDNImg extends React.Component {
     render(){
         let parts=this.props.src.split('/');
         let src=null;
-        if(this.state.width){
+        let width=this.state.width;
+        if(width){
             switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
                     parts.splice(6,['c_scale,w_'+width]);
@@ -134,8 +135,10 @@ class OnlineDeliberationGame extends React.Component {
                     <Icon icon="group" />
                     <div>Join a team of diverse Americans</div>
                 </Stack>
+                <Stack>
                     <Icon icon="arrows-alt" />
                     <div>Take on a polarized challenge</div>
+                </Stack>
                 <Stack>
                     <Icon icon="search" />
                     <div>Find the solution that unites your team</div>
