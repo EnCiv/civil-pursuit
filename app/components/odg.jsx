@@ -20,22 +20,6 @@ class CivilPursuitLogo extends React.Component {
 
 class Boxes extends React.Component {
 
-    resize = null;
-
-    componentDidMount() {
-        this.resize=this.resizeListener.bind(this);
-        window.addEventListener("resize", this.resize);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.resize);
-    }
-
-    resizeListener(){
-        console.info("Boxes.resizeListener");
-        this.forceUpdate();
-    }
-
     renderChildren (width,horizontal) {
         return React.Children.map(this.props.children, child => {
             console.info("Boxes.child",width,horizontal);
@@ -52,11 +36,13 @@ class Boxes extends React.Component {
         console.info("Boxes");
         const {className}=this.props;
         let count=this.props.children.length;
-        let horizontal= (typeof screen != 'undefined') ? screen.width > screen.height : true;
+        let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        let horizontal= (typeof screen != 'undefined') ? w > h : true;
         let width = horizontal ? 100/count : 100;
         return (
         <section className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
-            { this.renderChildren(width, horizontal) }
+            { this.renderChildren(w, horizontal) }
         </section>
         );
     }
@@ -79,7 +65,9 @@ class Stack extends React.Component {
         });
     }
     render(){
-        let horizontal= (typeof screen != 'undefined') ? !(screen.width > screen.height) : false;
+        let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        let horizontal= (typeof screen != 'undefined') ? !(w > h) : false;
         const {className}=this.props;
         return (
         <section style={{display: horizontal ? 'table' : 'block'}}
@@ -128,6 +116,22 @@ class CDNImg extends React.Component {
 }
 
 class OnlineDeliberationGame extends React.Component {
+
+    resize = null;
+
+    componentDidMount() {
+        this.resize=this.resizeListener.bind(this);
+        window.addEventListener("resize", this.resize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resize);
+    }
+
+    resizeListener(){
+        console.info("OnlineDeliberationGame.resizeListener");
+        this.forceUpdate();
+    }
 
 
   smooth(tag,e){
