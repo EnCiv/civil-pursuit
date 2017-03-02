@@ -173,6 +173,11 @@ class App extends React.Component {
               page = ( <About /> );
               break;
 
+        case 'odg':
+          return(
+            <OnlineDeliberationGame />
+          );
+       
 
         case 'item':
 
