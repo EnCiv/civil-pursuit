@@ -465,7 +465,7 @@ class HttpServer extends EventEmitter {
               return next(new Error('No such type'));
             }
 
-            console.info("server getPanelPage found type", type);
+            console.info("server getPanelPage found type", type.name, type._id);
 
             Item.findOne({ id : req.params.panelParent }).then(
               item => {
@@ -473,19 +473,18 @@ class HttpServer extends EventEmitter {
                   return next();
                 }
 
-                console.info("server getPanelPage found item", item);
+                console.info("server getPanelPage found item", item.subject, item._id);
 
                 const panelId = makePanelId({ type: type._id, parent : item._id });
 
                 const query = {
                   type: type._id,
                   parent: item._id,
-                  size: 10
                 };
 
                 Item.getPanelItems(query).then(
                   results => {
-                    req.panels = { [panelId] : makePanel({ type: type._id, parent : item._id }) };
+                    req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
 
                     req.panels[panelId].items = results.items;
 
