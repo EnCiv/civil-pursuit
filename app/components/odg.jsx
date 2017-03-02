@@ -19,7 +19,8 @@ class CivilPursuitLogo extends React.Component {
 }
 
 class Boxes extends React.Component {
-
+// if viewport is wider than tall (desktop), lay children out horizontally
+// otherwise lay them out vertically (smartphone)
     renderChildren (width,horizontal) {
         return React.Children.map(this.props.children, child => {
             console.info("Boxes.child",width,horizontal);
@@ -36,9 +37,13 @@ class Boxes extends React.Component {
         console.info("Boxes");
         const {className}=this.props;
         let count=this.props.children.length;
-        let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-        let horizontal= (typeof screen != 'undefined') ? w > h : true;
+        let w=1920; // if this is running on the server, pick something
+        let h=1080;
+        if(typeof document !== 'undefined'){
+            w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        }
+        let horizontal=  w > h;
         let width = horizontal ? 100/count : 100;
         return (
         <section className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
@@ -49,6 +54,8 @@ class Boxes extends React.Component {
 }
 
 class Stack extends React.Component {
+// if viewport is wider than tall (desktop), lay children out vertically
+// otherwise lay them out horizontally (smartphone)
     renderChildren (horizontal) {
         return React.Children.map(this.props.children, child =>{
             if(horizontal){
@@ -65,9 +72,13 @@ class Stack extends React.Component {
         });
     }
     render(){
-        let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-        let horizontal= (typeof screen != 'undefined') ? !(w > h) : false;
+        let w=1920; // if this is running on the server, pick something
+        let h=1080;
+        if(typeof document !== 'undefined'){
+            w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        }
+        let horizontal= !(w > h);
         const {className}=this.props;
         return (
         <section style={{display: horizontal ? 'table' : 'block'}}
