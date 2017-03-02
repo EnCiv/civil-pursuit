@@ -4,6 +4,7 @@ import React from 'react';
 import Icon  from './util/icon';
 import smoothScroll       from '../lib/app/smooth-scroll';
 import CloudinaryImage    from './util/cloudinary-image';
+import ClassNames          from 'classnames';
 
 
 class CivilPursuitLogo extends React.Component {
@@ -21,11 +22,28 @@ class CivilPursuitLogo extends React.Component {
 
 class Boxes extends React.Component {
 
+    resize = null;
+
+    componentDidMount() {
+        resize=this.resizeListener.bind(this);
+        window.addEventListener("resize", resize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", resize);
+    }
+
+    resizeListener(){
+        this.forceUpdate();
+    }
+
     renderChildren (width,horizontal) {
         return React.Children.map(this.props.children, child => {
             console.info("Boxes.child",width,horizontal);
             return(
-                <div style={{width: width+'%', display: horizontal ? 'inline-block' : 'block'}}>
+                <div style={{width: width+'%', display: horizontal ? 'inline-block' : 'block'}}
+                className={classNames(this.props.className, {childhorizontal: horizontal}, {childvertical: !horizontal})}
+                >
                     { child }
                 </div>
             );
@@ -33,11 +51,12 @@ class Boxes extends React.Component {
     }
     render(){
         console.info("Boxes");
+        const {className}=this.props;
         let count=this.props.children.length;
         let horizontal= (typeof screen != 'undefined') ? screen.width > screen.height : true;
         let width = horizontal ? 100/count : 100;
         return (
-        <section>
+        <section className={classNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
             { this.renderChildren(width, horizontal) }
         </section>
         );
@@ -62,8 +81,11 @@ class Stack extends React.Component {
     }
     render(){
         let horizontal= (typeof screen != 'undefined') ? !(screen.width > screen.height) : false;
+        const {className}=this.props;
         return (
-        <section style={{display: horizontal ? 'table' : 'block'}}>
+        <section style={{display: horizontal ? 'table' : 'block'}}
+            className={classNames(className, {horizontal: horizontal}, {vertical: !horizontal})} 
+        >
             { this.renderChildren(horizontal) }
         </section>
         );
@@ -120,37 +142,37 @@ class OnlineDeliberationGame extends React.Component {
 
   render() {
     const page = (
-        <section>
-            <Boxes>
-                <div>
+        <section className='odg-intro'>
+            <Boxes className='odg-main-box'>
+                <div className='odg-main-box-text'>
                     <CivilPursuitLogo />
-                    <div>Bridge the Political Divide</div>
-                    <div>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
+                    <div className='odg-main-box-tag-line'>Bridge the Political Divide</div>
+                    <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
-                <div>
+                <div className='odg-main-box-image'>
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
-            <div>Find the Solutions to What Divides Us</div>
-            <Boxes>
-                <Stack>
+            <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>
+            <Boxes className='odg-icon-box'>
+                <Stack className='odg-icon-stack'>
                     <Icon icon="group" />
                     <div>Join a team of diverse Americans</div>
                 </Stack>
-                <Stack>
+                <Stack className='odg-icon-stack'>
                     <Icon icon="arrows-alt" />
                     <div>Take on a polarized challenge</div>
                 </Stack>
-                <Stack>
+                <Stack className='odg-icon-stack'>
                     <Icon icon="search" />
                     <div>Find the solution that unites your team</div>
                 </Stack>
-                <Stack>
+                <Stack className='odg-icon-stack'>
                     <Icon icon="unlock-alt" />
                     <div>Proceed to the next level</div>
                 </Stack>
             </Boxes>
-            <div>The more you play the more real it becomes</div>
+            <div className='odg-trailer'>The more you play the more real it becomes</div>
         </section>
     );
     return ( page );
