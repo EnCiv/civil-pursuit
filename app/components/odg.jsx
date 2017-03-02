@@ -89,10 +89,12 @@ class CDNImg extends React.Component {
                     parts.splice(6,['c_scale,w_'+width]);
                     if(parts[0]==='http:') parts[0]='https:';
                     src=parts.join('/');
+                    break;
                 case 9: // transfroms present eg http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_1600/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
                     parts[4]=parts[6]+',c_scale,w_'+width; // just paste it on the end of whats there - it will override anything previous
                     if(parts[0]==='http:') parts[0]='https:';
                     src=parts.join('/');
+                    break;
                 default:
                     console.error("CloudinaryImage",this.props.src,"expected 8 or 9 parts got:", parts.length);
                     src=this.props.src;
