@@ -42,7 +42,7 @@ class Boxes extends React.Component {
             console.info("Boxes.child",width,horizontal);
             return(
                 <div style={{width: width+'%', display: horizontal ? 'inline-block' : 'block'}}
-                className={classNames(this.props.className, {childhorizontal: horizontal}, {childvertical: !horizontal})}
+                className={ClassNames(this.props.className, {childhorizontal: horizontal}, {childvertical: !horizontal})}
                 >
                     { child }
                 </div>
@@ -56,7 +56,7 @@ class Boxes extends React.Component {
         let horizontal= (typeof screen != 'undefined') ? screen.width > screen.height : true;
         let width = horizontal ? 100/count : 100;
         return (
-        <section className={classNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
+        <section className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} >
             { this.renderChildren(width, horizontal) }
         </section>
         );
@@ -84,7 +84,7 @@ class Stack extends React.Component {
         const {className}=this.props;
         return (
         <section style={{display: horizontal ? 'table' : 'block'}}
-            className={classNames(className, {horizontal: horizontal}, {vertical: !horizontal})} 
+            className={ClassNames(className, {horizontal: horizontal}, {vertical: !horizontal})} 
         >
             { this.renderChildren(horizontal) }
         </section>
@@ -124,7 +124,7 @@ class CDNImg extends React.Component {
             }
         }
         console.info("CDNImg src=", src);
-        return(<div ref='image'><img classNames={this.props.classNames} style={this.props.style} src={src}/></div>);
+        return(<div ref='image'><img className={this.props.className} style={this.props.style} src={src}/></div>);
     }
 }
 
