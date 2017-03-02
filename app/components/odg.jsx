@@ -23,12 +23,12 @@ class Boxes extends React.Component {
     resize = null;
 
     componentDidMount() {
-        resize=this.resizeListener.bind(this);
-        window.addEventListener("resize", resize);
+        this.resize=this.resizeListener.bind(this);
+        window.addEventListener("resize", this.resize);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", resize);
+        window.removeEventListener("resize", this.resize);
     }
 
     resizeListener(){
