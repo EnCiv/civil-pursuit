@@ -221,14 +221,24 @@ class App extends React.Component {
           }
 
         case 'items':
+          if(! this.props.panels) { break; }
 
           const panelId2 = Object.keys(this.props.panels)[0];
 
           console.info("App.render items", { panelId2 });
 
+          const panel2 = Object.assign({}, this.props.panels[panelId2].panel);
+
+          //panel.items = panel.items.filter(item => item.id === paths[1]);
+
+          //console.info("app item panel filtered", panel );
+
+          const component2=panel.type.component || 'Subtype';
+
           page = (
-            <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
+            <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } emitter = {this.emitter } />
           );
+
           break;
       }
     }
