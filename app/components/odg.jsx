@@ -75,6 +75,7 @@ class CDNImg extends React.Component {
 
     componentDidMount() {
         let width=this.refs.image.clientWidth;
+        console.info("CDNImg.copnentDidMount", width);
         if(width > 0) this.setState({width: width});
     }
 
@@ -98,7 +99,7 @@ class CDNImg extends React.Component {
             }
         }
         console.info("CDNImg src=", src);
-        return(<img classNames={this.props.classNames} style={this.props.style} src={src} ref='image'/>);
+        return(<div ref='image'><img classNames={this.props.classNames} style={this.props.style} src={src}/></div>);
     }
 }
 
