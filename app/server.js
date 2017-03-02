@@ -173,6 +173,7 @@ class HttpServer extends EventEmitter {
   router () {
     this.timeout();
     this.getLandingPage();
+    this.getOldfield();
     this.getTermsOfServicePage();
     this.getSettings();
     this.getItemPage();
@@ -204,6 +205,13 @@ class HttpServer extends EventEmitter {
       next();
     });
   }
+
+ getOldfield(){ // hard coding a short route
+  this.app.get('/Oldfield', (req, res, next) =>{
+    res.redirect('/item/81GUO/Oldfield');
+  }
+  );
+ }
 
   getLandingPage () {
     try {
