@@ -10,11 +10,9 @@ import ClassNames          from 'classnames';
 class CivilPursuitLogo extends React.Component {
     render(){
         return(
-            <section className={ `civil-pursuit-logo-image` }>
-                <a href="/">
+            <section className={'civil-pursuit-logo-image'}>
                     <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" transparent/>
-                    <p className={ `civil-pursuit-logo-text`}>Civil Pursuit<sub>TM</sub></p>
-                </a>
+                    <p>Civil Pursuit<sub>TM</sub></p>
             </section>
         );
     }
@@ -157,19 +155,19 @@ class OnlineDeliberationGame extends React.Component {
             <Boxes className='odg-icon-box'>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="group" />
-                    <div>Join a team of diverse Americans</div>
+                    <p>Join a team of diverse Americans</p>
                 </Stack>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="arrows-alt" />
-                    <div>Take on a polarized challenge</div>
+                    <p>Take on a polarized challenge</p>
                 </Stack>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="search" />
-                    <div>Find the solution that unites your team</div>
+                    <p>Find the solution that unites your team</p>
                 </Stack>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="unlock-alt" />
-                    <div>Proceed to the next level</div>
+                    <p>Proceed to the next level</p>
                 </Stack>
             </Boxes>
             <div className='odg-trailer'>The more you play the more real it becomes</div>
