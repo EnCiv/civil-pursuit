@@ -32,6 +32,7 @@ class Boxes extends React.Component {
     }
 
     resizeListener(){
+        console.info("Boxes.resizeListener");
         this.forceUpdate();
     }
 
@@ -154,12 +155,12 @@ class OnlineDeliberationGame extends React.Component {
             <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>
             <Boxes className='odg-icon-box'>
                 <Stack className='odg-icon-stack'>
-                    <Icon icon="group" />
-                    <p>Join a team of diverse Americans</p>
-                </Stack>
-                <Stack className='odg-icon-stack'>
                     <Icon icon="arrows-alt" />
                     <p>Take on a polarized challenge</p>
+                </Stack>
+                <Stack className='odg-icon-stack'>
+                    <Icon icon="group" />
+                    <p>Join a team of diverse Americans</p>
                 </Stack>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="search" />
