@@ -80,7 +80,7 @@ class CDNImg extends React.Component {
 
     render(){
         let parts=this.props.src.split('/');
-        let src;
+        let src=null;
         if(this.state.width){
             switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
@@ -96,8 +96,9 @@ class CDNImg extends React.Component {
                     src=this.props.src;
                     break;
             }
-            return(<img classNames={this.props.classNames} style={this.props.style} src={src} />);
-        }else return (null);
+        }
+        console.info("CDNImg src=", src);
+        return(<img classNames={this.props.classNames} style={this.props.style} src={src} ref='image'/>);
     }
 }
 
