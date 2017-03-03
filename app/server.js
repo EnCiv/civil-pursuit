@@ -510,7 +510,7 @@ class HttpServer extends EventEmitter {
                     console.info("getPanelPage", results.count);
                     if(!req.panels[panelId].items) { req.panels[panelId].items = []; }
 
-                    req.panels[panelId].items.concat(results.items);
+                     req.panels[panelId].items=req.panels[panelId].items.concat(results.items);
 
                     //console.log("server.getPanelPage", require('util').inspect(req.panels, { depth: null }));
 

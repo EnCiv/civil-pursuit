@@ -234,6 +234,7 @@ class App extends React.Component {
           //console.info("app item panel filtered", panel );
 
           const component2=panel2.type.component || 'Subtype';
+                    console.info("App.render panel2", { panel2 });
 
           page = (
             <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } emitter = {this.emitter } />
