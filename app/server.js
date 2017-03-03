@@ -503,10 +503,12 @@ class HttpServer extends EventEmitter {
                   parent: item._id,
                 };
 
+                console.info("server getPanelPage", query, userId);
                 Item.getPanelItems(query, userId).then(
                   results => {
                     req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
                     console.info("getPanelPage", results.count);
+                    if(!req.panels[panelId].items) { req.panels[panelId].items = []; }
 
                     req.panels[panelId].items.concat(results.items);
 
