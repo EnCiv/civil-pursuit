@@ -58,18 +58,12 @@ class Stack extends React.Component {
 // otherwise lay them out horizontally (smartphone)
     renderChildren (horizontal) {
         return React.Children.map(this.props.children, child =>{
-            if(horizontal){
                 return (
-                    <div style={{display: 'table-cell'}}
+                    <div style={{display: horizontal? 'table-cell' : 'inline-block'}}
                     className={ClassNames(this.props.className, {childhorizontal: horizontal}, {childvertical: !horizontal})}>
                         { child }
                     </div>
                 );
-            }else{
-                return (
-                    child
-                );
-            }
         });
     }
     render(){
