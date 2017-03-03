@@ -444,10 +444,52 @@ class HttpServer extends EventEmitter {
                 "httpOnly": true
               });
           }
-          // else {
+          try {
+            Type.findOne({ id : 'sOAQO' }).then(
+              type => {
+                if ( ! type ) {
+                  return next(new Error('No such type'));
+                }
 
-          // }
-          next();
+                console.info("server getPanelPage found type", type.name, type._id);
+
+                Item.findOne({ id : 'IZwzs' }).then(
+                  item => {
+                    if ( ! item ) {
+                      return next();
+                    }
+
+                    console.info("server getPanelPage found item", item.subject, item._id);
+
+                    const panelId = makePanelId({ type: type._id, parent : item._id });
+
+                    const query = {
+                      type: type._id,
+                      parent: item._id,
+                    };
+
+                    console.info("server getPanelPage", query, userId);
+                    Item.getPanelItems(query, userId).then(
+                      results => {
+                        req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
+                        console.info("getPanelPage", results.count);
+
+                        req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
+
+                        next();
+                      }, 
+                      next
+                    );
+                  },
+                  next
+                );
+              },
+              next
+            );
+          }
+          catch ( error ) {
+            next(error);
+          }
         },
         serverReactRender.bind(this));
     }
@@ -510,8 +552,6 @@ class HttpServer extends EventEmitter {
                     console.info("getPanelPage", results.count);
 
                      req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
-
-                    //console.log("server.getPanelPage", require('util').inspect(req.panels, { depth: null }));
 
                     next();
                   }, 

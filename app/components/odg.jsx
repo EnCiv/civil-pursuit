@@ -124,6 +124,16 @@ class CDNImg extends React.Component {
 
 class OnlineDeliberationGame extends React.Component {
 
+    renderChildren () {
+        return React.Children.map(this.props.children, child =>{
+                return (
+                    <div className={ClassNames(this.props.className, 'odg-child')}>
+                        { child }
+                    </div>
+                );
+        });
+    }
+
     resize = null;
 
     componentDidMount() {
@@ -182,7 +192,8 @@ class OnlineDeliberationGame extends React.Component {
                     <p>Proceed to the next level</p>
                 </Stack>
             </Boxes>
-            <div className='odg-trailer'>The more you play the more real it becomes</div>
+            <div className='odg-trailer'>The more you play the more real it gets</div>
+            { this.renderChildren() }
         </section>
     );
     return ( page );
