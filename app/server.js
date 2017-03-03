@@ -485,8 +485,9 @@ class HttpServer extends EventEmitter {
                 Item.getPanelItems(query).then(
                   results => {
                     req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
+                    console.info("getPanelPage", results.count);
 
-                    req.panels[panelId].items = results.items;
+                    req.panels[panelId].items.concat(results.items);
 
                     //console.log("server.getPanelPage", require('util').inspect(req.panels, { depth: null }));
 

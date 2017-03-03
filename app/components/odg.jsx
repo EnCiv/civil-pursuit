@@ -60,7 +60,8 @@ class Stack extends React.Component {
         return React.Children.map(this.props.children, child =>{
             if(horizontal){
                 return (
-                    <div style={{display: 'table-cell'}}>
+                    <div style={{display: 'table-cell'}}
+                    className={ClassNames(className, {childhorizontal: horizontal}, {childvertical: !horizontal})}>
                         { child }
                     </div>
                 );
