@@ -458,6 +458,27 @@ class HttpServer extends EventEmitter {
 
   getPanelPage () {
     this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
+    var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+    var sniffr = new Sniffr();
+    sniffr.sniff(req.headers['user-agent']);
+    var device = Device(req.headers['user-agent']);
+    this.browserConfig.os = sniffr.os;
+    this.browserConfig.browser = sniffr.browser;
+    this.browserConfig.type = device.type;
+    this.browserConfig.model = device.model;
+    this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+    this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+    console.info("server.getPanelPage browser", this.browser);
+    if ( ! req.cookies.synapp ) {
+      res.cookie('synapp',
+        { training : true },
+        {
+          "path":"/",
+          "signed": false,
+          "maxAge": 604800000,
+          "httpOnly": true
+        });
+    }
       try {
         Type.findOne({ id : req.params.panelShortId }).then(
           type => {
@@ -482,7 +503,7 @@ class HttpServer extends EventEmitter {
                   parent: item._id,
                 };
 
-                Item.getPanelItems(query).then(
+                Item.getPanelItems(query, userId).then(
                   results => {
                     req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
                     console.info("getPanelPage", results.count);

@@ -104,6 +104,7 @@ class CDNImg extends React.Component {
         let parts=this.props.src.split('/');
         let src=null;
         let width=this.state.width;
+        if(this.refs.image && this.refs.image.clientWidth && this.refs.image.clientWidth > width) width=this.refs.image.clientWidth;
         if(width){
             switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
