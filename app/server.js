@@ -424,6 +424,7 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/odg',
         (req, res, next) => {
+          var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
           var sniffr = new Sniffr();
           sniffr.sniff(req.headers['user-agent']);
           var device = Device(req.headers['user-agent']);
