@@ -5,6 +5,7 @@ import Icon  from './util/icon';
 import smoothScroll       from '../lib/app/smooth-scroll';
 import CloudinaryImage    from './util/cloudinary-image';
 import ClassNames          from 'classnames';
+import Footer               from './footer';
 
 
 class CivilPursuitLogo extends React.Component {
@@ -194,6 +195,7 @@ class OnlineDeliberationGame extends React.Component {
             </Boxes>
             <div className='odg-trailer'>The more you play the more real it gets</div>
             { this.renderChildren() }
+            <Footer />
         </section>
     );
     return ( page );
