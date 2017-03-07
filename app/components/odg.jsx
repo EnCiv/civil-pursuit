@@ -194,7 +194,7 @@ class OnlineDeliberationGame extends React.Component {
                     <p>Proceed to the next level</p>
                 </Stack>
             </Boxes>
-            <div className='odg-trailer'>The more you play the more real it gets</div>
+            <div className='odg-nothing'>The more you play the more real it gets</div>
             { this.renderChildren() }
         </section>
         <Footer />
