@@ -181,9 +181,9 @@ class App extends React.Component {
 
           const panelId3 = keylist3[keylist3.length-1];
 
-          const panel3 = Object.assign({}, this.props.panels[panelId1].panel);
+          const panel3 = Object.assign({}, this.props.panels[panelId3].panel);
 
-          const component3=panel.type.component || 'Subtype';
+          const component3=panel3.type.component || 'Subtype';
 
           return( <OnlineDeliberationGame>
                     <TypeComponent component={component3} { ...this.props } user={ user } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
