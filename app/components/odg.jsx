@@ -163,7 +163,7 @@ class OnlineDeliberationGame extends React.Component {
 
   render() {
     const page = (
-        <section className='odg-intro'>
+       [ <section className='odg-intro'>
             <Boxes className='odg-main-box'>
                 <div className='odg-main-box-text'>
                     <CivilPursuitLogo />
@@ -195,8 +195,9 @@ class OnlineDeliberationGame extends React.Component {
             </Boxes>
             <div className='odg-trailer'>The more you play the more real it gets</div>
             { this.renderChildren() }
-            <Footer />
-        </section>
+        </section>,
+        <Footer />
+        ]
     );
     return ( page );
   }
