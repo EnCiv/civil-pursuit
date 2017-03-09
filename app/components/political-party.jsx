@@ -13,7 +13,6 @@ class PoliticalParty extends React.Component {
 
     constructor(props){
         super(props);
-        console.info("PoliticalParty.constructor",props, PoliticalParty.options)
         if ( typeof PoliticalParty.options === 'undefined' ) {
             PoliticalParty.options=[];
             window.socket.emit('get political parties', this.okGotChoices.bind(this));
@@ -27,7 +26,6 @@ class PoliticalParty extends React.Component {
             <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
         ));
         this.setState({loaded: true});
-        console.info("PoliticalParty.okGotChoices", PoliticalParty.options);
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +46,7 @@ class PoliticalParty extends React.Component {
     let option1 = (this.state.loaded ? <option value=''>Choose one</option> : <option value=''>Loading Options</option>);
 
     return (
-        <Row baseline className="gutter-y">
+        <Row className={this.props.className}>
             <Column span={this.props.split}>
               Political Party
             </Column>

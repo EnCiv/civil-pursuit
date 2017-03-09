@@ -82,7 +82,7 @@ class Voter extends React.Component {
           </Column>
         </Row>
 
-        <PoliticalParty split={25} user={user} onChange={ this.setParty.bind(this)} />
+        <PoliticalParty className="gutter syn-row-baseline-items" split={25} user={user} onChange={ this.setParty.bind(this)} />
 
         <Row baseline className="gutter">
           <Column span="25">
