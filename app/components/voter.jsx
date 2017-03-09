@@ -13,6 +13,7 @@ import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import politicalTendencyType          from '../lib/proptypes/political-tendency';
 import PoliticalParty                 from './political-party';
+import DynamicSelector                from './dynamic-selector';
 
 class Voter extends React.Component {
 
@@ -35,7 +36,7 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setParty (obj) {
+  setUserInfo (obj) {
       window.socket.emit('set user info', obj );
   }
 
@@ -82,19 +83,8 @@ class Voter extends React.Component {
           </Column>
         </Row>
 
-        <PoliticalParty className="gutter syn-row-baseline-items" split={25} user={user} onChange={ this.setParty.bind(this)} />
-
-        <Row baseline className="gutter">
-          <Column span="25">
-            Political Tendency
-          </Column>
-          <Column span="75">
-            <Select block medium ref="tendency" defaultValue={ user.tendency } onChange={ this.setTendency.bind(this) }>
-              <option value=''>Choose one</option>
-              { tendency }
-            </Select>
-          </Column>
-        </Row>
+        <PoliticalParty className="gutter syn-row-baseline-items" split={25} user={user} onChange={ this.setUserInfo.bind(this)} />
+        <DynamicSelector property="tendency" name="Political Tendency" className="gutter syn-row-baseline-items" split={25} info={user} onChange={ this.setUserInfo.bind(this)} />
 
       </section>
     );
