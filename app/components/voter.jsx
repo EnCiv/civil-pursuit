@@ -20,8 +20,7 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
-    user : userType,
-    politicalTendency : React.PropTypes.arrayOf(politicalTendencyType)
+    user : userType
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,23 +41,10 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setTendency () {
-    const tendency = ReactDOM.findDOMNode(this.refs.tendency).value;
-
-    if ( tendency ) {
-      window.socket.emit('set user info', { tendency });
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
-    let { user, politicalTendency } = this.props;
+    let { user } = this.props;
 
 
-    let tendency = politicalTendency.map(tendency => (
-      <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
-    ));
     return (
       <section>
         <section style={{ width: '50%', float : 'left' }}>
@@ -83,7 +69,7 @@ class Voter extends React.Component {
           </Column>
         </Row>
 
-        <PoliticalParty className="gutter syn-row-baseline-items" split={25} user={user} onChange={ this.setUserInfo.bind(this)} />
+        <DynamicSelector property="party" name="Political Party" className="gutter syn-row-baseline-items" split={25} info={user} onChange={ this.setUserInfo.bind(this)} />
         <DynamicSelector property="tendency" name="Political Tendency" className="gutter syn-row-baseline-items" split={25} info={user} onChange={ this.setUserInfo.bind(this)} />
 
       </section>
