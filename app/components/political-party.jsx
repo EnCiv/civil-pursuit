@@ -51,7 +51,7 @@ class PoliticalParty extends React.Component {
               Political Party
             </Column>
             <Column span={100-this.props.split}>
-                <Select block medium ref="choice" defaultValue={ user.party } onChange={ this.setChoice.bind(this) }>
+                <Select block medium ref="choice" defaultValue={ user.party } onChange={ this.saveChoice.bind(this) }>
                     { option1 }
                     { PoliticalParty.options }
                 </Select>
