@@ -11,8 +11,8 @@ import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import politicalPartyType             from '../lib/proptypes/political-party';
 import politicalTendencyType          from '../lib/proptypes/political-tendency';
+import PoliticalParty                 from './political-party';
 
 class Voter extends React.Component {
 
@@ -20,7 +20,6 @@ class Voter extends React.Component {
 
   static propTypes = {
     user : userType,
-    politicalParties : React.PropTypes.arrayOf(politicalPartyType),
     politicalTendency : React.PropTypes.arrayOf(politicalTendencyType)
   };
 
@@ -36,12 +35,8 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setParty () {
-    const party = ReactDOM.findDOMNode(this.refs.party).value;
-
-    if ( party ) {
-      window.socket.emit('set user info', { party });
-    }
+  setParty (obj) {
+      window.socket.emit('set user info', obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,11 +52,8 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user, politicalParties, politicalTendency } = this.props;
+    let { user, politicalTendency } = this.props;
 
-    let parties = politicalParties.map(party => (
-      <option value={ party._id } key={ party._id }>{ party.name }</option>
-    ));
 
     let tendency = politicalTendency.map(tendency => (
       <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
@@ -90,17 +82,7 @@ class Voter extends React.Component {
           </Column>
         </Row>
 
-        <Row baseline className="gutter">
-          <Column span="25">
-            Political Party
-          </Column>
-          <Column span="75">
-            <Select block medium ref="party" defaultValue={ user.party } onChange={ this.setParty.bind(this) }>
-              <option value=''>Choose one</option>
-              { parties }
-            </Select>
-          </Column>
-        </Row>
+        <PoliticalParty split={25} user={user} onChange={ this.setParty.bind(this)} />
 
         <Row baseline className="gutter">
           <Column span="25">
