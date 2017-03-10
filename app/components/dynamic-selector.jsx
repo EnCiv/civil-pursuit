@@ -14,7 +14,7 @@ class DynamicSelector extends React.Component {
     constructor(props){
         super(props);
         const {property}=props;
-        if ( typeof DynamicSelector.options === 'undefined' ) DynamicSelector.properties=[];
+        if ( typeof DynamicSelector.properties === 'undefined' ) DynamicSelector.properties=[];
         if ( typeof DynamicSelector.properties[property] === 'undefined')
         {
             DynamicSelector.properties[property]={options: [], choices: []};
