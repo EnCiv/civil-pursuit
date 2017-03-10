@@ -45,8 +45,8 @@ class DynamicSelector extends React.Component {
 
   render() {
 
-    const { info, property, className, split, name, valueOnly } = this.props;
-    let option1 = (this.state.loaded ? <option value=''>Choose one</option> : <option value=''>Loading Options</option>);
+    const { info, property, className, split, valueOnly, style } = this.props;
+    let option1 = (this.state.loaded ? <option value=''>{property}</option> : <option value=''>Loading Options</option>);
 
     if(valueOnly)
         if(this.state.loaded)
@@ -56,17 +56,10 @@ class DynamicSelector extends React.Component {
         else return(null);
     else
         return (
-            <Row className={className}>
-                <Column span={split}>
-                {name}
-                </Column>
-                <Column span={100-split}>
-                    <Select block medium ref="choice" defaultValue={ info[property] } onChange={ this.saveChoice.bind(this) }>
-                        { option1 }
-                        { DynamicSelector.properties[property].options }
-                    </Select>
-            </Column>
-            </Row>
+            <Select block medium ref="choice" defaultValue={ info[property] } onChange={ this.saveChoice.bind(this) } style={style} >
+                { option1 }
+                { DynamicSelector.properties[property].options }
+            </Select>
         );
     }
 }

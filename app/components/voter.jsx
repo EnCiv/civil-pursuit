@@ -54,25 +54,36 @@ class Voter extends React.Component {
           <p>We use this information to make sure that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.</p>
         </section>
 
-        <Row baseline className="gutter">
-          <Column span="25">
-            Registered voter
-          </Column>
-          <Column span="75">
-            <Select block medium ref="registered" defaultValue={ user.registered_voter } onChange={ this.setRegisteredVoter.bind(this) }>
+        <SelectorRow name="Registered Voter">
+          <Select block medium ref="registered" defaultValue={ user.registered_voter } onChange={ this.setRegisteredVoter.bind(this) }>
               <option value=''>Choose one</option>
               <option value={ true }>Yes</option>
               <option value={ false }>No</option>
-            </Select>
-          </Column>
-        </Row>
-
-        <DynamicSelector property="party" name="Political Party" className="gutter syn-row-baseline-items" split={25} info={user} onChange={ this.setUserInfo.bind(this)} />
-        <DynamicSelector property="tendency" name="Political Tendency" className="gutter syn-row-baseline-items" split={25} info={user} onChange={ this.setUserInfo.bind(this)} />
-
+          </Select>
+        </SelectorRow>
+        <SelectorRow name="Political Party">
+          <DynamicSelector property="party" info={user} onChange={ this.setUserInfo.bind(this)} />
+        </SelectorRow>
+        <SelectorRow  name="Political Tendency">
+          <DynamicSelector property="tendency" info={user} onChange={ this.setUserInfo.bind(this)} />
+        </SelectorRow>
       </section>
     );
   }
 }
 
+class SelectorRow extends React.Component{
+  render(){
+    return(
+        <Row baseline className="gutter">
+          <Column span="25">
+            {this.props.name}
+          </Column>
+          <Column span="75">
+            {this.props.children}
+          </Column>
+        </Row>
+    );
+  }
+}
 export default Voter;
