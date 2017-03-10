@@ -13,18 +13,21 @@ class DynamicSelector extends React.Component {
 
     constructor(props){
         super(props);
-        if ( typeof DynamicSelector.options === 'undefined' ) DynamicSelector.options={};
-        if ( typeof DynamicSelector.options[this.props.property] === 'undefined')
+        const {property}=props;
+        if ( typeof DynamicSelector.options === 'undefined' ) DynamicSelector.properties=[];
+        if ( typeof DynamicSelector.properties[property] === 'undefined')
         {
-            DynamicSelector.options[this.props.property]=[];
-            window.socket.emit('get dynamic '+this.props.property, this.okGotChoices.bind(this));
+            DynamicSelector.properties[property]={options: [], choices: []};
+            window.socket.emit('get dynamic '+property, this.okGotChoices.bind(this));
         }else{
             this.state.loaded=true;
         }
     }
 
     okGotChoices(choices){
-        DynamicSelector.options[this.props.property]=choices.map(choice => (
+        const property=this.props.property;
+        choices.forEach(choice => DynamicSelector.properties[property].choices[choice._id]=choice.name);
+        DynamicSelector.properties[property].options=choices.map(choice => (
             <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
         ));
         this.setState({loaded: true});
@@ -42,23 +45,30 @@ class DynamicSelector extends React.Component {
 
   render() {
 
-    let { info } = this.props;
+    const { info, property, className, split, name, valueOnly } = this.props;
     let option1 = (this.state.loaded ? <option value=''>Choose one</option> : <option value=''>Loading Options</option>);
 
-    return (
-        <Row className={this.props.className}>
-            <Column span={this.props.split}>
-              {this.props.name}
+    if(valueOnly)
+        if(this.state.loaded)
+            return (
+                <span>DynamicSelector.properties[property].choices[info[property]]</span>
+            );
+        else return(null);
+    else
+        return (
+            <Row className={className}>
+                <Column span={split}>
+                {name}
+                </Column>
+                <Column span={100-split}>
+                    <Select block medium ref="choice" defaultValue={ info[property] } onChange={ this.saveChoice.bind(this) }>
+                        { option1 }
+                        { DynamicSelector.properties[property].options }
+                    </Select>
             </Column>
-            <Column span={100-this.props.split}>
-                <Select block medium ref="choice" defaultValue={ info[this.props.property] } onChange={ this.saveChoice.bind(this) }>
-                    { option1 }
-                    { DynamicSelector.options[this.props.property] }
-                </Select>
-          </Column>
-        </Row>
-    );
-  }
+            </Row>
+        );
+    }
 }
 
 export default DynamicSelector;

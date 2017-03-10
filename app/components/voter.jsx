@@ -11,8 +11,6 @@ import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import politicalTendencyType          from '../lib/proptypes/political-tendency';
-import PoliticalParty                 from './political-party';
 import DynamicSelector                from './dynamic-selector';
 
 class Voter extends React.Component {
