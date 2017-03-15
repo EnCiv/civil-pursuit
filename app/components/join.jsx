@@ -85,7 +85,7 @@ class JoinForm extends React.Component {
             this.setState({ validationError : null, successMessage : 'Welcome aboard!', info: null });
             //location.href = '/page/profile';
             //location.href = '/';
-            location.href=path;
+            // temporary - if someone joins don't refresh --  location.href=path;
             break;
 
           default:

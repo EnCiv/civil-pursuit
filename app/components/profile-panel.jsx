@@ -49,30 +49,19 @@ class ProfilePanel extends React.Component {
         const {userInfo} = this.state;
         var done=[];
 
-        if (!user) {
-            if (!this.state.typeList.length) return (null);
-            const newPanel = {
-                parent: panel.parent,
-                type: this.state.typeList[0],
-                skip: panel.skip || 0,
-                limit: panel.limit || config['navigator batch size'],
-            };
-            return (
-                <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
-            )
-        }
 
         if ((this.state.ready && userInfo.gender && userInfo.dob && userInfo.neighborhood && userInfo.member_type)) {
             if(this.firstPass  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
                 if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
+                const index = user ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
                 const newPanel = {
                     parent: panel.parent,
-                    type: this.state.typeList[1],
+                    type: this.state.typeList[index],
                     skip: panel.skip || 0,
                     limit: panel.limit || config['navigator batch size'],
                 };
                 return (
-                    <TypeComponent  { ...this.props } component={this.state.typeList[1].component} panel={newPanel} />
+                    <TypeComponent  { ...this.props } component={this.state.typeList[index].component} panel={newPanel} />
                 )
             }else if(!this.firstPass){ // if all the data is there, and this is not the first pass put up the done button
                 done=[
