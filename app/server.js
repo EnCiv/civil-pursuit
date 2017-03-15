@@ -446,7 +446,7 @@ class HttpServer extends EventEmitter {
               });
           }
           try {
-            Type.findOne({ id : 'sOAQO' }).then(
+            Type.findOne({ id : 'Polzc' }).then(
               type => {
                 if ( ! type ) {
                   return next(new Error('No such type'));
@@ -454,7 +454,7 @@ class HttpServer extends EventEmitter {
 
                 console.info("server getPanelPage found type", type.name, type._id);
 
-                Item.findOne({ id : 'IZwzs' }).then(
+                Item.findOne({ id : 'bvuDs' }).then(
                   item => {
                     if ( ! item ) {
                       return next();
