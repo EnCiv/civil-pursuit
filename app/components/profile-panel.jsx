@@ -16,7 +16,7 @@ class ProfilePanel extends React.Component {
     state = {
         typeList: [],
         ready: false,
-        userInfo: null,
+        userInfo: {},
         done: false
     }
 
