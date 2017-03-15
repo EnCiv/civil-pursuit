@@ -98,10 +98,13 @@ class Layout extends Document {
 
     console.info("index browser", props.browserConfig);
 
-    if (   ( props.browserConfig.browser.name=="chrome" && props.browserConfig.browser.version[0] >= 54)
-        || ( props.browserConfig.browser.name=="safari" && props.browserConfig.browser.version[0] >= 11)
-        || ( props.browserConfig.browser.name=="opera" && props.browserConfig.browser.version[0] >= 41)
-        || ( props.browserConfig.browser.name=="firefox" && props.browserConfig.browser.version[0] >= 50)
+    if ( ( props.browserConfig ) && 
+         (
+             ( props.browserConfig.browser.name=="chrome" && props.browserConfig.browser.version[0] >= 54)
+          || ( props.browserConfig.browser.name=="safari" && props.browserConfig.browser.version[0] >= 11)
+          || ( props.browserConfig.browser.name=="opera" && props.browserConfig.browser.version[0] >= 41)
+          || ( props.browserConfig.browser.name=="firefox" && props.browserConfig.browser.version[0] >= 50)
+         )
        ) {
       console.info("index browser supports ES6");
     }else { //add polyfill only for broswers that need it
