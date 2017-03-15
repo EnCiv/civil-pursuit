@@ -92,7 +92,7 @@ class ProfilePanel extends React.Component {
     
 
         let content = [];
-        if (this.state.ready) {
+        if (this.state.ready || !this.props.user) { // if user then wait for the user info, otherwise display
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     <Gender split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
