@@ -20,8 +20,6 @@ class ProfilePanel extends React.Component {
         done: false
     }
 
-    firstPass=true;
-
     constructor(props) {
         super(props);
         if(typeof window !== 'undefined' && this.props.user) {
@@ -49,9 +47,8 @@ class ProfilePanel extends React.Component {
         const {userInfo} = this.state;
         var done=[];
 
-
-        if ((this.state.ready && userInfo.gender && userInfo.dob && userInfo.neighborhood && userInfo.member_type)) {
-            if(this.firstPass  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+        if ((userInfo.dob && userInfo.neighborhood && userInfo.member_type)) {
+            if(user || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
                 if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
                 const index = user ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
                 const newPanel = {
@@ -63,7 +60,7 @@ class ProfilePanel extends React.Component {
                 return (
                     <TypeComponent  { ...this.props } component={this.state.typeList[index].component} panel={newPanel} />
                 )
-            }else if(!this.firstPass){ // if all the data is there, and this is not the first pass put up the done button
+            }else { // if all the data is there
                 done=[
                     <div className='instruction-text'>
                         Complete!
@@ -77,7 +74,7 @@ class ProfilePanel extends React.Component {
                     </div>
                 ];
             } 
-        } else if (this.state.ready) this.firstPass=false;  // if the user info has been received but the profile data wasn't there the first pass is over
+        }
 
         let title = panel.type.name || "Participant Profile";
         let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);
