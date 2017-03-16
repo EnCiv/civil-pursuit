@@ -9,6 +9,8 @@ function signUp (req, res, next) {
 
     let { email, password, facebook } = req.body;
 
+    console.info("sign-up", req.body);
+
     console.log("sign-up", { email, password, facebook });
     //console.info("sign-up detail", req, res);
 
@@ -28,7 +30,7 @@ function signUp (req, res, next) {
 
     else {
       User
-        .create({ email, password, facebook })
+        .create(req.body)
         .then(
           user => {
             try {

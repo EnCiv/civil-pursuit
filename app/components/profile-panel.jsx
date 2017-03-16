@@ -106,7 +106,7 @@ class ProfilePanel extends React.Component {
                     limit: panel.limit || config['navigator batch size'],
                 };
                 return (
-                    <TypeComponent  { ...this.props } user={userId} component={this.state.typeList[index].component} panel={newPanel} vs={this.state.vs} />
+                    <TypeComponent  { ...this.props } userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} vs={this.state.vs} />
                 )
             }else { // if all the data is there
                 done=[

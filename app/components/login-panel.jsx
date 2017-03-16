@@ -28,7 +28,7 @@ class LoginPanel extends React.Component {
     }
 
     render() {
-        const { panel, user, active } = this.props;
+        const { panel, user, userInfo, active } = this.props;
  //       console.info("LoginPanel:",this.props, this.state);
 
         if (user) {
@@ -62,7 +62,7 @@ class LoginPanel extends React.Component {
                 >
                 {instruction}
                 <div className='item-login-panel'>
-                    <JoinForm onChange={this.vsChange.bind(this)}/>
+                    <JoinForm userInfo={userInfo} />
                 </div>
             </Panel>
         );

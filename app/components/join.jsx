@@ -72,9 +72,11 @@ class JoinForm extends React.Component {
 
     window.onbeforeunload = null; // stop the popup about navigating away
 
+    var userInfo=Object.assign({},this.props.userInfo, {email, password})
+
     superagent
       .post('/sign/up')
-      .send({ email, password })
+      .send(userInfo)
       .end((err, res) => {
         if (err) console.error("joinForm.signup error", err);
         switch (res.status) {
