@@ -23,6 +23,10 @@ class LoginPanel extends React.Component {
         this.setState({ typeList: typeList });
     }
 
+    vsChange(obj){
+        if(this.props.vs & this.props.vs.toParent) this.props.vs.toParent(obj);  // let parent know the user has logged in
+    }
+
     render() {
         const { panel, user, active } = this.props;
  //       console.info("LoginPanel:",this.props, this.state);
@@ -58,7 +62,7 @@ class LoginPanel extends React.Component {
                 >
                 {instruction}
                 <div className='item-login-panel'>
-                    <JoinForm />
+                    <JoinForm onChange={this.vsChange.bind(this)}/>
                 </div>
             </Panel>
         );
