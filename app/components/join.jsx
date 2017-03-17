@@ -53,8 +53,7 @@ class JoinForm extends React.Component {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
       confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
-      agree = ReactDOM.findDOMNode(this.refs.agree),
-      path = window.location.pathname;
+      agree = ReactDOM.findDOMNode(this.refs.agree);
 
     this.setState({ validationError: null, info: 'Logging you in...' });
 
@@ -86,10 +85,8 @@ class JoinForm extends React.Component {
 
           case 200:
             this.setState({ validationError: null, successMessage: 'Welcome aboard!', info: null });
-            //location.href = '/page/profile';
-            //location.href = '/';
             if (this.props.onChange) setTimeout(() => this.props.onChange({ userId: JSON.parse(res.text).id }), 800);
-            else setTimeout(() => location.href = path, 800);
+            else setTimeout(() => location.href = this.props.newLocation ? this.props.newLocation : window.location.pathname, 800);
             break;
 
           default:
@@ -128,10 +125,9 @@ class JoinForm extends React.Component {
             break;
 
           case 200:
-            ok();
             this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
             if (this.props.onChange) setTimeout(() => this.props.onChange({ userId: JSON.parse(res.text).id }), 800);
-            else setTimeout(() => location.href = window.location.pathname, 800); //'/page/profile'
+            else setTimeout(() => location.href = this.props.newLocation ? this.props.newLocation : window.location.pathname, 800); //'/page/profile'
             return;
 
           default:

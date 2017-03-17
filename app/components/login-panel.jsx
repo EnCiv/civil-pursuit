@@ -30,6 +30,9 @@ class LoginPanel extends React.Component {
     render() {
         const { panel, user, userInfo, active } = this.props;
  //       console.info("LoginPanel:",this.props, this.state);
+        var newLocation=null;
+
+        if(this.state.typeList && this.state.typeList.length) newLocation="/items/"+panel.state.typeList[0].id+"/"+panel.parent.id;
 
         if (user) {
             if(!this.state.typeList.length) return(null);
@@ -62,7 +65,7 @@ class LoginPanel extends React.Component {
                 >
                 {instruction}
                 <div className='item-login-panel'>
-                    <JoinForm userInfo={userInfo} />
+                    <JoinForm userInfo={userInfo} newLocation={newLocation} />
                 </div>
             </Panel>
         );
