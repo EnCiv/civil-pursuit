@@ -104,6 +104,10 @@ class Item extends Model {
         "type"            :   Number,
         "index"           :   true,
         "default"         :   0
+      },
+
+      "profiles"          :  {
+        "type"            :   [ String ]
       }
     };
   }
