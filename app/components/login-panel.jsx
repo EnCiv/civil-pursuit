@@ -32,7 +32,8 @@ class LoginPanel extends React.Component {
  //       console.info("LoginPanel:",this.props, this.state);
         var newLocation=null;
 
-        if(this.state.typeList && this.state.typeList.length) newLocation="/items/"+panel.state.typeList[0].id+"/"+panel.parent.id;
+        if(this.state.typeList.length) newLocation="/items/"+panel.state.typeList[0].id+"/"+panel.parent.id;
+        console.info("Login-Panel newlocation", newLocation);
 
         if (user) {
             if(!this.state.typeList.length) return(null);
