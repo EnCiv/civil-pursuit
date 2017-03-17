@@ -176,7 +176,7 @@ class JoinForm extends React.Component {
   onChangeActive() {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
-      confirm = ReactDOM.findDOMNode(this.refs.confirm).value
+      confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
       agree = ReactDOM.findDOMNode(this.refs.agree).classList.contains('fa-check-square-o'); // true if the box is checked
 
     if (!this.state.loginActive && email && password && !confirm) this.setState({ loginActive: true });
