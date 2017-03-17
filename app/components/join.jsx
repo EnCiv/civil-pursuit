@@ -110,9 +110,11 @@ class JoinForm extends React.Component {
       password = ReactDOM.findDOMNode(this.refs.password).value;
 
     window.onbeforeunload = null; // stop the popup about navigating away
+
+    var userInfo=Object.assign({},this.props.userInfo, {email, password}) // include any new user Info
     superagent
       .post('/sign/in')
-      .send({ email, password })
+      .send(userInfo)
       .end((err, res) => {
         if (err) console.error("joinForm.login error", err);
         var errorMsg = '';
@@ -174,7 +176,7 @@ class JoinForm extends React.Component {
   onChangeActive() {
     let email = ReactDOM.findDOMNode(this.refs.email).value,
       password = ReactDOM.findDOMNode(this.refs.password).value,
-      confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
+      confirm = ReactDOM.findDOMNode(this.refs.confirm).value
       agree = ReactDOM.findDOMNode(this.refs.agree).classList.contains('fa-check-square-o'); // true if the box is checked
 
     if (!this.state.loginActive && email && password && !confirm) this.setState({ loginActive: true });
