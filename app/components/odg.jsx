@@ -158,7 +158,7 @@ class CircleImg extends React.Component {
         if(!this.props.parent) return;
         let rect=this.props.parent.getBoundingClientRect();
         console.info("CircleImg.componentDidUpdate", rect);
-        if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
+        if(rect.width > 0 && rect.height >0 && rect.width != this.state.width && rect.height != this.state.height ) this.setState({width: rect.width, height: rect.height });  // prevent loop on state change
     }
 
     render(){
