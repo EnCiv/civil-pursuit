@@ -123,6 +123,40 @@ class CDNImg extends React.Component {
     }
 }
 
+class CircleImg extends React.Component {
+
+    state={width: 0, height: 0};
+
+    componentDidMount() {
+        let rect=this.refs.image.getBoundingClientRect();
+        console.info("CircleImg.componentDidMount", rect);
+        if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
+    }
+
+    render(){
+
+        var content=[];
+        var {width, height} = this.state;
+        if(true){
+            content=[
+                <svg width="700" height="660">
+                    <defs>
+                        <pattern id="image" x={0} y={0} patternUnits="userSpaceOnUse" height={1} width={1}>
+                            <image x={0} y={0} xlink={{href: this.props.src}}></image>
+                        </pattern>
+                    </defs>
+                    <circle id='top' cx={180} cy={120} r={80} fill="url(#image)"/>
+                </svg>
+            ]
+        }
+        return(
+            <div ref="image" style={{display: "absolute", zIndex: 1}} >
+                {content}
+            </div>
+        );
+    }
+}
+
 class OnlineDeliberationGame extends React.Component {
 
     renderChildren () {
@@ -173,6 +207,7 @@ class OnlineDeliberationGame extends React.Component {
                 </div>
                 <div className='odg-main-box-image'>
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
+                    <CircleImg src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" />
                 </div>
             </Boxes>
             <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>
