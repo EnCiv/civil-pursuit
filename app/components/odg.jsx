@@ -146,8 +146,18 @@ class CircleImg extends React.Component {
     state={width: 0, height: 0};
 
     componentDidMount() {
+        console.info("CircleImg.componentDidUpdate", this.props.parent);
+        if(!this.props.parent) return;
         let rect=this.props.parent.getBoundingClientRect();
         console.info("CircleImg.componentDidMount", rect);
+        if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
+    }
+
+    componentDidUpdate() {
+        console.info("CircleImg.componentDidUpdate", this.props.parent);
+        if(!this.props.parent) return;
+        let rect=this.props.parent.getBoundingClientRect();
+        console.info("CircleImg.componentDidUpdate", rect);
         if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
     }
 
