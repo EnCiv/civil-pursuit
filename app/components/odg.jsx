@@ -146,13 +146,12 @@ class CircleImg extends React.Component {
     state={width: 0, height: 0};
 
     componentDidMount() {
-        let rect=this.refs.image.getBoundingClientRect();
+        let rect=this.props.parent.getBoundingClientRect();
         console.info("CircleImg.componentDidMount", rect);
         if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
     }
 
     render(){
-
         var content=[];
         var {width, height} = this.state;
         if(width && height){
@@ -169,7 +168,7 @@ class CircleImg extends React.Component {
             ]
         }
         return(
-            <div ref="image" style={{position: "absolute", zIndex: 1}} >
+            <div ref="image" style={{position: "relative", zIndex: 1}} >
                 {content}
             </div>
         );
@@ -224,8 +223,8 @@ class OnlineDeliberationGame extends React.Component {
                     <div className='odg-main-box-tag-line'>Bridge the Political Divide</div>
                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
-                <div className='odg-main-box-image'>
-                    <CircleImg cx={50} cy={50} r={30} src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" />
+                <div className='odg-main-box-image' ref="main">
+                    <CircleImg cx={50} cy={50} r={30} src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" parent={this.refs.main} />
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
