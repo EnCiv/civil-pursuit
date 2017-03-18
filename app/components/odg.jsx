@@ -95,6 +95,24 @@ class CDNImg extends React.Component {
         if(width > 0) this.setState({width: width});
     }
 
+    static getUrlbyHeight(src, height){
+        let parts=this.props.src.split('/');
+        switch(parts.length){
+                case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
+                    parts.splice(6,0,'c_scale,h_'+height);
+                    if(parts[0]==='http:') parts[0]='https:';
+                    break;
+                case 9: // transfroms present eg http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_1600/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
+                    parts[4]=parts[6]+',c_scale,h_'+height; // just paste it on the end of whats there - it will override anything previous
+                    if(parts[0]==='http:') parts[0]='https:';
+                    break;
+                default:
+                    console.error("CloudinaryImage",this.props.src,"expected 8 or 9 parts got:", parts.length);
+                    return(src);
+        }
+        return(parts.join('/'));
+    }
+
     render(){
         let parts=this.props.src.split('/');
         let src=null;
@@ -137,15 +155,16 @@ class CircleImg extends React.Component {
 
         var content=[];
         var {width, height} = this.state;
-        if(true){
+        if(width && height){
+            var src=CDNImg.getURLbyHeight(this.props.src, height*this.props.r*2/100);
             content=[
-                <svg width="700" height="660">
+                <svg width={width} height={height}>
                     <defs>
-                        <pattern id="image" x={0} y={0} patternUnits="userSpaceOnUse" height={1} width={1}>
+                        <pattern id="image" x={0} y={0} patternUnits="userSpaceOnUse" height={height*this.props.r*2/100} width={height*this.props.r*2/100}>
                             <image x={0} y={0} xlinkHref={this.props.src}></image>
                         </pattern>
                     </defs>
-                    <circle id='top' cx={180} cy={120} r={80} fill="url(#image)"/>
+                    <circle id='top' cx={this.props.cx*width/100} cy={this.props.cy*width/100} r={height*this.props.r/100} fill="url(#image)"/>
                 </svg>
             ]
         }
@@ -206,7 +225,7 @@ class OnlineDeliberationGame extends React.Component {
                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
                 <div className='odg-main-box-image'>
-                    <CircleImg src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" />
+                    <CircleImg cx={50} cy={50} r={30} src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" />
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
