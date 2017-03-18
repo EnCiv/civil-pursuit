@@ -138,11 +138,9 @@ class ProfilePanel extends React.Component {
         if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
             var profiles=['Gender', 'Birthdate', 'Neighborhood','MemberType'];
             if(panel.parent && panel.parent.profiles && panel.parent.profiles.length) profiles=panel.parent.profiles;
-            console.info("PanelProfile profiles", profiles);
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.map(component=>{
-                            console.info("profilePanel component", component);
                             return(<ProfileComponent component={component} split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>);
                         }) 
                     }
