@@ -178,7 +178,7 @@ class CircleImg extends React.Component {
             ]
         }
         return(
-            <div ref="image" style={{position: "relative", zIndex: 1}} >
+            <div ref="image" style={{position: "absolute", zIndex: 1}} >
                 {content}
             </div>
         );
@@ -234,7 +234,7 @@ class OnlineDeliberationGame extends React.Component {
                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
                 <div className='odg-main-box-image' ref="main">
-                    <CircleImg cx={50} cy={50} r={30} src="http://res.cloudinary.com/hscbexf6a/image/upload/v1489551282/ojmi3fykiqtl2vqs8ru1.jpg" parent={this.refs.main} />
+                    <CircleImg cx={50} cy={50} r={20} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
