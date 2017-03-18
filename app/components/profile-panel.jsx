@@ -142,6 +142,7 @@ class ProfilePanel extends React.Component {
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.forEach(component=>{
+                            console.info("profilePanel component", component);
                             <ProfileComponent component={component} split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
                         }) 
                     }

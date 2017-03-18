@@ -20,11 +20,12 @@ class ProfileComponent extends React.Component{
 
     render(){
         var Component;
-        var profile=this.props.component ? this.props.component.split["."] : [];
+        var profile=[];
+        profile = this.props.component.split["."];
         console.info("profileComponent", this.props.component, profile);
         if(profile[0]){
             Component=ProfileComponent.components[profile[0]];
-        } else return null;
+        } else { console.error("ProfileComponent unknown component", this.props.component); return null};
         return(<Component property={profile[1]} {...this.props} /> );
     }
 }
