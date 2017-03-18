@@ -95,8 +95,8 @@ class CDNImg extends React.Component {
         if(width > 0) this.setState({width: width});
     }
 
-    static getUrlbyHeight(src, height){
-        let parts=this.props.src.split('/');
+    static getURLbyHeight(src, height){
+        let parts=src.split('/');
         switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
                     parts.splice(6,0,'c_scale,h_'+height);
@@ -107,7 +107,7 @@ class CDNImg extends React.Component {
                     if(parts[0]==='http:') parts[0]='https:';
                     break;
                 default:
-                    console.error("CloudinaryImage",this.props.src,"expected 8 or 9 parts got:", parts.length);
+                    console.error("CloudinaryImage",src,"expected 8 or 9 parts got:", parts.length);
                     return(src);
         }
         return(parts.join('/'));
