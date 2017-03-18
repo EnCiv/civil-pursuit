@@ -5,11 +5,8 @@ import Panel from './panel';
 import config from 'syn/../../public.json';
 import TypeComponent from './type-component';
 import Instruction from './instruction';
-import Gender from './gender';
-import Birthdate from './birthdate';
-import MemberType from './member-type';
-import Neighborhood from './neighborhood';
 import Button           from './util/button';
+import ProfileComponent from './profile-component';
 
 class ProfilePanel extends React.Component {
 
@@ -137,13 +134,16 @@ class ProfilePanel extends React.Component {
     
 
         let content = [];
+        let profiles=['Gender', 'Birthdate', 'Neighborhood','MemberType'];
+        if(panel.parent && panel.parent.profiles) profiles=panel.parent.profiles;
+
         if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
-                    <Gender split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
-                    <Birthdate split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
-                    <Neighborhood split={25} user={userInfo} emitter={this.setUserInfo.bind(this)} />
-                    <MemberType split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                    {   profiles.forEach(component=>{
+                            <ProfileComponent component={component} split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                        }) 
+                    }
                 </div>
             ];
         }
