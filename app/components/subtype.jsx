@@ -36,7 +36,7 @@ class Subtype extends React.Component {
 
       content = (
         <PanelStore { ...panel }>
-          <PanelItems user={ user } />
+          <PanelItems {...this.props} />
         </PanelStore>
       );
 
