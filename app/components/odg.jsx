@@ -165,16 +165,24 @@ class CircleImg extends React.Component {
     render(){
         var content=[];
         var {width, height} = this.state;
+        var imageHeight=height*this.props.r*2/100;
+        var imageWidth=height*this.props.r*2/100;
+        var centerX=this.props.cx*width/100;
+        var centerY=this.props.cy*width/100;
+        var radius= height*this.props.r/100;
+        var imageX=centerX-radius;
+        var imageY=centerY-radius;
+
         if(width && height){
             var src=CDNImg.getURLbyHeight(this.props.src, height*this.props.r*2/100);
             content=[
                 <svg width={width} height={height}>
                     <defs>
-                        <pattern id="image" x={0} y={0} patternUnits="userSpaceOnUse" height={height*this.props.r*2/100} width={height*this.props.r*2/100}>
+                        <pattern id="image" x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
                             <image x={0} y={0} xlinkHref={src}></image>
                         </pattern>
                     </defs>
-                    <circle id='top' cx={this.props.cx*width/100} cy={this.props.cy*width/100} r={height*this.props.r/100} fill="url(#image)"/>
+                    <circle id='top' cx={centerX} cy={centerY} r={radius} fill="url(#image)"/>
                 </svg>
             ]
         }
@@ -235,7 +243,7 @@ class OnlineDeliberationGame extends React.Component {
                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
                 <div className='odg-main-box-image' ref="main">
-                    <CircleImg cx={48} cy={46} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
+                    <CircleImg cx={49} cy={47} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
