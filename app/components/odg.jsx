@@ -225,7 +225,7 @@ class OnlineDeliberationGame extends React.Component {
 
     toMeFromChild(vs) {
         console.info("ODG.toMeFromChild", vs);
-        if(vs.state) this.setState({vs: vs})
+        if(vs.state) this.setState({vs: Object.assign({},this.state.vs, vs)});
         if(vs.toChild) this.toChild=vs.toChild;
     }
 
