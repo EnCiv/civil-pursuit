@@ -95,8 +95,9 @@ class CDNImg extends React.Component {
         if(width > 0) this.setState({width: width});
     }
 
-    static getURLbyHeight(src, height){
-        let parts=src.split('/');
+    static getURLbyHeight(src, heightf){  //src url, height with fraction
+        var height=Math.ceil(heightf);
+        var parts=src.split('/');
         switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
                     parts.splice(6,0,'c_scale,h_'+height);
@@ -170,7 +171,7 @@ class CircleImg extends React.Component {
                 <svg width={width} height={height}>
                     <defs>
                         <pattern id="image" x={0} y={0} patternUnits="userSpaceOnUse" height={height*this.props.r*2/100} width={height*this.props.r*2/100}>
-                            <image x={0} y={0} xlinkHref={this.props.src}></image>
+                            <image x={0} y={0} xlinkHref={src}></image>
                         </pattern>
                     </defs>
                     <circle id='top' cx={this.props.cx*width/100} cy={this.props.cy*width/100} r={height*this.props.r/100} fill="url(#image)"/>
@@ -234,7 +235,7 @@ class OnlineDeliberationGame extends React.Component {
                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
                 </div>
                 <div className='odg-main-box-image' ref="main">
-                    <CircleImg cx={50} cy={50} r={20} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
+                    <CircleImg cx={48} cy={46} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
                     <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                 </div>
             </Boxes>
