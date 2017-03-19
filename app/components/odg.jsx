@@ -268,10 +268,10 @@ class OnlineDeliberationGame extends React.Component {
                             </Stack>
                         </Boxes>
                         <div className='odg-nothing'>The more you play the more real it gets</div>
-                        <div className={ClassNames(this.props.className, 'odg-child')}>
-                            <TypeComponent {...this.props} vs={this.state.vs} />
-                        </div>
                     </Accordion>
+                    <div className={ClassNames(this.props.className, 'odg-child')}>
+                        <TypeComponent {...this.props} vs={this.state.vs} />
+                    </div>
                 </section>
                 <Footer />
             </section>
