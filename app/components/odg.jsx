@@ -6,6 +6,7 @@ import smoothScroll       from '../lib/app/smooth-scroll';
 import CloudinaryImage    from './util/cloudinary-image';
 import ClassNames          from 'classnames';
 import Footer               from './footer';
+import TypeComponent                    from './type-component';
 
 
 class CivilPursuitLogo extends React.Component {
@@ -188,16 +189,6 @@ class CircleImg extends React.Component {
 
 class OnlineDeliberationGame extends React.Component {
 
-    renderChildren () {
-        return React.Children.map(this.props.children, child =>{
-                return (
-                    <div className={ClassNames(this.props.className, 'odg-child')}>
-                        { child }
-                    </div>
-                );
-        });
-    }
-
     resize = null;
 
     componentDidMount() {
@@ -220,6 +211,10 @@ class OnlineDeliberationGame extends React.Component {
     let link=document.getElementsByName(tag);
     smoothScroll(link[0].offsetTop, 500);
     //document.body.animate({scrollTop: link[0].offsetTop}, 500);
+  }
+
+  toMeFromChild(vs){
+      console.info("ODG.toMeFromChild",vs);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -255,11 +250,13 @@ class OnlineDeliberationGame extends React.Component {
                 </Stack>
                 <Stack className='odg-icon-stack'>
                     <Icon icon="unlock-alt" />
-                    <p>Proceed to the next level</p>
+                    <p>Unlock the next level</p>
                 </Stack>
             </Boxes>
             <div className='odg-nothing'>The more you play the more real it gets</div>
-            { this.renderChildren() }
+            <div className={ClassNames(this.props.className, 'odg-child')}>
+                <TypeComponent {...this.props} vs={{state: "truncated", depth: 0, toParent: this.toMeFromChild.bind(this)}} />
+            </div>
         </section>
         <Footer />
       </section>

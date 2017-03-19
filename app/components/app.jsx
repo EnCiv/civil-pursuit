@@ -163,9 +163,6 @@ class App extends React.Component {
               );
               break;
 
-            case 'odg':
-              page = ( <OnlineDeliberationGame /> );
-              break;
           }
           break;
           
@@ -185,9 +182,7 @@ class App extends React.Component {
 
           const component3=panel3.type.component || 'Subtype';
 
-          return( <OnlineDeliberationGame>
-                    <TypeComponent component={component3} { ...this.props } user={ user } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
-                  </OnlineDeliberationGame>
+          return( <OnlineDeliberationGame component={component3} { ...this.props } user={ user } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
                 );
 
         case 'item':
