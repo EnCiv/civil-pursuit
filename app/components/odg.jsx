@@ -235,7 +235,7 @@ class OnlineDeliberationGame extends React.Component {
                 <div className='odg-main-box-text'>
                     <CivilPursuitLogo />
                     <div className='odg-main-box-tag-line'>Bridge the Political Divide</div>
-                    <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams take on polarized issues to find solutions that unite us</div>
+                    <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams of conservatives and liberals from across the country take on polarized issues to find solutions to what divides us.</div>
                 </div>
                 <div className='odg-main-box-image' ref="main">
                     <CircleImg cx={49} cy={47} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />

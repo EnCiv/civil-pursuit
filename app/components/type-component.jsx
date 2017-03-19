@@ -37,6 +37,7 @@ class TypeComponent extends React.Component{
         } else {
             Component=Subtype;
         }
+        console.info("TypeComponent", this.props );
         return(<Component {...this.props} /> );
     }
 }
