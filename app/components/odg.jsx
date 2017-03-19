@@ -189,6 +189,13 @@ class CircleImg extends React.Component {
 
 class OnlineDeliberationGame extends React.Component {
 
+    state ={vs: {state: 'truncated', depth: 0 }};
+
+    constructor(props){
+        super(props);
+        this.state.vs.toParent=this.toMeFromChild.bind(this);
+    }
+
     resize = null;
 
     componentDidMount() {
@@ -220,6 +227,7 @@ class OnlineDeliberationGame extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
+
     const page = (
         <section>
          <section className='odg-intro'>
@@ -255,7 +263,7 @@ class OnlineDeliberationGame extends React.Component {
             </Boxes>
             <div className='odg-nothing'>The more you play the more real it gets</div>
             <div className={ClassNames(this.props.className, 'odg-child')}>
-                <TypeComponent {...this.props} vs={{state: "truncated", depth: 0, toParent: this.toMeFromChild.bind(this)}} />
+                <TypeComponent {...this.props} vs={this.state.vs} />
             </div>
         </section>
         <Footer />
