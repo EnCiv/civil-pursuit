@@ -24,7 +24,6 @@ class Boxes extends React.Component {
 // otherwise lay them out vertically (smartphone)
     renderChildren (width,horizontal) {
         return React.Children.map(this.props.children, child => {
-            console.info("Boxes.child",width,horizontal);
             return(
                 <div style={{width: width+'%', display: horizontal ? 'inline-block' : 'block'}}
                 className={ClassNames(this.props.className, {childhorizontal: horizontal}, {childvertical: !horizontal})}
@@ -35,7 +34,6 @@ class Boxes extends React.Component {
         });
     }
     render(){
-        console.info("Boxes");
         const {className}=this.props;
         let count=this.props.children.length;
         let w=1920; // if this is running on the server, pick something
@@ -91,7 +89,6 @@ class CDNImg extends React.Component {
 
     componentDidMount() {
         let width=this.refs.image.clientWidth;
-        console.info("CDNImg.copnentDidMount", width);
         if(width > 0) this.setState({width: width});
     }
 
@@ -137,7 +134,6 @@ class CDNImg extends React.Component {
                     break;
             }
         }
-        console.info("CDNImg src=", src);
         return(<div ref='image'><img className={this.props.className} style={this.props.style} src={src}/></div>);
     }
 }
@@ -147,18 +143,14 @@ class CircleImg extends React.Component {
     state={width: 0, height: 0};
 
     componentDidMount() {
-        console.info("CircleImg.componentDidUpdate", this.props.parent);
         if(!this.props.parent) return;
         let rect=this.props.parent.getBoundingClientRect();
-        console.info("CircleImg.componentDidMount", rect);
         if(rect.width > 0 && rect.height >0 ) this.setState({width: rect.width, height: rect.height });
     }
 
     componentDidUpdate() {
-        console.info("CircleImg.componentDidUpdate", this.props.parent);
         if(!this.props.parent) return;
         let rect=this.props.parent.getBoundingClientRect();
-        console.info("CircleImg.componentDidUpdate", rect);
         if(rect.width > 0 && rect.height >0 && rect.width != this.state.width && rect.height != this.state.height ) this.setState({width: rect.width, height: rect.height });  // prevent loop on state change
     }
 
@@ -187,7 +179,7 @@ class CircleImg extends React.Component {
             ]
         }
         return(
-            <div ref="image" style={{position: "absolute", zIndex: 1}} >
+            <div ref="image" style={{position: "absolute"}} >
                 {content}
             </div>
         );
