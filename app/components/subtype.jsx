@@ -3,40 +3,20 @@
 import React                      from 'react';
 import Loading                    from './util/loading';
 import PanelItems                 from './panel-items';
-import makePanelId                from '../lib/app/make-panel-id';
-import itemType                   from '../lib/proptypes/item';
-import panelType                  from '../lib/proptypes/panel';
 import PanelStore                 from './store/panel';
 
 class Subtype extends React.Component {
 
-
-  status = 'iddle';
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//  componentWillReceiveProps (nextProps) {
-//   console.info("subtype.componentWillReceiveProps", nextProps, this);
-//    if ( this.status === 'iddle' && nextProps.active ) {
-//      this.status = 'ready';
-//
-//      if ( ! nextProps.panels[this.id] ) {
-//        console.info("subtype.componentWillReceiveProps.get items", nextProps.type, nextProps.parent._id);
-//        window.Dispatcher.emit('get items', { type : nextProps.type, parent : nextProps.parent._id });
-//      }
-//    }
-//  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
-    const { panel, user, active } = this.props;
+    const { panel } = this.props;
 
     let content = ( <Loading message="Loading related" /> );
 
+    // panelStore will fill the panel with items and replace this.prop.panel with the new on when it renders PanelItems
+    // all other props are passed to PanelItems
       content = (
         <PanelStore { ...panel }>
-          <PanelItems {...this.props} />
+          <PanelItems {...this.props} /> 
         </PanelStore>
       );
 
