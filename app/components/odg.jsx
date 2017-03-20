@@ -10,6 +10,7 @@ import TypeComponent                    from './type-component';
 import Accordion          from './util/accordion';
 
 
+
 class CivilPursuitLogo extends React.Component {
     render(){
         return(
@@ -233,49 +234,52 @@ class OnlineDeliberationGame extends React.Component {
 
     render() {
 
-        const page = (
-            <section>
-                <section className='odg-intro'>
-                    <Accordion active={this.state.vs.state == 'truncated'} >
-                        <Boxes className='odg-main-box'>
-                            <div className='odg-main-box-text'>
-                                <CivilPursuitLogo />
-                                <div className='odg-main-box-tag-line'>Bridge the Political Divide</div>
-                                <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams of conservatives and liberals from across the country take on polarized issues to find solutions to what divides us.</div>
-                            </div>
-                            <div className='odg-main-box-image' ref="main">
-                                <CircleImg cx={49} cy={47} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
-                                <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
-                            </div>
-                        </Boxes>
-                        <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>
-                        <Boxes className='odg-icon-box'>
-                            <Stack className='odg-icon-stack'>
-                                <Icon icon="arrows-alt" />
-                                <p>Take on a polarized challenge</p>
-                            </Stack>
-                            <Stack className='odg-icon-stack'>
-                                <Icon icon="group" />
-                                <p>Join a team of diverse Americans</p>
-                            </Stack>
-                            <Stack className='odg-icon-stack'>
-                                <Icon icon="search" />
-                                <p>Find the solution that unites your team</p>
-                            </Stack>
-                            <Stack className='odg-icon-stack'>
-                                <Icon icon="unlock-alt" />
-                                <p>Unlock the next level</p>
-                            </Stack>
-                        </Boxes>
-                        <div className='odg-nothing'>The more you play the more real it gets</div>
-                    </Accordion>
-                    <div className={ClassNames(this.props.className, 'odg-child')}>
-                        <TypeComponent {...this.props} vs={this.state.vs} />
-                    </div>
+        var page;
+
+
+             page = (
+                <section>
+                    <section className='odg-intro'>
+                        <Accordion active={this.state.vs.state == 'truncated'} >
+                            <Boxes className='odg-main-box'>
+                                <div className='odg-main-box-text'>
+                                    <CivilPursuitLogo />
+                                    <div className='odg-main-box-tag-line'>Bridge the Political Divide</div>
+                                    <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams of conservatives and liberals from across the country take on polarized issues to find solutions to what divides us.</div>
+                                </div>
+                                <div className='odg-main-box-image' ref="main">
+                                    <CircleImg cx={49} cy={47} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
+                                    <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
+                                </div>
+                            </Boxes>
+                            <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>
+                            <Boxes className='odg-icon-box'>
+                                <Stack className='odg-icon-stack'>
+                                    <Icon icon="arrows-alt" />
+                                    <p>Take on a polarized challenge</p>
+                                </Stack>
+                                <Stack className='odg-icon-stack'>
+                                    <Icon icon="group" />
+                                    <p>Join a team of diverse Americans</p>
+                                </Stack>
+                                <Stack className='odg-icon-stack'>
+                                    <Icon icon="search" />
+                                    <p>Find the solution that unites your team</p>
+                                </Stack>
+                                <Stack className='odg-icon-stack'>
+                                    <Icon icon="unlock-alt" />
+                                    <p>Unlock the next level</p>
+                                </Stack>
+                            </Boxes>
+                            <div className='odg-nothing'>The more you play the more real it gets</div>
+                        </Accordion>
+                        <div className={ClassNames(this.props.className, 'odg-child')}>
+                            <TypeComponent {...this.props} vs={this.state.vs} newLocation="/odg" />
+                        </div>
+                    </section>
+                    <Footer />
                 </section>
-                <Footer />
-            </section>
-        );
+            );
         return (page);
     }
 }

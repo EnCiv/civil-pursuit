@@ -17,6 +17,7 @@ import QHome                            from './qhome';
 import PanelList                        from './panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
+import ODGCongrat         from './odg-congrat';
 
 class App extends React.Component {
 
@@ -171,6 +172,15 @@ class App extends React.Component {
               break;
 
         case 'odg':
+          if(user){
+            page=(
+                <Layout user={ this.props.user } setPath={this.setPath.bind(this)} >
+                    <ODGCongrat />
+                </Layout>
+                );
+                break;
+          }
+
           if(! this.props.panels) return(
             <OnlineDeliberationGame />
           );
