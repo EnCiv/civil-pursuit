@@ -85,6 +85,10 @@ class Identity extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    setUserInfo(info){
+        window.socket.emit('set user info', { info });
+    }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
 
@@ -175,8 +179,12 @@ class Identity extends React.Component {
             </Column>
           </Row>
 
-          <Birthdate split={25} user={user}/>  
-          <Gender split={25} user={user}/>
+          <SelectorRow name="Birthdate">
+            <Birthdate info={user} emitter={this.setUserInfo.bind(this)}/>  
+          </SelectorRow>
+          <SelectorRow name="Gender">
+            <Gender info={user} emitter={this.setUserInfo.bind(this)}/>
+          </SelectorRow>
 
         </section>
 
@@ -188,3 +196,18 @@ class Identity extends React.Component {
 }
 
 export default Identity;
+
+class SelectorRow extends React.Component{
+  render(){
+    return(
+        <Row baseline className="gutter">
+          <Column span="25">
+            {this.props.name}
+          </Column>
+          <Column span="75">
+            {this.props.children}
+          </Column>
+        </Row>
+    );
+  }
+}

@@ -8,6 +8,7 @@ import Instruction from './instruction';
 import Button           from './util/button';
 import ProfileComponent from './profile-component';
 
+
 class ProfilePanel extends React.Component {
 
     state = {
@@ -142,7 +143,12 @@ class ProfilePanel extends React.Component {
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.map(component=>{
-                            return(<ProfileComponent component={component} split={25} user={userInfo} emitter={this.setUserInfo.bind(this)}/>);
+                            var name=ProfileComponent.name(component);            
+                            return(
+                                <SelectorRow name={name} >
+                                    <ProfileComponent component={component} info={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                                </SelectorRow>
+                            );
                         }) 
                     }
                 </div>
@@ -163,3 +169,18 @@ class ProfilePanel extends React.Component {
 }
 
 export default ProfilePanel;
+
+class SelectorRow extends React.Component{
+  render(){
+    return(
+        <Row baseline className="gutter">
+          <Column span="25">
+            {this.props.name}
+          </Column>
+          <Column span="75">
+            {this.props.children}
+          </Column>
+        </Row>
+    );
+  }
+}
