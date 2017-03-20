@@ -324,6 +324,7 @@ class PanelItems extends React.Component {
                       ref     =   "subtype"
                       active  =   { (active.item === item._id && active.section === 'subtype') }
                       vs={null}
+                      component={null}
                       />
                   </Accordion>
                 </div>
