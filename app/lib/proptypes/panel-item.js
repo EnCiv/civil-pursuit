@@ -39,6 +39,7 @@ const panelItem     =   shape({
   harmony           :   shape({
     harmony         :   number
   }).isRequired,
+  profiles          :   arrayOf(string)
 });
 
 export default panelItem;
