@@ -107,7 +107,7 @@ class Item extends Model {
       },
 
       "profiles"          :  {
-        "type"            :   [ String ]
+        "type"            :   [String]
       }
     };
   }
