@@ -7,6 +7,8 @@ import TypeComponent from './type-component';
 import Instruction from './instruction';
 import Button           from './util/button';
 import ProfileComponent from './profile-component';
+import Row                            from './util/row';
+import Column                         from './util/column';
 
 
 class ProfilePanel extends React.Component {
@@ -173,14 +175,16 @@ export default ProfilePanel;
 class SelectorRow extends React.Component{
   render(){
     return(
-        <Row baseline className="gutter">
-          <Column span="25">
-            {this.props.name}
-          </Column>
-          <Column span="75">
-            {this.props.children}
-          </Column>
-        </Row>
+        <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
+            <Row baseline className="gutter">
+                <Column span="25">
+                    {this.props.name}
+                </Column>
+                <Column span="75">
+                    {this.props.children}
+                </Column>
+            </Row>
+        </div>
     );
   }
 }
