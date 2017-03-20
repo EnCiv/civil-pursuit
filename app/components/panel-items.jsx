@@ -319,11 +319,11 @@ class PanelItems extends React.Component {
                     style   = {{backgroundColor: bgc}}
                     >
                     <TypeComponent
+                      {...this.props}
                       panel = { subPanel }
                       ref     =   "subtype"
-                      user    =   { user }
                       active  =   { (active.item === item._id && active.section === 'subtype') }
-                      hideFeedback = {this.props.hideFeedback}
+                      vs={null}
                       />
                   </Accordion>
                 </div>

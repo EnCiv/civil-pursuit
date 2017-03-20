@@ -174,9 +174,7 @@ class App extends React.Component {
         case 'odg':
           if(user){
             page=(
-                <Layout user={ this.props.user } setPath={this.setPath.bind(this)} >
                     <ODGCongrat />
-                </Layout>
                 );
                 break;
           }
