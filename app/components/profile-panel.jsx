@@ -94,8 +94,15 @@ class ProfilePanel extends React.Component {
         const { panel, active } = this.props;
         const {userId, userInfo} = this.state;
         var done=[];
+        var profiles=['Gender', 'Birthdate', 'Neighborhood','MemberType'];
 
-        if ((userInfo.dob && userInfo.neighborhood && userInfo.member_type)) {
+        if(panel.parent && panel.parent.profiles && panel.parent.profiles.length) profiles=panel.parent.profiles;
+
+        var properties=ProfileComponent.properties(profiles);
+        
+        console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
+
+        if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
             if(userId || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
                 if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
                 const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
@@ -139,9 +146,6 @@ class ProfilePanel extends React.Component {
         let content = [];
 
         if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
-            var profiles=['Gender', 'Birthdate', 'Neighborhood','MemberType'];
-            if(panel.parent && panel.parent.profiles && panel.parent.profiles.length) profiles=panel.parent.profiles;
-            console.info("ProfilePanel",this.props, profiles);
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.map(component=>{

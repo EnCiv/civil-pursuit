@@ -27,6 +27,16 @@ class ProfileComponent extends React.Component{
         return (S(name).humanize().titleCase().s) ;
    }
 
+    static properties(components){
+        return(components.map(component=>{
+            var profile = component.split(".");
+            var name;
+            if(profile.length==1) name=profile[0];
+            else name=profile[1];
+            return(S(name).underscore().s)
+        }));
+   }
+
     render(){
         var Component;
         var profile=[];
