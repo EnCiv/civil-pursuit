@@ -24,7 +24,7 @@ class DynamicSelector extends React.Component {
     constructor(props){
         super(props);
         const {collection}=props;
-        if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collection=[];
+        if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collections=[];
         if ( typeof DynamicSelector.collections[collection] === 'undefined')
         {
             DynamicSelector.collections[collection]={options: [], choices: []};
@@ -74,7 +74,7 @@ class DynamicSelector extends React.Component {
  //
   static value(collection, choice, onComplete) {
     var onCompleted= onComplete || null;  // onComplete might not be passed, but it must be passed to gotChoices
-    if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collection=[];
+    if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collections=[];
     if ( typeof DynamicSelector.collections[collection] === 'undefined') {
         DynamicSelector.collections[collection]={options: [], choices: []};
         window.socket.emit('get dynamic '+collection, DynamicSelector.gotChoices.bind(collection, choice, onCompleted))

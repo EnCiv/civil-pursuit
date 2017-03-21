@@ -51,7 +51,7 @@ class ProfileComponent extends React.Component {
             case 1:
                 return (S(profile[0]).underscore().s);
             case 2:
-                return (S(profile[0]).underscore().s);
+                return (S(profile[1]).underscore().s);
             case 3:
                 return (profile[2]);
             default:
@@ -67,7 +67,7 @@ class ProfileComponent extends React.Component {
             case 1:
                 return (S(profile[0]).underscore().s);
             case 2:
-                return (S(profile[0]).underscore().s);
+                return (S(profile[1]).underscore().s);
             case 3:
                 return (profile[2]);
             case 4:
