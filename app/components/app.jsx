@@ -174,7 +174,7 @@ class App extends React.Component {
         case 'odg':
           if(user){
             page=(
-                    <ODGCongrat />
+                    <ODGCongrat { ...this.props } emitter = {this.emitter }/>
                 );
                 break;
           }
@@ -190,7 +190,7 @@ class App extends React.Component {
 
           const component3=panel3.type.component || 'Subtype';
 
-          return( <OnlineDeliberationGame component={component3} { ...this.props } user={ user } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
+          return( <OnlineDeliberationGame component={component3} { ...this.props } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
                 );
 
         case 'item':

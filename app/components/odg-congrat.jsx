@@ -90,7 +90,7 @@ class ODGCongrat extends React.Component {
               <div className="civil-pursuit-conteiner-inner">
                 <div className="civil-pursuit-text-block odg-text">
                     <h2>You did it!</h2>
-                    <p style={{fontSize: "1.5em"}}>
+                    <p>
                     You took the first step! This means there's hope for an awesome future.
                     </p>
                 </div>
@@ -102,7 +102,7 @@ class ODGCongrat extends React.Component {
                     <p>Having people sign up like you just did also gives us a sign that we're doing something right, and that helps us get more people involved so we can get this going faster.</p>
                     <p>Want to help?  Share this link: https://www.civilpursuit.com/odg on your social media channels like Facebook, Twitter, and Instagram and email it to anyone who has an opinion about the direction of this country.
                     </p>
-                    <p>We face tough political challenges, see if you can solve them. Join me at https://www.civilpursuit.com/odg."</p>
+                    <p>Say this: "We face tough political challenges, see if you can solve them. Join me at https://www.civilpursuit.com/odg."</p>
                 </div>
                 <div className="civil-pursuit-text-block">
                   <h2>Questions, Comments, Suggestions, Want to be an early beta tester?</h2>
