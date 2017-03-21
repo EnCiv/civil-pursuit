@@ -149,10 +149,10 @@ class ProfilePanel extends React.Component {
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.map(component=>{
-                            var name=ProfileComponent.title(component);            
+                            var title=ProfileComponent.title(component);            
                             return(
-                                <SelectorRow name={name} >
-                                    <ProfileComponent component={component} info={userInfo} onChange={this.setUserInfo.bind(this)}/>
+                                <SelectorRow name={title} >
+                                    <ProfileComponent block medium component={component} info={userInfo} onChange={this.setUserInfo.bind(this)}/>
                                 </SelectorRow>
                             );
                         }) 
