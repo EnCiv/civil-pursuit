@@ -15,7 +15,7 @@ class Gender extends React.Component {
     let gender = ReactDOM.findDOMNode(this.refs.gender).value;
 
     if ( gender ) {
-      if(this.props.emitter) this.props.emitter({gender});
+      if(this.props.onChange) this.props.onChange({gender});
     }
   }
 

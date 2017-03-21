@@ -180,10 +180,10 @@ class Identity extends React.Component {
           </Row>
 
           <SelectorRow name="Birthdate">
-            <Birthdate info={user} emitter={this.setUserInfo.bind(this)}/>  
+            <Birthdate info={user} onChange={this.setUserInfo.bind(this)}/>  
           </SelectorRow>
           <SelectorRow name="Gender">
-            <Gender info={user} emitter={this.setUserInfo.bind(this)}/>
+            <Gender info={user} onChange={this.setUserInfo.bind(this)}/>
           </SelectorRow>
 
         </section>

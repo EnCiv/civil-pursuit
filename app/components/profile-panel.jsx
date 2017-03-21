@@ -152,7 +152,7 @@ class ProfilePanel extends React.Component {
                             var name=ProfileComponent.title(component);            
                             return(
                                 <SelectorRow name={name} >
-                                    <ProfileComponent component={component} info={userInfo} emitter={this.setUserInfo.bind(this)}/>
+                                    <ProfileComponent component={component} info={userInfo} onChange={this.setUserInfo.bind(this)}/>
                                 </SelectorRow>
                             );
                         }) 

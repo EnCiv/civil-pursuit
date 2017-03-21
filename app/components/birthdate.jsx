@@ -20,7 +20,7 @@ class Birthdate extends React.Component {
       let now = Date.now();
 
       if ( now > dob ) {
-        if(this.props.emitter) this.props.emitter( { dob } );
+        if(this.props.onChange) this.props.onChange( { dob } );
       }
     }
   }

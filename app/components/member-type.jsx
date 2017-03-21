@@ -16,7 +16,7 @@ class MemberType extends React.Component {
 
     if ( member_type ) {
       window.socket.emit('set user info', { member_type });
-      if(this.props.emitter) this.props.emitter({member_type});
+      if(this.props.onChange) this.props.onChange({member_type});
     }
   }
 
