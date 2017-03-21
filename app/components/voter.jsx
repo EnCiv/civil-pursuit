@@ -62,10 +62,10 @@ class Voter extends React.Component {
           </Select>
         </SelectorRow>
         <SelectorRow name="Political Party">
-          <DynamicSelector property="party" info={user} onChange={ this.setUserInfo.bind(this)} />
+          <DynamicSelector block medium property="party" info={user} onChange={ this.setUserInfo.bind(this)} />
         </SelectorRow>
         <SelectorRow  name="Political Tendency">
-          <DynamicSelector property="tendency" info={user} onChange={ this.setUserInfo.bind(this)} />
+          <DynamicSelector block medium property="tendency" info={user} onChange={ this.setUserInfo.bind(this)} />
         </SelectorRow>
       </section>
     );

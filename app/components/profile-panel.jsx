@@ -94,12 +94,12 @@ class ProfilePanel extends React.Component {
         const { panel, active } = this.props;
         const {userId, userInfo} = this.state;
         var done=[];
-        var profiles=['Gender', 'Birthdate', 'Neighborhood','MemberType'];
+        var profiles=['Gender', 'Birthdate.Birthdate..dob', 'Neighborhood','MemberType'];
 
         if(panel.parent && panel.parent.profiles && panel.parent.profiles.length) profiles=panel.parent.profiles;
 
         var properties=ProfileComponent.properties(profiles);
-        
+
         console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
 
         if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
@@ -149,7 +149,7 @@ class ProfilePanel extends React.Component {
             content = [
                 <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
                     {   profiles.map(component=>{
-                            var name=ProfileComponent.name(component);            
+                            var name=ProfileComponent.title(component);            
                             return(
                                 <SelectorRow name={name} >
                                     <ProfileComponent component={component} info={userInfo} emitter={this.setUserInfo.bind(this)}/>

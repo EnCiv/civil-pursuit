@@ -9,42 +9,86 @@ import Neighborhood from './neighborhood';
 import DynamicSelector from './dynamic-selector';
 import S from 'string';
 
-class ProfileComponent extends React.Component{
+/**
+ * ComponentName.collectionName.infoPropertyName.Title
+ * 
+ *  ComponentName = ComponentName
+ *    title = humanize and titleCase of ComponentName= Component Name
+ *    collection= underscore of ComponentName
+ *    infoPropertyName = collection
+ */
 
-    static components={
+class ProfileComponent extends React.Component {
+
+    static components = {
         'Gender': Gender,
         'Birthdate': Birthdate,
         'MemberType': MemberType,
         'Neighborhood': Neighborhood,
         'DynamicSelector': DynamicSelector
-   }
+    }
 
-   static name(component){
+    static title(component) {
         var profile = component.split(".");
-        var name;
-        if(profile.length==1) name=profile[0];
-        else name=profile[1];
-        return (S(name).humanize().titleCase().s) ;
-   }
+        switch (profile.length) {
+            case 0:
+                return (null);
+            case 1:
+                return (S(profile[0]).humanize.titleCase().s);
+            case 2:
+                return profile[1];
+            default:
+                return (profile[1]);
 
-    static properties(components){
-        return(components.map(component=>{
-            var profile = component.split(".");
-            var name;
-            if(profile.length==1) name=profile[0];
-            else name=profile[1];
-            return(S(name).underscore().s)
-        }));
-   }
+        }
+    }
 
-    render(){
+    static collection(component) {
+        var profile = component.split(".");
+        switch (profile.length) {
+            case 0:
+                return (null);
+            case 1:
+                return (S(profile[0]).underscore.s);
+            case 2:
+                return (S(profile[0]).underscore.s);
+            case 3:
+                return (profile[2]);
+            default:
+                return (profile[2]);
+        }
+    }
+
+    static property(component) {
+        var profile = component.split(".");
+        switch (profile.length) {
+            case 0:
+                return (null);
+            case 1:
+                return (S(profile[0]).underscore.s);
+            case 2:
+                return (S(profile[0]).underscore.s);
+            case 3:
+                return (profile[2]);
+            case 4:
+                return (profile[3]);
+            default:
+                return (profile[3]);
+        }
+    }
+
+    static properties(components) {
+        return (components.map(component => ProfileComponent.property(component)))
+    }
+
+    render() {
         var Component;
-        var profile=[];
+        var profile = [];
         profile = this.props.component.split(".");
-        if(profile[0]){
-            Component=ProfileComponent.components[profile[0]];
-        } else { return(null);};
-        return(<Component property={profile[1]} {...this.props} /> );
+        if (profile[0]) {
+            Component = ProfileComponent.components[profile[0]];
+        } else { return (null); };
+        return (<Component {...this.props} property={ProfileComponent.property(this.props.component)} collection={ProfileComponent.collection(this.props.component)}/>);
     }
 }
 

@@ -123,7 +123,7 @@ class Residence extends React.Component {
 
         <InputGroup block className="gutter">
           <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
-          <DynamicSelector property="state" info={user} onChange={ this.setUserInfo.bind(this)} style={{ flexBasis: '30%'}} />
+          <DynamicSelector block medium property="state" info={user} onChange={ this.setUserInfo.bind(this)} style={{ flexBasis: '30%'}} />
         </InputGroup>
 
         <InputGroup block className="gutter">
