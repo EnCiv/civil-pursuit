@@ -16,7 +16,7 @@ class ODGCongrat extends React.Component {
       e.preventDefault();
     }
     let results;
-    let email = this.refs.email.value;
+    let email = this.props.user && this.props.user.email ? this.props.user.email : this.refs.email.value;
     let fname = this.refs.fname.value;
     let lname = this.refs.lname.value;
     let subject = this.refs.subject.value;
@@ -90,27 +90,27 @@ class ODGCongrat extends React.Component {
                 <div className="civil-pursuit-text-block">
                     <h2>You did it!</h2>
                     <p>
-                    You took the first step! Now that we see you're are interested, we'll work even harder at getting a broad enough group signed up, and getting this out so you can help us find. 
+                    You took the first step! This means there's hope for an awesome future.
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block">
                     <h2>Where it's at</h2>
                     <p>
-                    We know, you were hoping that after you clicked [Start Here] you would start into the game right away. But we're still building it, and at the same time we're working to gather a broad enough group of people like you so that when the game is ready, the players will be ready too.
+                    We know, you were hoping that after you clicked [Start Here] you would start into the game right away. But we're still building it, and at the same time we're working to gather a vast a d broad group of people like you so that when we begin, the a diverse pool of players is be ready too.
                     </p>
-                    <p>Having people sign up like this also gives us a sign that we're doing something right, and that helps us get more people involved so we can get this going faster.</p>
+                    <p>Having people sign up like you just did also gives us a sign that we're doing something right, and that helps us get more people involved so we can get this going faster.</p>
                     <p>Want to help?  Share this link: https://www.civilpursuit.com/odg on your social media channels like Facebook, Twitter, and Instagram and email it to anyone who has an opinion about the direction of this country.
                     </p>
-                    <p>Though we may disagree on tough political issues I want to invinte you to join me a https://www.civilpursuit.com/odg becaue in America your voice counts as much as anyone's and together we can find the solutions to what divides us."</p>
+                    <p>We face tough political challenges, see if you can solve them. Join me at https://www.civilpursuit.com/odg."</p>
                 </div>
                 <div className="civil-pursuit-text-block">
-                  <h2>Questions, Comments, Suggestions?</h2>
+                  <h2>Questions, Comments, Suggestions, Want to be an early beta tester?</h2>
                   <p>Lets talk!</p>
                   <form id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
-                          <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />
+                          {this.props.user && this.props.user.email ? <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required /> : null}
                           <input ref="fname" className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
                           <input ref="lname" className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
                           <input ref="subject" className="subjectin" type="text" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
