@@ -34,7 +34,7 @@ class ProfileComponent extends React.Component {
             case 0:
                 return (null);
             case 1:
-                return (S(profile[0]).humanize.titleCase().s);
+                return (S(profile[0]).humanize().titleCase().s);
             case 2:
                 return profile[1];
             default:
@@ -49,9 +49,9 @@ class ProfileComponent extends React.Component {
             case 0:
                 return (null);
             case 1:
-                return (S(profile[0]).underscore.s);
+                return (S(profile[0]).underscore().s);
             case 2:
-                return (S(profile[0]).underscore.s);
+                return (S(profile[0]).underscore().s);
             case 3:
                 return (profile[2]);
             default:
@@ -65,9 +65,9 @@ class ProfileComponent extends React.Component {
             case 0:
                 return (null);
             case 1:
-                return (S(profile[0]).underscore.s);
+                return (S(profile[0]).underscore().s);
             case 2:
-                return (S(profile[0]).underscore.s);
+                return (S(profile[0]).underscore().s);
             case 3:
                 return (profile[2]);
             case 4:
