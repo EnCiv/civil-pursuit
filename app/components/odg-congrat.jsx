@@ -62,6 +62,7 @@ class ODGCongrat extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
+    console.info("odgCongrats", this.props);
     const page = (
       <section>
         <div className="civil-pursuit">
@@ -87,13 +88,13 @@ class ODGCongrat extends React.Component {
 
             <div className="civil-pursuit-container-outer">
               <div className="civil-pursuit-conteiner-inner">
-                <div className="civil-pursuit-text-block">
+                <div className="civil-pursuit-text-block odg-text">
                     <h2>You did it!</h2>
-                    <p>
+                    <p style={{fontSize: "1.5em"}}>
                     You took the first step! This means there's hope for an awesome future.
                     </p>
                 </div>
-                <div className="civil-pursuit-text-block">
+                <div className="civil-pursuit-text-block odg-text">
                     <h2>Where it's at</h2>
                     <p>
                     We know, you were hoping that after you clicked [Start Here] you would start into the game right away. But we're still building it, and at the same time we're working to gather a vast a d broad group of people like you so that when we begin, the a diverse pool of players is be ready too.
@@ -110,7 +111,7 @@ class ODGCongrat extends React.Component {
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
                         <div className="civil-pursuit-text-block email-form cf">                   
-                          {this.props.user && this.props.user.email ? <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required /> : null}
+                          {this.props.user && this.props.user.email ? null : <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />}
                           <input ref="fname" className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
                           <input ref="lname" className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
                           <input ref="subject" className="subjectin" type="text" name="MMERGE3" id="mce-MMERGE3" placeholder="Subject" />
