@@ -13,9 +13,9 @@ class DynamicSelector extends React.Component {
 
 /**
  * 
- * a selector made up of choices from a collection in the database on the server
+ * render a selector made up of choices from a collection in the database on the server
  * 
- *  the collection is loaded on first use and stored within the Class so the choices are immediately available for future use by any other object
+ *  the collection is loaded on first use and stored within this class so the choices are immediately available for future use by any other objects
  * 
  */
 
@@ -88,7 +88,8 @@ class DynamicSelector extends React.Component {
 
   render() {
 
-    const { info, property, collection, valueOnly, style } = this.props;
+    const { info, property, valueOnly, style } = this.props;
+    const collection = this.props.collection || property; // for backwards compatibility when there was only the property.
     let option1 = (this.state.loaded ? <option value=''>{property}</option> : <option value=''>Loading Options</option>);
 
     if(valueOnly)
