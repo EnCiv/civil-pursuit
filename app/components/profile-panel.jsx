@@ -104,6 +104,16 @@ class ProfilePanel extends React.Component {
 
         if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
             if(userId || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+                if(userId && this.props.newLocation){
+                    window.onbeforeunload=null; // don't warn on redirect
+                    location.href= this.props.newLocation;
+                    return null;
+                }
+                if(userId && panel.parent && panel.parent.new_location){
+                    window.onbeforeunload=null; // don't warn on redirect
+                    location.href= panel.parent.new_location;
+                    return null;
+                }
                 if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
                 const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
                 const newPanel = {
