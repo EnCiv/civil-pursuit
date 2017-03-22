@@ -23,7 +23,7 @@ class DynamicSelector extends React.Component {
 
     constructor(props){
         super(props);
-        const {collection}=props;
+        const collection = props.collection || props.property;
         if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collections=[];
         if ( typeof DynamicSelector.collections[collection] === 'undefined')
         {
@@ -37,7 +37,7 @@ class DynamicSelector extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     okGotChoices(choices){
-        const {collection}=this.props;
+        const collection = this.props.collection || this.props.property;
         choices.forEach(choice => DynamicSelector.collections[collection].choices[choice._id]=choice.name);
         DynamicSelector.collections[collection].options=choices.map(choice => (
             <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
@@ -57,16 +57,13 @@ class DynamicSelector extends React.Component {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    static gotChoices(collection, choice, onComplete, choices){
-        choices.forEach(choice => DynamicSelector.collections[collection].choices[choice._id]=choice.name);
-        DynamicSelector.collections[collection].options=choices.map(choice => (
-            <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
-        ));
-        if(onComplete) onComplete(DynamicSelector.collections[collection].choices[choice]);
-    }
-
-
-
+static gotChoices(collection, choice, onComplete, choices){
+    choices.forEach(choice => DynamicSelector.collections[collection].choices[choice._id]=choice.name);
+    DynamicSelector.collections[collection].options=choices.map(choice => (
+        <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
+    ));
+    if(onComplete) onComplete(DynamicSelector.collections[collection].choices[choice]);
+}
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  // return the value of the choice from the collection
