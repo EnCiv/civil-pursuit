@@ -174,7 +174,17 @@ toInstructionFromParent(result){
     var title, name;
     const currentPanel=this.state.currentPanel;
     const containerWidth=this.state.containerWidth;
-    const spaceBetween=containerWidth * 0.25;
+    var spaceBetween=containerWidth * 0.25;
+
+
+    if(typeof document !== 'undefined'){
+        let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        if(containerWidth+spaceBetween < w){
+          spaceBetween=w-containerWidth;
+        }
+    }
+
+
 
     if ( panel ) {
       console.info("PanelList: type");
