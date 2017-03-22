@@ -108,6 +108,9 @@ class Item extends Model {
 
       "profiles"          :  {
         "type"            :   [String]
+      },
+      "new_location"      :  {
+        "type"            :    String
       }
     };
   }

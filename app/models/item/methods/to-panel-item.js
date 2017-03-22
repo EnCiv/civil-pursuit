@@ -32,7 +32,8 @@ function toPanelItem (userId) {
         references,       /** [{ title: String, url: String }] **/
         views,            /** Number **/
         promotions,       /** Number **/
-        profiles
+        profiles,
+        new_location
       } = this;
 
       const item = {
@@ -45,7 +46,8 @@ function toPanelItem (userId) {
         views,
         promotions,
         parent,
-        profiles
+        profiles,
+        new_location
       };
 
       //console.info("toPanelItems.after promise subtype, this.subject");

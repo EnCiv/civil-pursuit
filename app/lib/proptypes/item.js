@@ -25,7 +25,8 @@ const item          =   shape({
   user              :   user.isRequired,
   promotions        :   number.isRequired,
   views             :   number.isRequired,
-  profiles          :   arrayOf(string)
+  profiles          :   arrayOf(string),
+  new_location      :   string
 });
 
 export default item;
