@@ -110,7 +110,7 @@ class ODGCongrat extends React.Component {
                   <form id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                     <div id="mc_embed_signup_scroll" class="civil-pursuit-title signup">
                       <div className="civil-pursuit-text-block email-block">
-                        <div className="civil-pursuit-text-block email-form cf">                   
+                        <div className="civil-pursuit-text-block odg-email-form cf">                   
                           {this.props.user && this.props.user.email ? null : <input ref="email" className="emailin" type="email" name="EMAIL" id="mce-EMAIL" placeholder="email address" required />}
                           <input ref="fname" className="namein" type="text" name="FNAME" id="mce-FNAME"  placeholder="First name" />
                           <input ref="lname" className="namein" type="text" name="LNAME" id="mce-LNAME" placeholder="Last name" />
