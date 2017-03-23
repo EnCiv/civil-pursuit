@@ -71,7 +71,7 @@ class ODGCongrat extends React.Component {
               <div className="civil-pursuit bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
-                    <div className="civil-pursuit news-headline-text">Finding Solutions to What Divides Us</div>
+                    <div className="civil-pursuit news-headline-text">The Online Deliberation Game</div>
                   </div>
                 </div>
                 <div className="civil-pursuit social-bar">
@@ -91,18 +91,17 @@ class ODGCongrat extends React.Component {
                 <div className="civil-pursuit-text-block odg-text">
                     <h2>You did it!</h2>
                     <p>
-                    You took the first step! This means there's hope for an awesome future.
+                    You took the first step! This means there really are American's who really do want to bridge the divide. 
                     </p>
                 </div>
                 <div className="civil-pursuit-text-block odg-text">
-                    <h2>Where it's at</h2>
+                    <h2>Where's this at at</h2>
                     <p>
-                    We know, you were hoping that after you clicked [Start Here] you would start into the game right away. But we're still building it, and at the same time we're working to gather a vast a d broad group of people like you so that when we begin, the a diverse pool of players is be ready too.
+                    We know, you were hoping that after you clicked [Start Here] you would start into the game right away. But we're still building it, and at the same time we're working to gather a vast and broad group of people like you so that when we begin, the a diverse pool of players is be ready too.
                     </p>
-                    <p>Having people sign up like you just did also gives us a sign that we're doing something right, and that helps us get more people involved so we can get this going faster.</p>
+                    <p>Having people sign up like you just did also gives us a sign that we're doing something right, that we can show others so we can get more people involved so we can get this going faster.</p>
                     <p>Want to help?  Share this link: https://www.civilpursuit.com/odg on your social media channels like Facebook, Twitter, and Instagram and email it to anyone who has an opinion about the direction of this country.
                     </p>
-                    <p>Say this: "We face tough political challenges, see if you can solve them. Join me at https://www.civilpursuit.com/odg."</p>
                 </div>
                 <div className="civil-pursuit-text-block">
                   <h2>Questions, Comments, Suggestions, Want to be an early beta tester?</h2>
