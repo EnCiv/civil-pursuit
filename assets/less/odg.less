@@ -7,22 +7,6 @@ Civil Pursuit Style
 
 @import "lib/var";
 
-.odg-icon-stack.childhorizontal p{
-    text-align: left;
-    vertical-align: middle;
-    font-size: 2rem;
-    margin-top: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-bottom: 0;
-    min-height: 0;
-    color: darkslategray;
-}
-
-.odg-icon-stack.horizontal {
-    padding-top: .5em;
-}
-
 .civil-pursuit-logo-image {
     margin: 0;
     font-size: 4.5rem;
@@ -113,10 +97,44 @@ Civil Pursuit Style
     border-color: mediumpurple;
 }
 
+.odg-icon-box.childhorizontal {
+    vertical-align: top;
+}
+
+.odg-icon-box.vertical {
+    padding-bottom: 1em;
+}
+
 .odg-icon-stack{
     background-color: white;
     color: @syn-purple-color;
     text-align: center;
+}
+
+.odg-icon-stack.horizontal {
+    padding-top: .5em;
+}
+
+.odg-icon-stack.childhorizontal {
+    vertical-align: middle;
+}
+
+.odg-icon-stack.childhorizontal i{
+    min-width: 3em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.odg-icon-stack.childhorizontal p{
+    text-align: left;
+    vertical-align: middle;
+    font-size: 2rem;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    min-height: 0;
+    color: darkslategray;
 }
 
 .odg-icon-stack.vertical {
@@ -125,10 +143,6 @@ Civil Pursuit Style
     border: 3px solid black;
     border-radius: 6px;
     margin: 1rem;
-}
-
-.odg-icon-box.childhorizontal {
-    vertical-align: top;
 }
 
 .odg-icon-stack.childvertical p{
@@ -148,29 +162,4 @@ Civil Pursuit Style
     padding-right: 1em;
     text-decoration: underline;
     font-style: oblique;
-}
-
-.odg-nothing {
-    color: black;
-    text-align: right;
-    font-size: 2rem;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    padding-right: 1em;
-    text-decoration: underline;
-    font-style: oblique;
-}
-
-.odg-icon-box.vertical {
-    padding-bottom: 1em;
-}
-
-.odg-icon-stack.childhorizontal {
-    vertical-align: middle;
-}
-
-.odg-icon-stack.childhorizontal i{
-    min-width: 3em;
-    text-align: center;
-    vertical-align: middle;
 }
