@@ -137,6 +137,7 @@ class ItemButtons extends React.Component {
       var min=item.subtype.min || 2;
       var buttonTitle=item.subtype.buttonTitle || {active: "Delve into a deeper level of this discussion",
                                                    inactive: "After 2 people Upvote this, the discussion can continue at a deeper level" };
+      var number=buttonName === 'Start Here' ? ' ' : (item.children ? item.children : 0);
 
       if (item.promotions >= min) {
         if (buttonstate.subtype) {
@@ -162,7 +163,7 @@ class ItemButtons extends React.Component {
       }
       buttons.push(
         <ButtonGroup>
-         <span className="civil-button-info">{ (item.children ? item.children : 0 )} </span>
+         <span className="civil-button-info">{ number } </span>
           {subtype}
         </ButtonGroup>
         );
