@@ -29,39 +29,56 @@ function signIn (req, res, next) {
         .then(
           user => {
             req.user = user;
+            console.info("sign-in user",user);
 
-            Discussion
-              .findCurrent()
-              .then(
-                discussion => {
-                  try {
-                    if ( discussion ) {
-                      const alreadyRegistered = discussion.registered.some(registered => registered.equals(user._id))
+            // were we passed updated info in the signin
+            var p1=new Promise((ok,ko)=>{
+              var newInfo=Object.assign({},req.body);
+              delete newInfo.email;
+              delete newInfo.password;
+              delete newInfo.facebook;
+              if(Object.keys(newInfo).length) {
+              // yes, newInfo
+                User
+                  .updateById(user._id, newInfo)
+                  .then(
+                    user => ok(user),
+                    error => ko(error)
+                  );
+              } else ok(user);
+            })
+            .then(user=>{
+              Discussion
+                .findCurrent()
+                .then(
+                  discussion => {
+                    try {
+                      if ( discussion ) {
+                        const alreadyRegistered = discussion.registered.some(registered => registered.equals(user._id))
 
-                      if ( alreadyRegistered ) {
-                        return next();
+                        if ( alreadyRegistered ) {
+                          return next();
+                        }
+
+                        discussion
+                          .push('registered', user._id)
+                          .save()
+                          .then(
+                            () => next(),
+                            next
+                          );
                       }
-
-                      discussion
-                        .push('registered', user._id)
-                        .save()
-                        .then(
-                          () => next(),
-                          next
-                        );
+                      else {
+                        next();
+                      }
                     }
-                    else {
-                      next();
+                    catch (error) {
+                      next(error);
                     }
-                  }
-                  catch (error) {
-                    next(error);
-                  }
-                },
-                next
-              );
-
-            next();
+                  },
+                  next
+                )
+            }, next);
           },
           error => {
             if ( /^User not found/.test(error.message) ) {
@@ -77,7 +94,7 @@ function signIn (req, res, next) {
             }
           }
         );
-    }
+      }
   }
 
   catch ( error ) {

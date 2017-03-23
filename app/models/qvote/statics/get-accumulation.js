@@ -11,7 +11,7 @@ import Mungo from 'mungo';
 function getAccumulation (itemId, userId) {
   return new Promise((ok, ko) => {
     var itemA=[];
-    itemId.forEach(item=>{ typeof item === 'string' ? itemA.push(Mungo.Type.ObjectID.convert(item)) : itemA.push(item); console.info("getAcc itemA", typeof item, typeof itemA[itemA.length-1])} );
+    itemId.forEach(item=>{ typeof item === 'string' ? itemA.push(Mungo.Type.ObjectID.convert(item)) : itemA.push(item); } );
     // when using mungo aggregate the filter object is passed directly to mongo. It is necessary that all id's are objects in the ObjectId from and not strings
     var query={item: {$in: itemA }};
     if(userId){ query.user = Mungo.Type.ObjectID.convert(userId)}; // get a specific user's accumulation

@@ -20,8 +20,7 @@ class Birthdate extends React.Component {
       let now = Date.now();
 
       if ( now > dob ) {
-        window.socket.emit('set user info', { dob });
-        if(this.props.emitter) this.props.emitter( { dob } );
+        if(this.props.onChange) this.props.onChange( { dob } );
       }
     }
   }
@@ -31,12 +30,12 @@ class Birthdate extends React.Component {
 
   render() {
 
-    let { user } = this.props;
+    let { info } = this.props;
 
     let dobValue;
 
-    if ( user.dob ) {
-      let dob = new Date(user.dob);
+    if ( info.dob ) {
+      let dob = new Date(info.dob);
 
       let dob_year  = dob.getUTCFullYear();
       let dob_month = dob.getUTCMonth() + 1;
@@ -54,14 +53,7 @@ class Birthdate extends React.Component {
     }
 
     return (
-          <Row baseline className="gutter-y">
-            <Column span={this.props.split}>
-              Birthdate
-            </Column>
-            <Column span={100 - this.props.split}>
               <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } placeholder="MM/DD/YYYY" />
-            </Column>
-          </Row>   
     );
   }
 

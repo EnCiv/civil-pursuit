@@ -23,11 +23,26 @@ class LoginPanel extends React.Component {
         this.setState({ typeList: typeList });
     }
 
+    vsChange(obj){
+        if(this.props.vs & this.props.vs.toParent) this.props.vs.toParent(obj);  // let parent know the user has logged in
+    }
+
     render() {
-        const { panel, user, active } = this.props;
- //       console.info("LoginPanel:",this.props, this.state);
+        const { panel, user, userInfo, active } = this.props;
+        console.info("LoginPanel:",this.props, this.state);
+        var newLocation=this.props.newLocation || null;
+        if(!newLocation && panel.parent && panel.parent.new_location) newLocation=panel.parent.new_location;  // get new Location out of the parent item if there is one
+        if(user && newLocation){
+                window.onbeforeunload=null; // don't warn on redirect
+                location.href=newLocation;
+                return null;
+        }
+
+        if(!newLocation && this.state.typeList.length) newLocation="/items/"+this.state.typeList[0].id+"/"+panel.parent.id;  //new location calculated from next type
+        console.info("Login-Panel newlocation", newLocation);
 
         if (user) {
+
             if(!this.state.typeList.length) return(null);
             const newPanel = {
                 parent: panel.parent,
@@ -58,7 +73,7 @@ class LoginPanel extends React.Component {
                 >
                 {instruction}
                 <div className='item-login-panel'>
-                    <JoinForm />
+                    <JoinForm userInfo={userInfo} newLocation={newLocation} />
                 </div>
             </Panel>
         );

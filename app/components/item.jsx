@@ -9,6 +9,7 @@ import ClassNames          from 'classnames';
 import VisualState     from './visual-state';
 import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';
+import DynamicSelector from './dynamic-selector';
 
 //Item Visual State - lets other components change the visual state of an item. 
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
@@ -172,12 +173,6 @@ class VSItem extends React.Component {
 
     if(!item) {return (<div style={{textAlign: "center"}}>Nothing available at this time.</div>);}
 
-    const tendencyChoice = null;
-
-    if(typeof window !== 'undefined' ) {
-        window.Synapp.tendencyChoice
-    };
-
     let rendereditem = {};
 
     let referenceLink, referenceTitle;
@@ -213,7 +208,7 @@ class VSItem extends React.Component {
                     { item.description }
                   </div>
                   <div className="item-tendency" style={{display: 'none'}}>
-                      { tendencyChoice && item && item.user && item.user.tendency ? '-' + tendencyChoice[item.user.tendency]  :  '' }
+                      { item && item.user && item.user.tendency ? '-' + <DynamicSelector property="tendency" valueOnly info={item.user} />  :  '' }
                   </div>
                 </Accordion>
               </section>

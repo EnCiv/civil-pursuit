@@ -45,7 +45,7 @@ Civil Pursuit Style
     width: ~"calc(100vw)"; /** this width includes the scroll bar if present. Causes some problems not yet fixed */
     position: relative;
     left: ~"calc(-50vw + 50%)"; 
-    top: -5px;
+    top: 0;
 
     @media (max-width: @screen-phone) {
       top: -5px;
@@ -354,6 +354,12 @@ Civil Pursuit Style
     float: right;
   }
 
+  .odg-email-form {
+    display: table-cell;
+    min-width: 55vw;
+    float: right;
+  }
+
   input[type="email"] {
     display: inline-block;
     vertical-align: bottom;
@@ -432,5 +438,9 @@ Civil Pursuit Style
     vertical-align: top;
     margin-bottom: .5em;
   }
+}
+
+.civil-pursuit-text-block.odg-text p{
+  font-size: 1.5em;
 }
 

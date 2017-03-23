@@ -15,8 +15,7 @@ class Neighborhood extends React.Component {
     let neighborhood = ReactDOM.findDOMNode(this.refs.neighborhood).value;
 
     if ( neighborhood ) {
-      window.socket.emit('set user info', { neighborhood });
-      if(this.props.emitter) this.props.emitter({neighborhood});
+      if(this.props.onChange) this.props.onChange({neighborhood});
     }
   }
 
@@ -24,7 +23,7 @@ class Neighborhood extends React.Component {
 
   render() {
 
-    let { user } = this.props;
+    let { info } = this.props;
     let neighborhoods=['Arrowhead','Lakeside','Island','All others'];
 
     let neighborhoodOptions = neighborhoods.map(nh=>(
@@ -32,17 +31,10 @@ class Neighborhood extends React.Component {
         ));
 
     return (
-        <Row baseline className="gutter-y">
-            <Column span={this.props.split}>
-              Neighborhood
-            </Column>
-            <Column span={100 - this.props.split}>
-              <Select block medium ref="neighborhood" onChange={ this.saveNeighborhood.bind(this) } defaultValue={ user.neighborhood }>
-                <option value="">Choose one</option>
-                {neighborhoodOptions}
-              </Select>
-            </Column>
-        </Row>
+        <Select {...this.props} ref="neighborhood" onChange={ this.saveNeighborhood.bind(this) } defaultValue={ info.neighborhood }>
+          <option value="">Choose one</option>
+          {neighborhoodOptions}
+        </Select>
     );
   }
 }

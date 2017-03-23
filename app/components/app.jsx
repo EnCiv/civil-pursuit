@@ -16,6 +16,8 @@ import { EventEmitter }                 from 'events';
 import QHome                            from './qhome';
 import PanelList                        from './panel-list';
 import TypeComponent                    from './type-component';
+import OnlineDeliberationGame           from './odg';
+import ODGCongrat         from './odg-congrat';
 
 class App extends React.Component {
 
@@ -161,6 +163,7 @@ class App extends React.Component {
                 </UserStore>
               );
               break;
+
           }
           break;
           
@@ -168,6 +171,27 @@ class App extends React.Component {
               page = ( <About /> );
               break;
 
+        case 'odg':
+          if(user){
+            page=(
+                    <ODGCongrat { ...this.props } emitter = {this.emitter }/>
+                );
+                break;
+          }
+
+          if(! this.props.panels) return(
+            <OnlineDeliberationGame />
+          );
+          const keylist3 = Object.keys(this.props.panels);
+
+          const panelId3 = keylist3[keylist3.length-1];
+
+          const panel3 = Object.assign({}, this.props.panels[panelId3].panel);
+
+          const component3=panel3.type.component || 'Subtype';
+
+          return( <OnlineDeliberationGame component={component3} { ...this.props } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
+                );
 
         case 'item':
 
@@ -211,14 +235,25 @@ class App extends React.Component {
           }
 
         case 'items':
+          if(! this.props.panels) { break; }
 
           const panelId2 = Object.keys(this.props.panels)[0];
 
           console.info("App.render items", { panelId2 });
 
+          const panel2 = Object.assign({}, this.props.panels[panelId2].panel);
+
+          //panel.items = panel.items.filter(item => item.id === paths[1]);
+
+          //console.info("app item panel filtered", panel );
+
+          const component2=panel2.type.component || 'Subtype';
+                    console.info("App.render panel2", { panel2 });
+
           page = (
-            <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
+            <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } emitter = {this.emitter } />
           );
+
           break;
       }
     }

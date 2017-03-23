@@ -27,7 +27,7 @@ html {
 
 body {
   padding: 10px;
-  padding-top: calc(@syn-topbar-height + 10px);
+  padding-top: calc(@syn-topbar-height);
   text-align: left;
   box-sizing: border-box;
 
@@ -41,7 +41,7 @@ body {
   @media (max-width: @screen-phone) {
     padding-left: 2px;
     padding-right: 2px;
-    padding-top: 65px; /** top bar is smaller on phones **/
+    padding-top: calc(@syn-topbar-height-up-to-phone); /** top bar is smaller on phones **/
   }
 }
 

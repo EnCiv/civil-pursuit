@@ -11,17 +11,14 @@ import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import politicalPartyType             from '../lib/proptypes/political-party';
-import politicalTendencyType          from '../lib/proptypes/political-tendency';
+import DynamicSelector                from './dynamic-selector';
 
 class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
-    user : userType,
-    politicalParties : React.PropTypes.arrayOf(politicalPartyType),
-    politicalTendency : React.PropTypes.arrayOf(politicalTendencyType)
+    user : userType
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,36 +33,16 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setParty () {
-    const party = ReactDOM.findDOMNode(this.refs.party).value;
-
-    if ( party ) {
-      window.socket.emit('set user info', { party });
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setTendency () {
-    const tendency = ReactDOM.findDOMNode(this.refs.tendency).value;
-
-    if ( tendency ) {
-      window.socket.emit('set user info', { tendency });
-    }
+  setUserInfo (obj) {
+      window.socket.emit('set user info', obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user, politicalParties, politicalTendency } = this.props;
+    let { user } = this.props;
 
-    let parties = politicalParties.map(party => (
-      <option value={ party._id } key={ party._id }>{ party.name }</option>
-    ));
 
-    let tendency = politicalTendency.map(tendency => (
-      <option value={ tendency._id } key={ tendency._id }>{ tendency.name }</option>
-    ));
     return (
       <section>
         <section style={{ width: '50%', float : 'left' }}>
@@ -77,46 +54,36 @@ class Voter extends React.Component {
           <p>We use this information to make sure that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.</p>
         </section>
 
-        <Row baseline className="gutter">
-          <Column span="25">
-            Registered voter
-          </Column>
-          <Column span="75">
-            <Select block medium ref="registered" defaultValue={ user.registered_voter } onChange={ this.setRegisteredVoter.bind(this) }>
+        <SelectorRow name="Registered Voter">
+          <Select block medium ref="registered" defaultValue={ user.registered_voter } onChange={ this.setRegisteredVoter.bind(this) }>
               <option value=''>Choose one</option>
               <option value={ true }>Yes</option>
               <option value={ false }>No</option>
-            </Select>
-          </Column>
-        </Row>
-
-        <Row baseline className="gutter">
-          <Column span="25">
-            Political Party
-          </Column>
-          <Column span="75">
-            <Select block medium ref="party" defaultValue={ user.party } onChange={ this.setParty.bind(this) }>
-              <option value=''>Choose one</option>
-              { parties }
-            </Select>
-          </Column>
-        </Row>
-
-        <Row baseline className="gutter">
-          <Column span="25">
-            Political Tendency
-          </Column>
-          <Column span="75">
-            <Select block medium ref="tendency" defaultValue={ user.tendency } onChange={ this.setTendency.bind(this) }>
-              <option value=''>Choose one</option>
-              { tendency }
-            </Select>
-          </Column>
-        </Row>
-
+          </Select>
+        </SelectorRow>
+        <SelectorRow name="Political Party">
+          <DynamicSelector block medium property="party" info={user} onChange={ this.setUserInfo.bind(this)} />
+        </SelectorRow>
+        <SelectorRow  name="Political Tendency">
+          <DynamicSelector block medium property="tendency" info={user} onChange={ this.setUserInfo.bind(this)} />
+        </SelectorRow>
       </section>
     );
   }
 }
 
+class SelectorRow extends React.Component{
+  render(){
+    return(
+        <Row baseline className="gutter">
+          <Column span="25">
+            {this.props.name}
+          </Column>
+          <Column span="75">
+            {this.props.children}
+          </Column>
+        </Row>
+    );
+  }
+}
 export default Voter;

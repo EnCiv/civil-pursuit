@@ -117,7 +117,7 @@ class Creator extends React.Component {
 
   makeDbItem(){
     var item = {};
-    item._id=this.props.item._id;
+
     Creator.keys.forEach(key => {
       if(key==='reference') return; // don't add it in and delete it later
       if(this.state[key]) { item[key]=this.state[key] }
@@ -130,7 +130,8 @@ class Creator extends React.Component {
       item.parent = this.props.parent;
     }
     if ( this.props.item ) {
-      item.from = this.props.item._id;
+      if(this.props.noEdit) item.from = this.props.item._id;
+      else item._id = this.props.item._id;
     }
     return item;
   }

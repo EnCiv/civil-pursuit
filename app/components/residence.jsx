@@ -11,7 +11,7 @@ import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import stateType                      from '../lib/proptypes/state';
+import DynamicSelector                from './dynamic-selector';
 
 class Residence extends React.Component {
 
@@ -19,7 +19,6 @@ class Residence extends React.Component {
 
   static propTypes = {
     user : userType,
-    states : React.PropTypes.arrayOf(stateType)
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,12 +52,8 @@ class Residence extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setState () {
-    let state = ReactDOM.findDOMNode(this.refs.state).value;
-
-    if ( state ) {
-      window.socket.emit('set user info', { state });
-    }
+  setUserInfo (obj) {
+      window.socket.emit('set user info', obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,10 +108,6 @@ class Residence extends React.Component {
       );
     }
 
-    let states = this.props.states.map(state => (
-      <option value={ state._id } key={ state._id }>{ state.name }</option>
-    ));
-
     return (
       <section>
         <section style={{ width: '50%', float : 'left' }}>
@@ -132,13 +123,7 @@ class Residence extends React.Component {
 
         <InputGroup block className="gutter">
           <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
-          <Select style={{ flexBasis: '30%'}} 
-                  ref="state"  
-                  onChange={ this.setState.bind(this) } 
-                  defaultValue={ user.state }>
-                  <option value="">State</option>
-                  { states }
-          </Select>
+          <DynamicSelector block medium property="state" info={user} onChange={ this.setUserInfo.bind(this)} style={{ flexBasis: '30%'}} />
         </InputGroup>
 
         <InputGroup block className="gutter">

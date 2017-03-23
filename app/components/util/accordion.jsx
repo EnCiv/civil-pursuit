@@ -62,13 +62,13 @@ class Accordion extends React.Component {
 
   openStart=null;
 
-  smoothOpen(durationMS) {
+  smoothOpen() {
     if(!this.openStart) this.openStart= new Date().getTime();
     else return; // don't stutter start
     if(this.inOpen==='active') { return; } // dont't stutter start.
     this.inOpen='active';
     if(this.inClose!=="inactive") {this.inClose='abort'}
-    var duration = durationMS || 500;
+    var duration = this.props.maxDuration || 500;
     let accordion = this.refs.accordion;
 
     let timerMax=1000;  //just in case
@@ -115,17 +115,23 @@ class Accordion extends React.Component {
 
 
   inClose='inactive';
+  closeStart=null;
   smoothClose() {
     // set an interval to update scrollTop attribute every 25 ms
+    if(!this.closeStart) this.closeStart= new Date().getTime();
+    else return; // don't stutter close
     if(this.inClose=='active'){return;} //don't stutter the close
     this.inClose='active';
     if(this.inOpen!='inactive') { this.inOpen='abort';} //override the open with a close
-
+    var duration = this.props.maxDuration || 500;
     let accordion = this.refs.accordion;
 
-    //let maxHeight = parseInt(accordion.style.maxHeight,10) || 0;
     let height= accordion.clientHeight;
     accordion.style.maxHeight= Math.floor(height) + 'px';
+
+    let minHeight = parseInt(accordion.style.minHeight,10) || 0;
+    if(this.refs.accordionWrapper.children[0]) 
+      minHeight= Math.max(minHeight, parseInt(this.refs.accordionWrapper.children[0].style.minHeight,10) || 0); // wrapper is a div which wraps around the innards may have a min-height set
 
     this.setState( { attr : 'collapsing' } );
     let timerMax=1000; //just incase something goes wrong don't leave the timer running
@@ -133,13 +139,21 @@ class Accordion extends React.Component {
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
       if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; console.error("accordion.smoothClose abort due to subsiquent open"); return; }
+      
+      let now=new Date().getTime();
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= Math.floor(accordion.clientHeight);
-      if( (lmaxHeight >= lheight) && (lheight > 0)){ //it's still shrinking
-        accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
+
+      if( ((now - this.closeStart)< duration) && (lmaxHeight >= lheight) && (lheight > minHeight)){ // there is still time and it's still shrinking
+ //       accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
+        let step = Math.min(1, (now - this.closeStart) / duration); // calculate the percent of the scroll duration that has been completed. 100% max
+        let distance = Math.max(lheight - minHeight, 1); // distance to go, but not negative
+        let newMax = Math.floor(lheight - (step * distance)); // top of the next step
+        accordion.style.maxHeight=newMax+'px'; // set the new height
       } else {
         this.inClose='inactive';
         clearInterval(timer);
+        this.closeStart=null;
         if(this.props.onComplete) { this.setState({ attr : 'collapsed' }, () => this.props.onComplete(false)); }
         else this.setState({ attr : 'collapsed' });
         accordion.style.maxHeight=null;

@@ -179,6 +179,7 @@ class HttpServer extends EventEmitter {
     this.getItemPage();
     this.getPanelPage();
     this.getQSortPage();
+    this.getODG();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -419,8 +420,108 @@ class HttpServer extends EventEmitter {
     }, serverReactRender.bind(this));
   }
 
+  getODG () {
+    try {
+      this.app.get('/odg',
+        (req, res, next) => {
+          var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+          var sniffr = new Sniffr();
+          sniffr.sniff(req.headers['user-agent']);
+          var device = Device(req.headers['user-agent']);
+          this.browserConfig.os = sniffr.os;
+          this.browserConfig.browser = sniffr.browser;
+          this.browserConfig.type = device.type;
+          this.browserConfig.model = device.model;
+          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+          console.info("server.ODG browser", this.browser);
+          if ( ! req.cookies.synapp ) {
+            res.cookie('synapp',
+              { training : true },
+              {
+                "path":"/",
+                "signed": false,
+                "maxAge": 604800000,
+                "httpOnly": true
+              });
+          }
+          try {
+            Type.findOne({ id : 'Polzc' }).then(
+              type => {
+                if ( ! type ) {
+                  return next(new Error('No such type'));
+                }
+
+                console.info("server getPanelPage found type", type.name, type._id);
+
+                Item.findOne({ id : 'bvuDs' }).then(
+                  item => {
+                    if ( ! item ) {
+                      return next();
+                    }
+
+                    console.info("server getPanelPage found item", item.subject, item._id);
+
+                    const panelId = makePanelId({ type: type._id, parent : item._id });
+
+                    const query = {
+                      type: type._id,
+                      parent: item._id,
+                    };
+
+                    console.info("server getPanelPage", query, userId);
+                    Item.getPanelItems(query, userId).then(
+                      results => {
+                        req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
+                        console.info("getPanelPage", results.count);
+
+                        req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
+
+                        next();
+                      }, 
+                      next
+                    );
+                  },
+                  next
+                );
+              },
+              next
+            );
+          }
+          catch ( error ) {
+            next(error);
+          }
+        },
+        serverReactRender.bind(this));
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
+  }
+
   getPanelPage () {
     this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
+    var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+    var sniffr = new Sniffr();
+    sniffr.sniff(req.headers['user-agent']);
+    var device = Device(req.headers['user-agent']);
+    this.browserConfig.os = sniffr.os;
+    this.browserConfig.browser = sniffr.browser;
+    this.browserConfig.type = device.type;
+    this.browserConfig.model = device.model;
+    this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+    this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+    console.info("server.getPanelPage browser", this.browser);
+    if ( ! req.cookies.synapp ) {
+      res.cookie('synapp',
+        { training : true },
+        {
+          "path":"/",
+          "signed": false,
+          "maxAge": 604800000,
+          "httpOnly": true
+        });
+    }
       try {
         Type.findOne({ id : req.params.panelShortId }).then(
           type => {
@@ -428,18 +529,35 @@ class HttpServer extends EventEmitter {
               return next(new Error('No such type'));
             }
 
-            const panelId = makePanelId({ type, parent : req.params.panelParent });
+            console.info("server getPanelPage found type", type.name, type._id);
 
-            Item.getPanelItems({ type, parent : req.params.panelParent }).then(
-              results => {
-                req.panels = { [panelId] : makePanel({ type, parent : req.params.panelParent }) };
+            Item.findOne({ id : req.params.panelParent }).then(
+              item => {
+                if ( ! item ) {
+                  return next();
+                }
 
-                req.panels[panelId].items = results.items;
+                console.info("server getPanelPage found item", item.subject, item._id);
 
-                console.log("server.getPanelPage", require('util').inspect(req.panels, { depth: null }));
+                const panelId = makePanelId({ type: type._id, parent : item._id });
 
-                next();
+                const query = {
+                  type: type._id,
+                  parent: item._id,
+                };
 
+                console.info("server getPanelPage", query, userId);
+                Item.getPanelItems(query, userId).then(
+                  results => {
+                    req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
+                    console.info("getPanelPage", results.count);
+
+                     req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
+
+                    next();
+                  }, 
+                  next
+                );
               },
               next
             );
