@@ -97,9 +97,9 @@ class ODGCongrat extends React.Component {
                 <div className="civil-pursuit-text-block odg-text">
                     <h2>What's next</h2>
                     <p>
-                    You will receive an email when your team has been assembled and it's time to start. You were probably hoping to start into the game right away, we're working to gather a vast and broad base of people like you so that when we begin, the a diverse pool of players is be ready too. Also, we're still building some of it 
+                    You will receive an email when your team has been assembled and it's time to start. You were probably hoping to start into the game right away, but we're working to gather a vast and broad base of people like you so that when it's time to begin, a diverse pool of players is ready too. Also, we're still building some of it. 
                     </p>
-                    <p>Having people sign up like you just did also gives us a sign that we're doing something right, that we can show others so we can get more people involved so we can get this going faster.</p>
+                    <p>Signing up, like you just did, also gives us a sign that we're doing something right, that we can show others so we can get more people involved so we can get this going faster.</p>
                     <p>Want to help?  Share this link: https://www.civilpursuit.com/odg on your social media channels like Facebook, Twitter, and Instagram and email it to anyone who has an opinion about the direction of this country.
                     </p>
                 </div>
