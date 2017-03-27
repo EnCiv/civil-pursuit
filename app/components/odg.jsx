@@ -177,12 +177,13 @@ class CircleImg extends React.Component {
                      xmlnsXlink="http://www.w3.org/1999/xlink"
                 >
                     <defs>
-                        <pattern id="image" x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
+                        <pattern id="circleimage" x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
                             <image x={0} y={0} 
-                             xlinkHref={src} href={src}></image>
+                             xlinkHref={src} 
+                             href={src}></image>
                         </pattern>
                     </defs>
-                    <circle id='top' cx={centerX} cy={centerY} r={radius} fill="url(#image)"/>
+                    <circle cx={centerX} cy={centerY} r={radius} fill="url(#circleimage)"/>
                 </svg>
             ]
         }
