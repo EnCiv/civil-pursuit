@@ -95,16 +95,17 @@ class CDNImg extends React.Component {
         if(width > 0) this.setState({width: width});
     }
 
-    static getURLbyHeight(src, heightf){  //src url, height with fraction
+    static getURLbyWidthHeight(src, widthf, heightf){  //src url, height with fraction
         var height=Math.ceil(heightf);
+        var width=Math.ceil(widthf);
         var parts=src.split('/');
         switch(parts.length){
                 case 8: // transforms not encoded eg http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
-                    parts.splice(6,0,'c_scale,h_'+height);
+                    parts.splice(6,0,'c_thumb,h_'+height+',w_'+width); // width is same as hight
                     if(parts[0]==='http:') parts[0]='https:';
                     break;
                 case 9: // transfroms present eg http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_1600/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
-                    parts[4]=parts[6]+',c_scale,h_'+height; // just paste it on the end of whats there - it will override anything previous
+                    parts[6]=parts[6]+'c_thumb,h_'+height+',w_'+width; // just paste it on the end of whats there - it will override anything previous
                     if(parts[0]==='http:') parts[0]='https:';
                     break;
                 default:
@@ -127,7 +128,7 @@ class CDNImg extends React.Component {
                     src=parts.join('/');
                     break;
                 case 9: // transfroms present eg http://res.cloudinary.com/hrltiizbo/image/upload/c_scale,w_1600/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png
-                    parts[4]=parts[6]+',c_scale,w_'+width; // just paste it on the end of whats there - it will override anything previous
+                    parts[6]=parts[6]+',c_scale,w_'+width; // just paste it on the end of whats there - it will override anything previous
                     if(parts[0]==='http:') parts[0]='https:';
                     src=parts.join('/');
                     break;
@@ -144,6 +145,12 @@ class CDNImg extends React.Component {
 class CircleImg extends React.Component {
 
     state={width: 0, height: 0};
+
+    constructor(props){
+        super(props);
+        if(typeof CircleImg.id === 'undefined') CircleImg.id=0;
+        this.imageId='CircleImg-'+CircleImg.id++;
+    }
 
     componentDidMount() {
         if(!this.props.parent) return;
@@ -169,7 +176,7 @@ class CircleImg extends React.Component {
         var imageY=centerY-radius;
 
         if(width && height){
-            var src=CDNImg.getURLbyHeight(this.props.src, height*this.props.r*2/100);
+            var src=CDNImg.getURLbyWidthHeight(this.props.src, imageWidth, imageHeight);
             content=[
                 <svg width={width} height={height} 
                      version="1.1" 
@@ -177,13 +184,13 @@ class CircleImg extends React.Component {
                      xmlnsXlink="http://www.w3.org/1999/xlink"
                 >
                     <defs>
-                        <pattern id="circleimage" x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
-                            <image x={0} y={0} 
+                        <pattern id={this.imageId} x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
+                            <image x={0} y={0} height={imageHeight} width={imageWidth}
                              xlinkHref={src} 
                              href={src}></image>
                         </pattern>
                     </defs>
-                    <circle cx={centerX} cy={centerY} r={radius} fill="url(#circleimage)"/>
+                    <circle cx={centerX} cy={centerY} r={radius} fill={"url(#"+this.imageId+")"}/>
                 </svg>
             ]
         }
