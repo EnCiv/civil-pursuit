@@ -171,10 +171,15 @@ class CircleImg extends React.Component {
         if(width && height){
             var src=CDNImg.getURLbyHeight(this.props.src, height*this.props.r*2/100);
             content=[
-                <svg width={width} height={height}>
+                <svg width={width} height={height} 
+                     version="1.1" 
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlnsXlink="http://www.w3.org/1999/xlink"
+                >
                     <defs>
                         <pattern id="image" x={imageX} y={imageY} patternUnits="userSpaceOnUse" height={imageHeight} width={imageWidth}>
-                            <image x={0} y={0} xlinkHref={src} href={src}></image>
+                            <image x={0} y={0} 
+                             xlinkHref={src} href={src}></image>
                         </pattern>
                     </defs>
                     <circle id='top' cx={centerX} cy={centerY} r={radius} fill="url(#image)"/>
