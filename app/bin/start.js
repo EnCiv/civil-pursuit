@@ -20,7 +20,7 @@ log4js_extend(log4js, {
   format: "{at: {n: @name, f: @file, l: @line, c: @column}}"
 });
 
-if(!global.logger) global.logger = log4js.getLogger("category");
+if(!global.logger) global.logger = log4js.getLogger();
 
 Mungo.verbosity = 1;
 
