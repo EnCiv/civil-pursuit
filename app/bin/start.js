@@ -17,7 +17,7 @@ import log4js_extend            from 'log4js-extend';
 
 log4js_extend(log4js, {
   path: __dirname,
-  format: "{at: {n: '@name', f: '@file', l: @line, c: @column}}"
+  format: "{at: {n: @name', f: @file, l: @line, c: @column}}"
 });
 
 if(!global.logger) global.logger = log4js.getLogger("node");

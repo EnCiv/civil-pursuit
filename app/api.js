@@ -136,7 +136,7 @@ class API extends EventEmitter {
   start () {
     try {
       this.io = SocketIO.listen(this.server.server);
-      this.emit('message', 'socketIO listening');
+      logger.info('socketIO listening');
       this.io
         .use(this.identify.bind(this))
         .on('connection', this.connected.bind(this));
@@ -211,9 +211,10 @@ class API extends EventEmitter {
   connected (socket) {
     try {
 
-      this.emit('message', { 'new socket' :
+      logger.info({ 'new socket' :
         { id : socket.id, synuser : socket.synuser }
       });
+
 
       this.sockets.push(socket);
 
@@ -222,13 +223,13 @@ class API extends EventEmitter {
       socket.on('disconnect', () => {
       });
 
-      this.emit('message', 'new socket connexion');
+      logger.info('new socket connexion');
 
       socket.emit('welcome', socket.synuser);
 
       socket.broadcast.emit('online users', this.users.length);
       socket.emit('online users', this.users.length);
-      console.info("api: connected: socket.emit  online users",this.users.length);
+      logger.info("api: connected: socket.emit  online users",this.users.length);
 
       socket.ok = (event, ...responses) => {
         const formatted = responses.map(res => {
@@ -242,7 +243,7 @@ class API extends EventEmitter {
         });
 
         // this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
-        console.info("api: connected: socket.ok ", event, ...responses);
+        logger.info("api: connected: socket.ok ", event, ...responses);
         socket.emit('OK ' + event, ...responses);
       };
 
@@ -264,8 +265,8 @@ class API extends EventEmitter {
   stream (socket) {
     try {
       ss(socket).on('upload image', (stream, data) => {
-        console.log('<<<'.bold.cyan, 'upload image'.bold.cyan, stream, data)
         const filename = '/tmp/' + data.name;
+        logger.info('upload image', {stream}, {data}, {filename});
         stream.pipe(fs.createWriteStream(filename));
       });
     }
