@@ -9,14 +9,14 @@ import log4js_extend            from 'log4js-extend';
 
 
 
-log4js.configure({
-  appenders: [
-    { type: 'console' }
-  ]
-});
+
+log4js.loadAppender("console");
+log4js.addAppender(log4js.appenders.console());
 
 
-//log4js.loadAppender('stdout'); 
+
+
+//log4js.loadAppender(''); 
 //log4js.addAppender(log4js.appenders.stdout()); 
 /*
 log4js.replaceConsole();
@@ -33,7 +33,7 @@ log4js.configure({
 });
 */
 
-if(!window.logger) window.logger = log4js.getLogger();
+if(!window.logger) window.logger = log4js.getLogger(); else console.log("window.logger already defined");
 
 
 window.socket = io();
