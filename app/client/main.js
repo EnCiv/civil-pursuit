@@ -4,10 +4,10 @@ import React              from 'react';
 import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
-import log4js                   from 'log4js';
+//import log4js                   from 'log4js';
 //import log4js_extend            from 'log4js-extend';
 
-
+var log4js = require('log4js');
 
 
 //log4js.loadAppender("console");
