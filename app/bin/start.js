@@ -13,11 +13,8 @@ import Type                     from    '../models/type';
 import AppError                 from    '../models/app-error';
 
 import log4js                   from 'log4js';
-import log4jsWrapper            from 'log4js-function-designation-wrapper';
 
-global.logger = log4js.getLogger();
-
-var logger = log4jsWrapper(global.logger, "module-name");
+if(!global.logger) global.logger = log4js.getLogger();
 
 Mungo.verbosity = 1;
 
