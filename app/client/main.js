@@ -16,6 +16,8 @@ log4js_extend(log4js, {
 
 log4js.loadAppender('console'); 
 log4js.addAppender(log4js.appenders.console()); 
+log4js.replaceConsole();
+
 
 if(!window.logger) window.logger = log4js.getLogger("browser");
 
