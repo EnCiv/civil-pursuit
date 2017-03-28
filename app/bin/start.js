@@ -12,12 +12,18 @@ import Item                     from    '../models/item';
 import Type                     from    '../models/type';
 import AppError                 from    '../models/app-error';
 
+import log4js                   from 'log4js';
+
+var logger = log4js.getLogger();
+
 Mungo.verbosity = 1;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function start (emitter = false) {
   var verbose=false;
+
+  logger.info("start", {emitter});
 
   if ( ! emitter ) {
     emitter = new EventEmitter();
