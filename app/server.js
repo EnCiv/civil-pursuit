@@ -631,6 +631,11 @@ class HttpServer extends EventEmitter {
         env     :   this.app.get('env'),
       });
 
+      logger.info('Server is listening', {
+        port    :   this.app.get('port'),
+        env     :   this.app.get('env'),
+      });
+
       this.emit('listening', { port : this.app.get('port') });
 
       this.socketAPI = new API(this)
