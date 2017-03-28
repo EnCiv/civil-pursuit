@@ -9,15 +9,22 @@ import log4js_extend            from 'log4js-extend';
 
 
 
+
+
+//log4js.loadAppender('console'); 
+//log4js.addAppender(log4js.appenders.console()); 
+//log4js.replaceConsole();
+log4js.configure({
+  appenders: [
+    { type: "console" }
+  ],
+  replaceConsole: true
+});
+
 log4js_extend(log4js, {
   path: __dirname,
   format: "{at:{n:@name,f:@file,l:@line.@column}}"
 });
-
-log4js.loadAppender('console'); 
-log4js.addAppender(log4js.appenders.console()); 
-log4js.replaceConsole();
-
 
 if(!window.logger) window.logger = log4js.getLogger("browser");
 
