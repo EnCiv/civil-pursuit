@@ -17,10 +17,10 @@ import log4js_extend            from 'log4js-extend';
 
 log4js_extend(log4js, {
   path: __dirname,
-  format: "{at: {n: @name, f: @file, l: @line, c: @column}}"
+  format: "{at: {n: '@name', f: '@file', l: @line, c: @column}}"
 });
 
-if(!global.logger) global.logger = log4js.getLogger();
+if(!global.logger) global.logger = log4js.getLogger("node");
 
 Mungo.verbosity = 1;
 
@@ -70,7 +70,7 @@ function start (emitter = false) {
 
         () => new Promise((ok, ko) => {
           Mungo.connect(process.env.MONGOHQ_URL)
-            .on('error', error => { console.info("Mungo connection error", error); return( ko );})
+            .on('error', error => { logger.error("Mungo connection error", {error}); return( ko );})
             .on('connected', ok);
         }),
 
@@ -80,6 +80,7 @@ function start (emitter = false) {
             new Server(verbose)
               .on('listening', status => {
                 emitter.emit('message', 'HTTP server is listening'.green, status);
+                logger.info('HTTP server is listening', {status});
               })
               .on('error', emitter.emit.bind(emitter, 'error') )
               .on('message', emitter.emit.bind(emitter, 'message'));
