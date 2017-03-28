@@ -178,7 +178,6 @@ class HttpServer extends EventEmitter {
     this.getSettings();
     this.getItemPage();
     this.getPanelPage();
-    this.getQSortPage();
     this.getODG();
 
     this.app.get('/error', (req, res, next) => {
@@ -227,7 +226,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          console.info("server.getLandingPage browser", this.browser);
+          logger.info({browserConfig: this.browserConfig});
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
@@ -308,7 +307,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          console.info("server.getItemPage browser", this.browser);
+          logger.info({browserConfig: this.browserConfig});
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
@@ -352,74 +351,7 @@ class HttpServer extends EventEmitter {
     }, serverReactRender.bind(this));
   }
 
-  getQSortPage () {
-    this.app.get('/qsort/:parent_short_id/:item_slug', (req, res, next) => {
-      let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-          var sniffr = new Sniffr();
-          sniffr.sniff(req.headers['user-agent']);
-          var device = Device(req.headers['user-agent']);
-          this.browserConfig.os = sniffr.os;
-          this.browserConfig.browser = sniffr.browser;
-          this.browserConfig.type = device.type;
-          this.browserConfig.model = device.model;
-          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
-          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          console.info("server.getQsortPage browser", this.browserConfig);
-      try {
-        Item.findOne({ id : req.params.parent_short_id }).then(
-          item => {
-            if ( ! item ) {
-              console.error("server getQsortPage no item");
-              return next();
-            }
-            item.toPanelItem(userId).then(
-              item => {
-                if(! item.subtype) {
-                  console.error("server getQsortPage no item subtype");
-                  return next();
-                }
-
-                req.panels = {};
-                
-                const iPanelId=makePanelId(item);
-                req.panels[iPanelId]=makePanel(item);
-                req.panels[iPanelId].panel.items.push(item);
-                
-                const query = {
-                  type: item.subtype,
-                  parent: item._id,
-                  size: 100
-                };
-
-
-                const qPanelId=makePanelId(query);
-                req.panels[qPanelId] = makePanel(query);
-                Item
-                  .getPanelItems(query, userId)
-                  .then(
-                      results => {
-                        try {
-                          req.panels[qPanelId].panel.items=results.items.slice(0);
-                          next();
-                        }
-                        catch ( error ) {
-                          next(error);
-                        }
-                      }, this.error.bind(this)
-                    );
-              },
-              next
-            );
-          },
-          next
-        );
-      }
-      catch ( error ) {
-        next(error);
-      }
-    }, serverReactRender.bind(this));
-  }
-
+ 
   getODG () {
     try {
       this.app.get('/odg',
@@ -434,7 +366,7 @@ class HttpServer extends EventEmitter {
           this.browserConfig.model = device.model;
           this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
           this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          console.info("server.ODG browser", this.browser);
+          logger.info({browserConfig: this.browserConfig});
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
@@ -452,7 +384,7 @@ class HttpServer extends EventEmitter {
                   return next(new Error('No such type'));
                 }
 
-                console.info("server getPanelPage found type", type.name, type._id);
+                logger.info({type: {name: type.name, _id: type._id}});
 
                 Item.findOne({ id : 'bvuDs' }).then(
                   item => {
@@ -460,7 +392,7 @@ class HttpServer extends EventEmitter {
                       return next();
                     }
 
-                    console.info("server getPanelPage found item", item.subject, item._id);
+                    logger.info({item: {subject: item.subject, _id: item._id}});
 
                     const panelId = makePanelId({ type: type._id, parent : item._id });
 
@@ -469,11 +401,11 @@ class HttpServer extends EventEmitter {
                       parent: item._id,
                     };
 
-                    console.info("server getPanelPage", query, userId);
+                    logger.info({query}, {userId});
                     Item.getPanelItems(query, userId).then(
                       results => {
                         req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
-                        console.info("getPanelPage", results.count);
+                        logger.info({count: results.count});
 
                         req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
 
@@ -511,7 +443,7 @@ class HttpServer extends EventEmitter {
     this.browserConfig.model = device.model;
     this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
     this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-    console.info("server.getPanelPage browser", this.browser);
+    logger.info({browserConfig: this.browserConfig});
     if ( ! req.cookies.synapp ) {
       res.cookie('synapp',
         { training : true },
@@ -529,7 +461,7 @@ class HttpServer extends EventEmitter {
               return next(new Error('No such type'));
             }
 
-            console.info("server getPanelPage found type", type.name, type._id);
+            logger.info({type: {name: type.name, _id: type._id}});
 
             Item.findOne({ id : req.params.panelParent }).then(
               item => {
@@ -537,7 +469,7 @@ class HttpServer extends EventEmitter {
                   return next();
                 }
 
-                console.info("server getPanelPage found item", item.subject, item._id);
+                logger.info({item: {subject: item.subject, _id: item._id}});
 
                 const panelId = makePanelId({ type: type._id, parent : item._id });
 
@@ -546,11 +478,11 @@ class HttpServer extends EventEmitter {
                   parent: item._id,
                 };
 
-                console.info("server getPanelPage", query, userId);
+                logger.info({query}, {userId});
                 Item.getPanelItems(query, userId).then(
                   results => {
                     req.panels = { [panelId] : makePanel({ type: type, parent : item }) };
-                    console.info("getPanelPage", results.count);
+                    logger.info({count: results.count});
 
                      req.panels[panelId].panel.items=req.panels[panelId].panel.items.concat(results.items);
 
@@ -665,7 +597,7 @@ class HttpServer extends EventEmitter {
           this.server.close(ok);
 
           for (let socketId in this.sockets) {
-            console.log('socket', socketId, 'destroyed');
+            logger.info('destroying socket', socketId);
             this.sockets[socketId].destroy();
           }
         },
