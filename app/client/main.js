@@ -16,17 +16,18 @@ import log4js_extend            from 'log4js-extend';
 //log4js.replaceConsole();
 log4js.configure({
   appenders: [
-    { type: "console" }
+    { type: "stdout" }
   ],
   replaceConsole: true
 });
 
-log4js_extend(log4js, {
+/*log4js_extend(log4js, {
   path: __dirname,
   format: "{at:{n:@name,f:@file,l:@line.@column}}"
 });
+*/
 
-if(!window.logger) window.logger = log4js.getLogger("browser");
+if(!window.logger) window.logger = log4js.getLogger();
 
 
 window.socket = io();
