@@ -5,22 +5,12 @@ import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 import log4js                   from 'log4js';
-import log4js_extend            from 'log4js-extend';
+//import log4js_extend            from 'log4js-extend';
 
 
 
 
 //log4js.loadAppender("console");
-
-log4js.configure({
-
-      appenders: { console: { type: 'console', layout: { type: 'messagePassThrough' } } },
-
-      categories: { default: { appenders: ['console'], level: 'DEBUG' } }
-
-    });
-
-
 
 
 //log4js.loadAppender(''); 
