@@ -10,8 +10,15 @@ import log4js_extend            from 'log4js-extend';
 
 
 
-log4js.loadAppender("console");
-log4js.addAppender(log4js.appenders.console());
+//log4js.loadAppender("console");
+
+log4js.configure({
+
+      appenders: { console: { type: 'console', layout: { type: 'messagePassThrough' } } },
+
+      categories: { default: { appenders: ['console'], level: 'DEBUG' } }
+
+    });
 
 
 
@@ -33,7 +40,7 @@ log4js.configure({
 });
 */
 
-if(!window.logger) window.logger = log4js.getLogger(); else console.log("window.logger already defined");
+//if(!window.logger) window.logger = log4js.getLogger(); else console.log("window.logger already defined");
 
 
 window.socket = io();
@@ -47,7 +54,6 @@ window.socket.on('welcome', user => {
 
 function render (props) {
   console.log('Rendering app', props);
-  logger.info({props});
   ReactDOM.render(<App { ...props } />, document.getElementById('synapp'));
 }
 
