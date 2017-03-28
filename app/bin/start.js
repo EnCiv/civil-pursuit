@@ -13,8 +13,14 @@ import Type                     from    '../models/type';
 import AppError                 from    '../models/app-error';
 
 import log4js                   from 'log4js';
+import log4js_extend            from 'log4js-extend';
 
-if(!global.logger) global.logger = log4js.getLogger();
+log4js_extend(log4js, {
+  path: __dirname,
+  format: "at @name (@file:@line:@column)"
+});
+
+if(!global.logger) global.logger = log4js.getLogger("category");
 
 Mungo.verbosity = 1;
 
@@ -23,7 +29,7 @@ Mungo.verbosity = 1;
 function start (emitter = false) {
   var verbose=false;
 
-  logger.info("start", {emitter});
+  logger.info(__filename, {emitter});
 
   if ( ! emitter ) {
     emitter = new EventEmitter();

@@ -59,7 +59,7 @@
     "less": "^2.7.2",
     "lodash": "^4.17.4",
     "log4js": "^1.1.1",
-    "log4js-function-designation-wrapper ": "^0.0.1",
+    "log4js-extend": "^0.1.2",
     "marked": "^0.3.3",
     "moment": "^2.10.6",
     "mungo": "https://github.com/Synaccord/mungo.git#v2.3.3.6",
