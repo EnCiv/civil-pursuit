@@ -9,10 +9,15 @@ import log4js_extend            from 'log4js-extend';
 
 
 
+log4js.configure({
+  appenders: [
+    { type: 'console' }
+  ]
+});
 
 
-log4js.loadAppender('stdout'); 
-log4js.addAppender(log4js.appenders.stdout()); 
+//log4js.loadAppender('stdout'); 
+//log4js.addAppender(log4js.appenders.stdout()); 
 /*
 log4js.replaceConsole();
 log4js.configure({
