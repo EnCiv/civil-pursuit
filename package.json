@@ -60,6 +60,7 @@
     "lodash": "^4.17.4",
     "log4js": "https://github.com/nomiddlename/log4js-node.git",
     "log4js-extend": "^0.1.2",
+    "log4js-node-mongodb": "^2.2.1",
     "marked": "^0.3.3",
     "moment": "^2.10.6",
     "mungo": "https://github.com/Synaccord/mungo.git#v2.3.3.6",
