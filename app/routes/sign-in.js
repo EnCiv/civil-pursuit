@@ -5,6 +5,8 @@ import Discussion  from '../models/discussion';
 
 function signIn (req, res, next) {
 
+  logger.info({signIn: req.body});
+
   try {
 
     let { email, password, facebook } = req.body;

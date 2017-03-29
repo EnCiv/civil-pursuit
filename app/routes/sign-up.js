@@ -9,9 +9,9 @@ function signUp (req, res, next) {
 
     let { email, password, facebook } = req.body;
 
-    console.info("sign-up", req.body);
+    logger.info({signUp: req.body});
 
-    console.log("sign-up", { email, password, facebook });
+    //console.info("sign-up", { email, password, facebook });
     //console.info("sign-up detail", req, res);
 
     if ( facebook ) {
