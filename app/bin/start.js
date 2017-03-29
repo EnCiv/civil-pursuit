@@ -14,13 +14,19 @@ import AppError                 from    '../models/app-error';
 
 import log4js                   from 'log4js';
 import log4js_extend            from 'log4js-extend';
+import mongoAppender            from 'log4js-node-mongodb';
+
+log4js.addAppender(
+    mongoAppender.appender({connectionString: process.env.MONGOHQ_URL}),
+    'node'
+);
 
 log4js_extend(log4js, {
   path: __dirname,
   format: "{at:{n:@name,f:@file,l:@line.@column}}"
 });
 
-if(!global.logger) global.logger = log4js.getLogger("node");
+if(!global.logger) global.logger = log4js.getLogger('node');
 
 Mungo.verbosity = 1;
 

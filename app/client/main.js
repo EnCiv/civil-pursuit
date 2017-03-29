@@ -4,7 +4,6 @@ import React              from 'react';
 import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
-import log4js             from 'log4js';
 
 window.socket = io();
 
