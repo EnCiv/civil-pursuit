@@ -211,10 +211,6 @@ class API extends EventEmitter {
   connected (socket) {
     try {
 
-      logger.info({ 'new socket' :
-        { id : socket.id, synuser : socket.synuser }
-      });
-
 
       this.sockets.push(socket);
 
@@ -223,13 +219,11 @@ class API extends EventEmitter {
       socket.on('disconnect', () => {
       });
 
-      logger.info('new socket connexion');
-
       socket.emit('welcome', socket.synuser);
 
       socket.broadcast.emit('online users', this.users.length);
       socket.emit('online users', this.users.length);
-      logger.info("api: connected: socket.emit  online users",this.users.length);
+      logger.trace('socket connected', { id : socket.id, synuser : socket.synuser, onlineUsers: this.users.length });
 
       socket.ok = (event, ...responses) => {
         const formatted = responses.map(res => {
@@ -243,7 +237,7 @@ class API extends EventEmitter {
         });
 
         // this.emit('message', '>>>'.green.bold, event.green.bold, ...formatted);
-        logger.info("api: connected: socket.ok ", event, ...responses);
+        logger.trace("api: connected: socket.ok ", event, ...responses);
         socket.emit('OK ' + event, ...responses);
       };
 
