@@ -26,7 +26,11 @@ log4js_extend(log4js, {
   format: "{at:{n:@name,f:@file,l:@line.@column}}"
 });
 
-if(!global.logger) global.logger = log4js.getLogger('node');
+if(!global.logger) {
+  global.logger = log4js.getLogger('node');
+  global.logger.setLevel("INFO");
+}
+
 
 Mungo.verbosity = 1;
 
