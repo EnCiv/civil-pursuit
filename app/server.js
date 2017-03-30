@@ -81,11 +81,11 @@ class HttpServer extends EventEmitter {
 
           this.signers();
 
-          this.router();
-
           this.api();
 
           this.cdn();
+
+          this.router();
 
           this.notFound();
 
@@ -115,6 +115,23 @@ class HttpServer extends EventEmitter {
 
     this.app.use(passport.initialize());
   }
+
+  getBrowserConfig(){
+    this.app.use((req, res, next) => {
+      var sniffr = new Sniffr();
+      sniffr.sniff(req.headers['user-agent']);
+      var device = Device(req.headers['user-agent']);
+      this.browserConfig.os = sniffr.os;
+      this.browserConfig.browser = sniffr.browser;
+      this.browserConfig.type = device.type;
+      this.browserConfig.model = device.model;
+      this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
+      this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
+      logger.info(req.method, req.originalURL, {browserConfig: this.browserConfig});
+      next();
+    });
+  }
+
 
   parsers () {
     this.app.use(
@@ -172,6 +189,7 @@ class HttpServer extends EventEmitter {
 
   router () {
     this.timeout();
+    this.getBrowserConfig();
     this.getLandingPage();
     this.getOldfield();
     this.getTermsOfServicePage();
@@ -217,16 +235,6 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/',
         (req, res, next) => {
-          var sniffr = new Sniffr();
-          sniffr.sniff(req.headers['user-agent']);
-          var device = Device(req.headers['user-agent']);
-          this.browserConfig.os = sniffr.os;
-          this.browserConfig.browser = sniffr.browser;
-          this.browserConfig.type = device.type;
-          this.browserConfig.model = device.model;
-          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
-          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          logger.info({browserConfig: this.browserConfig});
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
@@ -298,16 +306,6 @@ class HttpServer extends EventEmitter {
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-          var sniffr = new Sniffr();
-          sniffr.sniff(req.headers['user-agent']);
-          var device = Device(req.headers['user-agent']);
-          this.browserConfig.os = sniffr.os;
-          this.browserConfig.browser = sniffr.browser;
-          this.browserConfig.type = device.type;
-          this.browserConfig.model = device.model;
-          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
-          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          logger.info({browserConfig: this.browserConfig});
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
           item => {
@@ -357,16 +355,6 @@ class HttpServer extends EventEmitter {
       this.app.get('/odg',
         (req, res, next) => {
           var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-          var sniffr = new Sniffr();
-          sniffr.sniff(req.headers['user-agent']);
-          var device = Device(req.headers['user-agent']);
-          this.browserConfig.os = sniffr.os;
-          this.browserConfig.browser = sniffr.browser;
-          this.browserConfig.type = device.type;
-          this.browserConfig.model = device.model;
-          this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
-          this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-          logger.info({browserConfig: this.browserConfig});
           if ( ! req.cookies.synapp ) {
             res.cookie('synapp',
               { training : true },
@@ -434,16 +422,6 @@ class HttpServer extends EventEmitter {
   getPanelPage () {
     this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
     var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-    var sniffr = new Sniffr();
-    sniffr.sniff(req.headers['user-agent']);
-    var device = Device(req.headers['user-agent']);
-    this.browserConfig.os = sniffr.os;
-    this.browserConfig.browser = sniffr.browser;
-    this.browserConfig.type = device.type;
-    this.browserConfig.model = device.model;
-    this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
-    this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-    logger.info({browserConfig: this.browserConfig});
     if ( ! req.cookies.synapp ) {
       res.cookie('synapp',
         { training : true },

@@ -89,7 +89,6 @@ function start (emitter = false) {
           try {
             new Server(verbose)
               .on('listening', status => {
-                emitter.emit('message', 'HTTP server is listening'.green, status);
                 logger.info('HTTP server is listening', {status});
               })
               .on('error', emitter.emit.bind(emitter, 'error') )
