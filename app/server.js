@@ -127,7 +127,7 @@ class HttpServer extends EventEmitter {
       this.browserConfig.model = device.model;
       this.browserConfig.referrer = req.headers['referrer']; //  Get referrer for referrer
       this.browserConfig.ip=req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get IP - allow for proxy
-      logger.info(req.method, req.originalURL, {browserConfig: this.browserConfig});
+      logger.info(req.method, req.originalUrl, {browserConfig: this.browserConfig});
       next();
     });
   }
