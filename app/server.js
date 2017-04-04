@@ -216,6 +216,7 @@ class HttpServer extends EventEmitter {
   timeout () {
     this.app.use((req, res, next) => {
       setTimeout(() => {
+        logger.info("timeout headersSent:", res.headersSent);
         if ( ! res.headersSent ) {
           next(new Error('Test error > timeout'));
         }
@@ -536,11 +537,6 @@ class HttpServer extends EventEmitter {
     });
 
     this.server.listen(this.app.get('port'),  () => {
-      this.emit('message', 'Server is listening', {
-        port    :   this.app.get('port'),
-        env     :   this.app.get('env'),
-      });
-
       logger.info('Server is listening', {
         port    :   this.app.get('port'),
         env     :   this.app.get('env'),
