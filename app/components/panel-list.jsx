@@ -19,7 +19,6 @@ class PanelList extends React.Component {
   state = {
     discussion: null,
     topLevelType: null,
-    training: null,
     typeList: [],
     currentPanel: null,
     containerWidth: 0,
