@@ -531,6 +531,7 @@ class HttpServer extends EventEmitter {
 
   start () {
     this.server = http.createServer(this.app);
+    this.server.timeout=3*60*1000;
 
     this.server.on('error', error => {
       this.emit('error', error);
