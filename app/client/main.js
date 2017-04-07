@@ -15,26 +15,16 @@ if(typeof window !== 'undefined') {
                                   { type: 'console' },
                                 ]
                               }
-  }
-}
+  };
+  
+  import log4js                   from 'log4js';
+  import log4js_extend            from 'log4js-extend';
 
-import log4js                   from 'log4js';
-import log4js_extend            from 'log4js-extend';
+  log4js_extend(log4js, {
+    path: __dirname,
+    format: "{at:{n:@name,f:@file,l:@line.@column}}"
+  });
 
-log4js_extend(log4js, {
-  path: __dirname,
-  format: "{at:{n:@name,f:@file,l:@line.@column}}"
-});
-
-if(typeof global != 'undefined' && !global.logger) {
-  // running on node and logger isn't defined yet
-  global.logger = log4js.getLogger('node');
-  global.logger.setLevel("INFO");
-  logger.info("client main running on node");
-}
-
-if(typeof window != 'undefined' && !window.logger) {
-  // running on browser and logger isn't defined yet
   window.logger = log4js.getLogger('browser');
   window.logger.setLevel("INFO");
   console.info("client main running on browser");
