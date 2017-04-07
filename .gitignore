@@ -9,4 +9,4 @@
 /assets/css/index.css
 /assets/css/index.min.css
 /assets/bower_components/*
-
+/bconsole/node_modules/*
