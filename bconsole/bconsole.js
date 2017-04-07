@@ -1,11 +1,10 @@
 "use strict";
-var layouts = require('log4js').layouts
-, consoleLog = console.log.bind(console);
+var layouts = require('log4js').layouts;
 
 function bconsoleAppender (layout, timezoneOffset) {
   layout = layout || layouts.messagePassThroughLayout;
   return function(loggingEvent) {
-    consoleLog(layout(loggingEvent, timezoneOffset));
+    console.info(layout(loggingEvent, timezoneOffset));
   };
 }
 
