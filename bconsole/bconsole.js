@@ -3,7 +3,7 @@ var layouts = require('log4js').layouts
 , consoleLog = console.log.bind(console);
 
 function bconsoleAppender (layout, timezoneOffset) {
-  layout = layout || layouts.colouredLayout;
+  layout = layout || layouts.messagePassThroughLayout;
   return function(loggingEvent) {
     consoleLog(layout(loggingEvent, timezoneOffset));
   };
