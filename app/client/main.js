@@ -15,6 +15,8 @@ if(typeof window !== 'undefined') {
                                   { type: 'bconsole' },
                                 ]
                               };
+  window.process={};
+  window.process.env=process.env;
   console.log("require log4js", process.env);
   //var bconsoleAppender = require('./bconsoleappender');
   var log4js = require('log4js');
