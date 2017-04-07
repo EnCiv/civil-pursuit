@@ -4,12 +4,12 @@ import QVote from '../models/qvote';
 
 function getQVoteInfo (itemId, own, cb) {
  const user= own ? (this.synuser ? this.synuser.id : null) : null;
- if(own && !user) return; // nothing to do here
-
+ if(own && !user) cb([]); // return nothing
+ else
   QVote.getAccumulation(itemId, user)
     .then(results => {
-        if(!results){return;}  // if no data then don't do the call back
-        cb(results)
+        if(!results){cb([])}  // return nothing
+        else cb(results);
     })
     .catch(this.error.bind(this));
 }
