@@ -6,9 +6,16 @@ import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 
 // process has to be defined before log4js is imported on the browser side.
-if(typeof process === 'undefined') {
-  window.process={stdout: {write: function (str) {console.log(str)}}};
+if(typeof window !== 'undefined') {
+  if(!window.process) window.process={};
+  window.process.stdout={write: function (str) {console.log(str)}};
   process.stdout.write("stdout installed");
+  process.env={LOG4JS_CONFIG: {
+                                appenders: [
+                                  { type: 'console' },
+                                ]
+                              }
+  }
 }
 
 import log4js                   from 'log4js';
