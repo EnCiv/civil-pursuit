@@ -10,8 +10,8 @@ import log4js_extend            from 'log4js-extend';
 if(typeof window !== 'undefined') {
   if(!window.process) window.process={};
   window.process.stdout={write: function (str) {console.log(str)}};
-  process.stdout.write("stdout installed");
-  process.env={LOG4JS_CONFIG: {
+  //window.process.stdout.write("stdout installed");
+  window.process.env={LOG4JS_CONFIG: {
                                 appenders: [
                                   { type: 'console' },
                                 ]
