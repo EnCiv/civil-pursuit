@@ -188,7 +188,7 @@ class HttpServer extends EventEmitter {
   }
 
   router () {
-    this.timeout();
+    if ( process.env.NODE_ENV !== 'production' ) this.timeout();
     this.getBrowserConfig();
     this.getLandingPage();
     this.getOldfield();
@@ -213,12 +213,13 @@ class HttpServer extends EventEmitter {
     });
   }
 
+  // a minute after a request has been received, check and see if the response has been sent.
   timeout () {
     this.app.use((req, res, next) => {
       setTimeout(() => {
-        logger.info("timeout headersSent:", res.headersSent);
-        if ( ! res.headersSent ) {
-          next(new Error('Test error > timeout'));
+         if ( ! res.headersSent ) {
+          logger.error("timeout headersSent:", res.headersSent);
+          next(new Error('Test error > timeout headers not sent'));
         }
       }, 1000 * 60);
       next();
