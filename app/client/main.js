@@ -8,10 +8,8 @@ import Facebook           from '../lib/app/fb-sdk';
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
-  if(!process){ 
-    console.error("main: process not defined"); 
-    var process={env: {}};
-  }
+  console.info("main: window.process, process",typeof window.process, typeof process ); 
+
   process.env.LOG4JS_CONFIG= {
                                 appenders: [
                                   { type: 'bconsole' },
