@@ -5,7 +5,6 @@ import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 //import log4js_extend            from 'log4js-extend';
-import bconsoleAppender      from './bconsoleappender';  // import this now so it's available to the browser when required
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
@@ -19,6 +18,7 @@ if(typeof window !== 'undefined') {
                                 ]
                               };
   console.log("require log4js", process.env);
+  //var bconsoleAppender = require('./bconsoleappender');
   var log4js = require('log4js');
 
 
