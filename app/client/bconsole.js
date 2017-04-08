@@ -1,7 +1,7 @@
 "use strict";
 
 function bconsoleAppender (layout, timezoneOffset) {
-  layout = layout || function(e,t){return e};
+  layout = layout || function(e,t){return (e.startTime, e.categoryName, ...e.data)};
   return function(loggingEvent) {
     console.info(layout(loggingEvent, timezoneOffset));
   };
