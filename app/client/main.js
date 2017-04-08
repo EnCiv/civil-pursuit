@@ -8,17 +8,7 @@ import Facebook           from '../lib/app/fb-sdk';
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
-  console.info("main: window.process, process",typeof window.process, typeof process ); 
-
-  process.env.LOG4JS_CONFIG= {
-                                appenders: [
-                                  { type: 'bconsole' },
-                                ]
-                              };
-  //window.process={};
-  //window.process.env=process.env;
-  console.log("require log4js", process.env);
-  //var bconsoleAppender = require('./bconsoleappender');
+  process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }]};
   var log4js = require('log4js');
 
 
@@ -29,7 +19,7 @@ if(typeof window !== 'undefined') {
 
   window.logger = log4js.getLogger('browser');
   window.logger.setLevel("INFO");
-  console.info("client main running on browser");
+  logger.info("client main running on browser");
 }
 
 window.socket = io();
