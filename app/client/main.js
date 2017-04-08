@@ -4,7 +4,7 @@ import React              from 'react';
 import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
-import log4js_extend            from 'log4js-extend';
+//import log4js_extend            from 'log4js-extend';
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
@@ -12,10 +12,10 @@ if(typeof window !== 'undefined') {
   var log4js = require('log4js');
 
 
-  log4js_extend(log4js, {
-    path: __dirname,
-    format: "{at:{n:@name,f:@file,l:@line.@column}}"
-  });
+//  log4js_extend(log4js, {
+//    path: __dirname,
+//    format: "{at:{n:@name,f:@file,l:@line.@column}}"
+//  });
 
   window.logger = log4js.getLogger('browser');
   window.logger.setLevel("INFO");

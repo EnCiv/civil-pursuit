@@ -1,7 +1,7 @@
 "use strict";
 
 
-// on the broswer, console.info display objects in a way that is compact and lets you expand them and dig down.
+// on the broswer, console.log displays objects in a way that is compact and lets you expand them through the UI.
 // so this default layout will preserve the objects and pass them to console.log
 function bconsoleAppender (layout, timezoneOffset) {
   layout = layout || function(e,t){
