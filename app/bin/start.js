@@ -21,6 +21,11 @@ log4js.addAppender(
     'node'
 );
 
+log4js.addAppender(
+    mongoAppender.appender({connectionString: process.env.MONGOHQ_URL}),
+    'browser'
+);
+
 if(!global.bslogger){  // used by socketlogger - doesn't include extend because that would always be the same
   global.bslogger=log4js.getLogger('browser');
   global.bslogger.setLevel("INFO");
