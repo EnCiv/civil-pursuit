@@ -31,19 +31,17 @@ if(!global.bslogger){  // used by socketlogger - doesn't include extend because 
   global.bslogger.setLevel("INFO");
 }
 
-//log4js_extend(log4js, {
-//  path: __dirname,
-//  format: "{at:{n:@name,f:@file,l:@line.@column}}"
-//});
+log4js_extend(log4js, {
+  path: __dirname,
+  format: "{at:{n:@name,f:@file,l:@line.@column}}"
+});
 
 if(!global.logger) {
   global.logger = log4js.getLogger('node');
   global.logger.setLevel("INFO");
-  log4js_extend({getLogger: ()=>global.logger},{
-    path: __dirname,
-    format: "{at:{n:@name,f:@file,l:@line.@column}}"
-  });
 }
+
+console.info("bslogger", bslogger.emit, bslogger.this, bslogger.prototype);
 
 
 Mungo.verbosity = 1;
