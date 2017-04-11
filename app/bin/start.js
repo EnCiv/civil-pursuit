@@ -21,6 +21,11 @@ log4js.addAppender(
     'node'
 );
 
+if(!global.bslogger){  // used by socketlogger - doesn't include extend because that would always be the same
+  global.bslogger=log4js.getLogger('browser');
+  global.bslogger.setLevel("INFO");
+}
+
 log4js_extend(log4js, {
   path: __dirname,
   format: "{at:{n:@name,f:@file,l:@line.@column}}"
