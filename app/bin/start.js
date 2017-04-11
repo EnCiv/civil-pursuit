@@ -41,7 +41,6 @@ if(!global.logger) {
   global.logger.setLevel("INFO");
 }
 
-console.info("bslogger", bslogger.emit, bslogger.this, bslogger.prototype);
 
 
 Mungo.verbosity = 1;
