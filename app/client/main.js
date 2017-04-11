@@ -5,7 +5,6 @@ import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 //import log4js_extend            from 'log4js-extend';
-import socketlogger from './socketlogger';
 
 window.socket = io();
 
