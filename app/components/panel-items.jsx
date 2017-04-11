@@ -122,7 +122,7 @@ class PanelItems extends React.Component {
 
   toggle (itemId, section) {
 
-    console.info("PanelItems.toggle",itemId, section);
+    logger.info("PanelItems.toggle",itemId, section);
 
     var ooview='truncated';
     if(this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod ==="ooview") ooview='ooview';
