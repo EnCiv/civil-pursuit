@@ -5,10 +5,20 @@ import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
 //import log4js_extend            from 'log4js-extend';
+import socketlogger from './socketlogger';
+
+window.socket = io();
+
+window.socket.on('welcome', user => {
+  if ( ! user ) {
+    new Facebook().on('ready', () => Facebook.connect(false));
+  }
+  render(Object.assign({}, reactProps, { user }));
+});
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
-  process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }]};
+  process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }, {type: 'socketlogger'}]};
   var log4js = require('log4js');
 
 
@@ -21,15 +31,6 @@ if(typeof window !== 'undefined') {
   window.logger.setLevel("INFO");
   logger.info("client main running on browser");
 }
-
-window.socket = io();
-
-window.socket.on('welcome', user => {
-  if ( ! user ) {
-    new Facebook().on('ready', () => Facebook.connect(false));
-  }
-  render(Object.assign({}, reactProps, { user }));
-});
 
 function render (props) {
   console.log('Rendering app', props);
