@@ -234,7 +234,7 @@ class TopBar extends React.Component {
     menustrip.push(
       <div className="syn-top_bar-menu-item" >
         <button onClick={this.goToPage.bind(this, '/about')} >
-          <span>About</span>
+          <a href='/about'>About</a>
         </button>
       </div>
       );
