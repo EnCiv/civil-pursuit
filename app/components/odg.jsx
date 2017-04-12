@@ -261,8 +261,8 @@ class OnlineDeliberationGame extends React.Component {
                                     <div className='odg-main-box-description'>A muiliplayer deliberation game where diverse teams of conservatives and liberals from across the country take on polarized issues to find solutions to what divides us.</div>
                                 </div>
                                 <div className='odg-main-box-image' ref="main">
-                                    <CircleImg cx={49} cy={47} r={22} src="http://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
-                                    <CDNImg src="http://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
+                                    <CircleImg cx={49} cy={47} r={22} src="https://res.cloudinary.com/hrltiizbo/image/upload/v1456513725/capitol_crowd_wrong_way_andwo1.jpg" parent={this.refs.main} />
+                                    <CDNImg src="https://res.cloudinary.com/hrltiizbo/image/upload/v1488346232/31311905_l_Circle_Table_-_white_mqbo5o.png" />
                                 </div>
                             </Boxes>
                             <div className='odg-intro-tag-line'>Find the Solutions to What Divides Us</div>

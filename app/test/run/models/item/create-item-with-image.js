@@ -59,7 +59,7 @@ function testCreateItem (props) {
         it('Cloudinary Image', it => {
           it('should be a cloudinary url', () =>
             locals.item.should.have.property('image')
-              .which.startWith('http://res.cloudinary.com/')
+              .which.startWith('https://res.cloudinary.com/')
           );
         });
       });

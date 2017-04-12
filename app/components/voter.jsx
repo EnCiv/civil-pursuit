@@ -46,7 +46,7 @@ class Voter extends React.Component {
     return (
       <section>
         <section style={{ width: '50%', float : 'left' }}>
-          <Image src="http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png" responsive />
+          <Image src="https://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png" responsive />
         </section>
 
         <section className="gutter">

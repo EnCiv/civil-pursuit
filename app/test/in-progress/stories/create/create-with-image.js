@@ -122,7 +122,7 @@ function test(props) {
       });
 
       it('Image is cloudinary', it => {
-        locals.item.image.should.startWith('http://res.cloudinary.com/');
+        locals.item.image.should.startWith('https://res.cloudinary.com/');
       });
 
       it('Image has updated in item box', () =>

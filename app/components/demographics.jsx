@@ -97,7 +97,7 @@ class Demographics extends React.Component {
     return (
       <section className="demographics">
         <section style={{ width: '50%', float : 'left' }}>
-          <Image src="http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png" responsive />
+          <Image src="https://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png" responsive />
         </section>
 
         <section className="gutter">
