@@ -190,7 +190,7 @@ class HttpServer extends EventEmitter {
   router () {
     if ( process.env.NODE_ENV !== 'production' ) this.timeout();
     this.getBrowserConfig();
-    app.get('/robots.txt', function (req, res) { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
+    this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
     this.getLandingPage();
     this.getOldfield();
     this.getTermsOfServicePage();
