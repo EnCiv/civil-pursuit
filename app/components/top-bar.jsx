@@ -13,7 +13,29 @@ import HeaderMenu                     from './header-menu';
 import selectors                      from '../../selectors.json';
 import menus                          from '../../fixtures/header-menu/1.json';
 
+
 class TopBar extends React.Component {
+  topStrip=[];
+  topBurger=[];
+
+  renderMenuItem(name, onClick, href){
+      // on desktop the menu is a strip across the top
+      this.topStrip.push(
+      <div className="syn-top_bar-menu-item">
+        <button onClick={onClick} >
+          <a href={href}>{name}</a>
+        </button>
+      </div>
+      );
+      // on smartphone the menu is a hamber in the upper right corner
+      this.topBurger.push(
+        <li>
+          <button onClick={onClick}>
+            <a href={href}>{name}</a>
+          </button>
+        </li>
+      );
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -156,132 +178,18 @@ class TopBar extends React.Component {
 
     let onlineNow = this.props.online || 0;
 
-    let right1, right2, menu1, menu2;
+    this.renderMenuItem("Challenges",this.goToPage.bind(this, '/'), '/' )
+    this.renderMenuItem("About",this.goToPage.bind(this, '/about'),'/about');
+    this.renderMenuItem("Blog",this.goToHref.bind(this, "https://synaccord.wordpress.com/"),"https://synaccord.wordpress.com/")
+    if(user) {
+      this.renderMenuItem("Profile",this.goToPage.bind(this, '/page/profile'),'/page/profile');
+      this.renderMenuItem("Logout",this.signOut.bind(this),'/sign/out');
+    } else {
+      this.renderMenuItem("Login",this.toggleLogin.bind(this), '/' );
+      this.renderMenuItem("Join",this.toggleJoin.bind(this), '/' );      
+    }
 
-    // if ( ready ) {
-      if ( user ) {
-        right1 = (
-            <div className="syn-top_bar-menu-item" key={ `header-menu-profile-button` } >
-              <button onClick={ this.goToPage.bind(this, '/page/profile') }>
-                <span>Profile</span>
-              </button>
-            </div>
-        );
-        right2 = (
-            <div className="syn-top_bar-menu-item">
-              <button onClick={ this.signOut.bind(this) }>
-                <span>Logout</span>
-              </button>
-            </div>
-        );
-        menu1 = (
-          <li key={ `header-menu-profile-button` }>
-            <button onClick={this.goToPage.bind(this, '/page/profile') }>
-              <span>Profile</span>
-            </button>
-          </li>
-        );
-        menu2 = (
-          <li key={ `header-menu-signout-button` }>
-            <button onClick={this.signOut.bind(this) }>
-              <span>Logout</span>
-            </button>
-          </li>
-        );
-      }
-      else {
-        right1 = (
-            <div className="syn-top_bar-menu-item">
-              <button onClick={ this.toggleLogin.bind(this) }>
-                <span>Login</span>
-              </button>
-            </div>
-        );
-        right2 = (
-            <div className="syn-top_bar-menu-item">
-              <button onClick={ this.toggleJoin.bind(this) }>
-                <span>Join</span>
-              </button>
-            </div>
-        );
-        menu1 = (
-          <li key={ `header-menu-login-button` }>
-            <button onClick={this.toggleLogin.bind(this) }>
-              <span>Login</span>
-            </button>
-          </li>
-        );
-        menu2 = (
-          <li key={ `header-menu-join-button` }>
-            <button onClick={this.toggleJoin.bind(this) }>
-              <span>Join</span>
-            </button>
-          </li>
-        );
-      }
-  
-    // }
-
-    let menustrip = [];
-
-    menustrip.push(
-      <div className="syn-top_bar-menu-item">
-        <button onClick={this.goToPage.bind(this, '/')} >
-          <span>Challenges</span>
-        </button>
-      </div>
-      );
-
-    menustrip.push(
-      <div className="syn-top_bar-menu-item" >
-        <button onClick={this.goToPage.bind(this, '/about')} >
-          <a href='/about'>About</a>
-        </button>
-      </div>
-      );
-
-    menustrip.push(
-      <div className="syn-top_bar-menu-item" >
-        <button onClick={this.goToHref.bind(this, "https://synaccord.wordpress.com/")} >
-          <span>Blog</span>
-        </button>
-      </div>
-      );
-
-
-    menustrip.push(right1);
-    menustrip.push(right2);
-
-    let menuViews = [];
-
-    menuViews.push(
-      <li>
-        <a href={ '/' } onClick={this.goToPage.bind(this, '/')} >
-          <span>Challenges</span>
-        </a>
-      </li>
-      );
-
-    menuViews.push(
-      <li>
-        <a href={ '/about' } onClick={this.goToPage.bind(this, '/about')} >
-          <span>About</span>
-        </a>
-      </li>
-      );
-
-    menuViews.push(
-      <li>
-        <a href={'https://synaccord.wordpress.com/'} onClick={this.goToHref.bind(this, 'https://synaccord.wordpress.com/')} >
-          <span>Blog</span>
-        </a>
-      </li>
-      );
-
-    menuViews.push(menu1);
-    menuViews.push(menu2);
-
-
+    
     return (
       <section>
         <header role="banner" className="syn-top_bar-wrapper">
@@ -307,7 +215,7 @@ class TopBar extends React.Component {
               </section>
             </section>
             <section className="syn-top_bar-menu-row">
-              { menustrip }
+              { this.topStrip }
             </section>
           </div>
         </header>
@@ -317,7 +225,7 @@ class TopBar extends React.Component {
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
         <section id="syn-header-menu" ref="header-menu">
           <ul>
-           { menuViews }
+           { this.topBurger }
           </ul>
         </section>
       </section>
@@ -325,8 +233,4 @@ class TopBar extends React.Component {
   }
 }
 
-// moved this out of render - return because I couldn't comment it out.
-//              <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
-//                Online now: { onlineNow }
-//              </section>
 export default TopBar;
