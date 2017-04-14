@@ -136,26 +136,31 @@ class TopBar extends React.Component {
   // if you don't select a menu item, or press the burger in 15 seconds, the menu slides out to the right 
 
   headerMenuTimeout=null;
+  headerMenuTop=0;
+  
   headerMenuHandler (e) {
     e.preventDefault();
     const headerMenu = this.refs.hamburgermenu;
     const hamburger = this.refs.hamburger;
     const headerWidth = headerMenu.offsetWidth;
     
+    // first time through move the burger Menu below the burger
+    if(!this.headerMenuTop) this.headerMenuTop=this.headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
 
     hamburger.classList.toggle('on');
     headerMenu.classList.toggle('visible');
 
-    function off (){
+    function off () {
         headerMenu.style.right= -1.5*headerWidth+'px';
         setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')},500)
     }
 
     if ( headerMenu.classList.contains('visible') ) {
-      this.headerMenuTimeout=setTimeout(this.off, 15000);
+      headerMenu.style.right= 0;
+      this.headerMenuTimeout=setTimeout(off, 15000);
     }else{
       if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
-      this.off()  
+      off();  
     }
   }
 
