@@ -128,33 +128,37 @@ class TopBar extends React.Component {
 
   headerMenuTimeout=null;
   headerMenuTop=0;
+  headerWidth=0;
 
   headerMenuHandler (e) {
     e.preventDefault();
     const headerMenu = this.refs.hamburgermenu;
     const hamburger = this.refs.hamburger;
-    const headerWidth = headerMenu.offsetWidth;
+    
     
     // first time through move the burger Menu below the burger
+    // calculate the width, and move it right of the screen
     if(!this.headerMenuTop) {
-      headerMenu.style.right= -(headerWidth+1)+'px';
       this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+      headerMenu.classList.add('visible');
+      this.headerWidth=headerMenu.offsetWidth; // get the width
+      headerMenu.style.right=-(this.headerWidth+1)+'px';
+      headerMenu.classList.add('transitions');
     }
-
 
     hamburger.classList.toggle('on');
 
     function off () {
-        headerMenu.style.right= -(headerWidth+1)+'px';
-        setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')},500)
+        headerMenu.style.right= -(this.headerWidth+1)+'px';
+        setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')}, 500)
     }
 
     if ( headerMenu.classList.contains('visible') ) {
       if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
-      off();  
+      off();
     }else{
-      headerMenu.classList.toggle('visible');
-      setTimeout(()=>headerMenu.style.right= 0); // in the next tick change right so that the motion occurs after visible is set
+      headerMenu.classList.add('visible');
+      headerMenu.style.right= 0; // in the next tick change right so that the motion occurs after visible is set
       this.headerMenuTimeout=setTimeout(off, 15000);
     }
   }

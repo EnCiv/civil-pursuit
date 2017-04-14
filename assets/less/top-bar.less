@@ -223,7 +223,6 @@
 
 .top_bar-hamburger {
   height: 100%;
-  transition: all linear 500ms;
   color: @syn-purple-color;
   font-size: 2.5rem;
 
@@ -245,13 +244,16 @@
   margin-top: 1rem;
   right: -100vw;
   box-sizing: border-box;
-  transition: all linear 500ms;
   outline: 1px solid #444;
   background: rgba(red(@syn-purple-color), green(@syn-purple-color), blue(@syn-purple-color), .95);
   box-shadow: 0 1rem 2rem 0 rgba(68,68,68,1);
   z-index: 3;
   font-size: 1.5rem;
   display: none;
+
+  &.transitions {
+      transition: all linear 500ms;
+  }
   
   &.visible {
     display: block;
