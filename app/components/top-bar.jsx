@@ -135,30 +135,20 @@ class TopBar extends React.Component {
 
   headerMenuHandler (e) {
     e.preventDefault();
+    const headerMenu = this.refs.headermenu;
+    const hamburger = this.refs.hamburger;
 
-    this.HeaderMenuToggle().then(
-      () => {
-        const hamburger = this.refs.hamburger;
-        hamburger.classList.toggle('on');
-      }
-    );
-  }
+    hamburger.classList.toggle('on');
+    headerMenu.classList.toggle('visible');
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if ( headerMenu.classList.contains('visible') ) {
+      const headerHeight = headerMenu.offsetHeight;
+      const hamburgerBottom = this.refs.hamburger.getBoundingClientRect().bottom;
 
-  HeaderMenuToggle () {
-      const headerMenu = this.refs.headermenu;
+      headerMenu.style.top = hamburgerBottom + 10 + 'px';
 
-      headerMenu.classList.toggle('visible');
-
-      if ( headerMenu.classList.contains('visible') ) {
-        const headerHeight = headerMenu.offsetHeight;
-        const hamburgerBottom = this.refs.hamburger.getBoundingClientRect().bottom;
-
-        headerMenu.style.top = hamburgerBottom + 10 + 'px';
-
-        setTimeout(()=>{headerMenu.style.top= -1.5*headerHeight+'px'; setTimeout(()=>headerMenu.classList.remove('visible'),500)}, 3000);
-      }
+      setTimeout(()=>{headerMenu.style.top= -1.5*headerHeight+'px'; setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.toggle('on')},500)}, 3000);
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
