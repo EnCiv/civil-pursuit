@@ -155,11 +155,11 @@ class TopBar extends React.Component {
 
     if ( headerMenu.classList.contains('visible') ) {
       if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
-      off();
+      off.call(this);
     }else{
       headerMenu.classList.add('visible');
       headerMenu.style.right= 0; // in the next tick change right so that the motion occurs after visible is set
-      this.headerMenuTimeout=setTimeout(off, 15000);
+      this.headerMenuTimeout=setTimeout(off.bind(this), 15000);
     }
   }
 
