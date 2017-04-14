@@ -4,7 +4,7 @@ import React                          from 'react';
 import TopBar                         from './top-bar';
 import Footer                         from './footer';
 import Panel                          from './panel';
-import HeaderMenu                     from './header-menu';
+
 
 class Layout extends React.Component {
 

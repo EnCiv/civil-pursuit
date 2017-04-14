@@ -32,11 +32,6 @@
   -webkit-transform-style:    preserve-3d;
   -moz-transform-style:       preserve-3d;
   transform-style:            preserve-3d;
-
-  /** Appearance */
-
-  /**background:                 rgba(255, 255, 255, 0.9);**/
-  /** box-shadow:                -2px 4px 3px 3px rgba(0, 0, 0, 0.14); **/
 }
 
 .syn-top_bar-info{
@@ -89,7 +84,7 @@
   margin-left: -10%;  /** why isn't this box dead center on the screen **/
 
   span {
-  padding-bottom: inherit;
+    padding-bottom: inherit;
   }
 
   @media (max-width: @screen-tablet) {
@@ -116,6 +111,7 @@
     padding-right: @syn-gutter * 2;
     // border-left: 1px solid #ccc;
     height: 100%;
+    margin: 0; 
   }
 
   // .syn-top_bar-online_now {
@@ -175,24 +171,6 @@
   padding-right: @syn-gutter;
 }
 
-.syn-top_bar-hamburger {
-  height: 100%;
-  transition: all ease 500ms;
-  color: @syn-purple-color;
-
-  &.on {
-    button, button:hover {
-      background-color: @syn-purple-color !important;
-      color: white !important;
-    }
-  }
-
-  @media (min-width: @screen-phone) {
-    display: none;
-    /** do not show this on a desktop **/
-  }
-}
-
 .syn-top_bar-menu-item {
   display: table-cell;
   background-color: @syn-purple-color;
@@ -240,6 +218,88 @@
 
   @media (max-width: @screen-phone) {
     display: none;
+  }
+}
+
+.syn-top_bar-hamburger {
+  height: 100%;
+  transition: all ease 500ms;
+  color: @syn-purple-color;
+  font-size: 1.5rem;
+
+  &.on {
+    button, button:hover {
+      background-color: @syn-purple-color !important;
+      color: white !important;
+    }
+  }
+
+  @media (min-width: @screen-phone) {
+    display: none;
+    /** do not show this on a desktop **/
+  }
+}
+
+.top_bar-hamburger-menu{
+  position: absolute;
+  margin-top: .25em;
+  right: -100vw;
+  box-sizing: border-box;
+  transition: all ease 500ms;
+  outline: 1px solid #444;
+  opacity: 0;
+  background: rgba(red(@syn-purple-color), green(@syn-purple-color), blue(@syn-purple-color), .95);
+  box-shadow: 0px 8px 15px 0px rgba(68,68,68,1);
+  z-index: 1;
+  display: none;
+  
+  &.visible {
+    display: block;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    padding: 10px 20px;
+    list-style: none;
+    color: #fff;
+
+    a {
+      color: #fff;
+      text-decoration: none;
+
+      i {
+        width: 35px;
+        text-align: center;
+      }
+    }
+
+    button {
+      text-align: center;
+      border: none;
+      background: inherit;
+      text-decoration: none;
+      padding: 0;
+      i {
+        width: 35px;
+        text-align: center;
+      }
+      &:hover {
+        background: rgba(red(@syn-gold-color), green(@syn-gold-color), blue(@syn-gold-color), .8);
+      }
+      span {
+        &:hover {
+          background: rgba(red(@syn-gold-color), green(@syn-gold-color), blue(@syn-gold-color), .8);
+        }
+      }
+    }
+  }
+  li:hover {
+    background: rgba(red(@syn-gold-color), green(@syn-gold-color), blue(@syn-gold-color), .8);
+    cursor: pointer
   }
 }
 /**-------------------------------------------------------------// top-bar    */

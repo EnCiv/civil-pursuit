@@ -9,7 +9,6 @@ import Login                          from './login';
 import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
-import HeaderMenu                     from './header-menu';
 import selectors                      from '../../selectors.json';
 import menus                          from '../../fixtures/header-menu/1.json';
 
@@ -132,22 +131,31 @@ class TopBar extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // when the burger is pressed, the menu slides in from the right.
+  // if you press the burger again the menu slides out to the right.
+  // if you don't select a menu item, or press the burger in 15 seconds, the menu slides out to the right 
 
+  headerMenuTimeout=null;
   headerMenuHandler (e) {
     e.preventDefault();
-    const headerMenu = this.refs.headermenu;
+    const headerMenu = this.refs.hamburgermenu;
     const hamburger = this.refs.hamburger;
+    const headerWidth = headerMenu.offsetWidth;
+    
 
     hamburger.classList.toggle('on');
     headerMenu.classList.toggle('visible');
 
+    function off (){
+        headerMenu.style.right= -1.5*headerWidth+'px';
+        setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')},500)
+    }
+
     if ( headerMenu.classList.contains('visible') ) {
-      const headerHeight = headerMenu.offsetHeight;
-      const hamburgerBottom = this.refs.hamburger.getBoundingClientRect().bottom;
-
-      headerMenu.style.top = hamburgerBottom + 10 + 'px';
-
-      setTimeout(()=>{headerMenu.style.top= -1.5*headerHeight+'px'; setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.toggle('on')},500)}, 3000);
+      this.headerMenuTimeout=setTimeout(this.off, 15000);
+    }else{
+      if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
+      this.off()  
     }
   }
 
@@ -196,6 +204,11 @@ class TopBar extends React.Component {
                       <Icon icon="bars" />
                     </Button>
                   </section>
+                  <section className="top_bar-hamburger-menu" ref="hamburgermenu">
+                    <ul>
+                      { this.topBurger }
+                    </ul>
+                  </section>
                 </section>
               </section>
             </section>
@@ -208,11 +221,6 @@ class TopBar extends React.Component {
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
-        <section id="syn-header-menu" ref="headermenu">
-          <ul>
-           { this.topBurger }
-          </ul>
-        </section>
       </section>
     );
   }
