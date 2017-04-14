@@ -137,7 +137,7 @@ class TopBar extends React.Component {
 
   headerMenuTimeout=null;
   headerMenuTop=0;
-  
+
   headerMenuHandler (e) {
     e.preventDefault();
     const headerMenu = this.refs.hamburgermenu;
@@ -145,7 +145,7 @@ class TopBar extends React.Component {
     const headerWidth = headerMenu.offsetWidth;
     
     // first time through move the burger Menu below the burger
-    if(!this.headerMenuTop) this.headerMenuTop=this.headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+    if(!this.headerMenuTop) this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
 
     hamburger.classList.toggle('on');
     headerMenu.classList.toggle('visible');
@@ -204,7 +204,7 @@ class TopBar extends React.Component {
                 </section>
                 <section className={ `${comp}-right` }>
                   <section className={ `${comp}-beta` }>Beta</section>
-                  <section className={ 'syn-top_bar-hamburger'} ref="hamburger">
+                  <section className={ 'top_bar-hamburger'} ref="hamburger">
                     <Button onClick={ this.headerMenuHandler.bind(this) }>
                       <Icon icon="bars" />
                     </Button>

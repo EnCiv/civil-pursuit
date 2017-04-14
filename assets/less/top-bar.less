@@ -221,9 +221,9 @@
   }
 }
 
-.syn-top_bar-hamburger {
+.top_bar-hamburger {
   height: 100%;
-  transition: all ease 500ms;
+  transition: all linear 500ms;
   color: @syn-purple-color;
   font-size: 1.5rem;
 
@@ -245,11 +245,12 @@
   margin-top: .25em;
   right: -100vw;
   box-sizing: border-box;
-  transition: all ease 500ms;
+  transition: all linear 500ms;
   outline: 1px solid #444;
   background: rgba(red(@syn-purple-color), green(@syn-purple-color), blue(@syn-purple-color), .95);
   box-shadow: 0px 8px 15px 0px rgba(68,68,68,1);
   z-index: 3;
+  font-size: 1.5rem;
   display: none;
   
   &.visible {
