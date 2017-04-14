@@ -177,16 +177,19 @@ class TopBar extends React.Component {
     let comp = 'syn-top_bar';
 
     let onlineNow = this.props.online || 0;
-
-    this.renderMenuItem("Challenges",this.goToPage.bind(this, '/'), '/' )
-    this.renderMenuItem("About",this.goToPage.bind(this, '/about'),'/about');
-    this.renderMenuItem("Blog",this.goToHref.bind(this, "https://synaccord.wordpress.com/"),"https://synaccord.wordpress.com/")
-    if(user) {
-      this.renderMenuItem("Profile",this.goToPage.bind(this, '/page/profile'),'/page/profile');
-      this.renderMenuItem("Logout",this.signOut.bind(this),'/sign/out');
-    } else {
-      this.renderMenuItem("Login",this.toggleLogin.bind(this), '/' );
-      this.renderMenuItem("Join",this.toggleJoin.bind(this), '/' );      
+    
+    if(!this.topStrip.length){
+    // render menus if not already rendered
+      this.renderMenuItem("Challenges",this.goToPage.bind(this, '/'), '/' )
+      this.renderMenuItem("About",this.goToPage.bind(this, '/about'),'/about');
+      this.renderMenuItem("Blog",this.goToHref.bind(this, "https://synaccord.wordpress.com/"),"https://synaccord.wordpress.com/")
+      if(user) {
+        this.renderMenuItem("Profile",this.goToPage.bind(this, '/page/profile'),'/page/profile');
+        this.renderMenuItem("Logout",this.signOut.bind(this),'/sign/out');
+      } else {
+        this.renderMenuItem("Login",this.toggleLogin.bind(this), '/' );
+        this.renderMenuItem("Join",this.toggleJoin.bind(this), '/' );      
+      }
     }
 
     
