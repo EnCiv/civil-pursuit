@@ -57,18 +57,9 @@ class TopBar extends React.Component {
     if ( e ) {
       e.preventDefault();
     }
-
-    let modalJoin = document.querySelector('.syn-join');
-    let modalLogin = document.querySelector('.syn-login');
-    let modalForgotP = document.querySelector('.syn-forgot-password');
-
-    modalJoin.classList.remove('syn--visible');
-
-    modalLogin.classList.toggle('syn--visible');
-
-    modalForgotP.classList.remove('syn--visible');
-
-
+    document.querySelector('.syn-join').classList.remove('syn--visible');
+    document.querySelector('.syn-login').classList.toggle('syn--visible');
+    document.querySelector('.syn-forgot-password').classList.remove('syn--visible');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,22 +136,26 @@ class TopBar extends React.Component {
     const headerWidth = headerMenu.offsetWidth;
     
     // first time through move the burger Menu below the burger
-    if(!this.headerMenuTop) this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+    if(!this.headerMenuTop) {
+      headerMenu.style.right= -(headerWidth+1)+'px';
+      this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+    }
+
 
     hamburger.classList.toggle('on');
-    headerMenu.classList.toggle('visible');
 
     function off () {
-        headerMenu.style.right= -headerWidth+'px';
+        headerMenu.style.right= -(headerWidth+1)+'px';
         setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')},500)
     }
 
     if ( headerMenu.classList.contains('visible') ) {
-      headerMenu.style.right= 0;
-      this.headerMenuTimeout=setTimeout(off, 15000);
-    }else{
       if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
       off();  
+    }else{
+      headerMenu.classList.toggle('visible');
+      setTimeout(()=>headerMenu.style.right= 0); // in the next tick change right so that the motion occurs after visible is set
+      this.headerMenuTimeout=setTimeout(off, 15000);
     }
   }
 
