@@ -140,10 +140,13 @@ class TopBar extends React.Component {
     // calculate the width, and move it right of the screen
     if(!this.headerMenuTop) {
       this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+      hamburger.classList.add('on');
       headerMenu.classList.add('visible');
       this.headerWidth=headerMenu.offsetWidth; // get the width
       headerMenu.style.right=-(this.headerWidth+1)+'px';
       headerMenu.classList.add('transitions');
+      visible.call(this);
+      return;
     }
 
     hamburger.classList.toggle('on');
@@ -153,13 +156,17 @@ class TopBar extends React.Component {
         setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')}, 500)
     }
 
+    function visible (){
+      headerMenu.style.right= 0; // in the next tick change right so that the motion occurs after visible is set
+      this.headerMenuTimeout=setTimeout(off.bind(this), 15000);
+    }
+
     if ( headerMenu.classList.contains('visible') ) {
       if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
       off.call(this);
     }else{
       headerMenu.classList.add('visible');
-      headerMenu.style.right= 0; // in the next tick change right so that the motion occurs after visible is set
-      this.headerMenuTimeout=setTimeout(off.bind(this), 15000);
+      visible.call(this);
     }
   }
 
