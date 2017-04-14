@@ -151,7 +151,7 @@ class TopBar extends React.Component {
     headerMenu.classList.toggle('visible');
 
     function off () {
-        headerMenu.style.right= -1.5*headerWidth+'px';
+        headerMenu.style.right= -headerWidth+'px';
         setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')},500)
     }
 
