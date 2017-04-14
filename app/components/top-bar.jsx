@@ -147,26 +147,18 @@ class TopBar extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   HeaderMenuToggle () {
-    return new Promise((ok, ko) => {
-      const headerMenu = document.querySelector('#syn-header-menu');
+      const headerMenu = this.refs.headermenu;
 
       headerMenu.classList.toggle('visible');
 
       if ( headerMenu.classList.contains('visible') ) {
         const headerHeight = headerMenu.offsetHeight;
+        const hamburgerBottom = this.refs.hamburger.getBoundingClientRect().bottom;
 
-        const bottom = `calc(100vh - ${(78 + headerHeight)}px)`;
+        headerMenu.style.top = hamburgerBottom + 10 + 'px';
 
-
-        headerMenu.style.bottom = bottom;
+        setTimeout(()=>{headerMenu.style.top= -1.5*headerHeight+'px'; setTimeout(()=>headerMenu.classList.remove('visible'),500)}, 3000);
       }
-
-      else {
-        headerMenu.style.bottom = 'calc(100vh - 73px)';
-      }
-
-      setTimeout(ok);
-    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +218,7 @@ class TopBar extends React.Component {
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
         <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
-        <section id="syn-header-menu" ref="header-menu">
+        <section id="syn-header-menu" ref="headermenu">
           <ul>
            { this.topBurger }
           </ul>
