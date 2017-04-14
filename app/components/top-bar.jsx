@@ -145,7 +145,7 @@ class TopBar extends React.Component {
       this.headerWidth=headerMenu.offsetWidth; // get the width
       headerMenu.style.right=-(this.headerWidth+1)+'px';
       headerMenu.classList.add('transitions');
-      visible.call(this);
+      setTimeout(visible.bind(this)); // on next tick make it visible so it doesn't slide in too fast
       return;
     }
 
@@ -153,7 +153,7 @@ class TopBar extends React.Component {
 
     function off () {
         headerMenu.style.right= -(this.headerWidth+1)+'px';
-        setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')}, 500)
+        setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')}, 250); // 250 should be the same as the transition time in top-bar.less
     }
 
     function visible (){
