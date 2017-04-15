@@ -127,46 +127,45 @@ class TopBar extends React.Component {
   // if you don't select a menu item, or press the burger in 15 seconds, the menu slides out to the right 
 
   headerMenuTimeout=null;
-  headerMenuTop=0;
   headerWidth=0;
 
   headerMenuHandler (e) {
     e.preventDefault();
     const headerMenu = this.refs.hamburgermenu;
     const hamburger = this.refs.hamburger;
-    
-    
-    // first time through move the burger Menu below the burger
-    // calculate the width, and move it right of the screen
-    if(!this.headerMenuTop) {
-      this.headerMenuTop=headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
-      hamburger.classList.add('on');
-      headerMenu.classList.add('visible');
-      this.headerWidth=headerMenu.offsetWidth; // get the width
-      headerMenu.style.right=-(this.headerWidth+1)+'px';
-      headerMenu.classList.add('transitions');
-      setTimeout(visible.bind(this)); // on next tick make it visible so it doesn't slide in too fast
-      return;
-    }
-
-    hamburger.classList.toggle('on');
-
+  
     function off () {
-        headerMenu.style.right= -(this.headerWidth+1)+'px';
+        headerMenu.style.right= (-Math.ceil(this.headerWidth))+'px';
         setTimeout(()=>{headerMenu.classList.remove('visible');  hamburger.classList.remove('on')}, 250); // 250 should be the same as the transition time in top-bar.less
     }
 
-    function visible (){
-      setTimeout(()=>headerMenu.style.right= 0 + 'px'); // in the next tick change right so that the motion occurs after visible is set
+    function slideIn (){
+      setTimeout(()=>headerMenu.style.right= 0 + 'px'); // in the next tick change right so that the motion occurs after the previous style change
       this.headerMenuTimeout=setTimeout(off.bind(this), 15000);
     }
 
-    if ( headerMenu.classList.contains('visible') ) {
-      if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
-      off.call(this);
-    }else{
+    // first time through move the burger Menu below the burger
+    // calculate the width, and move it right of the screen
+    if(!this.headerWidth) {
+      headerMenu.style.top=hamburger.getBoundingClientRect().bottom + 'px';
+      hamburger.classList.add('on');
       headerMenu.classList.add('visible');
-      visible.call(this);
+      this.headerWidth=headerMenu.offsetWidth; // get the width
+      headerMenu.style.right= (-Math.ceil(this.headerWidth))+'px';
+      setTimeout(()=>{ // on the next tick add in the transition so it doesn't slow the right change above
+          headerMenu.classList.add('transitions');
+          slideIn.call(this); 
+      });
+    } else {
+      hamburger.classList.toggle('on');
+
+      if ( headerMenu.classList.contains('visible') ) {
+        if(this.headerMenuTimeout)clearTimeout(this.headerMenuTimeout);
+        off.call(this);
+      }else{
+        headerMenu.classList.add('visible');
+        slideIn.call(this); // let visible take effect before sliding in
+      }
     }
   }
 
