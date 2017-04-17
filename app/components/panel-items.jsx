@@ -48,6 +48,9 @@ class PanelItems extends React.Component {
     if(this.props.vs && this.props.vs.toParent){
       this.props.vs.toParent({toChild: this.toMeFromParent.bind(this)})
     }
+    let typeSId=this.props.panel.type.id || 'notype';
+    let parentSId=this.props.panel.parent.id || 'noparent';
+    window.history.pushState({},"",window.location.pathname+'items/'+typeSId+'/'+parentSId);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
