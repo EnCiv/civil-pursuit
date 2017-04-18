@@ -44,6 +44,17 @@ npm run transpile  || {
 echo "transpile ok"
 
 echo '*************************************************************************'
+echo Create Index
+echo '*************************************************************************'
+
+create-index -u -r dist/app/components || {
+  echo Could not create-index;
+  exit 1
+}
+echo "create-index ok"
+
+
+echo '*************************************************************************'
 echo BROWSERIFY
 echo '*************************************************************************'
 
