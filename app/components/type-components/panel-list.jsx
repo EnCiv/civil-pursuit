@@ -318,3 +318,4 @@ toInstructionFromParent(result){
 }
 
 export default PanelList;
+export {PanelList};
