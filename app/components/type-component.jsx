@@ -2,20 +2,13 @@
 'use strict';
 
 import React                            from 'react';
-import QHome                            from './qhome';
-import PanelList                        from './panel-list';
-import Subtype                          from './subtype';
-import QSortItems                       from './qsort-items';
-import QSortWhy                         from './qsort-why';
-import QSortRefine                      from './qsort-refine';
-import QSortReLook                      from './qsort-harmony';
-import QSortFinale                      from './qsort-finale';
-import LoginPanel                       from './login-panel';
-import ProfilePanel                     from './profile-panel';
+import * as components                  from "./type-components"
+
 
 class TypeComponent extends React.Component{
     history=false;
 
+/**
     static components={
         'PanelList': PanelList,
         'QHome': QHome,
@@ -29,7 +22,9 @@ class TypeComponent extends React.Component{
         'ProfilePanel': ProfilePanel,        
     }
 
+**/
     render(){
+        console.info("TypeComponent",components);
 
         if(!this.history && this.props.panel && this.props.panel.type){
             let typeSId=this.props.panel.type.id || 'notypeid';
@@ -40,9 +35,9 @@ class TypeComponent extends React.Component{
   
         var Component;
         if(this.props.component){
-            Component=TypeComponent.components[this.props.component];
+            Component=components[this.props.component];
         } else if(this.props.panel && this.props.panel.type && this.props.panel.type.component) {
-            Component=TypeComponent.components[this.props.panel.type.component];
+            Component=components[this.props.panel.type.component];
         } else {
             Component=Subtype;
         }

@@ -1,13 +1,13 @@
 'use strict';
 
 import React                        from 'react';
-import Icon                         from './util/icon';
-import Loading                      from './util/loading';
-import Countdown                    from './countdown';
-import QSortItems                   from './qsort-items';
-import panelType                    from '../lib/proptypes/panel';
-import PanelStore                   from './store/panel';
-import Welcome                        from './welcome';
+import Icon                         from '../util/icon';
+import Loading                      from '../util/loading';
+import Countdown                    from '../countdown';
+import QSortItems                   from '../qsort-items';
+import panelType                    from '../../lib/proptypes/panel';
+import PanelStore                   from '../store/panel';
+import Welcome                        from '../welcome';
 
 class QHome extends React.Component {
 

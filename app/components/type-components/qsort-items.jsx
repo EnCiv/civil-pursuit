@@ -1,22 +1,22 @@
 'use strict';
 
 import React from 'react';
-import Panel from './panel';
-import panelType from '../lib/proptypes/panel';
-import QSortButtons from './qsort-buttons';
-import ItemStore from '../components/store/item';
+import Panel from '../panel';
+import panelType from '../../lib/proptypes/panel';
+import QSortButtons from '../qsort-buttons';
+import ItemStore from '../store/item';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from './qsort-flip-item'
-import smoothScroll from '../lib/app/smooth-scroll';
-import Instruction from './instruction';
+import QSortFlipItem from '../qsort-flip-item'
+import smoothScroll from '../../lib/app/smooth-scroll';
+import Instruction from '../instruction';
 import Color from 'color';
-import Button           from './util/button';
-import QSortButtonList from './qsort-button-list';
-import Creator            from './creator';
-import Accordion          from './util/accordion';
-import Icon               from './util/icon';
-import PanelStore from './store/panel';
-import QVoteStore from './store/qvote';
+import Button           from '../util/button';
+import QSortButtonList from '../qsort-button-list';
+import Creator            from '../creator';
+import Accordion          from '../util/accordion';
+import Icon               from '../util/icon';
+import PanelStore from '../store/panel';
+import QVoteStore from '../store/qvote';
 
 
   // 20 is hard coded, but where should this be? type or item?

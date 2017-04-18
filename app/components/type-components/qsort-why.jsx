@@ -1,23 +1,23 @@
 'use strict';
 
 import React from 'react';
-import Panel from './panel';
-import PanelStore from './store/panel';
-import PanelItems from './panel-items';
-import panelType from '../lib/proptypes/panel';
-import QSortButtons from './qsort-buttons';
-import ItemStore from '../components/store/item';
+import Panel from '../panel';
+import PanelStore from '../store/panel';
+import PanelItems from '../panel-items';
+import panelType from '../../lib/proptypes/panel';
+import QSortButtons from '../qsort-buttons';
+import ItemStore from '../store/item';
 import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from './qsort-flip-item';
-import smoothScroll from '../lib/app/smooth-scroll';
-import Instruction from './instruction';
+import QSortFlipItem from '../qsort-flip-item';
+import smoothScroll from '../../lib/app/smooth-scroll';
+import Instruction from '../instruction';
 import Color from 'color';
-import Button           from './util/button';
-import ButtonGroup           from './util/button-group';
-import Item from './item';
-import Creator            from './creator';
-import QSortButtonList from './qsort-button-list';
+import Button           from '../util/button';
+import ButtonGroup           from '../util/button-group';
+import Item from '../item';
+import Creator            from '../creator';
+import QSortButtonList from '../qsort-button-list';
 
 
 class QSortWhy extends React.Component {

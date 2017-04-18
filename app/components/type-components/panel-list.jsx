@@ -2,10 +2,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Loading from './util/loading';
-import TypeComponent from './type-component';
-import Panel from './panel';
-import Instruction from './instruction';
+import Loading from '../util/loading';
+import TypeComponent from '../type-component';
+import Panel from '../panel';
+import Instruction from '../instruction';
 import merge from 'lodash/merge'
 
 class PanelList extends React.Component {

@@ -1,14 +1,14 @@
 'use strict';
 
 import React from 'react';
-import Panel from './panel';
+import Panel from '../panel';
 import config from 'syn/../../public.json';
-import TypeComponent from './type-component';
-import Instruction from './instruction';
-import Button           from './util/button';
-import ProfileComponent from './profile-component';
-import Row                            from './util/row';
-import Column                         from './util/column';
+import TypeComponent from '../type-component';
+import Instruction from '../instruction';
+import Button           from '../util/button';
+import ProfileComponent from '../profile-component';
+import Row                            from '../util/row';
+import Column                         from '../util/column';
 
 
 class ProfilePanel extends React.Component {

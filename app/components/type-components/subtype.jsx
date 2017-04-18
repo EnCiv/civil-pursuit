@@ -1,9 +1,9 @@
 'use strict';
 
 import React                      from 'react';
-import Loading                    from './util/loading';
-import PanelItems                 from './panel-items';
-import PanelStore                 from './store/panel';
+import Loading                    from '../util/loading';
+import PanelItems                 from '../panel-items';
+import PanelStore                 from '../store/panel';
 
 class Subtype extends React.Component {
 
