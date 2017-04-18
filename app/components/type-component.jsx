@@ -2,7 +2,7 @@
 'use strict';
 
 import React                            from 'react';
-import * as components                  from "./type-components/*"
+import * as components                  from "./type-components/"
 
 
 class TypeComponent extends React.Component{
