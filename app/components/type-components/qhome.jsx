@@ -73,4 +73,5 @@ class QHome extends React.Component {
   }
 }
 
-export default QHome;
+//export default QHome;
+export {QHome};
