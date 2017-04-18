@@ -13,7 +13,6 @@ import Icon                             from './util/icon';
 import UserStore                        from './store/user';
 import About                            from './about';
 import { EventEmitter }                 from 'events';
-import QHome                            from './qhome';
 import PanelList                        from './panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
