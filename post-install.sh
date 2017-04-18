@@ -47,7 +47,7 @@ echo '*************************************************************************'
 echo Create Index
 echo '*************************************************************************'
 
-create-index -u -r dist/app/components || {
+create-index -u -r dist/components || {
   echo Could not create-index;
   exit 1
 }

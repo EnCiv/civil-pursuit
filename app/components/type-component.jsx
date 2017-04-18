@@ -26,7 +26,7 @@ class TypeComponent extends React.Component{
     render(){
         console.info("TypeComponent",components);
 
-        if(!this.history && this.props.panel && this.props.panel.type){
+        if(typeof window !== undefined && !this.history && this.props.panel && this.props.panel.type){
             let typeSId=this.props.panel.type.id || 'notypeid';
             let parentSId= this.props.panel.parent ? this.props.panel.parent.id || 'noparentid' : 'noparent';
             window.history.pushState({},"",window.location.pathname+'items/'+typeSId+'/'+parentSId+'/');

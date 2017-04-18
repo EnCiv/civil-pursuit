@@ -29,3 +29,4 @@ class Subtype extends React.Component {
 }
 
 export default Subtype;
+export {Subtype};
