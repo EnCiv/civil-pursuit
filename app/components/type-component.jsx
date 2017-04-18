@@ -2,7 +2,7 @@
 'use strict';
 
 import React                            from 'react';
-import * as components                  from "./type-components"
+import * as components                  from "./type-components/*"
 
 
 class TypeComponent extends React.Component{
@@ -39,7 +39,7 @@ class TypeComponent extends React.Component{
         } else if(this.props.panel && this.props.panel.type && this.props.panel.type.component) {
             Component=components[this.props.panel.type.component];
         } else {
-            Component=Subtype;
+            Component=components.Subtype;
         }
         logger.info("TypeComponent", this.props );
         return(<Component {...this.props} /> );
