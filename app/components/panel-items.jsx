@@ -453,4 +453,4 @@ class PanelItems extends React.Component {
 export default PanelItems;
 
 import Item from './item';
-import Subtype from './subtype';
+
