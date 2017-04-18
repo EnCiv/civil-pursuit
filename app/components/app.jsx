@@ -13,7 +13,7 @@ import Icon                             from './util/icon';
 import UserStore                        from './store/user';
 import About                            from './about';
 import { EventEmitter }                 from 'events';
-import PanelList                        from './panel-list';
+import PanelList                        from './type-components/panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
 import ODGCongrat         from './odg-congrat';
