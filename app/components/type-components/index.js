@@ -3,9 +3,8 @@
 // until that day, this is manual
 'use strict';
 
-import QHome                            from './qhome';
-import PanelList                        from './panel-list';
-import Subtype                          from './subtype';
+//import PanelList                        from './panel-list';
+//import Subtype                          from './subtype';
 import QSortItems                       from './qsort-items';
 import QSortWhy                         from './qsort-why';
 import QSortRefine                      from './qsort-refine';
@@ -15,9 +14,8 @@ import LoginPanel                       from './login-panel';
 import ProfilePanel                     from './profile-panel';
 
 var  Components={
-        'PanelList': PanelList,
-        'QHome': QHome,
-        'Subtype': Subtype,
+        'PanelList': require('./panel-list'),
+        'Subtype': require('./subtype'),
         'QSortItems': QSortItems,
         'QSortWhy': QSortWhy,
         'QSortRefine': QSortRefine,
