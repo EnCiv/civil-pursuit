@@ -14,8 +14,8 @@ import LoginPanel                       from './login-panel';
 import ProfilePanel                     from './profile-panel';
 
 var  Components={
-        'PanelList': require('./panel-list'),
-        'Subtype': require('./subtype'),
+        'PanelList': require('./panel-list').default,
+        'Subtype': require('./subtype').default,
         'QSortItems': QSortItems,
         'QSortWhy': QSortWhy,
         'QSortRefine': QSortRefine,
