@@ -3,26 +3,16 @@
 // until that day, this is manual
 'use strict';
 
-//import PanelList                        from './panel-list';
-//import Subtype                          from './subtype';
-import QSortItems                       from './qsort-items';
-import QSortWhy                         from './qsort-why';
-import QSortRefine                      from './qsort-refine';
-import QSortReLook                      from './qsort-relook';
-import QSortFinale                      from './qsort-finale';
-import LoginPanel                       from './login-panel';
-import ProfilePanel                     from './profile-panel';
-
 var  Components={
         'PanelList': require('./panel-list').default,
         'Subtype': require('./subtype').default,
-        'QSortItems': QSortItems,
-        'QSortWhy': QSortWhy,
-        'QSortRefine': QSortRefine,
-        'QSortReLook': QSortReLook,
-        'LoginPanel': LoginPanel,
-        'QSortFinale': QSortFinale,
-        'ProfilePanel': ProfilePanel,        
+        'QSortItems': require('./qsort-items').default,
+        'QSortWhy': require('./qsort-why').default,
+        'QSortRefine': require('./qsort-refine').default,
+        'QSortReLook': require('./qsort-relook').default,
+        'LoginPanel': require('./qsort-finale').default,
+        'QSortFinale': require('./login-panel').default,
+        'ProfilePanel': require('./profile-panel').default,     
     }
 
 export default Components;
