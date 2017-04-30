@@ -4,10 +4,10 @@
 'use strict';
 
 var  Components={
-        'Details': require('./Details').default,
-        'Harmony': require('./Harmony').default,
-        'Promote': require('./Promote').default,
-        'Subtype': require('./Subtype').default,
+        'Details': require('./details'),
+        'Harmony': require('./harmony'),
+        'Promote': require('./promote'),
+        'Subtype': require('./subtype')
 }
 
 export default Components;

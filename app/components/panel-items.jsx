@@ -46,25 +46,25 @@ class PanelItems extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentDidMount () {
-    this.props.emitter.on('show', this.show.bind(this));
-  }
+  //componentDidMount () {
+  //  this.props.emitter.on('show', this.show.bind(this));
+ // }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentWillUnmount () {
-    this.props.emitter.removeListener('show', this.show.bind(this));
-  }
+  //componentWillUnmount () {
+  //  this.props.emitter.removeListener('show', this.show.bind(this));
+ // }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate () {
-    if ( this.props.new ) {
-      if ( this.props.new._id !== this.new ) {
-        this.new = this.props.new._id;
-        this.toggle(this.props.new._id, 'promote');
-      }
-    }
+ //   if ( this.props.new ) {
+ //     if ( this.props.new._id !== this.new ) {
+ //       this.new = this.props.new._id;
+ //       this.toggle(this.props.new._id, 'promote');
+ //     }
+ //   }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +73,10 @@ class PanelItems extends React.Component {
     e.preventDefault();
 
     // window.Dispatcher.emit('get items', this.props.panel);
+  }
+
+  toggleCreator(){
+    if(this.props.uim && this.props.uim.toParent) this.uim.toParent({type: "TOGGLE_CREATOR"});
   }
 
   toChild=[];  // toChild keeps track of the toChild func for each child item
@@ -116,7 +120,11 @@ class PanelItems extends React.Component {
           Object.assign(nextUIM, uim, {shape: 'truncated', itemId: null});
         } else Object.assign(nextUIM, uim); // no change necessary
       }
-    } return null; // don't return a new state so the default methods can have a shot at it
+    } else if(action.type==="TOGGLE_CREATOR"){
+      if(ush!=='creator') Object.assign(nextUIM, uim, {shape: 'creator'});
+      else  Object.assign(nextUIM,uim, {shape: 'truncated'});
+    } else return null; // don't return a new state so the default methods can have a shot at it
+    return nextUIM;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,14 +151,14 @@ class PanelItems extends React.Component {
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       if(action.itemId) this.toChild[action.itemId] = action.function; 
-    } else if(this.props.uim.toParent) this.props.uim.toParent(action);
+    } else if(this.props.uim && this.props.uim.toParent) return(this.props.uim.toParent(action));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
 
-    const { panel, count, user, emitter } = this.props;
+    const { panel, count, user, emitter, uim } = this.props;
 
     let title = 'Loading items', name, loaded = false, content, loadMore,
       type, parent, creator;
@@ -168,7 +176,7 @@ class PanelItems extends React.Component {
       if ( ! panel.items.length && ! ( panel.type && panel.type.createMethod==='hidden') ) {
         content = (
           <div className={`syn-panel-gutter text-center vs-${this.state.vs.state}`}>
-            <a href="#" onClick={ this.toggle.bind(this, null, 'creator') } className="click-to-create">
+            <a href="#" onClick={ this.toggleCreator.bind(this) } className="click-to-create">
               Click the + to be the first to add something here
             </a>
           </div>
@@ -179,10 +187,10 @@ class PanelItems extends React.Component {
         content = panel.items
           .map(item => {
             let shape='truncated';
-            if(panel.items.length===1 && this.props.uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
+            if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             // what about ooview ???
             //if(type.visualMethod && type.visualMethod ==="ooview" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
-            var itemUIM=Object.assign({},this.props.uim,{item: item._id, shape: shape, toParent: this.toMeFromChild.bind(this)});  // override toParent so we can aggregate children
+            var itemUIM=Object.assign({},uim,{item: item._id, shape: shape, toParent: this.toMeFromChild.bind(this)});  // override toParent so we can aggregate children
 
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
@@ -192,6 +200,8 @@ class PanelItems extends React.Component {
                   panel = { panel }
                   uim = { itemUIM }
                   hideFeedback = {this.props.hideFeedback}
+                  buttons={['Promote','Details','Harmony','Subtype']}
+                  style   = {{backgroundColor: bgc}}
                 />
               </ItemStore>
             );
@@ -216,13 +226,13 @@ class PanelItems extends React.Component {
           <Creator
             type    =   { type }
             parent  =   { parent }
-            toggle  =   { this.toggle.bind(this, null, 'creator') }
+            toggle  =   { this.toggleCreator.bind(this) }
             />
         );
 
       creator = (
         <Accordion
-          active    =   { (active.section === 'creator') }
+          active    =   { (uim && uim.shape === 'creator') }
           style   = {{backgroundColor: bgc}}
           >
           { creatorPanel }
@@ -232,15 +242,15 @@ class PanelItems extends React.Component {
 
     return (
         <Panel
-          noHeading={type && type.visualMethod && type.visualMethod ==="ooview" && this.state.uim.shape==='collapsed'}
-          uim = {this.state.uim}
+          noHeading={type && type.visualMethod && type.visualMethod ==="ooview" && uim && uim.shape==='collapsed'}
+          uim = {uim}
           heading     =   {[
             ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id) )) ? (null) : 
             (
               <Icon
                 icon        =   "plus"
                 className   =   "toggle-creator"
-                onClick     =   { this.toggle.bind(this, null, 'creator') }
+                onClick     =   { this.toggleCreator.bind(this) }
               />
             )
           ]}

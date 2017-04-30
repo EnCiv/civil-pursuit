@@ -10,6 +10,8 @@ import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';
 import DynamicSelector from './dynamic-selector';
 import UserInterfaceManager from './user-interface-manager';
+import ItemStore from './store/item';
+import ItemComponent from './item-component';
 
 //Item Visual State - lets other components change the visual state of an item. 
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
@@ -32,19 +34,22 @@ class UIMItem extends React.Component {
 
   constructor(props) {
     super(props);
-    //    console.info("VSItem constructor");
-    if (this.props.uim.toParent) this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: VSItem.actionToState });
+    //    console.info("UIMItem constructor");
+    if (this.props.uim.toParent) this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: UIMItem.actionToState });
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
-    var nextUIM;
+    var nextUIM={};
     if (action.type == "TOGGLE_BUTTON") {
-      if (action.button && uim.button) {
-        if (action.button === uim.button) { // untoggle button, pop path
-          Object.assign(nextUIM, { button: null, shape: 'truncated' });
+      let button=action.button;
+      if (uim.button) { // the button is on
+        if (button === uim.button) { // untoggle button
+          if (button === 'Subtype') { // untoggle the subtype button and pop the path
+            Object.assign(nextUIM, { button: null, shape: 'truncated', pathPart: [] });
+          }else          
+            Object.assign(nextUIM, { button: null, shape: 'truncated' });
         } else { // old button off, new button on, state still open
           if (button === 'Subtype') {
-            VisualState.path.splice(uim.pathDepth, 2); // take off Subtype/itemId
             Object.assign(nextUIM, { button: null, pathPart: [] });
             // no shape change
           } else {
@@ -52,8 +57,8 @@ class UIMItem extends React.Component {
             // no shape change
           }
         }
-      } else { // toggle button on, open state
-        if (button === 'Subtype') {
+      } else { // the button is off, toggle it, open state
+        if (button === 'Subtype') { // its that subtype button so add to path
           Object.assign(nextUIM, uim, { button: button, shape: 'open', pathPart: ['Subtype', action.itemId] });
         } else {
           Object.assign(nextUIM, uim, { button: button, shape: 'open' });
@@ -94,7 +99,7 @@ class UIMItem extends React.Component {
   /*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
   shouldComponentUpdate(newProps, newState) {
     if (!isEqual(this.props.uim, newProps.uim)) return true;
-    if (!isEqual(this.props.buttonState, newProps.buttonState)) return true;
+    if (!isEqual(this.props.buttons, newProps.buttons)) return true;
     if (this.state.hint !== newState.hint) return true;
     if (this.state.minHeight != newState.minHeight) return true;
     if (this.props.item && newProps.item) {
@@ -182,13 +187,13 @@ class UIMItem extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { item, user, buttonState, uim } = this.props;
-    const vState = uim ? uim.shape : '';
-    const cState = vState ? 'vs-' + vState : '';
+    const { item, user, buttons, uim, style } = this.props;
+    const shape = uim ? uim.shape : '';
+    const classShape = shape ? 'vs-' + shape : '';
 
     let noReference = true;
 
-    //   console.info("VSItem render");
+    console.info("UIMItem render", this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
@@ -200,34 +205,43 @@ class UIMItem extends React.Component {
       noReference = false;
     }
 
+    var renderButtons = buttons ? buttons.map(button => {
+                        return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id)} />);
+                      })
+                    : null;
+
+    console.info("UIMItem.render rendered buttons");
+
+    var renderPanels = buttons ? buttons.map(button => {
+                return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button} style={style} />);
+              })
+              : null;
+
+    logger.info("UIMItem.render rendered buttons and panels");
 
     return (
-      <Accordion active={vState !== 'collapsed'} name='item'>
-        <article className={ClassNames("item", this.props.className, cState)} ref="item" id={`item-${item._id}`} >
-          <Accordion active={vState !== 'ooview'} text={true} >
-            <ItemMedia className={cState} onClick={this.readMore.bind(this)}
+      <Accordion active={shape !== 'collapsed'} name='item'>
+        <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={`item-${item._id}`} >
+          <Accordion active={shape !== 'ooview'} text={true} >
+            <ItemMedia className={classShape} onClick={this.readMore.bind(this)}
               item={item}
               ref="media"
             />
-            <section className={ClassNames("item-text", cState)} ref='itemText'>
-              <section className={ClassNames("item-buttons", cState)} ref='buttons'>
+            <section className={ClassNames("item-text", classShape)} ref='itemText'>
+              <section className={ClassNames("item-buttons", classShape)} ref='buttons'>
                 <ItemStore item={item}>
-                  {
-                    Object.keys(buttonState).map(button => {
-                      return (<ItemComponents component={button} part='button' {...this.props} item={item} active={buttonState[button]} style={{ backgroundColor: bgc }} uim={undefined} onClick={this.onClick.bind(this, button, item._id)} />);
-                    })
-                  }
+                  { renderButtons }
                 </ItemStore>
               </section>
-              <Accordion className={ClassNames("item-truncatable", cState)} onClick={this.readMore.bind(this)} active={vState === 'open'} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
-                <h4 className={ClassNames("item-subject", cState)} ref='subject'>
+              <Accordion className={ClassNames("item-truncatable", classShape)} onClick={this.readMore.bind(this)} active={shape === 'open'} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
+                <h4 className={ClassNames("item-subject", classShape)} ref='subject'>
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */}
                   {item.subject}
                 </h4>
-                <h5 className={ClassNames('item-reference', cState, { none: noReference })} ref='reference' >
+                <h5 className={ClassNames('item-reference', classShape, { none: noReference })} ref='reference' >
                   <a href={referenceLink} onClick={this.openURL.bind(this)} ref="link" target="_blank" rel="nofollow"><span>{referenceTitle}</span></a>
                 </h5>
-                <div className={ClassNames('item-description', 'pre-text', vState === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : cState)} ref='description'>
+                <div className={ClassNames('item-description', 'pre-text', shape === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : classShape)} ref='description'>
                   {item.description}
                 </div>
                 <div className="item-tendency" style={{ display: 'none' }}>
@@ -235,18 +249,14 @@ class UIMItem extends React.Component {
                 </div>
               </Accordion>
             </section>
-            <div className={ClassNames('item-trunc-hint', { expand: this.state.hint }, cState)}>
+            <div className={ClassNames('item-trunc-hint', { expand: this.state.hint }, classShape)}>
               <Icon icon="ellipsis-h" />
             </div>
           </Accordion>
           <section style={{ clear: 'both' }}>
           </section>
-          <section className={ClassNames("item-footer", cState)}>
-            {
-              Object.keys(buttonState).map(button => {
-                return (<ItemComponents component={button} part='panel' {...this.props} item={item} active={buttonState[button]} style={{ backgroundColor: bgc }} uim={undefined} />);
-              })
-            }
+          <section className={ClassNames("item-footer", classShape)}>
+            { renderPanels }
           </section>
         </article>
       </Accordion>

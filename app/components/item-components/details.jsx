@@ -7,16 +7,13 @@ import Icon from '../util/icon';
 import Accordion          from '../util/accordion';
 
 
-var Detail={button: DetailButton, panel: DetailPanel }
-export default Detail;
-
-class DetailButton extends React.Component {
+exports.button = class DetailButton extends React.Component {
   render() {
-    const { buttonState, item, onClick } = this.props;
+    const { active, item, onClick, user } = this.props;
     var success=false;
 
     if ((item.type && item.type.feedbackMethod!=="hidden") && ( user && item.user && item.user._id == user.id)) {
-        if(buttonState.details){
+        if(active){
             success=true;
             title="close the feedback panel";
         }else{
@@ -34,10 +31,10 @@ class DetailButton extends React.Component {
   }
 }
 
-class DetailPanel extends React.Component {
+exports.panel = class DetailPanel extends React.Component {
     mounted=false;
     render(){
-      if(!mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+      if(!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
       else {
         this.mounted=true;
         return(

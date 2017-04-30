@@ -17,54 +17,56 @@ class UserInterfaceManager extends React.Component {
     // return the array of all Visual States from here to the beginning
     // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
     // the top UIM state of the array is the root component
-    getState(newVs){
-        if(this.toParent) return this.toParent({action: "GET_STATE"}).push(newVs);
-        else return(newVs);
+    getState(newUIM){
+        if(this.props.uim && this.props.uim.toParent) return ((this.props.uim.toParent({type: "GET_STATE"})).push(newUIM));
+        else return(newUIM);
     }
 
     // handler for the window onpop state
-    // only the root VisualState will set this 
+    // only the root UserInterfaceManager will set this 
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
-        if(event.state.length) this.toMeFromParent({action: "ONPOPSTATE", event: event});
+        logger.info("UserInterfaceManager.onopostate", {event})
+        if(event.state && event.state.length) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
     toMeFromChild(action) {
-        logger.info("VisualState.toMeFromChild",action);
+        logger.info("UserInterfaceManager.toMeFromChild",action);
         if (action.type==="SET_TO_CHILD") { this.toChild = action.function }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
-            if(this.toParent===null) return [Object.assgign({}, this.state.uim)]; // return the uim state of the root  as an array of 1
-            else return this.toParent({action: "GET_STATE"}).push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
+            logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",this.state.uim);
+            if(this.props.uim.toParent===null) return [Object.assgign({}, this.state.uim)]; // return the uim state of the root  as an array of 1
+            else return this.props.uim.toParent({type: "GET_STATE"}).push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
         }
         else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {
-                if(nextUIM.shape!==this.state.uim.shape && this.props.uiToParent) this.props.uiToParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
+                if(nextUIM.shape!==this.state.uim.shape && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                    if(this.toChild) this.toChild({action:"CLEAR_PATH"});
-                    VisualState.history.splice(nextUIM.pathDepth); // clear path after this point
+                    if(this.toChild) this.toChild({type:"CLEAR_PATH"});
+                    UserInterfaceManager.path.splice(nextUIM.pathDepth); // clear path after this point
                     nextUIM.pathDepth=-1;  // 0 would be valid, mark depth as invalid
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                    nextUIM.pathDepth=VisualState.history.length;
-                    VisualState.history.push(nextUIM.pathPart);
+                    nextUIM.pathDepth=UserInterfaceManager.path.length;
+                    UserInterfaceManager.path.push(nextUIM.pathPart);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
-                window.history.pushState(this.getState(nextUIM),"Civil Pursuit", VisualState.path.join('/'));
+                window.history.pushState(this.getState(nextUIM),"Civil Pursuit", UserInterfaceManager.path.join('/'));
                 this.setState({uim: nextUIM})
                 return;
             }
         }
         // these actions can be overridden by the component's actonToState
         if(action.type==="CHILD_SHAPE_CHANGED"){
-            if(this.props.uiToParent) this.props.uiToParent(Object.assign({}, action, {distance: action.distance+1}));
+            if(this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
         }
     }
 
 
     toMeFromParent(action) {
-        logger.info("VisualState.toMeFromParent", action);
+        logger.info("UserInterfaceManager.toMeFromParent", action);
         var nextUIM;
         if (action.type==="ONPOPSTATE") {
             Object.assign(nextUIM,this.state.uim, action.event.state[this.props.depth]);
@@ -98,11 +100,11 @@ class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        logger.info("VisualState constructor");
+        logger.info("UserInterfaceManager constructor");
         this.toChild=null;
-        if(VisualState.path === 'undefined') { // this is the root VisualState
-             VisualState.path= this.props.path || [];
-             window.onpopstate=this.onpopstate();
+        if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
+             UserInterfaceManager.path= this.props.path || [];
+             window.onpopstate=this.onpopstate.bind(this);
         }
         this.state.uim=Object.assign({}, 
             {   shape: 'truncated',
@@ -137,7 +139,7 @@ class UserInterfaceManager extends React.Component {
 
     render() {
         const children = this.renderChildren();
-        logger.info("VisualState render");
+        logger.info("UserInterfaceManager render");
 
         return (
             <section>

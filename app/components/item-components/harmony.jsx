@@ -7,17 +7,14 @@ import Icon from '../util/icon';
 import Accordion          from '../util/accordion';
 
 
-var Harmony={button: HarmonyButton, panel: HarmonyPanel }
-export default Harmony;
-
-class HarmonyButton extends React.Component {
+exports.button = class HarmonyButton extends React.Component {
 
   render() {
-    const { buttonState, item, onClick } = this.props;
+    const { active, item, onClick } = this.props;
     var success=false;
 
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
-      if(buttonState.harmony) {
+      if(active) {
           success=true;
           title="Close the deliberation view and return to the list";
       } else {
@@ -43,10 +40,10 @@ class HarmonyButton extends React.Component {
   }
 }
 
-class HarmonyPanel extends React.Component {
+exports.panel = class HarmonyPanel extends React.Component {
   mounted = false;
   render() {
-    if (!mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
       return (

@@ -10,20 +10,20 @@ class Panel extends React.Component {
 
   render() {
     const { heading, className, uim, noHeading } = this.props;
-    const vState=uim ? uim.shape : '';
-    const cState= vState ? 'vs-'+vState : '';
+    const vShape=uim ? uim.shape : '';
+    const cShape= vShape ? 'vs-'+vShape : '';
 
 
     return (
       <section
         { ...this.props }
-        className     =   {ClassNames((className || ''), "syn-panel", cState )}
+        className     =   {ClassNames((className || ''), "syn-panel", cShape )}
         ref           =   "panel"
       >
-        <section className={ClassNames("syn-panel-heading", cState, {'no-heading': uim.shape==='collapsed'})}>
+        <section className={ClassNames("syn-panel-heading", cShape, {'no-heading': vShape==='collapsed'})}>
           { heading }
         </section>
-        <section className={ClassNames("syn-panel-body", cState)}>
+        <section className={ClassNames("syn-panel-body", cShape)}>
           { this.props.children }
         </section>
       </section>

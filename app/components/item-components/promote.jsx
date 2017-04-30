@@ -5,15 +5,11 @@ import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion from '../util/accordion';
-import TypeComponent from '../type-component';
 
-var Promote = { button: PromoteButton, panel: PromotePanel }
-export default Harmony;
-
-class HarmonyButton extends React.Component {
+exports.button=class PromoteButton extends React.Component {
 
   render() {
-    const { buttonState, panel, item, onClick } = this.props;
+    const { active, panel, item, onClick, user } = this.props;
     let promoteButtonLabel = null;
     var success = false;
     var inactive = false;
@@ -26,7 +22,7 @@ class HarmonyButton extends React.Component {
         promoteButtonLabel = item.upvote.userDidUpvote ? "Upvoted" : "Upvote";
       }
       if (user) {
-        if (buttonState.promote) {
+        if (active) {
           success = true;
           title = "End upvote without a choice";
         } else {
@@ -62,17 +58,18 @@ class HarmonyButton extends React.Component {
   }
 }
 
-class PromotePanel extends React.Component {
+exports.panel = class PromotePanel extends React.Component {
   mounted = false;
   render() {
-    if (!mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    const { active, panel, item, onClick, user, style } = this.props;
+    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
       return (
         <div className="toggler promote">
           <Accordion
             active={active}
-            style={{ backgroundColor: bgc }}
+            style={style}
           >
             <EvaluationStore
               item-id={item._id}

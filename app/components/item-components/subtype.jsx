@@ -7,19 +7,16 @@ import Icon from '../util/icon';
 import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
 
-var Subtype = { button: SubtypeButton, panel: SubtypePanel }
-export default Subtype;
 
-class SubtypeButton extends React.Component {
+exports.button = class SubtypeButton extends React.Component {
 
   donothing() {
     return false;
   }
 
   render() {
-    const { buttonState, item } = this.props;
-    if (!item.subtype) return null;
-    else{
+    const { active, item } = this.props;
+    if (item.subtype) {
       const buttonName = item.subtype.buttonName || "Delve";
       const min = item.subtype.min || 2;
       const buttonTitle = item.subtype.buttonTitle || {
@@ -33,7 +30,7 @@ class SubtypeButton extends React.Component {
       var onClick = this.props.onClick;
 
       if (item.promotions >= min) {
-        if (buttonstate.subtype) {
+        if (active) {
           success = true;
           title = buttonTitle.success;
         } else {
@@ -45,8 +42,7 @@ class SubtypeButton extends React.Component {
         title = buttonTitle.inactive;
       }
 
-      return
-      (
+      return (
         <ButtonGroup>
           <span className="civil-button-info">{number} </span>
           <Button small shy success={success} inactive={inactive} title={title} onClick={onClick} className="subtype-button" title={title}>
@@ -54,15 +50,14 @@ class SubtypeButton extends React.Component {
           </Button>
         </ButtonGroup>
       );
-    }
+    } else return null;
   }
 }
 
-
-class SubtypePanel extends React.Component {
+exports.panel = class SubtypePanel extends React.Component {
   mounted = false;
   render() {
-    if (!mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
       return (
