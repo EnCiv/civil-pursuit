@@ -1,11 +1,11 @@
 'use strict';
 
 import React from 'react';
-import ButtonGroup from './util/button-group';
-import Button from './util/button';
-import Icon from './util/icon';
-import Accordion          from './util/accordion';
-import TypeComponent      from './type-component';
+import ButtonGroup from '../util/button-group';
+import Button from '../util/button';
+import Icon from '../util/icon';
+import Accordion          from '../util/accordion';
+
 
 var Detail={button: DetailButton, panel= DetailPanel }
 export default Detail;
