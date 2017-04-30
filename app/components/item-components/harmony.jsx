@@ -7,7 +7,7 @@ import Icon from '../util/icon';
 import Accordion          from '../util/accordion';
 
 
-var Harmony={button: HarmonyButton, panel= HarmonyPanel }
+var Harmony={button: HarmonyButton, panel: HarmonyPanel }
 export default Harmony;
 
 class HarmonyButton extends React.Component {

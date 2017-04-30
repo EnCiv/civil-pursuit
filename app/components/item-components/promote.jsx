@@ -7,7 +7,7 @@ import Icon from '../util/icon';
 import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
 
-var Promote = { button: PromoteButton, panel= PromotePanel }
+var Promote = { button: PromoteButton, panel: PromotePanel }
 export default Harmony;
 
 class HarmonyButton extends React.Component {

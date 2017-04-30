@@ -7,7 +7,7 @@ import Icon from '../util/icon';
 import Accordion          from '../util/accordion';
 
 
-var Detail={button: DetailButton, panel= DetailPanel }
+var Detail={button: DetailButton, panel: DetailPanel }
 export default Detail;
 
 class DetailButton extends React.Component {

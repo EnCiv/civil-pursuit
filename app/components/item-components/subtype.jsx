@@ -7,7 +7,7 @@ import Icon from '../util/icon';
 import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
 
-var Subtype = { button: SubtypeButton, panel= SubtypePanel }
+var Subtype = { button: SubtypeButton, panel: SubtypePanel }
 export default Subtype;
 
 class SubtypeButton extends React.Component {
