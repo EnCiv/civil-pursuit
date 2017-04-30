@@ -23,8 +23,6 @@ class Promote extends React.Component {
     expandedR: false,
     activeL: false,
     activeR: false,
-    truncateItemsLeft: 0,
-    truncateItemsRight: 0,
     closedLeft: false,
     closedRight: false
   };
@@ -135,7 +133,7 @@ wideRight(){
       this.state.expandedL=false;
     }
     if(this.state.expandedR) {
-      this.setState({activeR: false, truncateItemsRight: this.state.truncateItemsRight+1});
+      this.setState({activeR: false} );
       if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
       this.state.expandedR=false;      
     }
@@ -144,12 +142,12 @@ wideRight(){
   toChildLeft=null;
   toChildRight=null;
 
-  toMeFromChildLeft(vs) {
-        if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
+  toMeFromChildLeft(action) {
+        if (action.type==="SET_TO_CHILD") { this.toChildLeft = action.function }  // child is passing up her func
   }
 
-  toMeFromChildRight(vs) {
-      if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
+  toMeFromChildRight(uim) {
+       if (action.type==="SET_TO_CHILD") { this.toChildRight = action.function }  // child is passing up her func
   }
 
   render () {
@@ -260,7 +258,7 @@ wideRight(){
               <div className="solid clear">
                 <DoubleWide left expanded={this.state.activeL} onComplete={this.wideLeft.bind(this)} closed={this.state.closedLeft}>
                   <Item item={ left } user={ user } toggle={ this.toggleLeft.bind(this) } position='left' key='item-left' 
-                    footer =  { leftFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildLeft.bind(this)}}
+                    footer =  { leftFooter } className="whole-border" uim= {{shape: 'truncated', toParent: this.toMeFromChildLeft.bind(this)}}
                   />
                   {feedbackLeft}
                   <PromoteBigScreenButtons className="promote-big-button"
@@ -277,7 +275,7 @@ wideRight(){
                 </DoubleWide>
                 <DoubleWide right expanded={this.state.activeR} onComplete={this.wideRight.bind(this)} closed={this.state.closedRight} >
                   <Item item={ right } user={ user } toggle={ this.toggleRight.bind(this) } position='right' key='item-right'
-                    footer =  { rightFooter } className="whole-border" vs= {{state: 'truncated', toParent: this.toMeFromChildRight.bind(this)}}
+                    footer =  { rightFooter } className="whole-border" uim= {{shape: 'truncated', toParent: this.toMeFromChildRight.bind(this)}}
                   />
                   {feedbackRight}
                   <PromoteBigScreenButtons

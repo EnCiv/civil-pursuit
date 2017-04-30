@@ -2,7 +2,8 @@
 'use strict';
 
 import React                       from 'react';
-import Components                  from "./type-components/"
+import Components                  from "./type-components/";
+import UserInterfaceManager        from "./user-interface-manager";
 
 class TypeComponent extends React.Component{
     render(){
@@ -11,7 +12,7 @@ class TypeComponent extends React.Component{
                         : Components.Subtype;
 
         logger.info("TypeComponent", this.props );
-        return(<Component {...this.props} /> );
+        return(<UserInterfaceManager {...this.props} > <Component /> </UserInterfaceManager> );  //UIM passes props plus the UIM state to the child Component
     }
 }
 

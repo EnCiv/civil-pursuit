@@ -1,0 +1,151 @@
+'use strict';
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ClassNames from 'classnames';
+import isEqual from 'lodash/isEqual';
+
+//Item Visual State - lets other components change the visual state of an item. 
+// For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
+
+class UserInterfaceManager extends React.Component {
+
+    state = { uim: {}};
+
+    toChild=null;
+
+    // return the array of all Visual States from here to the beginning
+    // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
+    // the top UIM state of the array is the root component
+    getState(newVs){
+        if(this.toParent) return this.toParent({action: "GET_STATE"}).push(newVs);
+        else return(newVs);
+    }
+
+    // handler for the window onpop state
+    // only the root VisualState will set this 
+    // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
+    onpopstate(event){
+        if(event.state.length) this.toMeFromParent({action: "ONPOPSTATE", event: event});
+    }
+
+    toMeFromChild(action) {
+        logger.info("VisualState.toMeFromChild",action);
+        if (action.type==="SET_TO_CHILD") { this.toChild = action.function }  // child is passing up her func
+        else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
+        else if (action.type==="GET_STATE") {
+            if(this.toParent===null) return [Object.assgign({}, this.state.uim)]; // return the uim state of the root  as an array of 1
+            else return this.toParent({action: "GET_STATE"}).push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
+        }
+        else if(this.actionToState) {
+            var  nextUIM= this.actionToState(action,this.state.uim);
+            if(nextUIM) {
+                if(nextUIM.shape!==this.state.uim.shape && this.props.uiToParent) this.props.uiToParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
+                if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
+                    if(this.toChild) this.toChild({action:"CLEAR_PATH"});
+                    VisualState.history.splice(nextUIM.pathDepth); // clear path after this point
+                    nextUIM.pathDepth=-1;  // 0 would be valid, mark depth as invalid
+                } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
+                    nextUIM.pathDepth=VisualState.history.length;
+                    VisualState.history.push(nextUIM.pathPart);
+                } else { // pathPart and nexUI.pathpart are both have length
+                    if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
+                }
+                window.history.pushState(this.getState(nextUIM),"Civil Pursuit", VisualState.path.join('/'));
+                this.setState({uim: nextUIM})
+                return;
+            }
+        }
+        // these actions can be overridden by the component's actonToState
+        if(action.type==="CHILD_SHAPE_CHANGED"){
+            if(this.props.uiToParent) this.props.uiToParent(Object.assign({}, action, {distance: action.distance+1}));
+        }
+    }
+
+
+    toMeFromParent(action) {
+        logger.info("VisualState.toMeFromParent", action);
+        var nextUIM;
+        if (action.type==="ONPOPSTATE") {
+            Object.assign(nextUIM,this.state.uim, action.event.state[this.props.depth]);
+            var uiToChild = () => {if(event.state.length > (this.props.depth+1) && this.toChild) this.toChild({action});}
+            if(isEqual(this.state.uim,nextUIM)){
+                // no need to change state
+                uiToChild();
+            } else {
+                // change the state and then pass to child
+                this.setState(nextUIM, uiToChild);
+            }
+        } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
+            this.setState({uim: Object.assign({},
+                this.state.uim, // preserve what's in the current uim state, that isn't overridden (external stuff perhaps)
+                {shape: 'truncated'},
+                this.props.uim,
+                {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0,
+                    toParent: this.toMeFromChild.bind(this)
+                },
+                {pathPart: [], pathDepth: -1})}
+                , ()=>{if(this.toChild) this.toChild(action)});
+        } else if(action.type==="CHANGE_SHAPE"){
+            this.setState({uim: Object.assign({},
+                this.state.uim,
+                {shape: action.shape}
+            )});
+        }else {
+            this.toChild({action});
+        }
+    }
+
+    constructor(props) {
+        super(props);
+        logger.info("VisualState constructor");
+        this.toChild=null;
+        if(VisualState.path === 'undefined') { // this is the root VisualState
+             VisualState.path= this.props.path || [];
+             window.onpopstate=this.onpopstate();
+        }
+        this.state.uim=Object.assign({}, 
+            {   shape: 'truncated',
+            }, 
+            this.props.uim,
+            {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0,
+                toParent: this.toMeFromChild.bind(this)
+            }
+        );
+    }
+
+    renderChildren() {
+        return React.Children.map(this.props.children, child =>
+            React.cloneElement(child, Object.assign({}, this.props, this.state))  //uim in state override uim in props
+        );
+    }
+
+    componentDidMount(){
+        if (this.props.uim.toParent) {
+            this.props.uim.toParent({toChild: this.toMeFromParent.bind(this)});
+        } // give parent your func so you can get state changes 
+    }
+
+/** 
+    componentWillReceiveProps(newProps){
+        props are the initial state only, prop changes are ignored after the component is constructed. 
+        execpt - props will be checked again on a CLEAR_PATH action
+    }
+**/
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    render() {
+        const children = this.renderChildren();
+        logger.info("VisualState render");
+
+        return (
+            <section>
+                {children}
+            </section>
+        );
+    }
+}
+
+export default UserInterfaceManager;
+
