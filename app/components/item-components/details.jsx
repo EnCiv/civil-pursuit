@@ -11,6 +11,7 @@ exports.button = class DetailButton extends React.Component {
   render() {
     const { active, item, onClick, user } = this.props;
     var success=false;
+    var title=null;
 
     if ((item.type && item.type.feedbackMethod!=="hidden") && ( user && item.user && item.user._id == user.id)) {
         if(active){

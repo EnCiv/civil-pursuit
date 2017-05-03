@@ -12,6 +12,7 @@ exports.button = class HarmonyButton extends React.Component {
   render() {
     const { active, item, onClick } = this.props;
     var success=false;
+    var title=null;
 
     if ( item.type && item.type.harmony && item.type.harmony.length ) {
       if(active) {
