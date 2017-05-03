@@ -82,7 +82,7 @@ class PanelItems extends React.Component {
   toChild=[];  // toChild keeps track of the toChild func for each child item
   actionToState (action, uim) {
     var nextUIM; 
-    logger.info("actionToState",action,uim);
+    logger.info("actionToState",{action},{uim});
     if(action.type==="CHILD_SHAPE_CHANAGED"){
       let ash=action.shape, ush=uim.shape;
       if(!action.itemId) logger.error("PanelItems.actionToState action without itemId", action)
@@ -132,9 +132,9 @@ class PanelItems extends React.Component {
   //
     toMeFromParent(action) {
         logger.info("PanelItems.toMeFromParent", action);
-        var {shape, itemId}=this.props.uim;
         if (action.type==="ONPOPSTATE") {
-            if(shape==='open'&& itemId && this.toChild[itemId]) this.toChild[itemId](action); // send the action to the active child
+            var {shape, itemId} = action.event.state[this.props.uim.depth];
+            if(shape==='open' && itemId && (action.event.state.length > (this.props.uim.depth+1)) && this.toChild[itemId]) this.toChild[itemId](action); // send the action to the active child
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
           Object.keys(this.toChild).forEach(childId=>{ // send the action to every child
             this.toChild[childId](action)
@@ -146,12 +146,15 @@ class PanelItems extends React.Component {
   // this is a one to many pattern for the user interface manager, yourself between the UIM and each child
   // send all unhandled actions to the parent UIM
   //
-  toMeFromChild(action) {
-    logger.info("PanelItems.toMeFromChild", action);
+  toMeFromChild(itemId, action) {
+    logger.info("PanelItems.toMeFromChild", itemId, action);
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
-      if(action.itemId) this.toChild[action.itemId] = action.function; 
-    } else if(this.props.uim && this.props.uim.toParent) return(this.props.uim.toParent(action));
+      this.toChild[itemId] = action.function; // don't pass this to parent
+    } else if(this.props.uim && this.props.uim.toParent) {
+       action.itemId=itemId; // actionToState may need to know the child's id
+       return(this.props.uim.toParent(action));
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,8 +193,7 @@ class PanelItems extends React.Component {
             if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             // what about ooview ???
             //if(type.visualMethod && type.visualMethod ==="ooview" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
-            var itemUIM=Object.assign({},uim,{item: item._id, shape: shape, toParent: this.toMeFromChild.bind(this)});  // override toParent so we can aggregate children
-
+            var itemUIM={shape: shape, depth: this.props.uim.depth+1, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item

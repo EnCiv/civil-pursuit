@@ -10,10 +10,6 @@ import isEqual from 'lodash/isEqual';
 
 class UserInterfaceManager extends React.Component {
 
-    state = { uim: {}};
-
-    toChild=null;
-
     // return the array of all Visual States from here to the beginning
     // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
     // the top UIM state of the array is the root component
@@ -81,8 +77,8 @@ class UserInterfaceManager extends React.Component {
         logger.info("UserInterfaceManager.toMeFromParent", action);
         var nextUIM;
         if (action.type==="ONPOPSTATE") {
-            Object.assign(nextUIM,this.state.uim, action.event.state[this.props.depth]);
-            var uiToChild = () => {if(event.state.length > (this.props.depth+1) && this.toChild) this.toChild({action});}
+            Object.assign(nextUIM,this.state.uim, action.event.state[this.props.uim.depth]);
+            var uiToChild = () => {if(action.event.state.length > (this.props.uim.depth+1) && this.toChild) this.toChild({action});}
             if(isEqual(this.state.uim,nextUIM)){
                 // no need to change state
                 uiToChild();
@@ -118,14 +114,11 @@ class UserInterfaceManager extends React.Component {
              UserInterfaceManager.path= this.props.path || [];
              window.onpopstate=this.onpopstate.bind(this);
         }
-        this.state.uim=Object.assign({}, 
-            {   shape: 'truncated',
-            }, 
-            this.props.uim,
-            {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0,
-                toParent: this.toMeFromChild.bind(this)
-            }
-        );
+        this.state={uim: {
+            shape: this.props.uim.shape || 'truncated',
+            depth: this.props.uim ? this.props.uim.depth +1 : 0,
+            toParent: this.toMeFromChild.bind(this)
+        }};
         logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
