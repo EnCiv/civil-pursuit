@@ -6,6 +6,7 @@ import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
+import config from '../../../public.json';
 
 
 exports.button = class SubtypeButton extends React.Component {
