@@ -59,7 +59,7 @@ exports.panel = class SubtypePanel extends React.Component {
   mounted = false;
   render() {
     const {active, style, item}=this.props;
-    if (!this.mounted && !active) return null; // don't render this unless it's active, or been rendered before
+    if ((this.mounted===false && active===false) || !item.subtype) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
       return (
