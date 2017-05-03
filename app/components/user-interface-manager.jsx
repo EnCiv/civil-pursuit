@@ -57,14 +57,14 @@ class UserInterfaceManager extends React.Component {
                     nextUIM.pathDepth=-1;  // 0 would be valid, mark depth as invalid
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                     nextUIM.pathDepth=UserInterfaceManager.path.length;
-                    UserInterfaceManager.path.concat(nextUIM.pathPart);
+                    UserInterfaceManager.path.push(...nextUIM.pathPart);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
                 var stateStack={stateStack: this.getState(nextUIM)};
                 var newPath= UserInterfaceManager.path.join('/');
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
-                window.history.pushState(stateStack,"Civil Pursuit", newPath);
+                window.history.pushState(stateStack,'', newPath);
                 this.setState({uim: nextUIM})
                 return;
             }
