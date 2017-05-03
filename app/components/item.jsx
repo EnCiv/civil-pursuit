@@ -59,7 +59,7 @@ class UIMItem extends React.Component {
         }
       } else { // the button is off, toggle it, open state
         if (button === 'Subtype') { // its that subtype button so add to path
-          Object.assign(nextUIM, uim, { button: button, shape: 'open', pathPart: ['Subtype', action.itemId] });
+          Object.assign(nextUIM, uim, { button: button, shape: 'open', pathPart: ['Subtype', action.shortId] });
         } else {
           Object.assign(nextUIM, uim, { button: button, shape: 'open' });
         }
@@ -118,8 +118,8 @@ class UIMItem extends React.Component {
 
 
   // when the user clicks on an item's button
-  onClick(button, itemId) {
-    this.props.uim.toParent({ type: "TOGGLE_BUTTON", button, itemId })
+  onClick(button, itemId, shortId) {
+    this.props.uim.toParent({ type: "TOGGLE_BUTTON", button, itemId, shortId })
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -206,7 +206,7 @@ class UIMItem extends React.Component {
     }
 
     var renderButtons = buttons ? buttons.map(button => {
-                        return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id)} />);
+                        return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
                       })
                     : null;
 
