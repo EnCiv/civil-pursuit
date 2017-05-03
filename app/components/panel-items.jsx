@@ -81,7 +81,7 @@ class PanelItems extends React.Component {
 
   toChild=[];  // toChild keeps track of the toChild func for each child item
   actionToState (action, uim) {
-    var nextUIM; 
+    var nextUIM={}; 
     logger.info("PanelItems.actionToState",{action},{uim});
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let ash=action.shape, ush=uim.shape;
@@ -99,17 +99,16 @@ class PanelItems extends React.Component {
         } else if(ush==='open' && ash==='truncated') { // panel is open child is changing to truncated, show all the other children
             if(action.itemId === uim.itemId) { // it's the one that was previously open
               Object.keys(this.toChild).forEach(childId=>{
-                if(childId===action.itemId) // no need to change the one that changed to truncated
-                this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'truncated'})
-                return;
+                if(childId===action.itemId) return;// no need to change the one that changed to truncated
+                else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'truncated'})
               });
               Object.assign(nextUIM, uim, {shape: 'truncated', itemId: null});
             }
             // else ignore it
         } else if(ush==='truncated' && ash==='open'){ // panel is truncated and action is to open an item
             Object.keys(this.toChild).forEach(childId=>{
-                if(childId===action.itemId) // no need to change the one that changed to open
-                this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'collapsed'});
+                if(childId===action.itemId) return;// no need to change the one that changed to open
+                else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'collapsed'});
             });
             Object.assign(nextUIM, uim, {shape: 'open', itemId: action.itemId});
         } else Object.assign(nextUIM, uim); // no change necessary
