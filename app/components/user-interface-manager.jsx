@@ -115,8 +115,8 @@ class UserInterfaceManager extends React.Component {
              window.onpopstate=this.onpopstate.bind(this);
         }
         this.state={uim: {
-            shape: this.props.uim.shape || 'truncated',
-            depth: this.props.uim ? this.props.uim.depth +1 : 0,
+            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
+            depth: this.props.uim ? this.props.uim.depth+1 : 0,
             toParent: this.toMeFromChild.bind(this)
         }};
         logger.info("UserInterfaceManager constructor, state", this.state);
