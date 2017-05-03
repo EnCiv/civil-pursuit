@@ -123,7 +123,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     componentDidMount(){
-        if (this.props.uim.toParent) {
+        if (this.props.uim && this.props.uim.toParent) {
             this.props.uim.toParent({toChild: this.toMeFromParent.bind(this)});
         } // give parent your func so you can get state changes 
     }
