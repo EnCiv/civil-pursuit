@@ -13,7 +13,7 @@ class TypeComponent extends React.Component{
                         : Components.Subtype;
 
         logger.info("TypeComponent", this.props );
-        if(typeof Component === 'function') return(<UserInterfaceManager {...this.props} > <Component /> </UserInterfaceManager> );  //UIM passes props plus the UIM state to the child Component
+        if(typeof Component === 'function') return(<UserInterfaceManager {...this.props} ><Component /></UserInterfaceManager> );  //UIM passes props plus the UIM state to the child Component
         logger.error("TypeComponent component not defined", {component});
         return null;
     }

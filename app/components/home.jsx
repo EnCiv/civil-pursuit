@@ -7,7 +7,7 @@ import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
-import Welcome                        from './welcome';
+import Welcome                      from './welcome';
 import TypeComponent                from './type-component';
 
 class Home extends React.Component {
@@ -67,6 +67,8 @@ class Home extends React.Component {
 
     const { discussion, panel } = this.state;
 
+    logger.info("Home",this.props)
+
 
     if( ! this.props.user) {
       content.push(
@@ -89,7 +91,7 @@ class Home extends React.Component {
       content.push(
         <div>
           <div id="top-level-panel">
-            <TypeComponent component={'Subtype'} panel={panel} style={{backgroundColor: "white"}} user={ this.props.user } />
+            <TypeComponent component={'Subtype'} {...this.props} panel={panel} style={{backgroundColor: "white"}} user={ this.props.user } />
           </div>
         </div>
       );
