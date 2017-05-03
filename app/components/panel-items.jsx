@@ -82,8 +82,8 @@ class PanelItems extends React.Component {
   toChild=[];  // toChild keeps track of the toChild func for each child item
   actionToState (action, uim) {
     var nextUIM; 
-    logger.info("actionToState",{action},{uim});
-    if(action.type==="CHILD_SHAPE_CHANAGED"){
+    logger.info("PanelItems.actionToState",{action},{uim});
+    if(action.type==="CHILD_SHAPE_CHANGED"){
       let ash=action.shape, ush=uim.shape;
       if(!action.itemId) logger.error("PanelItems.actionToState action without itemId", action)
       var ooview='truncated';
