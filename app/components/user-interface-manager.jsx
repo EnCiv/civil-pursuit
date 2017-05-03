@@ -61,7 +61,10 @@ class UserInterfaceManager extends React.Component {
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
-                window.history.pushState(this.getState(nextUIM),"Civil Pursuit", UserInterfaceManager.path.join('/'));
+                var stateStack={stateStack: this.getState(nextUIM)};
+                var newPath= UserInterfaceManager.path.join('/');
+                logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
+                window.history.pushState(stateStack,"Civil Pursuit", newPath);
                 this.setState({uim: nextUIM})
                 return;
             }
@@ -77,8 +80,8 @@ class UserInterfaceManager extends React.Component {
         logger.info("UserInterfaceManager.toMeFromParent", action);
         var nextUIM;
         if (action.type==="ONPOPSTATE") {
-            Object.assign(nextUIM,this.state.uim, action.event.state[this.props.uim.depth]);
-            var uiToChild = () => {if(action.event.state.length > (this.props.uim.depth+1) && this.toChild) this.toChild({action});}
+            Object.assign(nextUIM,this.state.uim, action.event.state.stateStack[this.props.uim.depth]);
+            var uiToChild = () => {if(action.event.state.stateStack.length > (this.props.uim.depth+1) && this.toChild) this.toChild({action});}
             if(isEqual(this.state.uim,nextUIM)){
                 // no need to change state
                 uiToChild();
