@@ -18,8 +18,12 @@ class UserInterfaceManager extends React.Component {
     // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
     // the top UIM state of the array is the root component
     getState(newUIM){
-        if(this.props.uim && this.props.uim.toParent) return ((this.props.uim.toParent({type: "GET_STATE"})).push(newUIM));
-        else return(newUIM);
+        if(this.props.uim && this.props.uim.toParent) {
+            var result=this.props.uim.toParent({type: "GET_STATE"});
+            logger.info("UserInterfaceManager.getState got", result);
+            return result.push(newUIM); // push this uim state to the uim state list and return it
+        }
+        else return([newUIM]);
     }
 
     // handler for the window onpop state
@@ -39,7 +43,7 @@ class UserInterfaceManager extends React.Component {
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
                 var root=[Object.assign({}, this.state.uim)]; 
                 logger.info("UserInterfaceManaer GET_STATE at root",root);
-                return result; 
+                return root; 
             }
             else {
                 var result=this.props.uim.toParent({type: "GET_STATE"});
@@ -57,7 +61,7 @@ class UserInterfaceManager extends React.Component {
                     nextUIM.pathDepth=-1;  // 0 would be valid, mark depth as invalid
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                     nextUIM.pathDepth=UserInterfaceManager.path.length;
-                    UserInterfaceManager.path.push(nextUIM.pathPart);
+                    UserInterfaceManager.path.concat(nextUIM.pathPart);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
@@ -108,7 +112,7 @@ class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        logger.info("UserInterfaceManager constructor");
+        logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
         this.toChild=null;
         if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.path= this.props.path || [];
@@ -122,6 +126,7 @@ class UserInterfaceManager extends React.Component {
                 toParent: this.toMeFromChild.bind(this)
             }
         );
+        logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
     renderChildren() {
