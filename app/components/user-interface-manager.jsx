@@ -50,7 +50,6 @@ class UserInterfaceManager extends React.Component {
         else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {
-                if(nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                     if(this.toChild) this.toChild({type:"CLEAR_PATH"});
                     UserInterfaceManager.path.splice(nextUIM.pathDepth); // clear path after this point
@@ -64,8 +63,9 @@ class UserInterfaceManager extends React.Component {
                 var stateStack={stateStack: this.getState(nextUIM)};
                 var newPath= UserInterfaceManager.path.join('/');
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
-                window.history.pushState(stateStack,'', newPath);
-                this.setState({uim: nextUIM})
+                window.history.pushState(stateStack,'', '/'+newPath);
+                this.setState({uim: nextUIM}, ()=>
+                (nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent) ? this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1}) : null);
                 return;
             }
         }
