@@ -36,13 +36,13 @@ class UserInterfaceManager extends React.Component {
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",this.state.uim);
-            if(this.props.uim.toParent===null) return [Object.assgign({}, this.state.uim)]; // return the uim state of the root  as an array of 1
+            if(this.props.uim && this.props.uim.toParent===null) return [Object.assgign({}, this.state.uim)]; // return the uim state of the root  as an array of 1
             else return this.props.uim.toParent({type: "GET_STATE"}).push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
         }
         else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {
-                if(nextUIM.shape!==this.state.uim.shape && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
+                if(nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1});
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                     if(this.toChild) this.toChild({type:"CLEAR_PATH"});
                     UserInterfaceManager.path.splice(nextUIM.pathDepth); // clear path after this point
@@ -60,7 +60,7 @@ class UserInterfaceManager extends React.Component {
         }
         // these actions can be overridden by the component's actonToState
         if(action.type==="CHILD_SHAPE_CHANGED"){
-            if(this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
+            if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
         }
     }
 
