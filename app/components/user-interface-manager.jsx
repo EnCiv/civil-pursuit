@@ -17,7 +17,8 @@ class UserInterfaceManager extends React.Component {
         if(this.props.uim && this.props.uim.toParent) {
             var result=this.props.uim.toParent({type: "GET_STATE"});
             logger.info("UserInterfaceManager.getState got", result);
-            return result.push(newUIM); // push this uim state to the uim state list and return it
+            result.push(newUIM);
+            return result; // push this uim state to the uim state list and return it
         }
         else return([newUIM]);
     }
@@ -44,7 +45,8 @@ class UserInterfaceManager extends React.Component {
             else {
                 var result=this.props.uim.toParent({type: "GET_STATE"});
                 logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", result);
-                return result.push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
+                result.push(Object.assign({},this.state.uim)); // push this uim state to the uim state list and return it
+                return result;
             }
         }
         else if(this.actionToState) {
