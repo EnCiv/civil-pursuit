@@ -57,14 +57,15 @@ exports.button = class SubtypeButton extends React.Component {
 exports.panel = class SubtypePanel extends React.Component {
   mounted = false;
   render() {
-    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    const {active, style, item}=this.props;
+    if (!this.mounted && !active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
       return (
         <div className="toggler subtype">
           <Accordion
-            active={this.props.active}
-            style={this.props.style}
+            active={active}
+            style={style}
           >
             <TypeComponent
               {...this.props}
