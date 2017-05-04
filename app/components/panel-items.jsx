@@ -95,7 +95,8 @@ class PanelItems extends React.Component {
               this.toChild[uim.itemId]({type: 'CHANGE_SHAPE',shape: 'truncated'});
               this.toChild[action.itemId]({type: 'CHANGE_SHAPE', shape: 'open'});
               Object.assign(nextUIM, uim, {itemId: action.itemId});
-            } // else no update required
+            } else // no update required
+              Object.assign(nextUIM, uim);
         } else if(ush==='open' && ash==='truncated') { // panel is open child is changing to truncated, show all the other children
             if(action.itemId === uim.itemId) { // it's the one that was previously open
               Object.keys(this.toChild).forEach(childId=>{
@@ -103,8 +104,8 @@ class PanelItems extends React.Component {
                 else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'truncated'})
               });
               Object.assign(nextUIM, uim, {shape: 'truncated', itemId: null});
-            }
-            // else ignore it
+            } else // else ignore it
+              Object.assign(nextUIM, uim);
         } else if(ush==='truncated' && ash==='open'){ // panel is truncated and action is to open an item
             Object.keys(this.toChild).forEach(childId=>{
                 if(childId===action.itemId) return;// no need to change the one that changed to open
@@ -122,7 +123,7 @@ class PanelItems extends React.Component {
     } else if(action.type==="TOGGLE_CREATOR"){
       if(ush!=='creator') Object.assign(nextUIM, uim, {shape: 'creator'});
       else  Object.assign(nextUIM,uim, {shape: 'truncated'});
-    } else return null; // don't return a new state so the default methods can have a shot at it
+    } else return null; // don't know this action, null so the default methods can have a shot at it
     return nextUIM;
   }
 
