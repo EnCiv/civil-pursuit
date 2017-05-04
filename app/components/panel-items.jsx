@@ -113,7 +113,7 @@ class PanelItems extends React.Component {
             });
             Object.assign(nextUIM, uim, {shape: 'open', itemId: action.itemId});
         } else Object.assign(nextUIM, uim); // no change necessary
-      }else{
+      }else{ // it's not my child that changed shape
         if(ooview && ash==='open'){
           Object.assign(nextUIM, uim, {shape: 'collapsed', itemId: action.itemId});
         } else if (ooview && ash==='truncated') {
@@ -124,6 +124,7 @@ class PanelItems extends React.Component {
       if(ush!=='creator') Object.assign(nextUIM, uim, {shape: 'creator'});
       else  Object.assign(nextUIM,uim, {shape: 'truncated'});
     } else return null; // don't know this action, null so the default methods can have a shot at it
+    logger.info("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
   }
 
