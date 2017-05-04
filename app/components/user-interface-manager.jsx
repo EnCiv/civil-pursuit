@@ -14,14 +14,15 @@ class UserInterfaceManager extends React.Component {
     // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
     // the top UIM state of the array is the root component
     getState(newUIM){
+        var nextUIM=Object.assign({},newUIM);
         delete newUIM.toParent; // browser has a problem with functions in the state
         if(this.props.uim && this.props.uim.toParent) {
             var result=this.props.uim.toParent({type: "GET_STATE"});
             logger.info("UserInterfaceManager.getState got", result);
-            result.push(newUIM);
+            result.push(nextUIM);
             return result; // push this uim state to the uim state list and return it
         }
-        else return([newUIM]);
+        else return([nextUIM]);
     }
 
     // handler for the window onpop state
@@ -40,7 +41,7 @@ class UserInterfaceManager extends React.Component {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",this.state.uim);
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
                 var root=[Object.assign({}, this.state.uim)]; 
-                delete root.toParent; // browser has a problem with functions in state
+                delete root[0].toParent; // browser has a problem with functions in state
                 logger.info("UserInterfaceManaer GET_STATE at root",root);
                 return root; 
             }
