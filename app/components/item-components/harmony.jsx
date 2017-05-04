@@ -5,6 +5,7 @@ import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion          from '../util/accordion';
+import Harmony from '../harmony';
 
 
 exports.button = class HarmonyButton extends React.Component {
