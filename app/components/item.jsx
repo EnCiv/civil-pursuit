@@ -40,7 +40,7 @@ class UIMItem extends React.Component {
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
     var nextUIM={};
-    if (action.type == "TOGGLE_BUTTON") {
+    if (action.type === "TOGGLE_BUTTON") {
       let button=action.button;
       if (uim.button) { // the button is on
         if (button === uim.button) { // untoggle button
@@ -50,7 +50,7 @@ class UIMItem extends React.Component {
             Object.assign(nextUIM, { button: null, shape: 'truncated' });
         } else { // old button off, new button on, state still open
           if (button === 'Subtype') {
-            Object.assign(nextUIM, { button: null, pathPart: [] });
+            Object.assign(nextUIM, { button: button, pathPart: ['Subtype', action.shortId] });
             // no shape change
           } else {
             Object.assign(nextUIM, { button: null });
@@ -64,6 +64,9 @@ class UIMItem extends React.Component {
           Object.assign(nextUIM, uim, { button: button, shape: 'open' });
         }
       }
+      return nextUIM;
+    }else if(action.type ==="CHANGE_SHAPE"){
+      Object.assign(nextUIM, uim);
       return nextUIM;
     } else return uim;
   }
