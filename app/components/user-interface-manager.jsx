@@ -16,7 +16,7 @@ class UserInterfaceManager extends React.Component {
     getState(newUIM){
         var nextUIM=Object.assign({},newUIM);
         if(this.props.uim && this.props.uim.toParent) {
-            var result=this.props.uim.toParent({type: "GET_STATE"});
+            var result=this.props.uim.toParent({type: "GET_STATE", distance: 1});
             logger.info("UserInterfaceManager.getState got", result);
             result.push(nextUIM);
             return result; // push this uim state to the uim state list and return it
@@ -34,17 +34,18 @@ class UserInterfaceManager extends React.Component {
 
     toMeFromChild(action) {
         logger.info("UserInterfaceManager.toMeFromChild",action);
+        if(!action.distance) action.distance=0; // action was from component so add distance
         if (action.type==="SET_TO_CHILD") { this.toChild = action.function }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
-            logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",this.state.uim);
+            logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
                 var root=[Object.assign({}, this.state.uim)]; 
                 logger.info("UserInterfaceManaer GET_STATE at root",root);
                 return root; 
             }
             else {
-                var result=this.props.uim.toParent({type: "GET_STATE"});
+                var result=this.props.uim.toParent({type: "GET_STATE", distance: action.distance+1});
                 logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", result);
                 let nextUIM=Object.assign({},this.state.uim);
                 result.push(nextUIM); // push this uim state to the uim state list and return it
@@ -68,10 +69,16 @@ class UserInterfaceManager extends React.Component {
                 var newPath= UserInterfaceManager.path.join('/');
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
                 window.history.pushState(stateStack,'', '/'+newPath);
-                if(nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent)
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1}));
-                else 
-                    this.setState({uim: nextUIM});
+                if(nextUIM.shape!==this.state.uim.shape){
+                    if(this.props.uim && this.props.uim.toParent){
+                        const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
+                        this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
+                    } else
+                        this.setState({uim: nextUIM});
+                }else {
+                    if(action.type === "CHILD_SHAPE_CHANGED" && this.props.uim && this.props.uim.toParent)
+                        this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1})
+                }
                 return;
             }
         } 
@@ -80,7 +87,7 @@ class UserInterfaceManager extends React.Component {
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
                 if(this.props.uim && this.props.uim.toParent) {// if there's a parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance +1 || 1}));
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM});
             } // no change, nothing to do
