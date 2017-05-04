@@ -15,7 +15,6 @@ class UserInterfaceManager extends React.Component {
     // the top UIM state of the array is the root component
     getState(newUIM){
         var nextUIM=Object.assign({},newUIM);
-        delete newUIM.toParent; // browser has a problem with functions in the state
         if(this.props.uim && this.props.uim.toParent) {
             var result=this.props.uim.toParent({type: "GET_STATE"});
             logger.info("UserInterfaceManager.getState got", result);
@@ -41,7 +40,6 @@ class UserInterfaceManager extends React.Component {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",this.state.uim);
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
                 var root=[Object.assign({}, this.state.uim)]; 
-                delete root[0].toParent; // browser has a problem with functions in state
                 logger.info("UserInterfaceManaer GET_STATE at root",root);
                 return root; 
             }
@@ -49,7 +47,6 @@ class UserInterfaceManager extends React.Component {
                 var result=this.props.uim.toParent({type: "GET_STATE"});
                 logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", result);
                 let nextUIM=Object.assign({},this.state.uim);
-                delete nextUIM.toParent; //browser has a problem with functions in state
                 result.push(nextUIM); // push this uim state to the uim state list and return it
                 return result;
             }
@@ -101,8 +98,7 @@ class UserInterfaceManager extends React.Component {
                 this.state.uim, // preserve what's in the current uim state, that isn't overridden (external stuff perhaps)
                 {shape: 'truncated'},
                 this.props.uim,
-                {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0,
-                    toParent: this.toMeFromChild.bind(this)
+                {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0
                 },
                 {pathPart: [], pathDepth: -1})}
                 , ()=>{if(this.toChild) this.toChild(action)});
@@ -126,15 +122,14 @@ class UserInterfaceManager extends React.Component {
         }
         this.state={uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth+1 : 0,
-            toParent: this.toMeFromChild.bind(this)
+            depth: this.props.uim ? this.props.uim.depth+1 : 0
         }};
         logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
     renderChildren() {
         return React.Children.map(this.props.children, child =>
-            React.cloneElement(child, Object.assign({}, this.props, this.state))  //uim in state override uim in props
+            React.cloneElement(child, Object.assign({}, this.props, {uim: Object.assign({}, this.state.uim, {toParent: this.toMeFromChild.bind(this)})}))  //uim in state override uim in props
         );
     }
 
