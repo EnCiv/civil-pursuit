@@ -39,6 +39,7 @@ class UIMItem extends React.Component {
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
+    logger.info("UIMItem.actionToState",{action},{uim});
     var nextUIM={};
     if (action.type === "TOGGLE_BUTTON") {
       let button=action.button;
@@ -65,10 +66,7 @@ class UIMItem extends React.Component {
         }
       }
       return nextUIM;
-    }else if(action.type ==="CHANGE_SHAPE"){
-      Object.assign(nextUIM, uim);
-      return nextUIM;
-    } else return uim;
+    } else return null;  // if you don't handle the type, let the default handlers prevail
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

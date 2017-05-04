@@ -74,9 +74,17 @@ class UserInterfaceManager extends React.Component {
                     this.setState({uim: nextUIM});
                 return;
             }
-        }
-        // these actions can be overridden by the component's actonToState
-        if(action.type==="CHILD_SHAPE_CHANGED"){
+        } 
+        // these actions can be overridden by the component's actonToState if either there isn't one or it returns a null next state
+        if(action.type ==="CHANGE_SHAPE"){
+            if(this.state.uim.shape!==action.shape){ // really the shape changed
+                var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
+                if(this.props.uim && this.props.uim.toParent) {// if there's a parent to tell of the change
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance +1 || 1}));
+                }else // no parent to tell of the change
+                    this.setState({uim: nextUIM});
+            } // no change, nothing to do
+        } else if(action.type==="CHILD_SHAPE_CHANGED"){
             if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
         }
     }
