@@ -192,7 +192,7 @@ class PanelItems extends React.Component {
             if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             // what about ooview ???
             //if(type.visualMethod && type.visualMethod ==="ooview" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
-            var itemUIM={shape: shape, depth: this.props.uim.depth+1, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
+            var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>
                 <Item

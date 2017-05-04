@@ -68,8 +68,10 @@ class UserInterfaceManager extends React.Component {
                 var newPath= UserInterfaceManager.path.join('/');
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
                 window.history.pushState(stateStack,'', '/'+newPath);
-                this.setState({uim: nextUIM}, ()=>
-                (nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent) ? this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1}) : null);
+                if(nextUIM.shape!==this.state.uim.shape && this.props.uim && this.props.uim.toParent)
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: nextUIM.distance || 1}));
+                else 
+                    this.setState({uim: nextUIM});
                 return;
             }
         }
