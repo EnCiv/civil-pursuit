@@ -140,7 +140,7 @@ class UIMItem extends React.Component {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (this.props.uim && this.props.uim.readmore) {
+    if (!(this.props.uim && this.props.uim.readmore)) {
       let buttonsR = this.refs.buttons.getBoundingClientRect();
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
@@ -198,6 +198,8 @@ class UIMItem extends React.Component {
     const { item, user, buttons, uim, style } = this.props;
     const shape = uim ? uim.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
+    const readMore=(uim && uim.readMore);
+    const truncShape = shape!=='collapsed' ? readMore ? 'vs-open' : 'vs-truncated' : 'vs-collapsed';
 
     let noReference = true;
 
@@ -242,15 +244,15 @@ class UIMItem extends React.Component {
                   { renderButtons }
                 </ItemStore>
               </section>
-              <Accordion className={ClassNames("item-truncatable", classShape)} onClick={this.readMore.bind(this)} active={shape === 'open'} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
-                <h4 className={ClassNames("item-subject", classShape)} ref='subject'>
+              <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readmore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
+                <h4 className={ClassNames("item-subject", truncShape)} ref='subject'>
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */}
                   {item.subject}
                 </h4>
-                <h5 className={ClassNames('item-reference', classShape, { none: noReference })} ref='reference' >
+                <h5 className={ClassNames('item-reference', truncShape, { none: noReference })} ref='reference' >
                   <a href={referenceLink} onClick={this.openURL.bind(this)} ref="link" target="_blank" rel="nofollow"><span>{referenceTitle}</span></a>
                 </h5>
-                <div className={ClassNames('item-description', 'pre-text', shape === 'truncated' ? (noReference ? 'vs-truncated4' : 'vs-truncated') : classShape)} ref='description'>
+                <div className={ClassNames('item-description', 'pre-text', (!readMore) ? (noReference ? 'vs-truncated4' : 'vs-truncated') : truncShape)} ref='description'>
                   {item.description}
                 </div>
                 <div className="item-tendency" style={{ display: 'none' }}>
