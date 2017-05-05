@@ -173,7 +173,7 @@ class Accordion extends React.Component {
     return (
       <section className={ classes } ref='accordion' style={ this.props.style } onClick={this.props.onClick} >
         <div ref='accordionWrapper' >
-          { this.state.attr!=='collapsed' ? this.props.children : null }
+          { this.props.active ? this.props.children : null }
         </div>
       </section>
     );
