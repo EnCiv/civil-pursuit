@@ -162,10 +162,8 @@ class UIMItem extends React.Component {
     e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
     if (this.props.uim.shape === 'truncated') {
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
-      if (this.props.uim.toParent) this.props.uim.toParent({ type: "CHANGE_SHAPE", shape: 'open' })
-    } else {
-      if (this.props.uim.toParent) this.props.uim.toParent({ type: "CHANGE_SHAPE", shape: 'truncated' })
-    }
+    } 
+    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_BUTTON", button: 'readmore' })
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
