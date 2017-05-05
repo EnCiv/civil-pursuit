@@ -214,7 +214,7 @@ class UIMItem extends React.Component {
                       : null;
 
       renderPanels = buttons ? buttons.map(button => {
-                  return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button} style={style} />);
+                  return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button && shape==='open'} style={style} />);
                 })
                 : null;
     }
