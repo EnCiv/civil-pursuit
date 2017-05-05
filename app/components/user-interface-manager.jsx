@@ -70,7 +70,7 @@ class UserInterfaceManager extends React.Component {
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
                 window.history.pushState(stateStack,'', '/'+newPath);
                 if(!isEqual(nextUIM,this.state.uim)){ // if anything in the state has changed
-                    if(nextUIM.shape != this.state.uim.shape) { // if the shape has changed (like a button or an ItemId)
+                    if(nextUIM.shape !== this.state.uim.shape) { // if the shape has changed (like a button or an ItemId)
                         if(this.props.uim && this.props.uim.toParent){
                             const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                             this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));

@@ -86,8 +86,8 @@ class PanelItems extends React.Component {
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let ash=action.shape, ush=uim.shape;
       if(!action.itemId) logger.error("PanelItems.actionToState action without itemId", action)
-      var ooview='truncated';
-      if(this.props.panel && this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod ==="ooview") ooview='ooview';
+      var ooview=false;
+      if(this.props.panel && this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod ==="ooview") ooview=true;
 
       if(action.distance===1) { //if this action is from an immediate child 
         if(ush==='open' && ash==='open') { // panel is alread open and item is open
@@ -249,7 +249,6 @@ class PanelItems extends React.Component {
 
     return (
         <Panel
-          noHeading={type && type.visualMethod && type.visualMethod ==="ooview" && uim && uim.shape==='collapsed'}
           uim = {uim}
           heading     =   {[
             ( <h4>{ title }</h4> ), ( type && type.createMethod=="hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id) )) ? (null) : 
