@@ -58,7 +58,8 @@ exports.button = class SubtypeButton extends React.Component {
 exports.panel = class SubtypePanel extends React.Component {
   mounted = false;
   render() {
-    const {active, style, item}=this.props;
+    const {active, style, item, uim}=this.props;
+    const nextUIM={shape: 'truncated', depth: uim.depth, toParent: uim.toParent} // UIM 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
     if ((this.mounted===false && active===false) || !item.subtype) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
@@ -70,6 +71,7 @@ exports.panel = class SubtypePanel extends React.Component {
           >
             <TypeComponent
               {...this.props}
+              uim={nextUIM}
               panel={{ parent: item, type: item.subtype, skip: 0, limit: config['navigator batch size'] }}
               component={'Subtype'}
             />

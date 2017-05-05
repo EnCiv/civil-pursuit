@@ -79,7 +79,7 @@ class UserInterfaceManager extends React.Component {
                     if(action.type === "CHILD_SHAPE_CHANGED" && this.props.uim && this.props.uim.toParent)
                         this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1})
                 }
-                return;
+                return null;
             }
         } 
         // these actions can be overridden by the component's actonToState if either there isn't one or it returns a null next state
@@ -94,6 +94,7 @@ class UserInterfaceManager extends React.Component {
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
             if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
         }
+        return null;
     }
 
 

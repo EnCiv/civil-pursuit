@@ -112,13 +112,17 @@ class PanelItems extends React.Component {
                 else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'collapsed'});
             });
             Object.assign(nextUIM, uim, {shape: 'open', itemId: action.itemId});
-        } else Object.assign(nextUIM, uim); // no change necessary
+        } else {
+          logger.info("PanelItems.actionToState falling through", {action}, {uim})
+          Object.assign(nextUIM, uim); // no change necessary
+        }
       }else{ // it's not my child that changed shape
+        logger.info("PanelItems.actionToState it's not my child that changed shape")
         if(ooview && ash==='open'){
           Object.assign(nextUIM, uim, {shape: 'collapsed', itemId: action.itemId});
         } else if (ooview && ash==='truncated') {
           Object.assign(nextUIM, uim, {shape: 'truncated', itemId: null});
-        } else Object.assign(nextUIM, uim); // no change necessary
+        } else Object.assign(nextUIM, uim); // no change to shape
       }
     } else if(action.type==="TOGGLE_CREATOR"){
       if(ush!=='creator') Object.assign(nextUIM, uim, {shape: 'creator'});
