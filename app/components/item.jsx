@@ -47,9 +47,9 @@ class UIMItem extends React.Component {
       if (uim.button) { // a button is on
         if (button === uim.button) { // untoggle button
           if (button === 'Subtype') { // untoggle the subtype button and pop the path
-            Object.assign(nextUIM, uim, { button: null, shape: readmore ? 'open' : 'truncated', pathPart: [] });
+            Object.assign(nextUIM, uim, { button: null, shape: readMore ? 'open' : 'truncated', pathPart: [] });
           }else          
-            Object.assign(nextUIM, uim, { button: null, shape: readmore ? 'open' :'truncated' });
+            Object.assign(nextUIM, uim, { button: null, shape: readMore ? 'open' :'truncated' });
         } else { // old button off, new button on, state still open
           if (button === 'Subtype') {
             Object.assign(nextUIM, uim, { button: button, pathPart: ['Subtype', action.shortId] });
@@ -69,10 +69,10 @@ class UIMItem extends React.Component {
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       let button=uim.button;
-      if (uim.readmore) { //readmore is on so turn it off
-         Object.assign(nextUIM, uim, { readmore: null, shape: button ? 'open' : 'truncated' });
-      }else{ // readmore is off so turn it on
-         Object.assign(nextUIM, uim, { readmore: true, shape: 'open'});
+      if (uim.readMore) { //readMore is on so turn it off
+         Object.assign(nextUIM, uim, { readMore: null, shape: button ? 'open' : 'truncated' });
+      }else{ // readMore is off so turn it on
+         Object.assign(nextUIM, uim, { readMore: true, shape: 'open'});
       }
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail
@@ -140,7 +140,7 @@ class UIMItem extends React.Component {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (!(this.props.uim && this.props.uim.readmore)) {
+    if (!(this.props.uim && this.props.uim.readMore)) {
       let buttonsR = this.refs.buttons.getBoundingClientRect();
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
@@ -169,7 +169,7 @@ class UIMItem extends React.Component {
 
   readMore(e) {
     e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
-    if (this.props.uim.readmore) { // if readmore is on and we are going to turn it off
+    if (this.props.uim.readMore) { // if readMore is on and we are going to turn it off
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
     } 
     if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE"})
@@ -244,7 +244,7 @@ class UIMItem extends React.Component {
                   { renderButtons }
                 </ItemStore>
               </section>
-              <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readmore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
+              <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
                 <h4 className={ClassNames("item-subject", truncShape)} ref='subject'>
                   { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */}
                   {item.subject}
