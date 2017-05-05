@@ -205,18 +205,19 @@ class UIMItem extends React.Component {
       referenceTitle = item.references[0].title;
       noReference = false;
     }
+    var renderButtons=null, renderPanels=null;
 
-    var renderButtons = buttons ? buttons.map(button => {
-                        return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
-                      })
-                    : null;
+    if(shape!=='collapsed'){ // render the buttons if this item is visible
+      renderButtons = buttons ? buttons.map(button => {
+                          return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+                        })
+                      : null;
 
-    console.info("UIMItem.render rendered buttons");
-
-    var renderPanels = buttons ? buttons.map(button => {
-                return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button} style={style} />);
-              })
-              : null;
+      renderPanels = buttons ? buttons.map(button => {
+                  return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button} style={style} />);
+                })
+                : null;
+    }
 
     logger.info("UIMItem.render rendered buttons and panels");
 
