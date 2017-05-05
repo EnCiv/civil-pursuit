@@ -114,15 +114,8 @@ class UserInterfaceManager extends React.Component {
                 // change the state and then pass to child
                 this.setState(nextUIM, uiToChild);
             }
-        } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
-            this.setState({uim: Object.assign({},
-                this.state.uim, // preserve what's in the current uim state, that isn't overridden (external stuff perhaps)
-                {shape: 'truncated'},
-                this.props.uim,
-                {   depth: (this.props.uim && this.props.uim.depth) ? this.props.uim.depth + 1 : 0
-                },
-                {pathPart: [], pathDepth: -1})}
-                , ()=>{if(this.toChild) this.toChild(action)});
+        } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
+            this.setState(this.getDefaultState(), ()=>{if(this.toChild) this.toChild(action)}); // after clearing the state tell child to clear 
         } else if(action.type==="CHANGE_SHAPE"){
             this.setState({uim: Object.assign({},
                 this.state.uim,
@@ -133,6 +126,14 @@ class UserInterfaceManager extends React.Component {
         }
     }
 
+    // consistently get the default state from multiple places
+    getDefaultState(){
+        return {uim: {
+            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
+            depth: this.props.uim ? this.props.uim.depth+1 : 0
+        }}
+    }
+
     constructor(props) {
         super(props);
         logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
@@ -141,10 +142,7 @@ class UserInterfaceManager extends React.Component {
              UserInterfaceManager.path= this.props.path || [];
              window.onpopstate=this.onpopstate.bind(this);
         }
-        this.state={uim: {
-            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth+1 : 0
-        }};
+        this.state=this.getDefaultState();
         logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
