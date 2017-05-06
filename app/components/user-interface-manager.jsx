@@ -35,8 +35,8 @@ class UserInterfaceManager extends React.Component {
     toMeFromChild({action}) {
         logger.info("UserInterfaceManager.toMeFromChild",action);
         if(!action.distance) action.distance=0; // action was from component so add distance
-        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}) }  // child is passing up her func
-        else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
+        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}); return null; }  // child is passing up her func
+        else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
@@ -143,6 +143,9 @@ class UserInterfaceManager extends React.Component {
              window.onpopstate=this.onpopstate.bind(this);
         }
         this.state=this.getDefaultState();
+        if (this.props.uim && this.props.uim.toParent) {
+            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
+        }
         logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
@@ -150,12 +153,6 @@ class UserInterfaceManager extends React.Component {
         return React.Children.map(this.props.children, child =>
             React.cloneElement(child, Object.assign({}, this.props, {uim: Object.assign({}, this.state.uim, {toParent: this.toMeFromChild.bind(this)})}))  //uim in state override uim in props
         );
-    }
-
-    componentDidMount(){
-        if (this.props.uim && this.props.uim.toParent) {
-            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
-        } // give parent your func so you can get state changes 
     }
 
 /** 
