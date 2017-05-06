@@ -42,30 +42,6 @@ class PanelItems extends React.Component {
     }
   }
 
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  //componentDidMount () {
-  //  this.props.emitter.on('show', this.show.bind(this));
- // }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  //componentWillUnmount () {
-  //  this.props.emitter.removeListener('show', this.show.bind(this));
- // }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentDidUpdate () {
- //   if ( this.props.new ) {
- //     if ( this.props.new._id !== this.new ) {
- //       this.new = this.props.new._id;
- //       this.toggle(this.props.new._id, 'promote');
- //     }
- //   }
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   loadMore (e) {
@@ -75,7 +51,7 @@ class PanelItems extends React.Component {
   }
 
   toggleCreator(){
-    if(this.props.uim && this.props.uim.toParent) this.uim.toParent({type: "TOGGLE_CREATOR"});
+    if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "TOGGLE_CREATOR"});
   }
 
   toChild=[];  // toChild keeps track of the toChild func for each child item
@@ -125,8 +101,19 @@ class PanelItems extends React.Component {
         } else Object.assign(nextUIM, uim); // no change to shape
       }
     } else if(action.type==="TOGGLE_CREATOR"){
-      if(ush!=='creator') Object.assign(nextUIM, uim, {shape: 'creator'});
-      else  Object.assign(nextUIM,uim, {shape: 'truncated'});
+      if(uim.creator) {// it's on so toggle it off
+        Object.assign(nextUIM,uim,{creator: false})
+      } else { // it's off so toggle it on
+        Object.assign(nextUIM,uim,{creator: true}); // if shape is not truncated, do so
+        if(ush!=='truncated'){ //if shape was not truncated 
+          if(uim.itemId){//there is an item that's open
+            this.toChild[uim.itemId]({type: "CHANGE_SHAPE", shape: 'truncated'});
+            Object.assign(nextUIM,nextUIM,{shape: 'truncated', itemId: null});
+          }else{
+            Object.assign(nextUIM,nextUIM,{shape: 'truncated'});
+          }
+        }
+      }
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.info("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
@@ -225,22 +212,17 @@ class PanelItems extends React.Component {
  //       }
       }
 
-      let creatorPanel;
 
-        creatorPanel = (
+      creator = (
+        <Accordion
+          active    =   { (uim && uim.creator) }
+          style   = {{backgroundColor: bgc}}
+          >
           <Creator
             type    =   { type }
             parent  =   { parent }
             toggle  =   { this.toggleCreator.bind(this) }
             />
-        );
-
-      creator = (
-        <Accordion
-          active    =   { (uim && uim.shape === 'creator') }
-          style   = {{backgroundColor: bgc}}
-          >
-          { creatorPanel }
         </Accordion>
       );
     }
