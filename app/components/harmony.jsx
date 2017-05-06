@@ -53,9 +53,9 @@ class UIMHarmony extends React.Component {
         if(action.side === uim.side) // this side is already open so just pass it on
           Object.assign(nextUIM, uim); 
         else if(!uim.side) // no side was open previously
-          Object.assign(nextUIM, uim, {side: side}); // expand the side
+          Object.assign(nextUIM, uim, {side: action.side}); // expand the side
         else { // the other side was open previously
-          Object.assign(nextUIM, uim, {side: side}); // expand this side
+          Object.assign(nextUIM, uim, {side: action.side}); // expand this side
           this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // tell the other side to truncate
         }
       } else // whatever the new shape is, unexpand the expanded side
