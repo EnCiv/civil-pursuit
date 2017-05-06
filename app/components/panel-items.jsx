@@ -114,8 +114,8 @@ class PanelItems extends React.Component {
             Object.assign(nextUIM,nextUIM,{shape: 'truncated'});
             delta.shape='truncated';
           }
-          Object.assign(nextUIM,uim,delta); // if shape is not truncated, do so
         }
+        Object.assign(nextUIM,uim,delta); // if shape is not truncated, do so
       }
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.info("PanelItems.actionToState return", {nextUIM})
