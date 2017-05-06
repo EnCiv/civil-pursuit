@@ -115,8 +115,9 @@ class UserInterfaceManager extends React.Component {
         logger.info("UserInterfaceManager.toMeFromParent", {action});
         var nextUIM;
         if (action.type==="ONPOPSTATE") {
-            Object.assign(nextUIM,this.state.uim, action.event.state.stateStack[this.props.uim.depth]);
-            var uiToChild = () => {if(action.event.state.stateStack.length > (this.props.uim.depth+1) && this.toChild) this.toChild({action});}
+            let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
+            Object.assign(nextUIM,this.state.uim, action.event.state.stateStack[depth]);
+            var uiToChild = () => {if(action.event.state.stateStack.length > (depth+1) && this.toChild) this.toChild({action});}
             if(isEqual(this.state.uim,nextUIM)){
                 // no need to change state
                 uiToChild();
