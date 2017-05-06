@@ -50,7 +50,7 @@ class UIMHarmony extends React.Component {
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+/***********
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
@@ -73,6 +73,7 @@ class UIMHarmony extends React.Component {
       }
     }
   }
+  *******/
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is where component specific actions are converted to component specific states
