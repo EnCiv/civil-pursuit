@@ -104,14 +104,17 @@ class PanelItems extends React.Component {
       if(uim.creator) {// it's on so toggle it off
         Object.assign(nextUIM,uim,{creator: false})
       } else { // it's off so toggle it on
-        Object.assign(nextUIM,uim,{creator: true}); // if shape is not truncated, do so
-        if(ush!=='truncated'){ //if shape was not truncated 
+        let delta={creator: true};
+        if(uim.shape!=='truncated'){ //if shape was not truncated 
           if(uim.itemId){//there is an item that's open
             this.toChild[uim.itemId]({type: "CHANGE_SHAPE", shape: 'truncated'});
-            Object.assign(nextUIM,nextUIM,{shape: 'truncated', itemId: null});
+            delta.shape='truncated';
+            delta.itemId=null;
           }else{
             Object.assign(nextUIM,nextUIM,{shape: 'truncated'});
+            delta.shape='truncated';
           }
+          Object.assign(nextUIM,uim,delta); // if shape is not truncated, do so
         }
       }
     } else return null; // don't know this action, null so the default methods can have a shot at it
