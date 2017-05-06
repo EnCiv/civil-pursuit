@@ -32,7 +32,7 @@ class UserInterfaceManager extends React.Component {
         if(event.state && event.state.length) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
-    toMeFromChild({action}) {
+    toMeFromChild(action) {
         logger.info("UserInterfaceManager.toMeFromChild",action);
         if(!action.distance) action.distance=0; // action was from component so add distance
         if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}); return null; }  // child is passing up her func
