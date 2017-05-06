@@ -13,15 +13,15 @@ class UserInterfaceManager extends React.Component {
     // return the array of all Visual States from here to the beginning
     // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
     // the top UIM state of the array is the root component
-    getState(){
-        var nextUIM=Object.assign({},this.state.uim);
+    getStateStack(){
+        var bottomUIM=Object.assign({},this.state.uim); // this UIM will be the bottom of the stack
         if(this.props.uim && this.props.uim.toParent) {
-            var result=this.props.uim.toParent({type: "GET_STATE", distance: 1});
-            logger.info("UserInterfaceManager.getState got", result);
-            result.push(nextUIM);
-            return result; // push this uim state to the uim state list and return it
+            var stack=this.props.uim.toParent({type: "GET_STATE", distance: 1});
+            logger.info("UserInterfaceManager.getState got", stack);
+            stack.push(bottomUIM);
+            return stack; // push this uim state to the uim state list and return it
         }
-        else return([nextUIM]);
+        else return([bottomUIM]);
     }
 
     // handler for the window onpop state
@@ -39,17 +39,16 @@ class UserInterfaceManager extends React.Component {
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
+            let thisUIM=Object.assign({}, this.state.uim);
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
-                var root=[Object.assign({}, this.state.uim)]; 
-                logger.info("UserInterfaceManaer GET_STATE at root",root);
-                return root; 
+                logger.info("UserInterfaceManaer GET_STATE at root",thisUIM);
+                return [thisUIM]; 
             }
             else {
-                var result=this.props.uim.toParent({type: "GET_STATE", distance: action.distance+1});
-                logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", result);
-                let nextUIM=Object.assign({},this.state.uim);
-                result.push(nextUIM); // push this uim state to the uim state list and return it
-                return result;
+                var stack=this.props.uim.toParent({type: "GET_STATE", distance: action.distance+1});
+                logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", stack);
+                stack.push(thisUIM); // push this uim state to the uim state list and return it
+                return stack;
             }
         }
         else if(this.actionToState) {
@@ -65,7 +64,7 @@ class UserInterfaceManager extends React.Component {
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
-                var stateStack={stateStack: this.getState()};
+                var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
                 var newPath= UserInterfaceManager.path.join('/');
                 logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
                 window.history.pushState(stateStack,'', '/'+newPath);
@@ -85,7 +84,7 @@ class UserInterfaceManager extends React.Component {
                 return null;
             }
         } 
-        // these actions can be overridden by the component's actonToState if either there isn't one or it returns a null next state
+        // these actions are overridden by the component's actonToState if either there isn't one or it returns a null next state
         if(action.type ==="CHANGE_SHAPE"){
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
@@ -95,7 +94,7 @@ class UserInterfaceManager extends React.Component {
                     this.setState({uim: nextUIM});
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
-            if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent(Object.assign({}, action, {distance: action.distance+1}));
+            if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
         }
         return null;
     }
