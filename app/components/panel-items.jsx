@@ -31,15 +31,14 @@ class PanelItems extends React.Component {
 
   mountedItems = {};
 
-  state = { active : { item : null, section : null } ,
-            vs: {}
+  state = { active : { item : null, section : null }
           };
 
   constructor(props){
     super(props);
     if(this.props.uim && this.props.uim.toParent) { 
       this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
-      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this) })
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems" })
     }
   }
 
@@ -93,7 +92,7 @@ class PanelItems extends React.Component {
         if(ush==='open' && ash==='open') { // panel is alread open and item is open
             if(action.itemId !== uim.itemId) { // changing from one child open to another
               if(uim.itemId) this.toChild[uim.itemId]({type: 'CHANGE_SHAPE',shape: 'truncated'});
-              else logger.warning("PanelItems.actionToState uim.itemId null", {action},{uim} );
+              else logger.error("PanelItems.actionToState uim.itemId null", {action},{uim} );
               this.toChild[action.itemId]({type: 'CHANGE_SHAPE', shape: 'open'});
               Object.assign(nextUIM, uim, {itemId: action.itemId});
             } else // no update required
@@ -184,7 +183,7 @@ class PanelItems extends React.Component {
 
       if ( ! panel.items.length && ! ( panel.type && panel.type.createMethod==='hidden') ) {
         content = (
-          <div className={`syn-panel-gutter text-center vs-${this.state.vs.state}`}>
+          <div className={`syn-panel-gutter text-center vs-${uim.shape}`}>
             <a href="#" onClick={ this.toggleCreator.bind(this) } className="click-to-create">
               Click the + to be the first to add something here
             </a>
@@ -197,8 +196,6 @@ class PanelItems extends React.Component {
           .map(item => {
             let shape='truncated';
             if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
-            // what about ooview ???
-            //if(type.visualMethod && type.visualMethod ==="ooview" && active.item === item._id && active.section === 'subtype') iVs.state='ooview'; // the subtype is active, so don't display the item
             var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
             return (
               <ItemStore item={ item } key={ `item-${item._id}` }>

@@ -32,10 +32,10 @@ class UserInterfaceManager extends React.Component {
         if(event.state && event.state.length) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
-    toMeFromChild(action) {
+    toMeFromChild({action}) {
         logger.info("UserInterfaceManager.toMeFromChild",action);
         if(!action.distance) action.distance=0; // action was from component so add distance
-        if (action.type==="SET_TO_CHILD") { this.toChild = action.function }  // child is passing up her func
+        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}) }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
@@ -102,7 +102,7 @@ class UserInterfaceManager extends React.Component {
 
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", action);
+        logger.info("UserInterfaceManager.toMeFromParent", {action});
         var nextUIM;
         if (action.type==="ONPOPSTATE") {
             Object.assign(nextUIM,this.state.uim, action.event.state.stateStack[this.props.uim.depth]);
@@ -154,7 +154,7 @@ class UserInterfaceManager extends React.Component {
 
     componentDidMount(){
         if (this.props.uim && this.props.uim.toParent) {
-            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this)});
+            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
         } // give parent your func so you can get state changes 
     }
 

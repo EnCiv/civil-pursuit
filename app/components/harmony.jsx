@@ -43,7 +43,7 @@ class UIMHarmony extends React.Component {
 
     if(this.props.uim && this.props.uim.toParent) { 
       this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
-      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this) })
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Harmony" })
     }
 
     this.toChild=[];
@@ -84,7 +84,7 @@ class UIMHarmony extends React.Component {
     if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.shape==='open'){
         if(action.side === uim.side) // this side is already open so just pass it on
-          Object.assign(nextUIM, uim);
+          Object.assign(nextUIM, uim); 
         else if(!uim.side) // no side was open previously
           Object.assign(nextUIM, uim, {side: side}); // expand the side
         else { // the other side was open previously
