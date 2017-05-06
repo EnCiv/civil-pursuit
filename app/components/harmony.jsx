@@ -10,54 +10,20 @@ import itemType                     from '../lib/proptypes/item';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
 import DoubleWide                   from './util/double-wide';
+import UserInterfaceManager         from './user-interface-manager';
 
-class Harmony extends React.Component {
-
-  state = {
-    expandedLeft: false,
-    expandedRight: false,
-    resetLeftView: 0,
-    resetRightView: 0
-  };
-
-vs={};
-
-//**********************************************************
-  focusLeft(focused) {
-    console.info("harmony.focusLeft",focused);
-    if(focused) {
-      if(this.state.expandedRight) { this.setState({expandedLeft: true, expandedRight: false}) }
-      else { this.setState({expandedLeft: true}) }
-    } else {
-      if(this.state.expandedRight) { 
-        this.setState({expandedLeft: false, expandedRight: false});
-        if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
-        if(this.toChildLeft){this.toChildLeft({state: 'truncated', distance: 0})}
-      }
-      else { 
-        this.setState({expandedLeft: false});
-        if(this.toChildRight){this.toChildLeft({state: 'truncated', distance: 0})}
-      }
-    }
+export default class Harmony extends React.Component {
+  render(){
+    return(
+    <UserInterfaceManager {...this.props}>
+      <UIMHarmony />
+     </UserInterfaceManager>
+    )
   }
+}
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class UIMHarmony extends React.Component {
 
-  focusRight(focused) {
-    console.info("harmony.focusRight",focused);
-    if(focused) {
-      if(this.state.expandedLeft) { this.setState({expandedRight: true, expandedLeft: false}) }
-      else { this.setState({expandedRight: true}) }
-    } else {
-      if(this.state.expandedLeft) { 
-        this.setState({expandedLeft: false, expandedRight: false});
-        if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}
-        if(this.toChildLeft){this.toChildLeft({state: 'truncated', distance: 0})}
-      }
-      else { this.setState({expandedRight: false}) 
-             if(this.toChildRight){this.toChildRight({state: 'truncated', distance: 0})}}
-    }
-  }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
@@ -72,10 +38,15 @@ vs={};
 
     if ( harmony.types && harmony.types.length ) {
       this.leftId = makePanelId( { type : harmony.types[0], parent : this.props.item._id });
-
       this.rightId = makePanelId( { type : harmony.types[1], parent : this.props.item._id });
     }
-    this.vs=Object.assign({},{state: 'truncated', depth: 0}, this.props.vs)  // initialize vs if not passed
+
+    if(this.props.uim && this.props.uim.toParent) { 
+      this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this) })
+    }
+
+    this.toChild=[];
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,71 +74,85 @@ vs={};
     }
   }
 
-  toChildLeft=null;
-  toChildRight=null;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is where component specific actions are converted to component specific states
+  //
 
-  toMeFromChildLeft(vs) {
-    //console.info("harmony.toMeFromChildLeft");
-    if (vs.toChild) { this.toChildLeft = vs.toChild }  // child is passing up her func
-    if (vs.state == 'open') {
-      if (this.state.expandedRight) { 
-        if(this.toChildRight){this.toChildRight({state:'truncated'})}  // notify the other panel of the state change (to truncated)
-        this.setState({ expandedLeft: true, expandedRight: false }) 
-      }
-      else { this.setState({ expandedLeft: true }) }
-    } else {
-      if (this.state.expandedRight) {
-        if(this.toChildRight){this.toChildRight({state: vs.state})}  // notify the other panel of the state change (to truncated)
-        this.setState({ expandedLeft: false, expandedRight: false });
-      }
-      else {
-        this.setState({ expandedLeft: false });
-      }
+  actionToState(action,uim) {
+    var nextUIM={};
+    if(action.type==="CHILD_SHAPE_CHANGED"){
+      if(action.shape==='open'){
+        if(action.side === uim.side) // this side is already open so just pass it on
+          Object.assign(nextUIM, uim);
+        else if(!uim.side) // no side was open previously
+          Object.assign(nextUIM, uim, {side: side}); // expand the side
+        else { // the other side was open previously
+          Object.assign(nextUIM, uim, {side: side}); // expand this side
+          this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // tell the other side to truncate
+        }
+      } else // whatever the new shape is, unexpand the expanded side
+        if(action.side === uim.side )
+          Object.assign(nextUIM,uim,{side: null});
+      return nextUIM; // return the new state
+    } else return null; // don't know the action type so let the default handler have it
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
+  //
+    toMeFromParent(action) {
+        logger.info("UIMHarmony.toMeFromParent", action);
+        if (action.type==="ONPOPSTATE") {
+            var {shape, side} = action.event.state.stateStack[this.props.uim.depth];
+            if(shape==='open' && itemId && (action.event.state.stateStack.length > (this.props.uim.depth+1)) && this.toChild[side]) this.toChild[side](action); // send the action to the active child
+        } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
+          Object.keys(this.toChild).forEach(childSide=>{ // send the action to every child
+            this.toChild[childSide](action)
+          });
+        } else logger.error("UIMHarmony.toMeFromParent action type unknown not handled", action)
+    }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user interface manager, yourself between the UIM and each child
+  // send all unhandled actions to the parent UIM
+  //
+  toMeFromChild(side, action) {
+    logger.info("UIMHarmony.toMeFromChild", side, action);
+
+    if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
+      this.toChild[side] = action.function; // don't pass this to parent
+    } else if(this.props.uim && this.props.uim.toParent) {
+       action.side=side; // actionToState may need to know which child
+       return(this.props.uim.toParent(action));
     }
   }
 
-  toMeFromChildRight(vs) {
-    //console.info("harmony.toMeFromChildRight");
-    if (vs.toChild) { this.toChildRight = vs.toChild }  // child is passing up her func
-    if (vs.state == 'open') {
-      if (this.state.expandedLeft) { 
-        if(this.toChildLeft){this.toChildLeft({state:'truncated'} )}
-        this.setState({ expandedRight: true, expandedLeft: false }) 
-      }
-      else { this.setState({ expandedRight: true }) }
-    } else {
-      if (this.state.expandedLeft) {
-        if(this.toChildLeft){this.toChildLeft({state: vs.state})}  // notify the other panel of the state change (to truncated)
-        this.setState({ expandedLeft: false, expandedRight: false });
-      } else { this.setState({ expandedRight: false }) }
-    }
-  }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { active, item, user } = this.props;
-    
+    const { active, item, user, uim } = this.props;
+
+    const leftUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'left')};  // inserting me between my parent and my child
+    const rightUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'right')};  // inserting me between my parent and my child
 
     let contentLeft = ( <Loading message="Loading" /> );
 
     let contentRight = ( <Loading message="Loading" /> );
 
       contentLeft = (
-        <DoubleWide className="harmony-pro" left expanded={this.state.expandedLeft}>
+        <DoubleWide className="harmony-pro" left expanded={uim.side==='left'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
-            <PanelItems user={ user } vs={Object.assign({}, this.vs,  { side: 'left', depth: this.vs.depth +1, toParent: this.toMeFromChildLeft.bind(this)})} 
-                        hideFeedback = {this.props.hideFeedback}
+            <PanelItems user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}
             />
           </PanelStore>
         </DoubleWide>
       );
 
       contentRight = (
-        <DoubleWide className="harmony-con" right expanded={this.state.expandedRight} >
+        <DoubleWide className="harmony-con" right expanded={uim.side==='right'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
-            <PanelItems user={ user } vs={Object.assign({}, this.vs, { side: 'right', depth: this.vs.depth +1, toParent: this.toMeFromChildRight.bind(this)})} 
-                        hideFeedback = {this.props.hideFeedback}/>
+            <PanelItems user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}/>
           </PanelStore>
         </DoubleWide>
       );
@@ -180,5 +165,3 @@ vs={};
     );
   }
 }
-
-export default Harmony;
