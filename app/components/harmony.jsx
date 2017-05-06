@@ -79,6 +79,7 @@ class UIMHarmony extends React.Component {
   //
 
   actionToState(action,uim) {
+    logger.info("UIMHarmony.actionToState", {action}, {uim});
     var nextUIM={};
     if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.shape==='open'){

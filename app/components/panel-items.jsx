@@ -92,7 +92,8 @@ class PanelItems extends React.Component {
       if(action.distance===1) { //if this action is from an immediate child 
         if(ush==='open' && ash==='open') { // panel is alread open and item is open
             if(action.itemId !== uim.itemId) { // changing from one child open to another
-              this.toChild[uim.itemId]({type: 'CHANGE_SHAPE',shape: 'truncated'});
+              if(uim.itemId) this.toChild[uim.itemId]({type: 'CHANGE_SHAPE',shape: 'truncated'});
+              else logger.warning("PanelItems.actionToState uim.itemId null", {action},{uim} );
               this.toChild[action.itemId]({type: 'CHANGE_SHAPE', shape: 'open'});
               Object.assign(nextUIM, uim, {itemId: action.itemId});
             } else // no update required
