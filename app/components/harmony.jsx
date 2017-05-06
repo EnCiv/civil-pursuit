@@ -33,47 +33,13 @@ class UIMHarmony extends React.Component {
 
     const { harmony } = this.props.item;
 
-    this.leftId = null;
-    this.rightId = null;
-
-    if ( harmony.types && harmony.types.length ) {
-      this.leftId = makePanelId( { type : harmony.types[0], parent : this.props.item._id });
-      this.rightId = makePanelId( { type : harmony.types[1], parent : this.props.item._id });
-    }
+    this.toChild=[];
 
     if(this.props.uim && this.props.uim.toParent) { 
       this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
       this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Harmony" })
     }
-
-    this.toChild=[];
   }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/***********
-  componentWillReceiveProps (props) {
-    if ( this.status === 'iddle' && props.active ) {
-      this.status = 'ready';
-
-      if ( props.panels ) {
-        if ( ! props.panels[this.leftId] ) {
-
-          window.Dispatcher.emit('get items', {
-            type        :   props.item.harmony.types[0],
-            parent      :   props.item
-          });
-        }
-
-        if ( ! props.panels[this.rightId] ) {
-          window.Dispatcher.emit('get items', {
-            type        :   props.item.harmony.types[1],
-            parent      :   props.item
-          });
-        }
-      }
-    }
-  }
-  *******/
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is where component specific actions are converted to component specific states
@@ -119,10 +85,13 @@ class UIMHarmony extends React.Component {
   // send all unhandled actions to the parent UIM
   //
   toMeFromChild(side, action) {
-    logger.info("UIMHarmony.toMeFromChild", side, action);
+    logger.info("UIMHarmony.toMeFromChild", {side}, {action});
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[side] = action.function; // don't pass this to parent
+    } else if(action.type==="SET_ACTION_TO_STATE"){
+        logger.error("Harmony.toMeFromChild unexpected action", {action})
+        return;
     } else if(this.props.uim && this.props.uim.toParent) {
        action.side=side; // actionToState may need to know which child
        return(this.props.uim.toParent(action));
@@ -145,8 +114,9 @@ class UIMHarmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={uim.side==='left'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
-            <PanelItems user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}
-            />
+            <UserInterfaceManager user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}>
+              <PanelItems />
+            </UserInterfaceManager>
           </PanelStore>
         </DoubleWide>
       );
@@ -154,7 +124,9 @@ class UIMHarmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={uim.side==='right'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
-            <PanelItems user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}/>
+            <UserInterfaceManager user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}>
+              <PanelItems />
+            </UserInterfaceManager>
           </PanelStore>
         </DoubleWide>
       );
