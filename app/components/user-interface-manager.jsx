@@ -10,18 +10,27 @@ import isEqual from 'lodash/isEqual';
 
 class UserInterfaceManager extends React.Component {
 
-    // return the array of all Visual States from here to the beginning
-    // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto a array
-    // the top UIM state of the array is the root component
-    getStateStack(){
-        var bottomUIM=Object.assign({},this.state.uim); // this UIM will be the bottom of the stack
-        if(this.props.uim && this.props.uim.toParent) {
-            var stack=this.props.uim.toParent({type: "GET_STATE", distance: 1});
-            logger.info("UserInterfaceManager.getState got", stack);
-            stack.push(bottomUIM);
-            return stack; // push this uim state to the uim state list and return it
+    constructor(props) {
+        super(props);
+        logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
+        this.toChild=null;
+        if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
+             UserInterfaceManager.path= this.props.path || [];
+             window.onpopstate=this.onpopstate.bind(this);
         }
-        else return([bottomUIM]);
+        this.state=this.getDefaultState();
+        if (this.props.uim && this.props.uim.toParent) {
+            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
+        }
+        logger.info("UserInterfaceManager constructor, state", this.state);
+    }
+
+    // consistently get the default state from multiple places
+    getDefaultState(){
+        return {uim: {
+            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
+            depth: this.props.uim ? this.props.uim.depth+1 : 0
+        }}
     }
 
     // handler for the window onpop state
@@ -38,6 +47,9 @@ class UserInterfaceManager extends React.Component {
         if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}); return null; }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
+            // return the array of all UIM States from here to the beginning
+            // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
+            // the top UIM state of the array is the root component, the bottom one is that of the UIM that inititated the call
             logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
             let thisUIM=Object.assign({}, this.state.uim);
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
@@ -99,7 +111,6 @@ class UserInterfaceManager extends React.Component {
         return null;
     }
 
-
     toMeFromParent(action) {
         logger.info("UserInterfaceManager.toMeFromParent", {action});
         var nextUIM;
@@ -125,41 +136,11 @@ class UserInterfaceManager extends React.Component {
         }
     }
 
-    // consistently get the default state from multiple places
-    getDefaultState(){
-        return {uim: {
-            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth+1 : 0
-        }}
-    }
-
-    constructor(props) {
-        super(props);
-        logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
-        this.toChild=null;
-        if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
-             UserInterfaceManager.path= this.props.path || [];
-             window.onpopstate=this.onpopstate.bind(this);
-        }
-        this.state=this.getDefaultState();
-        if (this.props.uim && this.props.uim.toParent) {
-            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
-        }
-        logger.info("UserInterfaceManager constructor, state", this.state);
-    }
-
     renderChildren() {
         return React.Children.map(this.props.children, child =>
             React.cloneElement(child, Object.assign({}, this.props, {uim: Object.assign({}, this.state.uim, {toParent: this.toMeFromChild.bind(this)})}))  //uim in state override uim in props
         );
     }
-
-/** 
-    componentWillReceiveProps(newProps){
-        props are the initial state only, prop changes are ignored after the component is constructed. 
-        execpt - props will be checked again on a CLEAR_PATH action
-    }
-**/
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

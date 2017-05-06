@@ -39,7 +39,7 @@ class UIMItem extends React.Component {
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
-    logger.info("UIMItem.actionToState",{action},{uim});
+    logger.info("UIMItem.actionToState",{action},{uim: Object.assign({},uim)}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
     if (action.type === "TOGGLE_BUTTON") {
       let button=action.button;
