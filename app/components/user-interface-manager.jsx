@@ -38,7 +38,7 @@ class UserInterfaceManager extends React.Component {
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
         logger.info("UserInterfaceManager.onopostate", {event})
-        if(event.state && event.state.length) this.toMeFromParent({type: "ONPOPSTATE", event: event});
+        if(event.state && event.state.stateStack) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
     toMeFromChild(action) {
