@@ -37,7 +37,7 @@ class UserInterfaceManager extends React.Component {
     // only the root UserInterfaceManager will set this 
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
-        logger.info("UserInterfaceManager.onopostate", {event})
+        logger.info("UserInterfaceManager.onpopostate", {event})
         if(event.state && event.state.stateStack) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
@@ -76,7 +76,7 @@ class UserInterfaceManager extends React.Component {
                     var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
                     var newPath= UserInterfaceManager.path.join('/');
                     logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
-                    window.history.pushState(stateStack,'', '/'+newPath);
+                    window.history.replaceState(stateStack,'', '/'+newPath);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
