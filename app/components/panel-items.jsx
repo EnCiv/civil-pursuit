@@ -129,8 +129,10 @@ class PanelItems extends React.Component {
         logger.info("PanelItems.toMeFromParent", action);
         if (action.type==="ONPOPSTATE") {
             var {shape, itemId} = action.event.state.stateStack[this.props.uim.depth];
-            if(shape==='open' && itemId && (action.event.state.stateStack.length > (this.props.uim.depth+1)) && this.toChild[itemId]) this.toChild[itemId](action); // send the action to the active child
-            else logger.error("PanelItems.toMeFromParent: got popstate but not (open and itemId)",action.event.state.stateStack[this.props.uim.depth]);
+            if(action.event.state.stateStack.length > (this.props.uim.depth+1)){
+                if(shape==='open' && itemId && this.toChild[itemId]) this.toChild[itemId](action); // send the action to the active child
+                else logger.error("PanelItems.toMeFromParent: got popstate but not (open and itemId)",action.event.state.stateStack[this.props.uim.depth]);
+            }else return null;// this was the end of the line
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
           Object.keys(this.toChild).forEach(childId=>{ // send the action to every child
             this.toChild[childId](action)

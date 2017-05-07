@@ -133,7 +133,7 @@ class UserInterfaceManager extends React.Component {
                 {shape: action.shape}
             )});
         }else {
-            this.toChild({action});
+            this.toChild(action);
         }
     }
 
