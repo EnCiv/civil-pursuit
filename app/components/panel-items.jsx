@@ -134,8 +134,8 @@ class PanelItems extends React.Component {
                 if(shape==='open'){
                   let sent=false;
                   Object.keys(this.toChild).forEach(child=>{
-                    if(child===itemId) {sent=true; this.toChild[child](action);}
-                    else this.toChild({type: "CHANGE_SHAPE", shape: 'truncated'})
+                    if(child===itemId) {sent=true; this.toChild[child]({type: "CHANGE_SHAPE", shape: "open"});}
+                    else this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'})
                     if(!sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE shape open child not found",{depth: this.props.uim.depth}, {action});
                   })
                 }else if (shape==='truncated'){
