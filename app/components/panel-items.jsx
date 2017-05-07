@@ -143,14 +143,14 @@ class PanelItems extends React.Component {
                     logger.error("PanelItems.toMeFromParent ONPOPSTATE unexpectedly longer, truncating and stopping here", {depth: this.props.uim.depth}, {action});
                   }
                   Object.keys(this.toChild).forEach(child=>{
-                    this.toChild({type: "CHANGE_SHAPE", shape: 'truncated'})
+                    this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'})
                   })
                 }else if (shape==='collapsed'){
                   if(action.event.state.stateStack.length > (this.props.uim.depth+2)) {
                     logger.error("PanelItems.toMeFromParent ONPOPSTATE unexpectedly longer, collapsing and stopping here", {depth: this.props.uim.depth}, {action});
                   }
                   Object.keys(this.toChild).forEach(child=>{
-                    this.toChild({type: "CHANGE_SHAPE", shape: 'truncated'})
+                    this.toChild[child]({type: "CHANGE_SHAPE", shape: 'collapsed'})
                   });
                 } else logger.error("PanelItems.toMeFromParent: got popstate with unknown shape",{depth: this.props.uim.depth}, action.event.state.stateStack[this.props.uim.depth]);
             }else return null;// this was the end of the line
