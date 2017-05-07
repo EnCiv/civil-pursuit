@@ -73,13 +73,13 @@ class UserInterfaceManager extends React.Component {
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                     nextUIM.pathDepth=UserInterfaceManager.path.length;
                     UserInterfaceManager.path.push(...nextUIM.pathPart);
+                    var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
+                    var newPath= UserInterfaceManager.path.join('/');
+                    logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
+                    window.history.pushState(stateStack,'', '/'+newPath);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
-                var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
-                var newPath= UserInterfaceManager.path.join('/');
-                logger.info("UserInterfaceManager push history",{stateStack}, {newPath});
-                window.history.pushState(stateStack,'', '/'+newPath);
                 if(!isEqual(nextUIM,this.state.uim)){ // if anything in the state has changed
                     if(nextUIM.shape !== this.state.uim.shape) { // if the shape has changed (like a button or an ItemId)
                         if(this.props.uim && this.props.uim.toParent){
