@@ -37,7 +37,7 @@ class UserInterfaceManager extends React.Component {
     // only the root UserInterfaceManager will set this 
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
-        logger.info("UserInterfaceManager.onpopostate", {event})
+        logger.info("UserInterfaceManager.onpopstate", {event})
         if(event.state && event.state.stateStack) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
@@ -126,7 +126,8 @@ class UserInterfaceManager extends React.Component {
             this.setState({uim: action.event.state.stateStack[depth]});
             return null;
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
-            this.setState(this.getDefaultState(), ()=>{if(this.toChild) this.toChild(action)}); // after clearing the state tell child to clear 
+            if(this.toChild) this.toChild(action); // clear children first
+            this.setState(this.getDefaultState()); // after clearing thechildren clear this state
         } else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
             if(this.state.uim.shape!==action.shape){
                 this.setState({uim: Object.assign({},
