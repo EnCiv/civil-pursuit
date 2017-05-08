@@ -71,8 +71,13 @@ class UIMHarmony extends React.Component {
     toMeFromParent(action) {
         logger.info("UIMHarmony.toMeFromParent", action);
         if (action.type==="ONPOPSTATE") {
-            var {shape, side} = action.event.state.stateStack[this.props.uim.depth];
-            if(shape==='open' && itemId && (action.event.state.stateStack.length > (this.props.uim.depth+1)) && this.toChild[side]) this.toChild[side](action); // send the action to the active child
+            var {side} = action.event.state.stateStack[this.props.uim.depth];
+            Object.keys(this.toChild).forEach(child=>{
+              if(child===side) {sent=true; this.toChild[child](action);}
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'}); // only one side panel is open, any others are truncated 
+              if((action.event.state.stateStack.length > (this.props.uim.depth+1)) && !sent) logger.error("Harmony.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
+            });
+            return null;
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
           Object.keys(this.toChild).forEach(childSide=>{ // send the action to every child
             this.toChild[childSide](action)

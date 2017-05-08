@@ -125,41 +125,27 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
   //
-    toMeFromParent(action) {
-        logger.info("PanelItems.toMeFromParent", action);
-        if (action.type==="ONPOPSTATE") {
-            var {shape} = action.event.state.stateStack[this.props.uim.depth+1]; // the shape for the Item component
-            var {itemId} = action.event.state.stateStack[this.props.uim.depth];  // the item was passed to the parent UIManager
-            if(action.event.state.stateStack.length > (this.props.uim.depth+1)){
-                if(shape==='open'){
-                  let sent=false;
-                  Object.keys(this.toChild).forEach(child=>{
-                    if(child===itemId) {sent=true; this.toChild[child]({type: "CHANGE_SHAPE", shape: "open"});}
-                    else this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'})
-                    if(!sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE shape open child not found",{depth: this.props.uim.depth}, {action});
-                  })
-                }else if (shape==='truncated'){
-                  if(action.event.state.stateStack.length > (this.props.uim.depth+2)) {
-                    logger.error("PanelItems.toMeFromParent ONPOPSTATE unexpectedly longer, truncating and stopping here", {depth: this.props.uim.depth}, {action});
-                  }
-                  Object.keys(this.toChild).forEach(child=>{
-                    this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'})
-                  })
-                }else if (shape==='collapsed'){
-                  if(action.event.state.stateStack.length > (this.props.uim.depth+2)) {
-                    logger.error("PanelItems.toMeFromParent ONPOPSTATE unexpectedly longer, collapsing and stopping here", {depth: this.props.uim.depth}, {action});
-                  }
-                  Object.keys(this.toChild).forEach(child=>{
-                    this.toChild[child]({type: "CHANGE_SHAPE", shape: 'collapsed'})
-                  });
-                } else logger.error("PanelItems.toMeFromParent: got popstate with unknown shape",{depth: this.props.uim.depth}, action.event.state.stateStack[this.props.uim.depth]);
-            }else return null;// this was the end of the line
-        } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
-          Object.keys(this.toChild).forEach(childId=>{ // send the action to every child
-            this.toChild[childId](action)
-          });
-        } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
-    }
+  toMeFromParent(action) {
+      logger.info("PanelItems.toMeFromParent", action);
+      if (action.type==="ONPOPSTATE") {
+          var {shape} = action.event.state.stateStack[this.props.uim.depth]; // the shape of my UIMManager
+          var {itemId} = action.event.state.stateStack[this.props.uim.depth];  // the item was passed to my UIMManager
+          if(action.event.state.stateStack.length > (this.props.uim.depth+1)){
+            let sent=false;
+            Object.keys(this.toChild).forEach(child=>{
+              if(child===itemId) {sent=true; this.toChild[child](action)}
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape==='open' ? 'collapsed' : shape ==='collapsed' ? 'collapsed' : 'truncated'}); 
+              // panel list open: one child is open, all the others are collapsed, if truncated: all children are truncated. if collapsed: all children are collapsed
+            })
+            if(!sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});
+          }
+          return null;// child has been updated, now UIM can set state for me
+      } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
+        Object.keys(this.toChild).forEach(child=>{ // send the action to every child
+          this.toChild[child](action)
+        });
+      } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is a one to many pattern for the user interface manager, yourself between the UIM and each child

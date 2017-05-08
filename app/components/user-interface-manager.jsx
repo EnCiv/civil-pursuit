@@ -127,11 +127,13 @@ class UserInterfaceManager extends React.Component {
             return null;
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
             this.setState(this.getDefaultState(), ()=>{if(this.toChild) this.toChild(action)}); // after clearing the state tell child to clear 
-        } else if(action.type==="CHANGE_SHAPE"){
-            this.setState({uim: Object.assign({},
-                this.state.uim,
-                {shape: action.shape}
-            )});
+        } else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
+            if(this.state.uim.shape!==action.shape){
+                this.setState({uim: Object.assign({},
+                    this.state.uim,
+                    {shape: action.shape}
+                )});
+            }
         }else {
             this.toChild(action);
         }

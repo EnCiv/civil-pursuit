@@ -35,48 +35,68 @@ class UIMItem extends React.Component {
   constructor(props) {
     super(props);
     //    console.info("UIMItem constructor");
-    if (this.props.uim.toParent) this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: UIMItem.actionToState });
+    if (this.props.uim.toParent) {
+      this.props.uim.toParent({type: 'SET_ACTION_TO_STATE', function: UIMItem.actionToState });
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
+    }
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
     logger.info("UIMItem.actionToState",{action},{uim: Object.assign({},uim)}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
     if (action.type === "TOGGLE_BUTTON") {
-      let button=action.button;
-      let readMore=uim.readMore;
-      if (uim.button) { // a button is on
-        if (button === uim.button) { // untoggle button
-          if (button === 'Subtype') { // untoggle the subtype button and pop the path
-            Object.assign(nextUIM, uim, { button: null, shape: readMore ? 'open' : 'truncated', pathPart: [] });
-          }else          
-            Object.assign(nextUIM, uim, { button: null, shape: readMore ? 'open' :'truncated' });
-        } else { // old button off, new button on, state still open
-          if (button === 'Subtype') {
-            Object.assign(nextUIM, uim, { button: button, pathPart: ['Subtype', action.shortId] });
-            // no shape change
-          } else {
-            Object.assign(nextUIM, uim, { button: button });
-            // no shape change
-          }
-        }
-      } else { // the button is off, toggle it, open state
-        if (button === 'Subtype') { // its that subtype button so add to path
-          Object.assign(nextUIM, uim, { button: button, shape: 'open', pathPart: ['Subtype', action.shortId] });
-        } else {
-          Object.assign(nextUIM, uim, { button: button, shape: 'open' });
-        }
-      }
+      let delta={};
+      delta.button= uim.button === action.button ? null : action.button; // toggle the button 
+      if(delta.button==='Subtype') delta.pathPart = ['Subtype', action.shortId]; // pathPart is added if subtype is active
+      else if(uim.button==='Subtype') delta.pathPart = []; // pathPart is removed
+      delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readmore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
-      let button=uim.button;
-      if (uim.readMore) { //readMore is on so turn it off
-         Object.assign(nextUIM, uim, { readMore: null, shape: button ? 'open' : 'truncated' });
-      }else{ // readMore is off so turn it on
-         Object.assign(nextUIM, uim, { readMore: true, shape: 'open'});
-      }
+      let delta={};
+      delta.readMore = uim.readmore ? false : true; // toggle condition;
+      delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readmore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail
   }
+
+  toChild=[];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user interface manager,insert yourself between the UIM and each child
+  // send all unhandled actions to the parent UIM
+  //
+  toMeFromChild(button, action) {
+    logger.info("Item.toMeFromChild", button, action);
+    if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
+      this.toChild[button] = action.function; // don't pass this to parent
+    } else if(this.props.uim && this.props.uim.toParent) {
+       action.button=button; // actionToState may need to know the child's id
+       return(this.props.uim.toParent(action));
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
+  //
+    toMeFromParent(action) {
+        logger.info("Items.toMeFromParent", action);
+        if (action.type==="ONPOPSTATE") {
+            var {button} = action.event.state.stateStack[this.props.uim.depth];  // the button was passed to the parent UIManager by actionToState
+            Object.keys(this.toChild).forEach(child=>{ // only child panels with UIM managers will have entries in this list. 
+              if(child===button) {sent=true; this.toChild[child](action);}
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'}); // only one button panel is open, any others are truncated (but inactive)
+              if((action.event.state.stateStack.length > (this.props.uim.depth+1)) && !sent) logger.error("Item.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
+            })
+            return null;// this was the end of the line
+        } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
+          Object.keys(this.toChild).forEach(child=>{ // send the action to every child
+            this.toChild[child](action)
+          });
+        } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
+    }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -218,12 +238,14 @@ class UIMItem extends React.Component {
 
     if(shape!=='collapsed'){ // render the buttons if this item is visible
       renderButtons = buttons ? buttons.map(button => {
-                          return (<ItemComponent component={button} part={'button'} {...this.props} active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+                          return (<ItemComponent {...this.props} component={button} part={'button'}  active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
                         })
                       : null;
 
       renderPanels = buttons ? buttons.map(button => {
-                  return (<ItemComponent component={button} part={'panel'} {...this.props} item={item} active={uim.button===button && shape==='open'} style={style} />);
+                  return (<ItemComponent {...this.props} component={button} part={'panel'} 
+                  uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
+                  item={item} active={uim.button===button && shape==='open'} style={style} />);
                 })
                 : null;
     }
