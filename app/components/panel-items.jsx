@@ -139,6 +139,7 @@ class PanelItems extends React.Component {
     }
   }
 
+  mounted=[];
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -190,7 +191,7 @@ class PanelItems extends React.Component {
             }
             return (
               <Accordion active={(uim.shape==='open' && uim.itemId===item._id) || uim.shape==='truncated'} name='item'>
-                { this.mounte[item._id] }
+                { this.mounted[item._id] }
               </Accordion>
             );
           });
