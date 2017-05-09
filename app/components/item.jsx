@@ -88,7 +88,7 @@ class UIMItem extends React.Component {
               let sent=false;
               Object.keys(this.toChild).forEach(child=>{ // only child panels with UIM managers will have entries in this list. 
                 if(child===button) {sent=true; this.toChild[child](action);}
-                else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'collapsed' : shape }); // only one button panel is open, any others are truncated (but inactive)
+                else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape }); // only one button panel is open, any others are truncated (but inactive)
               });
              if(button && !sent) logger.error("Item.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
             }
@@ -132,7 +132,7 @@ class UIMItem extends React.Component {
   /*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
   shouldComponentUpdate(newProps, newState) {
     if (!isEqual(this.props.uim, newProps.uim)) return true;
-    if (!isEqual(this.props.buttons, newProps.buttons)) return true;
+    //if (!isEqual(this.props.buttons, newProps.buttons)) return true;  the buttons don't change
     if (this.state.hint !== newState.hint) return true;
     if (this.state.minHeight != newState.minHeight) return true;
     if (this.props.item && newProps.item) {
@@ -218,7 +218,7 @@ class UIMItem extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { item, user, buttons, uim, style } = this.props;
+    const { active, item, user, buttons, uim, style } = this.props;
     const shape = uim ? uim.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore=(uim && uim.readMore);
@@ -226,7 +226,7 @@ class UIMItem extends React.Component {
 
     let noReference = true;
 
-    console.info("UIMItem render", this.props);
+    console.info("UIMItem render", this.props.uim.depth, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
@@ -256,7 +256,6 @@ class UIMItem extends React.Component {
     logger.info("UIMItem.render rendered buttons and panels");
 
     return (
-      <Accordion active={shape !== 'collapsed'} name='item'>
         <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={`item-${item._id}`} >
           <Accordion active={shape !== 'ooview'} text={true} >
             <ItemMedia className={classShape} onClick={this.readMore.bind(this)}
@@ -295,7 +294,6 @@ class UIMItem extends React.Component {
             { renderPanels }
           </section>
         </article>
-      </Accordion>
     );
   }
 }

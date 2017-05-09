@@ -133,7 +133,7 @@ class PanelItems extends React.Component {
             let sent=false;
             Object.keys(this.toChild).forEach(child=>{
               if(child===itemId) {sent=true; this.toChild[child](action)}
-              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'collapsed' : shape}); 
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape}); 
               // panel list open: one child is open, all the others are collapsed, if truncated: all children are truncated. if collapsed: all children are collapsed
             })
             if(itemId && !sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});
@@ -193,21 +193,23 @@ class PanelItems extends React.Component {
       else {
         content = panel.items
           .map(item => {
-            let shape='truncated';
+            let shape= uim.shape==='open' && uim.itemId==item.Id ? 'open' : 'truncated';
             //if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
             return (
-              <ItemStore item={ item } key={ `item-${item._id}` }>
-                <Item
-                  item    =   { item }
-                  user    =   { user }
-                  panel = { panel }
-                  uim = { itemUIM }
-                  hideFeedback = {this.props.hideFeedback}
-                  buttons={['Promote','Details','Harmony','Subtype']}
-                  style   = {{backgroundColor: bgc}}
-                />
-              </ItemStore>
+              <Accordion active={(uim.shape==='open' && uim.itemId===item._id) || uim.shape==='truncated'} name='item'>
+                <ItemStore item={ item } key={ `item-${item._id}` }>
+                  <Item
+                    item    =   { item }
+                    user    =   { user }
+                    panel = { panel }
+                    uim = { itemUIM }
+                    hideFeedback = {this.props.hideFeedback}
+                    buttons={['Promote','Details','Harmony','Subtype']}
+                    style   = {{backgroundColor: bgc}}
+                  />
+                </ItemStore>
+              </Accordion>
             );
           });
 
