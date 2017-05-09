@@ -42,7 +42,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     toMeFromChild(action) {
-        logger.info("UserInterfaceManager.toMeFromChild",this.props.depth, action);
+        logger.info("UserInterfaceManager.toMeFromChild",this.props.uim && this.props.uim.depth, action);
         if(!action.distance) action.distance=0; // action was from component so add distance
         if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}); return null; }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
@@ -114,7 +114,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", this.props.depth, {action});
+        logger.info("UserInterfaceManager.toMeFromParent", this.props.uim && this.props.uim.depth, {action});
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
@@ -129,7 +129,10 @@ class UserInterfaceManager extends React.Component {
             if(this.toChild) this.toChild(action); // clear children first
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
-        } else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
+        } else if(action.type==="RESET_SHAPE") {  // clear the path and reset the UIM state back to what the constructor would
+            this.setState(this.getDefaultState()); // after clearing thechildren clear this state
+            return null;
+        }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
             if(this.state.uim.shape!==action.shape){
                 this.setState({uim: Object.assign({},
                     this.state.uim,

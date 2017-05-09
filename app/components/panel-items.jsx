@@ -126,7 +126,7 @@ class PanelItems extends React.Component {
   // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
   //
   toMeFromParent(action) {
-      logger.info("PanelItems.toMeFromParent", this.props.depth, action);
+      logger.info("PanelItems.toMeFromParent", this.props.uim && this.props.uim.depth, action);
       if (action.type==="ONPOPSTATE") {
           var {shape} = action.event.state.stateStack[this.props.uim.depth]; // the shape of my UIMManager
           var {itemId} = action.event.state.stateStack[this.props.uim.depth];  // the active item that was passed to my UIMManager
@@ -134,7 +134,7 @@ class PanelItems extends React.Component {
             let sent=false;
             Object.keys(this.toChild).forEach(child=>{
               if(child===itemId) {sent=true; this.toChild[child](action)}
-              else this.toChild[child]({type: "CLEAR_PATH"}); 
+              else this.toChild[child]({type: "RESET_SHAPE"}); 
               // panel list open: one child is open, all the others are collapsed, if truncated: all children are truncated. if collapsed: all children are collapsed
             })
             if(itemId && !sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});
@@ -152,7 +152,7 @@ class PanelItems extends React.Component {
   // send all unhandled actions to the parent UIM
   //
   toMeFromChild(itemId, action) {
-    logger.info("PanelItems.toMeFromChild", this.props.depth, itemId, action);
+    logger.info("PanelItems.toMeFromChild", this.props.uim && this.props.uim.depth, itemId, action);
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[itemId] = action.function; // don't pass this to parent
