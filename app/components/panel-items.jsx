@@ -128,13 +128,12 @@ class PanelItems extends React.Component {
   toMeFromParent(action) {
       logger.info("PanelItems.toMeFromParent", this.props.uim && this.props.uim.depth, action);
       if (action.type==="ONPOPSTATE") {
-          var {shape} = action.event.state.stateStack[this.props.uim.depth-1]; // the shape of my UIMManager
-          var {itemId} = action.event.state.stateStack[this.props.uim.depth-1];  // the active item that was passed to my UIMManager
+          var {shape, itemId} = action.event.state.stateStack[this.props.uim.depth-1]; // the shape of my UIMManager
           if(action.event.state.stateStack.length > (this.props.uim.depth)){
             let sent=false;
             Object.keys(this.toChild).forEach(child=>{
               if(child===itemId) {sent=true; this.toChild[child](action)}
-              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape}); 
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'collapsed' : shape}); 
               // panel list open: one child is open, all the others are collapsed, if truncated: all children are truncated. if collapsed: all children are collapsed
             })
             if(itemId && !sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});
