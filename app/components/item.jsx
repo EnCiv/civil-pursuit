@@ -83,8 +83,8 @@ class UIMItem extends React.Component {
     toMeFromParent(action) {
         logger.info("Items.toMeFromParent", this.props.uim && this.props.uim.depth, action);
         if (action.type==="ONPOPSTATE") {
-            var {button} = action.event.state.stateStack[this.props.uim.depth];  // the button was passed to the parent UIManager by actionToState
-            if((action.event.state.stateStack.length > (this.props.uim.depth+1))) {
+            var {button} = action.event.state.stateStack[this.props.uim.depth-1];  // the button was passed to the parent UIManager by actionToState
+            if((action.event.state.stateStack.length > (this.props.uim.depth))) {
               let sent=false;
               Object.keys(this.toChild).forEach(child=>{ // only child panels with UIM managers will have entries in this list. 
                 if(child===button) {sent=true; this.toChild[child](action);}

@@ -29,7 +29,7 @@ class UserInterfaceManager extends React.Component {
     getDefaultState(){
         return {uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth+1 : 0
+            depth: this.props.uim ? this.props.uim.depth : 0 // this is my depth
         }}
     }
 
@@ -146,8 +146,9 @@ class UserInterfaceManager extends React.Component {
 
     renderChildren() {
         return React.Children.map(this.props.children, child =>
-            React.cloneElement(child, Object.assign({}, this.props, {uim: Object.assign({}, this.state.uim, {toParent: this.toMeFromChild.bind(this)})}))  //uim in state override uim in props
-        );
+            React.cloneElement(child, Object.assign({}, this.props, 
+                        {uim: Object.assign({}, this.state.uim, {depth: this.props.uim && this.props.uim.depth ? this.props.uim.depth +1 : 1, toParent: this.toMeFromChild.bind(this)})}  //uim in state override uim in props
+        )));
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

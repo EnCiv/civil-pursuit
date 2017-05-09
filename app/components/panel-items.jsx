@@ -128,9 +128,9 @@ class PanelItems extends React.Component {
   toMeFromParent(action) {
       logger.info("PanelItems.toMeFromParent", this.props.uim && this.props.uim.depth, action);
       if (action.type==="ONPOPSTATE") {
-          var {shape} = action.event.state.stateStack[this.props.uim.depth]; // the shape of my UIMManager
-          var {itemId} = action.event.state.stateStack[this.props.uim.depth];  // the active item that was passed to my UIMManager
-          if(action.event.state.stateStack.length > (this.props.uim.depth+1)){
+          var {shape} = action.event.state.stateStack[this.props.uim.depth-1]; // the shape of my UIMManager
+          var {itemId} = action.event.state.stateStack[this.props.uim.depth-1];  // the active item that was passed to my UIMManager
+          if(action.event.state.stateStack.length > (this.props.uim.depth)){
             let sent=false;
             Object.keys(this.toChild).forEach(child=>{
               if(child===itemId) {sent=true; this.toChild[child](action)}
