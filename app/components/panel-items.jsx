@@ -134,7 +134,7 @@ class PanelItems extends React.Component {
             let sent=false;
             Object.keys(this.toChild).forEach(child=>{
               if(child===itemId) {sent=true; this.toChild[child](action)}
-              else this.toChild[child]({type: "RESET_SHAPE"}); 
+              else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape}); 
               // panel list open: one child is open, all the others are collapsed, if truncated: all children are truncated. if collapsed: all children are collapsed
             })
             if(itemId && !sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});

@@ -83,12 +83,12 @@ class UIMItem extends React.Component {
     toMeFromParent(action) {
         logger.info("Items.toMeFromParent", this.props.uim && this.props.uim.depth, action);
         if (action.type==="ONPOPSTATE") {
-            var {button} = action.event.state.stateStack[this.props.uim.depth-1];  // the button was passed to the parent UIManager by actionToState
+            var {button, shape} = action.event.state.stateStack[this.props.uim.depth-1];  // the button was passed to the parent UIManager by actionToState
             if((action.event.state.stateStack.length > (this.props.uim.depth))) {
               let sent=false;
               Object.keys(this.toChild).forEach(child=>{ // only child panels with UIM managers will have entries in this list. 
                 if(child===button) {sent=true; this.toChild[child](action);}
-                else this.toChild[child]({type: "RESET_SHAPE"}); // only one button panel is open, any others are truncated (but inactive)
+                else this.toChild[child]({type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape }); // only one button panel is open, any others are truncated (but inactive)
               });
              if(button && !sent) logger.error("Item.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
             }
