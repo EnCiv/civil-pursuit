@@ -4,6 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
+
 
 //Item Visual State - lets other components change the visual state of an item. 
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
@@ -29,7 +31,7 @@ class UserInterfaceManager extends React.Component {
     getDefaultState(){
         return {uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            /* debug only */ depth: this.props.uim ? this.props.uim.depth : 0 //  - this is my depth to check
+            depth: this.props.uim ? this.props.uim.depth : 0 //  - this is my depth to check /* debug only */
         }}
     }
 
@@ -133,8 +135,8 @@ class UserInterfaceManager extends React.Component {
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
-            var nextState=Object.assign({},this.getDefaultState(),{uim: {shape: action.shape}}); // 
-            if(!Object.keys(this.state).every(key=>{let a=this.state.key; let b=nextState.key || null; return a===b})){  //undefined values in nextState are equivelent to this.state values that are null
+            var nextState=Object.assign({},this.state,{uim: {shape: action.shape}}); // 
+            if(!isEqualWith(this.state,nextState,(a,b)=>a==b)){  //undefined values in nextState are equivelent to this.state values that are null
             // don't set the state and cause a rerender if it hasn't changed
                 this.setState(nextState);
             }
@@ -153,7 +155,7 @@ class UserInterfaceManager extends React.Component {
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
         logger.info("UserInterfaceManager.shouldComponentUpdate",this.state,newState);
-    if (!isEqual(this.state,newState)) return true;
+    if (!isEqualWith(this.state,newState,(a,b)=>a==b)) return true;
     return false;
     }
 
