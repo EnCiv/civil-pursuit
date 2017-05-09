@@ -29,7 +29,7 @@ class UserInterfaceManager extends React.Component {
     getDefaultState(){
         return {uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth : 0 // this is my depth
+            /* debug only */ depth: this.props.uim ? this.props.uim.depth : 0 //  - this is my depth to check
         }}
     }
 
@@ -118,7 +118,7 @@ class UserInterfaceManager extends React.Component {
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
-            if(action.event.state.stateStack[depth].depth !== depth) logger.error("UserInterfaceManager.toMeFromParent ONPOPSTATE stateStack depth not equal to depth",action.event.state.stateStack[depth],depth); // debugging info
+            /* debug only */ if(action.event.state.stateStack[depth].depth !== depth) logger.error("UserInterfaceManager.toMeFromParent ONPOPSTATE stateStack depth not equal to depth",action.event.state.stateStack[depth],depth); // debugging info
             if(action.event.state.stateStack.length > (depth+1)){
                 if(this.toChild) this.toChild(action);
                 else logger.error("UserInterfaceManager.toMeFromParent ONPOPSTATE more stack but no toChild", {action}, {uim: this.props.uim});
@@ -134,11 +134,10 @@ class UserInterfaceManager extends React.Component {
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
             if(this.state.uim.shape!==action.shape){
-                this.setState({uim: Object.assign({},
-                    this.state.uim,
-                    {shape: action.shape}
-                )});
-            }
+                this.setState(this.getDefaultState(),
+                    {uim: {shape: action.shape}}
+                )
+            };
         }else {
             this.toChild(action);
         }
