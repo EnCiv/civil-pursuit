@@ -150,6 +150,13 @@ class UserInterfaceManager extends React.Component {
         )));
     }
 
+    /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
+    shouldComponentUpdate(newProps, newState) {
+        logger.info("UserInterfaceManager.shouldComponentUpdate",this.state,newState);
+    if (!isEqual(this.state,newState)) return true;
+    return false;
+    }
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
