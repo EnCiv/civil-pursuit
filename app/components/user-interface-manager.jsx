@@ -31,8 +31,8 @@ class UserInterfaceManager extends React.Component {
     getDefaultState(){
         return {uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth : 0,  //  - this is my depth to check /* debug only */
-            name: (this.state && this.state.uim) ? this.state.uim.name : null // this is for debugging
+            depth: this.props.uim ? this.props.uim.depth : 0,  // for debugging  - this is my depth to check
+            name: (this.state && this.state.uim) && this.state.uim.name // this is for debugging the name or undefined
         }}
     }
 
@@ -136,7 +136,7 @@ class UserInterfaceManager extends React.Component {
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
-            Object.assign(nextUIM,this.state.uim,{shape: action.shape}); // 
+            Object.assign(nextUIM,this.getDefaultState().uim,{shape: action.shape}); // 
             if(!isEqualWith(this.state.uim,nextUIM,(a,b)=>a==b)){  //undefined values in nextState are equivelent to this.state values that are null
             // don't set the state and cause a rerender if it hasn't changed
                 this.setState({uim: nextUIM});
