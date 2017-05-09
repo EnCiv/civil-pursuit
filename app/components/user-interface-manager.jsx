@@ -133,11 +133,11 @@ class UserInterfaceManager extends React.Component {
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
-            if(this.state.uim.shape!==action.shape){
-                this.setState(this.getDefaultState(),
-                    {uim: {shape: action.shape}}
-                )
-            };
+            var nextState=Object.assign({},this.getDefaultState(),{uim: {shape: action.shape}}); // 
+            if(!Object.keys(this.state).every(key=>{let a=this.state.key; let b=nextState.key || null; return a===b})){  //undefined values in nextState are equivelent to this.state values that are null
+            // don't set the state and cause a rerender if it hasn't changed
+                this.setState(nextState);
+            }
         }else {
             this.toChild(action);
         }
