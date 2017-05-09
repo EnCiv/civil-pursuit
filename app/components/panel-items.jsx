@@ -174,9 +174,8 @@ class PanelItems extends React.Component {
             let shape= uim.shape==='open' && uim.itemId==item.Id ? 'open' : 'truncated';
             //if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
-            return (
-              <Accordion active={(uim.shape==='open' && uim.itemId===item._id) || uim.shape==='truncated'} name='item'>
-                <ItemStore item={ item } key={ `item-${item._id}` }>
+            if(!this.mounted[item._id]){ // only render this once
+              this.mounted[item._id]=(<ItemStore item={ item } key={ `item-${item._id}` }>
                   <Item
                     item    =   { item }
                     user    =   { user }
@@ -187,6 +186,11 @@ class PanelItems extends React.Component {
                     style   = {{backgroundColor: bgc}}
                   />
                 </ItemStore>
+              );
+            }
+            return (
+              <Accordion active={(uim.shape==='open' && uim.itemId===item._id) || uim.shape==='truncated'} name='item'>
+                { this.mounte[item._id] }
               </Accordion>
             );
           });
