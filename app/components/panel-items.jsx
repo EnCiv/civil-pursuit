@@ -65,33 +65,11 @@ class PanelItems extends React.Component {
       if(this.props.panel && this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod ==="ooview") ooview=true;
 
       if(action.distance===1) { //if this action is from an immediate child 
-        if(ush==='open' && ash==='open') { // panel is alread open and item is open
-            if(action.itemId !== uim.itemId) { // changing from one child open to another
-              if(uim.itemId) this.toChild[uim.itemId]({type: 'CHANGE_SHAPE',shape: 'truncated'});
-              else logger.error("PanelItems.actionToState uim.itemId null", {action},{uim} );
-              this.toChild[action.itemId]({type: 'CHANGE_SHAPE', shape: 'open'});
-              Object.assign(nextUIM, uim, {itemId: action.itemId});
-            } else // no update required
-              Object.assign(nextUIM, uim);
-        } else if(ush==='open' && ash==='truncated') { // panel is open child is changing to truncated, show all the other children
-            if(action.itemId === uim.itemId) { // it's the one that was previously open
-              Object.keys(this.toChild).forEach(childId=>{
-                if(childId===action.itemId) return;// no need to change the one that changed to truncated
-                else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'truncated'})
-              });
-              Object.assign(nextUIM, uim, {shape: 'truncated', itemId: null});
-            } else // else ignore it
-              Object.assign(nextUIM, uim);
-        } else if(ush==='truncated' && ash==='open'){ // panel is truncated and action is to open an item
-            Object.keys(this.toChild).forEach(childId=>{
-                if(childId===action.itemId) return;// no need to change the one that changed to open
-                else this.toChild[childId]({type: 'CHANGE_SHAPE', shape: 'collapsed'});
-            });
-            Object.assign(nextUIM, uim, {shape: 'open', itemId: action.itemId});
-        } else {
-          logger.info("PanelItems.actionToState falling through", {action}, {uim})
-          Object.assign(nextUIM, uim); // no change necessary
-        }
+        var delta={};
+        if(action.shape === 'open' && action.itemId) delta.itemId=action.itemId;
+        else delta.itemId=null; // turn off the itemId
+        delta.shape = action.shape;
+        Object.assign(nextUIM, uim, delta);
       }else{ // it's not my child that changed shape
         logger.info("PanelItems.actionToState it's not my child that changed shape")
         if(ooview && ash==='open'){
