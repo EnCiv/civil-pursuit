@@ -137,10 +137,7 @@ class UserInterfaceManager extends React.Component {
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
             Object.assign(nextUIM,this.getDefaultState().uim,{shape: action.shape}); // 
-            if(!isEqualWith(this.state.uim,nextUIM,(a,b)=>a==b)){  //undefined values in nextState are equivelent to this.state values that are null
-            // don't set the state and cause a rerender if it hasn't changed
-                this.setState({uim: nextUIM});
-            }
+            this.setState({uim: nextUIM});
         }else {
             this.toChild(action);
         }
