@@ -48,17 +48,24 @@ class UIMItem extends React.Component {
     if (action.type === "TOGGLE_BUTTON") {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       if(delta.button) {
-        delta.pathPart=[delta.button];
-        if(delta.button === 'Subtype') delta.pathPart.push(action.shortId);
-      } else delta.pathPart=[]; 
+        delta.pathPart=[delta.button, action.shortId];
+        delta.itemId=action.itemId;
+      } else {
+        delta.pathPart=[]; 
+        delta.itemId=null;
+      }
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
-      if(delta.readMore) delta.pathPart = ['readMore']; // pathPart is added if active
-      else delta.pathPart = []; // pathPart is removed
-      delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      if(delta.readMore){
+        delta.pathPart = ['readMore',action.shortId]; // pathPart is added if active
+        delta.itemId=action.itemId;
+      } else { 
+        delta.pathPart = []; // pathPart is removed
+        delta.itemId=null;
+      }delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail
