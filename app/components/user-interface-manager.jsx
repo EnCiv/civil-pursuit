@@ -155,14 +155,12 @@ class UserInterfaceManager extends React.Component {
         logger.info("UserInterfaceManager.shouldComponentUpdate",this.props.uim && this.props.uim.depth, this.state,newState);
         var equaly=function(a,b){
             logger.info(a,b);
-            if(typeof a === 'undefined') a=null;
-            if(typeof b === 'undefined') b=null;
-            if(!a && !b) return true; //false, 0, undefined, null both are falsy
+            if(!a && !b) return true; //if both are false, they are the same
             let at=typeof a;
             if(at !== typeof b) return false; // if not falsy and types are not equal, they are not equal
-            if(at === 'object') return union(Object.keys(a),Object.keys(b)).every(key=>equaly(a[key],b[key]));
+            if(at === 'object') return union(Object.keys(a),Object.keys(b)).every(key=>equaly(a[key],b[key])); // they are both objects, break them down and compare them
             if(at === 'function') return true; //treat functions are equal no matter what they are
-            if(a && b) return a==b; // if both are truthy are the equal
+            if(a && b) return a==b; // if both are truthy are they equal
             return false;
         }
         //if (!Object.keys(this.state.uim).every(key=>{logger.info(key); let a=this.state.uim[key], b=newState.uim[key] || null; if(a!=b) logger.info(a,"!=",b); return a==b})) {logger.info("yes"); return true};
