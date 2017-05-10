@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import union from 'lodash/union';
+import cloneDeep from 'lodash/cloneDeep';
 
 
 //Item Visual State - lets other components change the visual state of an item. 
@@ -81,7 +82,9 @@ class UserInterfaceManager extends React.Component {
                     nextUIM.pathDepth=UserInterfaceManager.path.length;
                     UserInterfaceManager.path.push(...nextUIM.pathPart);
                     var newPath='/'+UserInterfaceManager.path.join('/');
-                    window.history.pushState({},"",newPath);
+                    var nextStack=cloneDeep(stateStack);
+                    nextStack.stateStack.push(nextUIM); // add the new UIM state to the stack
+                    window.history.pushState(nextStack,"",newPath);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
