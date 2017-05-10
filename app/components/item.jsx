@@ -49,12 +49,12 @@ class UIMItem extends React.Component {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       if(delta.button==='Subtype') delta.pathPart = ['Subtype', action.shortId]; // pathPart is added if subtype is active
       else if(uim.button==='Subtype') delta.pathPart = []; // pathPart is removed
-      delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readmore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
-      delta.readMore = !uim.readmore; // toggle condition;
-      delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readmore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      delta.readMore = !uim.readMore; // toggle condition;
+      delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail
