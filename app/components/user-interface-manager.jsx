@@ -78,12 +78,12 @@ class UserInterfaceManager extends React.Component {
                     var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
                     var oldPath='/'+UserInterfaceManager.path.join('/');
                     logger.info("UserInterfaceManager replaceState",{stateStack}, {oldPath});
-                    window.history.replaceState(stateStack,'', oldPath);
+                    window.history.replaceState(stateStack,'', oldPath); // in the initial case this is the history, after that, it's an update
                     nextUIM.pathDepth=UserInterfaceManager.path.length;
                     UserInterfaceManager.path.push(...nextUIM.pathPart);
                     var newPath='/'+UserInterfaceManager.path.join('/');
                     var nextStack=cloneDeep(stateStack);
-                    nextStack.stateStack.push(nextUIM); // add the new UIM state to the stack
+                    nextStack.stateStack[nextStack.stateStack.length-1]=nextUIM; // replace the last UIM state with the new one
                     window.history.pushState(nextStack,"",newPath);
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!isEqual(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
