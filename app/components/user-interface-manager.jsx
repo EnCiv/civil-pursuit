@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
-import isEqualWith from 'lodash/isEqualWith';
+import union from 'lodash/union';
 
 
 //Item Visual State - lets other components change the visual state of an item. 
