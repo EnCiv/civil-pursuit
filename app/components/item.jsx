@@ -42,10 +42,10 @@ class UIMItem extends React.Component {
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
-    logger.info("UIMItem.actionToState",{action},{uim: Object.assign({},uim)}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
+    logger.info("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
+    var delta={};
     if (action.type === "TOGGLE_BUTTON") {
-      let delta={};
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       if(delta.button==='Subtype') delta.pathPart = ['Subtype', action.shortId]; // pathPart is added if subtype is active
       else if(uim.button==='Subtype') delta.pathPart = []; // pathPart is removed
@@ -53,8 +53,7 @@ class UIMItem extends React.Component {
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
-      let delta={};
-      delta.readMore = uim.readmore ? false : true; // toggle condition;
+      delta.readMore = !uim.readmore; // toggle condition;
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readmore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
