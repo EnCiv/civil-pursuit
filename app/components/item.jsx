@@ -205,7 +205,7 @@ class UIMItem extends React.Component {
     if (this.props.uim.readMore) { // if readMore is on and we are going to turn it off
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
     } 
-    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE"})
+    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE", itemId: this.props.item._id, shortId: this.props.item.id})
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
