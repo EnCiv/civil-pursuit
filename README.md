@@ -1,40 +1,55 @@
 # Synaccord Web Application
----
 
 [![Circle CI](https://circleci.com/gh/Synaccord/synaccord.svg?style=shield&circle-token=5b337ba4f00eedca75846279350b3ca1c2072d5d)](https://circleci.com/gh/Synaccord/synaccord) [![Gitter](https://badges.gitter.im/Synaccord/synaccord.svg)](https://gitter.im/Synaccord/synaccord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Circle CI tests are not passing, and not being maintained at this moment.  User interface changes impact many multipes of these tests, so we are waiting until the user interface is not changing as much before updating these tests.
 
-# Download
+## Download
 
 ```bash
 git clone https://github.com/Synaccord/synaccord.git
 cd synaccord
 ```
 
-# Environment
+## Environment
 
-These ENV variables need to be set
-CLOUDINARY_URL - to a cloudinary CDN, one can be shared by many instances
-MONGO_HQ_URL - not we don't use mongohq anymore, we are using mongolabs, but we still set that env variable
-NODE_ENV - production or development
-SYNAPP_ENV - used as index into public.json 
+These ENV variables need to be set:
+* CLOUDINARY_URL - to a cloudinary CDN, one can be shared by many instances
+* MONGO_HQ_URL - not we don't use mongohq anymore, we are using mongolabs, but we still set that env variable
+* NODE_ENV - production or development
+* SYNAPP_ENV - used as index into config files like public.json 
 
-**You will need to source it everytime you install or start the app**.
+## Heroku
+The final deploy is to heroku, and it should be checked and used frequently during development. Here is how to deploy a new instance on heroku, after you have created an account and installed the heroku tool belt.
 
-# Install
+```bash
+heroku create new-app-name
+heroku addons:create mongolab:sandbox
+export MONGOHQ_URL=`heroku config:get MONGOLAB_URI`
+heroku config:set MONGOHQ_URL=$MONGOHQ_URL
+heroku config:set CLOUDINARY_URL="cloudinary://url-to-use"
+heroku config:set SYNAPP_ENV="alpha"
+heroku config:set NODE_ENV="production"
+git push heroku master
+```
+then: http://new-app-name.herokuapp.com will get you to the app
+
+a git push to heroku and build only takes a minute so don't avoid it.
+
+## Install
+You can also install and build locally, but watch out for incompatibilities.  Heroku is the gold standard.
 
 ```bash
 npm install
 ```
 
-# Start
+## Start
 
 ```bash
 npm start
 ```
 
-# NPM commands
+## NPM commands
 
 - `npm install` - Install app
 - `npm start` - Start app
@@ -46,7 +61,7 @@ npm start
 - `npm run watch-less` - Convert LESS to css
 - `npm run reset` - Empty database then populate it running the migrations
 
-# Directory Structure
+## Directory Structure
 
 - `app/bin/start.js` is where it starts
 - `app/server.js` is the main server code
@@ -62,7 +77,7 @@ npm start
 
 - `app/lib` this is js (not jsx) code used in the app
 - `app/lib/proptypes`
-	the .js files in this directory define the type of the class in terms of react prototypes.
+	the .js files in this directory define the type of the class in terms of react proptypes.
 
 - `app/models`
 	each sub directory corresponds to a collection in the database. These directories can have
@@ -82,9 +97,16 @@ npm start
 
 - `app/test` - a selenium based test fixture, and test.  Basically it fires up an instance of the server, and then opens a browser to it, sending events and checking results.  [But this is not being maintained right now because of how much work is required when there is a user interface change]
 
+- `assets/less/index.less` - this is the list of less files that will be turned into css, combined and uglified into assets.min.css
+
+- `dist` - excluded from the source tree, this is where npm builds into
+- `dist/assets/css/assets.min.css` - is built at build time from assets/less/index.less
+- `dist/assets/js/main.min.js` - built by bundle.sh at build time
+
 - `fixtures`
 	each sub directory is named for the db collection and contains a 1.json file with initialization data for that collection.
 
+- `post-install.sh` - on heroku, after everyting in installed, this is run to create the dist directory and build the required files.
 
 # DB File and name Structure
 
@@ -109,7 +131,7 @@ app\models\political-party\index.js defines the class PoliticalParty which exten
 	- these migrations will be applied at build time to convert previous schemas of the collection into the new schema
 
 app/models/political-party/schema.js defines the schema if this was made up up other objects 
-	- if another schema imports this one, it's PoliticalParty from ../political-party and the object name is party (but should it have been political_party???)
+	- if another schema imports this one, it's PoliticalParty from ../political-party and the object name is party (but should it have been political_party
 
 app\models\political-party\migrations\1.js
 defines 
