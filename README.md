@@ -1,22 +1,24 @@
-Synaccord Web Application
+# Synaccord Web Application
 ---
 
 [![Circle CI](https://circleci.com/gh/Synaccord/synaccord.svg?style=shield&circle-token=5b337ba4f00eedca75846279350b3ca1c2072d5d)](https://circleci.com/gh/Synaccord/synaccord) [![Gitter](https://badges.gitter.im/Synaccord/synaccord.svg)](https://gitter.im/Synaccord/synaccord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+Circle CI tests are not passing, and not being maintained at this moment.  User interface changes impact many multipes of these tests, so we are waiting until the user interface is not changing as much before updating these tests.
+
 # Download
 
 ```bash
-git clone https://bitbucket.org/francoisvespa/synaccord-web-application
-cd synaccord-web-application
+git clone https://github.com/Synaccord/synaccord.git
+cd synaccord
 ```
 
 # Environment
 
-Before you start the app, you need to set the environment variables. Follow the instructions disclosed in file [export.example.sh](export.example.sh). You should then have a file `export.sh`. Source it from terminal:
-
-```bash
-source export.sh
-```
+These ENV variables need to be set
+CLOUDINARY_URL - to a cloudinary CDN, one can be shared by many instances
+MONGO_HQ_URL - not we don't use mongohq anymore, we are using mongolabs, but we still set that env variable
+NODE_ENV - production or development
+SYNAPP_ENV - used as index into public.json 
 
 **You will need to source it everytime you install or start the app**.
 
@@ -45,10 +47,22 @@ npm start
 - `npm run reset` - Empty database then populate it running the migrations
 
 # Directory Structure
+- app/bin/start.js is where it starts
+- app/server.js is the main server code
+- app/client/main.js is the entrypoint for browser side code, but this will run on the server side too
+
 - app/api
-	The files in this directory are collected up by app/api.js and executed based on events
+	The files in this directory are collected up by app/api.js and executed based on events from the browser. On the browser side you emit an event to 
+		window.socket.emit('name of api', ...parameters)
+	and the file name-of-api with the exported function nameOfAPI will be executed on the server and its results returned.
+
+- app/components these are the react/jsx components that make up the app
+- app/components/store data is gathers through the api calls and stored in state, for child componets to use as props. This is how DB stuff gets to the browser.
+
+- app/lib this is js (not jsx) code used in the app
 - app/lib/proptypes
 	the .js files in this directory define the type of the class in terms of react prototypes.
+
 - app/models
 	each sub directory corresponds to a collection in the database. These directories can have
 		-index.js which defines a class that extends mungo and includes the schema. If the directory name is political-party the class name should be PoliticalParty
@@ -60,6 +74,13 @@ npm start
 		-methods (directory)
 		-statics (directory)
 			-lambda.js is used in testing
+
+- app/pages/index.js  - this file builds the index.html file that will be returned to the HTML get request.
+
+- app/routes - the server side express route handlers
+
+- app/test - a selenium based test fixture, and test.  Basically it fires up an instance of the server, and then opens a browser to it, sending events and checking results.  [But this is not being maintained right now because of how much work is required when there is a user interface change]
+
 - fixtures
 	each sub directory is named for the db collection and contains a 1.json file with initialization data for that collection.
 
@@ -71,11 +92,11 @@ Explaining the stucture using 'politcal party' as the name to show how naming an
 windows.socket.emit('get political parties',ok); to request the fixture data from the collection
 
 app/api/get-political-parties.js : getPoliticalParties function to gets the data from the collection
-app/lib/proptypes/political-party.js defines a React ProtoType for politicalParty
+app/lib/proptypes/political-party.js defines a React PropType for politicalParty
 
 when using politicalParties as a type in a class of a larger structure, use:
 - import politicalPartyType             from '../lib/proptypes/political-party' 
-to get the prototype, and then 
+to get the proptype, and then 
 - politicalParties : React.PropTypes.arrayOf(politicalPartyType)  
 to define the variable in the class you are using it in
 
@@ -99,12 +120,9 @@ defines
 
 app\models\political-part\migrations\2.js
 	- has code that will create a fixture (the default values for the input field) this would probably be 1.js for a new data set
-	references syn/../../fixtures/political-party/1.json to find the object defining the default values  ?? why syn and where is that defined
+	references syn/../../fixtures/political-party/1.json to find the object defining the default values
 
  
-
-?? Where is PoliticalParty used??
-
 
 
 
