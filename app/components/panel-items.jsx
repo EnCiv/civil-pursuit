@@ -118,7 +118,8 @@ class PanelItems extends React.Component {
           }
           return null;// child has been updated, now UIM can set state for me
       } else if(action.type==="GET_STATE"){
-        if(this.state.uim.itemId) return this.toChild[itemId](action); // pass the action to the child
+        let itemId=this.props.uim.itemId || null;
+        if(itemId && this.toChild[itemId]) return this.toChild[this.props.uim.itemId](action); // pass the action to the child
         else return null; // end of the line
       } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
         Object.keys(this.toChild).forEach(child=>{ // send the action to every child

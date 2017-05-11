@@ -32,7 +32,7 @@ class UIMItem extends React.Component {
 
   state = { hint: false, minHeight: null }; //
   toChild=[];
-  
+
   constructor(props) {
     super(props);
     //    console.info("UIMItem constructor");
@@ -104,7 +104,7 @@ class UIMItem extends React.Component {
             }
             return null;// this was the end of the line
         } else if(action.type==="GET_STATE"){
-          button=this.state.uim.button||null;
+          button=this.props.uim.button||null;
           if(button && this.toChild[button]) return this.toChild[button](action); // pass the action to the child
           else return null; // end of the line
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const

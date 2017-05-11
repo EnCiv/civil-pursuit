@@ -79,7 +79,7 @@ class UIMHarmony extends React.Component {
             });
             return null;
         }else if(action.type==="GET_STATE"){
-          side=this.state.uim.side||null;
+          side=this.props.uim.side||null;
           if(side && this.toChild[side]) return this.toChild[side](action); // pass the action to the child
           else return null; // end of the line
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const

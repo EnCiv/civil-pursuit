@@ -186,7 +186,7 @@ class UserInterfaceManager extends React.Component {
     updateHistory() {
         if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
-        var curPath = stateStack.stackState.reduce((acc, cur) => { // parse the state to build the curreent path
+        var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
             if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
             return acc;
         }, []);
