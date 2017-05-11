@@ -108,7 +108,7 @@ class UserInterfaceManager extends React.Component {
                 if(this.props.uim && this.props.uim.toParent){
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }else{ // this is the root, after changing shape, remind me that my child's shape has changed so I can update the window.histor
-                    this.setState({uim: nextUIM}, ()=>this.toMeFromParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
+                    this.setState({uim: nextUIM}, ()=>this.toMeFromChild({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }
                 //if(!equaly(nextUIM,this.state.uim)){ // if anything in the state has changed
                 //    if(nextUIM.shape !== this.state.uim.shape && this.props.uim && this.props.uim.toParent) { // if the shape has changed and we are not the root
