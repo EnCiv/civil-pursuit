@@ -104,11 +104,12 @@ class UserInterfaceManager extends React.Component {
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!equaly(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
-                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
+                
                 if(this.props.uim && this.props.uim.toParent){
+                    const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
-                }else{ // this is the root, after changing shape, remind me that my child's shape has changed so I can update the window.histor
-                    this.setState({uim: nextUIM}, ()=>this.toMeFromChild({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
+                }else{ // this is the root, after changing shape, remind me so I can update the window.histor
+                    this.setState({uim: nextUIM}, ()=>this.updateHistory());
                 }
                 //if(!equaly(nextUIM,this.state.uim)){ // if anything in the state has changed
                 //    if(nextUIM.shape !== this.state.uim.shape && this.props.uim && this.props.uim.toParent) { // if the shape has changed and we are not the root
@@ -130,26 +131,12 @@ class UserInterfaceManager extends React.Component {
                 if(this.props.uim && this.props.uim.toParent) {// if there's a parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
                 }else // no parent to tell of the change
-                    this.setState({uim: nextUIM});
+                    this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
             if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
             else { // this is the root UIM, update history.state
-                var stateStack={stateStack: this.toMeFromParent({type: "GET_STATE"})};  // recursively call me to get my state stack
-                var curPath=stateStack.stackState.reduce((acc,cur)=>{ // parse the state to build the curreent path
-                    if(cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
-                    return acc;
-                },[]);
-                curPath='/' + curPath.join('/');
-                if(curPath!==this.path){ // push the new state and path onto history
-                    logger.info("UserInterfaceManager.toMeFromParent pushState",{stateStack}, {curPath});
-                    this.path=curPath;
-                    window.history.pushState(stateStack,'',curPath); 
-                } else { // update the state of the current history
-                    logger.info("UserInterfaceManager.toMeFromParent replaceState",{stateStack}, {curPath});
-                    window.history.replaceState(stateStack,'', oldPath); //update the history after changes have propogated among the children
-                }
-                return null;
+                this.updateHistory();
             }
         }
         return null;
@@ -196,12 +183,26 @@ class UserInterfaceManager extends React.Component {
         }
     }
 
-    renderChildren() {
-        return React.Children.map(this.props.children, child =>
-            React.cloneElement(child, Object.assign({}, this.props, 
-                        {uim: Object.assign({}, this.state.uim, {depth: this.props.uim && this.props.uim.depth ? this.props.uim.depth +1 : 1, toParent: this.toMeFromChild.bind(this)})}  //uim in state override uim in props
-        )));
+    updateHistory() {
+        if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
+        var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
+        var curPath = stateStack.stackState.reduce((acc, cur) => { // parse the state to build the curreent path
+            if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
+            return acc;
+        }, []);
+        curPath = '/' + curPath.join('/');
+        if (curPath !== this.path) { // push the new state and path onto history
+            logger.info("UserInterfaceManager.toMeFromParent pushState", { stateStack }, { curPath });
+            this.path = curPath;
+            window.history.pushState(stateStack, '', curPath);
+        } else { // update the state of the current history
+            logger.info("UserInterfaceManager.toMeFromParent replaceState", { stateStack }, { curPath });
+            window.history.replaceState(stateStack, '', oldPath); //update the history after changes have propogated among the children
+        }
+        return null;
     }
+
+
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
@@ -211,6 +212,12 @@ class UserInterfaceManager extends React.Component {
         return should;
     }
 
+    renderChildren() {
+        return React.Children.map(this.props.children, child =>
+            React.cloneElement(child, Object.assign({}, this.props, 
+                        {uim: Object.assign({}, this.state.uim, {depth: this.props.uim && this.props.uim.depth ? this.props.uim.depth +1 : 1, toParent: this.toMeFromChild.bind(this)})}  //uim in state override uim in props
+        )));
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
