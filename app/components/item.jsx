@@ -31,7 +31,8 @@ export default Item;
 class UIMItem extends React.Component {
 
   state = { hint: false, minHeight: null }; //
-
+  toChild=[];
+  
   constructor(props) {
     super(props);
     //    console.info("UIMItem constructor");
@@ -39,6 +40,7 @@ class UIMItem extends React.Component {
       this.props.uim.toParent({type: 'SET_ACTION_TO_STATE', function: UIMItem.actionToState });
       this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
     }
+
   }
 
   static actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
@@ -71,8 +73,6 @@ class UIMItem extends React.Component {
     } else return null;  // if you don't handle the type, let the default handlers prevail
   }
 
-  toChild=[];
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is a one to many pattern for the user interface manager,insert yourself between the UIM and each child
   // send all unhandled actions to the parent UIM
@@ -103,6 +103,10 @@ class UIMItem extends React.Component {
              if(button && !sent) logger.error("Item.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
             }
             return null;// this was the end of the line
+        } else if(action.type==="GET_STATE"){
+          button=this.state.uim.button||null;
+          if(button && this.toChild[button]) return this.toChild[button](action); // pass the action to the child
+          else return null; // end of the line
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
           Object.keys(this.toChild).forEach(child=>{ // send the action to every child
             this.toChild[child](action)

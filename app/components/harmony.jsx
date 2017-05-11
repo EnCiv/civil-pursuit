@@ -78,6 +78,10 @@ class UIMHarmony extends React.Component {
               if((action.event.state.stateStack.length > (this.props.uim.depth+1)) && !sent) logger.error("Harmony.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
             });
             return null;
+        }else if(action.type==="GET_STATE"){
+          side=this.state.uim.side||null;
+          if(side && this.toChild[side]) return this.toChild[side](action); // pass the action to the child
+          else return null; // end of the line
         } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
           Object.keys(this.toChild).forEach(childSide=>{ // send the action to every child
             this.toChild[childSide](action)

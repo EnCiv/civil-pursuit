@@ -117,6 +117,9 @@ class PanelItems extends React.Component {
             if(itemId && !sent) logger.error("PanelItems.toMeFromParent ONPOPSTATE child not found",{depth: this.props.uim.depth}, {action});
           }
           return null;// child has been updated, now UIM can set state for me
+      } else if(action.type==="GET_STATE"){
+        if(this.state.uim.itemId) return this.toChild[itemId](action); // pass the action to the child
+        else return null; // end of the line
       } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
         Object.keys(this.toChild).forEach(child=>{ // send the action to every child
           this.toChild[child](action)
