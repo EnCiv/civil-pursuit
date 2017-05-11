@@ -47,23 +47,24 @@ npm start
 - `npm run reset` - Empty database then populate it running the migrations
 
 # Directory Structure
-- app/bin/start.js is where it starts
-- app/server.js is the main server code
-- app/client/main.js is the entrypoint for browser side code, but this will run on the server side too
 
-- app/api
+- `app/bin/start.js` is where it starts
+- `app/server.js` is the main server code
+- `app/client/main.js` is the entrypoint for browser side code, but this will run on the server side too
+
+- `app/api`
 	The files in this directory are collected up by app/api.js and executed based on events from the browser. On the browser side you emit an event to 
 		window.socket.emit('name of api', ...parameters)
 	and the file name-of-api with the exported function nameOfAPI will be executed on the server and its results returned.
 
-- app/components these are the react/jsx components that make up the app
-- app/components/store data is gathers through the api calls and stored in state, for child componets to use as props. This is how DB stuff gets to the browser.
+- `app/components` these are the react/jsx components that make up the app
+- `app/components/store` data is gathers through the api calls and stored in state, for child componets to use as props. This is how DB stuff gets to the browser.
 
-- app/lib this is js (not jsx) code used in the app
-- app/lib/proptypes
+- `app/lib` this is js (not jsx) code used in the app
+- `app/lib/proptypes`
 	the .js files in this directory define the type of the class in terms of react prototypes.
 
-- app/models
+- `app/models`
 	each sub directory corresponds to a collection in the database. These directories can have
 		-index.js which defines a class that extends mungo and includes the schema. If the directory name is political-party the class name should be PoliticalParty
 		-hook.js
@@ -75,13 +76,13 @@ npm start
 		-statics (directory)
 			-lambda.js is used in testing
 
-- app/pages/index.js  - this file builds the index.html file that will be returned to the HTML get request.
+- `app/pages/index.js`  - this file builds the index.html file that will be returned to the HTML get request.
 
-- app/routes - the server side express route handlers
+- `app/routes` - the server side express route handlers
 
-- app/test - a selenium based test fixture, and test.  Basically it fires up an instance of the server, and then opens a browser to it, sending events and checking results.  [But this is not being maintained right now because of how much work is required when there is a user interface change]
+- `app/test` - a selenium based test fixture, and test.  Basically it fires up an instance of the server, and then opens a browser to it, sending events and checking results.  [But this is not being maintained right now because of how much work is required when there is a user interface change]
 
-- fixtures
+- `fixtures`
 	each sub directory is named for the db collection and contains a 1.json file with initialization data for that collection.
 
 
