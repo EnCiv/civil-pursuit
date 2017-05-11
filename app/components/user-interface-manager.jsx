@@ -197,12 +197,15 @@ class UserInterfaceManager extends React.Component {
             window.history.pushState(stateStack, '', curPath);
         } else { // update the state of the current history
             logger.info("UserInterfaceManager.toMeFromParent replaceState", { stateStack }, { curPath });
-            window.history.replaceState(stateStack, '', oldPath); //update the history after changes have propogated among the children
+            window.history.replaceState(stateStack, '', curPath); //update the history after changes have propogated among the children
         }
         return null;
     }
 
-
+    componentDidUpdate(){
+        logger.info("UserInterfaceManager.componentDidUpdate");
+        if(!(this.props.uim && this.props.uim.toParent)) this.updateHistory(); // only do this if the root
+    }
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
