@@ -151,7 +151,7 @@ class UserInterfaceManager extends React.Component {
             if(action.event.state.stateStack.length > (depth+1)){
                 if(this.toChild) this.toChild(action);
                 else logger.error("UserInterfaceManager.toMeFromParent ONPOPSTATE more stack but no toChild", {action}, {uim: this.props.uim});
-            }
+            }else if(this.toChild) this.toChild({type: "CLEAR_PATH"}); // at the end of the new state, deeper states should be reset
             this.setState({uim: action.event.state.stateStack[depth]});
             return null;
         } else if (action.type==="GET_STATE") {
