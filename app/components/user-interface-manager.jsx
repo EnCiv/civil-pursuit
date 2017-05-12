@@ -112,7 +112,8 @@ class UserInterfaceManager extends React.Component {
                     const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }else{ // this is the root, after changing shape, remind me so I can update the window.histor
-                    this.setState({uim: nextUIM});
+                    if(equaly(this.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
+                    else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
                 }
                 //if(!equaly(nextUIM,this.state.uim)){ // if anything in the state has changed
                 //    if(nextUIM.shape !== this.state.uim.shape && this.props.uim && this.props.uim.toParent) { // if the shape has changed and we are not the root
@@ -139,7 +140,7 @@ class UserInterfaceManager extends React.Component {
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
             if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
             else { // this is the root UIM, update history.state
-                this.updateHistory();
+                setTimeout(()=>this.updateHistory(),0);
             }
         }
         return null;
