@@ -112,7 +112,7 @@ class UserInterfaceManager extends React.Component {
                     const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }else{ // this is the root, after changing shape, remind me so I can update the window.histor
-                    if(equaly(this.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
+                    if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
                     else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
                 }
                 //if(!equaly(nextUIM,this.state.uim)){ // if anything in the state has changed
@@ -207,7 +207,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     componentDidUpdate(){
-        logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.name);
+        logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.childName);
         if(!(this.props.uim && this.props.uim.toParent)) setTimeout(()=>this.updateHistory(),0); // only do this if the root, do it after the current queue has completed
     }
 
