@@ -6,7 +6,7 @@ import ClassNames from 'classnames';
 //import isEqual from 'lodash/isEqual';
 import union from 'lodash/union';
 //import cloneDeep from 'lodash/cloneDeep';
-import {shallowCompare} from 'react';
+import shallowequal from 'shallowequal';
 
 
 // for comparing UIM states, we use equaly.  If a property in two objects is logically false in both, the property is equal.  This means that undefined, null, false, 0, and '' are all the same.
@@ -210,7 +210,7 @@ class UserInterfaceManager extends React.Component {
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
         if(!equaly(this.state,newState)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.state,newState); return true;}
-        if(shallowCompare(this, newProps, this.state)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.props, newProps); return true;}
+        if(!shallowequal(this.props, newProps)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.props, newProps); return true;}
         logger.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.props, newProps, this.state, newState);
         return false;
     }
