@@ -207,7 +207,7 @@ class UserInterfaceManager extends React.Component {
 
     componentDidUpdate(){
         logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.name);
-        if(!(this.props.uim && this.props.uim.toParent)) console.info("UserInterfaceManager don't update history"); //this.updateHistory(); // only do this if the root
+        if(!(this.props.uim && this.props.uim.toParent)) setTimeout(()=>this.updateHistory(),0); // only do this if the root, do it after the current queue has completed
     }
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
