@@ -31,15 +31,17 @@ class UserInterfaceManager extends React.Component {
         super(props);
         logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
         this.toChild=null;
+        if(!(this.props.uim && this.props.uim.toParent)){
+            if(typeof UserInterfaceManager.path !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
+        }else{
+            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
+        }
+        // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
-             UserInterfaceManager.path= this.props.path || [];
-             this.path = this.props.rootPath || '/';
+             UserInterfaceManager.path= window.location.pathname || '/';
              window.onpopstate=this.onpopstate.bind(this);
         }
         this.state=this.getDefaultState();
-        if (this.props.uim && this.props.uim.toParent) {
-            this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
-        }
         logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
