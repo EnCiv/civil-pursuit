@@ -207,14 +207,14 @@ class UserInterfaceManager extends React.Component {
 
     componentDidUpdate(){
         logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.name);
-        if(!(this.props.uim && this.props.uim.toParent)) this.updateHistory(); // only do this if the root
+        if(!(this.props.uim && this.props.uim.toParent)) console.info("UserInterfaceManager don't update history"); //this.updateHistory(); // only do this if the root
     }
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
-        logger.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {console.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {console.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        console.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
