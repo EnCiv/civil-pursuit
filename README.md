@@ -2,7 +2,7 @@
 
 [![Circle CI](https://circleci.com/gh/Synaccord/synaccord.svg?style=shield&circle-token=5b337ba4f00eedca75846279350b3ca1c2072d5d)](https://circleci.com/gh/Synaccord/synaccord) [![Gitter](https://badges.gitter.im/Synaccord/synaccord.svg)](https://gitter.im/Synaccord/synaccord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Circle CI tests are not passing, and not being maintained at this moment.  User interface changes impact many multipes of these tests, so we are waiting until the user interface is not changing as much before updating these tests.
+######Circle CI tests are not passing, and not being maintained at this moment.  User interface changes impact many multipes of these tests, so we are waiting until the user interface is not changing as much before updating these tests.
 
 ## Download
 
@@ -73,6 +73,7 @@ npm start
 	and the file name-of-api with the exported function nameOfAPI will be executed on the server and its results returned.
 
 - `app/components` these are the react/jsx components that make up the app
+- `app/components/app.jsx` this is the fist component, called from client.js.  It looks at the url path and (like the server did) and calls subcomponents from there.  The browsr can move between components (eg from / to /About) without going back to the server.
 - `app/components/store` data is gathers through the api calls and stored in state, for child componets to use as props. This is how DB stuff gets to the browser.
 
 - `app/lib` this is js (not jsx) code used in the app
