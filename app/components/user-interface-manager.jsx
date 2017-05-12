@@ -191,9 +191,8 @@ class UserInterfaceManager extends React.Component {
             return acc;
         }, []);
         curPath = '/' + curPath.join('/');
-        if (curPath !== this.path) { // push the new state and path onto history
+        if (curPath !== window.location.pathname) { // push the new state and path onto history
             logger.info("UserInterfaceManager.toMeFromParent pushState", { stateStack }, { curPath });
-            this.path = curPath;
             window.history.pushState(stateStack, '', curPath);
         } else { // update the state of the current history
             logger.info("UserInterfaceManager.toMeFromParent replaceState", { stateStack }, { curPath });
