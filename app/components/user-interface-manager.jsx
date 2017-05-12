@@ -206,7 +206,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     componentDidUpdate(){
-        logger.info("UserInterfaceManager.componentDidUpdate");
+        logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.name);
         if(!(this.props.uim && this.props.uim.toParent)) this.updateHistory(); // only do this if the root
     }
 

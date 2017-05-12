@@ -150,6 +150,7 @@ class UIMHarmony extends React.Component {
 
 class HarmonyPanel extends React.Component{
   render(){
+    console.info("HarmonyPanel.render", this.props);
     return(
       <UserInterfaceManager {...this.props} >
         <PanelItems />
