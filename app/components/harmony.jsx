@@ -14,6 +14,7 @@ import UserInterfaceManager         from './user-interface-manager';
 
 export default class Harmony extends React.Component {
   render(){
+    console.info("Harmony above.render");
     return(
     <UserInterfaceManager {...this.props}>
       <UIMHarmony />
@@ -112,7 +113,7 @@ class UIMHarmony extends React.Component {
 
   render () {
     const { active, item, user, uim } = this.props;
-    logger.info("Harmony.render",this.props)
+    console.info("Harmony.render",this.props);
 
     const leftUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'left')};  // inserting me between my parent and my child
     const rightUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'right')};  // inserting me between my parent and my child

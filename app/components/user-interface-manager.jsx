@@ -50,8 +50,7 @@ class UserInterfaceManager extends React.Component {
     getDefaultState(){
         return {uim: {
             shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth : 0,  // for debugging  - this is my depth to check
-            name: (this.state && this.state.uim) && this.state.uim.name // this is for debugging the name or undefined
+            depth: this.props.uim ? this.props.uim.depth : 0  // for debugging  - this is my depth to check
         }}
     }
 
