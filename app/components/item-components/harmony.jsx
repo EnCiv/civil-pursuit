@@ -45,17 +45,21 @@ exports.button = class HarmonyButton extends React.Component {
 exports.panel = class HarmonyPanel extends React.Component {
   mounted = false;
   render() {
-    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    const {active, style, item, uim}=this.props;
+    const nextUIM={shape: 'truncated', depth: uim.depth, toParent: uim.toParent} // UIM 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
+    if (!this.mounted && !active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
+
       return (
         <div className="toggler harmony">
           <Accordion
-            active={this.props.active}
-            style={this.props.style}
+            active={active}
+            style={style}
           >
             <Harmony
               {...this.props}
+              uim={nextUIM}
             />
           </Accordion>
         </div>
