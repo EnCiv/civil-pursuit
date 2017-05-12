@@ -208,10 +208,10 @@ class UserInterfaceManager extends React.Component {
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
-        //if (!Object.keys(this.state.uim).every(key=>{logger.info(key); let a=this.state.uim[key], b=newState.uim[key] || null; if(a!=b) logger.info(a,"!=",b); return a==b})) {logger.info("yes"); return true};
-        let should =!equaly(this.state,newState);
-        logger.info("UserInterfaceManager.shouldComponentUpdate", should, this.props.uim && this.props.uim.depth, this.state,newState);
-        return should;
+        if(!equaly(this.state,newState)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.state,newState); return true;}
+        if(!equaly(this.props,newProps)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.props,newProps); return true;}
+        logger.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.props, newProps, this.state, newState);
+        return false;
     }
 
     renderChildren() {
