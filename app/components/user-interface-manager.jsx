@@ -31,6 +31,7 @@ class UserInterfaceManager extends React.Component {
         super(props);
         logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
         this.toChild=null;
+        this.childName='';
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.path !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -63,9 +64,9 @@ class UserInterfaceManager extends React.Component {
     }
 
     toMeFromChild(action) {
-        logger.info("UserInterfaceManager.toMeFromChild",this.props.uim && this.props.uim.depth, action);
+        logger.info("UserInterfaceManager.toMeFromChild",this.props.uim && this.props.uim.depth, this.childName, action);
         if(!action.distance) action.distance=0; // action was from component so add distance
-        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.setState({uim: Object.assign({},this.state.uim,{name: action.name})}); return null; }  // child is passing up her func
+        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.childName=action.name; return null; }  // child is passing up her func
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             // return the array of all UIM States from here to the beginning
@@ -146,7 +147,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", this.props.uim && this.props.uim.depth, {action});
+        logger.info("UserInterfaceManager.toMeFromParent", this.props.uim && this.props.uim.depth, this.childName, {action});
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
@@ -212,9 +213,9 @@ class UserInterfaceManager extends React.Component {
 
     /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.props, newProps); return true;}
-        logger.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {logger.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        logger.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
