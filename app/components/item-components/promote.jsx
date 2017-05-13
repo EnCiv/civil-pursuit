@@ -5,6 +5,8 @@ import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion from '../util/accordion';
+import EvaluationStore    from '../store/evaluation';
+import Promote from '../promote';
 
 exports.button=class PromoteButton extends React.Component {
 
