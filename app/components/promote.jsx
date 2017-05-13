@@ -146,7 +146,7 @@ wideRight(){
         if (action.type==="SET_TO_CHILD") { this.toChildLeft = action.function }  // child is passing up her func
   }
 
-  toMeFromChildRight(uim) {
+  toMeFromChildRight(action) {
        if (action.type==="SET_TO_CHILD") { this.toChildRight = action.function }  // child is passing up her func
   }
 
