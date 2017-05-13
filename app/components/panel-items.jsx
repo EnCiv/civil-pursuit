@@ -186,6 +186,7 @@ class PanelItems extends React.Component {
                     user    =   { user }
                     panel = { panel }
                     uim = { itemUIM }
+                    emitter = {emitter}
                     hideFeedback = {this.props.hideFeedback}
                     buttons={['Promote','Details','Harmony','Subtype']}
                     style   = {{backgroundColor: bgc}}

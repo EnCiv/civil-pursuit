@@ -232,7 +232,7 @@ class UIMItem extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { active, item, user, buttons, uim, style } = this.props;
+    const { active, item, user, buttons, uim, style, emitter } = this.props;
     const shape = uim ? uim.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore=(uim && uim.readMore);

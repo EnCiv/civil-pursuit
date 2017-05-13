@@ -63,7 +63,7 @@ exports.button=class PromoteButton extends React.Component {
 exports.panel = class PromotePanel extends React.Component {
   mounted = false;
   render() {
-    const { active, panel, item, onClick, user, style } = this.props;
+    const { active, panel, item, onClick, user, style, emitter } = this.props;
     if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
