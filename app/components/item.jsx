@@ -50,20 +50,20 @@ class UIMItem extends React.Component {
     if (action.type === "TOGGLE_BUTTON") {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       if(delta.button) {
-        delta.pathPart=[delta.button, action.shortId];
+        delta.pathPart=[delta.button];
         delta.itemId=action.itemId;
       } else {
         delta.pathPart=[]; 
         delta.itemId=null;
       }
-      if(uim.readMore) delta.pathPart= ['readMore',uim.shortId].concat(delta.pathPart);
+      if(uim.readMore) delta.pathPart= ['readMore'].concat(delta.pathPart);
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
       if(delta.readMore){
-        delta.pathPart = ['readMore',action.shortId]; // pathPart is added if active
+        delta.pathPart = ['readMore']; // pathPart is added if active
         delta.itemId=action.itemId;
         delta.shortId=action.shortId;
       } else { 
@@ -71,7 +71,7 @@ class UIMItem extends React.Component {
         delta.itemId=null;
         delta.shortId=null;
       }
-      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button,uim.shortId]);
+      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button]);
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
