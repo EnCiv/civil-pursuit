@@ -71,7 +71,7 @@ class UIMItem extends React.Component {
         delta.itemId=null;
         delta.shortId=null;
       }
-      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button,uim.itemId]);
+      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button,uim.shortId]);
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;

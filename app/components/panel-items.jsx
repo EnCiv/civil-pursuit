@@ -66,9 +66,13 @@ class PanelItems extends React.Component {
 
       if(action.distance===1) { //if this action is from an immediate child 
         var delta={};
-        if(action.shape === 'open' && action.itemId) delta.itemId=action.itemId;
-        else delta.itemId=null; // turn off the itemId
-        delta.shape = action.shape;
+        if(action.shape === 'open' && action.itemId) { 
+          delta.itemId=action.itemId;
+          delta.pathPart=[action.shortId];
+        } else {
+          delta.pathPart=[];
+          delta.itemId=null; // turn off the itemId
+        } delta.shape = action.shape;
         Object.assign(nextUIM, uim, delta);
       }else{ // it's not my child that changed shape
         logger.info("PanelItems.actionToState it's not my child that changed shape")
@@ -88,9 +92,11 @@ class PanelItems extends React.Component {
             this.toChild[uim.itemId]({type: "CHANGE_SHAPE", shape: 'truncated'});
             delta.shape='truncated';
             delta.itemId=null;
+            delta.pathPart=['Creator'];
           }else{
             Object.assign(nextUIM,nextUIM,{shape: 'truncated'});
             delta.shape='truncated';
+            delta.pathPart=[];
           }
         }
         Object.assign(nextUIM,uim,delta); // if shape is not truncated, do so
@@ -132,13 +138,14 @@ class PanelItems extends React.Component {
   // this is a one to many pattern for the user interface manager, yourself between the UIM and each child
   // send all unhandled actions to the parent UIM
   //
-  toMeFromChild(itemId, action) {
+  toMeFromChild(itemId, shortId, action) {
     logger.info("PanelItems.toMeFromChild", this.props.uim && this.props.uim.depth, itemId, action);
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[itemId] = action.function; // don't pass this to parent
     } else if(this.props.uim && this.props.uim.toParent) {
        action.itemId=itemId; // actionToState may need to know the child's id
+       action.shortId=shortId;
        return(this.props.uim.toParent(action));
     }
   }
@@ -178,7 +185,7 @@ class PanelItems extends React.Component {
           .map(item => {
             let shape= uim.shape==='open' && uim.itemId==item.Id ? 'open' : 'truncated';
             //if(panel.items.length===1 && uim && uim.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
-            var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id)};  // inserting me between my parent and my child
+            var itemUIM={shape: shape, depth: this.props.uim.depth, toParent: this.toMeFromChild.bind(this, item._id, item.id)};  // inserting me between my parent and my child
             if(!this.mounted[item._id]){ // only render this once
               this.mounted[item._id]=(<ItemStore item={ item } key={ `item-${item._id}` }>
                   <Item
