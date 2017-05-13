@@ -41,6 +41,7 @@ class UserInterfaceManager extends React.Component {
         if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.path= window.location.pathname || '/';
              window.onpopstate=this.onpopstate.bind(this);
+             setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
         }
         this.state=this.getDefaultState();
         logger.info("UserInterfaceManager constructor, state", this.state);
