@@ -56,6 +56,7 @@ class UIMItem extends React.Component {
         delta.pathPart=[]; 
         delta.itemId=null;
       }
+      if(uim.readMore) delta.pathPart= ['readMore',uim.shortId].concat(delta.pathPart);
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
@@ -64,10 +65,14 @@ class UIMItem extends React.Component {
       if(delta.readMore){
         delta.pathPart = ['readMore',action.shortId]; // pathPart is added if active
         delta.itemId=action.itemId;
+        delta.shortId=action.shortId;
       } else { 
         delta.pathPart = []; // pathPart is removed
         delta.itemId=null;
-      }delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+        delta.shortId=null;
+      }
+      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button,uim.itemId]);
+      delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail

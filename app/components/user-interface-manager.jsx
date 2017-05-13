@@ -3,9 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassNames from 'classnames';
-//import isEqual from 'lodash/isEqual';
 import union from 'lodash/union';
-//import cloneDeep from 'lodash/cloneDeep';
 import shallowequal from 'shallowequal';
 
 
@@ -22,9 +20,14 @@ var equaly=function(a,b){
         }
 
 
-//Item Visual State - lets other components change the visual state of an item. 
-// For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
-
+//User Interface Manager - manages the state of react components that interact with each other and change state based user interactions and interactions between stateful components.
+//Components communicate through the uim object, which is passed between them.  The basic component is
+//uim={shape: a string representing a shape.  You can have any shapes you want, this is using 'truncated', 'open' and 'collapsed' but this can be upto the implementation.  But all components will need to understand these shapes
+//     depth: the distance of the component from the root (first) component.
+//     toParent: the function to call to send 'actions' to the parent function
+//     each child component can add more properties to it's state, through the actionToState function
+//     }
+//
 class UserInterfaceManager extends React.Component {
 
     constructor(props) {
@@ -44,7 +47,6 @@ class UserInterfaceManager extends React.Component {
              setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
         }
         this.state=this.getDefaultState();
-        logger.info("UserInterfaceManager constructor, state", this.state);
     }
 
     // consistently get the default state from multiple places
@@ -72,10 +74,8 @@ class UserInterfaceManager extends React.Component {
             // return the array of all UIM States from here to the beginning
             // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
             // the top UIM state of the array is the root component, the bottom one is that of the UIM that inititated the call
-            logger.info("UserInterfaceManager.toMeFromChild:GET_STATE",{action}, {state: this.state});
             let thisUIM=Object.assign({}, this.state.uim);
             if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
-                logger.info("UserInterfaceManaer GET_STATE at root",thisUIM);
                 return [thisUIM]; 
             }
             else {
@@ -91,19 +91,7 @@ class UserInterfaceManager extends React.Component {
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                     logger.info("UserInterfaceManger.toChildFromParent path being removed clear children", this.state.uim.pathPart.join('/'))
                     if(this.toChild) this.toChild({type:"CLEAR_PATH"});
-                    //UserInterfaceManager.path.splice(nextUIM.pathDepth); // clear path after this point
-                    //nextUIM.pathDepth=-1;  // 0 would be valid, mark depth as invalid
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                    // var stateStack={stateStack: this.toMeFromChild({type: "GET_STATE"})};  // recursively call me to get my state stack
-                    //var oldPath='/'+UserInterfaceManager.path.join('/');
-                    //logger.info("UserInterfaceManager replaceState",{stateStack}, {oldPath});
-                    //window.history.replaceState(stateStack,'', oldPath); // in the initial case this is the history, after that, it's an update
-                    //nextUIM.pathDepth=UserInterfaceManager.path.length;
-                    //UserInterfaceManager.path.push(...nextUIM.pathPart);
-                    //var newPath='/'+UserInterfaceManager.path.join('/');
-                    //var nextStack=cloneDeep(stateStack);
-                    //stateStack.stateStack[nextStack.stateStack.length-1]=nextUIM; // replace the last UIM state with the new one
-                    //window.history.pushState(stateStack,"",newPath);
                     logger.info("UserInterfaceManger.toChildFromParent path being added", nextUIM.pathPart.join('/'))
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!equaly(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
@@ -116,16 +104,6 @@ class UserInterfaceManager extends React.Component {
                     if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
                     else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
                 }
-                //if(!equaly(nextUIM,this.state.uim)){ // if anything in the state has changed
-                //    if(nextUIM.shape !== this.state.uim.shape && this.props.uim && this.props.uim.toParent) { // if the shape has changed and we are not the root
-                //        const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
-                //        this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
-                //    } else
-                //        this.setState({uim: nextUIM});  // just update the state
-                //}else {
-                //    if(action.type === "CHILD_SHAPE_CHANGED" && this.props.uim && this.props.uim.toParent)
-                //        this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1})
-                //}
                 return null;
             }
         } 
@@ -163,7 +141,6 @@ class UserInterfaceManager extends React.Component {
             // return the array of all UIM States from the top down - with the top at 0 and the bottom at the end
             // it works by recursivelly calling GET_STATE from here to the end and then unshifting the UIM state of each component onto an array
             // the top UIM state of the array is the root component
-            logger.info("UserInterfaceManager.toMeFromParent:GET_STATE",{action}, {state: this.state});
             let stack;
             if(!this.toChild) return [Object.assign({},this.state.uim)];
             else stack=this.toChild(action);
@@ -212,11 +189,11 @@ class UserInterfaceManager extends React.Component {
         if(!(this.props.uim && this.props.uim.toParent)) setTimeout(()=>this.updateHistory(),0); // only do this if the root, do it after the current queue has completed
     }
 
-    /***  don't rerender if no change in state, props don't matter if it didn't change the state. ****/
+    /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {console.info("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {console.info("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
-        console.info("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        logger.trace("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
