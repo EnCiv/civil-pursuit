@@ -125,7 +125,9 @@ class UIMHarmony extends React.Component {
       contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={uim.side==='left'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
-            <HarmonyPanel user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}/>
+            <UserInterfaceManager user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}>
+              <PanelItems />
+            </UserInterfaceManager>
           </PanelStore>
         </DoubleWide>
       );
@@ -133,7 +135,9 @@ class UIMHarmony extends React.Component {
       contentRight = (
         <DoubleWide className="harmony-con" right expanded={uim.side==='right'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
-            <HarmonyPanel user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}/>
+            <UserInterfaceManager user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}>
+              <PanelIteems />
+            </UserInterfaceManager>
           </PanelStore>
         </DoubleWide>
       );
