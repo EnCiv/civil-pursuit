@@ -49,30 +49,20 @@ class UIMItem extends React.Component {
     var delta={};
     if (action.type === "TOGGLE_BUTTON") {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
-      if(delta.button) {
-        delta.pathPart=[delta.button];
-        delta.itemId=action.itemId;
-      } else {
-        delta.pathPart=[]; 
-        delta.itemId=null;
-      }
-      if(uim.readMore) delta.pathPart= ['readMore'].concat(delta.pathPart);
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      var parts=[];
+      if(nextUIM.readMore)parts.push('r');
+      if(nextUIM.button)parts.push(nextUIM.button[0]); // must ensure no collision of first character of item-component names
+      delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
-      if(delta.readMore){
-        delta.pathPart = ['readMore']; // pathPart is added if active
-        delta.itemId=action.itemId;
-        delta.shortId=action.shortId;
-      } else { 
-        delta.pathPart = []; // pathPart is removed
-        delta.itemId=null;
-        delta.shortId=null;
-      }
-      if(uim.button) delta.pathPart = delta.pathPart.concat([uim.button]);
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      var parts=[];
+      if(nextUIM.readMore)parts.push('r');
+      if(nextUIM.button)parts.push(nextUIM.button[0]); // must ensure no collision of first character of item-component names
+      delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else return null;  // if you don't handle the type, let the default handlers prevail
@@ -116,7 +106,29 @@ class UIMItem extends React.Component {
           Object.keys(this.toChild).forEach(child=>{ // send the action to every child
             this.toChild[child](action)
           });
-        } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
+        } else if(action.type==="SET_PATH"){
+          let depth=action.depth;
+          let parts=action.pathPart[depth].split(',');
+          let nextUIM=Object.assign({},this.props.uim);
+          delete nextUIM.toParent; // not part of your state
+          delete nextUIM.depth;  // not part of your state
+          let button=null;
+          let matched=0;
+          parts.forEach(part=>{
+            if(part==='r'){
+              nextUIM.readMore=true;
+              matched+=1;
+              nextUIM.shape='open';
+            }else if(this.props.buttons.some(b=>{if(b[0]===part){button=b; return true} else return false;})) {
+              nextUIM.button=button;
+              matched+=1;
+              nextUIM.shape='open';
+            }
+          });
+          if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
+          nextUIM.pathParts=Object.assign({},action.pathPart[depth]);
+          this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button], depth: depth+1, pathPart: action.pathPart}); // note: toChild of button might be undefined because button is null or the component doesn't have a UIM
+      }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
 
 
@@ -170,8 +182,8 @@ class UIMItem extends React.Component {
 
 
   // when the user clicks on an item's button
-  onClick(button, itemId, shortId) {
-    this.props.uim.toParent({ type: "TOGGLE_BUTTON", button, itemId, shortId })
+  onClick(button) {
+    this.props.uim.toParent({ type: "TOGGLE_BUTTON", button })
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +226,7 @@ class UIMItem extends React.Component {
     if (this.props.uim.readMore) { // if readMore is on and we are going to turn it off
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
     } 
-    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE", itemId: this.props.item._id, shortId: this.props.item.id})
+    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE"})
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

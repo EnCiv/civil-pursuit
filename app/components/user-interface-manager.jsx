@@ -68,7 +68,13 @@ class UserInterfaceManager extends React.Component {
     toMeFromChild(action) {
         logger.info("UserInterfaceManager.toMeFromChild",this.props.uim && this.props.uim.depth, this.childName, action);
         if(!action.distance) action.distance=0; // action was from component so add distance
-        if (action.type==="SET_TO_CHILD") { this.toChild = action.function; if(action.name) this.childName=action.name; return null; }  // child is passing up her func
+        if (action.type==="SET_TO_CHILD") { // child is passing up her func
+            this.toChild = action.function; 
+            if(action.name) this.childName=action.name; 
+            if(!(this.props.uim && this.props.uim.toParent) && window.location.pathname !== '/'){ // this is the root
+                setTimeout(()=>this.toChild({type: "SET_PATH", depth: 0, pathPart: window.location.split('/')}),0); // this starts after the return toChild so it completes.
+            }
+            return null; }  
         else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             // return the array of all UIM States from here to the beginning
@@ -84,8 +90,11 @@ class UserInterfaceManager extends React.Component {
                 stack.push(thisUIM); // push this uim state to the uim state list and return it
                 return stack;
             }
-        }
-        else if(this.actionToState) {
+        }else if (action.type==="SET_STATE_AND_CONTINUE"){
+            if(action.function && action.depth < action.pathParts.length) this.setState({uim: action.nextUIM},()=>action.function({type: 'SET_PATH', depth: action.depth, pathPart: action.pathPart}));
+            else this.setState({uim: action.nextUIM});
+            return null;
+        }else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
