@@ -53,8 +53,11 @@ class UserInterfaceManager extends React.Component {
     componentDidMount(){
         if(this.id===0){ //if this is the root instance
             var pathPart= window.location.pathname.split('/');
-            pathPart.shift; // thow out the leading path part that got us here
-            logger.info("UserInterfaceManager.componentDidMount",pathPart);
+            var root=this.props.path || '/';
+            if(pathPart[1]!=this.props.path.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
+            pathPart.shift; // thow out the empty element at the beginning because the first character is /
+            pathPart.shift; // shift off the rooth path name 
+            logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",pathPart);
             if(pathPart.length >0)
                 setTimeout(()=>this.toMeFromParent({type: "SET_PATH", depth: 0, pathPart: pathPart}))
             }
@@ -193,7 +196,7 @@ class UserInterfaceManager extends React.Component {
             if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
             return acc;
         }, []);
-        curPath = '/' + curPath.join('/');
+        curPath = (this.props.path || '/') + curPath.join('/');
         if (curPath !== window.location.pathname) { // push the new state and path onto history
             logger.info("UserInterfaceManager.toMeFromParent pushState", { stateStack }, { curPath });
             window.history.pushState(stateStack, '', curPath);

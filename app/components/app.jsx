@@ -165,10 +165,11 @@ class App extends React.Component {
 
           }
           break;
-        case r:
+
+        case 'r':
           page = (
             <div id="top-level-panel">
-              <TypeComponent component={'Subtype'} {...this.props} style={{backgroundColor: "white"}} user={ this.props.user } />
+              <TypeComponent component={'Subtype'} {...this.props} path={'/r'} style={{backgroundColor: "white"}} user={ this.props.user } />
             </div>
           );
           break;
