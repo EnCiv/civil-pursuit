@@ -43,7 +43,7 @@ class UserInterfaceManager extends React.Component {
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.nextId= 0;
-             if(typeof window !== undefined){ // if we are running on the browser
+             if(typeof window !== 'undefined'){ // if we are running on the browser
                 window.onpopstate=this.onpopstate.bind(this);
                 setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
              }
@@ -74,7 +74,7 @@ class UserInterfaceManager extends React.Component {
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
-            if((typeof window !== undefined) && this.id===0 ){ // this is the root and we are on the browser
+            if((typeof window !== 'undefined') && this.id===0 ){ // this is the root and we are on the browser
                 var pathPart= window.location.pathname.split('/');
                 var root=this.props.UIMRoot || '/r/';
                 if(pathPart[1]!=root.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
@@ -185,7 +185,7 @@ class UserInterfaceManager extends React.Component {
 
     updateHistory() {
         logger.info("UserInterfaceManager.updateHistory",  this.id);
-        if(typeof window === undefined) { logger.info("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
+        if(typeof window === 'undefined') { logger.info("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
         if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
         var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
