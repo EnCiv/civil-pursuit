@@ -52,7 +52,7 @@ class UIMItem extends React.Component {
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
       if(uim.readMore)parts.push('r');
-      if(nextUIM.button)parts.push(nextUIM.button[0]); // must ensure no collision of first character of item-component names
+      if(delta.button)parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
@@ -60,7 +60,7 @@ class UIMItem extends React.Component {
       delta.readMore = !uim.readMore; // toggle condition;
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
-      if(nextUIM.readMore)parts.push('r');
+      if(delta.readMore)parts.push('r');
       if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
