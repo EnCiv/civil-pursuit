@@ -51,7 +51,7 @@ class UIMItem extends React.Component {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
-      if(nextUIM.readMore)parts.push('r');
+      if(uim.readMore)parts.push('r');
       if(nextUIM.button)parts.push(nextUIM.button[0]); // must ensure no collision of first character of item-component names
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
@@ -61,7 +61,7 @@ class UIMItem extends React.Component {
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
       if(nextUIM.readMore)parts.push('r');
-      if(nextUIM.button)parts.push(nextUIM.button[0]); // must ensure no collision of first character of item-component names
+      if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
@@ -126,7 +126,7 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          nextUIM.pathParts=Object.assign({},action.pathPart[depth]);
+          nextUIM.pathPart=Object.assign({},action.pathPart[depth]);
           this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button], depth: depth+1, pathPart: action.pathPart}); // note: toChild of button might be undefined because button is null or the component doesn't have a UIM
       }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
