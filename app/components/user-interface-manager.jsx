@@ -76,8 +76,8 @@ class UserInterfaceManager extends React.Component {
             if(action.name) this.childName=action.name; 
             if(this.id===0 && typeof window !== undefined){ // this is the root and we are on the browser
                 var pathPart= window.location.pathname.split('/');
-                var root=this.props.path || '/r';
-                if(pathPart[1]!=this.props.path.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
+                var root=this.props.UIMRoot || '/r/';
+                if(pathPart[1]!=root.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
                 pathPart.shift; // thow out the empty element at the beginning because the first character is /
                 pathPart.shift; // shift off the rooth path name 
                 logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",pathPart);
@@ -185,13 +185,14 @@ class UserInterfaceManager extends React.Component {
 
     updateHistory() {
         logger.info("UserInterfaceManager.updateHistory",  this.id);
+        if(typeof window === undefined) { logger.info("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
         if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
         var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
             if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
             return acc;
         }, []);
-        curPath = (this.props.path || '/') + curPath.join('/');
+        curPath = (this.props.UIMRoot || '/r/') + curPath.join('/');
         if (curPath !== window.location.pathname) { // push the new state and path onto history
             logger.info("UserInterfaceManager.toMeFromParent pushState", { stateStack }, { curPath });
             window.history.pushState(stateStack, '', curPath);
