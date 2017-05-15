@@ -74,7 +74,7 @@ class UserInterfaceManager extends React.Component {
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
-            if(this.id===0 && typeof window !== undefined){ // this is the root and we are on the browser
+            if((typeof window !== undefined) && this.id===0 ){ // this is the root and we are on the browser
                 var pathPart= window.location.pathname.split('/');
                 var root=this.props.UIMRoot || '/r/';
                 if(pathPart[1]!=root.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
