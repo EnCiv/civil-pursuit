@@ -36,17 +36,28 @@ class UserInterfaceManager extends React.Component {
         this.toChild=null;
         this.childName='';
         if(!(this.props.uim && this.props.uim.toParent)){
-            if(typeof UserInterfaceManager.path !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
+            if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
             this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "UserInterfaceManager"});
         }
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
-        if(typeof UserInterfaceManager.path === 'undefined') { // this is the root UserInterfaceManager
-             UserInterfaceManager.path= window.location.pathname || '/';
+        if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
+             UserInterfaceManager.nextId= 0;
              window.onpopstate=this.onpopstate.bind(this);
              setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
         }
+        this.id=UserInterfaceManager.nextId++; // get the next id
         this.state=this.getDefaultState();
+    }
+
+    componentDidMount(){
+        if(this.id===0){ //if this is the root instance
+            var pathPart= window.location.pathname.split('/');
+            pathPart.shift; // thow out the leading path part that got us here
+            logger.info("UserInterfaceManager.componentDidMount",pathPart);
+            if(pathPart.length >0)
+                setTimeout(()=>this.toMeFromParent({type: "SET_PATH", depth: 0, pathPart: pathPart}))
+            }
     }
 
     // consistently get the default state from multiple places
@@ -61,12 +72,12 @@ class UserInterfaceManager extends React.Component {
     // only the root UserInterfaceManager will set this 
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
-        logger.info("UserInterfaceManager.onpopstate", {event})
+        logger.info("UserInterfaceManager.onpopstate", this.id, {event})
         if(event.state && event.state.stateStack) this.toMeFromParent({type: "ONPOPSTATE", event: event});
     }
 
     toMeFromChild(action) {
-        logger.info("UserInterfaceManager.toMeFromChild",this.props.uim && this.props.uim.depth, this.childName, action);
+        logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, action);
         if(!action.distance) action.distance=0; // action was from component so add distance
         if (action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
@@ -86,7 +97,7 @@ class UserInterfaceManager extends React.Component {
             }
             else {
                 var stack=this.props.uim.toParent({type: "GET_STATE", distance: action.distance+1});
-                logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got", stack);
+                logger.info("UserInterfaceManager.toMeFromChild:GET_STATE got",  this.id, stack);
                 stack.push(thisUIM); // push this uim state to the uim state list and return it
                 return stack;
             }
@@ -98,10 +109,10 @@ class UserInterfaceManager extends React.Component {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                    logger.info("UserInterfaceManger.toChildFromParent path being removed clear children", this.state.uim.pathPart.join('/'))
+                    logger.info("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
                     if(this.toChild) this.toChild({type:"CLEAR_PATH"});
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                    logger.info("UserInterfaceManger.toChildFromParent path being added", nextUIM.pathPart.join('/'))
+                    logger.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
                 } else { // pathPart and nexUI.pathpart are both have length
                     if(!equaly(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
@@ -135,7 +146,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", this.props.uim && this.props.uim.depth, this.childName, {action});
+        logger.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, {action});
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
@@ -175,7 +186,7 @@ class UserInterfaceManager extends React.Component {
     }
 
     updateHistory() {
-        logger.info("UserInterfaceManager.updateHistory");
+        logger.info("UserInterfaceManager.updateHistory",  this.id);
         if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
         var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
@@ -194,15 +205,15 @@ class UserInterfaceManager extends React.Component {
     }
 
     componentDidUpdate(){
-        logger.info("UserInterfaceManager.componentDidUpdate", this.props.uim && this.props.uim.depth, this.childName);
+        logger.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName);
         if(!(this.props.uim && this.props.uim.toParent)) setTimeout(()=>this.updateHistory(),0); // only do this if the root, do it after the current queue has completed
     }
 
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes state", this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes props", this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
-        logger.trace("UserInterfaceManager.shouldComponentUpdate no", this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes state", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes props", this.id, this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        logger.trace("UserInterfaceManager.shouldComponentUpdate no", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
@@ -217,7 +228,7 @@ class UserInterfaceManager extends React.Component {
 
     render() {
         const children = this.renderChildren();
-        logger.info("UserInterfaceManager render");
+        logger.info("UserInterfaceManager render", this.id);
 
         return (
             <section>

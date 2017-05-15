@@ -192,6 +192,7 @@ class HttpServer extends EventEmitter {
     this.getBrowserConfig();
     this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
     this.getLandingPage();
+    this.getUIMPath();
     this.getOldfield();
     this.getTermsOfServicePage();
     this.getSettings();
@@ -256,6 +257,33 @@ class HttpServer extends EventEmitter {
         serverReactRender.bind(this));
 
       this.app.get('/page/:page', serverReactRender.bind(this));
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
+  }
+
+    getUIMPath () {
+    try {
+      this.app.get('/r/*',
+        (req, res, next) => {
+          logger.info("server.getUIMPath", req.path)
+          if ( ! req.cookies.synapp ) {
+            res.cookie('synapp',
+              { training : true },
+              {
+                "path":"/",
+                "signed": false,
+                "maxAge": 604800000,
+                "httpOnly": true
+              });
+          }
+          // else {
+
+          // }
+          next();
+        },
+        serverReactRender.bind(this));
     }
     catch ( error ) {
       this.emit('error', error);
