@@ -43,24 +43,13 @@ class UserInterfaceManager extends React.Component {
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.nextId= 0;
-             window.onpopstate=this.onpopstate.bind(this);
-             setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
+             if(typeof window !== undefined){ // if we are running on the browser
+                window.onpopstate=this.onpopstate.bind(this);
+                setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
+             }
         }
         this.id=UserInterfaceManager.nextId++; // get the next id
         this.state=this.getDefaultState();
-    }
-
-    componentDidMount(){
-        if(this.id===0){ //if this is the root instance
-            var pathPart= window.location.pathname.split('/');
-            var root=this.props.path || '/';
-            if(pathPart[1]!=this.props.path.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
-            pathPart.shift; // thow out the empty element at the beginning because the first character is /
-            pathPart.shift; // shift off the rooth path name 
-            logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",pathPart);
-            if(pathPart.length >0)
-                setTimeout(()=>this.toMeFromParent({type: "SET_PATH", depth: 0, pathPart: pathPart}))
-            }
     }
 
     // consistently get the default state from multiple places
@@ -82,14 +71,20 @@ class UserInterfaceManager extends React.Component {
     toMeFromChild(action) {
         logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, action);
         if(!action.distance) action.distance=0; // action was from component so add distance
-        if (action.type==="SET_TO_CHILD") { // child is passing up her func
+        if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
-            if(!(this.props.uim && this.props.uim.toParent) && window.location.pathname !== '/'){ // this is the root
-                setTimeout(()=>this.toChild({type: "SET_PATH", depth: 0, pathPart: window.location.split('/')}),0); // this starts after the return toChild so it completes.
-            }
-            return null; }  
-        else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
+            if(this.id===0 && typeof window !== undefined){ // this is the root and we are on the browser
+                var pathPart= window.location.pathname.split('/');
+                var root=this.props.path || '/r';
+                if(pathPart[1]!=this.props.path.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
+                pathPart.shift; // thow out the empty element at the beginning because the first character is /
+                pathPart.shift; // shift off the rooth path name 
+                logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",pathPart);
+                    setTimeout(()=>this.toChild({type: "SET_PATH", depth: 0, pathPart: pathPart}),0); // this starts after the return toChild so it completes.
+                }
+            return null;
+        } else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
             // return the array of all UIM States from here to the beginning
             // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
