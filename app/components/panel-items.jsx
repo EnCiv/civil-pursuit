@@ -132,7 +132,7 @@ class PanelItems extends React.Component {
           var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
           if(this.toChild[shortId]){
              logger.info("PanelItems.toMeFromParent SET_STATE_AND_CONTINUE")
-             this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
+             this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           } else {
             logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
             this.waitingOn=nextUIM;
@@ -149,20 +149,17 @@ class PanelItems extends React.Component {
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[shortId] = action.function; // don't pass this to parent
+        if(this.waitingOn){
+          let nextUIM=this.waitingOn;
+          if(shortId===nextUIM.shortId && this.toChild[shortId]) { 
+            logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
+            this.waitingOn=null;
+            setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] }),0);
+          }
+        }
     } else if(this.props.uim && this.props.uim.toParent) {
        action.shortId=shortId; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if(!this.waitingOn) return;
-    let nextUIM=this.waitingOn;
-    let shortId=nextUIM.sortId;
-    if(shortId && this.toChild[shortId]) { 
-      logger.info("PanelItems.componentDidUpdate got waitingOn nextUIM", nextUIM);
-      this.waitingOn=null;
-      this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] });
     }
   }
 
