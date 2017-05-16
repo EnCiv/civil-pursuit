@@ -77,13 +77,11 @@ class UIMItem extends React.Component {
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[button] = action.function; // don't pass this to parent
       if(this.waitingOn){
-          let nextUIM=this.waitingOn;
-          if(button==nextUIM.button && this.toChild[button]) { 
-            logger.info("Item.toMeFromChild got waitingOn nextUIM", nextUIM);
-            this.waitingOn=null;
-            setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] }),0);
-          }
-        }
+          let action=this.waitingOn;
+          logger.info("Item.toMeFromChild got waitingOn action", action);
+          this.waitingOn=null;
+          setTimeout(()=>this.toChild[button](action),0);
+      }
     } else if(this.props.uim && this.props.uim.toParent) {
        action.button=button; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
@@ -134,8 +132,10 @@ class UIMItem extends React.Component {
           if(nextUIM.button==='Subtype') { // subtype is the only button that has children
               if(this.toChild[button]) this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
               else { 
-                this.waitingOn=nextUIM;
-                this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: ()=>{logger.info("Item.toMeFromParent SET_PATH Subtype nop")} });
+                this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action)=>{
+                  if(this.toChild[this.props.uim.button]) this.toChild[this.props.uim.button](action)
+                  else this.waitingOn=action;
+                 }});
               }
           }else{
              this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: null}); 
