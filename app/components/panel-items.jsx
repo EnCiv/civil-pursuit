@@ -130,8 +130,13 @@ class PanelItems extends React.Component {
       } else if(action.type="SET_PATH"){
           var shortId=action.part;
           var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
-          if(this.toChild[shortId]) this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
-          else this.waitingOn=nextUIM;
+          if(this.toChild[shortId]){
+             logger.info("PanelItems.toMeFromParent SET_STATE_AND_CONTINUE")
+             this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
+          } else {
+            logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
+            this.waitingOn=nextUIM;
+          }
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
   }
 
@@ -155,6 +160,7 @@ class PanelItems extends React.Component {
     let nextUIM=this.waitingOn;
     let shortId=nextUIM.sortId;
     if(shortId && this.toChild[shortId]) { 
+      logger.info("PanelItems.componentDidUpdate got waitingOn nextUIM", nextUIM);
       this.waitingOn=null;
       this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] });
     }

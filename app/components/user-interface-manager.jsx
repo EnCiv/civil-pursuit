@@ -82,7 +82,7 @@ class UserInterfaceManager extends React.Component {
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
-                logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",UserInterfaceManager.pathPart);
+                logger.info("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
                 setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
             }
             return null;

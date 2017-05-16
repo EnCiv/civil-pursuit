@@ -133,6 +133,7 @@ class UIMItem extends React.Component {
     let nextUIM=this.waitingOn;
     let button= nextUIM.button;
     if(button && this.toChild[button]) { 
+      logger.info("Item.componentDidUpdate got waitingOn nextUIM", nextUIM);
       this.waitingOn=null;
       this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] });
     }
