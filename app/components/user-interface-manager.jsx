@@ -79,9 +79,9 @@ class UserInterfaceManager extends React.Component {
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
-            if((typeof window !== 'undefined') && this.id===0 ){ // this is the root and we are on the browser
+            if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
                 logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",UserInterfaceManager.pathPart);
-                setTimeout(()=>this.toChild({type: "SET_PATH"}),0); // this starts after the return toChild so it completes.
+                setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
             }
             return null;
         } else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
@@ -100,8 +100,8 @@ class UserInterfaceManager extends React.Component {
                 return stack;
             }
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
-            if(action.function) this.setState({uim: action.nextUIM},()=>action.function({type: 'SET_PATH'}));
-            else this.setState({uim: action.nextUIM});
+            if(UserInterfaceManager.pathPart.length) this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}));
+            else this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)});
             return null;
         }else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);

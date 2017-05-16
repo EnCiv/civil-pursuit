@@ -107,11 +107,8 @@ class UIMItem extends React.Component {
             this.toChild[child](action)
           });
         } else if(action.type==="SET_PATH"){
-          let pathPart=UserInterfaceManager.pathPart.shift;
-          let parts=pathParts.split(',');
-          let nextUIM=Object.assign({},this.props.uim,{pathPart});
-          delete nextUIM.toParent; // not part of your state
-          delete nextUIM.depth;  // not part of your state
+          let nextUIM={shape: 'truncated', pathPart: [action.part]};
+          let parts=action.part.split(',');
           let button=null;
           let matched=0;
           parts.forEach(part=>{
@@ -126,11 +123,20 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined because button is null or the component doesn't have a UIM
+          if(this.toChild[button]) this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
+          else this.waitingOn=nextUIM;
       }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
 
-
+  componentDidUpdate(prevProps, prevState){
+    if(!this.waitingOn) return;
+    let nextUIM=this.waitingOn;
+    let button= nextUIM.button;
+    if(button && this.toChild[button]) { 
+      this.waitingOn=null;
+      this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] });
+    }
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   transparentEventListener = {};

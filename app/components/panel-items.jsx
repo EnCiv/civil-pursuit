@@ -20,7 +20,6 @@ import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
 import TypeComponent      from './type-component';
 import config             from '../../public.json';
-import UserInterfaceManager from './user-interface-manager';
 
 class PanelItems extends React.Component {
 
@@ -129,9 +128,9 @@ class PanelItems extends React.Component {
           this.toChild[child](action)
         });
       } else if(action.type="SET_PATH"){
-          var shortId=UserInterfaceManager.pathPart.shift();
-          var nextUIM={shape: 'open', shortId: shortId};
-          if(this.toChild[shortId]) this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: UserInterfaceManager.pathPart.lenght ? this.toChild[shortId] : null });
+          var shortId=action.part;
+          var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
+          if(this.toChild[shortId]) this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           else this.waitingOn=nextUIM;
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
   }
@@ -152,11 +151,12 @@ class PanelItems extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState){
+    if(!this.waitingOn) return;
     let nextUIM=this.waitingOn;
-    let shortId=nextUIM || null;
-    if(shortId && this.child[shortId]) { 
+    let shortId=nextUIM.sortId;
+    if(shortId && this.toChild[shortId]) { 
       this.waitingOn=null;
-      this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: UserInterfaceManager.pathPart.lenght ? this.toChild[shortId] : null });
+      this.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] });
     }
   }
 
