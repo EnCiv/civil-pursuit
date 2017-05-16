@@ -79,7 +79,7 @@ class UIMItem extends React.Component {
       if(this.waitingOn){
           let nextUIM=this.waitingOn;
           if(button==nextUIM.button && this.toChild[button]) { 
-            logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
+            logger.info("Item.toMeFromChild got waitingOn nextUIM", nextUIM);
             this.waitingOn=null;
             setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] }),0);
           }
@@ -133,7 +133,10 @@ class UIMItem extends React.Component {
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
           if(nextUIM.button==='Subtype') { // subtype is the only button that has children
               if(this.toChild[button]) this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
-              else this.waitingOn=nextUIM;
+              else { 
+                this.waitingOn=nextUIM;
+                this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: ()=>{logger.info("Item.toMeFromParent SET_PATH Subtype nop")} });
+              }
           }else{
              this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: null}); 
           }
