@@ -43,7 +43,7 @@ class UserInterfaceManager extends React.Component {
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.nextId= 0;
-             if(this.props.path){
+             if(this.props.path && this.props.path !== '/'){
                 UserInterfaceManager.pathPart= this.props.path.split('/');
                 var root=(this.props.UIMRoot || '/r/').split('/');
                 while(!UserInterfaceManager.pathPart[UserInterfaceManager.pathPart.length-1]) UserInterfaceManager.pathPart.pop(); // '/'s at the end translate to null elements, remove them
