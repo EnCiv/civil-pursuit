@@ -123,21 +123,10 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          if(this.toChild[button]) this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
-          else this.waitingOn=nextUIM;
+          setTimeout(()=>this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button]}),0); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
       }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
 
-  componentDidUpdate(prevProps, prevState){
-    if(!this.waitingOn) return;
-    let nextUIM=this.waitingOn;
-    let button= nextUIM.button;
-    if(button && this.toChild[button]) { 
-      logger.info("Item.componentDidUpdate got waitingOn nextUIM", nextUIM);
-      this.waitingOn=null;
-      this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] });
-    }
-  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   transparentEventListener = {};
