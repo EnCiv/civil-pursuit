@@ -43,9 +43,14 @@ class UserInterfaceManager extends React.Component {
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.nextId= 0;
+             if(this.props.path){
+                UserInterfaceManager.pathPart= this.props.path.split('/');
+                var root=(this.props.UIMRoot || '/r/').split('/');
+                if(root.some(part=>part!==UserInterfaceManager.pathPart.shift())) {logger.error("UserInterfaceManager.componentDidMount path didn't match props", this.props.UIMRoot, this.props.path )}
+             }else UserInterfaceManager.pathPart=[];
              if(typeof window !== 'undefined'){ // if we are running on the browser
                 window.onpopstate=this.onpopstate.bind(this);
-                setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
+                if(UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
              }
         }
         this.id=UserInterfaceManager.nextId++; // get the next id
@@ -75,14 +80,9 @@ class UserInterfaceManager extends React.Component {
             this.toChild = action.function; 
             if(action.name) this.childName=action.name; 
             if((typeof window !== 'undefined') && this.id===0 ){ // this is the root and we are on the browser
-                var pathPart= window.location.pathname.split('/');
-                var root=this.props.UIMRoot || '/r/';
-                if(pathPart[1]!=root.split('/')[1]) logger.error("UserInterfaceManager.componentDidMount path didn't match props", {root}, {pathPart} )
-                pathPart.shift; // thow out the empty element at the beginning because the first character is /
-                pathPart.shift; // shift off the rooth path name 
-                logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",pathPart);
-                    setTimeout(()=>this.toChild({type: "SET_PATH", depth: 0, pathPart: pathPart}),0); // this starts after the return toChild so it completes.
-                }
+                logger.info("UserInterfaceManager.componentDidMount will SET_PATH to",UserInterfaceManager.pathPart);
+                setTimeout(()=>this.toChild({type: "SET_PATH"}),0); // this starts after the return toChild so it completes.
+            }
             return null;
         } else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
         else if (action.type==="GET_STATE") {
@@ -100,7 +100,7 @@ class UserInterfaceManager extends React.Component {
                 return stack;
             }
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
-            if(action.function && action.depth < action.pathParts.length) this.setState({uim: action.nextUIM},()=>action.function({type: 'SET_PATH', depth: action.depth, pathPart: action.pathPart}));
+            if(action.function) this.setState({uim: action.nextUIM},()=>action.function({type: 'SET_PATH'}));
             else this.setState({uim: action.nextUIM});
             return null;
         }else if(this.actionToState) {

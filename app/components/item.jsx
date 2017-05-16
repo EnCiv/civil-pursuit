@@ -107,9 +107,9 @@ class UIMItem extends React.Component {
             this.toChild[child](action)
           });
         } else if(action.type==="SET_PATH"){
-          let depth=action.depth;
-          let parts=action.pathPart[depth].split(',');
-          let nextUIM=Object.assign({},this.props.uim);
+          let pathPart=UserInterfaceManager.pathPart.shift;
+          let parts=pathParts.split(',');
+          let nextUIM=Object.assign({},this.props.uim,{pathPart});
           delete nextUIM.toParent; // not part of your state
           delete nextUIM.depth;  // not part of your state
           let button=null;
@@ -126,8 +126,7 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          nextUIM.pathPart=Object.assign({},action.pathPart[depth]);
-          this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button], depth: depth+1, pathPart: action.pathPart}); // note: toChild of button might be undefined because button is null or the component doesn't have a UIM
+          this.toParent({type: 'SET_STATE_AND_CONTINUE', uim: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined because button is null or the component doesn't have a UIM
       }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
 

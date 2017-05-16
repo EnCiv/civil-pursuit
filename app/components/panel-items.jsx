@@ -20,6 +20,7 @@ import EditAndGoAgain     from './edit-and-go-again';
 import Harmony            from './harmony';
 import TypeComponent      from './type-component';
 import config             from '../../public.json';
+import UserInterfaceManager from './user-interface-manager';
 
 class PanelItems extends React.Component {
 
@@ -27,18 +28,14 @@ class PanelItems extends React.Component {
     panel           :   panelType
   };
 
-  new = null;
-
-  mountedItems = {};
-
-  state = { active : { item : null, section : null }
-          };
+  waitingOn=null;
 
   constructor(props){
     super(props);
+    this.startedEmpty= !(this.props.panel && this.props.panel.items && this.props.panel.items.length);
     if(this.props.uim && this.props.uim.toParent) { 
       this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
-      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems" })
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems", startedEmpty: this.startedEmpty})
     }
   }
 
@@ -132,9 +129,10 @@ class PanelItems extends React.Component {
           this.toChild[child](action)
         });
       } else if(action.type="SET_PATH"){
-          var shortId=action.pathPart[action.depth];
-          if(this.toChild[shortId]) this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: {shape: 'open', shortId: shortId}, function: this.toChild[shortId], depth:action.depth+1 });
-          else logger.error("PanelItems.toMeFromParent - unknown pathPart",action.depth, action.pathPart);
+          var shortId=UserInterfaceManager.pathPart.shift();
+          var nextUIM={shape: 'open', shortId: shortId};
+          if(this.toChild[shortId]) this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: UserInterfaceManager.pathPart.lenght ? this.toChild[shortId] : null });
+          else this.waitingOn=nextUIM;
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
   }
 
@@ -150,6 +148,15 @@ class PanelItems extends React.Component {
     } else if(this.props.uim && this.props.uim.toParent) {
        action.shortId=shortId; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    let nextUIM=this.waitingOn;
+    let shortId=nextUIM || null;
+    if(shortId && this.child[shortId]) { 
+      this.waitingOn=null;
+      this.toParent({type: "SET_PATH_AND_CONTINUE", nextUIM: nextUIM, function: UserInterfaceManager.pathPart.lenght ? this.toChild[shortId] : null });
     }
   }
 

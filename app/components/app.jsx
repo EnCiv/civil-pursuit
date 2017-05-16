@@ -133,7 +133,7 @@ class App extends React.Component {
 
     else {
       if ( path === '/' ) {
-        page = <Home user={ user } />;
+        page = <Home user={ user } path={path} />;
       }
 
       const paths = path.split(/\//);
@@ -169,7 +169,7 @@ class App extends React.Component {
         case 'r':
           page = (
             <div id="top-level-panel">
-              <TypeComponent component={'Subtype'} {...this.props} UIMRoot={'/r/'} style={{backgroundColor: "white"}} user={ this.props.user } />
+              <TypeComponent component={'Subtype'} {...this.props} path={path} UIMRoot={'/r/'} style={{backgroundColor: "white"}} user={ this.props.user } />
             </div>
           );
           break;
