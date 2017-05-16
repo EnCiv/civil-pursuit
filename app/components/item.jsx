@@ -76,6 +76,14 @@ class UIMItem extends React.Component {
     logger.info("Item.toMeFromChild", this.props.uim && this.props.uim.depth, button, action);
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[button] = action.function; // don't pass this to parent
+      if(this.waitingOn){
+          let nextUIM=this.waitingOn;
+          if(button==nextUIM.button && this.toChild[button]) { 
+            logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
+            this.waitingOn=null;
+            setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[button] }),0);
+          }
+        }
     } else if(this.props.uim && this.props.uim.toParent) {
        action.button=button; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
@@ -123,7 +131,12 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
+          if(nextUIM.button==='Subtype') { // subtype is the only button that has children
+              if(this.toChild[button]) this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
+              else this.waitingOn=nextUIM;
+          }else{
+             this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: null}); 
+          }
       }else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
     }
 
