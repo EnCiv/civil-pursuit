@@ -46,7 +46,7 @@ class UserInterfaceManager extends React.Component {
              if(this.props.path){
                 UserInterfaceManager.pathPart= this.props.path.split('/');
                 var root=(this.props.UIMRoot || '/r/').split('/');
-                if(root.some(part=>part!==UserInterfaceManager.pathPart.shift())) {logger.error("UserInterfaceManager.componentDidMount path didn't match props", this.props.UIMRoot, this.props.path )}
+                if(root.some(part=>part!==UserInterfaceManager.pathPart.shift())) {logger.error("UserInterfaceManager.componentDidMount path didn't match props", root, UserInterfaceManager.partPath )}
              }else UserInterfaceManager.pathPart=[];
              if(typeof window !== 'undefined'){ // if we are running on the browser
                 window.onpopstate=this.onpopstate.bind(this);
