@@ -107,9 +107,12 @@ class UserInterfaceManager extends React.Component {
                 this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}));
             } else {
                 logger.info("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim, action.nextUIM);
-                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)});
+                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory() });
             }
             return null;
+        }else if(action.type==="SET_PATH_COMPLETE") {
+            if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
+            else return this.updateHistory();
         }else if(this.actionToState) {
             var  nextUIM= this.actionToState(action,this.state.uim);
             if(nextUIM) {

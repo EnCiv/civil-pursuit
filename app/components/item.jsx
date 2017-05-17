@@ -129,7 +129,7 @@ class UIMItem extends React.Component {
             }
           });
           if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
-          if(nextUIM.button==='Subtype') { // subtype is the only button that has children
+          if(nextUIM.button) { 
               if(this.toChild[button]) this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[button]}); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
               else { 
                 this.props.uim.toParent({type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action)=>{
