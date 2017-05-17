@@ -127,7 +127,7 @@ class PanelItems extends React.Component {
         Object.keys(this.toChild).forEach(child=>{ // send the action to every child
           this.toChild[child](action)
         });
-      } else if(action.type="SET_PATH"){
+      } else if(action.type==="SET_PATH"){
           var shortId=action.part;
           var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
           if(this.toChild[shortId]){
