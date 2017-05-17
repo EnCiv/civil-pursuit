@@ -265,7 +265,7 @@ class HttpServer extends EventEmitter {
 
     getUIMPath () {
     try {
-      this.app.get('/r/*',
+      this.app.get('/h/*',
         (req, res, next) => {
           logger.info("server.getUIMPath", req.path)
           if ( ! req.cookies.synapp ) {

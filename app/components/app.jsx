@@ -167,7 +167,7 @@ class App extends React.Component {
           break;
 
         case 'r':
-          page = <Home user={ user } path={path} UIMRoot={'/r/'} />;
+          page = <Home user={ user } path={path} UIMRoot={'/h/'} />;
           break;
           
         case 'about':
