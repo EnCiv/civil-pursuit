@@ -30,9 +30,9 @@ export default Item;
 
 class UserInterfaceManagerClient extends React.Component {
 
-  constructor() {
-    super();
-    logger.info("UserInterfaceManagerClient.constructor", this.props);
+  constructor(props) {
+    super(props);
+    logger.info("UserInterfaceManagerClient.constructor", props, this.props);
     this.toChild = [];
     this.keyField = 'key'; // the default key field, can be overridden by children to make their code easier to read
     if (this.props.uim.toParent) {
@@ -64,7 +64,7 @@ class UserInterfaceManagerClient extends React.Component {
           }
         }
       } else if (this.props.uim && this.props.uim.toParent) {
-        action[this.keyField] = button; // actionToState may need to know the child's id
+        action[this.keyField] = key; // actionToState may need to know the child's id
         return (this.props.uim.toParent(action));
       }
     }
@@ -122,8 +122,9 @@ class UserInterfaceManagerClient extends React.Component {
 class UIMItem extends UserInterfaceManagerClient {
 
   state = { hint: false, minHeight: null }; //
-  constructor(){
-    super();
+  constructor(props){
+    var uimProps={uim: props.uim};
+    super(uimProps);
     logger.info("UIMItem.constructor", this.props)
     this.keyField='button';
   }
