@@ -30,8 +30,6 @@ class UIMHarmony extends React.Component {
   constructor (props) {
     super(props);
 
-    this.status = 'iddle';
-
     const { harmony } = this.props.item;
 
     this.toChild=[];
@@ -50,18 +48,12 @@ class UIMHarmony extends React.Component {
     logger.info("UIMHarmony.actionToState", {action}, {uim});
     var nextUIM={};
     if(action.type==="CHILD_SHAPE_CHANGED"){
-      if(action.shape==='open'){
-        if(action.side === uim.side) // this side is already open so just pass it on
-          Object.assign(nextUIM, uim); 
-        else if(!uim.side) // no side was open previously
-          Object.assign(nextUIM, uim, {side: action.side}); // expand the side
-        else { // the other side was open previously
-          Object.assign(nextUIM, uim, {side: action.side}); // expand this side
-          this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // tell the other side to truncate
-        }
-      } else // whatever the new shape is, unexpand the expanded side
-        if(action.side === uim.side )
-          Object.assign(nextUIM,uim,{side: null});
+      let delta={};
+      if(action.shape==='open') delta.side=action.side; // action is to open, this side is going to be the open side
+      else if(action.side === uim.side) delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
+      if(delta.side && uim.side!== delta.side) this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // if a side is going to be open, and it's not the side that is open, close the other side
+      if(delta.side) delta.pathPart=[delta.side[0]]; // if a side is open, include it in the partPath
+      Object.assign(nextUIM, uim, delta);
       return nextUIM; // return the new state
     } else return null; // don't know the action type so let the default handler have it
   }
@@ -87,7 +79,17 @@ class UIMHarmony extends React.Component {
           Object.keys(this.toChild).forEach(childSide=>{ // send the action to every child
             this.toChild[childSide](action)
           });
-        } else logger.error("UIMHarmony.toMeFromParent action type unknown not handled", action)
+        } else if(action.type==="SET_PATH"){
+          var side=action.part;
+          var nextUIM={shape: 'open', side: side, pathPart: [side]};
+          if(this.toChild[side]){
+             logger.info("Harmony.toMeFromParent SET_STATE_AND_CONTINUE")
+             this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[side]});
+          } else {
+            logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
+            this.waitingOn={nextUIM};
+          }
+      } else logger.error("UIMHarmony.toMeFromParent action type unknown not handled", action)
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,9 +101,21 @@ class UIMHarmony extends React.Component {
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[side] = action.function; // don't pass this to parent
-    } else if(action.type==="SET_ACTION_TO_STATE"){
-        logger.error("Harmony.toMeFromChild unexpected action", {action})
-        return;
+      if(this.waitingOn){
+        if(this.waitingOn.action){
+            let actn=this.waitingOn.action; // don't overload action
+            logger.info("Harmony.toMeFromChild got waitingOn action", actn);
+            this.waitingOn=null;
+            setTimeout(()=>this.toChild[side](actn),0);
+        }else if(this.waitingOn.nextUIM){
+          let nextUIM=this.waitingOn.nextUIM;
+            if(side===nextUIM.side && this.toChild[side]) { 
+              logger.info("Harmony.toMeFromParent got waitingOn nextUIM", nextUIM);
+              this.waitingOn=null;
+              setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[side] }),0);
+            }
+        }
+      }
     } else if(this.props.uim && this.props.uim.toParent) {
        action.side=side; // actionToState may need to know which child
        return(this.props.uim.toParent(action));
@@ -115,15 +129,11 @@ class UIMHarmony extends React.Component {
     const { active, item, user, uim } = this.props;
     console.info("Harmony.render",this.props);
 
-    const leftUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'left')};  // inserting me between my parent and my child
-    const rightUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'right')};  // inserting me between my parent and my child
+    const leftUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'L')};  // inserting me between my parent and my child
+    const rightUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'R')};  // inserting me between my parent and my child
 
-    let contentLeft = ( <Loading message="Loading" /> );
-
-    let contentRight = ( <Loading message="Loading" /> );
-
-      contentLeft = (
-        <DoubleWide className="harmony-pro" left expanded={uim.side==='left'}>
+    let  contentLeft = (
+        <DoubleWide className="harmony-pro" left expanded={uim.side==='L'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
             <UserInterfaceManager user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}>
               <PanelItems />
@@ -132,8 +142,8 @@ class UIMHarmony extends React.Component {
         </DoubleWide>
       );
 
-      contentRight = (
-        <DoubleWide className="harmony-con" right expanded={uim.side==='right'} >
+    let contentRight = (
+        <DoubleWide className="harmony-con" right expanded={uim.side==='R'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
             <UserInterfaceManager user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}>
               <PanelItems />
