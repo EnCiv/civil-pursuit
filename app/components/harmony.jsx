@@ -53,6 +53,7 @@ class UIMHarmony extends React.Component {
       else if(action.side === uim.side) delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
       if(delta.side && uim.side && uim.side!== delta.side) this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // if a side is going to be open, and it's not the side that is open, close the other side
       if(delta.side) delta.pathPart=[delta.side]; // if a side is open, include it in the partPath
+      else delta.pathPart=[]; //otherwise no path part
       Object.assign(nextUIM, uim, delta);
       return nextUIM; // return the new state
     } else return null; // don't know the action type so let the default handler have it
