@@ -130,7 +130,7 @@ class UIMItem extends UserInterfaceManagerClient {
   }
 
   setPath(action){  //UIM is setting the initial path. Take your pathPart and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
-    let nextUIM={shape: 'truncated', pathPart: [action.part]};
+    var nextUIM={shape: 'truncated', pathPart: [action.part]};
     let parts=action.part.split(',');
     let button=null;
     let matched=0;
@@ -152,7 +152,7 @@ class UIMItem extends UserInterfaceManagerClient {
   actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
     logger.info("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
-    var delta={};
+    let delta={};
     if (action.type === "TOGGLE_BUTTON") {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       delta.shape= delta.button || uim.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
