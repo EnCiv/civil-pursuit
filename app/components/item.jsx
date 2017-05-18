@@ -124,6 +124,7 @@ class UIMItem extends UserInterfaceManagerClient {
   state = { hint: false, minHeight: null }; //
   constructor(props){
     super(props);
+    logger.info("UIMItem.constructor", props)
     this.keyField='button';
   }
 
