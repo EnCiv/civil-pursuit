@@ -86,8 +86,9 @@ class UserInterfaceManager extends React.Component {
                 setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
             }
             return null;
-        } else if (action.type==="SET_ACTION_TO_STATE") {this.actionToState = action.function; return null;} // child component passing action to state calculator
-        else if (action.type==="GET_STATE") {
+        } else if (action.type==="SET_ACTION_TO_STATE") { // child component passing action to state calculator
+            this.actionToState = action.function; return null;
+        } else if (action.type==="GET_STATE") {
             // return the array of all UIM States from here to the beginning
             // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
             // the top UIM state of the array is the root component, the bottom one is that of the UIM that inititated the call
@@ -114,7 +115,7 @@ class UserInterfaceManager extends React.Component {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else return this.updateHistory();
         }else if(this.actionToState) {
-            var  nextUIM= this.actionToState(action,this.state.uim);
+            var  nextUIM= this.actionToState(action, this.state.uim);
             if(nextUIM) {
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                     logger.info("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
@@ -133,8 +134,8 @@ class UserInterfaceManager extends React.Component {
                     else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
                 }
                 return null;
-            }
-        } 
+            }else logger.info("UserInterfaceManager.toMeFromChild actionToState returned null");
+        } else logger.error("UserInterfaceManager.toMeFromChild this.actionToState is missing"); 
         // these actions are overridden by the component's actonToState if either there isn't one or it returns a null next state
         if(action.type ==="CHANGE_SHAPE"){
             if(this.state.uim.shape!==action.shape){ // really the shape changed
@@ -145,8 +146,12 @@ class UserInterfaceManager extends React.Component {
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
-            if(this.props.uim && this.props.uim.toParent) this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
-            else { // this is the root UIM, update history.state
+            logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim &&  this.props.depth);
+            if(this.id!==0) {   
+                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState not root",this.id, this.props.uim &&  this.props.depth);
+                this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
+            } else { // this is the root UIM, update history.state
+                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim &&  this.props.depth);
                 setTimeout(()=>this.updateHistory(),0);
             }
         }
