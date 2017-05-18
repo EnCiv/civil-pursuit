@@ -215,7 +215,7 @@ class UserInterfaceManager extends React.Component {
 
     componentDidUpdate(){
         logger.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName);
-        if(!(this.props.uim && this.props.uim.toParent)) setTimeout(()=>this.updateHistory(),0); // only do this if the root, do it after the current queue has completed
+        if(!(this.props.uim && this.props.uim.toParent) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
     }
 
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
