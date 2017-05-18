@@ -30,9 +30,9 @@ export default Item;
 
 class UserInterfaceManagerClient extends React.Component {
 
-  constructor(props) {
-    super(props);
-    logger.info("UserInterfaceManagerClient.constructor", props);
+  constructor() {
+    super();
+    logger.info("UserInterfaceManagerClient.constructor", this.props);
     this.toChild = [];
     this.keyField = 'key'; // the default key field, can be overridden by children to make their code easier to read
     if (this.props.uim.toParent) {
@@ -122,9 +122,9 @@ class UserInterfaceManagerClient extends React.Component {
 class UIMItem extends UserInterfaceManagerClient {
 
   state = { hint: false, minHeight: null }; //
-  constructor(props){
-    super(props);
-    logger.info("UIMItem.constructor", props)
+  constructor(){
+    super();
+    logger.info("UIMItem.constructor", this.props)
     this.keyField='button';
   }
 
