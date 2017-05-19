@@ -28,7 +28,7 @@ class UIMHarmony extends UserInterfaceManagerClient {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
-    logger.info("UIMHarmony.constructor", props)
+    console.info("UIMHarmony.constructor", props)
     var uimProps={uim: props.uim};
     super(uimProps, 'side');
     logger.info("UIMHarmony.constructor", this.props)

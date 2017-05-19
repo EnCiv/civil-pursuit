@@ -257,8 +257,8 @@ export default UserInterfaceManager;
 export class UserInterfaceManagerClient extends React.Component {
 
   constructor(props, keyField) {
+    console.info("UserInterfaceManagerClient.constructor", props, keyField);
     super(props);
-    logger.info("UserInterfaceManagerClient.constructor", props, this.props);
     this.toChild = [];
     this.keyField = keyField || 'key'; // the default key field, can be overridden by children to make their code easier to read
     if (this.props.uim.toParent) {
