@@ -63,10 +63,10 @@ class UserInterfaceManagerClient extends React.Component {
             setTimeout(() => this.props.uim.toParent({ type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[key] }), 0);
           }
         }
-      } else if (this.props.uim && this.props.uim.toParent) {
+      }
+    } else if (this.props.uim && this.props.uim.toParent) {
         action[this.keyField] = key; // actionToState may need to know the child's id
         return (this.props.uim.toParent(action));
-      }
     }
   }
 
