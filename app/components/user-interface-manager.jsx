@@ -32,7 +32,7 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        logger.info("UserInterfaceManager constructor, parent:", this.props.uim);
+        console.info("UserInterfaceManager constructor, parent:", this.props.uim);
         this.toChild=null;
         this.childName='';
         if(!(this.props.uim && this.props.uim.toParent)){
@@ -93,7 +93,7 @@ export class UserInterfaceManager extends React.Component {
             // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
             // the top UIM state of the array is the root component, the bottom one is that of the UIM that inititated the call
             let thisUIM=Object.assign({}, this.state.uim);
-            if(!(this.props.uim && this.props.uim.toParent)) { // return the uim state of the root  as an array of 1
+            if((this.id===0)) { // return the uim state of the root  as an array of 1
                 return [thisUIM]; 
             }
             else {
@@ -126,7 +126,7 @@ export class UserInterfaceManager extends React.Component {
                     if(!equaly(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
                 }
                 
-                if(this.props.uim && this.props.uim.toParent){
+                if(this.id!==0){
                     const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }else{ // this is the root, after changing shape, remind me so I can update the window.histor
@@ -140,18 +140,18 @@ export class UserInterfaceManager extends React.Component {
         if(action.type ==="CHANGE_SHAPE"){
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
-                if(this.props.uim && this.props.uim.toParent) {// if there's a parent to tell of the change
+                if(this.id!==0) {// if there's a parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
-            logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim &&  this.props.depth);
+            logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim && this.props.uim.depth);
             if(this.id!==0) {   
-                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState not root",this.id, this.props.uim &&  this.props.depth);
+                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState not root",this.id, this.props.uim && this.props.uim.depth);
                 this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
             } else { // this is the root UIM, update history.state
-                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim &&  this.props.depth);
+                logger.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim && this.props.uim.depth);
                 setTimeout(()=>this.updateHistory(),0);
             }
         }
@@ -201,7 +201,7 @@ export class UserInterfaceManager extends React.Component {
     updateHistory() {
         logger.info("UserInterfaceManager.updateHistory",  this.id);
         if(typeof window === 'undefined') { logger.info("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
-        if(this.props.uim && this.props.uim.toParent) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
+        if(this.id!==0) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
         var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
             if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
@@ -220,7 +220,7 @@ export class UserInterfaceManager extends React.Component {
 
     componentDidUpdate(){
         logger.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName);
-        if(!(this.props.uim && this.props.uim.toParent) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
+        if((this.id===0) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
     }
 
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
@@ -261,10 +261,11 @@ export class UserInterfaceManagerClient extends React.Component {
     super(props);
     this.toChild = [];
     this.keyField = keyField || 'key'; // the default key field, can be overridden by children to make their code easier to read
+    if(!this.props.uim) logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
     if (this.props.uim.toParent) {
       this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
       this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
-    }
+    }else logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,7 +273,7 @@ export class UserInterfaceManagerClient extends React.Component {
   // send all unhandled actions to the parent UIM
   //
   toMeFromChild(key, action) {
-    logger.info(" UserInterfaceManagerClient.toMeFromChild", this.props.uim && this.props.uim.depth, key, action);
+    logger.info(" UserInterfaceManagerClient.toMeFromChild", this.props.uim.depth, key, action);
     if (action.type === "SET_TO_CHILD") { // child is passing up her func
       this.toChild[key] = action.function; // don't pass this to parent
       if (this.waitingOn) {
@@ -290,7 +291,7 @@ export class UserInterfaceManagerClient extends React.Component {
           }
         }
       }
-    } else if (this.props.uim && this.props.uim.toParent) {
+    } else {
         action[this.keyField] = key; // actionToState may need to know the child's id
         return (this.props.uim.toParent(action));
     }
@@ -300,7 +301,7 @@ export class UserInterfaceManagerClient extends React.Component {
   // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
   //
   toMeFromParent(action) {
-    logger.info("UserInterfaceManagerClient.toMeFromParent", this.props.uim && this.props.uim.depth, action);
+    logger.info("UserInterfaceManagerClient.toMeFromParent", this.props.uim.depth, action);
     if (action.type === "ONPOPSTATE") {
       var { shape } = action.event.state.stateStack[this.props.uim.depth - 1];  // the button was passed to the parent UIManager by actionToState
       var key = action.event.state.stateStack[this.props.uim.depth - 1][this.keyField];
