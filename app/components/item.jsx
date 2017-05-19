@@ -30,11 +30,11 @@ export default Item;
 
 class UserInterfaceManagerClient extends React.Component {
 
-  constructor(props) {
+  constructor(props, keyField) {
     super(props);
     logger.info("UserInterfaceManagerClient.constructor", props, this.props);
     this.toChild = [];
-    this.keyField = 'key'; // the default key field, can be overridden by children to make their code easier to read
+    this.keyField = keyField || 'key'; // the default key field, can be overridden by children to make their code easier to read
     if (this.props.uim.toParent) {
       this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
       this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
@@ -98,7 +98,7 @@ class UserInterfaceManagerClient extends React.Component {
     } else if (action.type === "SET_PATH") {
       const { nextUIM, setBeforeWait } = this.setPath(action);
       if (nextUIM[this.keyField]) {
-        let key = nextUIM[keyField];
+        let key = nextUIM[this.keyField];
         if (this.toChild[key]) this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
         else if (setBeforeWait) {
           this.props.uim.toParent({
@@ -124,9 +124,8 @@ class UIMItem extends UserInterfaceManagerClient {
   state = { hint: false, minHeight: null }; //
   constructor(props){
     var uimProps={uim: props.uim};
-    super(uimProps);
+    super(uimProps, 'button');
     logger.info("UIMItem.constructor", this.props)
-    this.keyField='button';
   }
 
   setPath(action){  //UIM is setting the initial path. Take your pathPart and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
