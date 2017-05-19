@@ -10,7 +10,7 @@ import itemType                     from '../lib/proptypes/item';
 import panelType                    from '../lib/proptypes/panel';
 import PanelStore                   from './store/panel';
 import DoubleWide                   from './util/double-wide';
-import UserInterfaceManager         from './user-interface-manager';
+import {UserInterfaceManager, UserInterfaceManagerClient}  from './user-interface-manager';
 
 export default class Harmony extends React.Component {
   render(){
@@ -23,26 +23,24 @@ export default class Harmony extends React.Component {
   }
 }
 
-class UIMHarmony extends React.Component {
+class UIMHarmony extends UserInterfaceManagerClient {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
-    super(props);
-
-    const { harmony } = this.props.item;
-
-    this.toChild=[];
-
-    if(this.props.uim && this.props.uim.toParent) { 
-      this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
-      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Harmony" })
-    }
+    var uimProps={uim: props.uim};
+    super(uimProps,'side');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // this is where component specific actions are converted to component specific states
   //
+
+  setPath(action) {
+    var side = action.part;
+    var nextUIM = { shape: 'open', side: side, pathPart: [side] };
+    return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
+  }
 
   actionToState(action,uim) {
     logger.info("UIMHarmony.actionToState", {action}, {uim});
@@ -58,71 +56,6 @@ class UIMHarmony extends React.Component {
       return nextUIM; // return the new state
     } else return null; // don't know the action type so let the default handler have it
   }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
-  //
-    toMeFromParent(action) {
-        logger.info("UIMHarmony.toMeFromParent", action);
-        if (action.type==="ONPOPSTATE") {
-            var {side} = action.event.state.stateStack[this.props.uim.depth];
-            Object.keys(this.toChild).forEach(child=>{
-              if(child===side) {sent=true; this.toChild[child](action);}
-              else this.toChild[child]({type: "CHANGE_SHAPE", shape: 'truncated'}); // only one side panel is open, any others are truncated 
-              if((action.event.state.stateStack.length > (this.props.uim.depth+1)) && !sent) logger.error("Harmony.toMeFromParent ONPOPSTATE more state but child not found",{depth: this.props.uim.depth}, {action});
-            });
-            return null;
-        }else if(action.type==="GET_STATE"){
-          side=this.props.uim.side||null;
-          if(side && this.toChild[side]) return this.toChild[side](action); // pass the action to the child
-          else return null; // end of the line
-        } else if(action.type=="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
-          Object.keys(this.toChild).forEach(childSide=>{ // send the action to every child
-            this.toChild[childSide](action)
-          });
-        } else if(action.type==="SET_PATH"){
-          var side=action.part;
-          var nextUIM={shape: 'open', side: side, pathPart: [side]};
-          if(this.toChild[side]){
-             logger.info("Harmony.toMeFromParent SET_STATE_AND_CONTINUE")
-             this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[side]});
-          } else {
-            logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
-            this.waitingOn={nextUIM};
-          }
-      } else logger.error("UIMHarmony.toMeFromParent action type unknown not handled", action)
-    }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // this is a one to many pattern for the user interface manager, yourself between the UIM and each child
-  // send all unhandled actions to the parent UIM
-  //
-  toMeFromChild(side, action) {
-    logger.info("UIMHarmony.toMeFromChild", {side}, {action});
-
-    if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
-      this.toChild[side] = action.function; // don't pass this to parent
-      if(this.waitingOn){
-        if(this.waitingOn.action){
-            let actn=this.waitingOn.action; // don't overload action
-            logger.info("Harmony.toMeFromChild got waitingOn action", actn);
-            this.waitingOn=null;
-            setTimeout(()=>this.toChild[side](actn),0);
-        }else if(this.waitingOn.nextUIM){
-          let nextUIM=this.waitingOn.nextUIM;
-            if(side===nextUIM.side && this.toChild[side]) { 
-              logger.info("Harmony.toMeFromParent got waitingOn nextUIM", nextUIM);
-              this.waitingOn=null;
-              setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[side] }),0);
-            }
-        }
-      }
-    } else if(this.props.uim && this.props.uim.toParent) {
-       action.side=side; // actionToState may need to know which child
-       return(this.props.uim.toParent(action));
-    }
-  }
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -159,17 +92,5 @@ class UIMHarmony extends React.Component {
         { contentRight }
       </section>
     );
-  }
-}
-
-
-class HarmonyPanel extends React.Component{
-  render(){
-    console.info("HarmonyPanel.render", this.props);
-    return(
-      <UserInterfaceManager {...this.props} >
-        <PanelItems />
-      </UserInterfaceManager>
-    )
   }
 }

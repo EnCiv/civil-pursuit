@@ -254,3 +254,92 @@ class UserInterfaceManager extends React.Component {
 
 export default UserInterfaceManager;
 
+class UserInterfaceManagerClient extends React.Component {
+
+  constructor(props, keyField) {
+    super(props);
+    logger.info("UserInterfaceManagerClient.constructor", props, this.props);
+    this.toChild = [];
+    this.keyField = keyField || 'key'; // the default key field, can be overridden by children to make their code easier to read
+    if (this.props.uim.toParent) {
+      this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
+      this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user interface manager,insert yourself between the UIM and each child
+  // send all unhandled actions to the parent UIM
+  //
+  toMeFromChild(key, action) {
+    logger.info(" UserInterfaceManagerClient.toMeFromChild", this.props.uim && this.props.uim.depth, key, action);
+    if (action.type === "SET_TO_CHILD") { // child is passing up her func
+      this.toChild[key] = action.function; // don't pass this to parent
+      if (this.waitingOn) {
+        if (this.waitingOn.action) {
+          let actn = this.waitingOn.action; // don't overload action
+          logger.info("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
+          this.waitingOn = null;
+          setTimeout(() => this.toChild[key](actn), 0);
+        } else if (this.waitingOn.nextUIM) {
+          let nextUIM = this.waitingOn.nextUIM;
+          if (key === nextUIM[this.keyField] && this.toChild[key]) {
+            logger.info("UserInterfaceManagerClient.toMeFromParent got waitingOn nextUIM", nextUIM);
+            this.waitingOn = null;
+            setTimeout(() => this.props.uim.toParent({ type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[key] }), 0);
+          }
+        }
+      }
+    } else if (this.props.uim && this.props.uim.toParent) {
+        action[this.keyField] = key; // actionToState may need to know the child's id
+        return (this.props.uim.toParent(action));
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
+  //
+  toMeFromParent(action) {
+    logger.info("UserInterfaceManagerClient.toMeFromParent", this.props.uim && this.props.uim.depth, action);
+    if (action.type === "ONPOPSTATE") {
+      var { shape } = action.event.state.stateStack[this.props.uim.depth - 1];  // the button was passed to the parent UIManager by actionToState
+      var key = action.event.state.stateStack[this.props.uim.depth - 1][this.keyField];
+      if ((action.event.state.stateStack.length > (this.props.uim.depth))) {
+        let sent = false;
+        Object.keys(this.toChild).forEach(child => { // only child panels with UIM managers will have entries in this list. 
+          if (child === key) { sent = true; this.toChild[child](action); }
+          else this.toChild[child]({ type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape }); // only one button panel is open, any others are truncated (but inactive)
+        });
+        if (key && !sent) logger.error("UserInterfaceManagerClient.toMeFromParent ONPOPSTATE more state but child not found", { depth: this.props.uim.depth }, { action });
+      }
+      return null;// this was the end of the line
+    } else if (action.type === "GET_STATE") {
+      key = this.props.uim[this.keyField] || null;
+      if (key && this.toChild[key]) return this.toChild[key](action); // pass the action to the child
+      else return null; // end of the line
+    } else if (action.type === "CLEAR_PATH") {  // clear the path and reset the UIM state back to what the const
+      Object.keys(this.toChild).forEach(child => { // send the action to every child
+        this.toChild[child](action)
+      });
+    } else if (action.type === "SET_PATH") {
+      const { nextUIM, setBeforeWait } = this.setPath(action);
+      if (nextUIM[this.keyField]) {
+        let key = nextUIM[this.keyField];
+        if (this.toChild[key]) this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
+        else if (setBeforeWait) {
+          this.props.uim.toParent({
+            type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action) => {
+              if (this.toChild[this.props.uim[this.keyField]]) this.toChild[this.props.uim[this.keyField]](action)
+              else this.waitingOn = action;
+            }
+          });
+        } else {
+          logger.info("UserInterfaceManagerClient.toMeFromParent SET_PATH waitingOn", nextUIM);
+          this.waitingOn = nextUIM;
+        }
+      } else {
+        this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: null });
+      }
+    } else logger.error("UserInterfaceManagerClient.toMeFromParent action type unknown not handled", action)
+  }
+}
