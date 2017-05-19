@@ -254,7 +254,7 @@ class UserInterfaceManager extends React.Component {
 
 export default UserInterfaceManager;
 
-class UserInterfaceManagerClient extends React.Component {
+export class UserInterfaceManagerClient extends React.Component {
 
   constructor(props, keyField) {
     super(props);
