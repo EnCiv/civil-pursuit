@@ -35,7 +35,7 @@ class UIMItem extends UserInterfaceManagerClient {
   constructor(props){
     var uimProps={uim: props.uim};
     super(uimProps, 'button');
-    logger.info("UIMItem.constructor", this.props)
+    console.info("UIMItem.constructor", this.props)
   }
 
   setPath(action){  //UIM is setting the initial path. Take your pathPart and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
