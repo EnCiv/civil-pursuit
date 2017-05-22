@@ -61,6 +61,10 @@ exports.button=class PromoteButton extends React.Component {
 }
 
 exports.panel = class PromotePanel extends React.Component {
+  promote(button,winner){
+    this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'truncated'});  // after the evaluation is done, the panel should go away
+  }
+
   mounted = false;
   render() {
     const { active, panel, item, onClick, user, style, emitter, uim } = this.props;
@@ -76,7 +80,7 @@ exports.panel = class PromotePanel extends React.Component {
           >
             <EvaluationStore
               item-id={item._id}
-              toggle={onClick}
+              toggle={this.promote.bind(this)}
               active={active}
               emitter={emitter}
             >
