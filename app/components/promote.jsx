@@ -111,18 +111,18 @@ class UIMPromote extends UserInterfaceManagerClient {
 
     slide(side, opened) {
       console.info("UIMPromotoe.slide",side, opened);
-      const opposite={left: 'right', right: 'left'};
+      const opposite={left: 'right', right: 'left'}, hiddenDuration=250;// hold closed position for 250mSec
         if (!opened) {
             if (this.buttons.event === 'promote') {
                 this.props.emitter.emit('promote', this.buttons.position);
                 this.buttons.event = 'null';
                 this.slideClosed[side] = false;
-                setTimeout(()=>this.transitionedOC[side].toggle(true),100);
+                setTimeout(()=>{if(this.transitionedOC[side] && this.transitionedOC[side].toggle) this.transitionedOC[side].toggle(true)},hiddenDuration); // element might not exist later
             } else if (this.buttons.event === 'next' && this.slideClosed[opposite[side]]) { // if next and the other side is closed too
                 this.props.emitter.emit('next');
                 this.buttons.event = 'null';
                 this.slideClosed[opposite[side]] = false;
-                setTimeout(()=>{this.transitionedOC['left'].toggle(true); this.transitionedOC['right'].toggle(true)},100);
+                setTimeout(()=>{if(this.transitionedOC['left'] && this.transitionedOC['left'].toggle) this.transitionedOC['left'].toggle(true); if(this.transitionedOC['right'] && this.transitionedOC['right'].toggle)this.transitionedOC['right'].toggle(true)},hiddenDuration); //element might be deleted later
             } else {
                 this.slideClosed[side] = true;
             }
