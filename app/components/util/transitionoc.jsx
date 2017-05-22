@@ -2,13 +2,19 @@
 
 import React                    from 'react';
 import ClassNames          from 'classnames';
-
 //
 // use <TransitionOC ref={comp => { this.TransitionOCComponent = comp; }}}
-// so that you can call this.TransitionOCComponent.toggle();
+// so that you can call this.TransitionOCComponent.toggle(set);
+// set=== true will open, set=== false will close, set undefined will toggle current state
 // 
 
 export default class TransitionOC extends React.Component {
+
+    static propTypes = {
+        onChange: React.PropTypes.func,
+        active: React.PropTypes.bool,
+        className: React.PropTypes.string.isRequired
+    }
 
     constructor(props){
         super(props);
@@ -25,7 +31,6 @@ export default class TransitionOC extends React.Component {
     }
 
     toggle(set){
-        console.info("TransitionOC toggle", set, this.props)
         if(typeof set === 'boolean') return this.componentWillReceiveProps({active: set});
         if(this.state.shape==='opened') this.setState({shape: 'closing'});  // start closing
         else if (this.state.shape===('closing')) this.setState({shape: 'opening'}); // reverse direction
@@ -46,7 +51,6 @@ export default class TransitionOC extends React.Component {
     }
 
     transitioned(e){
-        console.info("TransitionOC.transitioned",e);
         if(this.state.shape==='opening')       this.setState({shape: 'opened'}, ()=>{this.props.onChange && this.props.onChange(true)}); // finish opening
         else if(this.state.shape==='closing')  this.setState({shape: 'closed'}, ()=>{this.props.onChange && this.props.onChange(false)});  // finish closing
         else if(this.state.shape==='opened') { this.props.onChange && this.props.onChange(true)  } // finish opening
@@ -60,7 +64,6 @@ export default class TransitionOC extends React.Component {
             this.state.shape
         )
 
-        console.info("TransitionOC.render",classes)
         return (
             <div {...this.props} className={classes} ref='ele'  >
                 { this.props.children }
