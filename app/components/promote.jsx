@@ -117,13 +117,12 @@ class UIMPromote extends UserInterfaceManagerClient {
                 this.props.emitter.emit('promote', this.buttons.position);
                 this.buttons.event = 'null';
                 this.slideClosed[side] = false;
-                this.transitionedOC[side].toggle(true);
+                setTimeout(()=>this.transitionedOC[side].toggle(true),100);
             } else if (this.buttons.event === 'next' && this.slideClosed[opposite[side]]) { // if next and the other side is closed too
                 this.props.emitter.emit('next');
                 this.buttons.event = 'null';
                 this.slideClosed[opposite[side]] = false;
-                this.transitionedOC['left'].toggle(true);
-                this.transitionedOC['right'].toggle(true);
+                setTimeout(()=>{this.transitionedOC['left'].toggle(true); this.transitionedOC['right'].toggle(true)},100);
             } else {
                 this.slideClosed[side] = true;
             }
