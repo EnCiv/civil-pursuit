@@ -62,7 +62,7 @@ exports.button=class PromoteButton extends React.Component {
 
 exports.panel = class PromotePanel extends React.Component {
   promote(button,winner){
-    this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'truncated'});  // after the evaluation is done, the panel should go away
+    this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner});  // after the evaluation is done, the panel should go away
   }
 
   mounted = false;

@@ -122,10 +122,7 @@ export class UserInterfaceManager extends React.Component {
                     if(this.toChild) this.toChild({type:"CLEAR_PATH"});
                 } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                     logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
-                } else { // pathPart and nexUI.pathpart are both have length
-                    if(!equaly(this.state.uim.pathPart,nextUIM.pathPart)) logger.error("can't change pathPart in the middle of a path", this.state.uim, nextUIM);
-                }
-                
+                }                 
                 if(this.id!==0){
                     const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));

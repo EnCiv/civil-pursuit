@@ -80,7 +80,17 @@ class UIMItem extends UserInterfaceManagerClient {
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
-    } else return null;  // if you don't handle the type, let the default handlers prevail
+    } else  if (action.type === "FINISH_PROMOTE") {
+      if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';  // after promote is finished show the subtype if there is one
+      else delta.readMore=true; // otherewaise readmore
+      delta.shape= 'open';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+      var parts=[];
+      if(delta.readMore)parts.push('r');
+      if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
+      delta.pathPart=[parts.join(',')];
+      Object.assign(nextUIM, uim, delta);
+      return nextUIM;
+    }else return null;  // if you don't handle the type, let the default handlers prevail
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
