@@ -33,7 +33,7 @@ class App extends React.Component {
         Synapp.tendencyChoice = [];
         this.getTendency();
       }
-      window.onbeforeunload = this.confirmOnPageExit.bind(this);
+      //window.onbeforeunload = this.confirmOnPageExit.bind(this);
     }
 
     this.state.path = props.path ;

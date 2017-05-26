@@ -32,9 +32,10 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        console.info("UserInterfaceManager constructor, parent:", this.props.uim);
+        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
         this.toChild=null;
         this.childName='';
+        this.initialUIM=this.props.initialUIM;
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -56,15 +57,19 @@ export class UserInterfaceManager extends React.Component {
              }
         }
         this.id=UserInterfaceManager.nextId++; // get the next id
+
         this.state=this.getDefaultState();
     }
 
     // consistently get the default state from multiple places
     getDefaultState(){
-        return {uim: {
-            shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
-            depth: this.props.uim ? this.props.uim.depth : 0  // for debugging  - this is my depth to check
-        }}
+        return {uim: Object.assign({},
+                    {   shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
+                        depth: this.props.uim ? this.props.uim.depth : 0  // for debugging  - this is my depth to check
+                    },
+                    this.initialUIM
+                )
+        }
     }
 
     // handler for the window onpop state
@@ -253,15 +258,15 @@ export default UserInterfaceManager;
 
 export class UserInterfaceManagerClient extends React.Component {
 
-  constructor(props, keyField) {
+  constructor(props, keyField='key') {
     console.info("UserInterfaceManagerClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
-    this.keyField = keyField || 'key'; // the default key field, can be overridden by children to make their code easier to read
+    this.keyField=keyField;
     if(!this.props.uim) logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
     if (this.props.uim.toParent) {
       this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
-      this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "Items" })
+      this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name })
     }else logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
   }
 
