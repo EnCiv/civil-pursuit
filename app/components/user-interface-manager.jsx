@@ -135,7 +135,10 @@ export class UserInterfaceManager extends React.Component {
                     else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
                 }
                 return null;
-            }else logger.trace("UserInterfaceManager.toMeFromChild actionToState returned null");
+            }else {
+                if(this.id) this.props.uim.toParent(action);  // pass the action up to the next component
+                else logger.info("UserInterfaceManager.toMeFromChild at root, unhandled action", action);
+            }
         } else logger.error("UserInterfaceManager.toMeFromChild this.actionToState is missing"); 
         // these actions are overridden by the component's actonToState if either there isn't one or it returns a null next state
         if(action.type ==="CHANGE_SHAPE"){
