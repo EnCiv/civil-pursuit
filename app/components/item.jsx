@@ -73,7 +73,8 @@ class UIMItem extends UserInterfaceManagerClient {
       return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
-      if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) uim.button='Harmony';
+      if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) uim.button='Harmony';  // open harmony when opening readMore
+      if(!delta.readMore && uim.button==='Harmony') uim.button===null;  // harmony off when closing readMore
       delta.shape= uim.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
       if(delta.readMore)parts.push('r');
@@ -82,13 +83,19 @@ class UIMItem extends UserInterfaceManagerClient {
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "FINISH_PROMOTE") {
-      if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';  // after promote is finished show the subtype if there is one
-      else delta.readMore=true; // otherewaise readmore
-      delta.shape= 'open';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
-      var parts=[];
-      if(delta.readMore)parts.push('r');
-      if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
-      delta.pathPart=[parts.join(',')];
+      if(!(action.winner && action.winner===this.props.item._id)) {
+        delta.shape='truncated';
+        delta.button=null;
+        delta.pathPart=[];
+      } else {
+        if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';  // after promote is finished show the subtype if there is one
+        else delta.readMore=true; // otherewaise readmore
+        delta.shape= 'open';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+        var parts=[];
+        if(delta.readMore)parts.push('r');
+        if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
+        delta.pathPart=[parts.join(',')];
+      } 
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     }else return null;  // if you don't handle the type, let the default handlers prevail
