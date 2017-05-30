@@ -32,7 +32,7 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.constructor.initialUIM);
+        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
         this.toChild=null;
         this.childName='';
         if(!(this.props.uim && this.props.uim.toParent)){
@@ -66,7 +66,7 @@ export class UserInterfaceManager extends React.Component {
                     {   shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
                         depth: this.props.uim ? this.props.uim.depth : 0  // for debugging  - this is my depth to check
                     },
-                    this.constructor.initialUIM
+                    this.props.initialUIM
                 )
         }
     }

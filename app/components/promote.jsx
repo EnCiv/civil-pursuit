@@ -21,7 +21,7 @@ export default class Promote extends React.Component {
     render() {
         console.info("Promote above.render");
         return (
-            <UserInterfaceManager {...this.props}>
+            <UserInterfaceManager {...this.props} initialUIM={Promote.initialUIM}>
                 <UIMPromote />
             </UserInterfaceManager>
         )
@@ -76,12 +76,13 @@ class UIMPromote extends UserInterfaceManagerClient {
           delta.cursor = uim.cursor +1 ; 
           if ( delta.cursor < this.props.limit ) delta.cursor+=1; // can go forward a second one
           if ( delta.cursor <= this.props.limit) { // next evaluation
-                delta.left = cursor - 1;
-                delta.right = cursor;
+                delta.left = delta.cursor - 1;
+                delta.right = delta.cursor;
           } else { // done with evaluations
               delta=Promote.initialUIM;
           }
-          Object.assign(nextUIM, uim, delta)
+          Object.assign(nextUIM, uim, delta);
+          return nextUIM;
         } else if (action.type==="PROMOTE"){
           let delta={};
           const cursor = uim.cursor + 1;
