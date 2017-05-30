@@ -17,10 +17,11 @@ import { UserInterfaceManager, UserInterfaceManagerClient } from './user-interfa
 
 
 export default class Promote extends React.Component {
+    static initialUIM={shape: 'truncated', left: 0, right: 1, cursor: 1, side: ''};
     render() {
         console.info("Promote above.render");
         return (
-            <UserInterfaceManager {...this.props} initialUIM={{shape: 'truncated', left: 0, right: 1, cursor: 1, side: ''}}>
+            <UserInterfaceManager {...this.props}>
                 <UIMPromote />
             </UserInterfaceManager>
         )
@@ -37,6 +38,8 @@ class UIMPromote extends UserInterfaceManagerClient {
         this.transitionedOC = [];
         if(!(props.uim)) logger.error("UIMPromote uim missing");
     }
+
+    static opposite={left: 'right', right: 'left'}
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // this is where component specific actions are converted to component specific states
@@ -70,35 +73,25 @@ class UIMPromote extends UserInterfaceManagerClient {
             return nextUIM; // return the new state
         } else if (action.type === "NEXT"){
           let delta={};
-          let cursor = uim.cursor;
-          if ( cursor + 2 > this.props.limit ) delta.cursor = cursor+1;
-          else delta.cursor= cursor += 2;
-          if ( cursor <= this.props.limit ) {
-            delta.left = cursor - 1;
-            delta.right = cursor;
-            Object.assign(nextUIM,uim,delta)
-          }
-          else { // we are done with the evaluation
-            delta.left=0;
-            delta.right=1;
-            delta.cursor=1;
-            delta.shape='truncated';
+          delta.cursor = uim.cursor +1 ; 
+          if ( delta.cursor < this.props.limit ) delta.cursor+=1; // can go forward a second one
+          if ( delta.cursor <= this.props.limit) { // next evaluation
+                delta.left = cursor - 1;
+                delta.right = cursor;
+          } else { // done with evaluations
+              delta=Promote.initialUIM;
           }
           Object.assign(nextUIM, uim, delta)
         } else if (action.type==="PROMOTE"){
           let delta={};
-          const opposite = action.position === 'left' ? 'right' : 'left';
           const cursor = uim.cursor + 1;
           if ( cursor <= this.props.limit ) {
             delta.cursor=cursor;
-            delta[opposite]=cursor;
+            delta[UIMPromote.opposite[action.position]]=cursor;
           } else {
             const winnerId=this.props.items[[action.position]]._id;
             this.insertUpvotes(winnerId);
-            delta.cursor=1;
-            delta.left=0;
-            delta.right=1;
-            delta.shape='truncated';
+            delta=Promote.initialUIM;
           }
           Object.assign(nextUIM,uim,delta);
           return nextUIM;
@@ -152,18 +145,18 @@ class UIMPromote extends UserInterfaceManagerClient {
     slideClosed=[]; //keep track of the sides as they close, make sure both sides are closed if 'next' before continuing
 
     slide(side, opened) {
-      console.info("UIMPromotoe.slide",side, opened);
-      const opposite={left: 'right', right: 'left'}, hiddenDuration=250;// hold closed position for 250mSec
+      console.info("UIMPromote.slide",side, opened);
+      const hiddenDuration=250;// hold closed position for 250mSec
         if (!opened) {
             if (this.buttons.event === 'promote') {
                 this.props.uim.toParent({type: "PROMOTE", position: this.buttons.position})
                 this.buttons.event = 'null';
                 this.slideClosed[side] = false;
                 setTimeout(()=>{if(this.transitionedOC[side] && this.transitionedOC[side].toggle) this.transitionedOC[side].toggle(true)},hiddenDuration); // element might not exist later
-            } else if (this.buttons.event === 'next' && this.slideClosed[opposite[side]]) { // if next and the other side is closed too
+            } else if (this.buttons.event === 'next' && this.slideClosed[UIMPromote.opposite[side]]) { // if next and the other side is closed too
                 this.props.uim.toParent({type: "NEXT"});
                 this.buttons.event = 'null';
-                this.slideClosed[opposite[side]] = false;
+                this.slideClosed[UIMPromote.opposite[side]] = false;
                 setTimeout(()=>{if(this.transitionedOC['left'] && this.transitionedOC['left'].toggle) this.transitionedOC['left'].toggle(true); if(this.transitionedOC['right'] && this.transitionedOC['right'].toggle)this.transitionedOC['right'].toggle(true)},hiddenDuration); //element might be deleted later
             } else {
                 this.slideClosed[side] = true;

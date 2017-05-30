@@ -32,10 +32,9 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
+        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.constructor.initialUIM);
         this.toChild=null;
         this.childName='';
-        this.initialUIM=this.props.initialUIM;
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -67,7 +66,7 @@ export class UserInterfaceManager extends React.Component {
                     {   shape: this.props.uim && this.props.uim.shape ? this.props.uim.shape : 'truncated',
                         depth: this.props.uim ? this.props.uim.depth : 0  // for debugging  - this is my depth to check
                     },
-                    this.initialUIM
+                    this.constructor.initialUIM
                 )
         }
     }
