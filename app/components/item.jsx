@@ -58,7 +58,7 @@ class UIMItem extends UserInterfaceManagerClient {
     return {nextUIM, setBeforeWait: true};  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, uim) { // this function is going to be called by the UIManager, uim is the current UIM state
+  actionToState(action, uim, source='CHILD') { // this function is going to be called by the UIManager, uim is the current UIM state
     logger.info("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
     let delta={};
@@ -67,48 +67,48 @@ class UIMItem extends UserInterfaceManagerClient {
       if(action.button === "Harmony" && !delta.button) delta.readMore=false; // if turning off harmony, also turn off readMore
       else delta.readMore = uim.readMore;
       delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
-      var parts=[];
-      if(delta.readMore)parts.push('r');
-      if(delta.button)parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
-      delta.pathPart=[parts.join(',')];
-      Object.assign(nextUIM, uim, delta);
-      return nextUIM;
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
       if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
       else if(!delta.readMore && uim.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
       else delta.button=uim.button; // othewise keep button the same
       delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
-      var parts=[];
-      if(delta.readMore)parts.push('r');
-      if(delta.button)parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
-      delta.pathPart=[parts.join(',')];
-      Object.assign(nextUIM, uim, delta);
-      return nextUIM;
     } else  if (action.type === "FINISH_PROMOTE") {
       if(!(action.winner && action.winner._id===this.props.item._id)) {
         delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
-        delta.pathPart=[];
         if(action.winner) setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner}));
       } else {
         if(this.props.buttons.some(b=>b==='Subtype')){
            delta.shape='open';
            delta.button='Subtype';
            delta.readMore=false;
-           delta.pathPart=['S'];  // after promote is finished show the subtype if there is one
         } else { 
           delta.shape='open';
           delta.button=null;
           delta.readMore=true;
-          delta.pathPart=['r']; // otherewaise readmore
         }
       }
-      Object.assign(nextUIM, uim, delta);
-      return nextUIM;
-    }
-    return null;  // if you don't handle the type, let the default handlers prevail
+    } else if(action.type==="CHANGE_SHAPE"){
+      if(action.shape==='open'){
+        delta.shape='open';
+        delta.readMore=true;
+        if(this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
+      } else if (action.shape==='truncated'){
+        delta.shape='truncated';
+        delta.readMore=false;
+        delta.button=null;
+      } 
+    } else 
+      return null;  // if you don't handle the type, let the default handlers prevail
+    // calculate the pathPart and return the new state
+    let parts=[];
+    if(delta.readMore) parts.push('r');
+    if(delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
+    delta.pathPart=[parts.join(',')];
+    Object.assign(nextUIM, uim, delta);
+    return nextUIM;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,6 +129,7 @@ class UIMItem extends UserInterfaceManagerClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
+    if(this.props.uim.shape==='open') this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.

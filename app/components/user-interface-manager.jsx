@@ -119,7 +119,7 @@ export class UserInterfaceManager extends React.Component {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else return this.updateHistory();
         }else if(this.actionToState) {
-            var  nextUIM= this.actionToState(action, this.state.uim);
+            var  nextUIM= this.actionToState(action, this.state.uim, "CHILD");
             if(nextUIM) {
                 if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                     logger.trace("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
@@ -184,6 +184,9 @@ export class UserInterfaceManager extends React.Component {
             if(stack) stack.unshift(Object.assign({},this.state.uim)); // if non-uim child is at the end, it returns null
             else stack=[Object.assign({},this.state.uim)];
             return stack;
+        } else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "PARENT"))!==null)){
+            this.setState({uim: nextUIM});
+            return null;
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
             if(this.toChild) this.toChild(action); // clear children first
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
@@ -199,7 +202,7 @@ export class UserInterfaceManager extends React.Component {
             logger.error("UserInterfaceManager.toMeFromParent: Unknown Action",{action}, {state: this.state});
             this.toChild(action);
             return null;
-        }
+        }   
     }
 
     updateHistory() {
