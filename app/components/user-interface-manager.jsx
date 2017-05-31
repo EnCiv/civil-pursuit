@@ -297,7 +297,9 @@ export class UserInterfaceManagerClient extends React.Component {
       }
     } else {
         action[this.keyField] = key; // actionToState may need to know the child's id
-        return (this.props.uim.toParent(action));
+        var result =this.props.uim.toParent(action);
+        console.info(this.constructor.name, this.title, action,'->', this.props.uim);
+        return result;
     }
   }
 
