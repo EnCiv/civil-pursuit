@@ -95,7 +95,7 @@ class UIMItem extends UserInterfaceManagerClient {
         if(delta.readMore)parts.push('r');
         if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
         delta.pathPart=[parts.join(',')];
-      } 
+      }
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     }else return null;  // if you don't handle the type, let the default handlers prevail

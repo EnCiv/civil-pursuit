@@ -61,14 +61,9 @@ exports.button=class PromoteButton extends React.Component {
 }
 
 exports.panel = class PromotePanel extends React.Component {
-  promote(button,winner){
-    this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner});  // after the evaluation is done, the panel should go away
-  }
-
   mounted = false;
   render() {
     const { active, panel, item, onClick, user, style, emitter, uim } = this.props;
-    const nextUIM={shape: 'truncated', depth: uim.depth, toParent: uim.toParent} // UIM 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
     if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;
@@ -80,7 +75,6 @@ exports.panel = class PromotePanel extends React.Component {
           >
             <EvaluationStore
               item-id={item._id}
-              toggle={this.promote.bind(this)}
               active={active}
               emitter={emitter}
             >
@@ -90,7 +84,7 @@ exports.panel = class PromotePanel extends React.Component {
                 panel={panel}
                 user={user}
                 hideFeedback={this.props.hideFeedback}
-                uim={nextUIM}
+                uim={uim}
               />
             </EvaluationStore>
           </Accordion>
