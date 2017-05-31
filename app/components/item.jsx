@@ -76,12 +76,12 @@ class UIMItem extends UserInterfaceManagerClient {
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
       if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
-      else if(!delta.readMore && uim.button==='Harmony') delta.button===null;  // turn harmony off when closing readMore
-      // othewise keep button the same
+      else if(!delta.readMore && uim.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
+      else delta.button=uim.button; // othewise keep button the same
       delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
       var parts=[];
       if(delta.readMore)parts.push('r');
-      if(delta.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
+      if(delta.button)parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
       delta.pathPart=[parts.join(',')];
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
@@ -92,13 +92,17 @@ class UIMItem extends UserInterfaceManagerClient {
         delta.button=null;
         delta.pathPart=[];
       } else {
-        if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';  // after promote is finished show the subtype if there is one
-        else delta.readMore=true; // otherewaise readmore
-        delta.shape= 'open';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
-        var parts=[];
-        if(delta.readMore)parts.push('r');
-        if(uim.button)parts.push(uim.button[0]); // must ensure no collision of first character of item-component names
-        delta.pathPart=[parts.join(',')];
+        if(this.props.buttons.some(b=>b==='Subtype')){
+           delta.shape='open';
+           delta.button='Subtype';
+           delta.readMore=false;
+           delta.pathPart=['S'];  // after promote is finished show the subtype if there is one
+        } else { 
+          delta.shape='open';
+          delta.button=null;
+          delta.readMore=true;
+          delta.pathPart=['r']; // otherewaise readmore
+        }
       }
       Object.assign(nextUIM, uim, delta);
       return nextUIM;

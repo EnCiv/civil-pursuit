@@ -17,7 +17,7 @@ import { UserInterfaceManager, UserInterfaceManagerClient } from './user-interfa
 
 
 export default class Promote extends React.Component {
-    static initialUIM={shape: 'truncated', left: 0, right: 1, cursor: 1, side: ''};
+    static initialUIM={ left: 0, right: 1, cursor: 1, side: ''};
     render() {
         console.info("Promote above.render");
         return (
