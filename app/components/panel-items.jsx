@@ -53,7 +53,6 @@ class PanelItems extends React.Component {
   toChild=[];  // toChild keeps track of the toChild func for each child item
   actionToState (action, uim) {
     var nextUIM={}; 
-    logger.info("PanelItems.actionToState",{action},{uim});
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let ash=action.shape, ush=uim.shape;
       if(!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
@@ -153,7 +152,7 @@ class PanelItems extends React.Component {
   // send all unhandled actions to the parent UIM
   //
   toMeFromChild(shortId, action) {
-    logger.info("PanelItems.toMeFromChild", this.props.uim && this.props.uim.depth, shortId, action);
+    logger.info("PanelItems.toMeFromChild", this.props.panel && this.props.panel.type && this.props.panel.type.name, this.props.uim && this.props.uim.depth, shortId, action, this.props.uim);
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[shortId] = action.function; // don't pass this to parent
