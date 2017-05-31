@@ -86,11 +86,12 @@ class UIMItem extends UserInterfaceManagerClient {
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
     } else  if (action.type === "FINISH_PROMOTE") {
-      if(!(action.winner && action.winner===this.props.item._id)) {
+      if(!(action.winner && action.winner._id===this.props.item._id)) {
         delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
         delta.pathPart=[];
+        if(action.winner) setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner}));
       } else {
         if(this.props.buttons.some(b=>b==='Subtype')){
            delta.shape='open';

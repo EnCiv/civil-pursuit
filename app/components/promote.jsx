@@ -91,10 +91,10 @@ class UIMPromote extends UserInterfaceManagerClient {
             delta.cursor=cursor;
             delta[UIMPromote.opposite[action.position]]=cursor;
           } else {
-            const winnerId=this.props.items[[action.position]]._id;
-            this.insertUpvotes(winnerId);
+            const winner=this.props.items[uim[action.position]]; // fetch the item indexed to by the winning position
+            this.insertUpvotes(winner._id);
             delta=Promote.initialUIM;
-            setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winnerId}),0);  // after the evaluation is done, the panel should go away
+            setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: action.winner}),0);  // after the evaluation is done, the panel should go away
           }
           Object.assign(nextUIM,uim,delta);
           return nextUIM;

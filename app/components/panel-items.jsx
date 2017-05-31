@@ -97,6 +97,14 @@ class PanelItems extends React.Component {
         }
         Object.assign(nextUIM,uim,delta); // if shape is not truncated, do so
       }
+    } else if(action.type==="OPEN_ITEM"){
+      if(!this.props.panel.items.some(item=>item._id===action.item._id)){ // if the new item is not in the list
+        this.props.panel.items.push(action.item);
+      }
+      delta.shortId=action.item.id;
+      delta.shape='open';
+      delta.pathPart=[delta.shortId];
+      Object.assign(nextUIM,uim,delta);
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.info("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
