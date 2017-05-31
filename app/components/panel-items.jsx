@@ -52,7 +52,7 @@ class PanelItems extends React.Component {
 
   toChild=[];  // toChild keeps track of the toChild func for each child item
   actionToState (action, uim) {
-    var nextUIM={}; 
+    var nextUIM={},delta={}; 
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let ash=action.shape, ush=uim.shape;
       if(!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
@@ -60,7 +60,6 @@ class PanelItems extends React.Component {
       if(this.props.panel && this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod ==="ooview") ooview=true;
 
       if(action.distance===1) { //if this action is from an immediate child 
-        var delta={};
         if(action.shape === 'open' && action.shortId) { 
           delta.shortId=action.shortId;
           delta.pathPart=[action.shortId];
@@ -81,7 +80,7 @@ class PanelItems extends React.Component {
       if(uim.creator) {// it's on so toggle it off
         Object.assign(nextUIM,uim,{creator: false})
       } else { // it's off so toggle it on
-        let delta={creator: true};
+        delta.creator=true;
         if(uim.shape!=='truncated'){ //if shape was not truncated 
           if(uim.shortId){//there is an item that's open
             this.toChild[uim.shortId]({type: "CHANGE_SHAPE", shape: 'truncated'});
