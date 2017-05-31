@@ -153,7 +153,7 @@ export class UserInterfaceManager extends React.Component {
             logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim && this.props.uim.depth);
             if(this.id!==0) {   
                 logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState not root",this.id, this.props.uim && this.props.uim.depth);
-                this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId
+                this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: this.state.uim.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId. This shape hasn't changed
             } else { // this is the root UIM, update history.state
                 logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim && this.props.uim.depth);
                 setTimeout(()=>this.updateHistory(),0);
