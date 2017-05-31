@@ -164,6 +164,11 @@ class PanelItems extends React.Component {
             setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] }),0);
           }
         }
+    } else if(action.type==="CHILD_SHAPE_CHANGED"){
+      if(this.props.uim.shortId && this.props.uim.shortId===shortId) {
+        action.shortId=shortId;
+        return(this.props.uim.toParent(action));
+      } else return; // we drop it here.  If the panel is open on one child, don't pass SHAPE_CHANGE events from other children
     } else if(this.props.uim && this.props.uim.toParent) {
        action.shortId=shortId; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
