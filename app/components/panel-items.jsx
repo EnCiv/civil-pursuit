@@ -141,7 +141,7 @@ class PanelItems extends React.Component {
              this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           } else {
             logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
-            this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: ()=>{}}); // set the state, but don't really conitune until waitingOn is satisfied
+            this.props.uim.toParent({type: "SET_STATE", nextUIM: nextUIM}); // set the state, but don't really conitune until waitingOn is satisfied
             this.waitingOn=nextUIM;
           }
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
@@ -161,7 +161,7 @@ class PanelItems extends React.Component {
           if(shortId===nextUIM.shortId && this.toChild[shortId]) { 
             logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
             this.waitingOn=null;
-            setTimeout(()=>this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId] }),0);
+            setTimeout(()=>this.props.uim.toParent({type: "CONTINUE_SET_PATH", function: this.toChild[shortId] }),0);
           }
         }
     } else if(action.type==="CHILD_SHAPE_CHANGED" && this.props.uim.shortId && this.props.uim.shortId !== shortId){

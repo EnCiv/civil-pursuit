@@ -106,6 +106,19 @@ export class UserInterfaceManager extends React.Component {
                 stack.push(thisUIM); // push this uim state to the uim state list and return it
                 return stack;
             }
+        }else if (action.type==="SET_STATE"){
+            logger.trace("UserInterfaceManager.toMeFromChild SET_STATE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
+            this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)});
+            return null;
+        }else if (action.type==="CONTINUE_SET_PATH"){
+            if(UserInterfaceManager.pathPart.length) {
+                logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
+                setTimeout(()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}),0);
+            } else {
+                logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim);
+                if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory();
+            }
+            return null;
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
             if(UserInterfaceManager.pathPart.length) {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
