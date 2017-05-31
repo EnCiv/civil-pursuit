@@ -103,6 +103,7 @@ class PanelItems extends React.Component {
       delta.shape='open';
       delta.pathPart=[delta.shortId];
       Object.assign(nextUIM,uim,delta);
+      setTimeout(()=>this.toChild[delta.shortId]({type: "CHANGE_SHAPE", shape: 'open'}));
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.info("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
