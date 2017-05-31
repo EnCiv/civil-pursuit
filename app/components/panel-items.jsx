@@ -141,6 +141,7 @@ class PanelItems extends React.Component {
              this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           } else {
             logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
+            this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: ()=>{}}); // set the state, but don't really conitune until waitingOn is satisfied
             this.waitingOn=nextUIM;
           }
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
