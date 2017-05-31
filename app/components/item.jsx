@@ -98,6 +98,8 @@ class UIMItem extends UserInterfaceManagerClient {
       }
       Object.assign(nextUIM, uim, delta);
       return nextUIM;
+    }else if(action.type === "CHILD_SHAPE_CHANGED"){
+      if(uim.button==="Promote") return uim; // no state change here, change comes from FINISH_PROMOTE
     }else return null;  // if you don't handle the type, let the default handlers prevail
   }
 
