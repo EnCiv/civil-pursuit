@@ -128,6 +128,7 @@ export class UserInterfaceManager extends React.Component {
                     logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
                 }                 
                 if(this.id!==0){
+                    if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
                     const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
                 }else{ // this is the root, after changing shape, remind me so I can update the window.histor
