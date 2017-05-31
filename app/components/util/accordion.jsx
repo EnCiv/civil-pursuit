@@ -82,7 +82,7 @@ class Accordion extends React.Component {
     this.setState( { attr : 'expanding'} );
     const timer = setInterval( () => {
       if(--timerMax <= 0 ){ clearInterval(timer); this.openStart=null;  console.error("accordion.smoothOpen timer overflow");}
-      if(this.inOpen==='abort'){ clearInterval(timer); this.openStart=null; this.inOpen='inactive'; console.error("accordion.smoothOpen abort due to subsiquent close"); return; }
+      if(this.inOpen==='abort'){ clearInterval(timer); this.openStart=null; this.inOpen='inactive'; return; }
       let now=new Date().getTime();
       if((now - this.openStart)>duration) { // time is up
             this.inOpen='inactive';
@@ -138,14 +138,13 @@ class Accordion extends React.Component {
 
     const timer = setInterval( () => {
       if(--timerMax == 0 ){ clearInterval(timer); console.error("accordion.smoothClose timer overflow");}
-      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; console.error("accordion.smoothClose abort due to subsiquent open"); return; }
+      if(this.inClose==='abort'){ clearInterval(timer); this.inClose='inactive'; return; }
       
       let now=new Date().getTime();
       let lmaxHeight = parseInt(accordion.style.maxHeight,10) || 0;
       let lheight= Math.floor(accordion.clientHeight);
 
       if( ((now - this.closeStart)< duration) && (lmaxHeight >= lheight) && (lheight > minHeight)){ // there is still time and it's still shrinking
- //       accordion.style.maxHeight =  (((lmaxHeight - this.stepSize) > 0) ? (lmaxHeight - this.stepSize) : 0 ) + 'px';
         let step = Math.min(1, (now - this.closeStart) / duration); // calculate the percent of the scroll duration that has been completed. 100% max
         let distance = Math.max(lheight - minHeight, 1); // distance to go, but not negative
         let newMax = Math.floor(lheight - (step * distance)); // top of the next step
