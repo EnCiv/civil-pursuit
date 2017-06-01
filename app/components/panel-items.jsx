@@ -36,6 +36,7 @@ class PanelItems extends React.Component {
       this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
       this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems", startedEmpty: this.startedEmpty})
     }
+    if(props.panel && props.panel.type && props.panel.type.name && props.panel.type.name !== this.title) { this.title=props.panel.type.name; this.props.uim.toParent({type: "SET_TITLE", title: this.title});} // this is for pretty debugging
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +70,7 @@ class PanelItems extends React.Component {
         } delta.shape = action.shape;
         Object.assign(nextUIM, uim, delta);
       }else{ // it's not my child that changed shape
-        logger.info("PanelItems.actionToState it's not my child that changed shape")
+        logger.trace("PanelItems.actionToState it's not my child that changed shape")
         if(ooview && ash==='open'){
           Object.assign(nextUIM, uim, {shape: 'collapsed', shortId: action.shortId});
         } else if (ooview && ash==='truncated') {
@@ -107,7 +108,7 @@ class PanelItems extends React.Component {
       if(this.toChild[delta.shortId]) setTimeout(nextFunc,0);
       else this.waitingOn={nextUIM: nextUIM, nextFunc: nextFunc};
     } else return null; // don't know this action, null so the default methods can have a shot at it
-    logger.info("PanelItems.actionToState return", {nextUIM})
+    logger.trace("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
   }
 
@@ -115,7 +116,7 @@ class PanelItems extends React.Component {
   // this is a one to many pattern for the user Interface Manager, handle each action  appropriatly
   //
   toMeFromParent(action) {
-      logger.info("PanelItems.toMeFromParent", this.props.uim && this.props.uim.depth, action);
+      logger.trace("PanelItems.toMeFromParent", this.props.uim && this.props.uim.depth, action);
       if (action.type==="ONPOPSTATE") {
           var {shape, shortId} = action.event.state.stateStack[this.props.uim.depth-1]; // the shape of my UIMManager
           if(action.event.state.stateStack.length > (this.props.uim.depth)){
@@ -140,10 +141,10 @@ class PanelItems extends React.Component {
           var shortId=action.part;
           var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
           if(this.toChild[shortId]){
-             logger.info("PanelItems.toMeFromParent SET_STATE_AND_CONTINUE")
+             logger.trace("PanelItems.toMeFromParent SET_STATE_AND_CONTINUE")
              return this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           } else {
-            logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
+            logger.trace("PanelItems.toMeFromParent waitingOn",nextUIM);
             this.waitingOn={nextUIM: nextUIM, nextFunc: ()=>this.props.uim.toParent({type: "CONTINUE_SET_PATH", function: this.toChild[shortId]})}
             return this.props.uim.toParent({type: "SET_STATE", nextUIM: nextUIM}); // set the state, but don't really conitune until waitingOn is satisfied
           }
@@ -155,14 +156,14 @@ class PanelItems extends React.Component {
   // send all unhandled actions to the parent UIM
   //
   toMeFromChild(shortId, action) {
-    logger.info("PanelItems.toMeFromChild", this.props.panel && this.props.panel.type && this.props.panel.type.name, this.props.uim && this.props.uim.depth, shortId, action, this.props.uim);
+    logger.trace("PanelItems.toMeFromChild", this.props.panel && this.props.panel.type && this.props.panel.type.name, this.props.uim && this.props.uim.depth, shortId, action, this.props.uim);
 
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[shortId] = action.function; // don't pass this to parent
         if(this.waitingOn){
           let nextUIM=this.waitingOn.nextUIM;
           if(shortId===nextUIM.shortId && this.toChild[shortId]) { 
-            logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
+            logger.trace("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
             var nextFunc=this.waitingOn.nextFunc;
             this.waitingOn=null;
             setTimeout(nextFunc ,0);
@@ -175,6 +176,10 @@ class PanelItems extends React.Component {
        action.shortId=shortId; // actionToState may need to know the child's id
        return(this.props.uim.toParent(action));
     }
+  }
+
+  componentWillReceiveProps(newProps){
+        if(newProps.panel && newProps.panel.type && newProps.panel.type.name && newProps.panel.type.name !== this.title) {  this.title=newProps.panel.type.name; this.props.uim.toParent({type: "SET_TITLE", title: this.title});} // this is for pretty debugging
   }
 
   mounted=[];

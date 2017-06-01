@@ -35,6 +35,7 @@ export class UserInterfaceManager extends React.Component {
         console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
         this.toChild=null;
         this.childName='';
+        this.childTitle='';
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -80,7 +81,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromChild(action) {
-        logger.trace("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, action);
+        logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state);
         if(!action.distance) action.distance=0; // action was from component so add distance
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
@@ -109,6 +110,10 @@ export class UserInterfaceManager extends React.Component {
         }else if (action.type==="SET_STATE"){
             logger.trace("UserInterfaceManager.toMeFromChild SET_STATE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
             this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)});
+            return null;
+        }else if (action.type==="SET_TITLE"){
+            logger.trace("UserInterfaceManager.toMeFromChild SET_TITLE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
+            this.childTitle=action.title; // this is only for pretty debugging
             return null;
         }else if (action.type==="CONTINUE_SET_PATH"){
             if(UserInterfaceManager.pathPart.length) {
@@ -177,7 +182,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.trace("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, {action});
+        logger.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state);
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;

@@ -19,7 +19,6 @@ import { UserInterfaceManager, UserInterfaceManagerClient } from './user-interfa
 export default class Promote extends React.Component {
     static initialUIM={ left: 0, right: 1, cursor: 1, side: ''};
     render() {
-        console.info("Promote above.render");
         return (
             <UserInterfaceManager {...this.props} initialUIM={Promote.initialUIM}>
                 <UIMPromote />
@@ -34,7 +33,7 @@ class UIMPromote extends UserInterfaceManagerClient {
     constructor(props) {
         var uimProps = { uim: props.uim };
         super(uimProps, 'side');
-        console.info("UIMPromote.constructor", this.props)
+        //console.info("UIMPromote.constructor", this.props)
         this.transitionedOC = [];
         if(!(props.uim)) logger.error("UIMPromote uim missing");
     }
@@ -53,7 +52,7 @@ class UIMPromote extends UserInterfaceManagerClient {
     }
 
     actionToState(action, uim) {
-        logger.info("UIMPromote.actionToState", { action }, { uim });
+        logger.trace("UIMPromote.actionToState", { action }, { uim });
         var nextUIM = {};
         if (action.type === "CHILD_SHAPE_CHANGED") {
             let delta = {};
@@ -171,7 +170,7 @@ class UIMPromote extends UserInterfaceManagerClient {
 
     render() {
         const { panel, show, limit, items, criterias, panelEmitter, user, uim } = this.props;
-        console.info(this.constructor.name,"UIMPromote.render",this.props);
+        //console.info(this.constructor.name,"UIMPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){
           return (

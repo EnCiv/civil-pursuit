@@ -35,7 +35,6 @@ class UIMItem extends UserInterfaceManagerClient {
   constructor(props){
     var uimProps={uim: props.uim};
     super(uimProps, 'button');
-    console.info("UIMItem.constructor", this.props)
   }
 
   setPath(action){  //UIM is setting the initial path. Take your pathPart and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
@@ -59,7 +58,7 @@ class UIMItem extends UserInterfaceManagerClient {
   }
 
   actionToState(action, uim, source='CHILD') { // this function is going to be called by the UIManager, uim is the current UIM state
-    logger.info("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
+    logger.trace("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextUIM={};
     let delta={};
     if (action.type === "TOGGLE_BUTTON") {
@@ -158,7 +157,7 @@ class UIMItem extends UserInterfaceManagerClient {
   componentWillReceiveProps(newProps) {
     this.textHint();
     setTimeout(this.textHint.bind(this), 500); // this sucks but double check the hint in 500Ms in case the environment has hanged - like you are within a double wide that's collapsing
-    if(this.props.item && this.props.item.subject) this.title=this.props.item.subject;
+    if(newProps.item && newProps.item.subject && newProps.item.subject !== this.title) {  this.title=newProps.item.subject; this.props.uim.toParent({type: "SET_TITLE", title: this.title});}
   }
 
 
@@ -238,7 +237,7 @@ class UIMItem extends UserInterfaceManagerClient {
 
     let noReference = true;
 
-    console.info("UIMItem render", this.props.uim.depth, this.props);
+    //console.info("UIMItem render", this.props.uim.depth, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
@@ -264,8 +263,6 @@ class UIMItem extends UserInterfaceManagerClient {
                 })
                 : null;
     }
-
-    logger.info("UIMItem.render rendered buttons and panels");
 
     return (
         <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={`item-${item._id}`} >
