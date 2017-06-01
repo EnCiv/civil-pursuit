@@ -92,9 +92,8 @@ export class UserInterfaceManager extends React.Component {
                 logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
                 setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
             }
-            return null;
         } else if (action.type==="SET_ACTION_TO_STATE") { // child component passing action to state calculator
-            this.actionToState = action.function; return null;
+            this.actionToState = action.function;
         } else if (action.type==="GET_STATE") {
             // return the array of all UIM States from here to the beginning
             // it works by recursivelly calling GET_STATE from here to the beginning and then pusing the UIM state of each component onto an array
@@ -112,11 +111,9 @@ export class UserInterfaceManager extends React.Component {
         }else if (action.type==="SET_STATE"){
             logger.trace("UserInterfaceManager.toMeFromChild SET_STATE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
             this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)});
-            return null;
         }else if (action.type==="SET_TITLE"){
             logger.trace("UserInterfaceManager.toMeFromChild SET_TITLE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
             this.childTitle=action.title; // this is only for pretty debugging
-            return null;
         }else if (action.type==="CONTINUE_SET_PATH"){
             if(UserInterfaceManager.pathPart.length) {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
@@ -125,7 +122,6 @@ export class UserInterfaceManager extends React.Component {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim);
                 if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory();
             }
-            return null;
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
             if(UserInterfaceManager.pathPart.length) {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
@@ -134,7 +130,6 @@ export class UserInterfaceManager extends React.Component {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim, action.nextUIM);
                 this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory() });
             }
-            return null;
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else return this.updateHistory();
@@ -153,7 +148,6 @@ export class UserInterfaceManager extends React.Component {
                 if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
                 else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
             }
-            return null;
         } 
         // these actions are overridden by the component's actonToState if either there is and it returns a newUIM to set (not null)
         else if(action.type ==="CHANGE_SHAPE"){  
@@ -173,6 +167,8 @@ export class UserInterfaceManager extends React.Component {
                 logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim && this.props.uim.depth);
                 setTimeout(()=>this.updateHistory(),0);
             }
+        } else { // the action was not understood, send it up
+            if(this.id) return this.props.uim.toParent(action); 
         }
         return null;
     }
