@@ -199,7 +199,12 @@ export class UserInterfaceManager extends React.Component {
             else stack=[Object.assign({},this.state.uim)];
             return stack;
         } else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "PARENT"))!==null)){
-            this.setState({uim: nextUIM});
+            if(!equaly(this.state.uim, nextUIM)) { // really the shape changed
+                if(this.id!==0) {// if there's a parent to tell of the change
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
+                }else // no parent to tell of the change
+                    this.setState({uim: nextUIM}, ()=>this.updateHistory());
+            } // no change, nothing to do
             return null;
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
             if(this.toChild) this.toChild(action); // clear children first
