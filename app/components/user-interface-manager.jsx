@@ -82,6 +82,7 @@ export class UserInterfaceManager extends React.Component {
 
     toMeFromChild(action) {
         logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
+        var  nextUIM={};
         if(!action.distance) action.distance=0; // action was from component so add distance
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
@@ -137,31 +138,25 @@ export class UserInterfaceManager extends React.Component {
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else return this.updateHistory();
-        }else if(this.actionToState) {
-            var  nextUIM= this.actionToState(action, this.state.uim, "CHILD");
-            if(nextUIM) {
-                if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                    logger.trace("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
-                    if(this.toChild) this.toChild({type:"CLEAR_PATH"});
-                } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                    logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
-                }                 
-                if(this.id!==0){
-                    //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
-                    const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
-                }else{ // this is the root, after changing shape, remind me so I can update the window.histor
-                    if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
-                    else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
-                }
-                return null;
-            }else {
-                if(this.id) this.props.uim.toParent(action);  // pass the action up to the next component
-                else logger.info("UserInterfaceManager.toMeFromChild at root, unhandled action", action);
+        }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
+            if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
+                logger.trace("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
+                if(this.toChild) this.toChild({type:"CLEAR_PATH"});
+            } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
+                logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
+            }                 
+            if(this.id!==0){
+                //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
+                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1;
+                this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
+            }else{ // this is the root, after changing shape, remind me so I can update the window.histor
+                if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
+                else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
             }
-        } else logger.error("UserInterfaceManager.toMeFromChild this.actionToState is missing"); 
-        // these actions are overridden by the component's actonToState if either there isn't one or it returns a null next state
-        if(action.type ==="CHANGE_SHAPE"){
+            return null;
+        } 
+        // these actions are overridden by the component's actonToState if either there is and it returns a newUIM to set (not null)
+        else if(action.type ==="CHANGE_SHAPE"){  
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
                 if(this.id!==0) {// if there's a parent to tell of the change
@@ -311,7 +306,7 @@ export class UserInterfaceManagerClient extends React.Component {
       if (this.waitingOn) {
         if (this.waitingOn.action) {
           let actn = this.waitingOn.action; // don't overload action
-          logger.trace("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
+          logger.info("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
           this.waitingOn = null;
           setTimeout(() => this.toChild[key](actn), 0);
         } else if (this.waitingOn.nextUIM) {
