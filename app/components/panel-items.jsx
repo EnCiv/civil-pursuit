@@ -103,7 +103,9 @@ class PanelItems extends React.Component {
       delta.shape='open';
       delta.pathPart=[delta.shortId];
       Object.assign(nextUIM,uim,delta);
-      setTimeout(()=>this.toChild[delta.shortId]({type: "CHANGE_SHAPE", shape: 'open'}));
+      var nextFunc=()=>this.toChild[delta.shortId]({type: "CHANGE_SHAPE", shape: 'open'});
+      if(this.toChild[delta.shortId]) setTimeout(nextFunc,0);
+      else this.waitingOn={nextUIM: nextUIM, nextFunc: nextFunc};
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.info("PanelItems.actionToState return", {nextUIM})
     return nextUIM;
@@ -139,11 +141,11 @@ class PanelItems extends React.Component {
           var nextUIM={shape: 'open', shortId: shortId, pathPart: [shortId]};
           if(this.toChild[shortId]){
              logger.info("PanelItems.toMeFromParent SET_STATE_AND_CONTINUE")
-             this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
+             return this.props.uim.toParent({type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[shortId]});
           } else {
             logger.info("PanelItems.toMeFromParent waitingOn",nextUIM);
-            this.props.uim.toParent({type: "SET_STATE", nextUIM: nextUIM}); // set the state, but don't really conitune until waitingOn is satisfied
-            this.waitingOn=nextUIM;
+            this.waitingOn={nextUIM: nextUIM, nextFunc: ()=>this.props.uim.toParent({type: "CONTINUE_SET_PATH", function: this.toChild[shortId]})}
+            return this.props.uim.toParent({type: "SET_STATE", nextUIM: nextUIM}); // set the state, but don't really conitune until waitingOn is satisfied
           }
       } else logger.error("PanelItems.toMeFromParent action type unknown not handled", action)
   }
@@ -158,11 +160,12 @@ class PanelItems extends React.Component {
     if(action.type==="SET_TO_CHILD" ) { // child is passing up her func
       this.toChild[shortId] = action.function; // don't pass this to parent
         if(this.waitingOn){
-          let nextUIM=this.waitingOn;
+          let nextUIM=this.waitingOn.nextUIM;
           if(shortId===nextUIM.shortId && this.toChild[shortId]) { 
             logger.info("PanelItems.toMeFromParent got waitingOn nextUIM", nextUIM);
+            var nextFunc=this.waitingOn.nextFunc;
             this.waitingOn=null;
-            setTimeout(()=>this.props.uim.toParent({type: "CONTINUE_SET_PATH", function: this.toChild[shortId] }),0);
+            setTimeout(nextFunc ,0);
           }
         }
     } else if(action.type==="CHILD_SHAPE_CHANGED" && this.props.uim.shortId && this.props.uim.shortId !== shortId){
