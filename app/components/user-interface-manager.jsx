@@ -159,7 +159,7 @@ export class UserInterfaceManager extends React.Component {
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
                 if(this.id!==0) {// if there's a parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 2})); // add an extra one
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
