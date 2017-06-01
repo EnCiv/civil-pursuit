@@ -33,8 +33,8 @@ class PanelItems extends React.Component {
     super(props);
     this.startedEmpty= !(this.props.panel && this.props.panel.items && this.props.panel.items.length);
     if(this.props.uim && this.props.uim.toParent) { 
-      this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
-      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems", startedEmpty: this.startedEmpty})
+      //this.props.uim.toParent({type: "SET_ACTION_TO_STATE", function: this.actionToState.bind(this) })
+      this.props.uim.toParent({type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: "PanelItems", startedEmpty: this.startedEmpty, actionToState: this.actionToState.bind(this)});
     }
     if(props.panel && props.panel.type && props.panel.type.name && props.panel.type.name !== this.title) { this.title=props.panel.type.name; this.props.uim.toParent({type: "SET_TITLE", title: this.title});} // this is for pretty debugging
   }

@@ -32,7 +32,7 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
+        //console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
         this.toChild=null;
         this.childName='';
         this.childTitle='';
@@ -85,7 +85,8 @@ export class UserInterfaceManager extends React.Component {
         if(!action.distance) action.distance=0; // action was from component so add distance
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
-            if(action.name) this.childName=action.name; 
+            if(action.name) this.childName=action.name;
+            if(action.actionToState) this.actionToState=action.actionToState; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
                 logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
                 setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
@@ -294,8 +295,8 @@ export class UserInterfaceManagerClient extends React.Component {
     this.keyField=keyField;
     if(!this.props.uim) logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
     if (this.props.uim.toParent) {
-      this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
-      this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name })
+      //this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
+      this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this) })
     }else logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
   }
 
