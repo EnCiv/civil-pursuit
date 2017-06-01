@@ -81,7 +81,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromChild(action) {
-        logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state);
+        logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
         if(!action.distance) action.distance=0; // action was from component so add distance
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
             this.toChild = action.function; 
@@ -183,7 +183,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state);
+        logger.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
@@ -289,7 +289,7 @@ export default UserInterfaceManager;
 export class UserInterfaceManagerClient extends React.Component {
 
   constructor(props, keyField='key') {
-    console.info("UserInterfaceManagerClient.constructor", props, keyField);
+    //console.info("UserInterfaceManagerClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
     this.keyField=keyField;
@@ -326,7 +326,7 @@ export class UserInterfaceManagerClient extends React.Component {
     } else {
         action[this.keyField] = key; // actionToState may need to know the child's id
         var result =this.props.uim.toParent(action);
-        console.info(this.constructor.name, this.title, action,'->', this.props.uim);
+        // console.info(this.constructor.name, this.title, action,'->', this.props.uim);
         return result;
     }
   }
