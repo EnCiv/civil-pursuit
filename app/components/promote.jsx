@@ -79,7 +79,7 @@ class UIMPromote extends UserInterfaceManagerClient {
                 delta.right = delta.cursor;
           } else { // done with evaluations
               delta=Promote.initialUIM;
-              setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: null}),0);  // after the evaluation is done, the panel should go away
+              setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: null, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
           Object.assign(nextUIM, uim, delta);
           return nextUIM;
@@ -93,7 +93,7 @@ class UIMPromote extends UserInterfaceManagerClient {
             const winner=this.props.items[uim[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             delta=Promote.initialUIM;
-            setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner}),0);  // after the evaluation is done, the panel should go away
+            setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
           Object.assign(nextUIM,uim,delta);
           return nextUIM;
@@ -137,8 +137,7 @@ class UIMPromote extends UserInterfaceManagerClient {
     promote(position) {
         this.props.uim.toParent({ type: "CLEAR_EXPANDERS" })
         this.buttons = { event: 'promote', position: position };
-        if (position === 'left') { this.transitionedOC['right'].toggle(false); }
-        if (position === 'right') { this.transitionedOC['left'].toggle(false); }
+        this.transitionedOC[UIMPromote.opposite[position]].toggle(false);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

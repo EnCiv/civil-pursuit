@@ -78,7 +78,7 @@ class UIMItem extends UserInterfaceManagerClient {
         delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
-        if(action.winner) setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner}));
+        if(action.winner) setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
       } else {
         if(this.props.buttons.some(b=>b==='Subtype')){
            delta.shape='open';

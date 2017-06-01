@@ -84,8 +84,9 @@ export class UserInterfaceManager extends React.Component {
         logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
         var  nextUIM={};
         if(!action.distance) action.distance=0; // action was from component so add distance
+        if(action.distance < 0) {action.distance +=1; if(this.id) return this.props.uim.toParent(action); else return }
         if(action.type==="SET_TO_CHILD") { // child is passing up her func
-            this.toChild = action.function; 
+            this.toChild = action.function;
             if(action.name) this.childName=action.name;
             if(action.actionToState) this.actionToState=action.actionToState; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
@@ -168,7 +169,8 @@ export class UserInterfaceManager extends React.Component {
                 setTimeout(()=>this.updateHistory(),0);
             }
         } else { // the action was not understood, send it up
-            if(this.id) return this.props.uim.toParent(action); 
+            if(this.id) { action.distance+=1; return this.props.uim.toParent(action); }
+            else return;
         }
         return null;
     }
