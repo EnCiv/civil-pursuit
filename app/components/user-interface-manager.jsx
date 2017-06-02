@@ -143,7 +143,7 @@ export class UserInterfaceManager extends React.Component {
             }                 
             if(this.id!==0){
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
-                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 0; // 0 because uimchild is going to add 1 to it before it gets to the UIM. 
+                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1; // 0 because uimchild is going to add 1 to it before it gets to the UIM. 
                 this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
             }else{ // this is the root, after changing shape, remind me so I can update the window.histor
                 if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
@@ -155,7 +155,7 @@ export class UserInterfaceManager extends React.Component {
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
                 if(this.id!==0) {// if there's a parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 2})); // add an extra one
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1})); // add an extra one
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
