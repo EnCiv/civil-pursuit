@@ -85,7 +85,8 @@ class UIMPromote extends UserInterfaceManagerClient {
         } else return null; // don't know the action type so let the default handler have it
         let parts=[];
         if (delta.side) parts.push(delta.side[0]); // if a side is open, include it in the partPath
-        if (delta.cursor>1) parts.push(delta.cursor);
+        if (delta.cursor) parts.push(delta.cursor);
+        else parts.push(uim.cursor);
         delta.pathPart = [parts.join(',')]; //otherwise no path part
         Object.assign(nextUIM, uim, delta);
         return nextUIM; // return the new state
