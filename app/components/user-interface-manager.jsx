@@ -213,7 +213,7 @@ export class UserInterfaceManager extends React.Component {
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
-            Object.assign(nextUIM,this.getDefaultState().uim,{shape: action.shape}); // 
+            nextUIM=Object.assign({},this.getDefaultState().uim,{shape: action.shape}); // 
             this.setState({uim: nextUIM});
             return null;
         }else {
