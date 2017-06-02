@@ -69,7 +69,7 @@ class UIMPromote extends UserInterfaceManagerClient {
                 delta.right = delta.cursor;
           } else { // done with evaluations
               //Promote.initialUIM;  don't change left and right - it will cause a rerender and don't remove path it will cause a clear path delta=Promote.initialUIM;
-              setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: null, distance: -1}),1000);  // after the evaluation is done, the panel should go away
+              setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: null, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
         } else if (action.type==="PROMOTE"){
           const cursor = uim.cursor + 1;
@@ -80,7 +80,7 @@ class UIMPromote extends UserInterfaceManagerClient {
             const winner=this.props.items[uim[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             delta.cursor=cursor; //Promote.initialUIM;  don't change left and right - it will cause a rerender and don't remove path it will cause a clear path
-            setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),1000);  // after the evaluation is done, the panel should go away
+            setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
         } else return null; // don't know the action type so let the default handler have it
         let parts=[];
