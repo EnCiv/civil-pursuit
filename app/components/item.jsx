@@ -64,7 +64,7 @@ class UIMItem extends UserInterfaceManagerClient {
     let delta={};
     if (action.type === "TOGGLE_BUTTON") {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
-      if(action.button === "Harmony" && !delta.button) delta.readMore=false; // if turning off harmony, also turn off readMore
+      if(action.button && !delta.button) delta.readMore=false; // if turning off a button, close readMore too
       else delta.readMore = uim.readMore;
       delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     } else  if (action.type === "TOGGLE_READMORE") {
@@ -99,7 +99,10 @@ class UIMItem extends UserInterfaceManagerClient {
         delta.readMore=false;
         delta.button=null;
       } 
-    } else 
+    } else if(action.type==="CHILD_SHAPE_CHANGED"  && action.distance >= 2){
+        delta.readMore=false; // if the user is working on stuff further below, close the readmore
+    }
+     else 
       return null;  // if you don't handle the type, let the default handlers prevail
     // calculate the pathPart and return the new state
     let parts=[];

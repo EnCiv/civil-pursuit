@@ -64,9 +64,10 @@ exports.panel = class PromotePanel extends React.Component {
   mounted = false;
   render() {
     const { active, panel, item, onClick, user, style, emitter, uim } = this.props;
-    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
+    if (!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before. 
     else {
       this.mounted = true;
+      // using key below to foce rerendering of evaluations for each new item to be evaluated.  Otherwise React just reuses the last set. 
       return (
         <div className="toggler promote">
           <Accordion
@@ -74,11 +75,13 @@ exports.panel = class PromotePanel extends React.Component {
             style={style}
           >
             <EvaluationStore
+              key={item._id}
               item-id={item._id}
               active={active}
               emitter={emitter}
             >
               <Promote
+                key={item._id}
                 ref="promote"
                 show={active}
                 panel={panel}
