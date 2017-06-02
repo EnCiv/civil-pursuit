@@ -74,21 +74,20 @@ class UIMItem extends UserInterfaceManagerClient {
       else delta.button=uim.button; // othewise keep button the same
       delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     } else  if (action.type === "FINISH_PROMOTE") {
-      if(!(action.winner && action.winner._id===this.props.item._id)) {
+      if(action.winner && action.winner._id===this.props.item._id) { // if we have a winner, and it's this item
+        delta.shape='open';
+        delta.readMore=true;
+        if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';
+        else delta.button=null;
+      }else if (action.winner) { // we have a winner but it's some other item
         delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
-        if(action.winner) setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
-      } else {
-        if(this.props.buttons.some(b=>b==='Subtype')){
-           delta.shape='open';
-           delta.button='Subtype';
-           delta.readMore=false;
-        } else { 
-          delta.shape='open';
-          delta.button=null;
-          delta.readMore=true;
-        }
+        setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
+      } else { // there wasn't a winner but we finish the promote
+        delta.shape='truncated';
+        delta.readMore='false';
+        delta.button=null;
       }
     } else if(action.type==="CHANGE_SHAPE"){
       if(action.shape==='open'){

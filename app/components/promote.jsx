@@ -46,32 +46,22 @@ class UIMPromote extends UserInterfaceManagerClient {
 
     setPath(action) {
         const lookup = { l: 'left', r: 'right' }
-        var side = action.part;
-        var nextUIM = { shape: 'open', side: lookup[side], pathPart: [side] };
+        var parts = action.part.split(',');
+        var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
+        var nextUIM = Object.assign({}, Promote.initialUIM, { shape: 'open', side: side, pathPart: action.part }); // always starts evaluation at the beginning if restoring a path
         return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
     actionToState(action, uim) {
         logger.trace("UIMPromote.actionToState", { action }, { uim });
-        var nextUIM = {};
+        var nextUIM = {}, delta={};
         if (action.type === "CHILD_SHAPE_CHANGED") {
-            let delta = {};
             if (action.shape === 'open') delta.side = action.side; // action is to open, this side is going to be the open side
             else if (action.side === uim.side) delta.side = null; // if action is to truncate (not open), and it's from the side that's open then truncate this
             if (delta.side && uim.side && uim.side !== delta.side) this.toChild[uim.side]({ type: "CHANGE_STATE", shape: 'truncated' }); // if a side is going to be open, and it's not the side that is open, close the other side
-            if (delta.side) {
-              delta.pathPart = [delta.side[0]]; // if a side is open, include it in the partPath
-            } else delta.pathPart = []; //otherwise no path part
-            Object.assign(nextUIM, uim, delta);
-            return nextUIM; // return the new state
         } else if (action.type === "CLEAR_EXPANDERS") {
-            let delta = {};
             delta.side = null; // action is to open, this side is going to be the open side
-            delta.pathPart = []; //otherwise no path part
-            Object.assign(nextUIM, uim, delta);
-            return nextUIM; // return the new state
         } else if (action.type === "NEXT"){
-          let delta={};
           delta.cursor = uim.cursor +1 ; 
           if ( delta.cursor < this.props.limit ) delta.cursor+=1; // can go forward a second one
           if ( delta.cursor <= this.props.limit) { // next evaluation
@@ -81,10 +71,7 @@ class UIMPromote extends UserInterfaceManagerClient {
               delta=Promote.initialUIM;
               setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: null, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
-          Object.assign(nextUIM, uim, delta);
-          return nextUIM;
         } else if (action.type==="PROMOTE"){
-          let delta={};
           const cursor = uim.cursor + 1;
           if ( cursor <= this.props.limit ) {
             delta.cursor=cursor;
@@ -95,9 +82,13 @@ class UIMPromote extends UserInterfaceManagerClient {
             delta=Promote.initialUIM;
             setTimeout(this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
-          Object.assign(nextUIM,uim,delta);
-          return nextUIM;
         } else return null; // don't know the action type so let the default handler have it
+        let parts=[];
+        if (delta.side) parts.push(delta.side[0]); // if a side is open, include it in the partPath
+        if (delta.cursor>1) parts.push(delta.cursor);
+        delta.pathPart = parts.join(','); //otherwise no path part
+        Object.assign(nextUIM, uim, delta);
+        return nextUIM; // return the new state
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
