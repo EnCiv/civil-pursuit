@@ -86,7 +86,7 @@ class UIMPromote extends UserInterfaceManagerClient {
         let parts=[];
         if (delta.side) parts.push(delta.side[0]); // if a side is open, include it in the partPath
         if (delta.cursor>1) parts.push(delta.cursor);
-        delta.pathPart = parts.join(','); //otherwise no path part
+        delta.pathPart = [parts.join(',')]; //otherwise no path part
         Object.assign(nextUIM, uim, delta);
         return nextUIM; // return the new state
     }
