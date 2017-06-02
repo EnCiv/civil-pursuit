@@ -48,7 +48,7 @@ class UIMPromote extends UserInterfaceManagerClient {
         const lookup = { l: 'left', r: 'right' }
         var parts = action.part.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
-        var nextUIM = Object.assign({}, Promote.initialUIM, { shape: 'open', side: side, pathPart: action.part }); // always starts evaluation at the beginning if restoring a path
+        var nextUIM = Object.assign({}, Promote.initialUIM, { shape: 'open', side: side, pathPart: [] }); // always starts evaluation at the beginning if restoring a path
         return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
