@@ -70,18 +70,16 @@ exports.panel = class PromotePanel extends React.Component {
       // using key below to foce rerendering of evaluations for each new item to be evaluated.  Otherwise React just reuses the last set. 
       return (
         <div className="toggler promote">
-          <Accordion
+          <Accordion 
             active={active}
             style={style}
           >
             <EvaluationStore
-              key={item._id}
               item-id={item._id}
               active={active}
               emitter={emitter}
             >
               <Promote
-                key={item._id}
                 ref="promote"
                 show={active}
                 panel={panel}

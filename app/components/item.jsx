@@ -259,8 +259,9 @@ class UIMItem extends UserInterfaceManagerClient {
                         })
                       : null;
 
+                      // using key here to make sure things get rendered
       renderPanels = buttons ? buttons.map(button => {
-                  return (<ItemComponent {...this.props} component={button} part={'panel'} 
+                  return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
                   uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
                   item={item} active={uim.button===button && shape==='open'} style={style} />);
                 })
