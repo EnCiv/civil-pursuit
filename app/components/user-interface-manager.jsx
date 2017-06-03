@@ -136,8 +136,8 @@ export class UserInterfaceManager extends React.Component {
             else return this.updateHistory();
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
             if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                logger.info("UserInterfaceManger.toChildFromParent path being removed clear children", this.id, this.state.uim.pathPart.join('/'))
-                // if(this.toChild) this.toChild({type:"CLEAR_PATH"});
+                logger.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
+                if(this.toChild) this.toChild({type:"RESET_SHAPE"});
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                 logger.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
