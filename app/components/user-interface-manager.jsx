@@ -137,7 +137,7 @@ export class UserInterfaceManager extends React.Component {
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
             if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                 logger.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
-                if(this.toChild) this.toChild({type:"RESET_SHAPE"});
+                if(this.toChild) this.toChild({type:"CLEAR_PATH"});
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                 logger.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
@@ -285,10 +285,10 @@ export class UserInterfaceManagerClient extends React.Component {
     //console.info("UserInterfaceManagerClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
+    this.waitingOn=null;
     this.keyField=keyField;
-    if(!this.props.uim) logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
+    if(!this.props.uim) logger.error("UserInterfaceManagerClient no uim",this.constructor.name, this.props);
     if (this.props.uim.toParent) {
-      //this.props.uim.toParent({ type: 'SET_ACTION_TO_STATE', function: this.actionToState.bind(this) });
       this.props.uim.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this) })
     }else logger.error("UserInterfaceManagerClient no uim.toParent",this.props);
   }
@@ -311,8 +311,10 @@ export class UserInterfaceManagerClient extends React.Component {
           let nextUIM = this.waitingOn.nextUIM;
           if (key === nextUIM[this.keyField] && this.toChild[key]) {
             logger.trace("UserInterfaceManagerClient.toMeFromParent got waitingOn nextUIM", nextUIM);
+            var nextFunc=this.waitingOn.nextFunc;
             this.waitingOn = null;
-            setTimeout(() => this.props.uim.toParent({ type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[key] }), 0);
+            if(nextFunc) setTimeout(nextFunc,0);
+            else setTimeout(() => this.props.uim.toParent({ type: "SET_STATE_AND_CONTINUE", nextUIM: nextUIM, function: this.toChild[key] }), 0);
           }
         }
       }
@@ -358,12 +360,12 @@ export class UserInterfaceManagerClient extends React.Component {
           this.props.uim.toParent({
             type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action) => {
               if (this.toChild[this.props.uim[this.keyField]]) this.toChild[this.props.uim[this.keyField]](action)
-              else this.waitingOn = action;
+              else this.waitingOn = {action};
             }
           });
         } else {
           logger.trace("UserInterfaceManagerClient.toMeFromParent SET_PATH waitingOn", nextUIM);
-          this.waitingOn = nextUIM;
+          this.waitingOn = {nextUIM};
         }
       } else {
         this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: null });
