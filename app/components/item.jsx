@@ -131,7 +131,7 @@ class UIMItem extends UserInterfaceManagerClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
-    if(this.props.uim.shape==='open') this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
+    if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.
