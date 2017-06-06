@@ -36,7 +36,6 @@ export class UserInterfaceManager extends React.Component {
         this.toChild=null;
         this.childName='';
         this.childTitle='';
-        this.topState=null;
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -45,6 +44,7 @@ export class UserInterfaceManager extends React.Component {
         // not an else of above because of the possibility that one might want to put a uim and toParent before the first component
         if(typeof UserInterfaceManager.nextId === 'undefined') { // this is the root UserInterfaceManager
              UserInterfaceManager.nextId= 0;
+             UserInterfaceManager.topState=null;
              if(this.props.path && this.props.path !== '/'){
                 UserInterfaceManager.pathPart= this.props.path.split('/');
                 var root=(this.props.UIMRoot || '/h/').split('/');
@@ -81,6 +81,7 @@ export class UserInterfaceManager extends React.Component {
         if(event.state && event.state.stateStack) {
             UserInterfaceManager.topState="ONPOPSTATE";
             this.toMeFromParent({type: "ONPOPSTATE", event: event});
+            console.info("UserInterfaceManager.onpopsate: returned.")
             UserInterfaceManager.topState=null;
         }
     }
@@ -99,6 +100,7 @@ export class UserInterfaceManager extends React.Component {
                 setTimeout(()=>{
                     UserInterfaceManager.topState="SET_PATH";
                     this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
+                    console.info("SET PATH Returned to root");
                     UserInterfaceManager.topState="null";
                 },0); // this starts after the return toChild so it completes.
             }
