@@ -36,6 +36,7 @@ export class UserInterfaceManager extends React.Component {
         this.toChild=null;
         this.childName='';
         this.childTitle='';
+        this.topState=null;
         if(!(this.props.uim && this.props.uim.toParent)){
             if(typeof UserInterfaceManager.nextId !== 'undefined') logger.error("UserInterfaceManager.constructor no parent, but not root!");
         }else{
@@ -77,7 +78,11 @@ export class UserInterfaceManager extends React.Component {
     // it works by recursively passing the ONPOPSTATE action to each child UIM component starting with the root
     onpopstate(event){
         logger.trace("UserInterfaceManager.onpopstate", this.id, {event})
-        if(event.state && event.state.stateStack) this.toMeFromParent({type: "ONPOPSTATE", event: event});
+        if(event.state && event.state.stateStack) {
+            UserInterfaceManager.topState="ONPOPSTATE";
+            this.toMeFromParent({type: "ONPOPSTATE", event: event});
+            UserInterfaceManager.topState=null;
+        }
     }
 
     toMeFromChild(action) {
@@ -91,7 +96,11 @@ export class UserInterfaceManager extends React.Component {
             if(action.actionToState) this.actionToState=action.actionToState; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
                 logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
-                setTimeout(()=>this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()}),0); // this starts after the return toChild so it completes.
+                setTimeout(()=>{
+                    UserInterfaceManager.topState="SET_PATH";
+                    this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
+                    UserInterfaceManager.topState="null";
+                },0); // this starts after the return toChild so it completes.
             }
         } else if (action.type==="SET_ACTION_TO_STATE") { // child component passing action to state calculator
             this.actionToState = action.function;
@@ -141,9 +150,9 @@ export class UserInterfaceManager extends React.Component {
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                 logger.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
-            if(this.id!==0){
+            if(this.id!==0 && !UserInterfaceManager.topState ){ // if this is not the root and this is not a root driven state change
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
-                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1; // 1 tells parent UIM it came from this UIM
+                const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1; // 1 tells parent UIM it came from this UIM 
                 this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
             }else{ // this is the root, after changing shape, remind me so I can update the window.histor
                 if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
@@ -154,7 +163,7 @@ export class UserInterfaceManager extends React.Component {
         else if(action.type ==="CHANGE_SHAPE"){  
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
-                if(this.id!==0) {// if there's a parent to tell of the change
+                if(this.id!==0 && !UserInterfaceManager.topState ) {// if there's a parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1})); // add an extra one
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
