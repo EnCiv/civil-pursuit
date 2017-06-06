@@ -26,7 +26,7 @@ class Item extends React.Component {
     if(readMore) parts.push('r');
     if(button) parts.push(button[0]);
     let pathPart=parts.join(',');
-    this.initialUIM={shape, readMore, button, pathPart: [pathPart]};
+    //this.initialUIM={shape, readMore, button, pathPart: [pathPart]};
   }
   render() {
     //   console.info("Item render");
