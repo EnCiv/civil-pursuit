@@ -96,7 +96,7 @@ export class UserInterfaceManager extends React.Component {
             if(action.name) this.childName=action.name;
             if(action.actionToState) this.actionToState=action.actionToState; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
-                logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
+                console.info("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
                 setTimeout(()=>{
                     UserInterfaceManager.topState="SET_PATH";
                     this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
@@ -144,7 +144,7 @@ export class UserInterfaceManager extends React.Component {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else {
                 console.info("SET PATH COMPLETED");
-                UserInterfaceManager.topState="null";
+                UserInterfaceManager.topState=null;
                 return this.updateHistory();
             }
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
