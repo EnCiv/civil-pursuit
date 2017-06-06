@@ -88,7 +88,7 @@ class UIMItem extends UserInterfaceManagerClient {
       if(action.shape==='open'){
         delta.readMore=true;
         if(this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
-        else delta.button=null;
+        else delta.button=uim.button;
       } else if (action.shape==='truncated'){
         delta.readMore=false;
         delta.button=null;
@@ -128,7 +128,7 @@ class UIMItem extends UserInterfaceManagerClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
-    if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
+    if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore && !UserInterfaceManager.topState ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.
