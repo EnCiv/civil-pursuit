@@ -100,8 +100,6 @@ export class UserInterfaceManager extends React.Component {
                 setTimeout(()=>{
                     UserInterfaceManager.topState="SET_PATH";
                     this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
-                    console.info("SET PATH Returned to root");
-                    UserInterfaceManager.topState="null";
                 },0); // this starts after the return toChild so it completes.
             }
         } else if (action.type==="SET_ACTION_TO_STATE") { // child component passing action to state calculator
@@ -144,7 +142,11 @@ export class UserInterfaceManager extends React.Component {
             }
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
-            else return this.updateHistory();
+            else {
+                console.info("SET PATH COMPLETED");
+                UserInterfaceManager.topState="null";
+                return this.updateHistory();
+            }
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
             if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
                 console.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
