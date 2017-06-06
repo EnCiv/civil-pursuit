@@ -66,44 +66,41 @@ class UIMItem extends UserInterfaceManagerClient {
       delta.button= uim.button === action.button ? null : action.button; // toggle the button 
       if(action.button && !delta.button) delta.readMore=false; // if turning off a button, close readMore too
       else delta.readMore = uim.readMore;
-      delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     } else  if (action.type === "TOGGLE_READMORE") {
       delta.readMore = !uim.readMore; // toggle condition;
       if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
       else if(!delta.readMore && uim.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
       else delta.button=uim.button; // othewise keep button the same
-      delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     } else  if (action.type === "FINISH_PROMOTE") {
       if(action.winner && action.winner._id===this.props.item._id) { // if we have a winner, and it's this item
-        delta.shape='open';
         delta.readMore=true;
         if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';
         else delta.button=null;
       }else if (action.winner) { // we have a winner but it's some other item
-        delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
         setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
       } else { // there wasn't a winner but we finish the promote
-        delta.shape='truncated';
         delta.readMore='false';
         delta.button=null;
       }
     } else if(action.type==="CHANGE_SHAPE"){
       if(action.shape==='open'){
-        delta.shape='open';
         delta.readMore=true;
         if(this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
+        else delta.button=null;
       } else if (action.shape==='truncated'){
-        delta.shape='truncated';
         delta.readMore=false;
         delta.button=null;
       } 
     } else if(action.type==="CHILD_SHAPE_CHANGED"  && action.distance >= 2){
         delta.readMore=false; // if the user is working on stuff further below, close the readmore
+        delta.button=uim.button; // keep the button status
     }
      else 
       return null;  // if you don't handle the type, let the default handlers prevail
+    //calculate the shape based on button and readMore
+    delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     // calculate the pathPart and return the new state
     let parts=[];
     if(delta.readMore) parts.push('r');
