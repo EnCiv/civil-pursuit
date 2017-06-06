@@ -261,9 +261,9 @@ export class UserInterfaceManager extends React.Component {
 
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes state", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes props", this.id, this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
-        logger.trace("UserInterfaceManager.shouldComponentUpdate no", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {console.info("UserInterfaceManager.shouldComponentUpdate yes state", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {console.info("UserInterfaceManager.shouldComponentUpdate yes props", this.id, this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        console.info("UserInterfaceManager.shouldComponentUpdate no", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
