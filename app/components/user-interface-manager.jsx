@@ -154,7 +154,9 @@ export class UserInterfaceManager extends React.Component {
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
                 const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1; // 1 tells parent UIM it came from this UIM 
                 this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
-            }else{ // this is the root, after changing shape, remind me so I can update the window.histor
+            }else if(this.id!==0 && UserInterfaceManager.topState){
+                this.setState({uim: nextUIM});
+            } else { // this is the root, after changing shape, remind me so I can update the window.histor
                 if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
                 else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
             }
@@ -219,7 +221,7 @@ export class UserInterfaceManager extends React.Component {
             this.setState(this.getDefaultState()); // after clearing thechildren clear this state
             return null;
         } else if(action.type==="RESET_SHAPE") {  // clear the path and reset the UIM state back to what the constructor would
-            this.setState(this.getDefaultState()); // after clearing thechildren clear this state
+            this.setState(this.getDefaultState()); //
             return null;
         }else if(action.type==="CHANGE_SHAPE"){ // change the shape if it needs to be changed
             nextUIM=Object.assign({},this.getDefaultState().uim,{shape: action.shape}); // 
@@ -347,7 +349,7 @@ export class UserInterfaceManagerClient extends React.Component {
         let sent = false;
         Object.keys(this.toChild).forEach(child => { // only child panels with UIM managers will have entries in this list. 
           if (child === key) { sent = true; this.toChild[child](action); }
-          else this.toChild[child]({ type: "CHANGE_SHAPE", shape: shape === 'open' ? 'truncated' : shape }); // only one button panel is open, any others are truncated (but inactive)
+          else this.toChild[child]({ type: "RESET_SHAPE" }); // only one button panel is open, any others are truncated (but inactive)
         });
         if (key && !sent) logger.error("UserInterfaceManagerClient.toMeFromParent ONPOPSTATE more state but child not found", { depth: this.props.uim.depth }, { action });
       }
