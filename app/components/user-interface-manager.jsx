@@ -86,7 +86,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromChild(action) {
-        logger.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
+        console.info("UserInterfaceManager.toMeFromChild", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
         var  nextUIM={};
         if(!action.distance) action.distance=0; // action was from component so add distance
         if(action.distance < 0) {action.distance +=1; if(this.id) return this.props.uim.toParent(action); else return }
@@ -145,10 +145,10 @@ export class UserInterfaceManager extends React.Component {
             else return this.updateHistory();
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
             if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                logger.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
+                console.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
                 if(this.toChild) this.toChild({type:"CLEAR_PATH"});
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                logger.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
+                console.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
             if(this.id!==0 && !UserInterfaceManager.topState ){ // if this is not the root and this is not a root driven state change
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
@@ -187,7 +187,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     toMeFromParent(action) {
-        logger.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
+        console.info("UserInterfaceManager.toMeFromParent", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle, action, this.state.uim);
         var nextUIM={};
         if (action.type==="ONPOPSTATE") {
             let depth=(this.props.uim && this.props.uim.depth) ? this.props.uim.depth : 0;
@@ -315,7 +315,7 @@ export class UserInterfaceManagerClient extends React.Component {
       if (this.waitingOn) {
         if (this.waitingOn.action) {
           let actn = this.waitingOn.action; // don't overload action
-          logger.info("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
+          console.info("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
           this.waitingOn = null;
           setTimeout(() => this.toChild[key](actn), 0);
         } else if (this.waitingOn.nextUIM) {
