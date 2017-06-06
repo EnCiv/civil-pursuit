@@ -69,7 +69,7 @@ class UIMHarmony extends UserInterfaceManagerClient {
     const rightUIM={shape: 'truncated', depth: uim.depth, toParent: this.toMeFromChild.bind(this, 'R')};  // inserting me between my parent and my child
 
     let  contentLeft = (
-        <DoubleWide className="harmony-pro" left expanded={uim.side==='L'}>
+        <DoubleWide className="harmony-pro" left expanded={uim.side==='L'} key={item._id+'-left'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
             <UserInterfaceManager user={ user } uim={leftUIM} hideFeedback = {this.props.hideFeedback}>
               <PanelItems />
@@ -79,7 +79,7 @@ class UIMHarmony extends UserInterfaceManagerClient {
       );
 
     let contentRight = (
-        <DoubleWide className="harmony-con" right expanded={uim.side==='R'} >
+        <DoubleWide className="harmony-con" right expanded={uim.side==='R'}  key={item._id+'-right'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
             <UserInterfaceManager user={ user } uim={rightUIM} hideFeedback = {this.props.hideFeedback}>
               <PanelItems />
