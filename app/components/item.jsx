@@ -17,10 +17,21 @@ import ItemComponent from './item-component';
 // For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
 
 class Item extends React.Component {
+  constructor(props){
+    super();
+    let shape=props.uim.shape;
+    let readMore=shape==='open';
+    let button = (props.item && props.item.harmony && props.item.harmony.types && props.item.harmony.types.length) ? 'Harmony' : null;
+    let parts=[];
+    if(readMore) parts.push('r');
+    if(button) parts.push(button[0]);
+    let pathPart=parts.join(',');
+    this.initialUIM={shape, readMore, button, pathPart: [pathPart]};
+  }
   render() {
     //   console.info("Item render");
     return (
-      <UserInterfaceManager {... this.props}>
+      <UserInterfaceManager {... this.props} initialUIM={this.initialUIM}>
         <UIMItem />
       </UserInterfaceManager>
     );
@@ -30,7 +41,6 @@ export default Item;
 
 
 class UIMItem extends UserInterfaceManagerClient {
-
   state = { hint: false, minHeight: null }; //
   constructor(props){
     var uimProps={uim: props.uim};
@@ -128,7 +138,7 @@ class UIMItem extends UserInterfaceManagerClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
-    if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore && !UserInterfaceManager.topState ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
+    //if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.
