@@ -81,6 +81,10 @@ class UIMItem extends UserInterfaceManagerClient {
       if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
       else if(!delta.readMore && uim.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
       else delta.button=uim.button; // othewise keep button the same
+    } else  if (action.type === "ITEM_DELVE") {
+      delta.readMore=true;
+      if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';
+      else delta.button=null;
     } else  if (action.type === "FINISH_PROMOTE") {
       if(action.winner && action.winner._id===this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore=true;

@@ -81,9 +81,10 @@ class UIMPromote extends UserInterfaceManagerClient {
             this.insertUpvotes(winner._id);
             delta.cursor=cursor; //Promote.initialUIM;  don't change left and right - it will cause a rerender and don't remove path it will cause a clear path
             if(winner._id === this.props.item._id){ // voted up the one we started with
-                setTimeout(()=>this.props.uim.toParent({type: "TOGGLE_BUTTON", button: "Subtype", distance: -1}),0);
+                setTimeout(()=>this.props.uim.toParent({type: "ITEM_DELVE", distance: -1}),0);
             } else { // voted up a different one
-                setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
+                setTimeout(()=>this.props.uim.toParent({type: "ITEM_DELVE", item: winner, distance: -2}),0);
+                //setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
             }
           }
         } else return null; // don't know the action type so let the default handler have it
