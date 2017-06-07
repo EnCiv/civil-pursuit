@@ -130,7 +130,7 @@ export class UserInterfaceManager extends React.Component {
                 setTimeout(()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}),0);
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim);
-                if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory();
+                if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { console.info("UserInterfaceManager.toMeFromChild CONTINUE_SET_PATH updateHistory"); this.updateHistory()};
             }
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
             if(UserInterfaceManager.pathPart.length) {
@@ -138,12 +138,12 @@ export class UserInterfaceManager extends React.Component {
                 this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}));
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim, action.nextUIM);
-                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else this.updateHistory() });
+                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { console.info("UserInterfaceManager.toMeFromChild  SET_STATE_AND_CONTINUE last one updateHistory");this.updateHistory()} });
             }
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else {
-                console.info("UserInterfaceManager.toMeFromChild SET PATH COMPLETED");
+                console.info("UserInterfaceManager.toMeFromChild SET PATH COMPLETED, updateHistory");
                 UserInterfaceManager.topState=null;
                 return this.updateHistory();
             }
@@ -161,8 +161,8 @@ export class UserInterfaceManager extends React.Component {
             }else if(this.id!==0){
                 this.setState({uim: nextUIM});
             } else { // this is the root, after changing shape, remind me so I can update the window.histor
-                if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
-                else this.setState({uim: nextUIM}); // otherwise, set the state and let history update on componentDidUpdate
+                if(equaly(this.state.uim,nextUIM)) setTimeout(()=>{ console.info("UserInterfaceManager.toMeFromChild actionToState equaly updateHistory", action);this.updateHistory()},0); // if no change update history
+                else this.setState({uim: nextUIM},()=>{ console.info("UserInterfaceManager.toMeFromChild actionToState setState updateHistory", action);this.updateHistory()}); // otherwise, set the state and let history update on componentDidUpdate
             }
         } 
         // these actions are overridden by the component's actonToState if either there is and it returns a newUIM to set (not null)
@@ -174,7 +174,7 @@ export class UserInterfaceManager extends React.Component {
                 }if(this.id!==0){ // don't propogate a change
                     this.setState({uim: nextUIM});
                 }else // this is the root, change state and then update history
-                    this.setState({uim: nextUIM}, ()=>this.updateHistory());
+                    this.setState({uim: nextUIM}, ()=>{ console.info("UserInterfaceManager.toMeFromChild CHANGE_SHAPE updateHistory");this.updateHistory()});
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
             logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim && this.props.uim.depth);
@@ -183,7 +183,7 @@ export class UserInterfaceManager extends React.Component {
                 this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: this.state.uim.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId. This shape hasn't changed
             } else { // this is the root UIM, update history.state
                 logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim && this.props.uim.depth);
-                setTimeout(()=>this.updateHistory(),0);
+                setTimeout(()=>{ console.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED default updateHistory");this.updateHistory()},0);
             }
         } else { // the action was not understood, send it up
             if(this.id) { action.distance+=1; return this.props.uim.toParent(action); }
@@ -221,7 +221,7 @@ export class UserInterfaceManager extends React.Component {
                 }if(this.id!==0){
                     this.setState({uim: nextUIM}); // inhibit CHILD_SHAPE_CHANGED
                 }else // no parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>this.updateHistory());
+                    this.setState({uim: nextUIM}, ()=>{ console.info("UserInterfaceManager.toMeFromParent CONTINUE_SET_PATH updateHistory");this.updateHistory()});
             } // no change, nothing to do
             return null;
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
@@ -264,8 +264,8 @@ export class UserInterfaceManager extends React.Component {
     }
 
     componentDidUpdate(){
-        console.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName, this.title);
-        if((this.id===0) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
+        console.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle);
+//        if((this.id===0) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>{ console.info("UserInterfaceManager.componentDidUpdate updateHistory");this.updateHistory()},0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
     }
 
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
