@@ -216,8 +216,10 @@ export class UserInterfaceManager extends React.Component {
             return stack;
         } else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "PARENT"))!==null)){
             if(!equaly(this.state.uim, nextUIM)) { // really the shape changed
-                if(this.id!==0) {// if there's a parent to tell of the change
+                if(this.id!==0 && !action.toBeContinued) {// if there's a parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1}));
+                }if(this.id!==0){
+                    this.setState({uim: nextUIM}); // inhibit CHILD_SHAPE_CHANGED
                 }else // no parent to tell of the change
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
@@ -242,7 +244,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     updateHistory() {
-        logger.trace("UserInterfaceManager.updateHistory",  this.id);
+        console.info("UserInterfaceManager.updateHistory",  this.id);
         if(typeof window === 'undefined') { logger.trace("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
         if(this.id!==0) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
@@ -262,7 +264,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     componentDidUpdate(){
-        logger.trace("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName);
+        console.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName, this.title);
         if((this.id===0) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
     }
 
