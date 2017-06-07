@@ -376,7 +376,7 @@ export class UserInterfaceManagerClient extends React.Component {
             type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action) => {
                 console.info("UserInterfaceManager.toMeFromParent SET_PATH ... closuer", this.props.uim[this.keyField], key);
               if (this.toChild[this.props.uim[this.keyField]]) this.toChild[this.props.uim[this.keyField]](action)
-              else this.waitingOn = {action};
+              else this.waitingOn = {nextUIM, nextFunc: ()=>{console.info("closure in closure",this.props.uim[this.keyField]); this.toChild[this.props.uim[this.keyField]](action)}};
             }
           });
         } else {
