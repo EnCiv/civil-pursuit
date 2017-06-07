@@ -38,7 +38,7 @@ class UIMHarmony extends UserInterfaceManagerClient {
   // this is where component specific actions are converted to component specific states
   //
 
-  setPath(action) {
+  segmentToState(action) {
     var side = action.segment;
     var nextUIM = { shape: 'open', side: side, pathSegment: side };
     return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.

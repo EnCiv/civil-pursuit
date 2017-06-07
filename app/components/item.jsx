@@ -48,7 +48,7 @@ class UIMItem extends UserInterfaceManagerClient {
     if(props.item && props.item.subject) {  this.title=props.item.subject; this.props.uim.toParent({type: "SET_TITLE", title: this.title});}
   }
 
-  setPath(action){  //UIM is setting the initial path. Take your pathSegment and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
+  segmentToState(action){  //UIM is setting the initial path. Take your pathSegment and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
     var nextUIM={shape: 'truncated', pathSegment: action.segment};
     let parts=action.segment.split(',');
     let button=null;

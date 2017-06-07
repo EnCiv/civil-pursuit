@@ -44,7 +44,7 @@ class UIMPromote extends UserInterfaceManagerClient {
     // this is where component specific actions are converted to component specific states
     //
 
-    setPath(action) {
+    segmentToState(action) {
         const lookup = { l: 'left', r: 'right' }
         var parts = action.segment.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 

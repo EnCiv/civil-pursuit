@@ -362,7 +362,7 @@ export class UserInterfaceManagerClient extends React.Component {
         this.toChild[child](action)
       });
     } else if (action.type === "SET_PATH") {
-      const { nextUIM, setBeforeWait } = this.setPath(action);
+      const { nextUIM, setBeforeWait } = this.segmentToState(action);
       if (nextUIM[this.keyField]) {
         let key = nextUIM[this.keyField];
         if (this.toChild[key]) this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
