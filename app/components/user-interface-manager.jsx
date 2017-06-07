@@ -32,7 +32,7 @@ export class UserInterfaceManager extends React.Component {
 
     constructor(props) {
         super(props);
-        //console.info("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
+        //logger.trace("UserInterfaceManager.constructor", this.constructor.name, this.props.uim, this.props.initialUIM);
         this.toChild=null;
         this.childName='';
         this.childTitle='';
@@ -81,7 +81,7 @@ export class UserInterfaceManager extends React.Component {
         if(event.state && event.state.stateStack) {
             UserInterfaceManager.topState="ONPOPSTATE";
             this.toMeFromParent({type: "ONPOPSTATE", event: event});
-            console.info("UserInterfaceManager.onpopsate: returned.")
+            logger.trace("UserInterfaceManager.onpopsate: returned.")
             UserInterfaceManager.topState=null;
         }
     }
@@ -96,7 +96,7 @@ export class UserInterfaceManager extends React.Component {
             if(action.name) this.childName=action.name;
             if(action.actionToState) this.actionToState=action.actionToState; 
             if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
-                console.info("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
+                logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
                 setTimeout(()=>{
                     UserInterfaceManager.topState="SET_PATH";
                     this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
@@ -130,7 +130,7 @@ export class UserInterfaceManager extends React.Component {
                 setTimeout(()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}),0);
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim);
-                if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { console.info("UserInterfaceManager.toMeFromChild CONTINUE_SET_PATH updateHistory"); this.updateHistory()};
+                if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { logger.trace("UserInterfaceManager.toMeFromChild CONTINUE_SET_PATH updateHistory"); this.updateHistory()};
             }
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
             if(UserInterfaceManager.pathPart.length) {
@@ -138,21 +138,21 @@ export class UserInterfaceManager extends React.Component {
                 this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}));
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim, action.nextUIM);
-                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { console.info("UserInterfaceManager.toMeFromChild  SET_STATE_AND_CONTINUE last one updateHistory");this.updateHistory()} });
+                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { logger.trace("UserInterfaceManager.toMeFromChild  SET_STATE_AND_CONTINUE last one updateHistory");this.updateHistory()} });
             }
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else {
-                console.info("UserInterfaceManager.toMeFromChild SET PATH COMPLETED, updateHistory");
+                logger.trace("UserInterfaceManager.toMeFromChild SET PATH COMPLETED, updateHistory");
                 UserInterfaceManager.topState=null;
                 return this.updateHistory();
             }
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
             if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                console.info("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
+                logger.trace("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
                 if(this.toChild) this.toChild({type:"CLEAR_PATH"});
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                console.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
+                logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
             if(this.id!==0 && !UserInterfaceManager.topState && !action.toBeContinued ){ // if this is not the root and this is not a root driven state change
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
@@ -161,8 +161,8 @@ export class UserInterfaceManager extends React.Component {
             }else if(this.id!==0){
                 this.setState({uim: nextUIM});
             } else { // this is the root, after changing shape, remind me so I can update the window.histor
-                if(equaly(this.state.uim,nextUIM)) { console.info("UserInterfaceManager.toMeFromChild actionToState equaly updateHistory", action);this.updateHistory()} // updateHistory now!
-                else this.setState({uim: nextUIM},()=>{ console.info("UserInterfaceManager.toMeFromChild actionToState setState updateHistory", action);this.updateHistory()}); // otherwise, set the state and let history update on componentDidUpdate
+                if(equaly(this.state.uim,nextUIM)) { logger.trace("UserInterfaceManager.toMeFromChild actionToState equaly updateHistory", action);this.updateHistory()} // updateHistory now!
+                else this.setState({uim: nextUIM},()=>{ logger.trace("UserInterfaceManager.toMeFromChild actionToState setState updateHistory", action);this.updateHistory()}); // otherwise, set the state and let history update on componentDidUpdate
             }
         } 
         // these actions are overridden by the component's actonToState if either there is and it returns a newUIM to set (not null)
@@ -174,7 +174,7 @@ export class UserInterfaceManager extends React.Component {
                 }if(this.id!==0){ // don't propogate a change
                     this.setState({uim: nextUIM});
                 }else // this is the root, change state and then update history
-                    this.setState({uim: nextUIM}, ()=>{ console.info("UserInterfaceManager.toMeFromChild CHANGE_SHAPE updateHistory");this.updateHistory()});
+                    this.setState({uim: nextUIM}, ()=>{ logger.trace("UserInterfaceManager.toMeFromChild CHANGE_SHAPE updateHistory");this.updateHistory()});
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
             logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState",this.id, this.props.uim && this.props.uim.depth);
@@ -183,7 +183,7 @@ export class UserInterfaceManager extends React.Component {
                 this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: this.state.uim.shape, distance: action.distance+1}); // pass a new action, not a copy including internal properties like itemId. This shape hasn't changed
             } else { // this is the root UIM, update history.state
                 logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED not handled by actionToState at root",this.id, this.props.uim && this.props.uim.depth);
-                setTimeout(()=>{ console.info("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED default updateHistory");this.updateHistory()},0);
+                setTimeout(()=>{ logger.trace("UserInterfaceManager.toMeFromChild CHILD_SHAPE_CHANGED default updateHistory");this.updateHistory()},0);
             }
         } else { // the action was not understood, send it up
             if(this.id) { action.distance+=1; return this.props.uim.toParent(action); }
@@ -221,7 +221,7 @@ export class UserInterfaceManager extends React.Component {
                 }if(this.id!==0){
                     this.setState({uim: nextUIM}); // inhibit CHILD_SHAPE_CHANGED
                 }else // no parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>{ console.info("UserInterfaceManager.toMeFromParent CONTINUE_SET_PATH updateHistory");this.updateHistory()});
+                    this.setState({uim: nextUIM}, ()=>{ logger.trace("UserInterfaceManager.toMeFromParent CONTINUE_SET_PATH updateHistory");this.updateHistory()});
             } // no change, nothing to do
             return null;
         } else if(action.type==="CLEAR_PATH") {  // clear the path and reset the UIM state back to what the constructor would
@@ -244,7 +244,7 @@ export class UserInterfaceManager extends React.Component {
     }
 
     updateHistory() {
-        console.info("UserInterfaceManager.updateHistory",  this.id);
+        logger.trace("UserInterfaceManager.updateHistory",  this.id);
         if(typeof window === 'undefined') { logger.trace("UserInterfaceManager.updateHistory called on servr side, ignoring"); return; }
         if(this.id!==0) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
@@ -263,16 +263,11 @@ export class UserInterfaceManager extends React.Component {
         return null;
     }
 
-    componentDidUpdate(){
-        console.info("UserInterfaceManager.componentDidUpdate", this.id, this.props.uim && this.props.uim.depth, this.childName, this.childTitle);
-//        if((this.id===0) && UserInterfaceManager.pathPart.length===0) setTimeout(()=>{ console.info("UserInterfaceManager.componentDidUpdate updateHistory");this.updateHistory()},0); // only do this if the root, only if not processing a pathPart, and do it after the current queue has completed
-    }
-
     /***  don't rerender if no change in state or props, use a logically equivalent check for state so that undefined and null are equivalent. Make it a deep compare in case apps want deep objects in their state ****/
     shouldComponentUpdate(newProps, newState) {
-        if(!equaly(this.state,newState)) {console.info("UserInterfaceManager.shouldComponentUpdate yes state", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
-        if(!shallowequal(this.props, newProps)) {console.info("UserInterfaceManager.shouldComponentUpdate yes props", this.id, this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
-        console.info("UserInterfaceManager.shouldComponentUpdate no", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
+        if(!equaly(this.state,newState)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes state", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.state,newState); return true;}
+        if(!shallowequal(this.props, newProps)) {logger.trace("UserInterfaceManager.shouldComponentUpdate yes props", this.id, this.props.uim && this.props.uim.depth, this.childName, this.props, newProps); return true;}
+        logger.trace("UserInterfaceManager.shouldComponentUpdate no", this.id, this.props.uim && this.props.uim.depth, this.childName,  this.props, newProps, this.state, newState);
         return false;
     }
 
@@ -302,7 +297,7 @@ export default UserInterfaceManager;
 export class UserInterfaceManagerClient extends React.Component {
 
   constructor(props, keyField='key') {
-    //console.info("UserInterfaceManagerClient.constructor", props, keyField);
+    //logger.trace("UserInterfaceManagerClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
     this.waitingOn=null;
@@ -336,7 +331,7 @@ export class UserInterfaceManagerClient extends React.Component {
     } else {
         action[this.keyField] = key; // actionToState may need to know the child's id
         var result =this.props.uim.toParent(action);
-        // console.info(this.constructor.name, this.title, action,'->', this.props.uim);
+        // logger.trace(this.constructor.name, this.title, action,'->', this.props.uim);
         return result;
     }
   }

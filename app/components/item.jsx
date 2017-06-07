@@ -163,7 +163,7 @@ class UIMItem extends UserInterfaceManagerClient {
       if (this.props.item.subject !== newProps.item.subject) return true;
       if (this.props.item.description !== newProps.item.description) return true;
     }
-    console.info("Item.shouldComponentUpdate", this.props.uim.depth, this.title, "no", this.props, newProps, this.state, newState);
+    logger.trace("Item.shouldComponentUpdate", this.props.uim.depth, this.title, "no", this.props, newProps, this.state, newState);
     return false;
   }
   /***/
@@ -251,7 +251,7 @@ class UIMItem extends UserInterfaceManagerClient {
 
     let noReference = true;
 
-    console.info("UIMItem render", this.props.uim.depth, this.title, this.props);
+    //console.info("UIMItem render", this.props.uim.depth, this.title, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
