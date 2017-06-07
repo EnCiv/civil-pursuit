@@ -263,6 +263,7 @@ class UIMItem extends UserInterfaceManagerClient {
       noReference = false;
     }
     var renderPanel = (button, active)=>{
+        console.info("UIMItem.renderPanel",button,active);
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
                     uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
                     item={item} active={active} style={style} />);
