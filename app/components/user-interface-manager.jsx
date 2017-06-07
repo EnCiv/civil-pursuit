@@ -143,7 +143,7 @@ export class UserInterfaceManager extends React.Component {
         }else if(action.type==="SET_PATH_COMPLETE") {
             if(this.id!==0) return this.props.uim.toParent({type: "SET_PATH_COMPLETE"});
             else {
-                console.info("SET PATH COMPLETED");
+                console.info("UserInterfaceManager.toMeFromChild SET PATH COMPLETED");
                 UserInterfaceManager.topState=null;
                 return this.updateHistory();
             }
@@ -154,11 +154,11 @@ export class UserInterfaceManager extends React.Component {
             } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
                 console.info("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
             }                 
-            if(this.id!==0 && !UserInterfaceManager.topState ){ // if this is not the root and this is not a root driven state change
+            if(this.id!==0 && !UserInterfaceManager.topState && !action.toBeContinued ){ // if this is not the root and this is not a root driven state change
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
                 const distance= (action.type === "CHILD_SHAPE_CHANGED") ? action.distance+1 : 1; // 1 tells parent UIM it came from this UIM 
                 this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: nextUIM.shape, distance: distance}));
-            }else if(this.id!==0 && UserInterfaceManager.topState){
+            }else if(this.id!==0){
                 this.setState({uim: nextUIM});
             } else { // this is the root, after changing shape, remind me so I can update the window.histor
                 if(equaly(this.state.uim,nextUIM)) setTimeout(()=>this.updateHistory(),0); // if no change update history
@@ -169,9 +169,11 @@ export class UserInterfaceManager extends React.Component {
         else if(action.type ==="CHANGE_SHAPE"){  
             if(this.state.uim.shape!==action.shape){ // really the shape changed
                 var nextUIM=Object.assign({}, this.state.uim, {shape: action.shape});
-                if(this.id!==0 && !UserInterfaceManager.topState ) {// if there's a parent to tell of the change
-                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1})); // add an extra one
-                }else // no parent to tell of the change
+                if(this.id!==0 && !UserInterfaceManager.topState  && !action.toBeContinued ) {// if there's a parent to tell of the change and we are not inhibiting shape_changed
+                    this.setState({uim: nextUIM}, ()=>this.props.uim.toParent({type: "CHILD_SHAPE_CHANGED", shape: action.shape, distance: 1})); 
+                }if(this.id!==0){ // don't propogate a change
+                    this.setState({uim: nextUIM});
+                }else // this is the root, change state and then update history
                     this.setState({uim: nextUIM}, ()=>this.updateHistory());
             } // no change, nothing to do
         } else if(action.type==="CHILD_SHAPE_CHANGED"){
@@ -231,10 +233,11 @@ export class UserInterfaceManager extends React.Component {
             nextUIM=Object.assign({},this.getDefaultState().uim,{shape: action.shape}); // 
             this.setState({uim: nextUIM});
             return null;
+        }else if(action.type==="SET_PATH"){ // let child handle this one without complaint
+            return this.toChild(action);
         }else {
             logger.error("UserInterfaceManager.toMeFromParent: Unknown Action",{action}, {state: this.state});
-            this.toChild(action);
-            return null;
+            return this.toChild(action);
         }   
     }
 
