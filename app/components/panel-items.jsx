@@ -92,6 +92,13 @@ class PanelItems extends UserInterfaceManagerClient {
         Object.assign(nextUIM, uim, delta); // if shape is not truncated, do so
       }
     } else if (action.type === "ITEM_DELVE") {
+      Object.assign(nextUIM, uim); // no state change
+      if(uim.shortId) {
+        var nextFunc = () => this.toChild[uim.shortId](action);
+        if (this.toChild[uim.shortId]) setTimeout(nextFunc, 0);
+        else this.waitingOn = { nextUIM: nextUIM, nextFunc: nextFunc };
+      }
+    } else if (action.type === "SHOW_ITEM") {
       if (!this.props.panel.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
         this.props.panel.items.push(action.item);
       }
@@ -99,9 +106,6 @@ class PanelItems extends UserInterfaceManagerClient {
       delta.shape = 'open';
       delta.pathPart = [delta.shortId];
       Object.assign(nextUIM, uim, delta);
-      var nextFunc = () => this.toChild[delta.shortId]({ type: "ITEM_DELVE"});
-      if (this.toChild[delta.shortId]) setTimeout(nextFunc, 0);
-      else this.waitingOn = { nextUIM: nextUIM, nextFunc: nextFunc };
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.trace("PanelItems.actionToState return", { nextUIM })
     return nextUIM;

@@ -83,7 +83,10 @@ class UIMPromote extends UserInterfaceManagerClient {
             if(winner._id === this.props.item._id){ // voted up the one we started with
                 setTimeout(()=>this.props.uim.toParent({type: "ITEM_DELVE", distance: -1}),0);
             } else { // voted up a different one
-                setTimeout(()=>this.props.uim.toParent({type: "ITEM_DELVE", item: winner, distance: -2}),0);
+                setTimeout(()=>{
+                    this.props.uim.toParent({type: "SHOW_ITEM", item: winner, distance: -2})
+                    setTimeout(()=>this.props.uim.toParent({type: "ITEM_DELVE", distance: -2}),0); // needs to go to the panel above this item
+                },0);
                 //setTimeout(()=>this.props.uim.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
             }
           }
