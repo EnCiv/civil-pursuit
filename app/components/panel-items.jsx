@@ -95,7 +95,7 @@ class PanelItems extends UserInterfaceManagerClient {
       Object.assign(nextUIM, uim); // no state change
       if(uim.shortId) {
         var nextFunc = () => this.toChild[uim.shortId](action);
-        if (this.toChild[uim.shortId]) setTimeout(nextFunc, 0);
+        if (this.toChild[uim.shortId]) nextFunc(); // update child before propogating up
         else this.waitingOn = { nextUIM: nextUIM, nextFunc: nextFunc };
       }
     } else if (action.type === "SHOW_ITEM") {
