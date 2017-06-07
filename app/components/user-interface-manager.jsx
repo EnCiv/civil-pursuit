@@ -348,7 +348,7 @@ export class UserInterfaceManagerClient extends React.Component {
         let sent = false;
         Object.keys(this.toChild).forEach(child => { // only child panels with UIM managers will have entries in this list. 
           if (child === key) { sent = true; this.toChild[child](action); }
-          else this.toChild[child]({ type: "RESET_SHAPE" }); // only one button panel is open, any others are truncated (but inactive)
+          else this.toChild[child]({ type: "CLEAR_PATH" }); // only one button panel is open, any others are truncated (but inactive)
         });
         if (key && !sent) logger.error("UserInterfaceManagerClient.toMeFromParent ONPOPSTATE more state but child not found", { depth: this.props.uim.depth }, { action });
       }
