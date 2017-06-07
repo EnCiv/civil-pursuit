@@ -161,7 +161,7 @@ export class UserInterfaceManager extends React.Component {
             }else if(this.id!==0){
                 this.setState({uim: nextUIM});
             } else { // this is the root, after changing shape, remind me so I can update the window.histor
-                if(equaly(this.state.uim,nextUIM)) setTimeout(()=>{ console.info("UserInterfaceManager.toMeFromChild actionToState equaly updateHistory", action);this.updateHistory()},0); // if no change update history
+                if(equaly(this.state.uim,nextUIM)) { console.info("UserInterfaceManager.toMeFromChild actionToState equaly updateHistory", action);this.updateHistory()} // updateHistory now!
                 else this.setState({uim: nextUIM},()=>{ console.info("UserInterfaceManager.toMeFromChild actionToState setState updateHistory", action);this.updateHistory()}); // otherwise, set the state and let history update on componentDidUpdate
             }
         } 
