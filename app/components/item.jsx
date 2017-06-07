@@ -262,11 +262,10 @@ class UIMItem extends UserInterfaceManagerClient {
       referenceTitle = item.references[0].title;
       noReference = false;
     }
-    var renderPanel = (button, active)=>{
-        console.info("UIMItem.renderPanel",button,active);
+    var renderPanel = (button)=>{
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
                     uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
-                    item={item} active={active} style={style} />);
+                    item={item} active={uim.button===button && shape==='open'} style={style} />);
     }
 
     var renderButton = (button)=>{
@@ -309,7 +308,7 @@ class UIMItem extends UserInterfaceManagerClient {
           <section style={{ clear: 'both' }}>
           </section>
           <section className={ClassNames("item-footer", classShape)}>
-            { buttons ? buttons.map(button => renderPanel(button, uim.button===button && shape==='open')) : null } {/*active is calculated here to try to keep changes from getting optomized out*/}
+            { buttons ? buttons.map(button => renderPanel(button)) : null }
           </section>
         </article>
     );
