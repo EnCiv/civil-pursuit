@@ -367,13 +367,8 @@ export class UserInterfaceManagerClient extends React.Component {
         let key = nextUIM[this.keyField];
         if (this.toChild[key]) this.props.uim.toParent({ type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
         else if (setBeforeWait) {
-          this.props.uim.toParent({
-            type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action) => {
-                console.info("UserInterfaceManager.toMeFromParent SET_PATH ... closuer", this.props.uim[this.keyField], key);
-              if (this.toChild[key]) this.toChild[key](action)
-              else this.waitingOn = {nextUIM, nextFunc: ()=>{console.info("closure in closure",key); this.toChild[key](action)}};
-            }
-          });
+            this.waitingOn={nextUIM, nextFunc: ()=>this.props.uim.toParent({type: "CONTINUE_SET_PATH", function: this.toChild[key]})};
+            this.props.uim.toParent({type: "SET_STATE", nextUIM});       
         } else {
           logger.trace("UserInterfaceManagerClient.toMeFromParent SET_PATH waitingOn", nextUIM);
           this.waitingOn = {nextUIM};
