@@ -262,21 +262,14 @@ class UIMItem extends UserInterfaceManagerClient {
       referenceTitle = item.references[0].title;
       noReference = false;
     }
-    var renderButtons=null, renderPanels=null;
+    var renderPanel = (button)=>{
+        return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
+                    uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
+                    item={item} active={uim.button===button && shape==='open'} style={style} />);
+    }
 
-    if(shape!=='collapsed'){ // render the buttons if this item is visible
-      renderButtons = buttons ? buttons.map(button => {
-                          return (<ItemComponent {...this.props} component={button} part={'button'}  active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
-                        })
-                      : null;
-
-                      // using key here to make sure things get rendered
-      renderPanels = buttons ? buttons.map(button => {
-                  return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
-                  uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
-                  item={item} active={uim.button===button && shape==='open'} style={style} />);
-                })
-                : null;
+    var renderButton = (button)=>{
+      return (<ItemComponent {...this.props} component={button} part={'button'}  active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);  
     }
 
     return (
@@ -289,7 +282,7 @@ class UIMItem extends UserInterfaceManagerClient {
             <section className={ClassNames("item-text", classShape)} ref='itemText'>
               <section className={ClassNames("item-buttons", classShape)} ref='buttons'>
                 <ItemStore item={item}>
-                  { renderButtons }
+                  { buttons ? buttons.map(button => renderButton(button)) : null }
                 </ItemStore>
               </section>
               <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
@@ -315,7 +308,7 @@ class UIMItem extends UserInterfaceManagerClient {
           <section style={{ clear: 'both' }}>
           </section>
           <section className={ClassNames("item-footer", classShape)}>
-            { renderPanels }
+            { buttons ? buttons.map(button => renderPanel(button)) : null }
           </section>
         </article>
     );
