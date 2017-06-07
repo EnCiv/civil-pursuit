@@ -317,12 +317,7 @@ export class UserInterfaceManagerClient extends React.Component {
     if (action.type === "SET_TO_CHILD") { // child is passing up her func
       this.toChild[key] = action.function; // don't pass this to parent
       if (this.waitingOn) {
-        if (this.waitingOn.action) {
-          let actn = this.waitingOn.action; // don't overload action
-          console.info("UserInterfaceManagerClient.toMeFromChild got waitingOn action", actn);
-          this.waitingOn = null;
-          setTimeout(() => this.toChild[key](actn), 0);
-        } else if (this.waitingOn.nextUIM) {
+        if (this.waitingOn.nextUIM) {
           let nextUIM = this.waitingOn.nextUIM;
           if (key === nextUIM[this.keyField] && this.toChild[key]) {
             logger.trace("UserInterfaceManagerClient.toMeFromParent got waitingOn nextUIM", nextUIM);
@@ -375,8 +370,8 @@ export class UserInterfaceManagerClient extends React.Component {
           this.props.uim.toParent({
             type: 'SET_STATE_AND_CONTINUE', nextUIM: nextUIM, function: (action) => {
                 console.info("UserInterfaceManager.toMeFromParent SET_PATH ... closuer", this.props.uim[this.keyField], key);
-              if (this.toChild[this.props.uim[this.keyField]]) this.toChild[this.props.uim[this.keyField]](action)
-              else this.waitingOn = {nextUIM, nextFunc: ()=>{console.info("closure in closure",this.props.uim[this.keyField]); this.toChild[this.props.uim[this.keyField]](action)}};
+              if (this.toChild[key]) this.toChild[key](action)
+              else this.waitingOn = {nextUIM, nextFunc: ()=>{console.info("closure in closure",key); this.toChild[key](action)}};
             }
           });
         } else {
