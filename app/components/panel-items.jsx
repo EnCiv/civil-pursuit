@@ -112,8 +112,10 @@ class PanelItems extends UserInterfaceManagerClient {
   setPath(action) {
     var nextUIM={shape: 'truncated', pathPart: [action.part]};
     var shortId = action.part;
-    if(!shortId) logger.error("PanelItems.setPath no shortId found");
-    var nextUIM = { shape: 'open', shortId: shortId, pathPart: [shortId] };
+    if(!shortId) console.error("PanelItems.setPath no shortId found");
+    else {
+      nextUIM.shape='open'; nextUIM.shortId=shortId 
+    }
     return { nextUIM, setBeforeWait: true }
   }
 
