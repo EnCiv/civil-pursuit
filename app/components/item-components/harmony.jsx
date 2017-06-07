@@ -52,7 +52,7 @@ exports.panel = class HarmonyPanel extends React.Component {
       this.mounted = true;
 
       return (
-        <div className="toggler harmony">
+        <div className="toggler harmony" key={item._id+'-toggler-'+this.constructor.name}>
           <Accordion
             active={active}
             style={style}

@@ -69,7 +69,7 @@ exports.panel = class PromotePanel extends React.Component {
       this.mounted = true;
       // using key below to foce rerendering of evaluations for each new item to be evaluated.  Otherwise React just reuses the last set. 
       return (
-        <div className="toggler promote">
+        <div className="toggler promote"  key={item._id+'-toggler-'+this.constructor.name}>
           <Accordion 
             active={active}
             style={style}

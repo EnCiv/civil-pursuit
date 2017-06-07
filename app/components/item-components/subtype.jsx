@@ -64,7 +64,7 @@ exports.panel = class SubtypePanel extends React.Component {
     else {
       this.mounted = true;
       return (
-        <div className="toggler subtype">
+        <div className="toggler subtype" key={item._id+'-toggler-'+this.constructor.name}>
           <Accordion
             active={active}
             style={style}
