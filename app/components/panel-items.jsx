@@ -180,7 +180,7 @@ class PanelItems extends UserInterfaceManagerClient {
               );
             }
             return (
-              <Accordion active={(uim.shape === 'open' && uim.shortId === item.id) || uim.shape === 'truncated'} name='item'>
+              <Accordion active={(uim.shape === 'open' && uim.shortId === item.id) || uim.shape === 'truncated'} name='item' key={item._id +'-panel-item'}>
                 {this.mounted[item.id]}
               </Accordion>
             );
