@@ -58,9 +58,9 @@ class PanelItems extends UserInterfaceManagerClient {
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
-          delta.pathPart = [action.shortId];
+          delta.pathSegment = action.shortId;
         } else {
-          delta.pathPart = [];
+          delta.pathSegment = null;
           delta.shortId = null; // turn off the shortId
         } delta.shape = action.shape;
         Object.assign(nextUIM, uim, delta);
@@ -82,11 +82,11 @@ class PanelItems extends UserInterfaceManagerClient {
             this.toChild[uim.shortId]({ type: "CHANGE_SHAPE", shape: 'truncated' });
             delta.shape = 'truncated';
             delta.shortId = null;
-            delta.pathPart = ['Creator'];
+            delta.pathSegment = 'Creator';
           } else {
             Object.assign(nextUIM, nextUIM, { shape: 'truncated' });
             delta.shape = 'truncated';
-            delta.pathPart = [];
+            delta.pathSegment = null;
           }
         }
         Object.assign(nextUIM, uim, delta); // if shape is not truncated, do so
@@ -104,18 +104,18 @@ class PanelItems extends UserInterfaceManagerClient {
       }
       delta.shortId = action.item.id;
       delta.shape = 'open';
-      delta.pathPart = [delta.shortId];
+      delta.pathSegment = delta.shortId;
       Object.assign(nextUIM, uim, delta);
     } else return null; // don't know this action, null so the default methods can have a shot at it
     logger.trace("PanelItems.actionToState return", { nextUIM })
     return nextUIM;
   }
 
-  // set the state from the pathPart. 
-  // the shortId is the path part
+  // set the state from the pathSegment. 
+  // the shortId is the path segment
   setPath(action) {
-    var nextUIM={shape: 'truncated', pathPart: [action.part]};
-    var shortId = action.part;
+    var nextUIM={shape: 'truncated', pathSegment: action.segment};
+    var shortId = action.segment;
     if(!shortId) console.error("PanelItems.setPath no shortId found");
     else {
       nextUIM.shape='open'; nextUIM.shortId=shortId 

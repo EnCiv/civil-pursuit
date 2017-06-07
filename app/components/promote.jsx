@@ -46,9 +46,9 @@ class UIMPromote extends UserInterfaceManagerClient {
 
     setPath(action) {
         const lookup = { l: 'left', r: 'right' }
-        var parts = action.part.split(',');
+        var parts = action.segment.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
-        var nextUIM = Object.assign({}, Promote.initialUIM, { shape: 'open', side: side, pathPart: [] }); // always starts evaluation at the beginning if restoring a path
+        var nextUIM = Object.assign({}, Promote.initialUIM, { shape: 'open', side: side, pathSegment: null }); // always starts evaluation at the beginning if restoring a path
         return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
@@ -95,7 +95,7 @@ class UIMPromote extends UserInterfaceManagerClient {
         if (delta.side) parts.push(delta.side[0]); // if a side is open, include it in the partPath
         if (delta.cursor) parts.push(delta.cursor);
         else parts.push(uim.cursor);
-        delta.pathPart = [parts.join(',')]; //otherwise no path part
+        delta.pathSegment = parts.join(','); //otherwise no path part
         Object.assign(nextUIM, uim, delta);
         return nextUIM; // return the new state
     }

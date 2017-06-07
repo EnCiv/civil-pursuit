@@ -39,8 +39,8 @@ class UIMHarmony extends UserInterfaceManagerClient {
   //
 
   setPath(action) {
-    var side = action.part;
-    var nextUIM = { shape: 'open', side: side, pathPart: [side] };
+    var side = action.segment;
+    var nextUIM = { shape: 'open', side: side, pathSegment: side };
     return { nextUIM, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
@@ -52,8 +52,8 @@ class UIMHarmony extends UserInterfaceManagerClient {
       if(action.shape==='open') delta.side=action.side; // action is to open, this side is going to be the open side
       else if(action.side === uim.side) delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
       if(delta.side && uim.side && uim.side!== delta.side) this.toChild[uim.side]({type: "CHANGE_STATE", shape: 'truncated'}); // if a side is going to be open, and it's not the side that is open, close the other side
-      if(delta.side) delta.pathPart=[delta.side]; // if a side is open, include it in the partPath
-      else delta.pathPart=[]; //otherwise no path part
+      if(delta.side) delta.pathSegment=delta.side; // if a side is open, include it in the pathSegment
+      else delta.pathSegment=null; //otherwise no path segment
       Object.assign(nextUIM, uim, delta);
       return nextUIM; // return the new state
     } else return null; // don't know the action type so let the default handler have it

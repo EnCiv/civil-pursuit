@@ -46,15 +46,15 @@ export class UserInterfaceManager extends React.Component {
              UserInterfaceManager.nextId= 0;
              UserInterfaceManager.topState=null;
              if(this.props.path && this.props.path !== '/'){
-                UserInterfaceManager.pathPart= this.props.path.split('/');
+                UserInterfaceManager.pathSegments= this.props.path.split('/');
                 var root=(this.props.UIMRoot || '/h/').split('/');
-                while(!UserInterfaceManager.pathPart[UserInterfaceManager.pathPart.length-1]) UserInterfaceManager.pathPart.pop(); // '/'s at the end translate to null elements, remove them
+                while(!UserInterfaceManager.pathSegments[UserInterfaceManager.pathSegments.length-1]) UserInterfaceManager.pathSegments.pop(); // '/'s at the end translate to null elements, remove them
                 while(!root[root.length-1]) root.pop(); // '/'s at the end translate to null elements, remove them
-                if(root.some(part=>part!==UserInterfaceManager.pathPart.shift())) {logger.error("UserInterfaceManager.componentDidMount path didn't match props", root, UserInterfaceManager.pathPart )}
-             }else UserInterfaceManager.pathPart=[];
+                if(root.some(segment=>segment!==UserInterfaceManager.pathSegments.shift())) {logger.error("UserInterfaceManager.componentDidMount path didn't match props", root, UserInterfaceManager.pathSegments )}
+             }else UserInterfaceManager.pathSegments=[];
              if(typeof window !== 'undefined'){ // if we are running on the browser
                 window.onpopstate=this.onpopstate.bind(this);
-                if(UserInterfaceManager.pathPart.length===0) setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
+                if(UserInterfaceManager.pathSegments.length===0) setTimeout(()=>this.updateHistory(),0); // aftr things have settled down, update history for the first time
              }
         }
         this.id=UserInterfaceManager.nextId++; // get the next id
@@ -95,11 +95,11 @@ export class UserInterfaceManager extends React.Component {
             this.toChild = action.function;
             if(action.name) this.childName=action.name;
             if(action.actionToState) this.actionToState=action.actionToState; 
-            if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathPart.length ){ // this is the root and we are on the browser and there is at least one pathPart
-                logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathPart);
+            if((typeof window !== 'undefined') && this.id===0 && UserInterfaceManager.pathSegments.length ){ // this is the root and we are on the browser and there is at least one pathSegment
+                logger.trace("UserInterfaceManager.toMeFromChild will SET_PATH to",UserInterfaceManager.pathSegments);
                 setTimeout(()=>{
                     UserInterfaceManager.topState="SET_PATH";
-                    this.toChild({type: "SET_PATH", part: UserInterfaceManager.pathPart.shift()});
+                    this.toChild({type: "SET_PATH", segment: UserInterfaceManager.pathSegments.shift()});
                 },0); // this starts after the return toChild so it completes.
             }
         } else if (action.type==="SET_ACTION_TO_STATE") { // child component passing action to state calculator
@@ -125,17 +125,17 @@ export class UserInterfaceManager extends React.Component {
             logger.trace("UserInterfaceManager.toMeFromChild SET_TITLE", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
             this.childTitle=action.title; // this is only for pretty debugging
         }else if (action.type==="CONTINUE_SET_PATH"){
-            if(UserInterfaceManager.pathPart.length) {
+            if(UserInterfaceManager.pathSegments.length) {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
-                setTimeout(()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}),0);
+                setTimeout(()=>action.function({type: 'SET_PATH', segment: UserInterfaceManager.pathSegments.shift()}),0);
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild CONTINUE to SET_PATH last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim);
                 if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { logger.trace("UserInterfaceManager.toMeFromChild CONTINUE_SET_PATH updateHistory"); this.updateHistory()};
             }
         }else if (action.type==="SET_STATE_AND_CONTINUE"){
-            if(UserInterfaceManager.pathPart.length) {
+            if(UserInterfaceManager.pathSegments.length) {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE to SET_PATH", this.id, this.props.uim && this.props.uim.depth, action.nextUIM);
-                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', part: UserInterfaceManager.pathPart.shift()}));
+                this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)},()=>action.function({type: 'SET_PATH', segment: UserInterfaceManager.pathSegments.shift()}));
             } else {
                 logger.trace("UserInterfaceManager.toMeFromChild SET_STATE_AND_CONTINUE last one", this.id, this.props.uim && this.props.uim.depth, this.state.uim, action.nextUIM);
                 this.setState({uim: Object.assign({},this.state.uim, action.nextUIM)}, ()=>{ if(this.id!==0) this.props.uim.toParent({type: "SET_PATH_COMPLETE"}); else { logger.trace("UserInterfaceManager.toMeFromChild  SET_STATE_AND_CONTINUE last one updateHistory");this.updateHistory()} });
@@ -148,11 +148,11 @@ export class UserInterfaceManager extends React.Component {
                 return this.updateHistory();
             }
         }else if(this.actionToState && ((nextUIM=this.actionToState(action, this.state.uim, "CHILD")))!==null) {
-            if((this.state.uim.pathPart && this.state.uim.pathPart.length) && !(nextUIM.pathPart && nextUIM.pathPart.length)) {  // path has been removed
-                logger.trace("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathPart.join('/'))
+            if((this.state.uim.pathSegment) && !(nextUIM.pathSegment)) {  // path has been removed
+                logger.trace("UserInterfaceManger.toChildFromParent child changed state and path being removed so reset children", this.id, this.state.uim.pathSegment)
                 if(this.toChild) this.toChild({type:"CLEAR_PATH"});
-            } else if(!(this.state.uim.pathPart && this.state.uim.pathPart.length) && (nextUIM.pathPart && nextUIM.pathPart.length)) { // path being added
-                logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathPart.join('/'))
+            } else if(!(this.state.uim.pathSegment) && (nextUIM.pathSegment)) { // path being added
+                logger.trace("UserInterfaceManger.toChildFromParent path being added", this.id, nextUIM.pathSegment)
             }                 
             if(this.id!==0 && !UserInterfaceManager.topState && !action.toBeContinued ){ // if this is not the root and this is not a root driven state change
                 //if(equaly(this.state.uim,nextUIM)) return null; // nothing has changed so don't kick off a CHILD_SHAPE_CHANGED chain
@@ -249,7 +249,7 @@ export class UserInterfaceManager extends React.Component {
         if(this.id!==0) logger.error("UserInterfaceManager.updateHistory called but not from root", this.props.uim);
         var stateStack = { stateStack: this.toMeFromParent({ type: "GET_STATE" }) };  // recursively call me to get my state stack
         var curPath = stateStack.stateStack.reduce((acc, cur) => { // parse the state to build the curreent path
-            if (cur.pathPart && cur.pathPart.length) acc.push(...cur.pathPart);
+            if (cur.pathSegment) acc.push(cur.pathSegment);
             return acc;
         }, []);
         curPath = (this.props.UIMRoot || '/h/') + curPath.join('/');

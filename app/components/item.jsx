@@ -25,8 +25,8 @@ class Item extends React.Component {
     let parts=[];
     if(readMore) parts.push('r');
     if(button) parts.push(button[0]);
-    let pathPart=parts.join(',');
-    //this.initialUIM={shape, readMore, button, pathPart: [pathPart]};
+    let pathSegment=parts.join(',');
+    //this.initialUIM={shape, readMore, button, pathSegment: pathSegment};
   }
   render() {
     //   console.info("Item render");
@@ -48,9 +48,9 @@ class UIMItem extends UserInterfaceManagerClient {
     if(props.item && props.item.subject) {  this.title=props.item.subject; this.props.uim.toParent({type: "SET_TITLE", title: this.title});}
   }
 
-  setPath(action){  //UIM is setting the initial path. Take your pathPart and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
-    var nextUIM={shape: 'truncated', pathPart: [action.part]};
-    let parts=action.part.split(',');
+  setPath(action){  //UIM is setting the initial path. Take your pathSegment and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
+    var nextUIM={shape: 'truncated', pathSegment: action.segment};
+    let parts=action.segment.split(',');
     let button=null;
     let matched=0;
     parts.forEach(part=>{
@@ -64,7 +64,7 @@ class UIMItem extends UserInterfaceManagerClient {
         nextUIM.shape='open';
       }
     });
-    if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathParts", {matched}, {parts}, {action}); 
+    if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathSegments", {matched}, {parts}, {action}); 
     return {nextUIM, setBeforeWait: true};  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
@@ -115,11 +115,11 @@ class UIMItem extends UserInterfaceManagerClient {
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
     delta.shape= delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
-    // calculate the pathPart and return the new state
+    // calculate the pathSegment and return the new state
     let parts=[];
     if(delta.readMore) parts.push('r');
     if(delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
-    delta.pathPart=[parts.join(',')];
+    delta.pathSegment=parts.join(',');
     Object.assign(nextUIM, uim, delta);
     return nextUIM;
   }
