@@ -9,78 +9,81 @@ import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';
 import DynamicSelector from './dynamic-selector';
-import {UserInterfaceManager, UserInterfaceManagerClient} from './user-interface-manager';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import ItemStore from './store/item';
 import ItemComponent from './item-component';
 
-//Item Visual State - lets other components change the visual state of an item. 
-// For example 'collapsed' is a visual state.  But as we grow the use of Item we find that there are more visual states and we even want to change the visual state of an item based on it's depth.
+//Item 
+// Render the Item with buttons and subpanels. This item starts out truncated, if the user clicks the text, the item opens.
+// When the text is truncated, a hint is shown
+// If the user clicks on a button, the corresponding sub panel expands
+//
 
 class Item extends React.Component {
   constructor(props){
     super();
-    let shape=props.uim.shape;
+    let shape=props.rasp.shape;
     let readMore=shape==='open';
     let button = (props.item && props.item.harmony && props.item.harmony.types && props.item.harmony.types.length) ? 'Harmony' : null;
     let parts=[];
     if(readMore) parts.push('r');
     if(button) parts.push(button[0]);
     let pathSegment=parts.join(',');
-    //this.initialUIM={shape, readMore, button, pathSegment: pathSegment};
+    //this.initialRASP={shape, readMore, button, pathSegment: pathSegment};
   }
   render() {
     //   console.info("Item render");
     return (
-      <UserInterfaceManager {... this.props} initialUIM={this.initialUIM}>
-        <UIMItem />
-      </UserInterfaceManager>
+      <ReactActionStatePath {... this.props} initialRASP={this.initialRASP}>
+        <RASPItem />
+      </ReactActionStatePath>
     );
   }
 }
 export default Item;
 
 
-class UIMItem extends UserInterfaceManagerClient {
+class RASPItem extends ReactActionStatePathClient {
   state = { hint: false, minHeight: null }; //
   constructor(props){
-    var uimProps={uim: props.uim};
-    super(uimProps, 'button');
-    if(props.item && props.item.subject) {  this.title=props.item.subject; this.props.uim.toParent({type: "SET_TITLE", title: this.title});}
+    var raspProps={rasp: props.rasp};
+    super(raspProps, 'button');
+    if(props.item && props.item.subject) {  this.title=props.item.subject; this.props.rasp.toParent({type: "SET_TITLE", title: this.title});}
   }
 
-  segmentToState(action){  //UIM is setting the initial path. Take your pathSegment and calculate the UIMState for it.  Also say if you should set the state before waiting the child or after waiting
-    var nextUIM={shape: 'truncated', pathSegment: action.segment};
+  segmentToState(action){  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
+    var nextRASP={shape: 'truncated', pathSegment: action.segment};
     let parts=action.segment.split(',');
     let button=null;
     let matched=0;
     parts.forEach(part=>{
       if(part==='r'){
-        nextUIM.readMore=true;
+        nextRASP.readMore=true;
         matched+=1;
-        nextUIM.shape='open';
+        nextRASP.shape='open';
       }else if(this.props.buttons.some(b=>{if(b[0]===part){button=b; return true} else return false;})) {
-        nextUIM.button=button;
+        nextRASP.button=button;
         matched+=1;
-        nextUIM.shape='open';
+        nextRASP.shape='open';
       }
     });
-    if(!matched || matched<parts.length) logger.error("UIMItem SET_PATH didn't match all pathSegments", {matched}, {parts}, {action}); 
-    return {nextUIM, setBeforeWait: true};  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
+    if(!matched || matched<parts.length) logger.error("RASPItem SET_PATH didn't match all pathSegments", {matched}, {parts}, {action}); 
+    return {nextRASP, setBeforeWait: true};  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, uim, source='CHILD') { // this function is going to be called by the UIManager, uim is the current UIM state
-    logger.trace("UIMItem.actionToState",{action},{uim}); // uim is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
-    var nextUIM={};
+  actionToState(action, rasp, source='CHILD') { // this function is going to be called by the RASP manager, rasp is the current RASP state
+    logger.trace("RASPItem.actionToState",{action},{rasp}); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
+    var nextRASP={};
     let delta={};
     if (action.type === "TOGGLE_BUTTON") {
-      delta.button= uim.button === action.button ? null : action.button; // toggle the button 
+      delta.button= rasp.button === action.button ? null : action.button; // toggle the button 
       if(action.button && !delta.button) delta.readMore=false; // if turning off a button, close readMore too
-      else delta.readMore = uim.readMore;
+      else delta.readMore = rasp.readMore;
     } else  if (action.type === "TOGGLE_READMORE") {
-      delta.readMore = !uim.readMore; // toggle condition;
-      if(delta.readMore && !uim.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
-      else if(!delta.readMore && uim.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
-      else delta.button=uim.button; // othewise keep button the same
+      delta.readMore = !rasp.readMore; // toggle condition;
+      if(delta.readMore && !rasp.button && this.props.item.harmony  && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
+      else if(!delta.readMore && rasp.button==='Harmony') delta.button=null;  // turn harmony off when closing readMore
+      else delta.button=rasp.button; // othewise keep button the same
     } else  if (action.type === "ITEM_DELVE") {
       delta.readMore=true;
       if(this.props.buttons.some(b=>b==='Subtype')) delta.button='Subtype';
@@ -93,7 +96,7 @@ class UIMItem extends UserInterfaceManagerClient {
       }else if (action.winner) { // we have a winner but it's some other item
         delta.readMore=false;
         delta.button=null;
-        setTimeout(()=>this.props.uim.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
+        setTimeout(()=>this.props.rasp.toParent({type: "OPEN_ITEM", item: action.winner, distance: -1}));
       } else { // there wasn't a winner but we finish the promote
         delta.readMore='false';
         delta.button=null;
@@ -102,14 +105,14 @@ class UIMItem extends UserInterfaceManagerClient {
       if(action.shape==='open'){
         delta.readMore=true;
         if(this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button='Harmony';  // open harmony when opening readMore
-        else delta.button=uim.button;
+        else delta.button=rasp.button;
       } else if (action.shape==='truncated'){
         delta.readMore=false;
         delta.button=null;
       } 
     } else if(action.type==="CHILD_SHAPE_CHANGED"  && action.distance >= 2){
         delta.readMore=false; // if the user is working on stuff further below, close the readmore
-        delta.button=uim.button; // keep the button status
+        delta.button=rasp.button; // keep the button status
     }
      else 
       return null;  // if you don't handle the type, let the default handlers prevail
@@ -120,8 +123,8 @@ class UIMItem extends UserInterfaceManagerClient {
     if(delta.readMore) parts.push('r');
     if(delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
     delta.pathSegment=parts.join(',');
-    Object.assign(nextUIM, uim, delta);
-    return nextUIM;
+    Object.assign(nextRASP, rasp, delta);
+    return nextRASP;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,7 +145,7 @@ class UIMItem extends UserInterfaceManagerClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
-    //if(this.props.uim.shape==='open' && !this.props.uim.button && !this.props.uim.readMore ) this.props.uim.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
+    //if(this.props.rasp.shape==='open' && !this.props.rasp.button && !this.props.rasp.readMore ) this.props.rasp.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.
@@ -155,7 +158,7 @@ class UIMItem extends UserInterfaceManagerClient {
 
   /*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
   shouldComponentUpdate(newProps, newState) {
-    if (!isEqual(this.props.uim, newProps.uim)) return true;
+    if (!isEqual(this.props.rasp, newProps.rasp)) return true;
     //if (!isEqual(this.props.buttons, newProps.buttons)) return true;  the buttons don't change
     if (this.state.hint !== newState.hint) return true;
     if (this.state.minHeight != newState.minHeight) return true;
@@ -163,7 +166,7 @@ class UIMItem extends UserInterfaceManagerClient {
       if (this.props.item.subject !== newProps.item.subject) return true;
       if (this.props.item.description !== newProps.item.description) return true;
     }
-    logger.trace("Item.shouldComponentUpdate", this.props.uim.depth, this.title, "no", this.props, newProps, this.state, newState);
+    logger.trace("Item.shouldComponentUpdate", this.props.rasp.depth, this.title, "no", this.props, newProps, this.state, newState);
     return false;
   }
   /***/
@@ -171,13 +174,13 @@ class UIMItem extends UserInterfaceManagerClient {
   componentWillReceiveProps(newProps) {
     this.textHint();
     setTimeout(this.textHint.bind(this), 500); // this sucks but double check the hint in 500Ms in case the environment has hanged - like you are within a double wide that's collapsing
-    if(newProps.item && newProps.item.subject && newProps.item.subject !== this.title) {  this.title=newProps.item.subject; this.props.uim.toParent({type: "SET_TITLE", title: this.title});}
+    if(newProps.item && newProps.item.subject && newProps.item.subject !== this.title) {  this.title=newProps.item.subject; this.props.rasp.toParent({type: "SET_TITLE", title: this.title});}
   }
 
 
   // when the user clicks on an item's button
   onClick(button) {
-    this.props.uim.toParent({ type: "TOGGLE_BUTTON", button })
+    this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button })
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,7 +191,7 @@ class UIMItem extends UserInterfaceManagerClient {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (!(this.props.uim && this.props.uim.readMore)) {
+    if (!(this.props.rasp && this.props.rasp.readMore)) {
       let buttonsR = this.refs.buttons.getBoundingClientRect();
       let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
@@ -217,10 +220,10 @@ class UIMItem extends UserInterfaceManagerClient {
 
   readMore(e) {
     e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
-    if (this.props.uim.readMore) { // if readMore is on and we are going to turn it off
+    if (this.props.rasp.readMore) { // if readMore is on and we are going to turn it off
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
     } 
-    if (this.props.uim.toParent) this.props.uim.toParent({ type: "TOGGLE_READMORE"})
+    if (this.props.rasp.toParent) this.props.rasp.toParent({ type: "TOGGLE_READMORE"})
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -229,7 +232,7 @@ class UIMItem extends UserInterfaceManagerClient {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    if (this.props.uim.shape === 'truncated') { return this.readMore(e); }
+    if (this.props.rasp.shape === 'truncated') { return this.readMore(e); }
 
     let win = window.open(this.refs.link.href, this.refs.link.target);
     if (win) {
@@ -243,15 +246,15 @@ class UIMItem extends UserInterfaceManagerClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { active, item, user, buttons, uim, style, emitter } = this.props;
-    const shape = uim ? uim.shape : '';
+    const { active, item, user, buttons, rasp, style, emitter } = this.props;
+    const shape = rasp ? rasp.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
-    const readMore=(uim && uim.readMore);
+    const readMore=(rasp && rasp.readMore);
     const truncShape = shape!=='collapsed' ? readMore ? 'vs-open' : 'vs-truncated' : 'vs-collapsed';
 
     let noReference = true;
 
-    //console.info("UIMItem render", this.props.uim.depth, this.title, this.props);
+    //console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
@@ -264,12 +267,12 @@ class UIMItem extends UserInterfaceManagerClient {
     }
     var renderPanel = (button)=>{
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id+'-'+button}
-                    uim={{depth: uim.depth, shape: (uim.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
-                    item={item} active={uim.button===button && shape==='open'} style={style} />);
+                    rasp={{depth: rasp.depth, shape: (rasp.button===button && shape==='open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this,button)}} 
+                    item={item} active={rasp.button===button && shape==='open'} style={style} />);
     }
 
     var renderButton = (button)=>{
-      return (<ItemComponent {...this.props} component={button} part={'button'}  active={uim.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);  
+      return (<ItemComponent {...this.props} component={button} part={'button'}  active={rasp.button===button} onClick={this.onClick.bind(this, button, item._id, item.id)} />);  
     }
 
     return (
