@@ -103,7 +103,8 @@ app\models\political-part\migrations\2.js
 
  
 
-?? Where is PoliticalParty used??
+## Using User Interface Manager
+
 
 
 
