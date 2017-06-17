@@ -3,7 +3,7 @@
 
 import React                       from 'react';
 import Components                  from "./type-components/";
-import UserInterfaceManager        from "./user-interface-manager";
+import ReactActionStatePath        from "react-action-state-path";
 
 class TypeComponent extends React.Component{
     render(){
@@ -13,7 +13,7 @@ class TypeComponent extends React.Component{
                         : Components.Subtype;
 
         logger.trace("TypeComponent", this.props );
-        if(typeof Component === 'function') return(<UserInterfaceManager {...this.props} ><Component /></UserInterfaceManager> );  //UIM passes props plus the UIM state to the child Component
+        if(typeof Component === 'function') return(<ReactActionStatePath {...this.props} ><Component /></ReactActionStatePath> );  //UIM passes props plus the UIM state to the child Component
         logger.error("TypeComponent component not defined", {component});
         return null;
     }

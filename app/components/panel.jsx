@@ -9,8 +9,8 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, uim, noHeading } = this.props;
-    const vShape=uim ? uim.shape : '';
+    const { heading, className, rasp, noHeading } = this.props;
+    const vShape=rasp ? rasp.shape : '';
     const cShape= vShape ? 'vs-'+vShape : '';
 
 

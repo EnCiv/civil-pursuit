@@ -9,7 +9,8 @@ import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';
 import DynamicSelector from './dynamic-selector';
-import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import ReactActionStatePath        from "react-action-state-path";
+import {ReactActionStatePathClient} from 'react-action-state-path';
 import ItemStore from './store/item';
 import ItemComponent from './item-component';
 
@@ -22,6 +23,7 @@ import ItemComponent from './item-component';
 class Item extends React.Component {
   constructor(props){
     super();
+    console.info("Item.constructor");
     let shape=props.rasp.shape;
     let readMore=shape==='open';
     let button = (props.item && props.item.harmony && props.item.harmony.types && props.item.harmony.types.length) ? 'Harmony' : null;
@@ -32,7 +34,7 @@ class Item extends React.Component {
     //this.initialRASP={shape, readMore, button, pathSegment: pathSegment};
   }
   render() {
-    //   console.info("Item render");
+    logger.trace("Item render");
     return (
       <ReactActionStatePath {... this.props} initialRASP={this.initialRASP}>
         <RASPItem />
@@ -49,6 +51,7 @@ class RASPItem extends ReactActionStatePathClient {
     var raspProps={rasp: props.rasp};
     super(raspProps, 'button');
     if(props.item && props.item.subject) {  this.title=props.item.subject; this.props.rasp.toParent({type: "SET_TITLE", title: this.title});}
+    console.info("RASPItem.constructor");
   }
 
   segmentToState(action){  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
@@ -254,7 +257,7 @@ class RASPItem extends ReactActionStatePathClient {
 
     let noReference = true;
 
-    //console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
+    console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 
