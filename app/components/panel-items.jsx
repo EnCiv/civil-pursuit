@@ -2,28 +2,28 @@
 
 import React from 'react';
 import Panel from './panel';
-import Loading from './util/loading';
-import Link from './util/link';
 import panelType from '../lib/proptypes/panel';
-import makePanelId from '../lib/app/make-panel-id';
-import Join from './join';
 import Accordion from './util/accordion';
-import Promote from './promote';
-import EvaluationStore from './store/evaluation';
-import ItemButtons from './item-buttons';
 import Icon from './util/icon';
 import Creator from './creator';
 import ItemStore from '../components/store/item';
-import Details from './details';
-import DetailsStore from './store/details';
 import EditAndGoAgain from './edit-and-go-again';
-import Harmony from './harmony';
-import TypeComponent from './type-component';
 import config from '../../public.json';
-import { ReactActionStatePathClient } from 'react-action-state-path';
+import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
 
-class PanelItems extends ReactActionStatePathClient {
+class PanelItems extends React.Component {
+  render() {
+    logger.trace("PanelItems render");
+    return (
+      <ReactActionStatePath {... this.props}>
+        <RASPPanelItems />
+      </ReactActionStatePath>
+    );
+  }
+}
+
+class RASPPanelItems extends ReactActionStatePathClient {
 
   static propTypes = {
     panel: panelType
