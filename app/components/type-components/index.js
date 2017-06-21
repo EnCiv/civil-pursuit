@@ -10,8 +10,8 @@ var  Components={
         'QSortWhy': require('./qsort-why').default,
         'QSortRefine': require('./qsort-refine').default,
         'QSortReLook': require('./qsort-relook').default,
-        'LoginPanel': require('./qsort-finale').default,
-        'QSortFinale': require('./login-panel').default,
+        'QSortFinale': require('./qsort-finale').default,
+        'LoginPanel': require('./login-panel').default,
         'ProfilePanel': require('./profile-panel').default,     
     }
 
