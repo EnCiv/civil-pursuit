@@ -70,9 +70,7 @@ class RASPHarmony extends ReactActionStatePathClient {
     let  contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side==='L'} key={item._id+'-left'}>
           <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
-            <ReactActionStatePath user={ user } rasp={leftRASP} hideFeedback = {this.props.hideFeedback}>
-              <PanelItems />
-            </ReactActionStatePath>
+              <PanelItems user={ user } rasp={leftRASP} hideFeedback = {this.props.hideFeedback}/>
           </PanelStore>
         </DoubleWide>
       );
@@ -80,9 +78,7 @@ class RASPHarmony extends ReactActionStatePathClient {
     let contentRight = (
         <DoubleWide className="harmony-con" right expanded={rasp.side==='R'}  key={item._id+'-right'} >
           <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
-            <ReactActionStatePath user={ user } rasp={rightRASP} hideFeedback = {this.props.hideFeedback}>
-              <PanelItems />
-            </ReactActionStatePath>
+              <PanelItems user={ user } rasp={rightRASP} hideFeedback = {this.props.hideFeedback} />
           </PanelStore>
         </DoubleWide>
       );
