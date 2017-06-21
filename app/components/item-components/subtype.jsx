@@ -73,7 +73,7 @@ exports.panel = class SubtypePanel extends React.Component {
               {...this.props}
               rasp={nextRASP}
               panel={{ parent: item, type: item.subtype, skip: 0, limit: config['navigator batch size'] }}
-              component={'Subtype'}
+              component={item.subtype && item.subtype.component || 'Subtype'}
             />
           </Accordion>
         </div>
