@@ -145,7 +145,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                 console.info("qsort-items creator")
                 loading.push(
                     <div className="gutter text-center">
-                        <a href="#" onClick={ this.props.rasp.toParent.bind(this,{type: "TOGGLE_CREATOR"}) } className="click-to-create">
+                        <a href="#" onClick={ this.toMeFromChild.bind(this,{type: "TOGGLE_CREATOR"}) } className="click-to-create">
                             Click the + to be the first to add something here
                         </a>
                     </div>
@@ -174,7 +174,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                                 user: user,
                                 item: item,
                                 id: item._id,
-                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toParent.bind(this,item.id)}
+                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
                             }
                         );
                     });
@@ -184,7 +184,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                         <div className='instruction-text'>
                             {this.QSortButtonList['unsorted'].direction}
                             <Button small shy
-                                onClick={this.toParent.bind(this,{type: "DONE"})}
+                                onClick={this.toMeFromChild.bind(this,{type: "DONE"})}
                                 className="qsort-done"
                                 style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                                 >
@@ -200,7 +200,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
             <Creator
                 type    =   { type }
                 parent  =   { parent }
-                toggle  =   { this.toParent.bind(this,{type: "TOGGLE_CREATOR"}) }
+                toggle  =   { this.toMeFromChild.bind(this,{type: "TOGGLE_CREATOR"}) }
                 />
             );
 
@@ -229,7 +229,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                         <Icon
                             icon        =   "plus"
                             className   =   "toggle-creator"
-                            onClick     =   { this.setState.bind(this,{creator: !this.state.creator }, null)}
+                            onClick     =   { this.toMeFromChild.bind(this,{type: "TOGGLE_CREATOR"})}
                         />
                         )
                     ]}
