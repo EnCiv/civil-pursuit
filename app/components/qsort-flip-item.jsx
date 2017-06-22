@@ -18,6 +18,7 @@ class QSortFlipItem extends React.Component {
                             item    =   { item }
                             user    =   { user }
                             buttons =   { ['QSortButtons'] }
+                            qbuttons =  {qbuttons}
                             rasp    =   { rasp }
                         />
                     </ItemStore>

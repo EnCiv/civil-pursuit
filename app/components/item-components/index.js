@@ -7,7 +7,8 @@ var  Components={
         'Details': require('./details'),
         'Harmony': require('./harmony'),
         'Promote': require('./promote'),
-        'Subtype': require('./subtype')
+        'Subtype': require('./subtype'),
+        'QSortButtons': require('./qsort-buttons')
 }
 
 export default Components;
