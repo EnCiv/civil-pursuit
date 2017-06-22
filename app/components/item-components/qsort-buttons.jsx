@@ -1,33 +1,28 @@
 'use strict';
 
 import React from 'react';
-import ButtonGroup      from './util/button-group';
-import Button           from './util/button';
-import Icon               from './util/icon';
+import ButtonGroup      from '../util/button-group';
+import Button           from '../util/button';
+import QSortButtonList from '../qsort-button-list';
 
 // button is 'active' even if it has been pushed. By pushing it again, you can change it back to unsosrted
 
-class QSortButtons extends React.Component {
-  toggle (section) {
-    if(this.props.toggle) this.props.toggle(this.props.item._id, section);
-  }
-
-
+exports.button = class QSortButtons extends React.Component {
   render () {
-
-    const { item, buttonstate, qbuttons} = this.props;
+    const { item, rasp} = this.props;
+    const qbuttons= this.props.qbuttons || QSortButtonList;
 
     let buttons = [];
 
-    buttons=Object.keys(buttonstate).map(btn => {
+    buttons=Object.keys(qbuttons).slice(1).map(btn => {
         var number=[];
-        if(typeof buttonstate[btn] == 'number') number=(<span>{buttonstate[btn]}</span>);
+        if(typeof rasp[btn] == 'number') number=(<span>{buttonstate[btn]}</span>);
         return(
                 <ButtonGroup>
                     {number}
                     <Button small shy 
                     inactive= { false } 
-                    onClick= { this.props.toggle ? this.toggle.bind(this, btn) : undefined } 
+                    onClick= { this.props.rasp.toParent.bind(this,{type: "TOGGLE_QBUTTON", button: qbutton, distance: -1}) } 
                     className= {`qsort-${qbuttons[btn].name}`}
                     title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}
@@ -41,5 +36,3 @@ class QSortButtons extends React.Component {
     return (<section>{ buttons }</section>);
   }
 }
-
-export default QSortButtons;

@@ -165,7 +165,7 @@ class QSortRefine extends React.Component {
 
     render() {
 
-        const { user } = this.props;
+        const { user, rasp } = this.props;
         const { panel } = this.props.shared;
 
         const onServer = typeof window === 'undefined';
@@ -241,7 +241,8 @@ class QSortRefine extends React.Component {
                                 whyName: this.whyName,
                                 emitter: this.props.emitter,
                                 show: topItem && !voted,
-                                id: item._id  //FlipMove uses this Id to sort
+                                id: item._id,  //FlipMove uses this Id to sort
+                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}
                             }
                         );
                         topItem=false
@@ -297,7 +298,7 @@ export default QSortRefine;
 class QSortRefineItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter, voted, winner } = this.props;
+        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter, voted, winner, rasp } = this.props;
         var creator=[];
         const hIndex= (whyName === 'most') ? 0 : 1;
         const active = show ? {item: whyItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
@@ -310,9 +311,8 @@ class QSortRefineItem extends React.Component {
                         <Item
                             item    =   { winner }
                             user    =   { user }
-                            vs={{state: 'truncated'}}
+                            rasp    =   {rasp}
                             toggle  =   { toggle }
-                            focusAction={null}
                         />
                     </ItemStore>
                 </div>
@@ -342,9 +342,8 @@ class QSortRefineItem extends React.Component {
                             item    =   { item }
                             user    =   { user }
                             footer= { creator }
-                            vs={{state: 'truncated'}}
+                            rasp    =   {rasp}
                             toggle  =   { toggle }
-                            focusAction={null}
                             hideFeedback = {this.props.hideFeedback}
                         />
                     </ItemStore>

@@ -17,6 +17,7 @@ import Accordion          from '../util/accordion';
 import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
+import {ReactActionStatePath, ReactActionStatePathClient} from '../react-action-state-path';
 
 
   // 20 is hard coded, but where should this be? type or item?
@@ -27,17 +28,16 @@ class QSortItems extends React.Component {
                     type={this.props.type}
                     limit={20} >
             <QVoteStore>
-                <QSortItemsQV  {...this.props}/>
+                <ReactActionStatePath {...this.props}>
+                    <RASPQSortItems />
+                </ReactActionStatePath>
             </QVoteStore>
         </PanelStore>
         );
     }
 }
 
-
-class QSortItemsQV extends React.Component {
-
-    state={creator: false};
+class RASPQSortItems extends ReactActionStatePathClient {
 
     static propTypes = {
         panel: panelType
@@ -49,41 +49,41 @@ class QSortItemsQV extends React.Component {
     scrollBackToTop = false;
 
     constructor(props){
-        super(props);
+        var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
+        super(raspProps, 'itemId');  // shortId is the key for indexing to child RASP functions
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    toggle(itemId, button) {
+    // 
+    actionToState(action,rasp) {
         //find the section that the itemId is in, take it out, and put it in the new section
-        let i;
-        let done = false;
-        var clone = {};
-        if (button == "done"){
+        var nextRASP={}, delta={};
+        if(action.type==="TOGGLE_QBUTTON") {
+            //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
+            //this doesn't happen when moveing and object up, above the fold. 
+            var doc = document.documentElement;
+            this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+            this.scrollBackToTop = true;
+            this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
+            window.socket.emit('insert qvote', { item: itemId, criteria: button });
+            delta.creator=false;
+        } else if (action.type==="DONE"){
             if(this.props.next) {
-            const results = {
-                index: this.props.index,
-                sections: this.props.sections,
-                panel: this.props.panel
+                const results = {
+                    index: this.props.index,
+                    sections: this.props.sections,
+                    panel: this.props.panel
+                }
+                setTimeout(()=>this.props.next(this.props.panelNum,"done", results));
             }
-            this.props.next(this.props.panelNum,"done", results)
-            }
-            return;
+            delta.creator=false;
+        } else if (action.type==="TOGGLE_CREATOR"){
+            delta.creator=true;
         }
-        if (button == 'harmony') { return; }
-
-        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-        //this doesn't happen when moveing and object up, above the fold. 
-        var doc = document.documentElement;
-        this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-        this.scrollBackToTop = true;
-
-        if (itemId && button) { this.props.toggle(itemId, button) }
-
-        window.socket.emit('insert qvote', { item: itemId, criteria: button });
-
+        Object.assign(nextRASP, rasp, delta);
+        return(nextRASP);
     }
 
     onFlipMoveFinishAll() {
@@ -101,11 +101,11 @@ class QSortItemsQV extends React.Component {
 
     render() {
 
-        const { panel, count, user, emitter } = this.props;
+        const { panel, count, user, emitter, rasp } = this.props;
 
         const onServer = typeof window === 'undefined';
 
-        let title = 'Loading items', name, loaded = false, content = [], loadMore, creator,
+        let title = 'Loading items', name, loaded = false, articles = [], loadMore, creator,
             type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
 
         if (panel) {
@@ -123,7 +123,8 @@ class QSortItemsQV extends React.Component {
             }
 
             if (parent) {
-                name += `-${parent._id || parent}`;
+                //name += `-${parent._id || parent}`; VSCode doesn't parse this syntax
+                name += ('-'+ (parent.id || parent));
             }
 
             title = type.name;
@@ -140,7 +141,7 @@ class QSortItemsQV extends React.Component {
                 console.info("qsort-items creator")
                 loading.push(
                     <div className="gutter text-center">
-                        <a href="#" onClick={ this.setState.bind(this,{creator: !this.state.creator},null)} className="click-to-create">
+                        <a href="#" onClick={ this.props.rasp.toParent.bind(this,{type: "TOGGLE_CREATOR"}) } className="click-to-create">
                             Click the + to be the first to add something here
                         </a>
                     </div>
@@ -161,19 +162,15 @@ class QSortItemsQV extends React.Component {
                         }
                     }
                     this.props.sections[criteria].forEach(itemId => {
-                        var buttonstate = {};
-                        Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = false; });
-                        if (criteria != 'unsorted') { buttonstate[criteria] = true; }
                         let item = items[this.props.index[itemId]];
-                        content.push(
+                        articles.push(
                             {
                                 sectionName: criteria,
                                 qbuttons: this.QSortButtonList,
                                 user: user,
                                 item: item,
-                                toggle: this.toggle.bind(this),
-                                buttonstate: buttonstate,
-                                id: item._id
+                                id: item._id,
+                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toParent.bind(this,item.id)}
                             }
                         );
                     });
@@ -183,7 +180,7 @@ class QSortItemsQV extends React.Component {
                         <div className='instruction-text'>
                             {this.QSortButtonList['unsorted'].direction}
                             <Button small shy
-                                onClick={this.toggle.bind(this, null, 'done')}
+                                onClick={this.toParent.bind(this,{type: "DONE"})}
                                 className="qsort-done"
                                 style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                                 >
@@ -199,13 +196,13 @@ class QSortItemsQV extends React.Component {
             <Creator
                 type    =   { type }
                 parent  =   { parent }
-                toggle  =   { this.setState.bind(this,{creator: !this.state.creator},null) }
+                toggle  =   { this.toParent.bind(this,{type: "TOGGLE_CREATOR"}) }
                 />
             );
 
             creator = (
                 <Accordion
-                active    =   { (this.state.creator) }
+                active    =   { (this.props.rasp.creator) }
                 poa       =   { this.refs.panel }
                 name      = 'creator'
                 >
@@ -244,7 +241,7 @@ class QSortItemsQV extends React.Component {
                     }}>
                         <div className="qsort-flip-move-articles">
                             <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                                {content.map(article => <QSortFlipItem {...article} key={article.id} />)}
+                                {articles.map(article => <QSortFlipItem {...article} key={article.id} />)}
                             </FlipMove>
                         </div>
                     </div>

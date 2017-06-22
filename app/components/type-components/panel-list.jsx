@@ -169,7 +169,7 @@ toInstructionFromParent(result){
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
-    const panel= this.props.panel;
+    const {panel, rasp, user, emitter} = this.props;
     var title, name;
     const currentPanel=this.state.currentPanel;
     const containerWidth=this.state.containerWidth;
@@ -256,12 +256,13 @@ toInstructionFromParent(result){
                   <TypeComponent  component={this.state.typeList[currentPanel].component}
                                   parent={panel.parent} 
                                   type={this.state.typeList[currentPanel]} 
-                                  user={this.props.user} 
+                                  user={user} 
                                   next={this.nextPanel.bind(this)} 
                                   shared={this.state.shared}
-                                  emitter={this.props.emitter}
+                                  emitter={emitter}
                                   panelNum={this.state.currentPanel}
                                   limit={panel.limit}
+                                  rasp={{shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}}
                   />  
       )];
     }

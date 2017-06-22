@@ -97,7 +97,7 @@ class QSortHarmony extends React.Component {
 
     render() {
 
-        const { user, emitter } = this.props;
+        const { user, emitter, rasp } = this.props;
 
         const { panel } = this.props.shared;
 
@@ -172,7 +172,8 @@ class QSortHarmony extends React.Component {
                                 item: item,
                                 toggle: this.toggle.bind(this),
                                 buttonstate: buttonstate,
-                                id: item._id
+                                id: item._id,
+                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}
                             }
                         );
                     });
@@ -226,7 +227,7 @@ class QSortFlipItemHarmony extends React.Component {
 
 
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
+        const {qbuttons, sectionName, item, user, toggle, buttonstate, rasp } = this.props;
 
         let harmony = (
                 <div className="toggler-harmony">
@@ -239,7 +240,7 @@ class QSortFlipItemHarmony extends React.Component {
                       ref     =   "harmony"
                       user    =   { user }
                       active  =   { true }
-                      vs      =    {{state: "truncated", depth: 0}}
+                      rasp      =    {rasp}
                       hideFeedback = {true}
                       limit   = {5}
                       />
@@ -265,9 +266,8 @@ class QSortFlipItemHarmony extends React.Component {
                                         />
                                 </ItemStore>
                             ) }
-                            vs={{state: 'truncated'}}
+                            rasp    =   { rasp }
                             toggle  =   { toggle }
-                            focusAction={null}
                             footer  =   { [ harmony ] }
                         />
                     </ItemStore>

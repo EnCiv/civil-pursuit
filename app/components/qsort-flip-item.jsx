@@ -9,7 +9,7 @@ class QSortFlipItem extends React.Component {
 
 
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
+        const {qbuttons, sectionName, item, user, rasp } = this.props;
 
         return(
                 <div style={{backgroundColor: qbuttons[sectionName].color}}>
@@ -17,20 +17,8 @@ class QSortFlipItem extends React.Component {
                         <Item
                             item    =   { item }
                             user    =   { user }
-                            buttons =   { (
-                                <ItemStore item={ item }>
-                                    <QSortButtons
-                                        item    =   { item }
-                                        user    =   { user }
-                                        toggle  =   { toggle }
-                                        buttonstate = { buttonstate }
-                                        qbuttons= { qbuttons }
-                                        />
-                                </ItemStore>
-                            ) }
-                            vs={{state: 'truncated'}}
-                            toggle  =   { toggle }
-                            focusAction={null}
+                            buttons =   { ['QSortButtons'] }
+                            rasp    =   { rasp }
                         />
                     </ItemStore>
                 </div>

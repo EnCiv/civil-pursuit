@@ -65,7 +65,7 @@ class QSortFinalTotal extends React.Component {
 
     render() {
 
-        const { user, emitter } = this.props;
+        const { user, emitter, rasp } = this.props;
 
         const { panel } = this.props.shared;
 
@@ -121,7 +121,8 @@ class QSortFinalTotal extends React.Component {
                                 user: user,
                                 item: item,
                                 buttonstate: buttonstate,
-                                id: item._id
+                                id: item._id,
+                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}
                             }
                         );
                     });
@@ -162,7 +163,7 @@ class QSortFlipItemHarmony extends React.Component {
 
 
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate } = this.props;
+        const {qbuttons, sectionName, item, user, toggle, buttonstate, rasp } = this.props;
 
  /*** No Harmony in Finale
   *        let harmony = (
@@ -203,8 +204,7 @@ class QSortFlipItemHarmony extends React.Component {
                                         />
                                 </ItemStore>
                             ) }
-                            vs={{state: 'truncated'}}
-                            focusAction={null}
+                            rasp={rasp}
                             footer  =   { [ harmony ] }
                         />
                     </ItemStore>
