@@ -30,7 +30,7 @@ class QSortItems extends React.Component {
                     type={this.props.type}
                     limit={20} >
             <QVoteStore>
-                <ReactActionStatePath {...this.props}>
+                <ReactActionStatePath >
                     <RASPQSortItems />
                 </ReactActionStatePath>
             </QVoteStore>
