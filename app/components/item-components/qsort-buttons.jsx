@@ -16,7 +16,7 @@ exports.button = class QSortButtons extends React.Component {
 
     buttons=Object.keys(qbuttons).slice(1).map(btn => {
         var number=[];
-        if(typeof rasp[btn] == 'number') number=(<span>{buttonstate[btn]}</span>);
+        if(typeof rasp[btn] == 'number') number=(<span>{rasp[btn]}</span>);
         return(
                 <ButtonGroup>
                     {number}
@@ -24,7 +24,7 @@ exports.button = class QSortButtons extends React.Component {
                     inactive= { false } 
                     onClick= { this.props.rasp.toParent.bind(this,{type: "TOGGLE_QBUTTON", button: btn, distance: -1}) } 
                     className= {`qsort-${qbuttons[btn].name}`}
-                    title= {qbuttons[btn].title[buttonstate[btn]?'active':'inactive']}
+                    title= {qbuttons[btn].title[rasp[btn]?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}
                     >
                         <span className="civil-button-text">{qbuttons[btn].name}</span>
