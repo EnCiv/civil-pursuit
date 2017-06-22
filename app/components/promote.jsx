@@ -84,7 +84,7 @@ class RASPPromote extends ReactActionStatePathClient {
                 setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", distance: -1}),0);
             } else { // voted up a different one
                 setTimeout(()=>{
-                    this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinuted: true})
+                    this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinued: true})
                     setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", distance: -2}),0); // needs to go to the panel above this item
                 },0);
                 //setTimeout(()=>this.props.rasp.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
