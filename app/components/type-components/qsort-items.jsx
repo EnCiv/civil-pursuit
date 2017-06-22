@@ -22,7 +22,9 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
   // 20 is hard coded, but where should this be? type or item?
 class QSortItems extends React.Component {
+    
     render(){
+        logger.info("QSortItems.render");
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
@@ -53,6 +55,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
         super(raspProps, 'itemId');  // shortId is the key for indexing to child RASP functions
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
+        console.info("RASPQSortItems.constructor");
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,6 +103,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
+        console.info("RASPQSortItems.render");
 
         const { panel, count, user, emitter, rasp } = this.props;
 
