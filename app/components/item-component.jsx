@@ -13,7 +13,7 @@ class ItemComponent extends React.Component{
         if(typeof cObj !== "object" ) logger.error("ItemComponent component not defined", {component, part});
         else {
             const Component = cObj[this.props.part];
-            if(typeof Component !== "function" ) logger.error("ItemComponent part not defined", {component, part});
+            if(typeof Component !== "function" ) logger.trace("ItemComponent part not defined", {component, part});
             else return(<Component {...this.props} /> );
         }
         return (null);
