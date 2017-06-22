@@ -17,7 +17,7 @@ import Accordion          from '../util/accordion';
 import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
-import {ReactActionStatePath, ReactActionStatePathClient} from '../react-action-state-path';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 
 
   // 20 is hard coded, but where should this be? type or item?
