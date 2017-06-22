@@ -29,8 +29,8 @@ class QSortItems extends React.Component {
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
                     limit={20} >
-            <QVoteStore>
-                <ReactActionStatePath rasp={{rasp: this.props.rasp}}>
+            <QVoteStore  rasp={{rasp: this.props.rasp}} >
+                <ReactActionStatePath>
                     <RASPQSortItems />
                 </ReactActionStatePath>
             </QVoteStore>
