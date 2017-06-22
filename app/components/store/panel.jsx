@@ -105,7 +105,7 @@ class PanelStore extends React.Component {
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>
-      React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter }))
+      React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter }), child.props.children )
     );
   }
 
