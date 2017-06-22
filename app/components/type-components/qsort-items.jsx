@@ -24,13 +24,13 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 class QSortItems extends React.Component {
     
     render(){
-        logger.info("QSortItems.render");
+        logger.info("QSortItems.render", this.props);
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
                     limit={20} >
-            <QVoteStore  rasp={{rasp: this.props.rasp}} >
-                <ReactActionStatePath>
+            <QVoteStore >
+                <ReactActionStatePath rasp={{rasp: this.props.rasp}}>
                     <RASPQSortItems />
                 </ReactActionStatePath>
             </QVoteStore>
@@ -53,8 +53,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
     constructor(props){
         var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
         super(raspProps, 'itemId');  // shortId is the key for indexing to child RASP functions
-        if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
-        else { this.QSortButtonList=QSortButtonList; }
+        this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         console.info("RASPQSortItems.constructor");
     }
 
