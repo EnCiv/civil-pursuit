@@ -30,7 +30,7 @@ exports.button = class QSortButtons extends React.Component {
                         }
                     }
                     className= {`qsort-${qbuttons[btn].name}`}
-                    title= {qbuttons[btn].title[rasp.button===button?'active':'inactive']}
+                    title= {qbuttons[btn].title[rasp.button && rasp.button===btn ?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}
                     >
                         <span className="civil-button-text">{qbuttons[btn].name}</span>
