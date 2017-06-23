@@ -17,13 +17,13 @@ exports.button = class QSortButtons extends React.Component {
 
     buttons=Object.keys(qbuttons).slice(1).map(btn => {
         var number=[];
-        if(typeof rasp[btn] == 'number') number=(<span>{rasp[btn]}</span>);
+        if(typeof rasp[btn] === 'number') number=(<span>{rasp[btn]}</span>);
         return(
                 <ButtonGroup>
                     {number}
                     <Button small shy 
                     inactive= { false } 
-                    success= { rasp.button===btn }
+                    success= { rasp.button && rasp.button===btn }
                     onClick= { ()=>{
                         toParent({type: "TOGGLE_BUTTON", button: btn, toBeContinued: true}); // tell item this button is set
                         toParent({type: "TOGGLE_QBUTTON", button: btn, distance: -1}); // tell qsort items this button is set 
