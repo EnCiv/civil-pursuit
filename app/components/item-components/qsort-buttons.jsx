@@ -11,7 +11,7 @@ exports.button = class QSortButtons extends React.Component {
   render () {
     const { item, rasp} = this.props;
     const qbuttons= this.props.qbuttons || QSortButtonList;
-    const toParent=this.props.rasp.toParent;
+    const toParent=rasp.toParent;
 
     let buttons = [];
 
@@ -23,13 +23,14 @@ exports.button = class QSortButtons extends React.Component {
                     {number}
                     <Button small shy 
                     inactive= { false } 
+                    success= { rasp.button===btn }
                     onClick= { ()=>{
                         toParent({type: "TOGGLE_BUTTON", button: btn, toBeContinued: true}); // tell item this button is set
                         toParent({type: "TOGGLE_QBUTTON", button: btn, distance: -1}); // tell qsort items this button is set 
                         }
                     }
                     className= {`qsort-${qbuttons[btn].name}`}
-                    title= {qbuttons[btn].title[rasp[btn]?'active':'inactive']}
+                    title= {qbuttons[btn].title[rasp.button===button?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}
                     >
                         <span className="civil-button-text">{qbuttons[btn].name}</span>

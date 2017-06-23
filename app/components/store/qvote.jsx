@@ -112,11 +112,9 @@ class QVoteStore extends React.Component {
   }
 
   renderChildren() {
-      console.info('QVoteStore.renderChildren', this.props)
       return React.Children.map(this.props.children, child => {
           var newProps = Object.assign({}, this.props, this.state, { toggle: this.toggle.bind(this) }, child.props);
           delete newProps.children;
-          console.info('QVoteStore.renderChildren.map', newProps);
           return React.cloneElement(child, newProps, child.props.children);
       });
   }

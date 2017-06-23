@@ -173,7 +173,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                                 user: user,
                                 item: item,
                                 id: item._id,
-                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item._id)}
+                                rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}
                             }
                         );
                     });
