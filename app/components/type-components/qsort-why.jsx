@@ -18,10 +18,21 @@ import ButtonGroup           from '../util/button-group';
 import Item from '../item';
 import Creator            from '../creator';
 import QSortButtonList from '../qsort-button-list';
-
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import {QSortToggle} from './qsort-items';
+import ItemCreator from '../item-creator';
 
 class QSortWhy extends React.Component {
+    render(){
+        return (
+            <ReactActionStatePath {...this.props}>
+                <RASPQSortWhy />
+            </ReactActionStatePath>
+        )
+    }
+}
 
+class RASPQSortWhy extends ReactActionStatePathClient {
     static propTypes = {
         panel: panelType
     };
@@ -51,14 +62,14 @@ class QSortWhy extends React.Component {
     whyName = '';
 
     constructor(props) {
-        super(props);
+        super(props, 'itemId');
         var unsortedList = [];
         console.info("qsortWhy constructor");
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         const qbuttons=Object.keys(QSortButtonList);
         qbuttons.slice(1).forEach(button => {
             var regex = new RegExp('./*'+button+'./*','i');
-            if(this.props.type.name.match(regex)) this.whyName=button;
+            if(this.props.type && this.props.type.name.match(regex)) this.whyName=button;
         });
         if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortWhy button name not found in type name:", qbuttons, this.props.type.name)}
         this.results.why[this.whyName]={};
@@ -90,16 +101,18 @@ class QSortWhy extends React.Component {
         }
     }
 
+    actionToState(action, rasp, source){
+        return null;
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     toggle(itemId, button, set, whyItemId) {
         console.info("QsortWhy");
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
-        let i;
-        let done = false;
-        var clone = {};
-        if( button == "done"){
+
+        if (button==='harmony' || !itemId) return;
+        if (button == "done"){
             if( this.props.next ){ 
                 this.props.next(this.props.panelNum,"done", this.results)
             }
@@ -108,47 +121,14 @@ class QSortWhy extends React.Component {
         if(set==='set'){
             this.results.why[this.whyName][itemId]=whyItemId;
         }
-        if (itemId && button && button !== 'harmony') {
-            Object.keys(this.ButtonList).forEach(
-                (sectionName) => {
-                    if (!done && ((i = this.state.sections[sectionName].indexOf(itemId)) !== -1)) {
-                        if (sectionName === button) {
-                            if(set==='set') { // set means don't toggle it
-                                clone[button]=this.state.sections[button].slice();
-                                clone['unsorted']=this.state.sections['unsorted'].slice();
-                                done=true;
-                            } else {
-                                //take the i'th element out of the section it is in and put it back in unsorted
-                                clone[button] = update(this.state.sections[button], { $splice: [[i, 1]] });
-                                clone['unsorted'] = update(this.state.sections['unsorted'], { $unshift: [itemId] });
-                                done = true;
-                            }
-                        } else if (sectionName === 'unsorted') {
-                            // it was in unsorted, so take it out and put it in the button's section
-                            clone['unsorted'] = update(this.state.sections['unsorted'], { $splice: [[i, 1]] });
-                            clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
-                            done = true;
-                        } else { // the item is in some other sectionName and should be moved to this button's section
-                            clone[sectionName] = update(this.state.sections[sectionName], { $splice: [[i, 1]] });
-                            clone[button] = update(this.state.sections[button], { $unshift: [itemId] });
-                            done = true;
-                        }
-                    } else if (sectionName != button) {  // copy over the other stction byt don't overwrite the one you are modifying
-                        clone[sectionName] = this.state.sections[sectionName].slice();
-                    }
-                }
-            );
-            this.setState({ 'sections': clone });
+        
+        this.setState({ 'sections': QSortToggle(this.state.sections,itemId,button,set) });
 
-            //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-            //this doesn't happen when moveing and object up, above the fold. 
-            var doc = document.documentElement;
-            this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-            this.scrollBackToTop = true;
-
-
-        }
-
+        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
+        //this doesn't happen when moveing and object up, above the fold. 
+        var doc = document.documentElement;
+        this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+        this.scrollBackToTop = true;
     }
 
     onFlipMoveFinishAll() {
@@ -166,8 +146,8 @@ class QSortWhy extends React.Component {
 
     render() {
 
-        const { user } = this.props;
-        const { panel } = this.props.shared;
+        const { user, rasp, shared, next, panelNum } = this.props;
+        const { panel } = shared;
 
         const onServer = typeof window === 'undefined';
 
@@ -202,7 +182,7 @@ class QSortWhy extends React.Component {
                 );
             }
 
-            if ( ! (this.props.shared && this.props.shared.sections && this.props.shared.sections[this.whyName] && Object.keys(this.props.shared.sections[this.whyName].length))) {
+            if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
                 // if we don't have any data to work with 
                 <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
                      No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
@@ -223,10 +203,7 @@ class QSortWhy extends React.Component {
                         }
                     }
                     this.state.sections[name].forEach(itemId => {
-                        var buttonstate = {};
-                        this.buttons.slice(1).forEach(button => { buttonstate[button] = false; });
-                        if (name != 'unsorted') { buttonstate[name] = true; }
-                        let item = items[this.props.shared.index[itemId]];
+                        let item = items[shared.index[itemId]];
                         content.push(
                             {
                                 sectionName: name,
@@ -234,8 +211,8 @@ class QSortWhy extends React.Component {
                                 item: item,
                                 toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                                 qbuttons: this.ButtonList,
-                                buttonstate: buttonstate,
                                 whyName: this.whyName,
+                                rasp: {shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)},
                                 id: item._id  //FlipMove uses this Id to sort
                             }
                         );
@@ -255,7 +232,7 @@ class QSortWhy extends React.Component {
                         </Button>
                     </div>
                 )
-            }else {this.props.next(this.props.panelNum,"issues")}
+            }else {next(panelNum,"issues")}
         }
 
 
@@ -289,133 +266,21 @@ class QSortWhy extends React.Component {
 export default QSortWhy;
 
 class QSortWhyItem extends React.Component {
-
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName } = this.props;
-        var creator=[];
-        const hIndex= (whyName === 'most') ? 0 : 1;
-
-        if(item.harmony && item.harmony.types[hIndex]){
-            creator=[
-                <PanelStore type={ item.harmony.types[hIndex] } parent={ item } own={true} >
-                    <QSortWhyCreate
-                        user    =   { user }
-                        type    =   { item.harmony.types[hIndex] }
-                        parent  =   { item }
-                        toggle  =  { toggle }
-                        qbuttons = { qbuttons }
-                        sectionName = { sectionName }
-                    />
-                </PanelStore >
-            ];
-        }
-
+        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName, rasp } = this.props;
         return(
                 <div style={{backgroundColor: qbuttons[sectionName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
-                            item    =   { item }
-                            user    =   { user }
-                            footer= { creator }
-                            vs={{state: 'truncated'}}
+                            {...this.props}
+                            buttons =   { ['CreateHarmony']}
+                            side    =   { whyName === 'most' ? 'left' : 'right'}
                             min={true}
                         />
                     </ItemStore>
                 </div>
         );
-
     }
 }
 
-class QSortWhyCreate extends React.Component {
-    set = false; // not part of state because we don't want to rerender on seting this. And once set, it's never changed.
-    item = {};  // a local copy of the item data, passed up by the child. No need for it to be part of state - it's only being changed by the child. but we keep a copy here so we don't rerender null
-
-    toMeFromChild(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
-        if(val.results) Object.assign(this.item,val.results.item);
-    }
-
-    constructor(props){
- //       console.info("QSortWhyCreate.constructor", props);
-        super(props);
-        this.setItem(props);
-        Object.assign(this.item, this.props.item);
-    }
-
-    componentWillReceiveProps(newProps){
- //       console.info("QSortWhyCreate.constructor", newProps);
-        this.setItem(newProps);
-        Object.assign(this.item, newProps.item);
-    }
-    
-
-    setItem(props){
-        const {type, parent, panel, toggle, qbuttons, sectionName, user } = props; // items is Object.assign'ed as a prop through PanelStore
-        if(panel && panel.items && panel.items.length) {
-            Object.assign(this.item,panel.items[0]);
-            if(!this.set){ 
-                this.set=true; 
-                toggle('set', this.item._id); // passing the Id of the why item created
-            }
-        }
- //       console.info("QsortWhyCreate.setItem:", this.item);
-    }
-
-    state={edit: false}
-
-    edit(){
-        this.setState({edit: true});
-    }
-
-    post(){
-        this.setState({edit: false});
-        if(!this.set && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
-    }
-
-    render(){
-        var result = [];
-        var color = '#fff'
-//        console.info("QSortWhyCreate", this.item);
-        const {type, parent, panel, toggle, qbuttons, sectionName, user } = this.props; // items is Object.assign'ed as a prop through PanelStore
-
-        if (this.state.edit || sectionName == 'unsorted' || !this.set) {
-            color = qbuttons['unsorted'].color;
-            result = [<Creator
-                type={type}
-                parent={parent}
-                item={this.item}
-                toggle={this.post.bind(this)}
-                toParent={this.toMeFromChild.bind(this)}
-            />
-            ];
-        } else {
-            color = qbuttons[sectionName].color;
-            result = [
-                <Item
-                    item={this.item}
-                    user={user}
-                    vs={{ state: 'truncated' }}
-                    min={true}
-                    buttons={
-                        <ButtonGroup>
-                            <Button small shy 
-                            onClick= { this.edit.bind(this) } 
-                            title= {"click to edit this comment"}
-                            >
-                                <span className="civil-button-text">edit</span>
-                            </Button>
-                        </ButtonGroup>
-                    }
-                />
-            ];
-        }
-
-        return(
-            <div style={{ backgroundColor: color,
-                          marginBottom: '0.5em'}} >
-                { result }
-            </div>
-        );
-    }
-}
 

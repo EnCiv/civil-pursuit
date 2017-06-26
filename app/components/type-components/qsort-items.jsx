@@ -18,6 +18,7 @@ import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import update from 'immutability-helper';
 
 
   // 20 is hard coded, but where should this be? type or item?
@@ -82,8 +83,8 @@ class RASPQSortItems extends ReactActionStatePathClient {
             }
             delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
-            delta.creator=true;
-        }
+            delta.creator= !rasp.creator;
+        } else return null;
         Object.assign(nextRASP, rasp, delta);
         return(nextRASP);
     }
@@ -256,3 +257,60 @@ class RASPQSortItems extends ReactActionStatePathClient {
 }
 
 export default QSortItems;
+
+// sections is an array of named sections.
+// each section is an array of itemIds
+// if you 'toggle' any itemId in a section, you are moving that itemId into that section, from whatever section it was in,
+// or, if the itemId is already in that section, you are moving it to the unsored section.
+// the unsorted section is the first in the list
+// if 'set' is equal to 'set' then you are moving the itemId into that section regardless of whethere it is in there or not.
+// if itemId is not in any section it will be added
+// if section is not in sections, it will be added and itemId will be the only element in it
+// a new copy is returned - sections is not mutated;
+//
+// import update from 'immutability-helper';
+
+export function QSortToggle(sections,itemId,section, set) {
+    let done=false, i;
+    var clone={};
+    let sectionNames=Object.keys(sections);
+    let unsorted=sectionNames[0]; // the first section is the unsorted one.
+    if (itemId){
+        sectionNames.forEach(
+            (sectionName) => {
+                if (!done && ((i = sections[sectionName].indexOf(itemId)) !== -1)) {
+                    if (sectionName === section) {
+                        if(set==='set') { // set means don't toggle it
+                            clone[section]=sections[section].slice();
+                            clone[unsorted]=sections[unsorted].slice();
+                            done=true;
+                        } else {
+                            //take the i'th element out of the section it is in and put it back in unsorted
+                            clone[section] = update(sections[section], { $splice: [[i, 1]] });
+                            clone[unsorted] = update(sections[unsorted], { $unshift: [itemId] });
+                            done = true;
+                        }
+                    } else if (sectionName === unsorted) {
+                        // it was in unsorted, so take it out and put it in the section's section
+                        clone[unsorted] = update(sections[unsorted], { $splice: [[i, 1]] });
+                        if(sections[section]) clone[section] = update(sections[section], { $unshift: [itemId] }); // section alread there, add the new itemId to it
+                        else clone[section]=[itemId] // add the section and the itemId
+                        done = true;
+                    } else { // the item is in some other sectionName and should be moved to this section's section
+                        clone[sectionName] = update(sections[sectionName], { $splice: [[i, 1]] });
+                        clone[section] = update(sections[section], { $unshift: [itemId] });
+                        done = true;
+                    }
+                } else if (sectionName != section) {  // copy over the other section but don't overwrite the one you are modifying
+                    clone[sectionName] = sections[sectionName].slice();
+                }
+            }
+        );
+        if(!done){
+            if(clone[section]) clone[section].unshift(itemId); // a new itemId not found in any section, add this one to the beginning of the list.
+            else clone[section]=[itemId];
+        }
+        return clone;
+    } return null;
+}
+
