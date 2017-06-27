@@ -7,8 +7,8 @@ import Button from '../util/button';
 exports.button = class EditButton extends React.Component {
 
     onClick(button) {
-        this.props.rasp.toParent({type: "TOGGLE_BUTTON", button: 'Edit', toBeContinuted: true})
-        this.props.rasp.toParent({type: "TOGGLE_EDIT"})
+        this.props.rasp.toParent({type: "TOGGLE_BUTTON", button: 'Edit', toBeContinuted: true});
+        this.props.rasp.toParent({type: "SET_EDIT"});
     }
 
   render() {
@@ -17,10 +17,10 @@ exports.button = class EditButton extends React.Component {
     var title=null;
 
       if(rasp.button==='Edit') {
-          success=false;
+          success=true;
           title="click to edit this";
       } else {
-          success=true;
+          success=false;
           title="click to post this";
       }
       return(

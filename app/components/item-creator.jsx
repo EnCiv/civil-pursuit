@@ -35,13 +35,12 @@ class RASPItemCreator extends ReactActionStatePathClient {
     }
     
     setItemFromPanel(props){
-        const {type, parent, panel, toggle, user } = props; // items is Object.assign'ed as a prop through PanelStore
+        const {type, parent, panel, toggle, user, rasp } = props; // items is Object.assign'ed as a prop through PanelStore
         if(panel && panel.items && panel.items.length) {
             Object.assign(this.item,panel.items[0]);
-            if(!this.set){ 
-                this.set=true; 
-                toggle('set', this.item._id); // passing the Id of the why item created
-                this.props.rasp.toParent({type: "TOGGLE_EDIT"}); // toggle the state of edit
+            if(!rasp.display){ 
+                toggle('set', this.item._id); // passing the Id of the item created
+                this.props.rasp.toParent({type: "SET_DISPLAY"}); // toggle the state of display
             }
         }
  //       console.info("QsortWhyCreate.setItemFromPanel:", this.item);
@@ -49,12 +48,14 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     actionToState(action,rasp,source){
         var nextRASP={}, delta={};
-        if (action==="TOGGLE_EDIT"){
-            delta.edit= !rasp.edit; // toggle edit
+        if (action==="SET_EDIT"){
+            delta.display= null; // toggle display
+        } else if (action==="SET_DISPLAY"){
+            delta.display= true; // toggle display
         }
         let parts=[];
         if(delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
-        if(delta.edit) parts.push('E');
+        if(delta.display) parts.push('D');
         delta.pathSegment=parts.join(',');
         Object.assign(nextRASP, rasp, delta);
         nextRASP=Object.assign({},rasp,delta);
@@ -67,8 +68,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
         let button=null;
         let matched=0;
         parts.forEach(part=>{
-            if (part==='E'){
-                nextRASP.edit=true;
+            if (part==='D'){
+                nextRASP.display=true;
                 matched+=1;
             }
         });
@@ -94,7 +95,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
         const type= this.props.type || panel.type || null;
         const parent= this.props.parent || panel.parent || null;
 
-        if ((!rasp.edit) || !this.set) {
+        if (!rasp.display) {
             content = [
                 <Creator
                     type={type}
