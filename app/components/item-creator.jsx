@@ -39,8 +39,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
         if(panel && panel.items && panel.items.length) {
             Object.assign(this.item,panel.items[0]);
             if(!rasp.display){ 
-                toggle('set', this.item._id); // passing the Id of the item created
                 this.props.rasp.toParent({type: "SET_DISPLAY"}); // toggle the state of display
+                toggle('set', this.item._id); // passing the Id of the item created
             }
         }
  //       console.info("QsortWhyCreate.setItemFromPanel:", this.item);
