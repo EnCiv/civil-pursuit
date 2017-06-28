@@ -23,11 +23,11 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     constructor(props){
         console.info("ItemCreator.constructor", props);
-        const {panel, toggle}=props;
-        const initialRASP={display: (panel && panel.items && panel.items.length)};
+        const {toggle, item}=props;
+        const initialRASP={display: item!==null};
         super(props, initialRASP);
         if(initialRASP.display){
-            Object.assign(this.item,panel.items[0]);
+            Object.assign(this.item,item);
             toggle('set', this.item._id); // passing the Id of the item created
         }
         Object.assign(this.item, this.props.item);
@@ -35,35 +35,26 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     componentWillReceiveProps(newProps){
  //       console.info("QSortWhyCreate.constructor", newProps);
-        this.setItemFromPanel(newProps);
+        if(this.item && newProps.item && this.item._id !== newProps.item._id) {
+            this.props.toggle('set', newProps.item._id); // passing the Id of the item created
+            this.props.rasp.toParent({type: "SET_DISPLAY"})
+        }
         Object.assign(this.item, newProps.item);
     }
     
-    setItemFromPanel(props){
-        const {type, parent, panel, toggle, user, rasp } = props; // items is Object.assign'ed as a prop through PanelStore
-        if(panel && panel.items && panel.items.length) {
-            Object.assign(this.item,panel.items[0]);
-            if(!rasp.display){ 
-                setTimeout(()=>this.props.rasp.toParent({type: "SET_DISPLAY"}),0); // toggle the state of display
-                toggle('set', this.item._id); // passing the Id of the item created
-            }
-        }
- //       console.info("QsortWhyCreate.setItemFromPanel:", this.item);
-    }
-
     actionToState(action,rasp,source){
+        console.info("ItemCreator.actionToState",action,rasp,source);
+        const {type}=action;
         var nextRASP={}, delta={};
-        if (action==="SET_EDIT"){
-            delta.display= null; // toggle display
-        } else if (action==="SET_DISPLAY"){
+        if (type==="SET_EDIT"){
+            delta.display= false; // toggle display
+        } else if (type==="SET_DISPLAY"){
             delta.display= true; // toggle display
         }
         let parts=[];
-        if(delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
         if(delta.display) parts.push('D');
         delta.pathSegment=parts.join(',');
         Object.assign(nextRASP, rasp, delta);
-        nextRASP=Object.assign({},rasp,delta);
         return nextRASP;
     }
 
@@ -87,13 +78,13 @@ class RASPItemCreator extends ReactActionStatePathClient {
     }
 
     post(){  // in the creator, user hit the post button
-        this.props.rasp.toParent({type: "TOGGLE_EDIT"});
-        if(!this.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
+        this.props.rasp.toParent({type: "SET_DISPLAY"});
+        //if(!this.props.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
     }
 
     render(){
         var defaultColor = '#fff'
-//        console.info("QSortWhyCreate", this.item);
+        console.info("ItemCreator.render", this.props);
         const { panel, toggle, user, rasp } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
         const type= this.props.type || panel.type || null;
@@ -112,13 +103,15 @@ class RASPItemCreator extends ReactActionStatePathClient {
                     />
                 </div>
                 <div style={{display: rasp.display ? 'block' : 'none'}}>
-                    <Item
-                        item={this.item}
-                        user={user}
-                        rasp= {{shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,'Item')}}
-                        min={true}
-                        buttons={["Edit"]}
-                    />
+                    {!this.item || !Object.keys(this.item).length ? null :
+                        <Item
+                            {...this.props}
+                            item={this.item}
+                            rasp= {{shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,'Item')}}
+                            min={true}
+                            buttons={["Edit"]}
+                        />
+                    }
                 </div>
             </div>
         );

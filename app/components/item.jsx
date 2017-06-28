@@ -46,7 +46,7 @@ export default Item;
 
 
 class RASPItem extends ReactActionStatePathClient {
-  state = { hint: false, minHeight: null }; //
+  state = { hint: false, minHeight: '60px' }; //
   constructor(props) {
     var raspProps = { rasp: props.rasp };
     super(raspProps, 'button');
@@ -249,7 +249,7 @@ class RASPItem extends ReactActionStatePathClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { active, item, user, buttons, rasp, style, emitter } = this.props;
+    const { item, user, buttons, rasp, style, emitter } = this.props;
     const shape = rasp ? rasp.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore = (rasp && rasp.readMore);

@@ -32,9 +32,10 @@ exports.panel = class CreateHarmonyPanel extends React.Component {
 class ListItemCreators extends React.Component {
     render (){
         console.info("ListItemCreators", this.props);
-        if (this.props.panel && this.props.panel.items && this.props.panel.items.length)
-            return (<div>{
-                this.props.panel.items.map(item=>{
+        var items=this.props.panel && this.props.panel.items || [null];
+        return (
+            <div>{
+                items.map(item=>{
                     return (
                         <ItemCreator
                             {...this.props}
@@ -42,12 +43,7 @@ class ListItemCreators extends React.Component {
                         />
                     )
                 })
-            }</div>);
-        else    // an empty one
-            return (  
-                <ItemCreator
-                    {...this.props}
-                />
-            );
+            }</div>
+        );
     }
 }
