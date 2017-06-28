@@ -46,7 +46,7 @@ export default Item;
 
 
 class RASPItem extends ReactActionStatePathClient {
-  state = { hint: false, minHeight: '60px' }; //
+  state = { hint: false, minHeight: 24 }; //
   constructor(props) {
     var raspProps = { rasp: props.rasp };
     super(raspProps, 'button');
@@ -164,7 +164,7 @@ class RASPItem extends ReactActionStatePathClient {
     if (!isEqual(this.props.rasp, newProps.rasp)) return true;
     //if (!isEqual(this.props.buttons, newProps.buttons)) return true;  the buttons don't change
     if (this.state.hint !== newState.hint) return true;
-    if (this.state.minHeight != newState.minHeight) return true;
+    if (this.state.minHeight !== newState.minHeight) return true;
     if (this.props.item && newProps.item) {
       if (this.props.item.subject !== newProps.item.subject) return true;
       if (this.props.item.description !== newProps.item.description) return true;
@@ -206,8 +206,9 @@ class RASPItem extends ReactActionStatePathClient {
       ) {
         if (!this.props.position) {
           // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
-          let minHeight = Math.ceil(innerChildR.height) + 'px';
-          if (this.state.minHeight !== minHeight) this.setState({ minHeight: minHeight });  // child hieight might change after data is loaded, set state so component should update.
+          let minHeight = Math.ceil(innerChildR.height);
+          if( minHeight > this.state.minHeight ) 
+            this.setState({ minHeight: minHeight });  // child hieight might change after data is loaded, set state so component should update.
         }
         if (this.state.hint) this.setState({ hint: false }); // if the hint is on - turn it off
         return;
@@ -291,7 +292,7 @@ class RASPItem extends ReactActionStatePathClient {
                 {buttons ? buttons.map(button => renderButton(button)) : null}
               </ItemStore>
             </section>
-            <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight }}>
+            <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight+'px' }}>
               <h4 className={ClassNames("item-subject", truncShape)} ref='subject'>
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */}
                 {item.subject}
