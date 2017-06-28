@@ -23,8 +23,13 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     constructor(props){
         console.info("ItemCreator.constructor", props);
-        super(props);
-        this.setItemFromPanel(props);
+        const {panel, toggle}=props;
+        const initialRASP={display: (panel && panel.items && panel.items.length)};
+        super(props, initialRASP);
+        if(initialRASP.display){
+            Object.assign(this.item,panel.items[0]);
+            toggle('set', this.item._id); // passing the Id of the item created
+        }
         Object.assign(this.item, this.props.item);
     }
 
@@ -39,7 +44,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
         if(panel && panel.items && panel.items.length) {
             Object.assign(this.item,panel.items[0]);
             if(!rasp.display){ 
-                this.props.rasp.toParent({type: "SET_DISPLAY"}); // toggle the state of display
+                setTimeout(()=>this.props.rasp.toParent({type: "SET_DISPLAY"}),0); // toggle the state of display
                 toggle('set', this.item._id); // passing the Id of the item created
             }
         }
@@ -83,45 +88,38 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     post(){  // in the creator, user hit the post button
         this.props.rasp.toParent({type: "TOGGLE_EDIT"});
-        if(!this.set && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
+        if(!this.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
     }
 
     render(){
-        var content = [];
-        var color = '#fff'
+        var defaultColor = '#fff'
 //        console.info("QSortWhyCreate", this.item);
         const { panel, toggle, user, rasp } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
         const type= this.props.type || panel.type || null;
         const parent= this.props.parent || panel.parent || null;
 
-        if (!rasp.display) {
-            content = [
-                <Creator
-                    type={type}
-                    parent={parent}
-                    item={this.item}
-                    toggle={this.post.bind(this)}
-                    toParent={this.onChange.bind(this)}
-                />
-            ];
-        } else {
-            color = this.props.color || color;
-            content = [
-                <Item
-                    item={this.item}
-                    user={user}
-                    rasp= {{shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,'Item')}}
-                    min={true}
-                    buttons={["Edit"]}
-                />
-            ];
-        }
-
         return(
-            <div style={{ backgroundColor: color,
+            <div style={{ backgroundColor: rasp.display ? this.props.color || defaultColor : defaultColor,
                           marginBottom: '0.5em'}} >
-                { content }
+                <div style={{display: rasp.display ? 'none' : 'block'}}>
+                    <Creator
+                        type={type}
+                        parent={parent}
+                        item={this.item}
+                        toggle={this.post.bind(this)}
+                        toParent={this.onChange.bind(this)}
+                    />
+                </div>
+                <div style={{display: rasp.display ? 'block' : 'none'}}>
+                    <Item
+                        item={this.item}
+                        user={user}
+                        rasp= {{shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,'Item')}}
+                        min={true}
+                        buttons={["Edit"]}
+                    />
+                </div>
             </div>
         );
     }
