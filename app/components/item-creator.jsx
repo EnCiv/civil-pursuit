@@ -94,9 +94,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
         var item=this.item;
 
         return(
-            <div style={{ backgroundColor: rasp.display ? this.props.color || defaultColor : defaultColor,
-                          marginBottom: '0.5em'}} >
-                <div style={{display: rasp.display ? 'none' : 'block'}}>
+            <div style={{marginBottom: '0.5em'}} >
+                <div style={{display: rasp.display ? 'none' : 'block', backgroundColor: defaultColor}}>
                     <Creator
                         type={type}
                         parent={parent}
