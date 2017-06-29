@@ -39,7 +39,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
             this.props.toggle('set', newProps.item._id); // passing the Id of the item created
             this.props.rasp.toParent({type: "SET_DISPLAY"})
         }
-        Object.assign(this.item, newProps.item);
+        if(this.props.item != newProps.item) // don't overwrite this.item unless there really is a change
+            Object.assign(this.item, newProps.item);
     }
     
     actionToState(action,rasp,source){
@@ -90,6 +91,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
         const type= this.props.type || panel.type || null;
         const parent= this.props.parent || panel.parent || null;
 
+        var item=this.item;
+
         return(
             <div style={{ backgroundColor: rasp.display ? this.props.color || defaultColor : defaultColor,
                           marginBottom: '0.5em'}} >
@@ -97,16 +100,16 @@ class RASPItemCreator extends ReactActionStatePathClient {
                     <Creator
                         type={type}
                         parent={parent}
-                        item={this.item}
+                        item={item}
                         toggle={this.post.bind(this)}
                         toParent={this.onChange.bind(this)}
                     />
                 </div>
                 <div style={{display: rasp.display ? 'block' : 'none'}}>
-                    {!this.item || !Object.keys(this.item).length ? null :
+                    {!item===null || !Object.keys(item).length ? null :
                         <Item
                             {...this.props}
-                            item={this.item}
+                            item={item}
                             rasp= {{shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,'Item')}}
                             min={true}
                             buttons={["Edit"]}

@@ -46,7 +46,7 @@ export default Item;
 
 
 class RASPItem extends ReactActionStatePathClient {
-  state = { hint: false, minHeight: 24 }; //
+  state = { hint: false, minHeight: null}; //
   constructor(props) {
     var raspProps = { rasp: props.rasp };
     super(raspProps, 'button');
@@ -195,28 +195,29 @@ class RASPItem extends ReactActionStatePathClient {
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
     if (!(this.props.rasp && this.props.rasp.readMore)) {
-      let buttonsR = this.refs.buttons.getBoundingClientRect();
-      let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
-      let bottomLine = Math.max(buttonsR.bottom, mediaR.bottom);
       let truncableR = truncable.getBoundingClientRect();
-      if (((buttonsR.height || mediaR.height) && (innerChildR.bottom < bottomLine)) // there is less text than the bottom of media or button
-        || (((!buttonsR.height && !mediaR.height) || this.props.min) && (Math.round(innerChildR.bottom) <= Math.ceil(truncableR.bottom))) // there is no media or buttons and there is less text than or equal to the 'min' height of truncated
-      ) {
-        if (!this.props.position) {
-          // if the actual size of item-text is less than the button group or media, set it to the button group and don't show the hint.
-          let minHeight = Math.ceil(innerChildR.height);
-          if( minHeight > this.state.minHeight ) 
-            this.setState({ minHeight: minHeight });  // child hieight might change after data is loaded, set state so component should update.
+
+      if(Math.round(innerChildR.bottom) > Math.ceil(truncableR.bottom)) { // the innards are bigger than the trunkable agrea, so truncate them 
+        this.setState({hint: true});
+      } else {
+        var nextState={};
+        if(this.state.hint) nextState.hint=false;
+        if(this.min && !this.props.position) { // do we need put in a smaller minHeight because there is not enough to fill the minimum
+
+          let buttonsR = this.refs.buttons.getBoundingClientRect();
+          let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
+          let bottomLine = Math.max(buttonsR.bottom, mediaR.bottom, innerChildR.bottom);
+
+          let minHeight=Math.ceil(innerChildR.top - bottomLine);
+
+          if(this.state.minHeight !== minHeight) nextState.minHeight=minHeight;
         }
-        if (this.state.hint) this.setState({ hint: false }); // if the hint is on - turn it off
-        return;
-      } else { // we are in the truncated state and there is so much text that we need to truncate it
-        if (!this.state.hint) this.setState({ hint: true }); // if the text is bigger, turn on the hint
+        this.setState(nextState);
       }
     } else { // if this is not the truncated state, make sure the hint is off
-      if (this.state.hint) this.setState({ hint: false }); // if open, turn off the hint
+      if (this.state.hint) this.setState({ hint: false, minHeight: null }); // if open, turn off the hint
     }
   }
 
@@ -292,7 +293,7 @@ class RASPItem extends ReactActionStatePathClient {
                 {buttons ? buttons.map(button => renderButton(button)) : null}
               </ItemStore>
             </section>
-            <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.state.minHeight+'px' }}>
+            <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore.bind(this)} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight+'px' }}>
               <h4 className={ClassNames("item-subject", truncShape)} ref='subject'>
                 { /*<Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link> */}
                 {item.subject}
