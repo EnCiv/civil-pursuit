@@ -111,13 +111,14 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         console.info("QsortWhy.toggle", ...arguments);
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
 
-        if (button==='harmony' || !itemId) return;
+        if (button==='harmony') return;
         if (button == "done"){
             if( this.props.next ){ 
                 this.props.next(this.props.panelNum,"done", this.results)
             }
             return;
         }
+        if(!itemId) return;
         if(set==='set'){
             this.results.why[this.whyName][itemId]=whyItemId;
         }
