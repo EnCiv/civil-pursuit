@@ -25,7 +25,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
         console.info("ItemCreator.constructor", props);
         const {toggle, item}=props;
         const initialRASP={display: item!==null && Object.keys(item).length>0}; // if there is a populated item, then start in display mode
-        super(props, initialRASP);
+        super(props, 'key', initialRASP);  // key is not used, but needed to be specified
         if(initialRASP.display){
             Object.assign(this.item,item);
             toggle('set', this.item._id); // passing the Id of the item created

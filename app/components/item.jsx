@@ -21,22 +21,10 @@ import ItemComponent from './item-component';
 //
 
 class Item extends React.Component {
-  constructor(props) {
-    super();
-    console.info("Item.constructor");
-    let shape = props.rasp.shape;
-    let readMore = shape === 'open';
-    let button = (props.item && props.item.harmony && props.item.harmony.types && props.item.harmony.types.length) ? 'Harmony' : null;
-    let parts = [];
-    if (readMore) parts.push('r');
-    if (button) parts.push(button[0]);
-    let pathSegment = parts.join(',');
-    //this.initialRASP={shape, readMore, button, pathSegment: pathSegment};
-  }
   render() {
     logger.trace("Item render");
     return (
-      <ReactActionStatePath {... this.props} initialRASP={this.initialRASP}>
+      <ReactActionStatePath {... this.props} >
         <RASPItem />
       </ReactActionStatePath>
     );
