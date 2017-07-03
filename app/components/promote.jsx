@@ -17,10 +17,10 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 
 
 export default class Promote extends React.Component {
-    static initialRASP={ left: 0, right: 1, cursor: 1, side: ''};
+    initialRASP={ left: 0, right: 1, cursor: 1, side: ''};
     render() {
         return (
-            <ReactActionStatePath {...this.props} initialRASP={Promote.initialRASP}>
+            <ReactActionStatePath {...this.props} initialRASP={this.initialRASP}>
                 <RASPPromote />
             </ReactActionStatePath>
         )
@@ -48,7 +48,7 @@ class RASPPromote extends ReactActionStatePathClient {
         const lookup = { l: 'left', r: 'right' }
         var parts = action.segment.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
-        var nextRASP = Object.assign({}, Promote.initialRASP, { shape: 'open', side: side, pathSegment: null }); // always starts evaluation at the beginning if restoring a path
+        var nextRASP = Object.assign({}, action.initialRASP, { shape: 'open', side: side, pathSegment: null }); // always starts evaluation at the beginning if restoring a path
         return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
@@ -68,7 +68,6 @@ class RASPPromote extends ReactActionStatePathClient {
                 delta.left = delta.cursor - 1;
                 delta.right = delta.cursor;
           } else { // done with evaluations
-              //Promote.initialRASP;  don't change left and right - it will cause a rerender and don't remove path it will cause a clear path delta=Promote.initialRASP;
               setTimeout(()=>this.props.rasp.toParent({type: "CHANGE_SHAPE", shape: 'truncated', distance: -1}),0);  // after the evaluation is done, the panel should go away
           }
         } else if (action.type==="PROMOTE"){
@@ -79,7 +78,7 @@ class RASPPromote extends ReactActionStatePathClient {
           } else {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
-            delta.cursor=cursor; //Promote.initialRASP;  don't change left and right - it will cause a rerender and don't remove path it will cause a clear path
+            delta.cursor=cursor; 
             if(winner._id === this.props.item._id){ // voted up the one we started with
                 setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", distance: -1}),0);
             } else { // voted up a different one
