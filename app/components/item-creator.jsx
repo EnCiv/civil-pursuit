@@ -8,9 +8,11 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
 export default class ItemCreator extends React.Component {
     render(){
+        const {item}=this.props;
+        const initialRASP={display: item!==null && Object.keys(item).length>0}; // if there is a populated item, then start in display mode
         console.info("ItemCreator", this.props);
         return (
-            <ReactActionStatePath {...this.props}>
+            <ReactActionStatePath {...this.props} initialRASP={initialRASP}>
                 <RASPItemCreator />
             </ReactActionStatePath>
         )
@@ -24,9 +26,8 @@ class RASPItemCreator extends ReactActionStatePathClient {
     constructor(props){
         console.info("ItemCreator.constructor", props);
         const {toggle, item}=props;
-        const initialRASP={display: item!==null && Object.keys(item).length>0}; // if there is a populated item, then start in display mode
-        super(props, 'key', initialRASP);  // key is not used, but needed to be specified
-        if(initialRASP.display){
+        super(props);
+        if(props.rasp.display){  // this is could be set by initialRASP above
             Object.assign(this.item,item);
             toggle('set', this.item._id); // passing the Id of the item created
         }

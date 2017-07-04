@@ -17,9 +17,10 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 
 
 export default class Promote extends React.Component {
+    initialRASP={ left: 0, right: 1, cursor: 1, side: ''};
     render() {
         return (
-            <ReactActionStatePath {...this.props}>
+            <ReactActionStatePath {...this.props} initialRASP={this.initialRASP}>
                 <RASPPromote />
             </ReactActionStatePath>
         )
@@ -30,12 +31,10 @@ export default class Promote extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class RASPPromote extends ReactActionStatePathClient {
     constructor(props) {
-        //var raspProps = { rasp: props.rasp };
-        const initialRASP={ left: 0, right: 1, cursor: 1, side: ''};
-        super(props, 'side', initialRASP);
+        var raspProps = { rasp: props.rasp };
+        super(raspProps, 'side');
         //console.info("RASPPromote.constructor", this.props)
         this.transitionedOC = [];
-        this.initialRASP=initialRASP; // done here because this is not accessible before super
         if(!(props.rasp)) logger.error("RASPPromote rasp missing");
     }
 
@@ -49,7 +48,7 @@ class RASPPromote extends ReactActionStatePathClient {
         const lookup = { l: 'left', r: 'right' }
         var parts = action.segment.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
-        var nextRASP = Object.assign({}, this.initialRASP, { shape: 'open', side: side, pathSegment: null }); // always starts evaluation at the beginning if restoring a path
+        var nextRASP = Object.assign({}, action.initialRASP, { shape: 'open', side: side, pathSegment: null }); // always starts evaluation at the beginning if restoring a path
         return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
@@ -79,7 +78,7 @@ class RASPPromote extends ReactActionStatePathClient {
           } else {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
-            delta.cursor=cursor;
+            delta.cursor=cursor; 
             if(winner._id === this.props.item._id){ // voted up the one we started with
                 setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", distance: -1}),0);
             } else { // voted up a different one
