@@ -131,7 +131,26 @@ class RASPPanelList extends React.Component {
   actionToState(action, rasp, source) {
     //find the section that the itemId is in, take it out, and put it in the new section
     var nextRASP = {}, delta = {};
-    return null;
+    if(type==="NEXT_PANEL") {
+      let newStatus=false;
+      const {panelNum, status, results}=action; 
+      var panelStatus = rasp.panelStatus.slice(0);
+      if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newStatus = true }
+      if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
+        for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
+      }
+      if (newStatus) delta.panelStatus=panelStatus;
+      if (results) delta.shared = merge({}, rasp.shared, results);
+
+      // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
+      if (status === 'done' && panelNum === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
+        delta.currentPanel = rasp.currentPanel+1;
+        this.smoothHeight();  // adjust height
+      } 
+      if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
+      Object.assign(nextRASP,rasp,delta);
+    }else return null;
+    return nextRASP;
   }
 
   segmentToState(action) {
@@ -145,12 +164,8 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   state = {
-    discussion: null,
-    topLevelType: null,
     typeList: [],
-    currentPanel: null,
-    containerWidth: 0,
-    panelStatus: ["issues"]
+    containerWidth: 0
   };
 
   shared = {};
@@ -182,10 +197,10 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations) {
     if (this.inHeight === 'active') return;
-    if (this.state.currentPanel === null) return;
+    if (typeof this.props.rasp.currentPanel !== 'number') return;
     let outer = this.refs.outer;
-    if (!this.refs['panel-list-' + this.state.currentPanel]) return;
-    let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.state.currentPanel]);
+    if (!this.refs['panel-list-' + this.props.rasp.currentPanel]) return;
+    let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.props.rasp.currentPanel]);
     if (!(inner)) return;
     let outerHeight = outer.clientHeight;
     let innerHeight = inner.clientHeight;
@@ -198,8 +213,8 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
-    if (this.state.currentPanel === null) return;
-    let pi = 'panel-list-' + this.state.currentPanel;
+    if (this.props.rasp.currentPanel === null) return;
+    let pi = 'panel-list-' + this.props.rasp.currentPanel;
     let target = ReactDOM.findDOMNode(this.refs.panel);
     if (this.state.containerWidth != target.clientWidth) {  // could be changed by resizing the window
       this.setState({
@@ -224,12 +239,12 @@ class RASPPanelList extends React.Component {
 
     const timer = setInterval(() => {
       if (--timerMax <= 0) { clearInterval(timer); this.inHeight = 'inactive'; return; }
-      if (!this.refs['panel-list-' + this.state.currentPanel]) { // when this happens it's a bug in the parent, but don't let it overload the console with error messages.
-        console.error('PanelList.smoothHeight: refs[] does not exist:', 'panel-list-' + this.state.currentPanel);
+      if (!this.refs['panel-list-' + this.props.rasp.currentPanel]) { // when this happens it's a bug in the parent, but don't let it overload the console with error messages.
+        console.error('PanelList.smoothHeight: refs[] does not exist:', 'panel-list-' + this.props.rasp.currentPanel);
         clearInterval(timer); this.inHeight = 'inactive';
         return;
       }
-      let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.state.currentPanel]);
+      let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.props.rasp.currentPanel]);
       let outerHeight = outer.clientHeight;
       let innerHeight = inner.clientHeight;
       let outerMaxHeight = parseInt(outer.style.maxHeight, 10) || 0;
@@ -250,35 +265,14 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   nextPanel(panelNum, status, results) {
-    let cP = this.state.currentPanel || 0;
-    var panelStatus = this.state.panelStatus.slice(0);
-    var newState = false;
-    if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newState = true }
-    if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
-      for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newState = true }
-    }
-    console.info("panelList nextPanel panelStatus")
-    if (newState) {
-      console.info("panelList nextPanel setting state")
-      this.setState({ panelStatus: panelStatus });
-    }
-    if (results) {
-      const shared = merge({}, this.state.shared, results);
-      console.info("panel-list shared");
-      this.setState({ shared: shared });
-    }
-    // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
-    if (status === 'done' && panelNum === this.state.currentPanel && this.state.currentPanel < (this.state.typeList.length - 1)) {
-      this.setState({ currentPanel: this.state.currentPanel + 1 });
-      this.smoothHeight();
-    }
+    return this.props.rasp.toParent({type: "NEXT_PANEL", panelNum, status, results});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   panelListButton(i) {
     this.setState({ currentPanel: i })
-    if (this.state.currentPanel) this.smoothHeight();
+    if (this.props.rasp.currentPanel) this.smoothHeight();
     else if (this.hideInstruction) this.hideInstruction()
   }
 
@@ -299,7 +293,7 @@ class RASPPanelList extends React.Component {
     let { typeList } = this.state;
     const { panel, rasp, user, emitter } = this.props;
     var title, name;
-    const currentPanel = this.state.currentPanel;
+    const currentPanel = this.props.rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
     var spaceBetween = containerWidth * 0.25;
 
@@ -335,9 +329,9 @@ class RASPPanelList extends React.Component {
       if (typeList) {
         typeList.forEach((type, i) => {
           let visible = false;
-          if (this.state.panelStatus[i] === 'done') { visible = true; }
-          if ((i > 0) && this.state.panelStatus[i - 1] === 'done') { visible = true }
-          let active = (this.state.currentPanel === i || (this.state.currentPanel === null && i === 0));
+          if (this.props.rasp.panelStatus[i] === 'done') { visible = true; }
+          if ((i > 0) && this.props.rasp.panelStatus[i - 1] === 'done') { visible = true }
+          let active = (this.props.rasp.currentPanel === i || (typeof this.props.rasp.currentPanel !== 'number' && i === 0));
           let buttonActive = active || visible;
           crumbs.push(
             <button onClick={buttonActive ? this.panelListButton.bind(this, i) : null}
@@ -380,9 +374,9 @@ class RASPPanelList extends React.Component {
             type={this.state.typeList[currentPanel]}
             user={user}
             next={this.nextPanel.bind(this)}
-            shared={this.state.shared}
+            shared={this.props.rasp.shared}
             emitter={emitter}
-            panelNum={this.state.currentPanel}
+            panelNum={this.props.rasp.currentPanel}
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
           />
