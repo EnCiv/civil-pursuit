@@ -122,8 +122,6 @@ class RASPPanelList extends React.Component {
       }
     } else logger.error("ReactActionStatePathClient.toMeFromParent action type unknown not handled", action)
   }
-}
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
