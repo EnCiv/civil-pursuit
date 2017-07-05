@@ -103,7 +103,7 @@ class RASPPanelList extends React.Component {
         var result = { raspChildren: raspChildren, depth: this.props.rasp.depth + 1, shape: 'multichild' };
         if (curPath.length) result.pathSegment = curPath.join(':');
         console.log("RASPPanelList.toMeFromParent GET_STATE returns", result);
-        return result;
+        return [result];
       } else
         return null;
     } else if (action.type === "CLEAR_PATH") {  // clear the path and reset the RASP state back to what the const
