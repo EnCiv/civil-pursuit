@@ -25,7 +25,7 @@ class RASPPanelList extends React.Component {
     //logger.trace("ReactActionStatePathClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
-    this.keyField = 'key';
+    this.keyField = 'currentPanel';
     this.waitingOn = null;
     if (!this.props.rasp) logger.error("ReactActionStatePathClient no rasp", this.constructor.name, this.props);
     if (this.props.rasp.toParent) {
@@ -67,6 +67,7 @@ class RASPPanelList extends React.Component {
   toMeFromParent(action) {
     logger.trace("ReactActionStatePathClient.toMeFromParent", this.props.rasp.depth, action);
     if (action.type === "ONPOPSTATE") {
+      console.log("RASPPanelList.toMeFromParent ONPOPSTATE", this.props.rasp.depth, action);
       let { stackDepth, stateStack } = action;
 
       let keepChild = Object.keys(this.toChild).forEach(child => keepChild[child] = false);
@@ -87,6 +88,7 @@ class RASPPanelList extends React.Component {
       return;// this was the end of the line
     } else if (action.type === "GET_STATE") {
       // get the state info from all the children and combind them into one Object
+      console.log("RASPPanelList.toMeFromParent GET_STATE", this.props.rasp.depth, action);
       var raspChildren = Object.keys(this.toChild).map(child => {
         return {
           stateStack: this.toChild[child]({ type: "GET_STATE" }),
@@ -100,6 +102,7 @@ class RASPPanelList extends React.Component {
       if (raspChildren.length) {
         var result = { raspChildren: raspChildren, depth: this.props.rasp.depth + 1, shape: 'multichild' };
         if (curPath.length) result.pathSegment = curPath.join(':');
+        console.log("RASPPanelList.toMeFromParent GET_STATE returns", result);
         return result;
       } else
         return null;
@@ -381,7 +384,7 @@ class RASPPanelList extends React.Component {
             emitter={emitter}
             panelNum={this.state.currentPanel}
             limit={panel.limit}
-            rasp={{ shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent }}
+            rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
           />
         )];
       }
