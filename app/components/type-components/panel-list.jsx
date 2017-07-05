@@ -11,9 +11,11 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 
 class PanelList extends React.Component {
   render() {
+    return (
     <ReactActionStatePath>
       <RASPPanelList />
     </ReactActionStatePath>
+    );
   }
 }
 
