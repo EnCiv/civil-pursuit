@@ -69,7 +69,7 @@
     "passport-twitter": "^1.0.3",
     "promise-sequencer": "^2.0.1",
     "react": "^15.6.1",
-    "react-action-state-path": "github:ddfridley/react-action-state-path#master",
+    "react-action-state-path": "github:ddfridley/react-action-state-path#78294c33382fc2ec34973116ddcc83640414c4ca",
     "react-dom": "^15.6.1",
     "react-flip-move": "^2.7.2",
     "redtea": "^3.4.1",
