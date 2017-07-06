@@ -133,7 +133,7 @@ class RASPPanelList extends React.Component {
   actionToState(action, rasp, source) {
     //find the section that the itemId is in, take it out, and put it in the new section
     var nextRASP = {}, delta = {};
-    if(type==="NEXT_PANEL") {
+    if(action.type==="NEXT_PANEL") {
       let newStatus=false;
       const {panelNum, status, results}=action; 
       var panelStatus = rasp.panelStatus.slice(0);
@@ -155,9 +155,11 @@ class RASPPanelList extends React.Component {
     return nextRASP;
   }
 
-  segmentToState(action) {
-    return null;
-  }
+    segmentToState(action) {
+        var currentPanel = action.segment;
+        var nextRASP = Object.assign({}, {currentPanel, pathSegment: currentPanel}); // note, initialRASP is not being applied. PanelStatus and results are derived
+        return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
+    }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
