@@ -294,7 +294,7 @@ class RASPPanelList extends React.Component {
     let { typeList } = this.state;
     const { panel, rasp, user, emitter } = this.props;
     var title, name;
-    const currentPanel = this.props.rasp.currentPanel;
+    const currentPanel = rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
     var spaceBetween = containerWidth * 0.25;
 
@@ -330,9 +330,9 @@ class RASPPanelList extends React.Component {
       if (typeList) {
         typeList.forEach((type, i) => {
           let visible = false;
-          if (this.props.rasp.panelStatus[i] === 'done') { visible = true; }
-          if ((i > 0) && this.props.rasp.panelStatus[i - 1] === 'done') { visible = true }
-          let active = (this.props.rasp.currentPanel === i || (typeof this.props.rasp.currentPanel !== 'number' && i === 0));
+          if (rasp.panelStatus[i] === 'done') { visible = true; }
+          if ((i > 0) && rasp.panelStatus[i - 1] === 'done') { visible = true }
+          let active = (rasp.currentPanel === i || (typeof rasp.currentPanel !== 'number' && i === 0));
           let buttonActive = active || visible;
           crumbs.push(
             <button onClick={buttonActive ? this.panelListButton.bind(this, i) : null}
@@ -362,7 +362,7 @@ class RASPPanelList extends React.Component {
         )
       }
 
-      if (currentPanel !== null && this.state.typeList.length) {
+      if (currentPanel !== null && typeList.length) {
         /**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
                 console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
                 console.info("PanelList list: size", panel.limit || "none");
@@ -370,14 +370,14 @@ class RASPPanelList extends React.Component {
                 console.info("PanelList list: typelist[",currentPanel,"]:",this.state.typeList[currentPanel].name);
                 console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);**/
         this.panelList[currentPanel].content = [(
-          <TypeComponent component={this.state.typeList[currentPanel].component}
+          <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
-            type={this.state.typeList[currentPanel]}
+            type={typeList[currentPanel]}
             user={user}
             next={this.nextPanel.bind(this)}
-            shared={this.props.rasp.shared}
+            shared={rasp.shared}
             emitter={emitter}
-            panelNum={this.props.rasp.currentPanel}
+            panelNum={rasp.currentPanel}
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
           />
