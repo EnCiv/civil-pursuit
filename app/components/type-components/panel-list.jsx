@@ -10,7 +10,7 @@ import merge from 'lodash/merge'
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 
 class PanelList extends React.Component {
-  initialRASP={panelStatus: [], shared: {}};
+  initialRASP={currentPanel: 0, panelStatus: [], shared: {}};
   render() {
     return (
       <ReactActionStatePath {... this.props} initialRASP={this.initialRASP} >
@@ -199,7 +199,6 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations) {
     if (this.inHeight === 'active') return;
-    if (typeof this.props.rasp.currentPanel !== 'number') return;
     let outer = this.refs.outer;
     if (!this.refs['panel-list-' + this.props.rasp.currentPanel]) return;
     let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.props.rasp.currentPanel]);
@@ -215,8 +214,6 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
-    if (this.props.rasp.currentPanel === null) return;
-    let pi = 'panel-list-' + this.props.rasp.currentPanel;
     let target = ReactDOM.findDOMNode(this.refs.panel);
     if (this.state.containerWidth != target.clientWidth) {  // could be changed by resizing the window
       this.setState({
@@ -298,6 +295,7 @@ class RASPPanelList extends React.Component {
     const currentPanel = rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
     var spaceBetween = containerWidth * 0.25;
+    let that=this; // so this can be accessed by functions
 
 
     if (typeof document !== 'undefined') {
@@ -328,15 +326,14 @@ class RASPPanelList extends React.Component {
         );
       }
 
-      if (typeList) {
-        typeList.forEach((type, i) => {
-          let visible = false;
-          if (rasp.panelStatus[i] === 'done') { visible = true; }
-          if ((i > 0) && rasp.panelStatus[i - 1] === 'done') { visible = true }
-          let active = (rasp.currentPanel === i || (typeof rasp.currentPanel !== 'number' && i === 0));
+      var renderCrumbs = ()=>{
+        typeList.map((type, i) => {
+          let visible = (   (rasp.panelStatus[i] === 'done') 
+                         || ((i > 0) && rasp.panelStatus[i - 1] === 'done'));
+          let active = (rasp.currentPanel === i );
           let buttonActive = active || visible;
-          crumbs.push(
-            <button onClick={buttonActive ? this.panelListButton.bind(this, i) : null}
+          return(
+            <button onClick={buttonActive ? that.panelListButton.bind(that, i) : null}
               className={!(active || visible) ? 'inactive' : ''}
               style={{
                 display: "inline",
@@ -350,20 +347,20 @@ class RASPPanelList extends React.Component {
             </button>
           )
         })
-
-        crumbs = (
-          <div style={{
-            display: "block",
-            marginBottom: "1em",
-            marginTop: "1em",
-            textAlign: "center"
-          }}>
-            {crumbs}
-          </div>
-        )
       }
 
-      if (currentPanel !== null && typeList.length) {
+      crumbs = (
+        <div style={{
+          display: "block",
+          marginBottom: "1em",
+          marginTop: "1em",
+          textAlign: "center"
+        }}>
+          {renderCrumbs()}
+        </div>
+      );
+
+      if (typeList.length) {
         /**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
                 console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
                 console.info("PanelList list: size", panel.limit || "none");
@@ -395,43 +392,37 @@ class RASPPanelList extends React.Component {
           >
             {instruction}
             {crumbs}
-            {
-              <div ref='outer'>
-                {currentPanel !== null && this.panelList.length ?
-                  <div id='panel-list-wide'
-                    style={{
-                      width: (containerWidth + spaceBetween) * this.panelList.length + 'px',
-                      left: -currentPanel * (containerWidth + spaceBetween) + 'px',
-                      transition: "all 0.5s linear",
-                      position: "relative"
-                    }}
-                  >
-                    {this.panelList.map((panelListItem, i) => {
-                      if (panelListItem.content.length) {
-                        return (
-                          <div id={`panel-list-${i}`}
-                            ref={`panel-list-${i}`}
-                            style={{
-                              display: "inline-block",
-                              verticalAlign: 'top',
-                              marginRight: spaceBetween + 'px',
-                              width: containerWidth + 'px'
-                            }}
-                          >
-                            {panelListItem.content}
-                          </div>
-                        );
-                      } else {
-                        return ([]);
-                      }
-                    })
+            <div ref='outer'>
+              { <div id='panel-list-wide'
+                  style={{
+                    width: (containerWidth + spaceBetween) * ( this.panelList.length || 1 ) + 'px',
+                    left: -currentPanel * (containerWidth + spaceBetween) + 'px',
+                    transition: "all 0.5s linear",
+                    position: "relative"
+                  }}
+                >
+                  {this.panelList.map((panelListItem, i) => {
+                    if (panelListItem.content.length) {
+                      return (
+                        <div id={`panel-list-${i}`}
+                          ref={`panel-list-${i}`}
+                          style={{
+                            display: "inline-block",
+                            verticalAlign: 'top',
+                            marginRight: spaceBetween + 'px',
+                            width: containerWidth + 'px'
+                          }}
+                        >
+                          {panelListItem.content}
+                        </div>
+                      );
+                    } else {
+                      return ([]);
                     }
-                  </div>
-                  :
-                  []
-                }
-              </div>
-            }
+                  })}
+                </div>
+              }
+            </div>
           </Panel>
         </section>
       );
