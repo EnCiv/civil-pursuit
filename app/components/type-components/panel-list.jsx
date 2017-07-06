@@ -74,7 +74,7 @@ class RASPPanelList extends React.Component {
       let keepChild = [];
       Object.keys(this.toChild).forEach(child => keepChild[child] = false);
 
-      stateStack[stackDepth].raspChildren.forEach(child => {
+      stateStack[stackDepth+1].raspChildren.forEach(child => {
         if (this.toChild[child.key]) {
           this.toChild[child.key]({ type: "ONPOPSTATE", stateStack: child.stateStack, stackDepth: 0 });
           keepChild[child.key] = true;
