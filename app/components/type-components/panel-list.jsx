@@ -81,8 +81,8 @@ class RASPPanelList extends React.Component {
         } else console.error("RASPPanelList.toMeFromParent ONPOPSTATE no child:", child.key);
       })
 
-      keepChild.forEach(child => {
-        if (!keepChild[child]) {
+      keepChild.forEach((keep, child) => { // child id is the index
+        if (!keep) {
           console.error("RASPPanelList.toMeFromParent ONPOPSTATE child not kept", child);
           this.toChild[child]({ type: "CLEAR_PATH" }); // only one button panel is open, any others are truncated (but inactive)
         }
