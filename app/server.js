@@ -335,7 +335,7 @@ class HttpServer extends EventEmitter {
   }
 
   getItemPage () {
-    this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
+    this.app.get('/item/:item_short_id/*', (req, res, next) => {
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
       try {
         Item.findOne({ id : req.params.item_short_id }).then(
