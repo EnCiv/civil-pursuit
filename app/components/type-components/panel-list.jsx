@@ -180,6 +180,7 @@ class RASPPanelList extends React.Component {
         delta.shape='open';
       }
     } else return null;
+    if(this.instructionHide) this.instructionHide(); //hide the instrucctions.
     var parts=[];
     if(delta.shape==='open') { parts.push('o'); parts.push(delta.currentPanel);}
     delta.pathSegment=parts.join(',');
@@ -341,8 +342,6 @@ class RASPPanelList extends React.Component {
     }
 
     if (panel) {
-      console.info("PanelList: type");
-      console.info("PanelList: parent");
       if (panel.type) {
         name = `syn-panel-list--${panel.type._id || panel.type}`;
         title = panel.type.name;
@@ -355,7 +354,7 @@ class RASPPanelList extends React.Component {
       }
       if (panel.type && panel.type.instruction) {
         instruction = (
-          <Instruction toParent={this.toInstructionFromParent.bind(this)} >
+          <Instruction toParent={this.toInstructionFromParent.bind(this)} ref={(comp) => { this.instructionHide = comp }} >
             {panel.type.instruction}
           </Instruction>
         );
