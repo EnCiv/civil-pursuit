@@ -115,11 +115,22 @@ class RASPPanelList extends React.Component {
     } else if (action.type === "SET_PATH") {
       const { nextRASP, setBeforeWait } = this.segmentToState(action);
       if (nextRASP[this.keyField]) {
-        let key = nextRASP[this.keyField];
+        let current = nextRASP[this.keyField];
         if (this.toChild[key]) this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
         else if (setBeforeWait) {
-          this.waitingOn = { nextRASP, nextFunc: () => this.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: this.toChild[key] }) };
-          this.props.rasp.toParent({ type: "SET_STATE", nextRASP });
+          var that=this;
+          var setPredicessors=()=>{
+            let predicessors=Object.keys(that.toChild);
+            if(predicessors < current) {
+              var predicessorRASP=Object.assign({},nextRASP,{[this.keyField]: predicessors});
+              this.waitingOn={ predicessorRASP, nextFunc: ()=>setPredicessors()}
+              this.props.rasp.toParent({ type: "SET_STATE", predicessorRASP })
+            }else {
+              this.waitingOn = { nextRASP, nextFunc: () => this.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: this.toChild[key] }) };
+              this.props.rasp.toParent({ type: "SET_STATE", nextRASP });
+            }
+          }
+          setPredicessors();
         } else {
           logger.trace("ReactActionStatePathClient.toMeFromParent SET_PATH waitingOn", nextRASP);
           this.waitingOn = { nextRASP };
@@ -149,16 +160,22 @@ class RASPPanelList extends React.Component {
         delta.currentPanel = rasp.currentPanel+1;
         this.smoothHeight();  // adjust height
       } 
-      if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
-      Object.assign(nextRASP,rasp,delta);
-    }else return null;
+    } else if(action.type==="NO_ISSUES") {
+      let newStatus=false;
+      const {panelNum}=action; 
+      var panelStatus = rasp.panelStatus.slice(0);
+      if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
+      if (newStatus) delta.panelStatus=panelStatus;
+    } else return null;
+    if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
+    Object.assign(nextRASP,rasp,delta);
     return nextRASP;
   }
 
     segmentToState(action) {
         var currentPanel = action.segment;
         var nextRASP = Object.assign({}, {currentPanel, pathSegment: currentPanel}); // note, initialRASP is not being applied. PanelStatus and results are derived
-        return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
+        return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
