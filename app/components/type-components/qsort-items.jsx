@@ -193,7 +193,14 @@ class RASPQSortItems extends ReactActionStatePathClient {
                         </div>
                     )
                     this.props.next(this.props.panelNum,"noIssues");
-                    this.props.toParent({type: "NO_ISSUES"});
+                    this.props.toParent({   type: "NO_ISSUES", 
+                                            results: {
+                                                index: this.props.index,
+                                                sections: this.props.sections,
+                                                panel: this.props.panel
+                                            }
+                                        }
+                    );
                 } else {this.props.next(this.props.panelNum,"issues")}
             }
             let creatorPanel;

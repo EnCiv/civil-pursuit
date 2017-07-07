@@ -145,8 +145,8 @@ class RASPPanelList extends React.Component {
     //find the section that the itemId is in, take it out, and put it in the new section
     var nextRASP = {}, delta = {};
     if(action.type==="NEXT_PANEL") {
-      let newStatus=false;
       const {panelNum, status, results}=action; 
+      let newStatus=false;
       var panelStatus = rasp.panelStatus.slice(0);
       if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newStatus = true }
       if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
@@ -154,18 +154,18 @@ class RASPPanelList extends React.Component {
       }
       if (newStatus) delta.panelStatus=panelStatus;
       if (results) delta.shared = merge({}, rasp.shared, results);
-
       // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
       if (status === 'done' && panelNum === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
         delta.currentPanel = rasp.currentPanel+1;
         this.smoothHeight();  // adjust height
-      } 
+      }
     } else if(action.type==="NO_ISSUES") {
+      const {panelNum, results}=action; 
       let newStatus=false;
-      const {panelNum}=action; 
       var panelStatus = rasp.panelStatus.slice(0);
       if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
       if (newStatus) delta.panelStatus=panelStatus;
+      if (results) delta.shared = merge({}, rasp.shared, results);
     } else return null;
     if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
     Object.assign(nextRASP,rasp,delta);
