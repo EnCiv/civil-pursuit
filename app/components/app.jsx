@@ -210,13 +210,11 @@ class App extends React.Component {
 
           //console.info("app item panel filtered", panel );
 
-          page = <Home user={ user } path={path} RASPRoot={'/item/'} />;
+          const component=panel.type.component || 'Subtype';
 
-          //const component=panel.type.component || 'Subtype';
-
-          //page = (
-          //  <TypeComponent component={component} { ...this.props } user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
-          //);
+          page = (
+            <TypeComponent component={component} { ...this.props } user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
+          );
 
           break;
 
