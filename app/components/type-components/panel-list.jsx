@@ -176,7 +176,7 @@ class RASPPanelList extends React.Component {
     } else return null;
     if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
     Object.assign(nextRASP,rasp,delta);
-    return nextRASP;
+    return nextRASP;  
   }
 
     segmentToState(action) {
@@ -353,26 +353,28 @@ class RASPPanelList extends React.Component {
       }
 
       var renderCrumbs = ()=>{
-        typeList.map((type, i) => {
-          let visible = (   (rasp.panelStatus[i] === 'done') 
-                         || ((i > 0) && rasp.panelStatus[i - 1] === 'done'));
-          let active = (rasp.currentPanel === i );
-          let buttonActive = active || visible;
-          return(
-            <button onClick={buttonActive ? that.panelListButton.bind(that, i) : null}
-              className={!(active || visible) ? 'inactive' : ''}
-              style={{
-                display: "inline",
-                padding: "0.5em",
-                border: "1px solid #666",
-                boxSizing: "border-box",
-                backgroundColor: active ? "#000" : visible ? "#fff" : "#fff",
-                color: active ? "#fff" : visible ? "#000" : null
-              }}>
-              {type.name}
-            </button>
-          )
-        })
+        return (
+          typeList.map((type, i) => {
+            let visible = (   (rasp.panelStatus[i] === 'done') 
+                          || ((i > 0) && rasp.panelStatus[i - 1] === 'done'));
+            let active = (rasp.currentPanel === i );
+            let buttonActive = active || visible;
+            return(
+              <button onClick={buttonActive ? that.panelListButton.bind(that, i) : null}
+                className={!(active || visible) ? 'inactive' : ''}
+                style={{
+                  display: "inline",
+                  padding: "0.5em",
+                  border: "1px solid #666",
+                  boxSizing: "border-box",
+                  backgroundColor: active ? "#000" : visible ? "#fff" : "#fff",
+                  color: active ? "#fff" : visible ? "#000" : null
+                }}>
+                {type.name}
+              </button>
+            )
+          })
+        )
       }
 
       crumbs = (
