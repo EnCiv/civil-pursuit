@@ -172,9 +172,17 @@ class RASPPanelList extends React.Component {
         var nextFunc=this.waitingOnResults.nextFunc;
         this.waitingOnResults=null;
         setTimeout(()=>nextFunc(),0);
+      } 
+    } else if(action.type==="PANEL_BUTTON"){
+      const {panelNum}=action;
+      if( panelNum===0 || rasp.panelStatus[panelNum]==='done') {
+        delta.currentPanel=panelNum;
+        delta.shape='open';
       }
     } else return null;
-    if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
+    var parts=[];
+    if(delta.shape==='open') { parts.push('o'); parts.push(delta.currentPanel);}
+    delta.pathSegment=parts.join(',');
     Object.assign(nextRASP,rasp,delta);
     return nextRASP;  
   }
@@ -323,7 +331,6 @@ class RASPPanelList extends React.Component {
     var spaceBetween = containerWidth * 0.25;
     let that=this; // so this can be accessed by functions
 
-
     if (typeof document !== 'undefined') {
       let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       if (containerWidth + spaceBetween < w) {
@@ -360,7 +367,7 @@ class RASPPanelList extends React.Component {
             let active = (rasp.currentPanel === i );
             let buttonActive = active || visible;
             return(
-              <button onClick={buttonActive ? that.panelListButton.bind(that, i) : null}
+              <button onClick={buttonActive ? rasp.toParent({type: "PANEL_BUTTON", panelNum: i}) : null}
                 className={!(active || visible) ? 'inactive' : ''}
                 style={{
                   display: "inline",
@@ -388,13 +395,7 @@ class RASPPanelList extends React.Component {
         </div>
       );
 
-      if (typeList.length) {
-        /**        console.info("PanelList list: type", panel.type ? panel.type.name : "none");
-                console.info("PanelList list: parent", panel.parent ? panel.parent.subject : "none");
-                console.info("PanelList list: size", panel.limit || "none");
-                console.info("PanelList list: own", panel.own || "none");
-                console.info("PanelList list: typelist[",currentPanel,"]:",this.state.typeList[currentPanel].name);
-                console.info("PanelList list: typelist[",currentPanel,"].component:",this.state.typeList[currentPanel].component);**/
+      if (rasp.shape=='open' && typeList.length) {
         this.panelList[currentPanel].content = [(
           <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
