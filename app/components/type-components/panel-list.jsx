@@ -26,7 +26,7 @@ class RASPPanelList extends React.Component {
     //logger.trace("ReactActionStatePathClient.constructor", props, keyField);
     super(props);
     this.toChild = [];
-    this.keyField = 'panelNum';
+    this.keyField = 'currentPanel';
     this.waitingOn = null;
     if (!this.props.rasp) logger.error("ReactActionStatePathClient no rasp", this.constructor.name, this.props);
     if (this.props.rasp.toParent) {
