@@ -116,14 +116,14 @@ class RASPPanelList extends React.Component {
       const { nextRASP, setBeforeWait } = this.segmentToState(action);
       console.info("RASPPanelList.toMeFromParent SET_PATH", action)
       if (nextRASP[this.keyField]) {
-        let current = nextRASP[this.keyField];
+        let key = nextRASP[this.keyField];
         /*if (this.toChild[key]) this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
         else */ if (setBeforeWait) {
           var that=this;
           var setPredicessors=()=>{
             let predicessors=that.toChild.length;
-            console.info("RASPPanelList.toMeFromParent.setPredicessors", current, predicessors);
-            if(predicessors < current) {
+            console.info("RASPPanelList.toMeFromParent.setPredicessors", key, predicessors);
+            if(predicessors < key) {
               var predicessorRASP=Object.assign({},nextRASP,{[that.keyField]: predicessors});
               that.waitingOnResults={ nextFunc: setPredicessors.bind(this)};
               that.props.rasp.toParent({ type: "SET_STATE", nextRASP: predicessorRASP });
