@@ -232,7 +232,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                             <span className="civil-button-text">{"next"}</span>
                         </Button>
                     </div>
-                )
+                );
+                this.props.rasp.toParent({ type: "RESULTS", results: this.results});
             }else {next(panelNum,"issues")}
         }
 

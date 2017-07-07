@@ -123,10 +123,10 @@ class RASPPanelList extends React.Component {
             let predicessors=Object.keys(that.toChild);
             if(predicessors < current) {
               var predicessorRASP=Object.assign({},nextRASP,{[this.keyField]: predicessors});
-              this.waitingOn={ predicessorRASP, nextFunc: ()=>setPredicessors()}
+              this.waitingOnResults={ nextFunc: ()=>setPredicessors()}
               this.props.rasp.toParent({ type: "SET_STATE", predicessorRASP })
             }else {
-              this.waitingOn = { nextRASP, nextFunc: () => this.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: this.toChild[key] }) };
+              this.waitingOnResults={ nextFunc: () => this.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: this.toChild[key] }) };
               this.props.rasp.toParent({ type: "SET_STATE", nextRASP });
             }
           }
@@ -159,13 +159,18 @@ class RASPPanelList extends React.Component {
         delta.currentPanel = rasp.currentPanel+1;
         this.smoothHeight();  // adjust height
       }
-    } else if(action.type==="NO_ISSUES") {
+    } else if(action.type==="RESULTS") {
       const {panelNum, results}=action; 
       let newStatus=false;
       var panelStatus = rasp.panelStatus.slice(0);
       if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
       if (newStatus) delta.panelStatus=panelStatus;
       if (results) delta.shared = merge({}, rasp.shared, results);
+      if(this.waitingOnResults && this.waitingOnResults.nextFunc) {
+        var nextFunc=this.waitingOnResults.nextFunc;
+        this.waitingOnResults=null;
+        setTimeout(()=>nextFunc(),0);
+      }
     } else return null;
     if(delta.currentPanel) delta.pathSegment=delta.currentPanel;
     Object.assign(nextRASP,rasp,delta);
