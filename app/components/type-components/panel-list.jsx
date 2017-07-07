@@ -162,7 +162,7 @@ class RASPPanelList extends React.Component {
         this.smoothHeight();  // adjust height
       }
     } else if(action.type==="RESULTS") {
-      const {panelNum, results}=action; 
+      const {panelNum, results}=action;
       let newStatus=false;
       var panelStatus = rasp.panelStatus.slice(0);
       if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
@@ -180,7 +180,7 @@ class RASPPanelList extends React.Component {
   }
 
     segmentToState(action) {
-        var currentPanel = action.segment;
+        var currentPanel = parseInt(action.segment,10) || 0;
         var nextRASP = Object.assign({}, {currentPanel, pathSegment: currentPanel}); // note, initialRASP is not being applied. PanelStatus and results are derived
         return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
