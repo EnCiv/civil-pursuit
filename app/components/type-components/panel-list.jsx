@@ -188,8 +188,10 @@ class RASPPanelList extends React.Component {
   }
 
     segmentToState(action) {
-        var currentPanel = parseInt(action.segment,10) || 0;
-        var nextRASP = Object.assign({}, {currentPanel, pathSegment: currentPanel}); // note, initialRASP is not being applied. PanelStatus and results are derived
+        var parts=action.segment.split(',');
+        var shape=parts[0]==='o' ? 'open' : 'truncated';
+        var currentPanel = parseInt(parts[1],10) || 0;
+        var nextRASP = Object.assign({}, {shape, currentPanel, pathSegment: action.segment}); // note, initialRASP is not being applied. PanelStatus and results are derived
         return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
@@ -367,7 +369,7 @@ class RASPPanelList extends React.Component {
             let active = (rasp.currentPanel === i );
             let buttonActive = active || visible;
             return(
-              <button onClick={buttonActive ? rasp.toParent({type: "PANEL_BUTTON", panelNum: i}) : null}
+              <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", panelNum: i}) : null}
                 className={!(active || visible) ? 'inactive' : ''}
                 style={{
                   display: "inline",
@@ -395,7 +397,7 @@ class RASPPanelList extends React.Component {
         </div>
       );
 
-      if (rasp.shape=='open' && typeList.length) {
+      if (rasp.shape==='open' && typeList.length) {
         this.panelList[currentPanel].content = [(
           <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
