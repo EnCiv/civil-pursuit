@@ -114,20 +114,22 @@ class RASPPanelList extends React.Component {
       });
     } else if (action.type === "SET_PATH") {
       const { nextRASP, setBeforeWait } = this.segmentToState(action);
+      console.info("RASPPanelList.toMeFromParent SET_PATH", action)
       if (nextRASP[this.keyField]) {
         let current = nextRASP[this.keyField];
-        if (this.toChild[key]) this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
-        else if (setBeforeWait) {
+        /*if (this.toChild[key]) this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
+        else */ if (setBeforeWait) {
           var that=this;
           var setPredicessors=()=>{
             let predicessors=Object.keys(that.toChild);
+            console.info("RASPPanelList.toMeFromParent.setPredicessors", current, predicessors);
             if(predicessors < current) {
-              var predicessorRASP=Object.assign({},nextRASP,{[this.keyField]: predicessors});
-              this.waitingOnResults={ nextFunc: ()=>setPredicessors()}
-              this.props.rasp.toParent({ type: "SET_STATE", predicessorRASP })
+              var predicessorRASP=Object.assign({},nextRASP,{[that.keyField]: predicessors});
+              that.waitingOnResults={ nextFunc: setPredicessors.bind(this)};
+              that.props.rasp.toParent({ type: "SET_STATE", predicessorRASP });
             }else {
-              this.waitingOnResults={ nextFunc: () => this.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: this.toChild[key] }) };
-              this.props.rasp.toParent({ type: "SET_STATE", nextRASP });
+              that.waitingOnResults={ nextFunc: () => that.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: that.toChild[key] }) };
+              that.props.rasp.toParent({ type: "SET_STATE", nextRASP });
             }
           }
           setPredicessors();
