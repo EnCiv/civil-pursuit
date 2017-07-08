@@ -130,7 +130,7 @@ class RASPPanelList extends React.Component {
               that.waitingOnResults={ nextFunc: setPredicessors.bind(this)};
               that.props.rasp.toParent({ type: "SET_STATE", nextRASP: predicessorRASP });
             }else {
-              that.waitingOnResults={ nextFunc: () => that.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: that.toChild[key] }) };
+              that.waitingOn={ nextRASP, nextFunc: () => that.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: that.toChild[key] }) };
               that.props.rasp.toParent({ type: "SET_STATE", nextRASP });
             }
           }
