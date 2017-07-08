@@ -437,6 +437,11 @@ class RASPPanelHead extends ReactActionStatePathClient {
     return null;
   }
 
+  segmentToState(action){
+        console.info("RASPPanelHEAD.segmentToState",action)
+    return null;
+  }
+
   renderChildren() {
       return React.Children.map(this.props.children, child =>{
           var newProps= Object.assign({}, this.props);
