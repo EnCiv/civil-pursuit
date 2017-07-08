@@ -100,7 +100,7 @@ class RASPPanelList extends React.Component {
         }
       })
       var curPath = raspChildren.reduce((acc, cur, i) => { // parse the state to build the curreent path
-        if (cur.stateStack[i].pathSegment) acc.push(cur.stateStack[i].pathSegment);
+        if (cur.stateStack[i] && cur.stateStack[i].pathSegment) acc.push(cur.stateStack[i].pathSegment);
         return acc;
       }, []);
       if (raspChildren.length) {
