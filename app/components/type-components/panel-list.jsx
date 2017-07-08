@@ -181,10 +181,11 @@ class RASPPanelList extends React.Component {
       }
     } else return null;
     if(this.instruction) this.instruction.hide(); //hide the instrucctions.
-    var parts=[];
-    if(delta.shape==='open') { parts.push('o'); parts.push(delta.currentPanel);}
-    delta.pathSegment=parts.join(',');
     Object.assign(nextRASP,rasp,delta);
+    var parts=[];
+    if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
+    nextRASP.pathSegment=parts.join(',');
+
     return nextRASP;  
   }
 
