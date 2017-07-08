@@ -219,7 +219,7 @@ class RASPPanelList extends React.Component {
       window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
     }
     this.setState({
-      containerWidth: ReactDOM.findDOMNode(this.refs.panel).clientWidth
+      containerWidth: this.refs.panel.clientWidth
     });
     this.observer = new MutationObserver(this.mutations.bind(this));
   }
@@ -249,7 +249,7 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate() {
-    let target = ReactDOM.findDOMNode(this.refs.panel);
+    let target = this.refs.panel;
     if (this.state.containerWidth != target.clientWidth) {  // could be changed by resizing the window
       this.setState({
         containerWidth: target.clientWidth
@@ -377,7 +377,7 @@ class RASPPanelList extends React.Component {
       }
 
       return (
-        <section>
+        <section ref="panel">
             {crumbs}
             <div ref='outer'>
               { <div id='panel-list-wide'
@@ -469,7 +469,6 @@ class RASPPanelHead extends ReactActionStatePathClient {
       return (
             <Panel
               className={name}
-              ref="panel"
               heading={[(<h4>{title}</h4>)]}
               style={{ backgroundColor: 'white' }}
             >
