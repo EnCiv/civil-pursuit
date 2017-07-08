@@ -431,6 +431,9 @@ class PanelHead extends React.Component {
 class RASPPanelHead extends ReactActionStatePathClient {
   actionToState(action,rasp,source){
     console.info("RASPPanelHEAD.actionToState",action,rasp,source)
+    if(action.type==="CHILD_SHAPE_CHANGED"){
+        if(this.instruction) this.instruction.hide();
+    }
     return null;
   }
 
@@ -470,6 +473,7 @@ class RASPPanelHead extends ReactActionStatePathClient {
               heading={[(<h4>{title}</h4>)]}
               style={{ backgroundColor: 'white' }}
             >
+              {instruction}
               {this.renderChildren()}
             </Panel>
       )
