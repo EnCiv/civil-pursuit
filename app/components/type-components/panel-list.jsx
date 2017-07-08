@@ -430,20 +430,17 @@ class PanelHead extends React.Component {
 
 class RASPPanelHead extends ReactActionStatePathClient {
   actionToState(action,rasp,source){
-    if(action.type==="CHILD_SHAPE_CHANGED"){
-      if(action.distance > 1)
-        if(this.instruction) this.instruction.hide();
-    }
+    console.info("RASPPanelHEAD.actionToState",action,rasp,source)
     return null;
   }
 
-    renderChildren() {
-        return React.Children.map(this.props.children, child =>{
-            var newProps= Object.assign({}, this.props);
-            delete newProps.children;
-            return React.cloneElement(child, newProps, child.props.children)
-        });
-    }
+  renderChildren() {
+      return React.Children.map(this.props.children, child =>{
+          var newProps= Object.assign({}, this.props);
+          delete newProps.children;
+          return React.cloneElement(child, newProps, child.props.children)
+      });
+  }
 
   render(){
     const {panel, cssName}=this.props;
