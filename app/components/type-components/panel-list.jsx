@@ -13,9 +13,11 @@ class PanelList extends React.Component {
   initialRASP={currentPanel: 0, panelStatus: [], shared: {}};
   render() {
     return (
-      <ReactActionStatePath {... this.props} initialRASP={this.initialRASP} >
-        <RASPPanelList />
-      </ReactActionStatePath>
+      <PanelHead {...this.props} cssName={'syn-panel-list'} >
+        <ReactActionStatePath >
+          <RASPPanelList />
+        </ReactActionStatePath>
+      </PanelHead>
     );
   }
 }
@@ -180,7 +182,6 @@ class RASPPanelList extends React.Component {
         delta.shape='open';
       }
     } else return null;
-    if(this.instruction) this.instruction.hide(); //hide the instrucctions.
     Object.assign(nextRASP,rasp,delta);
     var parts=[];
     if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
@@ -196,10 +197,6 @@ class RASPPanelList extends React.Component {
         var nextRASP = Object.assign({}, {shape, currentPanel, pathSegment: action.segment}); // note, initialRASP is not being applied. PanelStatus and results are derived
         return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  stage = 'loading';
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -305,31 +302,15 @@ class RASPPanelList extends React.Component {
     return this.props.rasp.toParent({type: "NEXT_PANEL", panelNum, status, results});
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  panelListButton(i) {
-    this.setState({ currentPanel: i })
-    if (this.props.rasp.currentPanel) this.smoothHeight();
-    else if (this.hideInstruction) this.hideInstruction()
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  hideInstruction = null;
-  toInstructionFromParent(result) {
-    this.hideInstruction = result.hide;
-  }
-
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     const content = [];
-    let instruction = [];
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
     const { panel, rasp, user, emitter } = this.props;
-    var title, name;
+
     const currentPanel = rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
     var spaceBetween = containerWidth * 0.25;
@@ -342,24 +323,6 @@ class RASPPanelList extends React.Component {
       }
     }
 
-    if (panel) {
-      if (panel.type) {
-        name = `syn-panel-list--${panel.type._id || panel.type}`;
-        title = panel.type.name;
-      } else {
-        name = 'syn-panel-list-no-type';
-        title = 'untitled';
-      }
-      if (panel.parent) {
-        name += `-${panel.parent._id || panel.parent}`;
-      }
-      if (panel.type && panel.type.instruction) {
-        instruction = (
-          <Instruction toParent={this.toInstructionFromParent.bind(this)} ref={(comp) => { this.instruction = comp }} >
-            {panel.type.instruction}
-          </Instruction>
-        );
-      }
 
       var renderCrumbs = ()=>{
         return (
@@ -415,13 +378,6 @@ class RASPPanelList extends React.Component {
 
       return (
         <section>
-          <Panel
-            className={name}
-            ref="panel"
-            heading={[(<h4>{title}</h4>)]}
-            style={{ backgroundColor: 'white' }}
-          >
-            {instruction}
             {crumbs}
             <div ref='outer'>
               { <div id='panel-list-wide'
@@ -433,12 +389,12 @@ class RASPPanelList extends React.Component {
                   }}
                 >
                   {this.panelList.map((panelListItem, i) => {
-                    if (rasp.shape==='open' && panelListItem.content.length) {
+                    if (panelListItem.content.length) {
                       return (
                         <div id={`panel-list-${i}`}
                           ref={`panel-list-${i}`}
                           style={{
-                            display: "inline-block",
+                            display: rasp.shape==='open'?"inline-block":'none',
                             verticalAlign: 'top',
                             marginRight: spaceBetween + 'px',
                             width: containerWidth + 'px'
@@ -453,13 +409,74 @@ class RASPPanelList extends React.Component {
                 </div>
               }
             </div>
-          </Panel>
         </section>
       );
-    } else return null; // no panel yet
   }
 
 }
 
 export default PanelList;
 export { PanelList };
+
+class PanelHead extends React.Component {
+  render() {
+    return (
+      <ReactActionStatePath {...this.props} initialRASP={this.initialRASP} >
+        <RASPPanelHead />
+      </ReactActionStatePath>
+    );
+  }
+}
+
+class RASPPanelHead extends ReactActionStatePathClient {
+  actionToState(action,rasp,source){
+    if(action.type==="CHILD_SHAPE_CHANGED"){
+      if(this.instruction) this.instruction.hide();
+    }
+    return null;
+  }
+
+    renderChildren() {
+        return React.Children.map(this.props.children, child =>{
+            var newProps= Object.assign({}, this.props);
+            delete newProps.children;
+            return React.cloneElement(child, newProps, child.props.children)
+        });
+    }
+
+  render(){
+    const {panel, cssName}=this.props;
+    var title, name, instruction=[];
+    if (panel) {
+      if (panel.type) {
+        name = cssName+'--'+(panel.type._id || panel.type);
+        title = panel.type.name;
+      } else {
+        name = cssName+'-no-type';
+        title = 'untitled';
+      }
+      if (panel.parent) {
+        name += `-${panel.parent._id || panel.parent}`;
+      }
+      if (panel.type && panel.type.instruction) {
+        instruction = (
+          <Instruction ref={(comp) => { this.instruction = comp }} >
+            {panel.type.instruction}
+          </Instruction>
+        );
+      }
+
+      return (
+            <Panel
+              className={name}
+              ref="panel"
+              heading={[(<h4>{title}</h4>)]}
+              style={{ backgroundColor: 'white' }}
+            >
+              {this.renderChildren()}
+            </Panel>
+      )
+    } else 
+      return null; // no panel yet
+  }
+}
