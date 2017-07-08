@@ -422,7 +422,7 @@ class PanelHead extends React.Component {
   render() {
     return (
       <ReactActionStatePath {...this.props} initialRASP={this.initialRASP} >
-        <RASPPanelHead />
+        <RASPPanelHead children={this.props.children}/>
       </ReactActionStatePath>
     );
   }
