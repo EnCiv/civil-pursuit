@@ -431,7 +431,8 @@ class PanelHead extends React.Component {
 class RASPPanelHead extends ReactActionStatePathClient {
   actionToState(action,rasp,source){
     if(action.type==="CHILD_SHAPE_CHANGED"){
-      if(this.instruction) this.instruction.hide();
+      if(action.distance > 1)
+        if(this.instruction) this.instruction.hide();
     }
     return null;
   }
