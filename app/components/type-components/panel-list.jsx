@@ -14,7 +14,7 @@ class PanelList extends React.Component {
   render() {
     return (
       <PanelHead {...this.props} cssName={'syn-panel-list'} >
-        <ReactActionStatePath >
+        <ReactActionStatePath initialRASP={this.initialRASP}>
           <RASPPanelList />
         </ReactActionStatePath>
       </PanelHead>
