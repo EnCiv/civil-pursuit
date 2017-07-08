@@ -433,7 +433,7 @@ class RASPPanelList extends React.Component {
                   }}
                 >
                   {this.panelList.map((panelListItem, i) => {
-                    if (panelListItem.content.length) {
+                    if (rasp.shape==='open' && panelListItem.content.length) {
                       return (
                         <div id={`panel-list-${i}`}
                           ref={`panel-list-${i}`}
@@ -447,9 +447,8 @@ class RASPPanelList extends React.Component {
                           {panelListItem.content}
                         </div>
                       );
-                    } else {
-                      return ([]);
-                    }
+                    } else
+                      return [];
                   })}
                 </div>
               }
