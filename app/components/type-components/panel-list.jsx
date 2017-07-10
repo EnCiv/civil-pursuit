@@ -10,7 +10,7 @@ import merge from 'lodash/merge'
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 
 class PanelList extends React.Component {
-  initialRASP={currentPanel: 0, panelStatus: [], shared: {}};
+  initialRASP={currentPanel: 0};
   render() {
     return (
       <PanelHead {...this.props} cssName={'syn-panel-list'} >
@@ -30,6 +30,7 @@ class RASPPanelList extends React.Component {
     this.toChild = [];
     this.keyField = 'currentPanel';
     this.waitingOn = null;
+    this.panelStatus=[];
     if (!this.props.rasp) logger.error("ReactActionStatePathClient no rasp", this.constructor.name, this.props);
     if (this.props.rasp.toParent) {
       this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this) })
@@ -148,16 +149,16 @@ class RASPPanelList extends React.Component {
   actionToState(action, rasp, source) {
     //find the section that the itemId is in, take it out, and put it in the new section
     var nextRASP = {}, delta = {};
+    var panelStatus = this.panelStatus;
     if(action.type==="NEXT_PANEL") {
       const {panelNum, status, results}=action; 
       let newStatus=false;
-      var panelStatus = rasp.panelStatus.slice(0);
       if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newStatus = true }
       if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
         for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
       }
-      if (newStatus) delta.panelStatus=panelStatus;
-      if (results) delta.shared = merge({}, rasp.shared, results);
+      //if (newStatus) this.panelStatus=panelStatus;
+      if (results) this.shared = merge({}, this.shared, results);
       // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
       if (status === 'done' && panelNum === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
         delta.currentPanel = rasp.currentPanel+1;
@@ -166,10 +167,10 @@ class RASPPanelList extends React.Component {
     } else if(action.type==="RESULTS") {
       const {panelNum, results}=action;
       let newStatus=false;
-      var panelStatus = rasp.panelStatus.slice(0);
+      var panelStatus = this.panelStatus;
       if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
-      if (newStatus) delta.panelStatus=panelStatus;
-      if (results) delta.shared = merge({}, rasp.shared, results);
+      //if (newStatus) this.panelStatus=panelStatus;
+      if (results) this.shared = merge({}, this.shared, results);
       if(this.waitingOnResults && this.waitingOnResults.nextFunc) {
         var nextFunc=this.waitingOnResults.nextFunc;
         this.waitingOnResults=null;
@@ -177,7 +178,7 @@ class RASPPanelList extends React.Component {
       } 
     } else if(action.type==="PANEL_BUTTON"){
       const {panelNum}=action;
-      if( panelNum===0 || rasp.panelStatus[panelNum]==='done') {
+      if( panelNum===0 || panelStatus[panelNum]==='done') {
         delta.currentPanel=panelNum;
         delta.shape='open';
       }
@@ -187,7 +188,7 @@ class RASPPanelList extends React.Component {
     if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
     nextRASP.pathSegment=parts.join(',');
 
-    return nextRASP;  
+    return nextRASP;
   }
 
     segmentToState(action) {
@@ -314,7 +315,7 @@ class RASPPanelList extends React.Component {
     const currentPanel = rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
     var spaceBetween = containerWidth * 0.25;
-    let that=this; // so this can be accessed by functions
+    var panelStatus=this.panelStatus; // so this can be accessed by functions
 
     if (typeof document !== 'undefined') {
       let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -327,8 +328,8 @@ class RASPPanelList extends React.Component {
       var renderCrumbs = ()=>{
         return (
           typeList.map((type, i) => {
-            let visible = (   (rasp.panelStatus[i] === 'done') 
-                          || ((i > 0) && rasp.panelStatus[i - 1] === 'done'));
+            let visible = (   (panelStatus[i] === 'done') 
+                          || ((i > 0) && panelStatus[i - 1] === 'done'));
             let active = (rasp.currentPanel === i );
             let buttonActive = active || visible;
             return(
@@ -367,7 +368,7 @@ class RASPPanelList extends React.Component {
             type={typeList[currentPanel]}
             user={user}
             next={this.nextPanel.bind(this)}
-            shared={rasp.shared}
+            shared={this.shared}
             emitter={emitter}
             panelNum={rasp.currentPanel}
             limit={panel.limit}
