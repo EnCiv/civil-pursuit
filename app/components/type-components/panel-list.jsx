@@ -420,6 +420,7 @@ export default PanelList;
 export { PanelList };
 
 class PanelHead extends React.Component {
+  initialRASP={key: 0, pathSegment: '0'};
   render() {
     return (
       <ReactActionStatePath {...this.props} initialRASP={this.initialRASP} >
@@ -439,8 +440,8 @@ class RASPPanelHead extends ReactActionStatePathClient {
   }
 
   segmentToState(action){
-        console.info("RASPPanelHEAD.segmentToState",action)
-    return null;
+      var nextRASP = Object.assign({}, action.initialRASP ); // note, initialRASP is not being applied. PanelStatus and results are derived
+      return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
   renderChildren() {
