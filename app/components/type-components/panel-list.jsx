@@ -444,8 +444,9 @@ class RASPPanelHead extends ReactActionStatePathClient {
   }
 
   renderChildren() {
-      return React.Children.map(this.props.children, child =>{
-          var newProps= Object.assign({}, this.props);
+      let {shape, depth}=this.props.rasp;
+      return React.Children.map(this.props.children, (child,i) =>{
+          var newProps= Object.assign({}, this.props, {rasp: {shape, depth, toParent: this.toMeFromChild.bind(this,i)}});
           delete newProps.children;
           return React.cloneElement(child, newProps, child.props.children)
       });
