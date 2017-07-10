@@ -450,7 +450,7 @@ class PanelHead extends React.Component {
 
   renderChildren() {
       let {shape, depth}=this.props.rasp;
-      if(this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
+      if(this.props.children && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
       return React.Children.map(this.props.children, (child,i) =>{
           var newProps= Object.assign({}, this.props, {rasp: {shape, depth, toParent: this.toMeFromChild.bind(this,i)}});
           delete newProps.children;
