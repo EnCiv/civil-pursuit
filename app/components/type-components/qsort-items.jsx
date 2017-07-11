@@ -267,10 +267,10 @@ export default QSortItems;
 // the unsorted section is the first in the list
 // if 'set' is equal to 'set' then you are moving the itemId into that section regardless of whethere it is in there or not.
 // if itemId is not in any section it will be added
-// if section is not in sections, it will be added and itemId will be the only element in it
+// if section is not in sections, it will be added and itemId will be the first element in it
 // a new copy is returned - sections is not mutated;
+// If itemId is in the unsorted list and the target section is unsorted, then it will be moved to the top of the list, or if 'set' it will be left as is.
 //
-// import update from 'immutability-helper';
 
 export function QSortToggle(sections,itemId,section, set) {
     let done=false, i;
@@ -284,12 +284,13 @@ export function QSortToggle(sections,itemId,section, set) {
                     if (sectionName === section) {
                         if(set==='set') { // set means don't toggle it
                             clone[section]=sections[section].slice();
-                            clone[unsorted]=sections[unsorted].slice();
+                            if(section!==unsorted) clone[unsorted]=sections[unsorted].slice();
                             done=true;
                         } else {
                             //take the i'th element out of the section it is in and put it back in unsorted
                             clone[section] = update(sections[section], { $splice: [[i, 1]] });
-                            clone[unsorted] = update(sections[unsorted], { $unshift: [itemId] });
+                            if(section !== unsorted) clone[unsorted] = update(sections[unsorted], { $unshift: [itemId] });
+                            else clone[unsorted].unshift(itemId);
                             done = true;
                         }
                     } else if (sectionName === unsorted) {
@@ -300,7 +301,8 @@ export function QSortToggle(sections,itemId,section, set) {
                         done = true;
                     } else { // the item is in some other sectionName and should be moved to this section's section
                         clone[sectionName] = update(sections[sectionName], { $splice: [[i, 1]] });
-                        clone[section] = update(sections[section], { $unshift: [itemId] });
+                        if(sections[section]) clone[section] = update(sections[section], { $unshift: [itemId] });
+                        else clone[section]=[itemId]; // if the section didn't exisit in sections add it.
                         done = true;
                     }
                 } else if (sectionName != section) {  // copy over the other section but don't overwrite the one you are modifying
