@@ -26,7 +26,7 @@ import PanelHead from '../panel-head';
 class QSortWhy extends React.Component {
     render(){
         return (
-            <PanelHead {...this.props} cssName={'syn-qsort-why'} >
+            <PanelHead {...this.props} panel={this.props.shared.panel} cssName={'syn-qsort-why'} >
                 <ReactActionStatePath>
                     <RASPQSortWhy />
                 </ReactActionStatePath>
@@ -150,13 +150,12 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, shared, next, panelNum } = this.props;
-        const { panel } = shared;
+        const { user, rasp, shared, next, panelNum, panel } = this.props;
+        const {items}=panel;
 
         const onServer = typeof window === 'undefined';
 
-        let title = 'Loading items', name, loaded = false, content = [], loadMore,
-            type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
+        let content = [], direction = [], instruction = [], issues = 0, done = [];
 
         if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
             // if we don't have any data to work with 
@@ -226,7 +225,6 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                         </FlipMove>
                     </div>
                 </div>
-                {loading}
             </section>
         );
     }
