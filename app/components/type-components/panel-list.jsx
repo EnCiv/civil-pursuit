@@ -422,30 +422,18 @@ export { PanelList };
 class PanelHead extends React.Component {
   waitingOn=[];
   toChild=[];
-  toMeFromParent(action) {
-    if(this.toChild[0]) return this.toChild[0](action);
-    else {
-      this.waitingOn.push(action);
-      return null;
-    }
-  }
 
   toMeFromChild(key, action) {
     logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, key, action);
     if(key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", key);
     if (action.type === "SET_TO_CHILD") { // child is passing up her func
-      this.toChild[key] = action.function; // don't pass this to parent
-      if (this.toChild[0] && this.waitingOn.length){
-        var actn=this.waitingOn.shift();
-        setTimeout(()=>this.toChild[0](actn),0);
-        return;
-      } else return;
+      this.toChild[key] = action.function; 
     } else {
       if(action.type==="CHILD_SHAPE_CHANGED"){
         if(this.instruction) this.instruction.hide();
       }
-      return this.props.rasp.toParent(action);
     }
+    return this.props.rasp.toParent(action); // pass the child function up to the parent so we are not in the way
   }
 
   renderChildren() {
