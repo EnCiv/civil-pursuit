@@ -154,24 +154,24 @@ class RASPPanelList extends React.Component {
     var panelStatus = this.panelStatus;
     if(action.type==="NEXT_PANEL") {
       const {currentPanel, status, results}=action; 
-      var panelNum=currentPanel;
+      var currentPanel=currentPanel;
       let newStatus=false;
-      if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newStatus = true }
-      if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
-        for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
+      if (panelStatus[currentPanel] !== status) { panelStatus[currentPanel] = status; newStatus = true }
+      if (status !== 'done' && currentPanel < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
+        for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
       }
       //if (newStatus) this.panelStatus=panelStatus;
       if (results) this.shared = merge({}, this.shared, results);
       // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
-      if (status === 'done' && panelNum === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
+      if (status === 'done' && currentPanel === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
         delta.currentPanel = rasp.currentPanel+1;
         this.smoothHeight();  // adjust height
       }
     } else if(action.type==="RESULTS") {
-      const {panelNum, results}=action;
+      const {currentPanel, results}=action;
       let newStatus=false;
       var panelStatus = this.panelStatus;
-      if (panelStatus[panelNum] !== "done") { panelStatus[panelNum] = "done"; newStatus = true }
+      if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; newStatus = true }
       //if (newStatus) this.panelStatus=panelStatus;
       if (results) this.shared = merge({}, this.shared, results);
       if(this.waitingOnResults && this.waitingOnResults.nextFunc) {
@@ -180,15 +180,15 @@ class RASPPanelList extends React.Component {
         setTimeout(()=>nextFunc(),0);
       } 
     } else if(action.type==="ISSUES") {
-      const {panelNum}=action; 
-      if (panelStatus[panelNum] !== "issues") { panelStatus[panelNum] = "issues";}
-      if (panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
-        for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== "issues") { panelStatus[i] = "issues";}
+      const {currentPanel}=action; 
+      if (panelStatus[currentPanel] !== "issues") { panelStatus[currentPanel] = "issues";}
+      if (currentPanel < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
+        for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== "issues") { panelStatus[i] = "issues";}
       }
     }else if(action.type==="PANEL_BUTTON"){
-      const {panelNum}=action;
-      if( panelNum===0 || panelStatus[panelNum]==='done') {
-        delta.currentPanel=panelNum;
+      const {currentPanel}=action;
+      if( currentPanel===0 || panelStatus[currentPanel]==='done') {
+        delta.currentPanel=currentPanel;
         delta.shape='open';
       }
     } else return null;
@@ -307,8 +307,8 @@ class RASPPanelList extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  nextPanel(panelNum, status, results) {
-    return this.props.rasp.toParent({type: "NEXT_PANEL", panelNum, status, results});
+  nextPanel(currentPanel, status, results) {
+    return this.props.rasp.toParent({type: "NEXT_PANEL", currentPanel, status, results});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -342,7 +342,7 @@ class RASPPanelList extends React.Component {
             let active = (currentPanel === i );
             let buttonActive = active || visible;
             return(
-              <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", panelNum: i}) : null}
+              <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", currentPanel: i}) : null}
                 className={!(active || visible) ? 'inactive' : ''}
                 style={{
                   display: "inline",
