@@ -187,7 +187,7 @@ class RASPPanelList extends React.Component {
       }
     }else if(action.type==="PANEL_BUTTON"){
       const {currentPanel}=action;
-      if( currentPanel===0 || panelStatus[currentPanel]==='done') {
+      if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
         delta.currentPanel=currentPanel;
         delta.shape='open';
       }

@@ -21,13 +21,16 @@ import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
+import PanelHead from '../panel-head';
 
 class QSortWhy extends React.Component {
     render(){
         return (
-            <ReactActionStatePath {...this.props}>
-                <RASPQSortWhy />
-            </ReactActionStatePath>
+            <PanelHead {...this.props} cssName={'syn-qsort-why'} >
+                <ReactActionStatePath>
+                    <RASPQSortWhy />
+                </ReactActionStatePath>
+            </PanelHead>
         )
     }
 }
@@ -155,111 +158,75 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         let title = 'Loading items', name, loaded = false, content = [], loadMore,
             type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
 
-        if (panel) {
-            items = panel.items;
-            loaded = true;
-
-            type = this.props.type || panel.type;  // if a type was passed, use that one rather than the panel type. We are operating on the parents matching items not ours
-
-            parent = panel.parent;
-
-            if (type) {
-                name = `syn-panel-${type._id}`;
-            } else {
-                name = 'syn-panel-no-type';
-            }
-
-            if (parent) {
-                name += `-${parent._id || parent}`;
-            }
-
-            title = type.name;
-
-            if (type && type.instruction) {
-                instruction = (
-                    <Instruction >
-                        {type.instruction}
-                    </Instruction>
-                );
-            }
-
-            if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
-                // if we don't have any data to work with 
-                <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
-                     No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
-                </div>
-            } else {
-                this.buttons.forEach((name) => {
-                    if (this.state.sections['unsorted'].length) { issues++ }
-                    let qb = this.ButtonList[name];
-                    if (qb.max) {
-                        console.info("QSortWhy qb")
-                        if (this.state.sections[name].length > qb.max) {
-                            direction.push(
-                                <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
-                                    {qb.direction}
-                                </div>
-                            )
-                            issues++;
-                        }
+        if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
+            // if we don't have any data to work with 
+            <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
+                    No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
+            </div>
+        } else {
+            this.buttons.forEach((name) => {
+                if (this.state.sections['unsorted'].length) { issues++ }
+                let qb = this.ButtonList[name];
+                if (qb.max) {
+                    console.info("QSortWhy qb")
+                    if (this.state.sections[name].length > qb.max) {
+                        direction.push(
+                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
+                                {qb.direction}
+                            </div>
+                        )
+                        issues++;
                     }
-                    this.state.sections[name].forEach(itemId => {
-                        let item = items[shared.index[itemId]];
-                        content.push(
-                            {
-                                sectionName: name,
-                                user: user,
-                                item: item,
-                                toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
-                                qbuttons: this.ButtonList,
-                                whyName: this.whyName,
-                                rasp: {shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)},
-                                id: item._id  //FlipMove uses this Id to sort
-                            }
-                        );
-                    });
+                }
+                this.state.sections[name].forEach(itemId => {
+                    let item = items[shared.index[itemId]];
+                    content.push(
+                        {
+                            sectionName: name,
+                            user: user,
+                            item: item,
+                            toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
+                            qbuttons: this.ButtonList,
+                            whyName: this.whyName,
+                            rasp: {shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)},
+                            id: item._id  //FlipMove uses this Id to sort
+                        }
+                    );
                 });
-            }
-            if (!issues) {
-                done.push(
-                    <div className='instruction-text'>
-                        {this.ButtonList['unsorted'].direction}
-                        <Button small shy
-                            onClick={this.toggle.bind(this, null, 'done')}
-                            className="qwhy-done"
-                            style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
-                            >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                );
-                this.props.rasp.toParent({ type: "RESULTS", results: this.results});
-            }else {next(panelNum,"issues")}
+            });
         }
+        if (!issues) {
+            done.push(
+                <div className='instruction-text'>
+                    {this.ButtonList['unsorted'].direction}
+                    <Button small shy
+                        onClick={this.toggle.bind(this, null, 'done')}
+                        className="qwhy-done"
+                        style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
+                        >
+                        <span className="civil-button-text">{"next"}</span>
+                    </Button>
+                </div>
+            );
+            this.props.rasp.toParent({ type: "RESULTS", results: this.results});
+        }else {next(panelNum,"issues")}
+
 
 
         return (
             <section id="syn-panel-qsort">
-                <Panel
-                    className={name}
-                    ref="panel"
-                    heading={[(<h4>{title}</h4>)]}
-                    type={type}
-                    >
-                    {instruction}
-                    {direction}
-                    {done}
-                    <div style={{ position: 'relative',
-                                  display: 'block',
-                    }}>
-                        <div className="qsort-flip-move-articles">
-                            <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                                {content.map(article => <QSortWhyItem {...article} key={article.id} />)}
-                            </FlipMove>
-                        </div>
+                {direction}
+                {done}
+                <div style={{ position: 'relative',
+                                display: 'block',
+                }}>
+                    <div className="qsort-flip-move-articles">
+                        <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
+                            {content.map(article => <QSortWhyItem {...article} key={article.id} />)}
+                        </FlipMove>
                     </div>
-                    {loading}
-                </Panel>
+                </div>
+                {loading}
             </section>
         );
     }
