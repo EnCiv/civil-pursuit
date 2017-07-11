@@ -180,11 +180,12 @@ class RASPQSortItems extends ReactActionStatePathClient {
                     });
                 });
                 if (!issues) {
+                    var results={index: this.props.index, sections: this.props.sections, panel: this.props.panel }
                     done.push(
                         <div className='instruction-text'>
                             {this.QSortButtonList['unsorted'].direction}
                             <Button small shy
-                                onClick={this.toMeFromChild.bind(this, null, {type: "DONE"})}
+                                onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results})}
                                 className="qsort-done"
                                 style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                                 >
@@ -192,15 +193,8 @@ class RASPQSortItems extends ReactActionStatePathClient {
                             </Button>
                         </div>
                     )
-                    this.props.rasp.toParent({   type: "RESULTS", 
-                                            results: {
-                                                index: this.props.index,
-                                                sections: this.props.sections,
-                                                panel: this.props.panel
-                                            }
-                                        }
-                    );
-                } else {this.props.next(this.props.panelNum,"issues")}
+                    this.props.rasp.toParent({type: "RESULTS", results});
+                } else this.props.rasp.toParent({type: "ISSUES"});
             }
             let creatorPanel;
 

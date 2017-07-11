@@ -73,11 +73,13 @@ class QVoteStore extends React.Component {
     okGetQVoteInfo(accumulation) {
         console.info("QVote got qvote info length", accumulation.length);
         if (accumulation) {
+            var sections=this.cloneSections(this.state.sections);
             accumulation.forEach(qvote => {
                 if (qvote.ownVote) {
-                    this.toggle(qvote.item, qvote.ownVote);
+                    sections=QSortToggle(sections, qvote.item, qvote.ownVote);
                 }
             });
+            this.setState({sections});
         }
     }
 

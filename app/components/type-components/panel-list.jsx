@@ -6,12 +6,14 @@ import Loading from '../util/loading';
 import TypeComponent from '../type-component';
 import Panel from '../panel';
 import Instruction from '../instruction';
-import merge from 'lodash/merge'
+import merge from 'lodash/merge';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
+import PanelHead from '../panel-head';
 
 class PanelList extends React.Component {
   initialRASP={currentPanel: 0};
   render() {
+    console.info("PanelList.render", this.props);
     return (
       <PanelHead {...this.props} cssName={'syn-panel-list'} >
         <ReactActionStatePath initialRASP={this.initialRASP}>
@@ -25,7 +27,7 @@ class PanelList extends React.Component {
 class RASPPanelList extends React.Component {
 
   constructor(props) {
-    //logger.trace("ReactActionStatePathClient.constructor", props, keyField);
+    console.log("RASPPanelList.constructor", props);
     super(props);
     this.toChild = [];
     this.keyField = 'currentPanel';
@@ -151,7 +153,8 @@ class RASPPanelList extends React.Component {
     var nextRASP = {}, delta = {};
     var panelStatus = this.panelStatus;
     if(action.type==="NEXT_PANEL") {
-      const {panelNum, status, results}=action; 
+      const {currentPanel, status, results}=action; 
+      var panelNum=currentPanel;
       let newStatus=false;
       if (panelStatus[panelNum] !== status) { panelStatus[panelNum] = status; newStatus = true }
       if (status !== 'done' && panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
@@ -176,7 +179,13 @@ class RASPPanelList extends React.Component {
         this.waitingOnResults=null;
         setTimeout(()=>nextFunc(),0);
       } 
-    } else if(action.type==="PANEL_BUTTON"){
+    } else if(action.type==="ISSUES") {
+      const {panelNum}=action; 
+      if (panelStatus[panelNum] !== "issues") { panelStatus[panelNum] = "issues";}
+      if (panelNum < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
+        for (let i = panelNum + 1; i < panelStatus.length; i++) if (panelStatus[i] !== "issues") { panelStatus[i] = "issues";}
+      }
+    }else if(action.type==="PANEL_BUTTON"){
       const {panelNum}=action;
       if( panelNum===0 || panelStatus[panelNum]==='done') {
         delta.currentPanel=panelNum;
@@ -187,7 +196,6 @@ class RASPPanelList extends React.Component {
     var parts=[];
     if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
     nextRASP.pathSegment=parts.join(',');
-
     return nextRASP;
   }
 
@@ -306,6 +314,7 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
+    console.info("RASPPanelList.render",this.props);
     const content = [];
     let loading;
     let crumbs = [];
@@ -330,7 +339,7 @@ class RASPPanelList extends React.Component {
           typeList.map((type, i) => {
             let visible = (   (panelStatus[i] === 'done') 
                           || ((i > 0) && panelStatus[i - 1] === 'done'));
-            let active = (rasp.currentPanel === i );
+            let active = (currentPanel === i );
             let buttonActive = active || visible;
             return(
               <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", panelNum: i}) : null}
@@ -419,66 +428,3 @@ class RASPPanelList extends React.Component {
 export default PanelList;
 export { PanelList };
 
-class PanelHead extends React.Component {
-  waitingOn=[];
-  toChild=[];
-
-  toMeFromChild(key, action) {
-    logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, key, action);
-    if(key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", key);
-    if (action.type === "SET_TO_CHILD") { // child is passing up her func
-      this.toChild[key] = action.function; 
-    } else {
-      if(action.type==="CHILD_SHAPE_CHANGED"){
-        if(this.instruction) this.instruction.hide();
-      }
-    }
-    return this.props.rasp.toParent(action); // pass the child function up to the parent so we are not in the way
-  }
-
-  renderChildren() {
-      let {shape, depth}=this.props.rasp;
-      if(this.props.children && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
-      return React.Children.map(this.props.children, (child,i) =>{
-          var newProps= Object.assign({}, this.props, {rasp: {shape, depth, toParent: this.toMeFromChild.bind(this,i)}});
-          delete newProps.children;
-          return React.cloneElement(child, newProps, child.props.children)
-      });
-  }
-
-  render(){
-    const {panel, cssName}=this.props;
-    var title, name, instruction=[];
-    if (panel) {
-      if (panel.type) {
-        name = cssName+'--'+(panel.type._id || panel.type);
-        title = panel.type.name;
-      } else {
-        name = cssName+'-no-type';
-        title = 'untitled';
-      }
-      if (panel.parent) {
-        name += `-${panel.parent._id || panel.parent}`;
-      }
-      if (panel.type && panel.type.instruction) {
-        instruction = (
-          <Instruction ref={(comp) => { this.instruction = comp }} >
-            {panel.type.instruction}
-          </Instruction>
-        );
-      }
-
-      return (
-            <Panel
-              className={name}
-              heading={[(<h4>{title}</h4>)]}
-              style={{ backgroundColor: 'white' }}
-            >
-              {instruction}
-              {this.renderChildren()}
-            </Panel>
-      )
-    } else 
-      return null; // no panel yet
-  }
-}
