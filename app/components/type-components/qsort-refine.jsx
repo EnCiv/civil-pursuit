@@ -157,7 +157,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                     <div className='instruction-text'>
                         {this.ButtonList['unsorted'].direction}
                         <Button small shy
-                            onClick={()=>rasp.toParent({ type: "RESULTS", results: this.results})}
+                            onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
                             className="qwhy-done"
                             style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
                             >
