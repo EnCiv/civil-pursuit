@@ -153,7 +153,7 @@ class RASPPanelList extends React.Component {
     var nextRASP = {}, delta = {};
     var panelStatus = this.panelStatus;
     if(action.type==="NEXT_PANEL") {
-      const {currentPanel, status, results}=action; 
+      const {currentPanel, status='done', results}=action; 
       var currentPanel=currentPanel;
       let newStatus=false;
       if (panelStatus[currentPanel] !== status) { panelStatus[currentPanel] = status; newStatus = true }
