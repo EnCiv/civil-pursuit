@@ -79,7 +79,7 @@ class RASPPromote extends ReactActionStatePathClient {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             delta.cursor=cursor; 
-            if(winner._id === this.props.item._id){ // voted up the one we started with
+            if(winner._id === this.props.itemId){ // voted up the one we started with
                 setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -1}),0);
             } else { // voted up a different one
                 setTimeout(()=>{
