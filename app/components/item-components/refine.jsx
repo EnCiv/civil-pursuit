@@ -12,22 +12,20 @@ import Item from '../item';
 
 
 exports.panel = class RefinePanel extends React.Component {
-    
-    constructor(props) {
-        super(props);
-        this.toChild = [];
-        this.state={chosen: 'promote'};
-        if (!this.props.rasp) logger.error("RefinePanel no rasp", this.constructor.name, this.props);
-        if (this.props.rasp.toParent) {
-            this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name })
-        } else logger.error("RefinePanelt no rasp.toParent", this.props);
-    }
 
+    toChild = [];
+    state={chosen: 'promote'};
+    
     toMeFromChild(key, action) {
         console.info("RefinePanel.toMeFromChild", this.props.rasp.depth, key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
-            this.toChild[key] = action.function;
-            return;
+            if(Object.keys(this.toChild).length) {
+                 this.toChild[key] = action.function;
+                 return null;
+            } else { // this is the first so notify parent
+                this.toChild[key] = action.function;
+                return this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name });  // notify parent of your existence after child existence known
+            }
         } else if(action.type ==="SHOW_ITEM") {
             this.setState({chosen: 'winner'});
         } else if(action.type ==="ITEM_DELVE") {

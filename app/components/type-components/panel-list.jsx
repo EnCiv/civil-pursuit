@@ -101,9 +101,10 @@ class RASPPanelList extends React.Component {
           stateStack: this.toChild[child]({ type: "GET_STATE" }),
           key: child
         }
-      })
+      });
+      if(raspChildren.length===1 && !raspChildren[0].stateStack) return null; // if the only child doesn't really exist yet (because it returns null) just return null
       var curPath = raspChildren.reduce((acc, cur, i) => { // parse the state to build the curreent path
-        if (cur.stateStack[i] && cur.stateStack[i].pathSegment) acc.push(cur.stateStack[i].pathSegment);
+        if (cur.stateStack && cur.stateStack[i] && cur.stateStack[i].pathSegment) acc.push(cur.stateStack[i].pathSegment);
         return acc;
       }, []);
       if (raspChildren.length) {

@@ -7,21 +7,19 @@ import Instruction from './instruction';
 
 class PanelHead extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.toChild = [];
-        if (!this.props.rasp) logger.error("PanelHead no rasp", this.constructor.name, this.props);
-        if (this.props.rasp.toParent) {
-            this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name })
-        } else logger.error("PanelHead no rasp.toParent", this.props);
-    }
+    toChild=[];
 
     toMeFromChild(key, action) {
         logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, key, action);
         if (key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
-            this.toChild[key] = action.function;
-            return;
+            if(Object.keys(this.toChild).length) {
+                 this.toChild[key] = action.function;
+                 return null;
+            } else { // this is the first so notify parent
+                this.toChild[key] = action.function;
+                return this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name });  // notify parent of your existence after child existence known
+            }
         } else {
             if (action.type === "CHILD_SHAPE_CHANGED") {
                 if (this.instruction) this.instruction.hide();
@@ -36,12 +34,15 @@ class PanelHead extends React.Component {
             if (this.instruction) this.instruction.show();
         }
         if (this.toChild[0]) return this.toChild[0](action);
-        else return null;
+        else {
+            console.error("PanelHead.toMeFromParent no toChild 0 yet!");
+            return null;
+        }
     }
 
     renderChildren() {
         let { shape, depth } = this.props.rasp;
-        if (this.props.children && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
+        if (this.props.children && this.props.children.length && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
         return React.Children.map(this.props.children, (child, i) => {
             var newProps = Object.assign({}, this.props, { rasp: { shape, depth, toParent: this.toMeFromChild.bind(this, i) } });
             delete newProps.children;
