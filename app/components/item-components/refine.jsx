@@ -12,11 +12,11 @@ import Item from '../item';
 
 
 exports.panel = class RefinePanel extends React.Component {
-
+    
     constructor(props) {
         super(props);
         this.toChild = [];
-        this.chosen='promote';
+        this.state={chosen: 'promote'};
         if (!this.props.rasp) logger.error("RefinePanel no rasp", this.constructor.name, this.props);
         if (this.props.rasp.toParent) {
             this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name })
@@ -24,29 +24,27 @@ exports.panel = class RefinePanel extends React.Component {
     }
 
     toMeFromChild(key, action) {
-        logger.trace("RefinePanel.toMeFromChild", this.props.rasp.depth, key, action);
-        if (key !== 0) console.error("RefinePanel.toMeFromChild got call from unexpected child:", key);
+        console.info("RefinePanel.toMeFromChild", this.props.rasp.depth, key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
             this.toChild[key] = action.function;
             return;
         } else if(action.type ==="SHOW_ITEM") {
-            this.chosen='winner';
+            this.setState({chosen: 'winner'});
         } else if(action.type ==="ITEM_DELVE") {
-            this.chosen='winner';
-        } else 
-            return this.props.rasp.toParent(action);
+            this.setState({chosen: 'winner'});
+        }
+        return this.props.rasp.toParent(action);
     }
 
     toMeFromParent(action) {
         console.info("RefinePanel.toMeFromParent", this.props.rasp.depth, action);
         if (action.type === "CLEAR_PATH") {  // clear the path and reset the RASP state back to what the const
-            this.chosen='promote';
+            this.setState({chosen: 'promote'});
         }
-        if(this.toChild[this.chosen]) return this.toChild[this.chosen](action);
+        if(this.toChild[this.state.chosen]) return this.toChild[this.state.chosen](action);
         else return null;
     }
 
-    mounted = false;
     render() {
         const { item, user, style, emitter, rasp, winner, whyItemId, type, unsortedColor='#fff' } = this.props;
         const active = !winner ? { item: whyItemId, section: 'promote' } : {};  // requried to convince EvaluationStore to be active   
@@ -54,8 +52,8 @@ exports.panel = class RefinePanel extends React.Component {
         //this.chosen= winner ? 'winner' : 'promote';
         return (
             <div className="toggler promote" key={item._id + '-toggler-' + this.constructor.name}>
-                <div style={{ display: winner ? 'block' : 'none' }}>
-                    <ItemStore item={winner} key={`item-${winner._id}`}>
+                <div style={{ display: this.state.chosen==='winner' ? 'block' : 'none' }}>
+                    <ItemStore item={winner} key={`item-${winner && winner._id || 'none'}`}>
                         <Item
                             item={winner}
                             user={user}
@@ -63,7 +61,7 @@ exports.panel = class RefinePanel extends React.Component {
                         />
                     </ItemStore>
                 </div>
-                <div style={{ display: rasp.display ? 'none' : 'block', backgroundColor: unsortedColor }}>
+                <div style={{ display: this.state.chosen==='promote' ? 'block' : 'none', backgroundColor: unsortedColor }}>
                     <EvaluationStore
                         item-id={whyItemId}
                         active={active}

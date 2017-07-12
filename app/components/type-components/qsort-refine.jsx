@@ -65,7 +65,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         if(action.type ==="SHOW_ITEM") {
             return rasp;
         } else if(action.type ==="ITEM_DELVE") {
-            this.results.refine[this.whyName][itemId]=action.winner;
+            this.results.refine[this.whyName][action.itemId]=action.item;
             this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
             var doc = document.documentElement;
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
@@ -135,7 +135,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                 }
                 this.state.sections[name].forEach(itemId => {
                     let item = items[shared.index[itemId]];
-                    let winner = this.results.refine[this.whyName] || null;
+                    let winner = this.results.refine[this.whyName][itemId] || null;
                     content.push(
                         {
                             sectionName: name,
@@ -146,7 +146,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                             type: type,
                             qbuttons: this.ButtonList,
                             id: item._id,  //FlipMove uses this Id to sort
-                            rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
+                            rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item._id)}
                         }
                     );
                 });
