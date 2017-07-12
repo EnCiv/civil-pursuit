@@ -258,14 +258,25 @@ class RASPItem extends ReactActionStatePathClient {
       referenceTitle = item.references[0].title;
       noReference = false;
     }
+
+    // a button could be a string, or it could be an object which must have a property component
     var renderPanel = (button) => {
-      return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
-        rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
-        item={item} active={rasp.button === button && shape === 'open'} style={style} />);
+      if(typeof button==='string')
+        return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
+          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
+          item={item} active={rasp.button === button && shape === 'open'} style={style} />);
+      else if (typeof button==='object')
+        return (<ItemComponent {...this.props} {...button} part={'panel'} key={item._id + '-' + button}
+          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
+          item={item} active={rasp.button === button && shape === 'open'} style={style} />);
     }
 
+    // a button could be a string, or it could be an object which must have a property component
     var renderButton = (button) => {
-      return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+      if(typeof button === 'string')
+        return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+      else if (typeof button === 'object')
+        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
     }
 
     return (

@@ -1,24 +1,13 @@
 'use strict';
 
 import React from 'react';
-import Panel from '../panel';
-import PanelStore from '../store/panel';
-import PanelItems from '../panel-items';
-import panelType from '../../lib/proptypes/panel';
-import QSortButtons from '../qsort-buttons';
 import ItemStore from '../store/item';
-import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from '../qsort-flip-item'
 import smoothScroll from '../../lib/app/smooth-scroll';
-import Instruction from '../instruction';
 import Color from 'color';
 import Button           from '../util/button';
 import Item from '../item';
-import Creator            from '../creator';
 import QSortButtonList from '../qsort-button-list';
-import EvaluationStore    from '../store/evaluation';
-import Promote            from '../promote';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
 import PanelHead from '../panel-head';
@@ -35,7 +24,7 @@ class QSortRefine extends React.Component {
     }
 }
 
-class RASPQSortRefine extends React.Component {
+class RASPQSortRefine extends ReactActionStatePathClient {
 
     ButtonList=[];
     results = {refine: {}};
@@ -51,6 +40,7 @@ class RASPQSortRefine extends React.Component {
 
     constructor(props) {
         super(props);
+        this.keyField = 'itemId';
         var unsortedList = [];
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         const qbuttons=Object.keys(QSortButtonList);
@@ -71,8 +61,18 @@ class RASPQSortRefine extends React.Component {
         console.info("qsortRefine constructor");
     }
 
-    actionToState(action, rasp, source){
-        return null;
+    actionToState(action, rasp, source) {
+        if(action.type ==="SHOW_ITEM") {
+            return rasp;
+        } else if(action.type ==="ITEM_DELVE") {
+            this.results.refine[this.whyName][itemId]=action.winner;
+            this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
+            var doc = document.documentElement;
+            this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+            this.scrollBackToTop = true;
+            return rasp;
+        } else 
+            return null;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -88,28 +88,10 @@ class RASPQSortRefine extends React.Component {
         });
 
         this.setState({sections: newSections});
-
     }
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    toggle(itemId, button, set, whyItem) {
-        console.info("QsortWhy" );
-        //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
-        if(set==='promote'){
-            this.results.refine[this.whyName][itemId]=whyItem;
-        }
-        if(button==='harmony') return;
-        if(!itemId) return;
-        this.setState({ 'sections': QSortToggle(this.state.sections,itemId,button,set) });
-
-        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-        //this doesn't happen when moveing and object up, above the fold. 
-        var doc = document.documentElement;
-        this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-        this.scrollBackToTop = true;
-    }
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
@@ -126,18 +108,17 @@ class RASPQSortRefine extends React.Component {
 
     render() {
 
-        const { user, rasp, panel } = this.props;
-        const { items } = panel;
+        const { user, rasp, panel, shared } = this.props;
+        const { items, type } = panel;
 
         const onServer = typeof window === 'undefined';
 
         let content = [], direction = [], instruction = [], issues = 0, done = [];
 
-        if ( ! (this.props.shared && this.props.shared.why && this.props.shared.why[this.whyName] && Object.keys(this.props.shared.why[this.whyName]).length)) {
+        if ( ! (shared && shared.why && shared.why[this.whyName] && Object.keys(shared.why[this.whyName]).length)) {
             // if we don't have any data to work with 
             ; 
         } else {
-            let topItem=true;
             this.buttons.forEach((name) => {
                 if (this.state.sections['unsorted'].length) { issues++ }
                 let qb = this.ButtonList[name];
@@ -153,31 +134,21 @@ class RASPQSortRefine extends React.Component {
                     }
                 }
                 this.state.sections[name].forEach(itemId => {
-                    var buttonstate = {};
-                    this.buttons.slice(1).forEach(button => { buttonstate[button] = false; });
-                    if (name != 'unsorted') { buttonstate[name] = true; }
-                    let item = items[this.props.shared.index[itemId]];
-                    const voted = this.results.refine[this.whyName][item._id] ? true : false;
+                    let item = items[shared.index[itemId]];
+                    let winner = this.results.refine[this.whyName] || null;
                     content.push(
                         {
                             sectionName: name,
                             user: user,
                             item: item,
-                            whyItemId: this.props.shared.why[this.whyName][item._id],
-                            voted: voted,
-                            winner: voted? this.results.refine[this.whyName][itemId] : null,
+                            whyItemId: shared.why[this.whyName][item._id],
+                            winner: winner,
                             type: type,
-                            toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                             qbuttons: this.ButtonList,
-                            buttonstate: buttonstate,
-                            whyName: this.whyName,
-                            emitter: this.props.emitter,
-                            show: topItem && !voted,
                             id: item._id,  //FlipMove uses this Id to sort
-                            rasp: {shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}
+                            rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
                         }
                     );
-                    topItem=false
                 });
             });
 
@@ -220,54 +191,18 @@ export default QSortRefine;
 class QSortRefineItem extends React.Component {
 
     render(){
-        const {qbuttons, sectionName, item,  whyItemId, user, type, toggle, buttonstate, whyName, show, emitter, voted, winner, rasp } = this.props;
-        var creator=[];
-        const hIndex= (whyName === 'most') ? 0 : 1;
-        const active = show ? {item: whyItemId, section: 'promote'} : {};  // requried to convince EvaluationStore to be active
-        const panel={type: type};
+        const {qbuttons, sectionName, item,  whyItemId, user, type, winner, rasp } = this.props;
 
-        if(voted){
-            creator=[
-                <div style={{backgroundColor: qbuttons[sectionName].color}}>
-                    <ItemStore item={ winner } key={ `item-${winner._id}` }>
-                        <Item
-                            item    =   { winner }
-                            user    =   { user }
-                            rasp    =   {rasp}
-                            toggle  =   { toggle }
-                        />
-                    </ItemStore>
-                </div>
-            ];
-        }else{
-            creator=[
-                    <EvaluationStore
-                      item-id     =   { whyItemId }
-                      toggle      =   { toggle }
-                      active      =   { active }
-                      emitter     =   { emitter }
-                      >
-                      <Promote
-                        ref       =   "promote"
-                        show      =   { show }
-                        panel     =   { panel }
-                        user    =     { user }
-                        hideFeedback = {true}
-                        />
-                    </EvaluationStore>
-            ];
-        }
         return(
                 <div style={{backgroundColor: qbuttons[sectionName].color}}>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }
                             user    =   { user }
-                            rasp    =   {rasp}
-                            toggle  =   { toggle }
+                            rasp    =   { rasp }
+                            buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
                             hideFeedback = {this.props.hideFeedback}
                         />
-                        { creator }
                     </ItemStore>
                 </div>
         );

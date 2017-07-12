@@ -10,7 +10,8 @@ var  Components={
         'Subtype': require('./subtype'),
         'QSortButtons': require('./qsort-buttons'),
         'Edit': require('./edit'),
-        'CreateHarmony': require('./create-harmony')
+        'CreateHarmony': require('./create-harmony'),
+        'Refine': require('./refine')
 }
 
 export default Components;
