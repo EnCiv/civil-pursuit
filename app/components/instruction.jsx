@@ -30,6 +30,10 @@ class Instruction extends React.Component {
       this.setState({truncated: true});
   }
 
+  show(){
+      this.setState({truncated: false});
+  }
+
   componentDidMount(){
     if(this.props.toParent){
       this.props.toParent({hide: this.hide.bind(this)});
