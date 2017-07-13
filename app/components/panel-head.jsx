@@ -54,6 +54,7 @@ class PanelHead extends React.Component {
         console.info("RASPPanelHead.render", this.props);
         const { panel, cssName } = this.props;
         var title, name, instruction = [];
+        // decompose panel into it's props if applicable
         const type=this.props.type || panel && panel.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
         const limit=this.props.limit || panel && panel.limit || 10;
