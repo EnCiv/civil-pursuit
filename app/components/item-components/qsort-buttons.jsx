@@ -17,18 +17,22 @@ exports.button = class QSortButtons extends React.Component {
 
     buttons=Object.keys(qbuttons).slice(1).map(btn => {
         var number=[];
-        if(typeof rasp[btn] === 'number') number=(<span>{rasp[btn]}</span>);
+        var onClick=null;
+        if(typeof qbuttons[btn].total === 'number') {
+             number=(<span>{qbuttons[btn].total}</span>);
+        }else{
+            onClick=()=>{
+                toParent({type: "TOGGLE_BUTTON", button: btn, toBeContinued: true}); // tell item this button is set
+                toParent({type: "TOGGLE_QBUTTON", button: btn, distance: -1}); // tell qsort items this button is set 
+            }
+        }
         return(
                 <ButtonGroup>
                     {number}
                     <Button small shy 
                     inactive= { false } 
                     success= { rasp.button && rasp.button===btn }
-                    onClick= { ()=>{
-                        toParent({type: "TOGGLE_BUTTON", button: btn, toBeContinued: true}); // tell item this button is set
-                        toParent({type: "TOGGLE_QBUTTON", button: btn, distance: -1}); // tell qsort items this button is set 
-                        }
-                    }
+                    onClick= { onClick }
                     className= {`qsort-${qbuttons[btn].name}`}
                     title= {qbuttons[btn].title[rasp.button && rasp.button===btn ?'active':'inactive']}
                     style={{backgroundColor: qbuttons[btn].color}}

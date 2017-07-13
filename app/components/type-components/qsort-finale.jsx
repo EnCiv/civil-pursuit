@@ -17,26 +17,27 @@ import QVoteTotals from '../store/qvote-totals';
 import Accordion from  '../util/accordion';
 import Item    from '../item';
 import Harmony              from '../harmony';
+import PanelHead from '../panel-head';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 
 
 class QSortFinale extends React.Component{
     render (){
-                console.info("QSortFinale");
-            return(
-
-                <QVoteTotals {...this.props} >
-                    <QSortFinalTotal/>
-                </QVoteTotals>
+        console.info("QSortFinale");
+        return(
+            <QVoteTotals {...this.props} >
+                <PanelHead  cssName={'syn-qsort-items'} >
+                    <ReactActionStatePath>
+                        <RASPQSortFinale/>
+                    </ReactActionStatePath>
+                </PanelHead>
+            </QVoteTotals>
         );
     }
 }
 export default QSortFinale;
 
-class QSortFinalTotal extends React.Component {
-
-    static propTypes = {
-        panel: panelType
-    };
+class RASPQSortFinale extends ReactActionStatePathClient {
 
     motionDuration = 500; //500mSec
 
@@ -44,11 +45,14 @@ class QSortFinalTotal extends React.Component {
     scrollBackToTop = false;
 
     constructor(props){
-        super(props);
+        super(props, 'itemId');
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
     }
 
+    actionToState(action,rasp) {
+        return null;
+    }
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
@@ -60,97 +64,46 @@ class QSortFinalTotal extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     render() {
-
-        const { user, emitter, rasp } = this.props;
-
-        const { panel } = this.props.shared;
-
+        const { user, emitter, rasp, panel } = this.props;
+        const { items, type } = panel;
         console.info("QSortFinale");
-
         const onServer = typeof window === 'undefined';
+        let content = [], direction = [], instruction = [], issues = 0, done = [], loading=[];
 
-        let title = 'Loading items', name, loaded = false, content = [], loadMore,
-            type, parent, items, direction = [], instruction = [], issues = 0, done = [], loading=[];
-
-        if (panel) {
-            items = panel.items;
-            loaded = true;
-
-            type = this.props.type || panel.type;  // if a type was passed, use that one rather than the panel type. We are operating on the parents matching items not ours
-
-            parent = panel.parent;
-
-            if (type) {
-                name = `syn-panel-${type._id}`;
-            } else {
-                name = 'syn-panel-no-type';
-            }
-
-            if (parent) {
-                name += `-${parent._id || parent}`;
-            }
-
-            title = type.name;
-
-            if (type && type.instruction) {
-                instruction = (
-                    <Instruction >
-                        {type.instruction}
-                    </Instruction>
+        if (!Object.keys(this.props.finale).length) {
+            loading.push(
+                <div className="gutter text-center">
+                    <p>There is nothing here</p>
+                </div>
+            );
+        } else {
+            this.props.finale.forEach(qobj => {
+                var qbuttonTotals=Object.keys(this.QSortButtonList).map(button => Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
+                var item = items[qobj.index];
+                content.push(
+                    {
+                        user: user,
+                        item: item,
+                        buttons: [{component: 'QSortButtons', qbuttons: qbuttonTotals},'Harmony'],
+                        qbuttons: qbuttonTotals,
+                        id: item._id,
+                        rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item._id)}
+                    }
                 );
-            }
+            });
+        }
 
-            if (!Object.keys(this.props.finale).length) {
-                loading.push(
-                    <div className="gutter text-center">
-                        <p>There is nothing here</p>
-                    </div>
-                );
-            } else {
-                    this.props.finale.forEach(qobj => {
-                        var buttonstate = {};
-                        Object.keys(this.QSortButtonList).slice(1).forEach(button => { buttonstate[button] = qobj[button] || 0; });
-                        let item = items[qobj.index];
-                        content.push(
-                            {
-                                qbuttons: this.QSortButtonList,
-                                user: user,
-                                item: item,
-                                buttonstate: buttonstate,
-                                id: item._id,
-                                rasp: {shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent}
-                            }
-                        );
-                    });
-                }
-            }
-    
         return (
-            <section id="syn-panel-qsort-harmony">
-                <Panel
-                    className={name}
-                    ref="panel"
-                    heading={[(<h4>{title}</h4>)]}
-                    type={type}
-                    >
-                    {instruction}
-                    {direction}
-                    {done}
-                    <div style={{ position: 'relative',
-                                  display: 'block',
-                    }}>
-                        <div className="qsort-flip-move-articles">
-
-                                {content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />)}
-
-                        </div>
+            <section id="syn-panel-qsort-finale">
+                {direction}
+                {done}
+                <div style={{ position: 'relative', display: 'block'}}>
+                    <div className="qsort-flip-move-articles">
+                        { content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />) }
                     </div>
-                    {loading}
-                </Panel>
+                </div>
+                {loading}
             </section>
         );
     }
@@ -160,56 +113,19 @@ class QSortFinalTotal extends React.Component {
 //                            </FlipMove>
 
 class QSortFlipItemHarmony extends React.Component {
-
-
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate, rasp } = this.props;
-
- /*** No Harmony in Finale
-  *        let harmony = (
-                <div className="toggler-harmony">
-                  <Accordion
-                    name    =   "harmony"
-                    active  =   { true }
-                    >
-                    <Harmony
-                      item    =   { item }
-                      ref     =   "harmony"
-                      user    =   { user }
-                      active  =   { true }
-                      vs      =    {{state: "title", depth: 0}}
-                      hideFeedback = {true}
-                      limit   = {5}
-                      />
-                  </Accordion>
-                </div>
-              );
-  **/      
-    let harmony = [];
-
+        const {qbuttons, buttons, item, user, rasp } = this.props;
         return(
-                <div style={{backgroundColor: qbuttons['unsorted'].color}}>
-                    <ItemStore item={ item } key={ `item-${item._id}` }>
-                        <Item
-                            item    =   { item }
-                            user    =   { user }
-                            buttons =   { (
-                                <ItemStore item={ item }>
-                                    <QSortButtons
-                                        item    =   { item }
-                                        user    =   { user }
-                                        toggle  =   { toggle }
-                                        buttonstate = { buttonstate }
-                                        qbuttons= { qbuttons }
-                                        />
-                                </ItemStore>
-                            ) }
-                            rasp={rasp}
-                            footer  =   { [ harmony ] }
-                        />
-                    </ItemStore>
-                </div>
+            <div style={{backgroundColor: qbuttons['unsorted'].color}}>
+                <ItemStore item={ item } key={ `item-${item._id}` }>
+                    <Item
+                        item    =   { item }
+                        user    =   { user }
+                        buttons =   { buttons }
+                        rasp    =   {rasp}
+                    />
+                </ItemStore>
+            </div>
         );
-
     }
 }
