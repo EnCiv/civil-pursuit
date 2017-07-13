@@ -26,7 +26,7 @@ class QSortFinale extends React.Component{
         console.info("QSortFinale");
         return(
             <QVoteTotals {...this.props} >
-                <PanelHead  cssName={'syn-qsort-items'} >
+                <PanelHead panel={this.props.shared.panel} cssName={'syn-qsort-items'} >
                     <ReactActionStatePath>
                         <RASPQSortFinale/>
                     </ReactActionStatePath>
@@ -79,7 +79,8 @@ class RASPQSortFinale extends ReactActionStatePathClient {
             );
         } else {
             this.props.finale.forEach(qobj => {
-                var qbuttonTotals=Object.keys(this.QSortButtonList).map(button => Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
+                var qbuttonTotals=[];
+                Object.keys(this.QSortButtonList).forEach(button => qbuttonTotals[button]=Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
                 var item = items[qobj.index];
                 content.push(
                     {
