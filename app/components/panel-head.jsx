@@ -44,7 +44,7 @@ class PanelHead extends React.Component {
         let { shape, depth } = this.props.rasp;
         if (this.props.children && this.props.children.length && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
         return React.Children.map(this.props.children, (child, i) => {
-            var newProps = Object.assign({}, this.props, { rasp: { shape, depth, toParent: this.toMeFromChild.bind(this, i) } });
+            var newProps = Object.assign({}, this.props, ...arguments, { rasp: { shape, depth, toParent: this.toMeFromChild.bind(this, i) } });
             delete newProps.children;
             return React.cloneElement(child, newProps, child.props.children)
         });
@@ -54,25 +54,24 @@ class PanelHead extends React.Component {
         console.info("RASPPanelHead.render", this.props);
         const { panel, cssName } = this.props;
         var title, name, instruction = [];
-        if (panel) {
-            if (panel.type) {
-                name = cssName + '--' + (panel.type._id || panel.type);
-                title = panel.type.name;
-            } else {
-                name = cssName + '-no-type';
-                title = 'untitled';
+        const type=this.props.type || panel && panel.type || null;
+        const parent=this.props.parent || panel && panel.parent || null;
+        const limit=this.props.limit || panel && panel.limit || 10;
+        const items=this.props.items || panel && panel.items || [];
+        if (type) {
+            name = cssName + '--' + (panel.type._id || panel.type);
+            title = type.name;
+
+            if (parent) {
+                name += `-${parent._id || parent}`;
             }
-            if (panel.parent) {
-                name += `-${panel.parent._id || panel.parent}`;
-            }
-            if (panel.type && panel.type.instruction) {
+            if (type.instruction) {
                 instruction = (
                     <Instruction ref={(comp) => { this.instruction = comp }} >
-                        {panel.type.instruction}
+                        {type.instruction}
                     </Instruction>
                 );
             }
-
             return (
                 <Panel
                     className={name}
@@ -80,7 +79,7 @@ class PanelHead extends React.Component {
                     style={{ backgroundColor: 'white' }}
                 >
                     {instruction}
-                    {this.renderChildren()}
+                    {this.renderChildren(type, parent, items, limit)}
                 </Panel>
             )
         } else

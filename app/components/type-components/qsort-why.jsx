@@ -26,7 +26,7 @@ import PanelHead from '../panel-head';
 class QSortWhy extends React.Component {
     render(){
         return (
-            <PanelHead {...this.props} panel={this.props.shared.panel} cssName={'syn-qsort-why'} >
+            <PanelHead {...this.props} cssName={'syn-qsort-why'} >
                 <ReactActionStatePath>
                     <RASPQSortWhy />
                 </ReactActionStatePath>
@@ -36,32 +36,13 @@ class QSortWhy extends React.Component {
 }
 
 class RASPQSortWhy extends ReactActionStatePathClient {
-    static propTypes = {
-        panel: panelType
-    };
-
     ButtonList=[];
-
- 
-
     buttons=[];
-
     motionDuration = 500; //500mSec
-
     state = {};
     results = {why: {}};
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
-
-    cloneSections(section) {
-        // Deep copy arrays.
-        var clone = {};
-        Object.keys(section).forEach(button => {
-            clone[button] = section[button].slice(0);
-        });
-        return clone;
-    }
-
     whyName = '';
 
     constructor(props) {
@@ -150,8 +131,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, shared, next, panelNum, panel } = this.props;
-        const {items}=panel;
+        const { user, rasp, shared, next, panelNum } = this.props;
+        const items=shared.panel.items;
 
         const onServer = typeof window === 'undefined';
 
@@ -199,7 +180,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 <div className='instruction-text'>
                     {this.ButtonList['unsorted'].direction}
                     <Button small shy
-                        onClick={this.toggle.bind(this, null, 'done')}
+                        onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
                         className="qwhy-done"
                         style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
                         >
@@ -208,9 +189,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 </div>
             );
             this.props.rasp.toParent({ type: "RESULTS", results: this.results});
-        }else {next(panelNum,"issues")}
-
-
+        }else 
+            rasp.toParent({ type: "ISSUES"});
 
         return (
             <section id="syn-panel-qsort">

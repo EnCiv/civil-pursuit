@@ -25,7 +25,7 @@ class QSortReLook extends React.Component {
     render() {
         console.info("QSortReLook");
         return (
-            <PanelHead {...this.props} panel={this.props.shared.panel} cssName={'syn-qsort-relook'} >
+            <PanelHead {...this.props} cssName={'syn-qsort-relook'} >
                 <QVoteLocal  >
                     <ReactActionStatePath>
                         <RASPQSortReLook />
@@ -38,10 +38,6 @@ class QSortReLook extends React.Component {
 export default QSortReLook;
 
 class RASPQSortReLook extends ReactActionStatePathClient {
-
-    static propTypes = {
-        panel: panelType
-    };
 
     motionDuration = 500; //500mSec
 
@@ -67,16 +63,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
             window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
             delta.creator=false;
-        } else if (action.type==="DONE"){
-            if(this.props.next) {
-                const results = {
-                    index: this.props.index,
-                    sections: this.props.sections,
-                    panel: this.props.panel
-                }
-                setTimeout(()=>this.props.next(this.props.panelNum,"done", results));
-            }
-            delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
         } else return null;
@@ -101,8 +87,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, emitter, rasp, panel } = this.props;
-        const {items, type, parent}=panel;
+        const { user, emitter, rasp } = this.props;
+        const items=shared.panel.items;
 
         console.info("RASPQSortReLook");
 

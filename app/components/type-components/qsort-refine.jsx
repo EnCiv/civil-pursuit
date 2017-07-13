@@ -15,7 +15,7 @@ import PanelHead from '../panel-head';
 class QSortRefine extends React.Component {
     render(){
         return (
-            <PanelHead {...this.props} panel={this.props.shared.panel} cssName={'syn-qsort-refine'} >
+            <PanelHead {...this.props} cssName={'syn-qsort-refine'} >
                 <ReactActionStatePath>
                     <RASPQSortRefine />
                 </ReactActionStatePath>
@@ -108,8 +108,8 @@ class RASPQSortRefine extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panel, shared } = this.props;
-        const { items, type } = panel;
+        const { user, rasp, shared, type } = this.props;
+        const items=shared.panel.items;
 
         const onServer = typeof window === 'undefined';
 

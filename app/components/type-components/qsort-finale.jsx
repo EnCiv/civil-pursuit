@@ -26,7 +26,7 @@ class QSortFinale extends React.Component{
         console.info("QSortFinale");
         return(
             <QVoteTotals {...this.props} >
-                <PanelHead panel={this.props.shared.panel} cssName={'syn-qsort-items'} >
+                <PanelHead cssName={'syn-qsort-finale'} >
                     <ReactActionStatePath>
                         <RASPQSortFinale/>
                     </ReactActionStatePath>
@@ -65,8 +65,9 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { user, emitter, rasp, panel } = this.props;
-        const { items, type } = panel;
+        const { user, emitter, rasp, shared } = this.props;
+        const items=shared.panel.items;
+
         console.info("QSortFinale");
         const onServer = typeof window === 'undefined';
         let content = [], direction = [], instruction = [], issues = 0, done = [], loading=[];
