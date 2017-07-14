@@ -182,7 +182,7 @@ class RASPItem extends ReactActionStatePathClient {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (!(this.props.rasp && this.props.rasp.readMore)) {
+    if (!(this.props.rasp && this.props.rasp.readMore) && this.props.rasp.shape!=='title') {
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
       let truncableR = truncable.getBoundingClientRect();
