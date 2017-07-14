@@ -175,7 +175,7 @@ class QSortFlipItemHarmony extends React.Component {
                     <Item
                         item={item}
                         user={user}
-                        buttons={['QSortButtons', { component: 'Harmony', limit: 5, hideFeedback: true, active: sectionName === 'unsorted' }]}
+                        buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: sectionName === 'unsorted' }]}
                         qbuttons={qbuttons}
                         rasp={rasp}
                     />

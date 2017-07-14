@@ -266,9 +266,9 @@ class RASPItem extends ReactActionStatePathClient {
           rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
           item={item} active={rasp.button === button && shape === 'open'} style={style} />);
       else if (typeof button==='object')
-        return (<ItemComponent {...this.props} {...button} part={'panel'} key={item._id + '-' + button}
+        return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button}
           rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
-          item={item} active={rasp.button === button && shape === 'open'} style={style} />);
+          item={item} active={rasp.button === button && shape === 'open'} style={style} {...button} />);
     }
 
     // a button could be a string, or it could be an object which must have a property component
