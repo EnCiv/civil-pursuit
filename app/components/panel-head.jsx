@@ -60,7 +60,7 @@ class PanelHead extends React.Component {
         const limit=this.props.limit || panel && panel.limit || 10;
         const items=this.props.items || panel && panel.items || [];
         if (type) {
-            name = cssName + '--' + (panel.type._id || panel.type);
+            name = cssName + '--' + (type._id || type);
             title = type.name;
 
             if (parent) {
