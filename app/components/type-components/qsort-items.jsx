@@ -43,10 +43,6 @@ class QSortItems extends React.Component {
 
 class RASPQSortItems extends ReactActionStatePathClient {
 
-    static propTypes = {
-        panel: panelType
-    };
-
     motionDuration = 500; //500mSec
 
     currentTop = 0; //default scroll position
@@ -78,7 +74,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                 const results = {
                     index: this.props.index,
                     sections: this.props.sections,
-                    panel: this.props.panel
+                    items: this.props.items
                 }
                 setTimeout(()=>this.props.next(this.props.panelNum,"done", results));
             }
@@ -106,8 +102,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
     render() {
         console.info("RASPQSortItems.render");
 
-        const { panel, count, user, emitter, rasp } = this.props;
-        const {items, type, parent}=panel;
+        const { count, user, emitter, rasp, items, type, parent } = this.props;
 
         const onServer = typeof window === 'undefined';
 
@@ -154,7 +149,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
                 });
             });
             if (!issues) {
-                var results={index: this.props.index, sections: this.props.sections, panel: this.props.panel }
+                var results={index: this.props.index, sections: this.props.sections, items: this.props.items }
                 done.push(
                     <div className='instruction-text'>
                         {this.QSortButtonList['unsorted'].direction}

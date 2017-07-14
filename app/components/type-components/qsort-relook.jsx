@@ -88,7 +88,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     render() {
 
         const { user, emitter, rasp } = this.props;
-        const items=shared.panel.items;
+        const items=shared.items;
 
         console.info("RASPQSortReLook");
 

@@ -66,7 +66,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
     render() {
         const { user, emitter, rasp, shared } = this.props;
-        const items=shared.panel.items;
+        const items=shared.items;
 
         console.info("QSortFinale");
         const onServer = typeof window === 'undefined';

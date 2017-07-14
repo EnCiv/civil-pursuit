@@ -132,7 +132,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     render() {
 
         const { user, rasp, shared, next, panelNum } = this.props;
-        const items=shared.panel.items;
+        const items=shared.items;
 
         const onServer = typeof window === 'undefined';
 

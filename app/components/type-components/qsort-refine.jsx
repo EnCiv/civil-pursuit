@@ -109,7 +109,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
     render() {
 
         const { user, rasp, shared, type } = this.props;
-        const items=shared.panel.items;
+        const items=shared.items;
 
         const onServer = typeof window === 'undefined';
 
