@@ -40,11 +40,11 @@ class PanelHead extends React.Component {
         }
     }
 
-    renderChildren() {
+    renderChildren(moreProps) {
         let { shape, depth } = this.props.rasp;
         if (this.props.children && this.props.children.length && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
         return React.Children.map(this.props.children, (child, i) => {
-            var newProps = Object.assign({}, this.props, arguments, { rasp: { shape, depth, toParent: this.toMeFromChild.bind(this, i) } });
+            var newProps = Object.assign({}, this.props, moreProps, { rasp: { shape, depth, toParent: this.toMeFromChild.bind(this, i) } });
             delete newProps.children;
             return React.cloneElement(child, newProps, child.props.children)
         });
@@ -80,7 +80,7 @@ class PanelHead extends React.Component {
                     style={{ backgroundColor: 'white' }}
                 >
                     {instruction}
-                    {this.renderChildren(type, parent, items, limit)}
+                    {this.renderChildren({type, parent, items, limit})}
                 </Panel>
             )
         } else
