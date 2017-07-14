@@ -161,7 +161,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       else {
         content = panel.items
           .map(item => {
-            let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : 'truncated';
+            let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
             //if(panel.items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
             var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
             if (!this.mounted[item.id]) { // only render this once
@@ -180,7 +180,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
               );
             }
             return (
-              <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape === 'truncated'} name='item' key={item._id +'-panel-item'}>
+              <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
                 {this.mounted[item.id]}
               </Accordion>
             );
