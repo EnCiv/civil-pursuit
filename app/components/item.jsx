@@ -243,8 +243,7 @@ class RASPItem extends ReactActionStatePathClient {
     const shape = rasp ? rasp.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore = (rasp && rasp.readMore);
-    const truncShape = shape !== 'collapsed' ? readMore ? 'vs-open' : 'vs-truncated' : 'vs-collapsed';
-
+    const truncShape = shape !== 'collapsed' && readMore ? 'vs-open' : 'vs-'+shape;
     let noReference = true;
 
     console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
@@ -263,11 +262,11 @@ class RASPItem extends ReactActionStatePathClient {
     var renderPanel = (button) => {
       if(typeof button==='string')
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
-          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
+          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : shape, toParent: this.toMeFromChild.bind(this, button) }}
           item={item} active={rasp.button === button && shape === 'open'} style={style} />);
       else if (typeof button==='object')
         return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button}
-          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : 'truncated', toParent: this.toMeFromChild.bind(this, button) }}
+          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : shape, toParent: this.toMeFromChild.bind(this, button) }}
           item={item} active={rasp.button === button && shape === 'open'} style={style} {...button} />);
     }
 
