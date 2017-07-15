@@ -33,7 +33,8 @@ type                =   shape({
   	}),
   mediaMethod		    : 	string,
   referenceMethod   :   string,
-  subjectPlaceHolder :  string
+  subjectPlaceHolder :  string,
+  buttons           :   any
 });
 
 export default type;

@@ -63,7 +63,8 @@ class Type extends Mungo.Model {
       },
       "mediaMethod":       String,
       "referenceMethod":   String,
-      "subjectPlaceholder": String
+      "subjectPlaceholder": String,
+      "buttons": Mungo.Mixed,
     }
   }
 

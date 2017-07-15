@@ -148,6 +148,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
       title = type.name;
 
+      var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
+      console.info("PanelItems.render buttons:", buttons);
+
       if (!panel.items.length && !(panel.type && panel.type.createMethod === 'hidden')) {
         content = (
           <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
@@ -173,7 +176,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
                   rasp={itemRASP}
                   emitter={emitter}
                   hideFeedback={this.props.hideFeedback}
-                  buttons={['Promote', 'Details', 'Harmony', 'Subtype']}
+                  buttons={buttons}
                   style={{ backgroundColor: bgc }}
                 />
               </ItemStore>
