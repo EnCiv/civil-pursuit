@@ -69,16 +69,6 @@ class RASPQSortItems extends ReactActionStatePathClient {
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
             window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
             delta.creator=false;
-        } else if (action.type==="DONE"){
-            if(this.props.next) {
-                const results = {
-                    index: this.props.index,
-                    sections: this.props.sections,
-                    items: this.props.items
-                }
-                setTimeout(()=>this.props.next(this.props.panelNum,"done", results));
-            }
-            delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
         } else return null;
@@ -109,7 +99,6 @@ class RASPQSortItems extends ReactActionStatePathClient {
         let articles = [], creator,
             direction = [], instruction = [], issues = 0, done = [], loading=[];
 
-        
         if (!Object.keys(this.props.index).length) {
             console.info("qsort-items creator")
             loading.push(
