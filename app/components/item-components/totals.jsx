@@ -8,7 +8,7 @@ import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
 import PanelStore from '../store/panel';
-
+import QSortFinale from '../type-components/qsort-finale';
 
 exports.button = class TotalsButton extends React.Component {
 
@@ -72,17 +72,20 @@ exports.panel = class TotalsPanel extends React.Component {
             <PanelStore parent={this.props.parent}
             type={this.props.type}
             limit={20} >
-                <QVoteTotals {...this.props} >
-                    <PanelHead cssName={'syn-qsort-finale'} >
-                        <ReactActionStatePath>
-                            <RASPQSortFinale/>
-                        </ReactActionStatePath>
-                    </PanelHead>
-                </QVoteTotals>
+                <TotalsPanelShared {...this.props} >
+                </TotalsPanelShared>
             </PanelStore>
           </Accordion>
         </div>
       )
     }
   }
+}
+
+class TotalsPanelShared extends React.Component {
+    render(){
+        return(
+                <QSortFinale {...this.props} shared={{items: this.props.panel && this.props.panel.items}} />
+        )
+    }
 }
