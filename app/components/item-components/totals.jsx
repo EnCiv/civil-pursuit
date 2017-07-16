@@ -45,7 +45,7 @@ exports.button = class TotalsButton extends React.Component {
       return (
         <ButtonGroup>
           <span className="civil-button-info">{number} </span>
-          <Button small shy success={success} inactive={inactive} title={title} onClick={onClick} className="subtype-button" title={title}>
+          <Button small shy success={success} inactive={inactive} title={title} onClick={onClick} className="totals-button" title={title}>
             <span className="civil-button-text">{buttonName}</span>
           </Button>
         </ButtonGroup>

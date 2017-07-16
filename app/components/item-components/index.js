@@ -11,7 +11,8 @@ var  Components={
         'QSortButtons': require('./qsort-buttons'),
         'Edit': require('./edit'),
         'CreateHarmony': require('./create-harmony'),
-        'Refine': require('./refine')
+        'Refine': require('./refine'),
+        "Totals": require('./totals')
 }
 
 export default Components;
