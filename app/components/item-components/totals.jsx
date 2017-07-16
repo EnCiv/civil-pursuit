@@ -24,6 +24,7 @@ exports.button = class TotalsButton extends React.Component {
         var success = false, inactive = false;
         var title = "";
         var onClick=this.props.onClick;
+        if(!this.props.user) return null; // no button if user not logged in
 
         // if (true) {
         if (active) {
@@ -64,14 +65,15 @@ exports.panel = class TotalsPanel extends React.Component {
     render() {
         const { active, style, item, rasp } = this.props;
         const nextRASP = { shape: rasp.shape, depth: rasp.depth, toParent: rasp.toParent } // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
+        if(!this.props.user) return null; // no panel if user not logged in
         if ((this.mounted === false && active === false)) return null; // don't render this unless it's active, or been rendered before
         else {
             if (!this.mounted) {
                 this.mounted = true;
-                if (this.props.item.type.harmony)
-                    window.socket.emit('get listo type', this.props.item.type.harmony, this.okGetListoType.bind(this));
+                //if (this.props.type.harmony)
+                //    window.socket.emit('get listo type', this.props.item.type.harmony, this.okGetListoType.bind(this));
             }
-            if (this.state.typeList && this.state.typeList.length) {
+            //if (this.state.typeList && this.state.typeList.length) {
                 return (
                     <div className="toggler totals" key={item._id + '-toggler-' + this.constructor.name}>
                         <Accordion
@@ -79,7 +81,7 @@ exports.panel = class TotalsPanel extends React.Component {
                             style={style}
                         >
                             <PanelStore parent={this.props.item}
-                                type={this.state.typeList[0]}
+                                type={this.props.type}
                                 limit={20} >
                                 <TotalsPanelShared {...this.props} >
                                 </TotalsPanelShared>
@@ -87,9 +89,9 @@ exports.panel = class TotalsPanel extends React.Component {
                         </Accordion>
                     </div>
                 )
-            } else {
-                return null;
-            }
+            //} else {
+              //  return null;
+           // }
         }
     }
 }
