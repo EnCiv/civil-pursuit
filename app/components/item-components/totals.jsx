@@ -23,7 +23,7 @@ exports.button = class TotalsButton extends React.Component {
         var number = ' ';
         var success = false, inactive = false;
         var title = "";
-        var onClick = this.onClick.bind(this);
+        var onClick=this.props.onClick;
 
         // if (true) {
         if (active) {
@@ -35,7 +35,7 @@ exports.button = class TotalsButton extends React.Component {
         //  } 
         //else {
         //    inactive = true;
-        //    onClick = this.donothing.bind(this);
+        //    onClick = this.donothing.bind(this);o
         //    title = buttonTitle.inactive;
         //  }
 
@@ -75,7 +75,7 @@ exports.panel = class TotalsPanel extends React.Component {
                 return (
                     <div className="toggler totals" key={item._id + '-toggler-' + this.constructor.name}>
                         <Accordion
-                            active={active && this.state.typeList && this.state.typeList.length}
+                            active={active}
                             style={style}
                         >
                             <PanelStore parent={this.props.item}
