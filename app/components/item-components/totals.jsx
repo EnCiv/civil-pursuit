@@ -52,7 +52,7 @@ exports.button = class TotalsButton extends React.Component {
 }
 
 exports.panel = class TotalsPanel extends React.Component {
-    state = {};
+    state = {typeList: null};
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     okGetListoType(typeList) {
