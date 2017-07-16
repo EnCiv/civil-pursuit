@@ -12,11 +12,10 @@ import QSortFinale from '../type-components/qsort-finale';
 import QSortButtonList from '../qsort-button-list';
 
 exports.button = class TotalsButton extends React.Component {
-
     render() {
         const { active, item } = this.props;
-        const buttonName = "Totals";
-        const buttonTitle = {
+        const buttonName = this.props.buttonName || "Totals";
+        const buttonTitle = this.props.buttonTitle || {
             active: "See the dynamic totals",
             success: "Return to the higher level of this discusion",
             inactive: "You need to participate before you can see the totals"
@@ -27,19 +26,12 @@ exports.button = class TotalsButton extends React.Component {
         var onClick=this.props.onClick;
         if(!this.props.user) return null; // no button if user not logged in
 
-        // if (true) {
         if (active) {
             success = true;
             title = buttonTitle.success;
         } else {
             title = buttonTitle.active;
         }
-        //  } 
-        //else {
-        //    inactive = true;
-        //    onClick = this.donothing.bind(this);o
-        //    title = buttonTitle.inactive;
-        //  }
 
         return (
             <ButtonGroup>
@@ -49,50 +41,35 @@ exports.button = class TotalsButton extends React.Component {
                 </Button>
             </ButtonGroup>
         );
-        //} else return null;
     }
 }
 
 exports.panel = class TotalsPanel extends React.Component {
     state = {typeList: null};
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    okGetListoType(typeList) {
-        for (let i = 0; i < typeList.length; i++) { this.panelList[i] = { content: [] }; }
-        this.setState({ typeList: typeList });
-    }
-
     mounted = false;
     render() {
         const { active, style, item, rasp } = this.props;
-        const nextRASP = { shape: rasp.shape, depth: rasp.depth, toParent: rasp.toParent } // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
         if(!this.props.user) return null; // no panel if user not logged in
         if ((this.mounted === false && active === false)) return null; // don't render this unless it's active, or been rendered before
         else {
             if (!this.mounted) {
                 this.mounted = true;
-                //if (this.props.type.harmony)
-                //    window.socket.emit('get listo type', this.props.item.type.harmony, this.okGetListoType.bind(this));
             }
-            //if (this.state.typeList && this.state.typeList.length) {
-                return (
-                    <div className="toggler totals" key={item._id + '-toggler-' + this.constructor.name}>
-                        <Accordion
-                            active={active}
-                            style={style}
-                        >
-                            <PanelStore parent={this.props.item}
-                                type={this.props.type}
-                                limit={20} >
-                                <TotalsPanelShared {...this.props} >
-                                </TotalsPanelShared>
-                            </PanelStore>
-                        </Accordion>
-                    </div>
-                )
-            //} else {
-              //  return null;
-           // }
+            return (
+                <div className="toggler totals" key={item._id + '-toggler-' + this.constructor.name}>
+                    <Accordion
+                        active={active}
+                        style={style}
+                    >
+                        <PanelStore parent={this.props.item}
+                            type={this.props.type}
+                            limit={20} >
+                            <TotalsPanelShared {...this.props} >
+                            </TotalsPanelShared>
+                        </PanelStore>
+                    </Accordion>
+                </div>
+            )
         }
     }
 }
