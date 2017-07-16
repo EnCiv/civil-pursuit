@@ -7,6 +7,7 @@ import Icon from '../util/icon';
 import Accordion from '../util/accordion';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
+import PanelStore from '../store/panel';
 
 
 exports.button = class TotalsButton extends React.Component {
