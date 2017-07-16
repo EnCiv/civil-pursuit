@@ -9,6 +9,7 @@ import TypeComponent from '../type-component';
 import config from '../../../public.json';
 import PanelStore from '../store/panel';
 import QSortFinale from '../type-components/qsort-finale';
+import QSortButtonList from '../qsort-button-list';
 
 exports.button = class TotalsButton extends React.Component {
 
@@ -98,8 +99,10 @@ exports.panel = class TotalsPanel extends React.Component {
 
 class TotalsPanelShared extends React.Component {
     render() {
+        var sections={};
+        Object.keys(QSortButtonList).forEach(s=>sections[s]=[]);
         return (
-            <QSortFinale {...this.props} shared={{ items: this.props.panel && this.props.panel.items }} />
+            <QSortFinale {...this.props} shared={{ items: this.props.panel && this.props.panel.items, sections }} />
         )
     }
 }
