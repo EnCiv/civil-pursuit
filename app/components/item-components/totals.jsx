@@ -12,9 +12,20 @@ import QSortFinale from '../type-components/qsort-finale';
 
 exports.button = class TotalsButton extends React.Component {
 
-  donothing() {
-    return false;
+    state={};
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  okGetListoType(typeList) {
+    for (let i = 0; i < typeList.length; i++) { this.panelList[i] = { content: [] }; }
+    this.setState({ typeList: typeList });
   }
+
+  onClick(){
+      if (typeof window !== 'undefined' && this.props.item.type.harmony)
+        window.socket.emit('get listo type', this.props.item.type.harmony, this.okGetListoType.bind(this));
+      this.props.onClick();
+  }
+
 
   render() {
     const { active, item } = this.props;
@@ -27,7 +38,7 @@ exports.button = class TotalsButton extends React.Component {
     var number =  ' ';
     var success = false, inactive = false;
     var title = "";
-    var onClick = this.props.onClick;
+    var onClick = this.onClick.bind(this);
 
      // if (true) {
     if (active) {
@@ -66,11 +77,11 @@ exports.panel = class TotalsPanel extends React.Component {
       return (
         <div className="toggler totals" key={item._id+'-toggler-'+this.constructor.name}>
           <Accordion
-            active={active}
+            active={active && this.state.typeList && this.state.typeList.length}
             style={style}
           >
             <PanelStore parent={this.props.item}
-            type={this.props.item.type}
+            type={this.state.typeList[0]}
             limit={20} >
                 <TotalsPanelShared {...this.props} >
                 </TotalsPanelShared>
