@@ -82,9 +82,10 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         var shortId = action.segment;
         if(!shortId) console.error("PanelItems.segmentToState no shortId found");
         else {
-            nextRASP.shape='open'; nextRASP.shortId=shortId 
+            nextRASP.shape='open'; 
+            nextRASP.shortId=shortId;
         }
-        return { nextRASP, setBeforeWait: true }
+        return { nextRASP, setBeforeWait: false }
     }
 
     onFlipMoveFinishAll() {
