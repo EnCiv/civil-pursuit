@@ -45,13 +45,46 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props){
-        super(props, 'itemId');
+        super(props, 'shortId');
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
     }
 
-    actionToState(action,rasp) {
-        return null;
+    actionToState(action,rasp, source) {
+        var nextRASP = {}, delta = {};
+            if (action.type === "CHILD_SHAPE_CHANGED") {
+            if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
+            if (action.distance === 1) { //if this action is from an immediate child 
+                if (action.shape === 'open' && action.shortId) {
+                    delta.shortId = action.shortId;
+                    if(rasp.shape==='open' && rasp.shortId){
+                        if(rasp.shortId !== action.shortId){
+                            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+                        }
+                    }
+                } else {
+                    delta.shortId = null; // turn off the shortId
+                } 
+                delta.shape = action.shape;
+            }
+        } else
+            return null;
+        Object.assign(nextRASP, rasp, delta);
+        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.shortId; 
+        else nextRASP.pathSegment=null;
+        return nextRASP;
+    }
+
+    // set the state from the pathSegment. 
+    // the shortId is the path segment
+    segmentToState(action) {
+        var nextRASP={shape: 'truncated', pathSegment: action.segment};
+        var shortId = action.segment;
+        if(!shortId) console.error("PanelItems.segmentToState no shortId found");
+        else {
+            nextRASP.shape='open'; nextRASP.shortId=shortId 
+        }
+        return { nextRASP, setBeforeWait: true }
     }
 
     onFlipMoveFinishAll() {
@@ -90,7 +123,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                         buttons: [{component: 'QSortButtons', qbuttons: qbuttonTotals},'Harmony'],
                         qbuttons: qbuttonTotals,
                         id: item._id,
-                        rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item._id)}
+                        rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
                     }
                 );
             });
@@ -121,7 +154,6 @@ class QSortFlipItemHarmony extends React.Component {
             <div style={{backgroundColor: qbuttons['unsorted'].color}}>
                 <ItemStore item={ item } key={ `item-${item._id}` }>
                     <Item
-                        item    =   { item }
                         user    =   { user }
                         buttons =   { buttons }
                         rasp    =   {rasp}
