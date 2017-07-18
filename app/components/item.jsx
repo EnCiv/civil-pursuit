@@ -265,9 +265,9 @@ class RASPItem extends ReactActionStatePathClient {
           rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : shape, toParent: this.toMeFromChild.bind(this, button) }}
           item={item} active={rasp.button === button && shape === 'open'} style={style} />);
       else if (typeof button==='object')
-        return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button}
-          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'open' : shape, toParent: this.toMeFromChild.bind(this, button) }}
-          item={item} active={rasp.button === button && shape === 'open'} style={style} {...button} />);
+        return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button.component}
+          rasp={{ depth: rasp.depth, shape: (rasp.button === button.component && shape === 'open') ? 'open' : shape, toParent: this.toMeFromChild.bind(this, button.component) }}
+          item={item} active={rasp.button === button.component && shape === 'open'} style={style} {...button} />);
     }
 
     // a button could be a string, or it could be an object which must have a property component
@@ -275,7 +275,7 @@ class RASPItem extends ReactActionStatePathClient {
       if(typeof button === 'string')
         return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
       else if (typeof button === 'object')
-        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button.component} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} />);
     }
 
     return (
