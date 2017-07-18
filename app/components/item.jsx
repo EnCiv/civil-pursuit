@@ -52,7 +52,14 @@ class RASPItem extends ReactActionStatePathClient {
         nextRASP.readMore = true;
         matched += 1;
         nextRASP.shape = 'open';
-      } else if (this.props.buttons.some(b => { if (b[0] === part) { button = b; return true } else return false; })) {
+      } else if (this.props.buttons.some(b => {
+            if(typeof b === 'string') {
+              if (b[0] === part) { button = b; return true } 
+            } else if(typeof b === 'object') {
+              if (b.component && b.component[0] === part) { button = b.component; return true } 
+            } else return false; 
+          })) 
+      {
         nextRASP.button = button;
         matched += 1;
         nextRASP.shape = 'open';
