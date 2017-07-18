@@ -118,6 +118,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                 Object.keys(this.QSortButtonList).forEach(button => qbuttonTotals[button]=Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
                 var item = items[qobj.index];
                 let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
+                let active = rasp.shape === 'open' && rasp.shortId !== item.id ? false : true;
                 content.push(
                     {
                         user: user,
@@ -125,7 +126,8 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                         buttons: [{component: 'QSortButtons', qbuttons: qbuttonTotals},'Harmony'],
                         qbuttons: qbuttonTotals,
                         id: item._id,
-                        rasp: {shape: shape, depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
+                        rasp: {shape: shape, depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)},
+                        active: active
                     }
                 );
             });
@@ -151,9 +153,9 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
 class QSortFlipItemHarmony extends React.Component {
     render() {
-        const { qbuttons, buttons, item, user, rasp } = this.props;
+        const { qbuttons, buttons, item, user, rasp, active } = this.props;
         return (
-            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
+            <Accordion active={active} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
                 <ItemStore item={item} key={`item-${item._id}`}>
                     <Item
                         user={user}
