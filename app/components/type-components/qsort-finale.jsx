@@ -149,18 +149,18 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 //                            </FlipMove>
 
 class QSortFlipItemHarmony extends React.Component {
-    render(){
-        const {qbuttons, buttons, item, user, rasp } = this.props;
-        return(
-            <div style={{backgroundColor: qbuttons['unsorted'].color}}>
-                <ItemStore item={ item } key={ `item-${item._id}` }>
+    render() {
+        const { qbuttons, buttons, item, user, rasp } = this.props;
+        return (
+            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
+                <ItemStore item={item} key={`item-${item._id}`}>
                     <Item
-                        user    =   { user }
-                        buttons =   { buttons }
-                        rasp    =   {rasp}
+                        user={user}
+                        buttons={buttons}
+                        rasp={rasp}
                     />
                 </ItemStore>
-            </div>
+            </Accordion>
         );
     }
 }
