@@ -109,12 +109,13 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         if (!Object.keys(this.props.finale).length) {
             loading.push(
                 <div className="gutter text-center">
-                    <p>There is nothing here</p>
+                    <p>Loading ...</p>
                 </div>
             );
         } else {
             this.props.finale.forEach(qobj => {
                 var qbuttonTotals=[];
+                let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
                 Object.keys(this.QSortButtonList).forEach(button => qbuttonTotals[button]=Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
                 var item = items[qobj.index];
                 content.push(
@@ -124,7 +125,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                         buttons: [{component: 'QSortButtons', qbuttons: qbuttonTotals},'Harmony'],
                         qbuttons: qbuttonTotals,
                         id: item._id,
-                        rasp: {shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
+                        rasp: {shape: shape, depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)}
                     }
                 );
             });

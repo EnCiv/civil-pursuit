@@ -30,7 +30,7 @@ exports.button = class QSortButtons extends React.Component {
                 <ButtonGroup>
                     {number}
                     <Button small shy 
-                    inactive= { false } 
+                    inactive= { onClick===null } 
                     success= { rasp.button && rasp.button===btn }
                     onClick= { onClick }
                     className= {`qsort-${qbuttons[btn].name}`}
