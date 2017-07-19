@@ -43,13 +43,15 @@ class RASPItem extends ReactActionStatePathClient {
   }
 
   someButton(part){
-    return (this.props.buttons.some(b => {
+    var button=null;
+    this.props.buttons.some(b => {
             if(typeof b === 'string') {
               if (b[0] === part) { button = b; return true }
             } else if(typeof b === 'object') {
               if (b.component && b.component[0] === part) { button = b.component; return true } 
             } else return false; 
-          })) 
+          })
+    return button;
   }
 
   segmentToState(action) {  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
@@ -62,7 +64,7 @@ class RASPItem extends ReactActionStatePathClient {
         nextRASP.readMore = true;
         matched += 1;
         nextRASP.shape = 'open';
-      } else if (this.someButton(part)) {
+      } else if (button=this.someButton(part)) {
         nextRASP.button = button;
         matched += 1;
         nextRASP.shape = 'open';
@@ -87,13 +89,11 @@ class RASPItem extends ReactActionStatePathClient {
       else delta.button = rasp.button; // othewise keep button the same
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
-      if (this.someButton('S')) delta.button = 'Subtype';
-      else delta.button = null;
+      delta.button=this.someButton('S');
     } else if (action.type === "FINISH_PROMOTE") {
       if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore = true;
-        if (this.someButton('S')) delta.button = 'Subtype';
-        else delta.button = null;
+        delta.button=this.someButton('S');
       } else if (action.winner) { // we have a winner but it's some other item
         delta.readMore = false;
         delta.button = null;
