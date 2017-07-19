@@ -89,11 +89,11 @@ class RASPItem extends ReactActionStatePathClient {
       else delta.button = rasp.button; // othewise keep button the same
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
-      delta.button=this.someButton('S');
+      if(this.props.item.subType) delta.button=this.someButton('S');
     } else if (action.type === "FINISH_PROMOTE") {
       if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore = true;
-        delta.button=this.someButton('S');
+        if(this.props.item.subType) delta.button=this.someButton('S');
       } else if (action.winner) { // we have a winner but it's some other item
         delta.readMore = false;
         delta.button = null;
