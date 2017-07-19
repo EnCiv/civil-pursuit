@@ -58,9 +58,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
-          delta.pathSegment = action.shortId;
         } else {
-          delta.pathSegment = null;
           delta.shortId = null; // turn off the shortId
         } delta.shape = action.shape;
         Object.assign(nextRASP, rasp, delta);
@@ -82,11 +80,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
             this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'truncated' });
             delta.shape = 'truncated';
             delta.shortId = null;
-            delta.pathSegment = 'Creator';
           } else {
             Object.assign(nextRASP, nextRASP, { shape: 'truncated' });
             delta.shape = 'truncated';
-            delta.pathSegment = null;
           }
         }
         Object.assign(nextRASP, rasp, delta); // if shape is not truncated, do so
@@ -104,22 +100,33 @@ class RASPPanelItems extends ReactActionStatePathClient {
       }
       delta.shortId = action.item.id;
       delta.shape = 'open';
-      delta.pathSegment = delta.shortId;
       Object.assign(nextRASP, rasp, delta);
     } else return null; // don't know this action, null so the default methods can have a shot at it
-    logger.trace("PanelItems.actionToState return", { nextRASP })
+    logger.trace("PanelItems.actionToState return", { nextRASP });
+    var parts=[];
+    const shapeToC={truncated: 't', open: 'o', title: 'l', collapsed: 'c'};
+    if(nextRASP.shortId) {
+      parts.push(nextRASP.shortId);
+      parts.push(shapeToC[nextRASP.shape]);
+    }
+    if(nextRASP.creator) parts.push('cr');
+    nextRASP.pathSegment=parts.join(',');
     return nextRASP;
   }
 
   // set the state from the pathSegment. 
   // the shortId is the path segment
   segmentToState(action) {
+    const cToShape={t: 'truncated', o: 'open', l: 'title', c: 'collapsed' };
     var nextRASP={shape: 'truncated', pathSegment: action.segment};
-    var shortId = action.segment;
-    if(!shortId) console.error("PanelItems.segmentToState no shortId found");
-    else {
-      nextRASP.shape='open'; nextRASP.shortId=shortId 
-    }
+    var parts=action.segment.split(',');
+    let count=parts.length;
+    parts.forEach(part=>{
+      if(part.length>2) {nextRASP.shortId=part; count--}
+      else if(part.length===2) {nextRASP.creator=true; count--}
+      else if(cToShape[part]) {nextRASP.shape=cToShape[part]; count--}
+    })
+    if(count) console.error("RASPPanelItems.segmentToState parts left over", count, parts );
     return { nextRASP, setBeforeWait: true }
   }
 
