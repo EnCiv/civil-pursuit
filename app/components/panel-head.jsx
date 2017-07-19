@@ -4,9 +4,11 @@ import React from 'react';
 import Loading from './util/loading';
 import Panel from './panel';
 import Instruction from './instruction';
+import Creator from './creator';
+import Accordion from './util/accordion';
+import Icon from './util/icon';
 
 class PanelHead extends React.Component {
-
     toChild=[];
 
     toMeFromChild(key, action) {
@@ -52,14 +54,15 @@ class PanelHead extends React.Component {
 
     render() {
         console.info("RASPPanelHead.render", this.props);
-        const { panel, cssName } = this.props;
-        var title, name, instruction = [], content=[];
+        const { panel, cssName, rasp } = this.props;
+        var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable
         const type=this.props.type || panel && panel.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
         const limit=this.props.limit || panel && panel.limit || 10;
         const items=this.props.items || panel && panel.items || [];
         const skip=this.props.skip || panel && panel.skip || 0;
+        const bgc="white";
         if (type) {
             name = cssName + '--' + (type._id || type);
             title = type.name;
@@ -74,10 +77,22 @@ class PanelHead extends React.Component {
                     </Instruction>
                 );
             }
+            creator = (
+                <Accordion
+                    active={(rasp && rasp.creator)}
+                    style={{ backgroundColor: bgc }}
+                >
+                    <Creator
+                        type={type}
+                        parent={parent}
+                        toggle={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })}
+                    />
+                </Accordion>
+            );            
             if (!items.length && !(type && type.createMethod === 'hidden')) {
                 content = (
                 <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
-                    <a href="#" onClick={()=>this.props.rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
+                    <a href="#" onClick={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
                     Click the + to be the first to add something here
                     </a>
                 </div>
@@ -93,13 +108,14 @@ class PanelHead extends React.Component {
                             <Icon
                                 icon="plus"
                                 className="toggle-creator"
-                                onClick={()=>this.props.rasp.toParent({type: "TOGGLE_CREATOR"})}
+                                onClick={()=>rasp.toParent({type: "TOGGLE_CREATOR"})}
                             />
                             )
                         ]}
                     style={{ backgroundColor: 'white' }}
                 >
                     {instruction}
+                    {creator}
                     {content}
                 </Panel>
             )

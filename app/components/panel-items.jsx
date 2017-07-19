@@ -3,23 +3,22 @@
 import React from 'react';
 import Accordion from './util/accordion';
 import Icon from './util/icon';
-import Creator from './creator';
 import ItemStore from '../components/store/item';
 import EditAndGoAgain from './edit-and-go-again';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
-import PanelHead from '../panel-head';
+import PanelHead from './panel-head';
 
 class PanelItems extends React.Component {
   render() {
     logger.trace("PanelItems render");
     return (
-      <PanelHead {...this.props} cssName={'syn-panel-item'} >
-        <ReactActionStatePath >
+      <ReactActionStatePath {...this.props} >
+        <PanelHead  cssName={'syn-panel-item'} >
           <RASPPanelItems />
-        </ReactActionStatePath>
-      </PanelHead>
+        </PanelHead>
+      </ReactActionStatePath>
     );
   }
 }
@@ -38,10 +37,6 @@ class RASPPanelItems extends ReactActionStatePathClient {
     e.preventDefault();
 
     // window.Dispatcher.emit('get items', this.props.panel);
-  }
-
-  toggleCreator() {
-    if (this.props.rasp && this.props.rasp.toParent) this.props.rasp.toParent({ type: "TOGGLE_CREATOR" });
   }
 
   actionToState(action, rasp) {
@@ -132,8 +127,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
     const { limit, skip, type, parent, items, count, user, emitter, rasp } = this.props;
 
-    let title = 'Loading items', name, content, loadMore,
-      type, parent, creator;
+    let title = 'Loading items', name, content, loadMore;
 
     let bgc = 'white';
 
@@ -176,26 +170,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
         //           </h5>
         //         );
         //       }
-  
-
-
-      creator = (
-        <Accordion
-          active={(rasp && rasp.creator)}
-          style={{ backgroundColor: bgc }}
-        >
-          <Creator
-            type={type}
-            parent={parent}
-            toggle={this.toggleCreator.bind(this)}
-          />
-        </Accordion>
-      );
-
 
     return (
       <section>
-        {creator}
         {content}
         {loadMore}
       </section>
