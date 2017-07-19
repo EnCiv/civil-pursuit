@@ -45,7 +45,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props) {
-        super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
+        super(props, 'shortId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
     }
 
@@ -54,7 +54,22 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     actionToState(action,rasp) {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
-        if(action.type==="TOGGLE_QBUTTON") {
+        if (action.type === "CHILD_SHAPE_CHANGED") {
+            if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
+            if (action.distance === 1) { //if this action is from an immediate child 
+                if (action.shape === 'open' && action.shortId) {
+                    delta.shortId = action.shortId;
+                    if(rasp.shape==='open' && rasp.shortId){
+                        if(rasp.shortId !== action.shortId){
+                            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+                        }
+                    }
+                } else {
+                    delta.shortId = null; // turn off the shortId
+                } 
+                delta.shape = action.shape;
+            }
+        } else if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
             var doc = document.documentElement;
@@ -67,6 +82,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             delta.creator= !rasp.creator;
         } else return null;
         Object.assign(nextRASP, rasp, delta);
+        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.shortId; 
+        else nextRASP.pathSegment=null;
         return(nextRASP);
     }
 
@@ -124,7 +141,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                             user: user,
                             item: item,
                             id: item._id,
-                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}
+                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item.id)}
                         }
                     );
                 });
