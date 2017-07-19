@@ -56,7 +56,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         var nextRASP={}, delta={};
         if (action.type === "CHILD_SHAPE_CHANGED") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
-            if (action.distance === 1) { //if this action is from an immediate child 
                 if (action.shape === 'open' && action.shortId) {
                     delta.shortId = action.shortId;
                     if(rasp.shape==='open' && rasp.shortId){
@@ -68,7 +67,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     delta.shortId = null; // turn off the shortId
                 } 
                 delta.shape = action.shape;
-            }
         } else if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 

@@ -53,12 +53,13 @@ class PanelHead extends React.Component {
     render() {
         console.info("RASPPanelHead.render", this.props);
         const { panel, cssName } = this.props;
-        var title, name, instruction = [];
+        var title, name, instruction = [], content=[];
         // decompose panel into it's props if applicable
         const type=this.props.type || panel && panel.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
         const limit=this.props.limit || panel && panel.limit || 10;
         const items=this.props.items || panel && panel.items || [];
+        const skip=this.props.skip || panel && panel.skip || 0;
         if (type) {
             name = cssName + '--' + (type._id || type);
             title = type.name;
@@ -73,14 +74,33 @@ class PanelHead extends React.Component {
                     </Instruction>
                 );
             }
+            if (!items.length && !(type && type.createMethod === 'hidden')) {
+                content = (
+                <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
+                    <a href="#" onClick={()=>this.props.rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
+                    Click the + to be the first to add something here
+                    </a>
+                </div>
+                );
+            } else 
+                content = this.renderChildren({type, parent, items, limit, skip});
             return (
                 <Panel
                     className={name}
-                    heading={[(<h4>{title}</h4>)]}
+                    heading={[
+                        (<h4>{title}</h4>), (type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
+                            (
+                            <Icon
+                                icon="plus"
+                                className="toggle-creator"
+                                onClick={()=>this.props.rasp.toParent({type: "TOGGLE_CREATOR"})}
+                            />
+                            )
+                        ]}
                     style={{ backgroundColor: 'white' }}
                 >
                     {instruction}
-                    {this.renderChildren({type, parent, items, limit})}
+                    {content}
                 </Panel>
             )
         } else

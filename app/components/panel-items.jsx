@@ -1,8 +1,6 @@
 'use strict';
 
 import React from 'react';
-import Panel from './panel';
-import panelType from '../lib/proptypes/panel';
 import Accordion from './util/accordion';
 import Icon from './util/icon';
 import Creator from './creator';
@@ -11,28 +9,27 @@ import EditAndGoAgain from './edit-and-go-again';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
+import PanelHead from '../panel-head';
 
 class PanelItems extends React.Component {
   render() {
     logger.trace("PanelItems render");
     return (
-      <ReactActionStatePath {... this.props}>
-        <RASPPanelItems />
-      </ReactActionStatePath>
+      <PanelHead {...this.props} cssName={'syn-panel-item'} >
+        <ReactActionStatePath >
+          <RASPPanelItems />
+        </ReactActionStatePath>
+      </PanelHead>
     );
   }
 }
 
 class RASPPanelItems extends ReactActionStatePathClient {
 
-  static propTypes = {
-    panel: panelType
-  };
-
   constructor(props) {
     var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
     super(raspProps, 'shortId');  // shortId is the key for indexing to child RASP functions
-    if (props.panel && props.panel.type && props.panel.type.name && props.panel.type.name !== this.title) { this.title = props.panel.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
+    if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,7 +50,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       let ash = action.shape, ush = rasp.shape;
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
       var ooview = false;
-      if (this.props.panel && this.props.panel.type && this.props.panel.type.visualMethod && this.props.panel.type.visualMethod === "ooview") ooview = true;
+      if (this.props.type && this.props.type.visualMethod && this.props.type.visualMethod === "ooview") ooview = true;
 
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
@@ -99,8 +96,8 @@ class RASPPanelItems extends ReactActionStatePathClient {
         else this.waitingOn = { nextRASP: nextRASP, nextFunc: nextFunc };
       }
     } else if (action.type === "SHOW_ITEM") {
-      if (!this.props.panel.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
-        this.props.panel.items.push(action.item);
+      if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
+        this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
       delta.shape = 'open';
@@ -125,7 +122,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   // this is just for debugging, to make the trace output easier to follow - associate the panel name to the output
   componentWillReceiveProps(newProps) {
-    if (newProps.panel && newProps.panel.type && newProps.panel.type.name && newProps.panel.type.name !== this.title) { this.title = newProps.panel.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
+    if (newProps.type && newProps.type.name && newProps.type.name !== this.title) { this.title = newProps.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
   }
 
   mounted = [];  // we render items and store them in this array.  No need to rerender them every time
@@ -133,63 +130,42 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { panel, count, user, emitter, rasp } = this.props;
+    const { limit, skip, type, parent, items, count, user, emitter, rasp } = this.props;
 
-    let title = 'Loading items', name, loaded = false, content, loadMore,
+    let title = 'Loading items', name, content, loadMore,
       type, parent, creator;
 
     let bgc = 'white';
 
-    if (panel) {
-      loaded = true;
-
-      type = panel.type;
-      parent = panel.parent;
-
-      title = type.name;
-
       var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
       console.info("PanelItems.render buttons:", buttons);
 
-      if (!panel.items.length && !(panel.type && panel.type.createMethod === 'hidden')) {
-        content = (
-          <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
-            <a href="#" onClick={this.toggleCreator.bind(this)} className="click-to-create">
-              Click the + to be the first to add something here
-            </a>
-          </div>
-        );
-      }
 
-      else {
-        content = panel.items
-          .map(item => {
-            let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
-            //if(panel.items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
-            var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
-            if (!this.mounted[item.id]) { // only render this once
-              this.mounted[item.id] = (<ItemStore item={item} key={`item-${item._id}`}>
-                <Item
-                  item={item}
-                  user={user}
-                  panel={panel}
-                  rasp={itemRASP}
-                  emitter={emitter}
-                  hideFeedback={this.props.hideFeedback}
-                  buttons={buttons}
-                  style={{ backgroundColor: bgc }}
-                />
-              </ItemStore>
-              );
-            }
-            return (
-              <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
-                {this.mounted[item.id]}
-              </Accordion>
+
+      content = items.map(item => {
+          let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
+          //if(items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
+          var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
+          if (!this.mounted[item.id]) { // only render this once
+            this.mounted[item.id] = (<ItemStore item={item} key={`item-${item._id}`}>
+              <Item
+                item={item}
+                user={user}
+                rasp={itemRASP}
+                emitter={emitter}
+                hideFeedback={this.props.hideFeedback}
+                buttons={buttons}
+                style={{ backgroundColor: bgc }}
+              />
+            </ItemStore>
             );
-          });
-
-        const { skip, limit } = panel;
+          }
+          return (
+            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
+              {this.mounted[item.id]}
+            </Accordion>
+          );
+        });
 
         const end = skip + limit;
 
@@ -200,7 +176,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         //           </h5>
         //         );
         //       }
-      }
+  
 
 
       creator = (
@@ -215,26 +191,14 @@ class RASPPanelItems extends ReactActionStatePathClient {
           />
         </Accordion>
       );
-    }
+
 
     return (
-      <Panel
-        rasp={rasp}
-        heading={[
-          (<h4>{title}</h4>), (type && type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
-            (
-              <Icon
-                icon="plus"
-                className="toggle-creator"
-                onClick={this.toggleCreator.bind(this)}
-              />
-            )
-        ]}
-      >
+      <section>
         {creator}
         {content}
         {loadMore}
-      </Panel>
+      </section>
     );
   }
 }
