@@ -64,7 +64,8 @@ class RASPHarmony extends ReactActionStatePathClient {
   render () {
     const { active, item, user, rasp } = this.props;
     console.info("Harmony.render",this.props);
-    const {shape, depth}=rasp;
+    const {depth}=rasp;
+    var shape=rasp.shape === 'open' ? 'truncated' : rasp.shape;
 
     const leftRASP={shape, depth, toParent: this.toMeFromChild.bind(this, 'L')};  // inserting me between my parent and my child
     const rightRASP={shape, depth, toParent: this.toMeFromChild.bind(this, 'R')};  // inserting me between my parent and my child
