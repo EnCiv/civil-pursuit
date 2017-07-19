@@ -50,6 +50,7 @@ class RASPHarmony extends ReactActionStatePathClient {
       let delta={};
       if(action.shape==='open') delta.side=action.side; // action is to open, this side is going to be the open side
       else if(action.side === rasp.side) delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
+      delta.shape=delta.side ? 'open' : rasp.shape==='open' ? 'truncated' : rasp.shape;
       if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "CHANGE_STATE", shape: 'truncated'}); // if a side is going to be open, and it's not the side that is open, close the other side
       if(delta.side) delta.pathSegment=delta.side; // if a side is open, include it in the pathSegment
       else delta.pathSegment=null; //otherwise no path segment
