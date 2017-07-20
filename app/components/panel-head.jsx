@@ -10,9 +10,10 @@ import Icon from './util/icon';
 
 class PanelHead extends React.Component {
     toChild=[];
+    debug=0;
 
     toMeFromChild(key, action) {
-        logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, this.childName, key, action);
+        if(this.debug) console.info("PanelHead.toMeFromChild", this.props.rasp.depth, this.childName, key, action);
         if (key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", this.childName, key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
             if(Object.keys(this.toChild).length) {
@@ -23,6 +24,8 @@ class PanelHead extends React.Component {
                 if(action.name) this.childName=action.name;
                 action.function=this.toMeFromParent.bind(this);
                 action.name= this.constructor.name+'->'+action.name;
+                this.debug=action.debug;
+                if(this.debug) console.info("PanelHead.toMeFromChild debug on", this.props.rasp.depth, this.childName, key, action);
                 return this.props.rasp.toParent(action);  // notify parent of your existence after child existence known
             }
         } else if(this.actionFilter){
@@ -35,7 +38,7 @@ class PanelHead extends React.Component {
     }
 
     toMeFromParent(action) {
-        console.info("PanelHead.toMeFromParent", this.props.rasp.depth, action);
+        if(this.debug) console.info("PanelHead.toMeFromParent", this.props.rasp.depth, action);
         if(this.actionFilter){
             if(!this.actionFilter(action, "PARENT"))
                 return null;
@@ -45,6 +48,7 @@ class PanelHead extends React.Component {
     }
 
     actionFilter(action, source) {
+        if(this.debug) console.info("PanelHead.actionFilter", this.props.rasp.depth, action, source);
         if (action.type === "CLEAR_PATH" && source==='PARENT') {  // clear the path and reset the RASP state back to what the const
             if (this.instruction) this.instruction.show();
             return true; // pass it on
@@ -65,7 +69,7 @@ class PanelHead extends React.Component {
     }
 
     render() {
-        console.info("RASPPanelHead.render", this.childName, this.props);
+        if(this.degug) console.info("RASPPanelHead.render", this.childName, this.props);
         const { panel, cssName, rasp } = this.props;
         var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable

@@ -27,7 +27,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   constructor(props) {
     var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
-    super(raspProps, 'shortId');  // shortId is the key for indexing to child RASP functions
+    super(raspProps, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
   }
 
