@@ -106,15 +106,15 @@ class PanelHead extends React.Component {
                 </Accordion>
             );            
             if (!items.length && !(type && type.createMethod === 'hidden')) {
-                content = (
+                content.push(
                 <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
                     <a href="#" onClick={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
                     Click the + to be the first to add something here
                     </a>
                 </div>
                 );
-            } else 
-                content = this.renderChildren({type, parent, items, limit, skip});
+            }
+            content.push(this.renderChildren({type, parent, items, limit, skip}));
             return (
                 <Panel
                     className={name}
