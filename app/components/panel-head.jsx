@@ -70,7 +70,7 @@ class PanelHead extends React.Component {
 
     render() {
         if(this.degug) console.info("RASPPanelHead.render", this.childName, this.props);
-        const { panel, cssName, rasp } = this.props;
+        const { panel, cssName, rasp, user } = this.props;
         var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable
         const type=this.props.type || panel && panel.type || null;
