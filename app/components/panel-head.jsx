@@ -12,34 +12,46 @@ class PanelHead extends React.Component {
     toChild=[];
 
     toMeFromChild(key, action) {
-        logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, key, action);
-        if (key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", key, action);
+        logger.trace(" PanelHead.toMeFromChild", this.props.rasp.depth, this.childName, key, action);
+        if (key !== 0) console.error("PanelHead.toMeFromChild got call from unexpected child:", this.childName, key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
             if(Object.keys(this.toChild).length) {
                  this.toChild[key] = action.function;
                  return null;
             } else { // this is the first so notify parent
                 this.toChild[key] = action.function;
-                return this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name });  // notify parent of your existence after child existence known
+                if(action.name) this.childName=action.name;
+                action.function=this.toMeFromParent.bind(this);
+                action.name= this.constructor.name+'->'+action.name;
+                return this.props.rasp.toParent(action);  // notify parent of your existence after child existence known
             }
-        } else {
-            if (action.type === "CHILD_SHAPE_CHANGED") {
-                if (this.instruction) this.instruction.hide();
-            }
+        } else if(this.actionFilter){
+            if (this.actionFilter(action, "CHILD"))
+                return this.props.rasp.toParent(action);
+            else
+                return null
         }
         return this.props.rasp.toParent(action);
     }
 
     toMeFromParent(action) {
         console.info("PanelHead.toMeFromParent", this.props.rasp.depth, action);
-        if (action.type === "CLEAR_PATH") {  // clear the path and reset the RASP state back to what the const
-            if (this.instruction) this.instruction.show();
-        }
+        if(this.actionFilter){
+            if(!this.actionFilter(action, "PARENT"))
+                return null;
+        } 
         if (this.toChild[0]) return this.toChild[0](action);
-        else {
-            console.error("PanelHead.toMeFromParent no toChild 0 yet!");
-            return null;
-        }
+        else console.error("PanelHead.toMeFromParent no toChild 0 yet!");   
+    }
+
+    actionFilter(action, source) {
+        if (action.type === "CLEAR_PATH" && source==='PARENT') {  // clear the path and reset the RASP state back to what the const
+            if (this.instruction) this.instruction.show();
+            return true; // pass it on
+        } else if (action.type === "CHILD_SHAPE_CHANGED" && source==='CHILD') {
+            if (this.instruction) this.instruction.hide();
+            return true; // pass it on
+        } else return true;
     }
 
     renderChildren(moreProps) {
@@ -53,7 +65,7 @@ class PanelHead extends React.Component {
     }
 
     render() {
-        console.info("RASPPanelHead.render", this.props);
+        console.info("RASPPanelHead.render", this.childName, this.props);
         const { panel, cssName, rasp } = this.props;
         var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable
