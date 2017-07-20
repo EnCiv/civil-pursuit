@@ -86,7 +86,7 @@ class PanelHead extends React.Component {
             if (parent) {
                 name += `-${parent._id || parent}`;
             }
-            if (type.instruction) {
+            if (rasp.shape==='truncated' && type.instruction) {
                 instruction = (
                     <Instruction ref={(comp) => { this.instruction = comp }} >
                         {type.instruction}
@@ -129,6 +129,7 @@ class PanelHead extends React.Component {
                             )
                         ]}
                     style={{ backgroundColor: 'white' }}
+                    rasp={rasp}
                 >
                     {instruction}
                     {creator}
