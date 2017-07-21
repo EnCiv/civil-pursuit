@@ -52,10 +52,12 @@ class RASPPanelItems extends ReactActionStatePathClient {
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
           delta.pathSegment = action.shortId;
+          delta.shape='open';
         } else {
           delta.pathSegment = null;
           delta.shortId = null; // turn off the shortId
-        } delta.shape = defaultRASP.shape;
+          delta.shape = defaultRASP.shape;
+        } 
         Object.assign(nextRASP, rasp, delta);
       } else { // it's not my child that changed shape
         logger.trace("PanelItems.actionToState it's not my child that changed shape")
