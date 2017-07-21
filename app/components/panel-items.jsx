@@ -39,7 +39,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
     // window.Dispatcher.emit('get items', this.props.panel);
   }
 
-  actionToState(action, rasp) {
+  actionToState(action, rasp, source, defaultRASP) {
     var nextRASP = {}, delta = {};
     console.info("PanelItems.actionToState", action, rasp);
     if (action.type === "CHILD_SHAPE_CHANGED") {
@@ -55,7 +55,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         } else {
           delta.pathSegment = null;
           delta.shortId = null; // turn off the shortId
-        } delta.shape = action.shape;
+        } delta.shape = defaultRASP.shape;
         Object.assign(nextRASP, rasp, delta);
       } else { // it's not my child that changed shape
         logger.trace("PanelItems.actionToState it's not my child that changed shape")
