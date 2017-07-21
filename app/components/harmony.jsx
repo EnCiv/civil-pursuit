@@ -43,15 +43,19 @@ class RASPHarmony extends ReactActionStatePathClient {
     return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action,rasp) {
+  actionToState(action,rasp, source, defaultRASP) {
     logger.info("RASPHarmony.actionToState", {action}, {rasp});
     var nextRASP={};
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let delta={};
-      if(action.shape==='open') delta.side=action.side; // action is to open, this side is going to be the open side
-      else if(action.side === rasp.side) delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
-      delta.shape=delta.side ? 'open' : rasp.shape==='open' ? 'truncated' : rasp.shape;
-      if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "CHANGE_STATE", shape: 'truncated'}); // if a side is going to be open, and it's not the side that is open, close the other side
+      if(action.shape==='open'){
+        delta.side=action.side; // action is to open, this side is going to be the open side
+        delta.shape='open'
+      } else if(action.side === rasp.side) { 
+        delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
+        delta.shape=defaultRASP.shape;
+      }
+      if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "CHANGE_STATE", shape: defaultRASP.shape}); // if a side is going to be open, and it's not the side that is open, close the other side
       if(delta.side) delta.pathSegment=delta.side; // if a side is open, include it in the pathSegment
       else delta.pathSegment=null; //otherwise no path segment
       Object.assign(nextRASP, rasp, delta);
