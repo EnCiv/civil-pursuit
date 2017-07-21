@@ -29,7 +29,7 @@ class RASPHarmony extends ReactActionStatePathClient {
 
   constructor (props) {
     var raspProps={rasp: props.rasp};
-    super(raspProps, 'side');
+    super(raspProps, 'side', 1);
     console.info("RASPHarmony.constructor", this.props)
   }
 
@@ -44,7 +44,7 @@ class RASPHarmony extends ReactActionStatePathClient {
   }
 
   actionToState(action,rasp, source, defaultRASP) {
-    logger.info("RASPHarmony.actionToState", {action}, {rasp});
+    if(this.debug) console.info("RASPHarmony.actionToState", ...arguments);
     var nextRASP={};
     if(action.type==="CHILD_SHAPE_CHANGED"){
       let delta={};
@@ -55,7 +55,7 @@ class RASPHarmony extends ReactActionStatePathClient {
         delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
         delta.shape=defaultRASP.shape;
       }
-      if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "CHANGE_STATE", shape: defaultRASP.shape}); // if a side is going to be open, and it's not the side that is open, close the other side
+      if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "RESET_STATE"}); // if a side is going to be open, and it's not the side that is open, close the other side
       if(delta.side) delta.pathSegment=delta.side; // if a side is open, include it in the pathSegment
       else delta.pathSegment=null; //otherwise no path segment
       Object.assign(nextRASP, rasp, delta);

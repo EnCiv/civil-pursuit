@@ -41,7 +41,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   actionToState(action, rasp, source, defaultRASP) {
     var nextRASP = {}, delta = {};
-    console.info("PanelItems.actionToState", action, rasp);
+    console.info("PanelItems.actionToState", ...arguments);
     if (action.type === "CHILD_SHAPE_CHANGED") {
       let ash = action.shape, ush = rasp.shape;
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)

@@ -35,7 +35,7 @@ class RASPPanelList extends React.Component {
     this.panelStatus=[];
     if (!this.props.rasp) logger.error("ReactActionStatePathClient no rasp", this.constructor.name, this.props);
     if (this.props.rasp.toParent) {
-      this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this) })
+      this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
     } else logger.error("ReactActionStatePathClient no rasp.toParent", this.props);
   }
 
