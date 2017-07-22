@@ -40,69 +40,55 @@ class RASPPanelItems extends ReactActionStatePathClient {
   }
 
   actionToState(action, rasp, source, defaultRASP) {
-    var nextRASP = {}, delta = {};
+    var nextRASP = {}, delta = {}, ooview=false;
     console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "CHILD_SHAPE_CHANGED") {
       let ash = action.shape, ush = rasp.shape;
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-      var ooview = false;
       if (this.props.type && this.props.type.visualMethod && this.props.type.visualMethod === "ooview") ooview = true;
 
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
-          delta.pathSegment = action.shortId;
-          delta.shape='open';
         } else {
-          delta.pathSegment = null;
           delta.shortId = null; // turn off the shortId
-          delta.shape = defaultRASP.shape;
         } 
-        Object.assign(nextRASP, rasp, delta);
       } else { // it's not my child that changed shape
-        logger.trace("PanelItems.actionToState it's not my child that changed shape")
-        if (ooview && ash === 'open') {
-          Object.assign(nextRASP, rasp, { shape: 'collapsed', shortId: action.shortId });
-        } else if (ooview && ash === 'truncated') {
-          Object.assign(nextRASP, rasp, { shape: 'truncated', shortId: null });
-        } else Object.assign(nextRASP, rasp); // no change to shape
+        delta.shortId=rasp.shortId;
       }
     } else if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
-        Object.assign(nextRASP, rasp, { creator: false })
+        delta.creator=false;
       } else { // it's off so toggle it on
         delta.creator = true;
-        if (rasp.shape !== 'truncated') { //if shape was not truncated 
-          if (rasp.shortId) {//there is an item that's open
-            this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'truncated' });
-            delta.shape = 'truncated';
-            delta.shortId = null;
-            delta.pathSegment = 'Creator';
-          } else {
-            Object.assign(nextRASP, nextRASP, { shape: 'truncated' });
-            delta.shape = 'truncated';
-            delta.pathSegment = null;
-          }
+        if (rasp.shortId) {//there is an item that's open
+          this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+          delta.shortId = null;
         }
-        Object.assign(nextRASP, rasp, delta); // if shape is not truncated, do so
       }
     } else if (action.type === "ITEM_DELVE") {
-      Object.assign(nextRASP, rasp); // no state change
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
         if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
-        else this.waitingOn = { nextRASP: nextRASP, nextFunc: nextFunc };
+        else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
       }
     } else if (action.type === "SHOW_ITEM") {
       if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
         this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
-      delta.shape = 'open';
-      delta.pathSegment = delta.shortId;
-      Object.assign(nextRASP, rasp, delta);
-    } else return null; // don't know this action, null so the default methods can have a shot at it
-    logger.trace("PanelItems.actionToState return", { nextRASP })
+    } else 
+      return null; // don't know this action, null so the default methods can have a shot at it
+
+    if(delta.shortId) {
+      if(ooview && action.distance>1) delta.shape='collapsed'
+      else delta.shape='open';
+    }else{
+      delta.shape=defaultRASP.shape;
+    }
+    if(delta.shortId) delta.pathSegment=delta.shortId;
+    else delta.pathSegment=null;
+    Object.assign(nextRASP, rasp, delta);
     return nextRASP;
   }
 
