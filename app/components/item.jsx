@@ -74,7 +74,7 @@ class RASPItem extends ReactActionStatePathClient {
     return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, rasp, source = 'CHILD') { // this function is going to be called by the RASP manager, rasp is the current RASP state
+  actionToState(action, rasp, source = 'CHILD', defaultRASP) { // this function is going to be called by the RASP manager, rasp is the current RASP state
     logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextRASP = {};
     let delta = {};
@@ -118,7 +118,7 @@ class RASPItem extends ReactActionStatePathClient {
     else
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
-    delta.shape = delta.button || delta.readMore ? 'open' : 'truncated';  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+    delta.shape = delta.button || delta.readMore ? 'open' : defaultRASP.shape;  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     // calculate the pathSegment and return the new state
     let parts = [];
     if (delta.readMore) parts.push('r');
