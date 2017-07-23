@@ -45,7 +45,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props) {
-        super(props, 'shortId');  // shortId is the key for indexing to child RASP functions
+        super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
     }
 
@@ -55,16 +55,16 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
         if (action.type === "CHILD_SHAPE_CHANGED") {
-            if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
-                if (action.shape === 'open' && action.shortId) {
-                    delta.shortId = action.shortId;
-                    if(rasp.shape==='open' && rasp.shortId){
-                        if(rasp.shortId !== action.shortId){
-                            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+            if (!action.itemId) logger.error("RASPQFortFinale.actionToState action without itemId", action);
+                if (action.shape === 'open' && action.itemId) {
+                    delta.itemId = action.itemId;
+                    if(rasp.shape==='open' && rasp.itemId){
+                        if(rasp.itemId !== action.itemId){
+                            this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
                         }
                     }
                 } else {
-                    delta.shortId = null; // turn off the shortId
+                    delta.itemId = null; // turn off the itemId
                 } 
                 delta.shape = action.shape;
         } else if(action.type==="TOGGLE_QBUTTON") {
@@ -80,7 +80,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             delta.creator= !rasp.creator;
         } else return null;
         Object.assign(nextRASP, rasp, delta);
-        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.shortId; 
+        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.itemId; 
         else nextRASP.pathSegment=null;
         return(nextRASP);
     }
