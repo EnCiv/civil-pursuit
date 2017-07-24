@@ -100,11 +100,13 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mounted=[];
 
     render() {
 
         const { user, rasp, shared } = this.props;
         const items=shared.items;
+        const qbuttons=this.props.qbuttons || this.QSortButtonList
 
         console.info("RASPQSortReLook");
 
@@ -133,16 +135,21 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }
                 this.props.sections[criteria].forEach(itemId => {
                     let item = items[this.props.index[itemId]];
-                    content.push(
-                        {
-                            sectionName: criteria,
-                            qbuttons: this.QSortButtonList,
-                            user: user,
-                            item: item,
-                            id: item._id,
-                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}
-                        }
-                    );
+                    if(!this.mounted[item._id]){
+                        this.mounted[item._id]=(
+                            <div style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
+                                <ItemStore item={item} key={`item-${item._id}`}>
+                                    <Item
+                                        user={user}
+                                        buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: criteria === 'unsorted' }]}
+                                        qbuttons={qbuttons}
+                                        rasp={ {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)} }
+                                    />
+                                </ItemStore>
+                            </div>
+                        );
+                    }
+                    content.push(this.mounted[item._id]);
                 });
             });
             if (!issues) {
@@ -172,45 +179,12 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }}>
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {content.map(article => <QSortFlipItemHarmony {...article} key={article._id} />)}
+                            {content}
                         </FlipMove>
                     </div>
                 </div>
                 {loading}
             </section>
-        );
-    }
-}
-
-class QSortFlipItemHarmony extends React.Component {
-    constructor(props){
-        super(props)
-        if(typeof QSortFlipItemHarmony.mounted === 'undefined') { // this is the root 
-            QSortFlipItemHarmony.mounted=[];
-             ReactActionStatePath.nextId= 0;
-        }
-        console.info("QSortFlipItemHarmony.constructor");
-    }
-
-    render() {
-        const { qbuttons, sectionName, item, user, toggle, buttonstate, rasp, key } = this.props;
-        if(!QSortFlipItemHarmony.mounted[item._id]){
-            QSortFlipItemHarmony.mounted[item._id]=({content:
-                <ItemStore item={item} key={`item-${item._id}`}>
-                    <Item
-                        user={user}
-                        buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: sectionName === 'unsorted' }]}
-                        qbuttons={qbuttons}
-                        rasp={rasp}
-                    />
-                </ItemStore>
-            });
-        }
-
-        return (
-            <div style={{ backgroundColor: qbuttons[sectionName].color }} key={key}>
-                {QSortFlipItemHarmony.mounted[item._id].content}
-            </div>
         );
     }
 }
