@@ -135,21 +135,24 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }
                 this.props.sections[criteria].forEach(itemId => {
                     let item = items[this.props.index[itemId]];
-                    if(!this.mounted[item._id]){
+                    if(!this.mounted[item._id] || this.mounted[item._id].criteria !== criteria){
                         this.mounted[item._id]=(
-                            <div style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
-                                <ItemStore item={item} key={`item-${item._id}`}>
-                                    <Item
-                                        user={user}
-                                        buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: criteria === 'unsorted' }]}
-                                        qbuttons={qbuttons}
-                                        rasp={ {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)} }
-                                    />
-                                </ItemStore>
-                            </div>
+                            {   content: 
+                                <div style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
+                                    <ItemStore item={item} key={`item-${item._id}`}>
+                                        <Item
+                                            user={user}
+                                            buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: criteria === 'unsorted' }]}
+                                            qbuttons={qbuttons}
+                                            rasp={ {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)} }
+                                        />
+                                    </ItemStore>
+                                </div>,
+                                criteria: criteria
+                            }
                         );
                     }
-                    content.push(this.mounted[item._id]);
+                    content.push(this.mounted[item._id].content);
                 });
             });
             if (!issues) {
