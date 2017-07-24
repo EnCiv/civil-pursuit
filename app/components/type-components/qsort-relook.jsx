@@ -80,8 +80,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             delta.creator= !rasp.creator;
         } else return null;
         Object.assign(nextRASP, rasp, delta);
-        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.itemId; 
-        else nextRASP.pathSegment=null;
+        //if(nextRASP.shape==='open') nextRASP.pathSegment=items[this.shared.index[nextRASP.itemId].id; 
+        //else nextRASP.pathSegment=null;
         return(nextRASP);
     }
 
@@ -139,7 +139,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                             user: user,
                             item: item,
                             id: item._id,
-                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item.id)}
+                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}
                         }
                     );
                 });
@@ -171,7 +171,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }}>
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />)}
+                            {content.map(article => <QSortFlipItemHarmony {...article} key={article._id} />)}
                         </FlipMove>
                     </div>
                 </div>
