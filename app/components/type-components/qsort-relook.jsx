@@ -183,12 +183,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
 class QSortFlipItemHarmony extends React.Component {
     render() {
-        const { qbuttons, sectionName, item, user, toggle, buttonstate, rasp } = this.props;
+        const { qbuttons, sectionName, item, user, toggle, buttonstate, rasp, key } = this.props;
         return (
-            <div style={{ backgroundColor: qbuttons[sectionName].color }}>
+            <div style={{ backgroundColor: qbuttons[sectionName].color }} key={key}>
                 <ItemStore item={item} key={`item-${item._id}`}>
                     <Item
-                        item={item}
                         user={user}
                         buttons={['QSortButtons', { component: 'Harmony', shape: 'title', limit: 5, hideFeedback: true, active: sectionName === 'unsorted' }]}
                         qbuttons={qbuttons}
