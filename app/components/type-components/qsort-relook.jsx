@@ -47,6 +47,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
+        console.info("QsortReLook.constructor",props);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,10 +183,19 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 }
 
 class QSortFlipItemHarmony extends React.Component {
+    constructor(props){
+        super(props)
+        if(typeof QSortFlipItemHarmony.mounted === 'undefined') { // this is the root 
+            QSortFlipItemHarmony.mounted=[];
+             ReactActionStatePath.nextId= 0;
+        }
+        console.info("QSortFlipItemHarmony.constructor");
+    }
+
     render() {
         const { qbuttons, sectionName, item, user, toggle, buttonstate, rasp, key } = this.props;
-        return (
-            <div style={{ backgroundColor: qbuttons[sectionName].color }} key={key}>
+        if(!QSortFlipItemHarmony.mounted[item._id]){
+            QSortFlipItemHarmony.mounted[item._id]=({content:
                 <ItemStore item={item} key={`item-${item._id}`}>
                     <Item
                         user={user}
@@ -194,6 +204,12 @@ class QSortFlipItemHarmony extends React.Component {
                         rasp={rasp}
                     />
                 </ItemStore>
+            });
+        }
+
+        return (
+            <div style={{ backgroundColor: qbuttons[sectionName].color }} key={key}>
+                {QSortFlipItemHarmony.mounted[item._id].content}
             </div>
         );
     }
