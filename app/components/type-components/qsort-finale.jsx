@@ -50,29 +50,30 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         else { this.QSortButtonList=QSortButtonList; }
     }
 
-    actionToState(action,rasp, source) {
+    actionToState(action, rasp, source) {
         var nextRASP = {}, delta = {};
-            if (action.type === "CHILD_SHAPE_CHANGED") {
+        if (action.type === "CHILD_SHAPE_CHANGED") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
             if (action.distance === 1) { //if this action is from an immediate child 
                 if (action.shape === 'open' && action.shortId) {
                     delta.shortId = action.shortId;
-                    if(rasp.shape==='open' && rasp.shortId){
-                        if(rasp.shortId !== action.shortId){
-                            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+                    if (rasp.shortId) {
+                        if (rasp.shortId !== action.shortId) {
+                            this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
                         }
                     }
                 } else {
-                    if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+                    if (rasp.shortId) this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
                     delta.shortId = null; // turn off the shortId
-                } 
-                delta.shape = action.shape;
+                }
             }
         } else
             return null;
         Object.assign(nextRASP, rasp, delta);
-        if(nextRASP.shape==='open') nextRASP.pathSegment=nextRASP.shortId; 
-        else nextRASP.pathSegment=null;
+        if (nextRASP.shortId) nextRASP.shape = 'open';
+        else nextRASP.shape = action.initialRASP.shape;
+        if (nextRASP.shape === 'open') nextRASP.pathSegment = nextRASP.shortId;
+        else nextRASP.pathSegment = null;
         return nextRASP;
     }
 
