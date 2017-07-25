@@ -111,7 +111,7 @@ class RASPItem extends ReactActionStatePathClient {
         delta.readMore = false;
         delta.button = null;
       }
-    } else if (action.type === "CHILD_SHAPE_CHANGED" && action.distance >= 2) {
+    } else if (action.type === "CHILD_SHAPE_CHANGED" && action.distance >= 2 && action.shape==='open') {
       delta.readMore = false; // if the user is working on stuff further below, close the readmore
       delta.button = rasp.button; // keep the button status
     }
