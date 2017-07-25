@@ -121,7 +121,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                 Object.keys(this.QSortButtonList).forEach(button => qbuttonTotals[button]=Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
                 var item = items[qobj.index];
                 let active = rasp.shortId ? rasp.shortId === item.id ? true : false : true;
-                let shape = active ? 'open' : rasp.shape==='open' ? 'truncated' : rasp.shape;
+                let shape = 'truncated';
                 content.push(
                     {
                         user: user,
