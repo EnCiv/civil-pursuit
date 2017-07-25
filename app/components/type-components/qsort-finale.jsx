@@ -63,6 +63,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                         }
                     }
                 } else {
+                    if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
                     delta.shortId = null; // turn off the shortId
                 } 
                 delta.shape = action.shape;
