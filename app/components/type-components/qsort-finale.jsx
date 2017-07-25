@@ -45,13 +45,14 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props){
-        super(props, 'shortId');
+        super(props, 'shortId', 1);
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
     }
 
-    actionToState(action, rasp, source) {
+    actionToState(action, rasp, source, initialRASP) {
         var nextRASP = {}, delta = {};
+        console.info("RASPQSortFinale.actionToState", ...arguments);
         if (action.type === "CHILD_SHAPE_CHANGED") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
             if (action.distance === 1) { //if this action is from an immediate child 
@@ -71,7 +72,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
             return null;
         Object.assign(nextRASP, rasp, delta);
         if (nextRASP.shortId) nextRASP.shape = 'open';
-        else nextRASP.shape = action.initialRASP.shape;
+        else nextRASP.shape = initialRASP.shape;
         if (nextRASP.shape === 'open') nextRASP.pathSegment = nextRASP.shortId;
         else nextRASP.pathSegment = null;
         return nextRASP;
@@ -154,6 +155,10 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 //                            </FlipMove>
 
 class QSortFlipItemHarmony extends React.Component {
+    constructor(props){
+        super(props)
+        console.info("QSortFlipItemHarmony.constructor",props);
+    }
     render() {
         const { qbuttons, buttons, item, user, rasp, active } = this.props;
         return (
