@@ -83,10 +83,14 @@ class RASPItem extends ReactActionStatePathClient {
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
     } else if (action.type === "TOGGLE_READMORE") {
-      delta.readMore = !rasp.readMore; // toggle condition;
-      if (delta.readMore && !rasp.button && this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
-      else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
-      else delta.button = rasp.button; // othewise keep button the same
+      if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
+          rasp.button=null;
+      } else {
+        delta.readMore = !rasp.readMore; // toggle condition;
+        if (delta.readMore && !rasp.button && this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
+        else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
+        else delta.button = rasp.button; // othewise keep button the same
+      }
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');
@@ -107,10 +111,7 @@ class RASPItem extends ReactActionStatePathClient {
         delta.readMore = true;
         if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
         else delta.button = rasp.button;
-      } else if (action.shape === 'truncated') {
-        delta.readMore = false;
-        delta.button = null;
-      }
+      } 
     } else if (action.type === "CHILD_SHAPE_CHANGED" && action.distance >= 2 && action.shape==='open') {
       delta.readMore = false; // if the user is working on stuff further below, close the readmore
       delta.button = rasp.button; // keep the button status
