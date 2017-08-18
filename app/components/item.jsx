@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ItemMedia from './item-media';
 import Icon from './util/icon';
-import Accordion from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';

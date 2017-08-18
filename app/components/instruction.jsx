@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Icon               from './util/icon';
-import Accordion          from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import ClassNames          from 'classnames';
 
 class Instruction extends React.Component {

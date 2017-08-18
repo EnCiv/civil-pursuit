@@ -11,7 +11,7 @@ import Color from 'color';
 import Button           from '../util/button';
 import QSortButtonList from '../qsort-button-list';
 import Creator            from '../creator';
-import Accordion          from '../util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';

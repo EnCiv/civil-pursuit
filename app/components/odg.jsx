@@ -7,7 +7,7 @@ import CloudinaryImage    from './util/cloudinary-image';
 import ClassNames          from 'classnames';
 import Footer               from './footer';
 import TypeComponent                    from './type-component';
-import Accordion          from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 
 
 

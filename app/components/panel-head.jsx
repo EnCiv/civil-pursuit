@@ -5,7 +5,7 @@ import Loading from './util/loading';
 import Panel from './panel';
 import Instruction from './instruction';
 import Creator from './creator';
-import Accordion from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import Icon from './util/icon';
 
 class PanelHead extends React.Component {

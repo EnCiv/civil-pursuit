@@ -14,7 +14,7 @@ import Button from '../util/button';
 import QSortButtonList from '../qsort-button-list';
 import merge from 'lodash/merge';
 import QVoteLocal from '../store/qvote-local';
-import Accordion from '../util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import Item from '../item';
 import Harmony from '../harmony';
 import PanelHead from '../panel-head';

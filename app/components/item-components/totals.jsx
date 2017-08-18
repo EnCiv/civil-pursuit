@@ -4,7 +4,7 @@ import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import Icon from '../util/icon';
-import Accordion from '../util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
 import PanelStore from '../store/panel';

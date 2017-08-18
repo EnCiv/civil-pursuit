@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import Accordion from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 import Icon from './util/icon';
 import ItemStore from '../components/store/item';
 import EditAndGoAgain from './edit-and-go-again';
