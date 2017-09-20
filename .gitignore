@@ -12,3 +12,5 @@
 /assets/css/training.*
 /assets/bower_components/*
 /bconsole/node_modules/*
+/_netrc
+/.netrc
