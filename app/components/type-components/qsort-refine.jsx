@@ -64,7 +64,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
     actionToState(action, rasp, source) {
         if(action.type ==="SHOW_ITEM") {
             return rasp;
-        } else if(action.type ==="ITEM_DELVE") {
+        } else if(action.type ==="ITEM_REFINE") {
             this.results.refine[this.whyName][action.itemId]=action.item;
             this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
             var doc = document.documentElement;
