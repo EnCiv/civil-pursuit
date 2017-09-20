@@ -80,6 +80,9 @@ class ProfilePanel extends React.Component {
 
     setUserInfo(info){
         this.setState({userInfo: Object.assign({},this.state.userInfo, info) });
+        if(this.props.user){ // if the user already exists, update the info immediatly
+            window.socket.emit('set user info', info);
+        }
     }
 
     okGetUserInfo(userInfo) {
