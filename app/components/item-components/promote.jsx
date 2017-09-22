@@ -83,7 +83,6 @@ exports.panel = class PromotePanel extends React.Component {
               <Promote
                 ref="promote"
                 item={item}
-                show={active}
                 panel={panel}
                 user={user}
                 hideFeedback={this.props.hideFeedback}
