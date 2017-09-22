@@ -78,7 +78,7 @@
 
 .item .item-text {
   padding: 0;
-  padding-right: 0.5em;
+  padding-right: @item-visual-gap;
   background-color: transparent; /* so it doesn't cover up the image and the buttons */
   transition: height 0.5s linear;
 }
@@ -175,7 +175,7 @@
   float                 :     right;
   text-align            :     right;
   margin-top            :     ~"calc( -1 * ( 0.5em - 2px ) )"; /** @item-visual-gap is not working here **/
-  margin-right          :     -0.25em; /** move it to the right negatting the padding of the item-text 2px; /** Top and right margin of buttons should be 2px **/
+  margin-right          :     -@item-visual-gap; /** move it to the right negatting the padding of the item-text **/
 }
 
 .item-buttons.vs-collapsed{ /* not visible but ready to be rendered */
