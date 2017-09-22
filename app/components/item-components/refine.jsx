@@ -51,7 +51,7 @@ exports.panel = class RefinePanel extends React.Component {
         //this.chosen= winner ? 'winner' : 'promote';
         return (
             <div className="toggler promote" key={item._id + '-toggler-' + this.constructor.name}>
-                <div style={{ display: this.state.chosen==='winner' ? 'block' : 'none' }}>
+                <Accordion active={this.state.chosen==='winner'}>
                     { winner ? 
                         <ItemStore item={winner} key={`item-${winner && winner._id || 'none'}`}>
                             <Item
@@ -62,8 +62,8 @@ exports.panel = class RefinePanel extends React.Component {
                         </ItemStore>
                         : null
                     }
-                </div>
-                <div style={{ display: this.state.chosen==='promote' ? 'block' : 'none', backgroundColor: unsortedColor }}>
+                </Accordion>
+                <Accordion active={this.state.chosen==='promote'} style={{ backgroundColor: unsortedColor }}>
                     <EvaluationStore
                         item-id={whyItemId}
                         active={active}
@@ -78,7 +78,7 @@ exports.panel = class RefinePanel extends React.Component {
                             hideFinish={true}
                         />
                     </EvaluationStore>
-                </div>
+                </Accordion>
             </div>
         )
     }
