@@ -75,6 +75,7 @@ exports.panel = class RefinePanel extends React.Component {
                             user={user}
                             rasp={{ depth: rasp.depth, shape: rasp.shape, toParent: this.toMeFromChild.bind(this, 'promote') }}
                             hideFeedback={true}
+                            hideFinish={true}
                         />
                     </EvaluationStore>
                 </div>

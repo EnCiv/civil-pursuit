@@ -167,7 +167,7 @@ class RASPPromote extends ReactActionStatePathClient {
     //**********************************************************
 
     render() {
-        const { panel, show, limit, items, criterias, panelEmitter, user, rasp } = this.props;
+        const { panel, hideFinish, limit, items, criterias, panelEmitter, user, rasp } = this.props;
         //console.info(this.constructor.name,"RASPPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){
@@ -215,11 +215,13 @@ class RASPPromote extends ReactActionStatePathClient {
         }
 
         const renderFinishButton = (cursor, limit) => {
-          return (
-            <Button block onClick={ this.next.bind(this) } className="finish-evaluate">
-              <b>{ cursor === limit ? 'Finish' : 'Neither' }</b>
-            </Button>
-          );
+            if (hideFinish && cursor === limit) return null;
+            else
+                return (
+                    <Button block onClick={this.next.bind(this)} className="finish-evaluate">
+                        <b>{cursor === limit ? 'Finish' : 'Neither'}</b>
+                    </Button>
+                );
         }
 
         return (
