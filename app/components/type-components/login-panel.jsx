@@ -38,8 +38,8 @@ class LoginPanel extends React.Component {
                 return null;
         }
 
-        if(!newLocation && this.state.typeList.length) newLocation="/items/"+this.state.typeList[0].id+"/"+panel.parent.id;  //new location calculated from next type
-        console.info("Login-Panel newlocation", newLocation);
+        //if(!newLocation && this.state.typeList.length) newLocation="/items/"+this.state.typeList[0].id+"/"+panel.parent.id;  //new location calculated from next type
+        //console.info("Login-Panel newlocation", newLocation);
 
         if (user) {
 
