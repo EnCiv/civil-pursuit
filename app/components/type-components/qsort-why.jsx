@@ -5,7 +5,6 @@ import Panel from '../panel';
 import PanelStore from '../store/panel';
 import PanelItems from '../panel-items';
 import panelType from '../../lib/proptypes/panel';
-import QSortButtons from '../qsort-buttons';
 import ItemStore from '../store/item';
 import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';

@@ -3,7 +3,6 @@
 import React              from 'react';
 import ItemStore          from '../components/store/item';
 import Item               from '../components/item';
-import QSortButtons       from './qsort-buttons';
 
 class QSortFlipItem extends React.Component {
 

@@ -3,7 +3,6 @@
 import React from 'react';
 import Panel from '../panel';
 import panelType from '../../lib/proptypes/panel';
-import QSortButtons from '../qsort-buttons';
 import ItemStore from '../store/item';
 import FlipMove from 'react-flip-move';
 import QSortFlipItem from '../qsort-flip-item';
