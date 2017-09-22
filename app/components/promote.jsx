@@ -215,13 +215,13 @@ class RASPPromote extends ReactActionStatePathClient {
         }
 
         const renderFinishButton = (cursor, limit) => {
-            if (hideFinish && cursor === limit) return null;
-            else
-                return (
+            return (
+                <Accordion active={!(hideFinish && cursor===limit)}>
                     <Button block onClick={this.next.bind(this)} className="finish-evaluate">
                         <b>{cursor === limit ? 'Finish' : 'Neither'}</b>
                     </Button>
-                );
+                </Accordion>
+            );
         }
 
         return (
