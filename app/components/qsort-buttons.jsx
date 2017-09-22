@@ -20,11 +20,9 @@ class QSortButtons extends React.Component {
     let buttons = [];
 
     buttons=Object.keys(buttonstate).map(btn => {
-        var number=[];
-        if(typeof buttonstate[btn] == 'number') number=(<span>{buttonstate[btn]}</span>);
         return(
-                <ButtonGroup>
-                    {number}
+                <ButtonGroup> 
+                    <span className="civil-button-info">{typeof buttonstate[btn] == 'number' ? buttonstate[btn] : ""}</span>
                     <Button small shy 
                     inactive= { false } 
                     onClick= { this.props.toggle ? this.toggle.bind(this, btn) : undefined } 
