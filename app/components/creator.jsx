@@ -284,45 +284,43 @@ class Creator extends React.Component {
   
 
     return (
-      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
+      <Form handler={this.create.bind(this)} className="syn-creator" ref="form" name="creator">
         <article className="item" ref="creator">
           {media}
-          <section className="item-buttons">
-            <section className="syn-button-group">
-              <span className="civil-button-info">{' '}</span>
-              <Submit small shy>
-                <span className="civil-button-text">Post</span>
-              </Submit>
-            </section>
-          </section>
 
           <section className="item-text">
+            <section className="item-buttons">
+              <section className="syn-button-group">
+                <span className="civil-button-info">{' '}</span>
+                <Submit small shy>
+                  <span className="civil-button-text">Post</span>
+                </Submit>
+              </section>
+            </section>
             <div className="item-inputs">
-              <TextInput block 
-                placeholder={this.props.type.subjectPlaceholder || "Subject" }
-                ref="subject" 
-                required 
-                name="subject" 
-                value={ this.state.subject }
-                onChange = {this.onChangeKey.bind(this,'subject')}
-                />
+              <TextInput block
+                placeholder={this.props.type.subjectPlaceholder || "Subject"}
+                ref="subject"
+                required
+                name="subject"
+                value={this.state.subject}
+                onChange={this.onChangeKey.bind(this, 'subject')}
+              />
 
-              { reference }
+              {reference}
 
               <TextArea
-                placeholder     =   "Description"
-                ref             =   "description"
-                name            =   "description"
-                value           =   { this.state.description }
-                onChange      =    {this.onChangeKey.bind(this,'description')}
+                placeholder="Description"
+                ref="description"
+                name="description"
+                value={this.state.description}
+                onChange={this.onChangeKey.bind(this, 'description')}
                 block
                 required
-                ></TextArea>
+              ></TextArea>
             </div>
           </section>
-
-
-          <section style={ { clear : 'both' }}></section>
+          <section style={{ clear: 'both' }}></section>
         </article>
       </Form>
     );
