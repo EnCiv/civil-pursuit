@@ -25,6 +25,7 @@ exports.button = class EditButton extends React.Component {
       }
       return(
         <ButtonGroup>
+            <span className="civil-button-info">{""}</span>
             <Button
                 small
                 shy
