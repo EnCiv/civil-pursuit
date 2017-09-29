@@ -60,7 +60,8 @@ class App extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setPath(p) {
-    this.setState({ path: p});
+    //this.setState({ path: p});
+    if(typeof window !== 'undefined') reactSetPath(p);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

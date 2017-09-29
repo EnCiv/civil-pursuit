@@ -7,6 +7,11 @@ import Facebook           from '../lib/app/fb-sdk';
 //import log4js_extend            from 'log4js-extend';
 
 window.socket = io();
+window.reactSetPath = (path)=>{
+  ReactDOM.unmountComponentAtNode(window.reactContainer);
+  reactProps.path=path;
+  render(reactProps);
+}
 
 window.socket.on('welcome', user => {
   if ( ! user ) {
@@ -32,9 +37,10 @@ if(typeof window !== 'undefined') {
 }
 
 function render (props) {
+  window.reactContainer=document.getElementById('synapp');
   console.log('Rendering app', props);
   logger.info('Rendering app', props);
-  ReactDOM.render(<App { ...props } />, document.getElementById('synapp'));
+  ReactDOM.render(<App { ...props } />, window.reactContainer );
 }
 
 render(reactProps);
