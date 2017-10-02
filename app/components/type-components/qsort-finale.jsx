@@ -101,7 +101,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { user, emitter, rasp, shared } = this.props;
+        const { user, rasp, shared } = this.props;
         const items=shared.items;
 
         console.info("QSortFinale");

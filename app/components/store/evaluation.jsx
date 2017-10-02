@@ -1,6 +1,5 @@
 'use strict';
 
-import { EventEmitter }   from 'events';
 import React              from 'react';
 import selectors          from '../../../selectors.json';
 import screens            from '../../../screens.json';
@@ -16,10 +15,6 @@ class EvaluationStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  emitter = new EventEmitter();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   componentDidMount () {
     if ( ! this.state.items ) {
       window.socket.emit(
@@ -28,8 +23,6 @@ class EvaluationStore extends React.Component {
         this.okGetEvaluation.bind(this)
       );
     }
-
-    this.panelEmitter = this.props.emitter;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +62,7 @@ class EvaluationStore extends React.Component {
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>
-      React.cloneElement(child, Object.assign({}, this.state, { panelEmitter : this.panelEmitter }))
+      React.cloneElement(child, Object.assign({}, this.state))
     );
   }
 

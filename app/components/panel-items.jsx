@@ -121,7 +121,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, user, emitter, rasp } = this.props;
+    const { limit, skip, type, parent, items, count, user, rasp } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
@@ -142,7 +142,6 @@ class RASPPanelItems extends ReactActionStatePathClient {
                 item={item}
                 user={user}
                 rasp={itemRASP}
-                emitter={emitter}
                 hideFeedback={this.props.hideFeedback}
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}

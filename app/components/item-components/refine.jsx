@@ -45,7 +45,7 @@ exports.panel = class RefinePanel extends React.Component {
     }
 
     render() {
-        const { item, user, style, emitter, rasp, winner, whyItemId, type, unsortedColor='#fff' } = this.props;
+        const { item, user, style, rasp, winner, whyItemId, type, unsortedColor='#fff' } = this.props;
         const active = !winner ? { item: whyItemId, section: 'promote' } : {};  // requried to convince EvaluationStore to be active   
         const panel = { type: type };
         //this.chosen= winner ? 'winner' : 'promote';
@@ -67,7 +67,6 @@ exports.panel = class RefinePanel extends React.Component {
                     <EvaluationStore
                         item-id={whyItemId}
                         active={active}
-                        emitter={emitter}
                     >
                         <Promote
                             ref="promote"

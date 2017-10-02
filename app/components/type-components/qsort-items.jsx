@@ -91,7 +91,7 @@ class RASPQSortItems extends ReactActionStatePathClient {
     render() {
         console.info("RASPQSortItems.render");
 
-        const { count, user, emitter, rasp, items, type, parent } = this.props;
+        const { count, user, rasp, items, type, parent } = this.props;
 
         const onServer = typeof window === 'undefined';
 

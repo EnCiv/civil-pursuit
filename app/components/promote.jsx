@@ -8,7 +8,6 @@ import Sliders from './sliders';
 import Harmony from './harmony';
 import Accordion          from 'react-proactive-accordion';
 import DoubleWide from './util/double-wide';
-import { EventEmitter } from 'events';
 import TransitionOC from './util/transitionoc';
 import Button from './util/button';
 import Column from './util/column';
@@ -167,7 +166,7 @@ class RASPPromote extends ReactActionStatePathClient {
     //**********************************************************
 
     render() {
-        const { panel, hideFinish, limit, items, criterias, panelEmitter, user, rasp } = this.props;
+        const { panel, hideFinish, limit, items, criterias, user, rasp } = this.props;
         //console.info(this.constructor.name,"RASPPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){

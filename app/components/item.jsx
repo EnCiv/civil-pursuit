@@ -250,7 +250,7 @@ class RASPItem extends ReactActionStatePathClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { item, user, buttons, rasp, style, emitter } = this.props;
+    const { item, user, buttons, rasp, style } = this.props;
     const shape = rasp ? rasp.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore = (rasp && rasp.readMore);

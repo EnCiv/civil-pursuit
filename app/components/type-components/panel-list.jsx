@@ -320,7 +320,7 @@ class RASPPanelList extends React.Component {
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
-    const { panel, rasp, user, emitter } = this.props;
+    const { panel, rasp, user } = this.props;
 
     const currentPanel = rasp.currentPanel;
     const containerWidth = this.state.containerWidth;
@@ -379,7 +379,6 @@ class RASPPanelList extends React.Component {
             user={user}
             next={this.nextPanel.bind(this)}
             shared={this.shared}
-            emitter={emitter}
             panelNum={rasp.currentPanel}
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}

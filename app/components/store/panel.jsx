@@ -1,7 +1,6 @@
 'use strict';
 
 import React            from 'react';
-import { EventEmitter } from 'events';
 import makePanelId      from '../../lib/app/make-panel-id';
 import publicConfig     from '../../../public.json';
 
@@ -10,8 +9,6 @@ class PanelStore extends React.Component {
   id;
 
   state = { panel : null, count : null, new : false };
-
-  emitter = new EventEmitter();
 
   constructor(props){
     super(props);
@@ -29,8 +26,6 @@ class PanelStore extends React.Component {
 
   componentDidMount() {
     window.socket.on('OK create item', this.okCreateItem.bind(this));
-
-    this.emitter.on('edit', this.edit.bind(this));
 
     if ( ! this.state.panel ) {
       const panel = { type : this.props.type };
@@ -55,20 +50,6 @@ class PanelStore extends React.Component {
 
   componentWillUnmount() {
     window.socket.off('OK create item', this.okCreateItem.bind(this));
-
-    this.emitter.removeListener('edit', this.edit.bind(this));
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  edit (item) {
-    const loaded = this.state.panel.items.some(
-      panelItem => panelItem._id === item._id
-    );
-
-    if ( loaded ) {
-      this.emitter.emit('show', item._id, 'editItem');
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +88,7 @@ class PanelStore extends React.Component {
     console.info("PanelStore.renderChildren",this.props);
     return React.Children.map(this.props.children, child =>{
       console.info("PanelStore.renderChildren.map",child.props.children);
-      return React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter }), child.props.children );
+      return React.cloneElement(child, Object.assign({}, this.state), child.props.children );
     });
   }
 

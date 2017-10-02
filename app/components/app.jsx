@@ -12,7 +12,6 @@ import Panel                            from './panel';
 import Icon                             from './util/icon';
 import UserStore                        from './store/user';
 import About                            from './about';
-import { EventEmitter }                 from 'events';
 import PanelList                        from './type-components/panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
@@ -21,8 +20,6 @@ import ODGCongrat         from './odg-congrat';
 class App extends React.Component {
 
   state = { path: null}
-
-  emitter = new EventEmitter();
 
   constructor (props) {
     super(props);
@@ -178,7 +175,7 @@ class App extends React.Component {
         case 'odg':
           if(user){
             page=(
-                    <ODGCongrat { ...this.props } emitter = {this.emitter }/>
+                    <ODGCongrat { ...this.props }/>
                 );
                 break;
           }
@@ -194,7 +191,7 @@ class App extends React.Component {
 
           const component3=panel3.type.component || 'Subtype';
 
-          return( <OnlineDeliberationGame component={component3} { ...this.props } count = { 1 } panel={ panel3 } emitter = {this.emitter } />
+          return( <OnlineDeliberationGame component={component3} { ...this.props } count = { 1 } panel={ panel3 } />
                 );
 
         case 'item':
@@ -214,7 +211,7 @@ class App extends React.Component {
           const component=panel.type.component || 'Subtype';
 
           page = (
-            <TypeComponent component={component} { ...this.props } RASPRoot={'/item/'} user={ user } count = { 1 } panel={ panel } emitter = {this.emitter } />
+            <TypeComponent component={component} { ...this.props } RASPRoot={'/item/'} user={ user } count = { 1 } panel={ panel } />
           );
 
           break;
@@ -236,7 +233,7 @@ class App extends React.Component {
                     console.info("App.render panel2", { panel2 });
 
           page = (
-            <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } emitter = {this.emitter } />
+            <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } />
           );
 
           break;
