@@ -107,6 +107,13 @@ class RASPPanelItems extends ReactActionStatePathClient {
   // this is just for debugging, to make the trace output easier to follow - associate the panel name to the output
   componentWillReceiveProps(newProps) {
     if (newProps.type && newProps.type.name && newProps.type.name !== this.title) { this.title = newProps.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
+    let oldLength = this.props.items && this.props.items.length || 0;
+    if(newProps.items && (newProps.items.length > oldLength)){  // if the length changes, history needs to be updated
+      console.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
+      setTimeout(()=>{
+        this.toMeFromChild({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
+      },0)
+    }
   }
 
   mounted = [];  // we render items and store them in this array.  No need to rerender them every time
