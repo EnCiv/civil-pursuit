@@ -10,6 +10,7 @@ window.socket = io();
 window.reactSetPath = (path)=>{
   ReactDOM.unmountComponentAtNode(window.reactContainer);
   reactProps.path=path;
+  window.history.pushState({}, '', path);
   render(reactProps);
 }
 
