@@ -51,7 +51,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, shared, next, panelNum } = this.props;
+        const { user, rasp, shared, next, panelNum, parent } = this.props;
         const items=shared.items;
         var results=null;
 
@@ -59,15 +59,8 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
         return (
             <section id="syn-cafe-idea">
-                <ItemCreator type={this.props.type} parent={this.props.parent} rasp={rasp}/>
-                <div className='instruction-text'>
-                    <Button small shy
-                        onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results})}
-                        className="qsort-done"
-                        >
-                        <span className="civil-button-text">{"next"}</span>
-                    </Button>
-                </div>
+                <Item item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
+                <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
             </section>
         );
     }
