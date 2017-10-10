@@ -9,13 +9,14 @@ class Subtype extends React.Component {
 
   render () {
     const { panel } = this.props;
+    const storeProps= panel ? panel : this.props;
 
     let content = ( <Loading message="Loading related" /> );
 
     // panelStore will fill the panel with items and replace this.prop.panel with the new on when it renders PanelItems
     // all other props are passed to PanelItems
       content = (
-        <PanelStore { ...panel }>
+        <PanelStore { ...storeProps }>
           <PanelItems {...this.props} /> 
         </PanelStore>
       );

@@ -345,6 +345,7 @@ class RASPPanelList extends React.Component {
             return(
               <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", currentPanel: i}) : null}
                 className={!(active || visible) ? 'inactive' : ''}
+                title={type.instruction}
                 style={{
                   display: "inline",
                   padding: "0.5em",
