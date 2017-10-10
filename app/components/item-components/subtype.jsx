@@ -16,11 +16,11 @@ exports.button = class SubtypeButton extends React.Component {
   }
 
   render() {
-    const { active, item } = this.props;
+    let { active, item, min, buttonName, buttonTitle } = this.props;
     if (item.subtype) {
-      const buttonName = item.subtype.buttonName || "Delve";
-      const min = item.subtype.min || 2;
-      const buttonTitle = item.subtype.buttonTitle || {
+      if(typeof buttonName==='undefined') buttonName = item.subtype.buttonName || "Delve";
+      if(typeof min === 'undefined') min = item.subtype.min || 2;
+      if(typeof buttonTitle === 'undefined') buttonTitle = item.subtype.buttonTitle || {
         active: "Delve into a deeper level of this discussion",
         success: "Return to the higher level of this discusion",
         inactive: "After 2 people Upvote this, the discussion can continue at a deeper level"
