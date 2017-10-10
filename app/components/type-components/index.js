@@ -12,7 +12,8 @@ var  Components={
         'QSortReLook': require('./qsort-relook').default,
         'QSortFinale': require('./qsort-finale').default,
         'LoginPanel': require('./login-panel').default,
-        'ProfilePanel': require('./profile-panel').default,     
+        'ProfilePanel': require('./profile-panel').default,
+        'CafeIdea': require('./cafe-idea').default     
     }
 
 export default Components;
