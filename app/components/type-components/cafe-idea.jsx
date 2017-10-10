@@ -43,24 +43,32 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-    actionToState(action, rasp, source){
-        return null;
+    actionToState(action, rasp, source,initialRASP){
+        var nextRASP={}, delta={};
+        if(action.type==="POST_ITEM"){
+            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item}}))
+            // no state change, the action will be consumed here
+        }else
+            return null;
+        Object.assign(nextRASP,rasp,delta);
+        return nextRASP;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
 
-        const { user, rasp, shared, next, panelNum, parent } = this.props;
-        const items=shared.items;
+        const { user, rasp, panelNum, parent } = this.props;
         var results=null;
 
         const onServer = typeof window === 'undefined';
 
         return (
             <section id="syn-cafe-idea">
-                <Item item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
-                <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
+                <div>
+                    <div>{parent.subject}></div>
+                    <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
+                </div>
             </section>
         );
     }

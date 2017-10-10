@@ -82,6 +82,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
     post(){  // in the creator, user hit the post button
         this.props.rasp.toParent({type: "SET_DISPLAY"});
         //if(!this.props.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
+        setTimeout(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}),0); // notifiy parents that a post has been made
     }
 
     render(){
