@@ -111,7 +111,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
     if(newProps.items && (newProps.items.length > oldLength)){  // if the length changes, history needs to be updated
       console.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
       setTimeout(()=>{
-        this.toMeFromChild({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
+        this.props.rasp.toParent({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
       },0)
     }
   }
