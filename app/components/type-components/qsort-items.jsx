@@ -20,7 +20,7 @@ import PanelHead from '../panel-head';
 
 
   // 20 is hard coded, but where should this be? type or item?
-class QSortItems extends React.Component {
+export class QSortItems extends React.Component {
     
     render(){
         logger.info("QSortItems.render", this.props);
@@ -40,7 +40,7 @@ class QSortItems extends React.Component {
     }
 }
 
-class RASPQSortItems extends ReactActionStatePathClient {
+export class RASPQSortItems extends ReactActionStatePathClient {
 
     motionDuration = 500; //500mSec
 

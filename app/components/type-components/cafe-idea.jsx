@@ -46,7 +46,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     actionToState(action, rasp, source,initialRASP){
         var nextRASP={}, delta={};
         if(action.type==="POST_ITEM"){
-            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item}}))
+            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item, parent: this.props.parent, type: this.props.type}}))
             // no state change, the action will be consumed here
         }else
             return null;

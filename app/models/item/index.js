@@ -15,6 +15,7 @@ import countChildren                    from './methods/count-children';
 import generateId                       from './hooks/set-id';
 import evaluate                         from './statics/evaluate';
 import getPanelItems                    from './statics/get-panel-items';
+import getRandomItems                   from './statics/get-random-items';
 import getDetails                       from './statics/get-details';
 import getUrlTitle                      from './hooks/get-url-title';
 import saveImage                        from './hooks/save-image';
@@ -140,6 +141,10 @@ class Item extends Model {
   }
 
   static getPanelItems (...args) {
+    return getPanelItems.apply(this, args);
+  }
+
+  static getRandomItems (...args) {
     return getPanelItems.apply(this, args);
   }
 

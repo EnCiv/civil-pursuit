@@ -13,7 +13,8 @@ var  Components={
         'QSortFinale': require('./qsort-finale').default,
         'LoginPanel': require('./login-panel').default,
         'ProfilePanel': require('./profile-panel').default,
-        'CafeIdea': require('./cafe-idea').default     
+        'CafeIdea': require('./cafe-idea').default,
+        'QSortRandomItems': require('./qsort-random-items').default
     }
 
 export default Components;
