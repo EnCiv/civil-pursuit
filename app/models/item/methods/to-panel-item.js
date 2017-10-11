@@ -53,6 +53,7 @@ function toPanelItem (userId) {
       //console.info("toPanelItems.after promise subtype, this.subject");
 
       item.image        =   item.image || config['default item image'];
+      const noIdUserProps=config['noIdUserProps'] || [];
       item.popularity   =   this.getPopularity();
 
       item.subtype    =   this.subtype ? this.$populated.subtype : results[0];
@@ -69,6 +70,12 @@ function toPanelItem (userId) {
 
       item.user       =   this.$populated.user;
 
+      if(item.user){
+        Object.keys(item.user).forEach(userProp=>{
+          if(!noIdUserProps.includes(userProp)) 
+            delete item.user[userProp];
+         })
+      }
       if ( typeof item.parent === 'undefined' ) {
         delete item.parent;
       }

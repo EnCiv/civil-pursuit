@@ -1,4 +1,23 @@
 {
+  "noIdUserProps": [
+    "race",
+    "gender",
+    "married",
+    "education",
+    "employment",
+    "citizenship",
+    "dualcitizenship",
+    "registered_voter",
+    "party",
+    "tendency",
+    "city",
+    "state",
+    "zip",
+    "zip4",
+    "neighborhood",
+    "member_type"
+  ],
+
   "profile": {
     "identity": {
       "description": "This information is used to identify you and make sure that you are unique"
