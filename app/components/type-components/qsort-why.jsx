@@ -50,11 +50,13 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         console.info("qsortWhy constructor");
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         const qbuttons=Object.keys(QSortButtonList);
-        qbuttons.slice(1).forEach(button => {
-            var regex = new RegExp('./*'+button+'./*','i');
-            if(this.props.type && this.props.type.name.match(regex)) this.whyName=button;
-        });
-        if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortWhy button name not found in type name:", qbuttons, this.props.type.name)}
+        if(!(this.whyName=this.props.whyName)){
+            qbuttons.slice(1).forEach(button => {
+                var regex = new RegExp('./*'+button+'./*','i');
+                if(this.props.type && this.props.type.name.match(regex)) this.whyName=button;
+            });
+            if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortWhy button name not found in type name:", qbuttons, this.props.type.name)}
+        }
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         console.info("qsort-why constructor buttonlist")

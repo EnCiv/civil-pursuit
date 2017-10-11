@@ -24,7 +24,7 @@ type                =   shape({
   visualMethod		  : 	string,
   evaluateQuestion  :   string,
   instruction	      :   string,
-  component         :   string,
+  component         :   any,
   min               :   number,
   buttonName        :   string,
   buttonTitle: 	shape({
