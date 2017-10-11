@@ -71,10 +71,19 @@ function toPanelItem (userId) {
 
         item.user       =   this.$populated.user;
 
+        let subObjects=[];
         if(typeof item.user === 'object'){
           Object.keys(item.user).forEach(userProp=>{
-            if(!noIdUserProps.includes(userProp)) 
+            if(userProp[0]==='$') 
+              subObjects.push(userProp);
+            else if(!noIdUserProps.includes(userProp)) //$props are special for the prototype
               delete item.user[userProp];
+          });
+          subObjects.forEach(subObj=>{
+            Object.keys(item.user[subObj]).forEach(userProp=>{
+              if(userProp[0]!=='$' && !noIdUserProps.includes(userProp))
+                delete item.user[subObj][userProp];
+            })
           })
         }
         if ( typeof item.parent === 'undefined' ) {
