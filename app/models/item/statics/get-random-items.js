@@ -23,8 +23,8 @@ function getRandomItems(panel, size, userId) {
                 { $sample: { size: size } }
             ]
         )
-            .skip(panel.skip || 0)
-            .limit(panel.limit || publicConfig['navigator batch size'])
+    //        .skip(panel.skip || 0)
+    //        .limit(panel.limit || publicConfig['navigator batch size'])
     );
 
     // convert the raw database output into Mongo objects of 'this' type
