@@ -73,7 +73,7 @@ class PanelHead extends React.Component {
         const { panel, cssName, rasp, user } = this.props;
         var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable
-        const type=this.props.type || panel && panel.type || null;
+        const type= (typeof this.props.type === 'object' && this.props.type) || panel && panel.type || this.props.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
         const limit=this.props.limit || panel && panel.limit || 10;
         const items=this.props.items || panel && panel.items || [];
