@@ -7,7 +7,7 @@ function setUserInfo (set, cb) {
     User
       .updateById(this.synuser.id, set)
       .then(
-        user => cb(user.toJSON()),
+        user => cb && cb(user.toJSON()),
         error => this.error(error)
       );
   }
