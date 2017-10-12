@@ -145,7 +145,7 @@ class Item extends Model {
   }
 
   static getRandomItems (...args) {
-    return getPanelItems.apply(this, args);
+    return getRandomItems.apply(this, args);
   }
 
   static evaluate (...args) {
