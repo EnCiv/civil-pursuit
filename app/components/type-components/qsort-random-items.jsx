@@ -27,7 +27,7 @@ class QSortRandomItems extends React.Component {
         return(
             <RandomItemStore parent={this.props.shared.parent || this.props.parent}
                         type={this.props.shared.type || this.props.type}
-                        size={8} >
+                        sampleSize={this.props.sampleSize || 8} >
                 <QVoteStore {...this.props}>
                     <PanelHead  cssName={'syn-qsort-items'} >
                         <ReactActionStatePath>

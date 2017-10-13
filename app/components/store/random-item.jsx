@@ -38,7 +38,7 @@ class RandomItemStore extends React.Component {
 
       this.id = makePanelId(panel);
 
-      window.socket.emit('get random items', panel, this.props.size || 8, this.okGetRandomItems.bind(this));
+      window.socket.emit('get random items', panel, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
     } else {
             this.id = makePanelId({ type : this.props.type, parent: this.props.parent || null });
     }
