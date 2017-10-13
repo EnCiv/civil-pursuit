@@ -2,6 +2,7 @@
 
 import sequencer from 'promise-sequencer';
 import publicConfig from '../../../../public.json';
+import Mungo from 'mungo';
 
 /**
  *  Return an object representing a batch of random item 
@@ -10,6 +11,12 @@ import publicConfig from '../../../../public.json';
 
 function getRandomItems(panel, size, userId) {
     var query = Object.assign({}, panel);
+
+    // convert objectId's to objects or they won't work in mongo
+    if(typeof query.parent === 'string') query.parent=Mungo.Type.ObjectID.convert(query.parent);
+    if(typeof query.type==='string') query.type=Mungo.Type.ObjectID.convert(query.type);
+    if(typeof query.user==='string') query.user=Mungo.Type.ObjectID.convert(query.user);
+
     delete query.skip; // not part of the query
     delete query.limit; // not part of the query
 
@@ -28,16 +35,12 @@ function getRandomItems(panel, size, userId) {
     );
 
     // convert the raw database output into Mongo objects of 'this' type
-    seq.push(samples => {
-        samples.map(rawItem => new this(rawItem, true))
-    });
-
     // populate all the referenced and calculations
-    seq.push(items => Promise.all(items.map(item => item.toPanelItem(userId))));
+    seq.push(samples => Promise.all(samples.map(rawItem => (new this(rawItem, true)).toPanelItem(userId))));
 
     return new Promise((ok, ko) => {
         sequencer(seq)
-            .then(results => ok({items: results[2]}))
+            .then(results => ok({items: results[1]}))
             .catch(ko);
     });
 }
