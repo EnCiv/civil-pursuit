@@ -7,6 +7,7 @@ import Birthdate from './birthdate';
 import MemberType from './member-type';
 import Neighborhood from './neighborhood';
 import DynamicSelector from './dynamic-selector';
+import YearOfBirth from './year-of-birth';
 import S from 'string';
 
 /**
@@ -25,7 +26,8 @@ class ProfileComponent extends React.Component {
         'Birthdate': Birthdate,
         'MemberType': MemberType,
         'Neighborhood': Neighborhood,
-        'DynamicSelector': DynamicSelector
+        'DynamicSelector': DynamicSelector,
+        'YearOfBirth': YearOfBirth
     }
 
     static title(component) {

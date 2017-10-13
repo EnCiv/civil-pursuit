@@ -15,7 +15,8 @@
     "zip",
     "zip4",
     "neighborhood",
-    "member_type"
+    "member_type",
+    "year_of_birth"
   ],
 
   "profile": {
