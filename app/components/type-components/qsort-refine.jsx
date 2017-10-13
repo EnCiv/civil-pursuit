@@ -118,7 +118,9 @@ class RASPQSortRefine extends ReactActionStatePathClient {
 
         if ( ! (shared && shared.why && shared.why[this.whyName] && Object.keys(shared.why[this.whyName]).length)) {
             // if we don't have any data to work with 
-            ; 
+            direction.push(
+                <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>Click next to continue.</div>
+            )
         } else {
             this.buttons.forEach((name) => {
                 if (this.state.sections['unsorted'].length) { issues++ }
@@ -152,24 +154,23 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                     );
                 });
             });
-
-            if (!issues) {
-                done.push(
-                    <div className='instruction-text'>
-                        {this.ButtonList['unsorted'].direction}
-                        <Button small shy
-                            onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
-                            className="qwhy-done"
-                            style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
-                            >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                );
-                rasp.toParent({ type: "RESULTS", results: this.results});
-            }else 
-                rasp.toParent({ type: "ISSUES"});
         }
+        if (!issues) {
+            done.push(
+                <div className='instruction-text'>
+                    {this.ButtonList['unsorted'].direction}
+                    <Button small shy
+                        onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
+                        className="qwhy-done"
+                        style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
+                        >
+                        <span className="civil-button-text">{"next"}</span>
+                    </Button>
+                </div>
+            );
+            rasp.toParent({ type: "RESULTS", results: this.results});
+        }else 
+            rasp.toParent({ type: "ISSUES"});
 
         return (
             <section id="syn-panel-qsort">
