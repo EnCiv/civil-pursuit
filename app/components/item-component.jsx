@@ -6,15 +6,16 @@ import Components                  from "./item-components/"
 
 class ItemComponent extends React.Component{
     render(){
-        delete this.props.children; // do not pass children - causes stack overflow
+        var newProps=Object.assign(this.props);
+        delete newProps.children;
         logger.trace("ItemComponent", this.props );
         const {component, part} = this.props;
         const cObj=Components[component];
         if(typeof cObj !== "object" ) logger.error("ItemComponent component not defined", {component, part});
         else {
-            const Component = cObj[this.props.part];
+            const Component = cObj[newProps.part];
             if(typeof Component !== "function" ) logger.trace("ItemComponent part not defined", {component, part});
-            else return(<Component {...this.props} /> );
+            else return(<Component {...newProps} /> );
         }
         return (null);
     }

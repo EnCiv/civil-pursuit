@@ -36,8 +36,8 @@ export default Item;
 class RASPItem extends ReactActionStatePathClient {
   state = { hint: false, minHeight: null}; //
   constructor(props) {
-    var raspProps = { rasp: props.rasp };
-    super(raspProps, 'button');
+    //var raspProps = { rasp: props.rasp };
+    super(props, 'button');
     if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
     console.info("RASPItem.constructor");
   }
