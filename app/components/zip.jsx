@@ -8,14 +8,17 @@ import Postcode                       from 'postcode-validator';
 
 class Zip extends React.Component {
     name='zip';
-    state={hint: true};
 
+    constructor(props){
+      super(props);
+      this.state={hint: this.props && this.props.info && this.validate( this.props.info[this.name])};
+    }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveInfo () {
     let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
 
-    if ( Postcode.validate(newValue,'US')) {
+    if ( this.validate(newValue)) {
       if(this.props.onChange) this.props.onChange({[this.name]: newValue});
       this.setState({hint: false})
     } else {
@@ -23,6 +26,9 @@ class Zip extends React.Component {
     }
   }
 
+  validate(value){
+    return Postcode.validate(value,'US');
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
@@ -32,8 +38,8 @@ class Zip extends React.Component {
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline-block'}}/>
-            <div style={{display: hint ? 'inline-block' : 'none'}}>a 5 digit zip or zip+4 number</div>
+            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
+            <div style={{display: hint ? 'inline' : 'none'}}>a 5 digit zip or zip+4 number</div>
         </div>
     );
   }

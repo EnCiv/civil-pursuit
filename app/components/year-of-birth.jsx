@@ -7,22 +7,29 @@ import Input                          from './util/input';
 
 class YearOfBirth extends React.Component {
     name='year_of_birth';
-    state={hint: true};
-
+ 
+    constructor(props){
+      super(props);
+      this.state={hint: this.props && this.props.info && this.validate( this.props.info[this.name])};
+    }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveInfo () {
-    let year=(new Date()).getFullYear();
-    let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
+    let value = ReactDOM.findDOMNode(this.refs.inputref).value;
 
-    if ( newValue > (year-150) && newValue<=year) {
-      if(this.props.onChange) this.props.onChange({[this.name]: newValue});
+    if ( this.validate(value)) {
+      if(this.props.onChange) this.props.onChange({[this.name]: value});
       this.setState({hint: false})
     } else {
         this.setState({hint: true})
     }
   }
 
+  validate(value){
+    let year=(new Date()).getFullYear();
+    if(value > (year-150) && value <=year) return true;
+    else return false;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
@@ -32,7 +39,7 @@ class YearOfBirth extends React.Component {
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] }/>
+            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '4em'}}/>
             <div style={{display: hint ? 'inline' : 'none'}}>A 4 digit year like 1999</div>
         </div>
     );
