@@ -32,8 +32,8 @@ class Zip extends React.Component {
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] }/>
-            <div style={{display: hint ? 'inline' : 'none'}}>a 5 digit zip or zip+4 number</div>
+            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline-block'}}/>
+            <div style={{display: hint ? 'inline-block' : 'none'}}>a 5 digit zip or zip+4 number</div>
         </div>
     );
   }

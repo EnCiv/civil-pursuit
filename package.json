@@ -67,6 +67,7 @@
     "passport": "^0.3.2",
     "passport-facebook": "^2.0.0",
     "passport-twitter": "^1.0.3",
+    "postcode-validator": "^1.2.0",
     "promise-sequencer": "^2.0.1",
     "react": "^15.6.2",
     "react-action-state-path": "github:ddfridley/react-action-state-path#master",
