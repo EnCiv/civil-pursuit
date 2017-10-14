@@ -3,7 +3,7 @@
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
 import Input                          from './util/input';
-import postcode                       from 'postcode-validator';
+import Postcode                       from 'postcode-validator';
 
 
 class Zip extends React.Component {
@@ -15,7 +15,7 @@ class Zip extends React.Component {
   saveInfo () {
     let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
 
-    if ( postcode(newValue.validate(newValue,'US'))) {
+    if ( Postcode.validate(newValue,'US')) {
       if(this.props.onChange) this.props.onChange({[this.name]: newValue});
       this.setState({hint: false})
     } else {

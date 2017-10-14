@@ -32,7 +32,7 @@ class YearOfBirth extends React.Component {
 
     return (
         <div>
-            <Input {...this.props} type="number" ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] }/>
+            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] }/>
             <div style={{display: hint ? 'inline' : 'none'}}>A 4 digit year like 1999</div>
         </div>
     );

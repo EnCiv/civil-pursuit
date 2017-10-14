@@ -93,6 +93,8 @@ class ProfilePanel extends React.Component {
         this.setState({ typeList: typeList });
     }
 
+    neededInputAtStart=false;
+
     render() {
         const { panel, active } = this.props;
         const {userId, userInfo} = this.state;
@@ -106,7 +108,7 @@ class ProfilePanel extends React.Component {
         console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
 
         if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
-            if(userId || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+            if(!this.neededInputAtStart  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
                 if(userId && this.props.newLocation){
                     window.onbeforeunload=null; // don't warn on redirect
                     location.href= this.props.newLocation;
@@ -142,7 +144,8 @@ class ProfilePanel extends React.Component {
                     </div>
                 ];
             } 
-        }
+        } else
+            this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
 
         let title = panel.type.name || "Participant Profile";
         let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);
