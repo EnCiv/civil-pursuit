@@ -9,6 +9,7 @@ import Neighborhood from './neighborhood';
 import DynamicSelector from './dynamic-selector';
 import YearOfBirth from './year-of-birth';
 import S from 'string';
+import Zip from './zip';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -27,7 +28,8 @@ class ProfileComponent extends React.Component {
         'MemberType': MemberType,
         'Neighborhood': Neighborhood,
         'DynamicSelector': DynamicSelector,
-        'YearOfBirth': YearOfBirth
+        'YearOfBirth': YearOfBirth,
+        'Zip': Zip
     }
 
     static title(component) {
