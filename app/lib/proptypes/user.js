@@ -40,7 +40,8 @@ const user          =   shape({
   zip4              :   string,
   neighborhood      :   string,
   member_type       :   string,
-  year_of_birth     :   number
+  year_of_birth     :   number,
+  street_address    :   any
 });
 
 export default user;

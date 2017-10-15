@@ -97,19 +97,19 @@ echo '*************************************************************************'
 echo MIGRATE DB
 echo '*************************************************************************'
 
-node dist/bin/migrate  || {
-  echo Could not migrate;
-  exit 1
-}
-echo "migrate ok"
+# node dist/bin/migrate  || {
+#  echo Could not migrate;
+#  exit 1
+#}
+#echo "migrate ok"
 
 echo '*************************************************************************'
 echo CLEAR ERRORS IN DB
 echo '*************************************************************************'
 
-node dist/bin/clear-errors  || {
-  echo Could not clear errors;
-  exit 1
-}
-
-echo "clear errors in db ok"
+#node dist/bin/clear-errors  || {
+#  echo Could not clear errors;
+#  exit 1
+#}
+#
+#echo "clear errors in db ok"

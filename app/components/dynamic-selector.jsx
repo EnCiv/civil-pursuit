@@ -24,13 +24,18 @@ class DynamicSelector extends React.Component {
     constructor(props){
         super(props);
         const collection = props.collection || props.property;
+        if(this.initCollection(collection)) this.state.loaded=true;
+    }
+
+    initCollection(collection){
         if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collections=[];
         if ( typeof DynamicSelector.collections[collection] === 'undefined')
         {
-            DynamicSelector.collections[collection]={options: [], choices: []};
+            DynamicSelector.collections[collection]={options: [], choices: [], names: []};
             window.socket.emit('get dynamic '+collection, this.okGotChoices.bind(this));
+            return false;
         }else{
-            this.state.loaded=true;
+            return true;
         }
     }
 
@@ -38,7 +43,10 @@ class DynamicSelector extends React.Component {
 
     okGotChoices(choices){
         const collection = this.props.collection || this.props.property;
-        choices.forEach(choice => DynamicSelector.collections[collection].choices[choice._id]=choice.name);
+        choices.forEach(choice => {
+            DynamicSelector.collections[collection].choices[choice._id]=choice.name;
+            DynamicSelector.collections[collection].names[choice.name]=choice._id;
+        })
         DynamicSelector.collections[collection].options=choices.map(choice => (
             <option value={ choice._id } key={ choice._id }>{ choice.name }</option>
         ));
@@ -71,16 +79,18 @@ static gotChoices(collection, choice, onComplete, choices){
  //
   static value(collection, choice, onComplete) {
     var onCompleted= onComplete || null;  // onComplete might not be passed, but it must be passed to gotChoices
-    if ( typeof DynamicSelector.collections === 'undefined' ) DynamicSelector.collections=[];
-    if ( typeof DynamicSelector.collections[collection] === 'undefined') {
-        DynamicSelector.collections[collection]={options: [], choices: []};
-        window.socket.emit('get dynamic '+collection, DynamicSelector.gotChoices.bind(collection, choice, onCompleted))
-        return(null);
-    }else{
-        return(DynamicSelector.collections[collection].choices[choice]);
-    }
+    if(this.initCollection(collection)) return(DynamicSelector.collections[collection].choices[choice]);
   }
 
+   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ // return the object Id of the choice correspoinding to the choice name
+ // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result when it's available
+ //
+ static find(collection, name, onComplete) {
+    var onCompleted= onComplete || null;  // onComplete might not be passed, but it must be passed to gotChoices
+    if(this.initCollection(collection)) return(DynamicSelector.collections[collection].names[name]);
+    else return null;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
