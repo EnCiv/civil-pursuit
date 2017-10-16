@@ -3,11 +3,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Input from './util/input';
+import Button from './util/button';
 import superagent from 'superagent';
 import ProfileComponent from './profile-component';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import DynamicSelector from './dynamic-selector';
+import us_abbreviations from 'us-abbreviations';
+import ButtonGroup from './util/button-group';
+
+var shortToLongState = us_abbreviations('postal','full');
 
 class StreetAddress extends React.Component {
     name = 'street_address';
@@ -26,25 +31,33 @@ class StreetAddress extends React.Component {
     constructor(props) {
         super(props);
         Object.assign(this.info, this.props.info[this.name] || {});
-        this.state = { hint: this.props && this.props.info /**&& this.validate(this.addressString())**/ };
+        this.state = { hint: false, info: {}};
+        this.profiles.forEach(profile=>this.state.info[profile]=null);
+        Object.assign(this.state.info, this.props.info[this.name])
         this.apiKey="AIzaSyDoVHuAQTcGwAGQxqWdyKEg29N5BzThqC8";
         if ( ! this.apiKey ) {
             throw new Error('Missing API KEY');
         }
     }
+
+    isAddressComplete(){
+        return !Object.keys(this.info).some(key=>!this.info[key])
+    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     saveInfo(property,value) {
         Object.assign(this.info,value);
-        if(Object.keys(this.info).some(key=>!this.info[key]))
-            return(this.setState({hint: true}));
+        if(!this.isAddressComplete()) return(this.setState({hint: true}));
         this.validate(this.addressString())
         .then((success)=>{
-            if(success) {
-                if (this.props.onChange) this.props.onChange({ street_address: this.info });
-                this.setState({ hint: false })
-            } else
-                this.setState({hint: true})
+            if(success==='check') {
+                this.setState({ hint: true })
+            } else if(success==='fail') {
+                this.setState({hint: false})
+            } else if(success==='done'){
+                this.setState({info: this.info, hint: false});
+                this.props.onChange({[this.name]: this.info })
+            }
         })
     }
 
@@ -56,35 +69,33 @@ class StreetAddress extends React.Component {
               .query({key: this.apiKey})
               .query({address: streetAddress})
               .end((err, res) => {
-                // if ( err ) {
-                //   return ko(err);
-                // }
+                let updated=false;
                 switch ( res.status ) {
-                  case 404:
-                    console.error('Server Not Found', res.body);
-                    break;
-    
-                    case 401:
-                    console.error('unauthorized',res.body);
-                      break;
-    
                     case 200:
                         console.info("StreetAddress.validate", res.body);
                         if(typeof res.body !== 'object') ko();
-                        if(!(res.body.kind && body.kind === 'civicinfo#representativeInfoResponse')) ko();
-                        this.info.line1=res.body.normalizedInput.line1;
-                        this.info.city=res.body.normalizedInput.city;
-                        this.info.city=res.body.normalizedInput.zip;
-                        this.info.state=DynamicSelector.find(res.body.normalizedInput.state) || 'null';
-                      ok(true);
-                      // location.href = '/page/profile';
-                      break;
+                        if(!(res.body.kind && res.body.kind === 'civicinfo#representativeInfoResponse')) ko();
+                        ['line1','city','zip'].forEach(prop=>{
+                            if(this.info[prop]!==res.body.normalizedInput[prop]){
+                                this.info[prop]=res.body.normalizedInput[prop];
+                                this.setState({info: {[prop]: this.info[prop]}})
+                                updated=true;
+                            }
+                        })
+                        let state=DynamicSelector.find(shortToLongState(res.body.normalizedInput.state));
+                        if(state && this.info.state!==state) {
+                            this.info.state=state;
+                            this.setState({info: {state: state}})
+                            updated=true;
+                        }
+                        ok(updated ? 'check' : 'done');
+                        break;
     
                     default:
-                        console.error('Unknown error', res.body);
-                      break;
+                        console.info('error', res.status, res.body);
+                        ok('fail');
+                        break;
                 }
-                ok(false);
               });
           }
           catch ( error ) {
@@ -96,8 +107,7 @@ class StreetAddress extends React.Component {
 
     render() {
 
-        let { info } = this.props;
-        let { hint } = this.state;
+        let { hint, info } = this.state;
 
         return (
             <div>
@@ -105,14 +115,21 @@ class StreetAddress extends React.Component {
                     {   this.profiles.map(component=>{
                             var title=ProfileComponent.title(component);            
                             return(
-                                <SelectorRow name={title} >
-                                    <ProfileComponent block medium component={component} info={info[this.name] || {}} onChange={this.saveInfo.bind(this,ProfileComponent.property(component))}/>
+                                <SelectorRow name={title} key={ProfileComponent.property(component)} >
+                                    <ProfileComponent block medium component={component} info={info} onChange={this.saveInfo.bind(this,ProfileComponent.property(component))}/>
                                 </SelectorRow>
                             );
                         }) 
                     }
                 </div>
-                <div style={{ display: hint ? 'block' : 'none' }}>enter a valid address</div>
+                <div style={{ display: hint ? 'block' : 'none' }}>
+                    <span>Is this address correct?</span>
+                    <ButtonGroup>
+                        <Button small shy onClick={()=>this.props.onChange({[this.name]: info })}>
+                            <span className="civil-button-text">Yes</span>
+                        </Button>
+                    </ButtonGroup>
+                </div>
             </div>
         );
     }
