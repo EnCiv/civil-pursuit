@@ -35,8 +35,8 @@ class StreetAddress extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     saveInfo(property,value) {
-        this.info[property]=value;
-        if(Object.keys(this.info).some(key=>this.info.key == false))
+        Object.assign(this.info,value);
+        if(Object.keys(this.info).some(key=>!this.info[key]))
             return(this.setState({hint: true}));
         this.validate(this.addressString())
         .then((success)=>{
@@ -61,11 +61,11 @@ class StreetAddress extends React.Component {
                 // }
                 switch ( res.status ) {
                   case 404:
-                    ko(new Error('Server Not Found', res.body));
+                    console.error('Server Not Found', res.body);
                     break;
     
                     case 401:
-                      ko(new Error('unauthorized',res.body));
+                    console.error('unauthorized',res.body);
                       break;
     
                     case 200:
@@ -81,9 +81,10 @@ class StreetAddress extends React.Component {
                       break;
     
                     default:
-                      ko(new Error('Unknown error', res.body));
+                        console.error('Unknown error', res.body);
                       break;
                 }
+                ok(false);
               });
           }
           catch ( error ) {
