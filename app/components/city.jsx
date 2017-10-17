@@ -29,6 +29,14 @@ class City extends React.Component {
   validate(value){
     return value && value.length>=2;
   }
+
+  componentWillReceiveProps(newProps){
+    let element=ReactDOM.findDOMNode(this.refs.inputref);
+    if(newProps.info && (newProps.info[this.name] !== element.value)) 
+      element.value=newProps.info[this.name];
+      element.style.backgroundColor='#800080';
+      setTimeout(()=>element.style.backgroundColor=null,1000)
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
