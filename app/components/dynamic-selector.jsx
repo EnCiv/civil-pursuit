@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Row from './util/row';
 import Column from './util/column';
 import Select from './util/select';
-
+import Color from 'color';
 
 
 
@@ -93,6 +93,16 @@ class DynamicSelector extends React.Component {
         else return null;
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // if the value is changed from above, push it to the element.  Don't use state because this is an input field and the user may also change the input field.
+    //
+    componentWillReceiveProps(newProps){
+        let {property}=this.props;
+        let element=ReactDOM.findDOMNode(this.refs.choice);
+        if(newProps.info && (newProps.info[property] !== element.value)) 
+          element.value=newProps.info[property];
+          element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.5);
+          setTimeout(()=>element.style.backgroundColor=null,1000)
+      }
 
     render() {
 

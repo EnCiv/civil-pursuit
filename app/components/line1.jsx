@@ -3,6 +3,7 @@
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
 import Input                          from './util/input';
+import Color from 'color';
 
 class Line1 extends React.Component {
     name='line1';
@@ -22,6 +23,14 @@ class Line1 extends React.Component {
     } else {
         this.setState({hint: true})
     }
+  }
+
+  componentWillReceiveProps(newProps){
+    let element=ReactDOM.findDOMNode(this.refs.inputref);
+    if(newProps.info && (newProps.info[this.name] !== element.value)) 
+      element.value=newProps.info[this.name];
+      element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.5);
+      setTimeout(()=>element.style.backgroundColor=null,1000)
   }
 
   validate(value){
