@@ -24,7 +24,10 @@ class DynamicSelector extends React.Component {
     constructor(props) {
         super(props);
         const collection = props.collection || props.property;
-        if (DynamicSelector.initCollection(collection, DynamicSelector.okGotChoices.bind(this, collection, () => this.setState({ loaded: true })))) this.state.loaded = true;
+        if (DynamicSelector.initCollection(collection, DynamicSelector.okGotChoices.bind(this, collection, ()=>this.setState({ loaded: true },()=>{
+            let element=ReactDOM.findDOMNode(this.refs.choice);  // after getting choices, and rerendering options, set the value again because it may be one of the new options
+            element.value=this.props.info[this.props.property];
+        })))) this.state.loaded = true;
     }
 
     // initialize the collestion in the static table, request data to populate it, and after fulfilled, call onComplete
@@ -50,7 +53,7 @@ class DynamicSelector extends React.Component {
         DynamicSelector.collections[collection].options = choices.map(choice => (
             <option value={choice._id} key={choice._id}>{choice.name}</option>
         ));
-        onComplete();
+        if(onComplete) onComplete();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,33 +67,29 @@ class DynamicSelector extends React.Component {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    static gotChoices(collection, choice, onComplete, choices) {
-        choices.forEach(choice => DynamicSelector.collections[collection].choices[choice._id] = choice.name);
-        DynamicSelector.collections[collection].options = choices.map(choice => (
-            <option value={choice._id} key={choice._id}>{choice.name}</option>
-        ));
-        if (onComplete) onComplete(DynamicSelector.collections[collection].choices[choice]);
-    }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // return the value of the choice from the collection
-    // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result when it's available
+    // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result immediately or when it's available
     //
     static value(collection, choice, onComplete) {
-        var onCompleted = onComplete || null;  // onComplete might not be passed, but it must be passed to gotChoices
-        if (DynamicSelector.initCollection(collection, onComplete)) return (DynamicSelector.collections[collection].choices[choice]);
-        else return null;
+        if (DynamicSelector.initCollection(collection, ()=>onComplete ? onComplete(DynamicSelector.collections[collection].choices[choice]):null)) {
+            var result=DynamicSelector.collections[collection].choices[choice];
+            if(onComplete) onComplete(result);
+            return result;
+        }
+        return null;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // return the object Id of the choice correspoinding to the choice name
-    // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result when it's available
+    // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result immediately or when it's available
     //
     static find(collection, name, onComplete) {
-        var onCompleted = onComplete || null;  // onComplete might not be passed, but it must be passed to gotChoices
-        if (DynamicSelector.initCollection(collection, onComplete)) return (DynamicSelector.collections[collection].names[name]);
-        else return null;
+        if (DynamicSelector.initCollection(collection, ()=>onComplete ? onComplete(DynamicSelector.collections[collection].names[name]):null)) {
+            var result=DynamicSelector.collections[collection].names[name];
+            if(onComplete) onComplete(result);
+            return result;
+        }
+        return null;
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // if the value is changed from above, push it to the element.  Don't use state because this is an input field and the user may also change the input field.
@@ -98,10 +97,11 @@ class DynamicSelector extends React.Component {
     componentWillReceiveProps(newProps){
         let {property}=this.props;
         let element=ReactDOM.findDOMNode(this.refs.choice);
-        if(newProps.info && (newProps.info[property] !== element.value)) 
+        if(newProps.info && (newProps.info[property] !== element.value)) {
           element.value=newProps.info[property];
           element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.5);
           setTimeout(()=>element.style.backgroundColor=null,1000)
+        }
       }
 
     render() {

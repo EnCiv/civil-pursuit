@@ -33,10 +33,11 @@ class Zip extends React.Component {
 
   componentWillReceiveProps(newProps){
     let element=ReactDOM.findDOMNode(this.refs.inputref);
-    if(newProps.info && (newProps.info[this.name] !== element.value)) 
+    if(newProps.info && (newProps.info[this.name] !== element.value)) {
       element.value=newProps.info[this.name];
-      element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.5);
+      element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.3);
       setTimeout(()=>element.style.backgroundColor=null,1000)
+    }
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

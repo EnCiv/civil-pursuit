@@ -17,21 +17,22 @@ var shortToLongState = us_abbreviations('postal','full');
 class StreetAddress extends React.Component {
     name = 'street_address';
     street_address={};
-    profiles=['Line1', 'City','DynamicSelector.State.state', 'Zip'];
+    profiles=['Line1', 'Zip', 'City','DynamicSelector.State.state'];
     apiKey='';
     info={};
+    possible={};
 
     addressString(){
         const {line1, city, state, zip}=this.info;
         return (
-            line1 + ', ' + city + ' ' + DynamicSelector.value('state',state,this.forceUpdate.bind(this)) + zip
+            line1 + ', ' + city + ' ' + (DynamicSelector.value('state',state) || '') + zip // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
         )
     }
 
     constructor(props) {
         super(props);
         Object.assign(this.info, this.props.info[this.name] || {});
-        this.state = { hint: false, info: {}};
+        this.state = { hint: false, working: false, info: {}};
         this.profiles.forEach(profile=>this.state.info[profile]=null);
         Object.assign(this.state.info, this.props.info[this.name])
         this.apiKey="AIzaSyDoVHuAQTcGwAGQxqWdyKEg29N5BzThqC8";
@@ -45,69 +46,77 @@ class StreetAddress extends React.Component {
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    validateTimeout;
+
+    componentDidMount(){
+        if(this.isAddressComplete())
+            this.validate(this.addressString());
+    }
+
     saveInfo(property,value) {
+        let d=new Date();
+        console.info("StreetAddress.saveInfo", value, this.validateTimeout, d.getSeconds()+':'+d.getMilliseconds())
         Object.assign(this.info,value);
-        if(!this.isAddressComplete()) return(this.setState({hint: true}));
-        this.validate(this.addressString())
-        .then((success)=>{
-            if(success==='check') {
-                this.setState({ hint: true })
-            } else if(success==='fail') {
-                this.setState({hint: false})
-            } else if(success==='done'){
-                this.setState({info: this.info, hint: false});
-                this.props.onChange({[this.name]: this.info })
-            }
-        })
+        Object.assign(this.state.info,value); // DANGER!! we are not calling setState here because we don't want to cause a rerender. The Input element sent this data up, the data is already displayed.
+        if(!this.isAddressComplete()) return(this.setState({hint: false, working: false}));
+        if(this.validateTimeout) clearTimeout(this.validateTimeout); // stop the old validate, here is new data
+        this.validateTimeout=setTimeout(()=>this.validate(this.addressString()),2000);
+        if(!this.state.working) this.setState({working: true});
     }
 
     validate(streetAddress) {
-        return new Promise((ok, ko) => {
-          try {
-            superagent
-              .get('https://www.googleapis.com/civicinfo/v2/representatives')
-              .query({key: this.apiKey})
-              .query({address: streetAddress})
-              .end((err, res) => {
+        this.validateTimeout=undefined;
+        try {
+        superagent
+            .get('https://www.googleapis.com/civicinfo/v2/representatives')
+            .query({key: this.apiKey})
+            .query({address: streetAddress})
+            .end((err, res) => {
                 let updated=false;
                 switch ( res.status ) {
                     case 200:
                         console.info("StreetAddress.validate", res.body);
-                        if(typeof res.body !== 'object') ko();
-                        if(!(res.body.kind && res.body.kind === 'civicinfo#representativeInfoResponse')) ko();
+                        if(typeof res.body !== 'object') return;
+                        if(!(res.body.kind && res.body.kind === 'civicinfo#representativeInfoResponse')) return;
+                        Object.assign(this.possible,this.info);
                         ['line1','city','zip'].forEach(prop=>{
-                            if(this.info[prop]!==res.body.normalizedInput[prop]){
-                                this.info[prop]=res.body.normalizedInput[prop];
-                                this.setState({info: {[prop]: this.info[prop]}})
+                            if(this.possible[prop]!==res.body.normalizedInput[prop]){
+                                this.possible[prop]=res.body.normalizedInput[prop];
                                 updated=true;
                             }
                         })
-                        let state=DynamicSelector.find(shortToLongState(res.body.normalizedInput.state));
-                        if(state && this.info.state!==state) {
-                            this.info.state=state;
-                            this.setState({info: {state: state}})
-                            updated=true;
-                        }
-                        ok(updated ? 'check' : 'done');
+                        DynamicSelector.find('state',shortToLongState(res.body.normalizedInput.state),(state)=>{ //state meaning geography
+                            if(state && this.possible.state!==state) {
+                                this.possible.state=state;
+                                updated=true;
+                            }
+                            if(!updated) {
+                                Object.assign(this.info,this.possible)
+                                this.props.onChange({[this.name]: this.info })
+                                this.setState({hint: false, working: false}); // no need to update info, it hasn't been updated
+                            } else {
+                                this.setState({hint: true, working: false, info: this.possible}) // update info displayed with 'possible' turn on hint to see if the user agrees
+                            }
+                        });  // CA - California -> $oid
                         break;
-    
                     default:
                         console.info('error', res.status, res.body);
-                        ok('fail');
+                        this.setState({hint: false, working: false})
                         break;
                 }
-              });
+            });
           }
           catch ( error ) {
-            ko(error);
+            console.info("StreetAddress.validate error=",error);
+            this.setState({hint: false, working: false})
           }
-        });
       }
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
 
-        let { hint, info } = this.state;
+        let { hint, working, info } = this.state;
 
         return (
             <div>
@@ -122,11 +131,17 @@ class StreetAddress extends React.Component {
                         }) 
                     }
                 </div>
+                <div style={{ display: working ? 'block' : 'none' }}>
+                    <span>working</span>
+                </div>
                 <div style={{ display: hint ? 'block' : 'none' }}>
                     <span>Is this address correct?</span>
                     <ButtonGroup>
-                        <Button small shy onClick={()=>this.props.onChange({[this.name]: info })}>
+                        <Button small shy onClick={()=>{Object.assign(this.info, this.possible); this.setState({hint: false, working: false}); this.props.onChange({[this.name]: this.info })}}>
                             <span className="civil-button-text">Yes</span>
+                        </Button>
+                        <Button small shy onClick={()=>this.setState({hint: false, info: this.info})}>
+                            <span className="civil-button-text">Undo</span>
                         </Button>
                     </ButtonGroup>
                 </div>
