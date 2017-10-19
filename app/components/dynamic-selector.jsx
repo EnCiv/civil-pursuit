@@ -30,18 +30,23 @@ class DynamicSelector extends React.Component {
         })))) this.state.loaded = true;
     }
 
-    // initialize the collestion in the static table, request data to populate it, and after fulfilled, call onComplete
+    // initialize the collection in the static table, request data to populate it, and after fulfilled, call onComplete for the stacked up requests
     static initCollection(collection, onComplete) {
-        if (typeof DynamicSelector.collections === 'undefined') DynamicSelector.collections = [];
-        if (typeof DynamicSelector.collections[collection] === 'undefined') {
-            DynamicSelector.collections[collection] = { options: [], choices: [], names: [] };
-            window.socket.emit('get dynamic ' + collection, onComplete);
+        if (typeof DynamicSelector.collections === 'undefined') DynamicSelector.collections = []; // this is the first call to DynamicSelector
+        if (typeof DynamicSelector.collections[collection] === 'undefined') { // this collection has never been used before
+            DynamicSelector.collections[collection] = { options: [], choices: [], names: [], completionStack: [] };
+            if(onComplete) DynamicSelector.collections[collection].completionStack.push(onComplete);
+            window.socket.emit('get dynamic ' + collection, null); // null to fill the spot for onComplete
             return false;
-        } else {
-            return true;
+        } else { // collection population has at least started
+            if(DynamicSelector.collections[collection].options.length) // the collection has been populated
+                return true;
+            else { // the request to populate made, but the collection is not populated
+                DynamicSelector.collections[collection].completionStack.push(onComplete);
+                return false;
+            }
         }
     }
-
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -54,6 +59,8 @@ class DynamicSelector extends React.Component {
             <option value={choice._id} key={choice._id}>{choice.name}</option>
         ));
         if(onComplete) onComplete();
+        let completionStack=DynamicSelector.collections[collection].completionStack;
+        while(completionStack.length) completionStack.pop()(); 
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +90,7 @@ class DynamicSelector extends React.Component {
     // return the object Id of the choice correspoinding to the choice name
     // if the collection has not been loaded yet, return null, load the collection, and call onComplete with the result immediately or when it's available
     //
-    static find(collection, name, onComplete) {
+    static id(collection, name, onComplete) {
         if (DynamicSelector.initCollection(collection, ()=>onComplete ? onComplete(DynamicSelector.collections[collection].names[name]):null)) {
             var result=DynamicSelector.collections[collection].names[name];
             if(onComplete) onComplete(result);

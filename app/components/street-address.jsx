@@ -25,7 +25,7 @@ class StreetAddress extends React.Component {
     addressString(){
         const {line1, city, state, zip}=this.info;
         return (
-            line1 + ', ' + city + ' ' + (DynamicSelector.value('state',state) || '') + zip // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
+            line1 + ', ' + city + ' ' + (DynamicSelector.value('state',state) || '', ()=>this.forceUpdate()) + zip // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
         )
     }
 
@@ -86,14 +86,14 @@ class StreetAddress extends React.Component {
                                 updated=true;
                             }
                         })
-                        DynamicSelector.find('state',shortToLongState(res.body.normalizedInput.state),(state)=>{ //state meaning geography
-                            this.info.validatedAt=new Date();
+                        DynamicSelector.id('state',shortToLongState(res.body.normalizedInput.state),(state)=>{ //state meaning geography
                             if(state && this.possible.state!==state) {
                                 this.possible.state=state;
                                 updated=true;
                             }
                             if(!updated) {
                                 Object.assign(this.info,this.possible);
+                                this.info.validatedAt=new Date();
                                 this.props.onChange({[this.name]: this.info })
                                 this.setState({hint: false, working: false}); // no need to update info, it hasn't been updated
                             } else {
@@ -121,6 +121,7 @@ class StreetAddress extends React.Component {
     render() {
 
         let { hint, working, info } = this.state;
+        let {validatedAt}=this.info;
 
         return (
             <div>
@@ -135,14 +136,14 @@ class StreetAddress extends React.Component {
                         }) 
                     }
                 </div>
-                <div style={{fontSize: this.validatedAt ? "0.5em" : "1em"}}>{this.validatedAt ? 'validated at: '+this.info.validatedAt : "Please enter a valid Street Address"}</div>
+                <div style={{fontSize: validatedAt ? "0.5em" : "1em"}}>{validatedAt ? 'validated at: '+validatedAt : "Please enter a valid Street Address"}</div>
                 <div style={{ display: working ? 'block' : 'none' }}>
                     <span>checking</span>
                 </div>
                 <div style={{ display: hint ? 'block' : 'none' }}>
                     <span>Is this address correct?</span>
                     <ButtonGroup>
-                        <Button small shy onClick={()=>{Object.assign(this.info, this.possible); this.setState({hint: false, working: false}); this.props.onChange({[this.name]: this.info })}}>
+                        <Button small shy onClick={()=>{this.info.validatedAt=new Date();Object.assign(this.info, this.possible); this.setState({hint: false, working: false}); this.props.onChange({[this.name]: this.info })}}>
                             <span className="civil-button-text">Yes</span>
                         </Button>
                         <Button small shy onClick={()=>this.setState({hint: false, info: this.info})}>
