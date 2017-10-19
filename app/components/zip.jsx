@@ -5,7 +5,7 @@ import ReactDOM                       from 'react-dom';
 import Input                          from './util/input';
 import Postcode                       from 'postcode-validator';
 import Color from 'color';
-
+import Icon                             from './util/icon';
 
 class Zip extends React.Component {
     name='zip';
@@ -18,9 +18,9 @@ class Zip extends React.Component {
 
   saveInfo () {
     let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
+    if(this.props.onChange) this.props.onChange({[this.name]: newValue});
 
     if ( this.validate(newValue)) {
-      if(this.props.onChange) this.props.onChange({[this.name]: newValue});
       this.setState({hint: false})
     } else {
         this.setState({hint: true})
@@ -49,7 +49,7 @@ class Zip extends React.Component {
     return (
         <div>
             <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
-            <div style={{display: hint ? 'inline' : 'none'}}>a 5 digit zip or zip+4 number</div>
+            <div style={{display: hint ? 'none' : 'inline'}}><Icon icon="check" /></div>
         </div>
     );
   }

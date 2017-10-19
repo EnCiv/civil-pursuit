@@ -42,7 +42,8 @@ class StreetAddress extends React.Component {
     }
 
     isAddressComplete(){
-        return !Object.keys(this.info).some(key=>!this.info[key])
+        // if the there is enough information for civic info to complete the address
+        return (this.info.line1 && (this.info.zip || this.info.city && this.info.state))
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
