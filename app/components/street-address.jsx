@@ -25,7 +25,7 @@ class StreetAddress extends React.Component {
     addressString(){
         const {line1, city, state, zip}=this.info;
         return (
-            line1 + ', ' + city + ' ' + (DynamicSelector.value('state',state) || '', ()=>this.forceUpdate()) + zip // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
+            line1 + ', ' + city + ' ' + (DynamicSelector.value('state',state,()=>this.forceUpdate()) || '') + zip // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
         )
     }
 
@@ -33,7 +33,6 @@ class StreetAddress extends React.Component {
         super(props);
         Object.assign(this.info, this.props.info[this.name] || {});
         this.state = { hint: false, working: false, info: {}};
-        this.profiles.forEach(profile=>this.state.info[profile]=null);
         Object.assign(this.state.info, this.props.info[this.name])
         this.apiKey="AIzaSyDoVHuAQTcGwAGQxqWdyKEg29N5BzThqC8";
         if ( ! this.apiKey ) {
@@ -47,14 +46,14 @@ class StreetAddress extends React.Component {
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    validateTimeout;
+    validateTimeout;  // timer to reset on each user input action
 
     componentWillMount(){
-        if(this.info.validatedAt && this.props.onChange) this.props.onChange({[this.name]: this.info })
-        else if(this.isAddressComplete()) this.validate(this.addressString());
+        if(this.info.validatedAt && this.props.onChange) this.props.onChange({[this.name]: this.info })  // if the info is initailly valid notify parent immediately
+        else if(this.isAddressComplete()) this.validate(this.addressString()); // if there's data that's not been validated, validate it.
     }
 
-    saveInfo(property,value) {
+    saveInfo(value) { // each time a property is updated
         let d=new Date();
         console.info("StreetAddress.saveInfo", value, this.validateTimeout, d.getSeconds()+':'+d.getMilliseconds())
         Object.assign(this.info,value);
@@ -130,7 +129,7 @@ class StreetAddress extends React.Component {
                             var title=ProfileComponent.title(component);            
                             return(
                                 <SelectorRow name={title} key={ProfileComponent.property(component)} >
-                                    <ProfileComponent block medium component={component} info={info} onChange={this.saveInfo.bind(this,ProfileComponent.property(component))}/>
+                                    <ProfileComponent block medium component={component} info={info} onChange={this.saveInfo.bind(this)}/>
                                 </SelectorRow>
                             );
                         }) 

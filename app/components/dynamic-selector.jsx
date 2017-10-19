@@ -24,10 +24,10 @@ class DynamicSelector extends React.Component {
     constructor(props) {
         super(props);
         const collection = props.collection || props.property;
-        if (DynamicSelector.initCollection(collection, DynamicSelector.okGotChoices.bind(this, collection, ()=>this.setState({ loaded: true },()=>{
+        if (DynamicSelector.initCollection(collection, ()=>this.setState({ loaded: true },()=>{
             let element=ReactDOM.findDOMNode(this.refs.choice);  // after getting choices, and rerendering options, set the value again because it may be one of the new options
             element.value=this.props.info[this.props.property];
-        })))) this.state.loaded = true;
+        }))) this.state.loaded = true;
     }
 
     // initialize the collection in the static table, request data to populate it, and after fulfilled, call onComplete for the stacked up requests
@@ -36,7 +36,7 @@ class DynamicSelector extends React.Component {
         if (typeof DynamicSelector.collections[collection] === 'undefined') { // this collection has never been used before
             DynamicSelector.collections[collection] = { options: [], choices: [], names: [], completionStack: [] };
             if(onComplete) DynamicSelector.collections[collection].completionStack.push(onComplete);
-            window.socket.emit('get dynamic ' + collection, null); // null to fill the spot for onComplete
+            window.socket.emit('get dynamic ' + collection, DynamicSelector.okGotChoices.bind(this, collection)); // null to fill the spot for onComplete
             return false;
         } else { // collection population has at least started
             if(DynamicSelector.collections[collection].options.length) // the collection has been populated
@@ -50,7 +50,7 @@ class DynamicSelector extends React.Component {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    static okGotChoices(collection, onComplete, choices) {
+    static okGotChoices(collection, choices) {
         choices.forEach(choice => {
             DynamicSelector.collections[collection].choices[choice._id] = choice.name;
             DynamicSelector.collections[collection].names[choice.name] = choice._id;
@@ -58,7 +58,6 @@ class DynamicSelector extends React.Component {
         DynamicSelector.collections[collection].options = choices.map(choice => (
             <option value={choice._id} key={choice._id}>{choice.name}</option>
         ));
-        if(onComplete) onComplete();
         let completionStack=DynamicSelector.collections[collection].completionStack;
         while(completionStack.length) completionStack.pop()(); 
     }

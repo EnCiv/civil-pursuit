@@ -107,45 +107,49 @@ class ProfilePanel extends React.Component {
 
         console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
 
-        if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
-            if(!this.neededInputAtStart  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
-                if(userId && this.props.newLocation){
-                    window.onbeforeunload=null; // don't warn on redirect
-                    location.href= this.props.newLocation;
-                    return null;
-                }
-                if(userId && panel.parent && panel.parent.new_location){
-                    window.onbeforeunload=null; // don't warn on redirect
-                    location.href= panel.parent.new_location;
-                    return null;
-                }
-                if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
-                const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
-                const newPanel = {
-                    parent: panel.parent,
-                    type: this.state.typeList[index],
-                    skip: panel.skip || 0,
-                    limit: panel.limit || config['navigator batch size'],
-                };
-                return (
-                    <TypeComponent  { ...this.props } userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} vs={this.state.vs} />
-                )
-            }else { // if all the data is there
-                done=[
-                    <div className='instruction-text'>
-                        Complete!
-                        <Button small shy
-                            onClick={this.setState.bind(this,{done: true},null)} // null is needed here so setState doesn't complain about the mouse event that's the next parameter
-                            className="profile-panel-done"
-                            style={{ backgroundColor: 'black', color: 'white', float: "right" }}
-                            >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                ];
-            } 
+        if(this.props.user && this.state.ready) // if there is a users and the user info in ready
+        {
+            if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
+                if(!this.neededInputAtStart  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+                    if(userId && this.props.newLocation){
+                        window.onbeforeunload=null; // don't warn on redirect
+                        location.href= this.props.newLocation;
+                        return null;
+                    }
+                    if(userId && panel.parent && panel.parent.new_location){
+                        window.onbeforeunload=null; // don't warn on redirect
+                        location.href= panel.parent.new_location;
+                        return null;
+                    }
+                    if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
+                    const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
+                    const newPanel = {
+                        parent: panel.parent,
+                        type: this.state.typeList[index],
+                        skip: panel.skip || 0,
+                        limit: panel.limit || config['navigator batch size'],
+                    };
+                    return (
+                        <TypeComponent  { ...this.props } userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} vs={this.state.vs} />
+                    )
+                }else { // if all the data is there
+                    done=[
+                        <div className='instruction-text'>
+                            Complete!
+                            <Button small shy
+                                onClick={this.setState.bind(this,{done: true},null)} // null is needed here so setState doesn't complain about the mouse event that's the next parameter
+                                className="profile-panel-done"
+                                style={{ backgroundColor: 'black', color: 'white', float: "right" }}
+                                >
+                                <span className="civil-button-text">{"next"}</span>
+                            </Button>
+                        </div>
+                    ];
+                } 
+            } else
+                this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
         } else
-            this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
+            return null; // wait for it
 
         let title = panel.type.name || "Participant Profile";
         let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);
