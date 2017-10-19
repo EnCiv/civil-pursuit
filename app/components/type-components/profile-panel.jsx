@@ -107,7 +107,7 @@ class ProfilePanel extends React.Component {
 
         console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
 
-        if(this.props.user && this.state.ready) // if there is a users and the user info in ready
+        if((this.props.user && this.state.ready) || this.neededInputAtStart) // if there is a users and the user info in ready or if input is going to be needed
         {
             if ( properties.every(prop => userInfo[prop] )) { // have all the property values been filled out?? 
                 if(!this.neededInputAtStart  || this.state.done){ // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
@@ -146,10 +146,11 @@ class ProfilePanel extends React.Component {
                         </div>
                     ];
                 } 
-            } else
-                this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
-        } else
+            }   
+        } else if(this.props.user) // there is user data to wait for
             return null; // wait for it
+        // else there is no user, so go ahead and render the input panel
+        this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
 
         let title = panel.type.name || "Participant Profile";
         let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);

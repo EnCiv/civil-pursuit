@@ -12,19 +12,14 @@ class Zip extends React.Component {
 
     constructor(props){
       super(props);
-      this.state={hint: this.props && this.props.info && this.validate( this.props.info[this.name])};
+      this.state={valid: !!(this.props && this.props.info && this.validate( this.props.info[this.name]))};
     }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveInfo () {
     let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
     if(this.props.onChange) this.props.onChange({[this.name]: newValue});
-
-    if ( this.validate(newValue)) {
-      this.setState({hint: false})
-    } else {
-        this.setState({hint: true})
-    }
+    this.setState({valid: !!this.validate(newValue)})
   }
 
   validate(value){
@@ -33,7 +28,7 @@ class Zip extends React.Component {
 
   componentWillReceiveProps(newProps){
     let element=ReactDOM.findDOMNode(this.refs.inputref);
-    if(newProps.info && (newProps.info[this.name] !== element.value)) {
+    if(newProps.info && (newProps.info[this.name] || '') !== element.value) {
       element.value=newProps.info[this.name];
       element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.3);
       setTimeout(()=>element.style.backgroundColor=null,1000)
@@ -44,12 +39,12 @@ class Zip extends React.Component {
   render() {
 
     let { info } = this.props;
-    let { hint } = this.state;
+    let { valid } = this.state;
 
     return (
         <div>
             <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
-            <div style={{display: hint ? 'none' : 'inline'}}><Icon icon="check" /></div>
+            <div style={{display: valid ? 'inline' : 'none'}}><Icon icon="check" /></div>
         </div>
     );
   }

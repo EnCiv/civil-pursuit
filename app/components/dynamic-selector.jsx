@@ -103,7 +103,7 @@ class DynamicSelector extends React.Component {
     componentWillReceiveProps(newProps){
         let {property}=this.props;
         let element=ReactDOM.findDOMNode(this.refs.choice);
-        if(newProps.info && (newProps.info[property] !== element.value)) {
+        if(newProps.info && (newProps.info[property] || '') != element.value) { 
           element.value=newProps.info[property];
           element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.5);
           setTimeout(()=>element.style.backgroundColor=null,1000)
