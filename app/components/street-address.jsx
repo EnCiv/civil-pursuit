@@ -49,9 +49,9 @@ class StreetAddress extends React.Component {
 
     validateTimeout;
 
-    componentDidMount(){
-        if(this.isAddressComplete())
-            this.validate(this.addressString());
+    componentWillMount(){
+        if(this.info.validatedAt && this.props.onChange) this.props.onChange({[this.name]: this.info })
+        else if(this.isAddressComplete()) this.validate(this.addressString());
     }
 
     saveInfo(property,value) {
@@ -87,12 +87,13 @@ class StreetAddress extends React.Component {
                             }
                         })
                         DynamicSelector.find('state',shortToLongState(res.body.normalizedInput.state),(state)=>{ //state meaning geography
+                            this.info.validatedAt=new Date();
                             if(state && this.possible.state!==state) {
                                 this.possible.state=state;
                                 updated=true;
                             }
                             if(!updated) {
-                                Object.assign(this.info,this.possible)
+                                Object.assign(this.info,this.possible);
                                 this.props.onChange({[this.name]: this.info })
                                 this.setState({hint: false, working: false}); // no need to update info, it hasn't been updated
                             } else {
@@ -101,6 +102,7 @@ class StreetAddress extends React.Component {
                         });  // CA - California -> $oid
                         break;
                     default:
+                        this.info.validatedAt=null;
                         console.info('error', res.status, res.body);
                         this.setState({hint: false, working: false})
                         break;
@@ -108,6 +110,7 @@ class StreetAddress extends React.Component {
             });
           }
           catch ( error ) {
+            this.info.validatedAt=null;
             console.info("StreetAddress.validate error=",error);
             this.setState({hint: false, working: false})
           }
@@ -132,8 +135,9 @@ class StreetAddress extends React.Component {
                         }) 
                     }
                 </div>
+                <div style={{fontSize: this.validatedAt ? "0.5em" : "1em"}}>{this.validatedAt ? 'validated at: '+this.info.validatedAt : "Please enter a valid Street Address"}</div>
                 <div style={{ display: working ? 'block' : 'none' }}>
-                    <span>working</span>
+                    <span>checking</span>
                 </div>
                 <div style={{ display: hint ? 'block' : 'none' }}>
                     <span>Is this address correct?</span>
