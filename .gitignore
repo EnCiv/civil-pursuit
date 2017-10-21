@@ -14,3 +14,4 @@
 /bconsole/node_modules/*
 /_netrc
 /.netrc
+/.bashrc
