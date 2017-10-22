@@ -56,7 +56,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     componentDidMount(){
         console.info("CafeIdea.componentDidMount change shape to open");
-        this.toMeFromChild('creator',{type: "CHANGE_SHAPE", shape: 'open'})  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
+        setTimeout(()=>this.toMeFromChild('creator',{type: "CHANGE_SHAPE", shape: 'open', distance: 1}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

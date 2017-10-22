@@ -116,8 +116,8 @@ class RASPItem extends ReactActionStatePathClient {
       if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')) delta.shape='title';
       delta.readMore = false; // if the user is working on stuff further below, close the readmore
       delta.button = rasp.button; // keep the button status
-    } else if (action.type === "CHILD_SHAPE_CHANGED" && (action.distance < 2) && rasp.shape==='title') {
-      delta.shape='open';
+    } else if ((action.type === "CHILD_SHAPE_CHANGED") && (action.distance === 1) && (rasp.shape==='title') && (action.shape!=='title')) {
+        ; // just fall through and let shape get calculated
     }else
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore

@@ -43,18 +43,19 @@ class RASPPanelItems extends ReactActionStatePathClient {
     var nextRASP = {}, delta = {};
     console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "CHILD_SHAPE_CHANGED") {
-      let ash = action.shape, ush = rasp.shape;
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
-        } else {
-          delta.shortId = null; // turn off the shortId
-        } 
-      } else { // it's not my child that changed shape
-        delta.shortId=rasp.shortId;
-      }
+        } else if(action.shape==='truncated'){
+            delta.shortId = null; // turn off the shortId
+        } else if(action.shape==='title')
+          delta.shape='title';
+        // else don't change shortId 
+      }else if(action.distance >= 2){
+        if(rasp.shortId && action.shape==='title') delta.shape='title';
+        // if distant child is open or truncated, don't change
+      } // if distance negative or 0 skip it
     } else if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
         delta.creator=false;
@@ -79,14 +80,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
     } else 
       return null; // don't know this action, null so the default methods can have a shot at it
 
-    if(delta.shortId) {
-      delta.shape='open';
-    }else{
-      delta.shape=defaultRASP.shape;
-    }
-    if(delta.shortId) delta.pathSegment=delta.shortId;
-    else delta.pathSegment=null;
+    if(!delta.shape) delta.shape=delta.shortId ? 'open' : defaultRASP.shape;
     Object.assign(nextRASP, rasp, delta);
+    if(nextRASP.shortId) nextRASP.pathSegment=nextRASP.shortId;
+    else nextRASP.pathSegment=null;
     return nextRASP;
   }
 
@@ -128,10 +125,17 @@ class RASPPanelItems extends ReactActionStatePathClient {
       var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
       console.info("PanelItems.render buttons:", buttons);
 
-
-
       content = items.map(item => {
-          let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
+        let shape;
+        if(rasp.shortId){ // one child should be shown
+          if(rasp.shortId===item.id) // this is the one to show
+            shape=rasp.shape; // could be open or title but child will follow the parent there
+          else 
+            shape='truncated'; // all other children should be truncated be default
+        }else
+          shape='truncated'; // show all children as truncated
+
+          //let shape = rasp.shape === 'open' && (rasp.shortId === item.id) ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
           //if(items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
           var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
           if (!this.mounted[item.id]) { // only render this once
@@ -148,7 +152,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={((rasp.shape === 'open' || rasp.shape==='title') && (rasp.shortId === item.id)) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );
