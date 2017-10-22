@@ -64,7 +64,7 @@ class QVoteTotals extends React.Component {
     renderChildren(moreProps) {
         return React.Children.map(this.props.children, (child, i) => {
             var newProps = Object.assign({}, this.props, this.state, moreProps);
-            delete newProps.children;
+            if(newProps.children) delete newProps.children;
             return React.cloneElement(child, newProps, child.props.children)
         });
     }

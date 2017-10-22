@@ -18,7 +18,7 @@ class TypeComponent extends React.Component{
             Object.assign(newProps,this.props);
             Component=Components[component];
         }
-        delete newProps.component;
+        if(newProps.component) delete newProps.component;
 
         logger.trace("TypeComponent", component, newProps );
         if(typeof Component === 'function') return(<Component {...newProps}/>);  //UIM passes props plus the UIM state to the child Component

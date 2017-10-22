@@ -7,7 +7,7 @@ import Components                  from "./item-components/"
 class ItemComponent extends React.Component{
     render(){
         var newProps=Object.assign(this.props);
-        delete newProps.children;
+        if(newProps.children) delete newProps.children;
         logger.trace("ItemComponent", this.props );
         const {component, part} = this.props;
         const cObj=Components[component];

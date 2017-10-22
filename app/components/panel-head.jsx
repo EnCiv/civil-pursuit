@@ -63,7 +63,7 @@ class PanelHead extends React.Component {
         return React.Children.map(this.props.children, (child, i) => {
             var rasp=Object.assign({}, this.props.rasp, {toParent: this.toMeFromChild.bind(this, i)})
             var newProps = Object.assign({}, this.props, moreProps, {rasp} );
-            delete newProps.children;
+            if(newProps.children) delete newProps.children;
             return React.cloneElement(child, newProps, child.props.children)
         });
     }
