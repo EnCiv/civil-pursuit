@@ -40,12 +40,11 @@ class RASPPanelItems extends ReactActionStatePathClient {
   }
 
   actionToState(action, rasp, source, defaultRASP) {
-    var nextRASP = {}, delta = {}, ooview=false;
+    var nextRASP = {}, delta = {};
     console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "CHILD_SHAPE_CHANGED") {
       let ash = action.shape, ush = rasp.shape;
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-      if (this.props.type && this.props.type.visualMethod && this.props.type.visualMethod === "ooview") ooview = true;
 
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
@@ -81,8 +80,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       return null; // don't know this action, null so the default methods can have a shot at it
 
     if(delta.shortId) {
-      if(ooview && action.distance>1) delta.shape='collapsed'
-      else delta.shape='open';
+      delta.shape='open';
     }else{
       delta.shape=defaultRASP.shape;
     }

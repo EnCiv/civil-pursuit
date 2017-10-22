@@ -353,7 +353,9 @@ class RASPPanelList extends React.Component {
                   boxSizing: "border-box",
                   backgroundColor: active ? "#000" : visible ? "#fff" : "#fff",
                   color: active ? "#fff" : visible ? "#000" : null
-                }}>
+                }}
+                key={type._id+'-panel-'+i}
+              >
                 {type.name}
               </button>
             )
@@ -383,6 +385,7 @@ class RASPPanelList extends React.Component {
             panelNum={rasp.currentPanel}
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
+            key={typeList[currentPanel]._id+'-panel-'+currentPanel}
           />
         )];
       }
@@ -410,6 +413,7 @@ class RASPPanelList extends React.Component {
                             marginRight: spaceBetween + 'px',
                             width: containerWidth + 'px'
                           }}
+                          key={typeList[i]._id+'-panel-'+i}
                         >
                           {panelListItem.content}
                         </div>

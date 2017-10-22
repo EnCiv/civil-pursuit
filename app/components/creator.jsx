@@ -244,12 +244,11 @@ class Creator extends React.Component {
                 <Icon
                   icon        =   "globe"
                   spin        =   { true }
-                  text-muted
                   className   =   {`looking-up ${this.state.lookingUp ? 'visible' : ''}`}
                   ref         =   "lookingUp"
                   />
 
-                <Icon icon="exclamation" text-warning className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
+                <Icon icon="exclamation" className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
 
                 <TextInput
                   block
