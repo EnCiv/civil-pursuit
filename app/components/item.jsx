@@ -112,14 +112,17 @@ class RASPItem extends ReactActionStatePathClient {
         if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
         else delta.button = rasp.button;
       } 
-    } else if (action.type === "CHILD_SHAPE_CHANGED" && action.distance >= 2 && action.shape==='open') {
+    } else if (action.type === "CHILD_SHAPE_CHANGED" && (action.distance >= 2) && action.shape==='open') {
+      if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')) delta.shape='title';
       delta.readMore = false; // if the user is working on stuff further below, close the readmore
       delta.button = rasp.button; // keep the button status
-    }
-    else
+    } else if (action.type === "CHILD_SHAPE_CHANGED" && (action.distance < 2) && rasp.shape==='title') {
+      delta.shape='open';
+    }else
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
-    delta.shape = delta.button || delta.readMore ? 'open' : defaultRASP.shape;  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+    if(delta.shape!=='title')
+      delta.shape = delta.button || delta.readMore ? 'open' : defaultRASP.shape;  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
     // calculate the pathSegment and return the new state
     let parts = [];
     if (delta.readMore) parts.push('r');
@@ -269,16 +272,33 @@ class RASPItem extends ReactActionStatePathClient {
       noReference = false;
     }
 
+    var childShape=(shape,button)=>{
+      switch(shape){
+        case 'title':
+          if(rasp.button === button) return 'open';
+          else return 'truncated';
+        case 'open':
+          if(rasp.button === button) return 'open'
+          else return 'truncated';
+        case 'truncated':
+          return 'truncated';
+        case 'collapsed':
+          return 'collapsed';
+        default:
+          return shape;
+      }
+    }
+
     // a button could be a string, or it could be an object which must have a property component
     var renderPanel = (button) => {
       if(typeof button==='string')
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
-          rasp={{ depth: rasp.depth, shape: (rasp.button === button && shape === 'open') ? 'truncated' : shape, toParent: this.toMeFromChild.bind(this, button) }}
-          item={item} active={rasp.button === button && shape === 'open'} style={style} />);
+          rasp={{ depth: rasp.depth, shape: childShape(shape,button), toParent: this.toMeFromChild.bind(this, button) }}
+          item={item} active={rasp.button === button} style={style} />);
       else if (typeof button==='object')
         return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button.component}
-          rasp={{ depth: rasp.depth, shape: (rasp.button === button.component && shape === 'open') ? 'truncated' : shape, toParent: this.toMeFromChild.bind(this, button.component) }}
-          item={item} active={rasp.button === button.component && shape === 'open'} style={style} {...button} />);
+          rasp={{ depth: rasp.depth, shape: childShape(shape, button.component), toParent: this.toMeFromChild.bind(this, button.component) }}
+          item={item} active={rasp.button === button.component } style={style} {...button} />);
     }
 
     // a button could be a string, or it could be an object which must have a property component
@@ -291,7 +311,7 @@ class RASPItem extends ReactActionStatePathClient {
 
     return (
       <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={`item-${item._id}`} >
-        <Accordion active={shape !== 'ooview'} text={true} >
+        <Accordion active={shape !== 'collapsed'} text={true} >
           <ItemMedia className={classShape} onClick={this.readMore.bind(this)}
             item={item}
             ref="media"

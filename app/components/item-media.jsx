@@ -9,7 +9,7 @@ import ClassNames          from 'classnames';
 
 class ItemMedia extends React.Component {
 
-state={mediaThin: {} };
+state={mediaThin: '' };
 
 afterLoad() {
   if(! this.refs.wrapper || ! this.refs.media) { return }
