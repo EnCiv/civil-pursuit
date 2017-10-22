@@ -284,9 +284,9 @@ class RASPItem extends ReactActionStatePathClient {
     // a button could be a string, or it could be an object which must have a property component
     var renderButton = (button) => {
       if(typeof button === 'string')
-        return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} />);
+        return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} />);
       else if (typeof button === 'object')
-        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button.component} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} />);
+        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button.component} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}/>);
     }
 
     return (
