@@ -117,7 +117,7 @@ class PanelHead extends React.Component {
             content.push(this.renderChildren({type, parent, items, limit, skip}));
             return (
                 <Panel
-                    className={name}
+                    className={name+' vs-'+rasp.shape}
                     heading={[
                         (<h4>{title}</h4>), (type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
                             (

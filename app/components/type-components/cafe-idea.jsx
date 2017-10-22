@@ -37,7 +37,7 @@ class CafeIdea extends React.Component {
 class RASPCafeIdea extends ReactActionStatePathClient {
 
     constructor(props) {
-        super(props, 'itemId');
+        super(props, 'itemId',1);
         console.info("CafeIdea constructor");
     }
 
@@ -52,6 +52,11 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             return null;
         Object.assign(nextRASP,rasp,delta);
         return nextRASP;
+    }
+
+    componentDidMount(){
+        console.info("CafeIdea.componentDidMount change shape to open");
+        this.toMeFromChild('creator',{type: "CHANGE_SHAPE", shape: 'open'})  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
