@@ -44,21 +44,16 @@ class RASPPanelItems extends ReactActionStatePathClient {
     console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "CHILD_SHAPE_CHANGED") {
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
+
       if (action.distance === 1) { //if this action is from an immediate child 
         if (action.shape === 'open' && action.shortId) {
           delta.shortId = action.shortId;
-        } else if(action.shape==='truncated'){
-            delta.shortId = null; // turn off the shortId
-        } else if(action.shape==='title')
-          delta.shape='title';
-        // else don't change shortId 
-      }else if(action.distance >= 2){
-        if(rasp.shortId && action.shape==='title') delta.shape='title';
-        // if distant child is open or truncated, don't change
-      } // if distance negative or 0 skip it
-    } else if (action.type==='DECENDANT_FOCUS'){
-        if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
-          delta.shape='title'
+        } else {
+          delta.shortId = null; // turn off the shortId
+        } 
+      } else { // it's not my child that changed shape
+        delta.shortId=rasp.shortId;
+      }
     } else if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
         delta.creator=false;
@@ -69,7 +64,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
+      setTimeout(()=>this.props.rasp.toParent({type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
@@ -81,24 +76,42 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
+    } else if (action.type==="DECENCANT_FOCUS") {
+        if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+          delta.decendantFocus=true;
+    } else if (action.type==="DECENCANT_UNFOCUS") {
+      if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
     } else 
       return null; // don't know this action, null so the default methods can have a shot at it
-    if(!delta.shape) delta.shape=delta.shortId ? 'open' : defaultRASP.shape;
+
     Object.assign(nextRASP, rasp, delta);
-    if(nextRASP.shortId) nextRASP.pathSegment=nextRASP.shortId;
-    else nextRASP.pathSegment=null;
+    if(nextRASP.shortId)
+      nextRASP.shape=nextRASP.decendantFocus ? 'title' : 'open';
+    else nextRASP.shape=defaultRASP.shape;
+    let parts=[];
+    if(nextRASP.decendantFocus)parts.push('d');
+    if(nextRASP.shortId)parts.push(nextRASP.shortId);
+    if(nextRASP.shortId && nextRASP.shortId.length!==5)console.error("PanelItems.actionToState shortId length should be 5, was",nextRASP.shortId.length);
+    if(parts.length) nextRASP.pathSegment=parts.join(',');
+    else delta.pathSegment=null;
+
     return nextRASP;
   }
 
   // set the state from the pathSegment. 
   // the shortId is the path segment
-  segmentToState(action) {
-    var nextRASP={shape: 'truncated', pathSegment: action.segment};
-    var shortId = action.segment;
-    if(!shortId) console.error("PanelItems.segmentToState no shortId found");
-    else {
-      nextRASP.shape='open'; nextRASP.shortId=shortId 
-    }
+  segmentToState(action, initialRASP) {
+    var nextRASP={shape: initialRASP.shape, pathSegment: action.segment};
+    var parts = action.segment.split(',');
+    parts.forEach(part=>{
+      if(part==='d') nextRASP.decendantFocus=true;
+      else if(part.length===5) nextRASP.shortId=part;
+      else console.info("PanelItems.segmentToState unexpected part:", part);
+    })
+    if(!nextRASP.shortId) 
+      console.error("PanelItems.segmentToState no shortId found!");
+    else
+      nextRASP.shape=nextRASP.decendantFocus? 'title' : 'open';
     return { nextRASP, setBeforeWait: true }
   }
 
@@ -128,17 +141,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
       var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
       console.info("PanelItems.render buttons:", buttons);
 
-      content = items.map(item => {
-        let shape;
-        if(rasp.shortId){ // one child should be shown
-          if(rasp.shortId===item.id) // this is the one to show
-            shape=rasp.shape; // could be open or title but child will follow the parent there
-          else 
-            shape='truncated'; // all other children should be truncated be default
-        }else
-          shape='truncated'; // show all children as truncated
 
-          //let shape = rasp.shape === 'open' && (rasp.shortId === item.id) ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
+
+      content = items.map(item => {
+          let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
           //if(items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
           var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
           if (!this.mounted[item.id]) { // only render this once
@@ -155,7 +161,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={((rasp.shape === 'open' || rasp.shape==='title') && (rasp.shortId === item.id)) || (rasp.shape !== 'open' && rasp.shape!=='title')} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );

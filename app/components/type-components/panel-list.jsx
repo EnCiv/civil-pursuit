@@ -190,18 +190,12 @@ class RASPPanelList extends React.Component {
       const {currentPanel}=action;
       if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
         delta.currentPanel=currentPanel;
-        if(rasp.shape==='truncated') delta.shape='open';
-        setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is here
+        delta.shape='open';
       }
-    }else if(action.type==="DECENDANT_FOCUS"){
-      if(action.distance > 1) delta.shape='title';
-      if(action.distance ==1) delta.shape='open';
-      //latch onto the titlize stata unless changed from above - else if(rasp.shape==='title' && action.shape==='open') delta.shape='open';
-      // else no change
     } else return null;
     Object.assign(nextRASP,rasp,delta);
     var parts=[];
-    if(nextRASP.shape==='open' || nextRASP.shape==='title') { parts.push('o'); parts.push(nextRASP.currentPanel);}
+    if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
     nextRASP.pathSegment=parts.join(',');
     return nextRASP;
   }
@@ -359,9 +353,7 @@ class RASPPanelList extends React.Component {
                   boxSizing: "border-box",
                   backgroundColor: active ? "#000" : visible ? "#fff" : "#fff",
                   color: active ? "#fff" : visible ? "#000" : null
-                }}
-                key={type._id+'-panel-'+i}
-              >
+                }}>
                 {type.name}
               </button>
             )
@@ -380,7 +372,7 @@ class RASPPanelList extends React.Component {
         </div>
       );
 
-      if ((rasp.shape==='open' || rasp.shape==='title') && typeList.length) {
+      if (rasp.shape==='open' && typeList.length) {
         this.panelList[currentPanel].content = [(
           <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
@@ -391,7 +383,6 @@ class RASPPanelList extends React.Component {
             panelNum={rasp.currentPanel}
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
-            key={typeList[currentPanel]._id+'-panel-'+currentPanel}
           />
         )];
       }
@@ -414,12 +405,11 @@ class RASPPanelList extends React.Component {
                         <div id={`panel-list-${i}`}
                           ref={`panel-list-${i}`}
                           style={{
-                            display: (rasp.shape==='open' || rasp.shape==='title') ? "inline-block":'none',
+                            display: rasp.shape==='open'?"inline-block":'none',
                             verticalAlign: 'top',
                             marginRight: spaceBetween + 'px',
                             width: containerWidth + 'px'
                           }}
-                          key={typeList[i]._id+'-panel-'+i}
                         >
                           {panelListItem.content}
                         </div>

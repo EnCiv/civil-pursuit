@@ -54,8 +54,8 @@ class RASPItem extends ReactActionStatePathClient {
     return button;
   }
 
-  segmentToState(action) {  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
-    var nextRASP = { shape: 'truncated', pathSegment: action.segment };
+  segmentToState(action,initialRASP) {  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
+    var nextRASP = { shape: initialRASP.shape, pathSegment: action.segment };
     let parts = action.segment.split(',');
     let button = null;
     let matched = 0;
@@ -63,11 +63,15 @@ class RASPItem extends ReactActionStatePathClient {
       if (part === 'r') {
         nextRASP.readMore = true;
         matched += 1;
-        nextRASP.shape = 'open';
+        nextRASP.shape = nextRASP.decendantFocus ? 'title': 'open';
+      } else if (part==='d'){
+        nextRASP.decendantFocus = true;
+        matched +=1;
+        nextRASP.shape = 'title';
       } else if (button=this.someButton(part)) {
         nextRASP.button = button;
         matched += 1;
-        nextRASP.shape = 'open';
+        nextRASP.shape = nextRASP.decendantFocus ? 'title': 'open';
       }
     });
     if (!matched || matched < parts.length) logger.error("RASPItem SET_PATH didn't match all pathSegments", { matched }, { parts }, { action });
@@ -82,8 +86,7 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
-      delta.shape=delta.button ? 'open': defaultRASP.shape;
-      setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is on me
+      setTimeout(()=>this.props.rasp.toParent({type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -93,26 +96,21 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      delta.shape=delta.readMore ? 'open':defaultRASP.shape;
-      setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is on me
+      setTimeout(()=>this.props.rasp.toParent({type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');
-      delta.shape='open';
     } else if (action.type === "FINISH_PROMOTE") {
       if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore = true; 
         if(this.props.item.subType) delta.button=this.someButton('S');
-        delta.shape='open';
       } else if (action.winner) { // we have a winner but it's some other item
         delta.readMore = false;
         delta.button = null;
-        delta.shape=defaultRASP.shape;
         setTimeout(() => this.props.rasp.toParent({ type: "OPEN_ITEM", item: action.winner, distance: -1 }));
       } else { // there wasn't a winner but we finish the promote
         delta.readMore = 'false';
         delta.button = null;
-        delta.shape=defaultRASP.shape;
       }
     } else if (action.type === "CHANGE_SHAPE") {
       delta.shape=action.shape;
@@ -122,12 +120,13 @@ class RASPItem extends ReactActionStatePathClient {
       } 
     } else if (action.type === "DECENDANT_FOCUS"){
       if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){
-        if(action.distance>1) 
-          delta.shape='title';
-        else if(action.distance===1)
-          delta.shape='open';
+        if(action.distance>1) {
+          delta.decendantFocus=true;
+        }
       }
-    } else if(action.type==="CHILD_SHAPE_CHANGED"){
+    } else if (action.type === "DECENDANT_UNFOCUS" && action.distance===1){
+      if(rasp.decendantFocus) delta.decendantFocus=false;  // my child has unfocused
+    }else if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.distance>1){
         delta.readMore = false; // if the user is working on stuff further below, close the readmore
         // don't change the shape.
@@ -136,10 +135,15 @@ class RASPItem extends ReactActionStatePathClient {
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
     Object.assign(nextRASP, rasp, delta);
+    if(nextRASP.button || nextRASP.readMore){
+      nextRASP.shape=nextRASP.decendantFocus ? 'title' : 'open'
+    } else 
+      nextRASP.shape=defaultRASP.shape;
     // calculate the pathSegment and return the new state
     let parts = [];
     if (nextRASP.readMore) parts.push('r');
     if (nextRASP.button) parts.push(nextRASP.button[0]); // must ensure no collision of first character of item-component names
+    if (nextRASP.decendantFocus) parts.push('d');
     nextRASP.pathSegment = parts.join(',');
     return nextRASP;
   }
