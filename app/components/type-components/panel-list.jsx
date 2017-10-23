@@ -192,10 +192,14 @@ class RASPPanelList extends React.Component {
         delta.currentPanel=currentPanel;
         delta.shape='open';
       }
+    }else if(action.type==="CHILD_SHAPE_CHANGED" && action.distance===1){
+      if(rasp.shape==='open' && action.shape==='title') delta.shape='title';
+      //latch onto the titlize stata unless changed from above - else if(rasp.shape==='title' && action.shape==='open') delta.shape='open';
+      // else no change
     } else return null;
     Object.assign(nextRASP,rasp,delta);
     var parts=[];
-    if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}
+    if(nextRASP.shape==='open' || nextRASP.shape==='title') { parts.push('o'); parts.push(nextRASP.currentPanel);}
     nextRASP.pathSegment=parts.join(',');
     return nextRASP;
   }
@@ -374,7 +378,7 @@ class RASPPanelList extends React.Component {
         </div>
       );
 
-      if (rasp.shape==='open' && typeList.length) {
+      if ((rasp.shape==='open' || rasp.shape==='title') && typeList.length) {
         this.panelList[currentPanel].content = [(
           <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
@@ -408,7 +412,7 @@ class RASPPanelList extends React.Component {
                         <div id={`panel-list-${i}`}
                           ref={`panel-list-${i}`}
                           style={{
-                            display: rasp.shape==='open'?"inline-block":'none',
+                            display: (rasp.shape==='open' || rasp.shape==='title') ? "inline-block":'none',
                             verticalAlign: 'top',
                             marginRight: spaceBetween + 'px',
                             width: containerWidth + 'px'

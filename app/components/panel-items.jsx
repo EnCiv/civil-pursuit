@@ -152,7 +152,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={((rasp.shape === 'open' || rasp.shape==='title') && (rasp.shortId === item.id)) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={((rasp.shape === 'open' || rasp.shape==='title') && (rasp.shortId === item.id)) || (rasp.shape !== 'open' && rasp.shape!=='title')} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );
