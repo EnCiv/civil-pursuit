@@ -82,6 +82,7 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
+      setTimer(this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is on me
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -91,6 +92,7 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
+      setTimer(this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is on me
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');
@@ -110,25 +112,27 @@ class RASPItem extends ReactActionStatePathClient {
       if (action.shape === 'open') {
         delta.readMore = true;
         if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
-        else delta.button = rasp.button;
       } 
-    } else if (action.type === "CHILD_SHAPE_CHANGED" && (action.distance >= 2) && action.shape==='open') {
-      if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')) delta.shape='title';
-      delta.readMore = false; // if the user is working on stuff further below, close the readmore
-      delta.button = rasp.button; // keep the button status
-    } else if ((action.type === "CHILD_SHAPE_CHANGED") && (action.distance === 1) && (rasp.shape==='title') && (action.shape!=='title')) {
-        ; // just fall through and let shape get calculated
-    }else
+    } else if (action.type === "DECENDANT_FOCUS"){
+      if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){
+        if(action.distance>1) 
+          delta.shape='title';
+        else if(action.distance===1)
+          delta.shape='open';
+      }
+      if(action.distance>1){
+        delta.readMore = false; // if the user is working on stuff further below, close the readmore
+      }
+    } else
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
-    if(delta.shape!=='title')
-      delta.shape = delta.button || delta.readMore ? 'open' : defaultRASP.shape;  // open if button or readMore is active, otherwise truncated. (if collapsed this should be irrelevant)
+    Object.assign(nextRASP, rasp, delta);
+    if(!delta.shape && !nextRASP.button && !nextRASP.readMore) nextRASP.shape='truncated';  // if shape wasn't assigned by event, and no button and not readMore then it's truncated.
     // calculate the pathSegment and return the new state
     let parts = [];
-    if (delta.readMore) parts.push('r');
-    if (delta.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
-    delta.pathSegment = parts.join(',');
-    Object.assign(nextRASP, rasp, delta);
+    if (nextRASP.readMore) parts.push('r');
+    if (nextRASP.button) parts.push(delta.button[0]); // must ensure no collision of first character of item-component names
+    nextRASP.pathSegment = parts.join(',');
     return nextRASP;
   }
 

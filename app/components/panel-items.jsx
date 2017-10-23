@@ -56,6 +56,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
         if(rasp.shortId && action.shape==='title') delta.shape='title';
         // if distant child is open or truncated, don't change
       } // if distance negative or 0 skip it
+    } else if (action.type==='DECENDANT_FOCUS'){
+        if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+          delta.shape='title'
     } else if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
         delta.creator=false;
@@ -66,6 +69,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
+      setTimeout(this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
@@ -79,7 +83,6 @@ class RASPPanelItems extends ReactActionStatePathClient {
       delta.shortId = action.item.id;
     } else 
       return null; // don't know this action, null so the default methods can have a shot at it
-
     if(!delta.shape) delta.shape=delta.shortId ? 'open' : defaultRASP.shape;
     Object.assign(nextRASP, rasp, delta);
     if(nextRASP.shortId) nextRASP.pathSegment=nextRASP.shortId;

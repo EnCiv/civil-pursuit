@@ -191,10 +191,11 @@ class RASPPanelList extends React.Component {
       if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
         delta.currentPanel=currentPanel;
         if(rasp.shape==='truncated') delta.shape='open';
-        if(rasp.shape==='open' || rasp.shape==='title') delta.shape=rasp.shape;
+        this.props.rasp.toParent({type: "DECENDANT_FOCUS"}); // user focus is here
       }
-    }else if(action.type==="CHILD_SHAPE_CHANGED" && action.distance===1){
-      if(rasp.shape==='open' && action.shape==='title') delta.shape='title';
+    }else if(action.type==="DECENDANT_FOCUS"){
+      if(action.distance > 1) delta.shape='title';
+      if(action.distance ==1) delta.shape='open';
       //latch onto the titlize stata unless changed from above - else if(rasp.shape==='title' && action.shape==='open') delta.shape='open';
       // else no change
     } else return null;
