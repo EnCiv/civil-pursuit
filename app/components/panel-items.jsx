@@ -69,7 +69,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      setTimeout(this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
+      setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);

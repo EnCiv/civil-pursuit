@@ -191,7 +191,7 @@ class RASPPanelList extends React.Component {
       if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
         delta.currentPanel=currentPanel;
         if(rasp.shape==='truncated') delta.shape='open';
-        this.props.rasp.toParent({type: "DECENDANT_FOCUS"}); // user focus is here
+        setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0); // user focus is here
       }
     }else if(action.type==="DECENDANT_FOCUS"){
       if(action.distance > 1) delta.shape='title';
