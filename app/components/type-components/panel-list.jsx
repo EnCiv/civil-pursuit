@@ -190,7 +190,8 @@ class RASPPanelList extends React.Component {
       const {currentPanel}=action;
       if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
         delta.currentPanel=currentPanel;
-        delta.shape='open';
+        if(rasp.shape==='truncated') delta.shape='open';
+        if(rasp.shape==='open' || rasp.shape==='title') delta.shape=rasp.shape;
       }
     }else if(action.type==="CHILD_SHAPE_CHANGED" && action.distance===1){
       if(rasp.shape==='open' && action.shape==='title') delta.shape='title';

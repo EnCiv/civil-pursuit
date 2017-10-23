@@ -11,7 +11,7 @@ class QSortFlipItem extends React.Component {
         const {qbuttons, sectionName, item, user, rasp } = this.props;
 
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}}>
+                <div style={{backgroundColor: qbuttons[sectionName].color}} key={ `item-${item._id}` }>
                     <ItemStore item={ item } key={ `item-${item._id}` }>
                         <Item
                             item    =   { item }

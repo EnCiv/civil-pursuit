@@ -25,7 +25,7 @@ exports.button = class QSortButtons extends React.Component {
             }
         }
         return(
-                <ButtonGroup>
+                <ButtonGroup key={item._id+'-'+btn}>
                     {number}
                     <span className="civil-button-info">{typeof qbuttons[btn].total === 'number' ? qbuttons[btn].total : ""}</span>
                     <Button small shy 

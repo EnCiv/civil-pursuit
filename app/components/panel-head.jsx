@@ -130,6 +130,7 @@ class PanelHead extends React.Component {
                         ]}
                     style={{ backgroundColor: 'white' }}
                     rasp={rasp}
+                    key={name}
                 >
                     {instruction}
                     {creator}

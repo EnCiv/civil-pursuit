@@ -227,7 +227,7 @@ class Creator extends React.Component {
 
     if(this.props.type.mediaMethod!="disabled"){
       media=[
-          <section className="item-media-wrapper">
+          <section className="item-media-wrapper" key="media">
             <section className="item-media" ref="media" style={{width: "calc(13em - 8px)"}}>
               <Uploader
                 ref       =   "uploader"
@@ -246,6 +246,7 @@ class Creator extends React.Component {
                   spin        =   { true }
                   className   =   {`looking-up ${this.state.lookingUp ? 'visible' : ''}`}
                   ref         =   "lookingUp"
+                  key         =   "globe"
                   />
 
                 <Icon icon="exclamation" className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
@@ -259,6 +260,7 @@ class Creator extends React.Component {
                   className     =    {`url-editor ${this.state.title ? 'hide' : ''}`}
                   name          =   "reference"
                   value         =   { this.state.reference }
+                  key           =   "reference"
                   />
 
                 <TextInput
@@ -267,6 +269,7 @@ class Creator extends React.Component {
                   value         =   {this.state.title}
                   className     =   {`url-title ${this.state.title ? 'visible' : ''}`}
                   ref           =   "title"
+                  key           =   "title"
                   />
 
                 <Icon
@@ -275,6 +278,7 @@ class Creator extends React.Component {
                   className     =   {`syn-edit-url ${this.state.title ? 'visible' : ''}`}
                   ref           =   "editURL"
                   onClick       =   { this.editURL.bind(this) }
+                  key           = "pencil"
                   />
               </Row>
 
@@ -304,6 +308,7 @@ class Creator extends React.Component {
                 name="subject"
                 value={this.state.subject}
                 onChange={this.onChangeKey.bind(this, 'subject')}
+                key="subject"
               />
 
               {reference}
@@ -316,6 +321,7 @@ class Creator extends React.Component {
                 onChange={this.onChangeKey.bind(this, 'description')}
                 block
                 required
+                key="description"
               ></TextArea>
             </div>
           </section>

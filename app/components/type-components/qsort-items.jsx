@@ -101,7 +101,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         if (!Object.keys(this.props.index).length) {
             console.info("qsort-items creator")
             loading.push(
-                <div className="gutter text-center">
+                <div className="gutter text-center" key="creator">
                     <a href="#" onClick={ this.toMeFromChild.bind(this, null, {type: "TOGGLE_CREATOR"}) } className="click-to-create">
                         Click the + to be the first to add something here
                     </a>
@@ -115,7 +115,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                 if (qb.max) {
                     if (this.props.sections[criteria].length > qb.max) {
                         direction.push(
-                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
+                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }} key="instruction">
                                 {qb.direction}
                             </div>
                         )
@@ -139,7 +139,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             if (!issues) {
                 var results={index: this.props.index, sections: this.props.sections, items: this.props.items }
                 done.push(
-                    <div className='instruction-text'>
+                    <div className='instruction-text' key="done">
                         {this.QSortButtonList['unsorted'].direction}
                         <Button small shy
                             onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results})}
@@ -182,7 +182,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                 {done}
                 <div style={{ position: 'relative',
                                 display: 'block',
-                }}>
+                }} key="fliplist">
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                             {articles.map(article => <QSortFlipItem {...article} key={article.id} />)}
