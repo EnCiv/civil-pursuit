@@ -75,8 +75,12 @@ class RASPItemCreator extends ReactActionStatePathClient {
         return {nextRASP, setBeforeWait: false};  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
     
+    timestamp=new Date();
+
     onChange(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
         if(val.results) Object.assign(this.item,val.results.item);
+        let t=new Date();
+        if((t-this.timestamp) > 500)  this.props.rasp.toParent({type: "DECENDANT_FOCUS"}); // let the ancestors know that the user focus is here  
     }
 
     post(){  // in the creator, user hit the post button
