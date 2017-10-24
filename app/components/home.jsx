@@ -89,7 +89,7 @@ class Home extends React.Component {
       // const panel = this.props.panels[this.props.topLevelType];
 
       content.push(
-        <div>
+        <div key="top-level-panel">
           <div id="top-level-panel">
             <TypeComponent component={'Subtype'} {...this.props} panel={panel} style={{backgroundColor: "white"}} user={ this.props.user } />
           </div>
@@ -97,7 +97,7 @@ class Home extends React.Component {
       );
     } else {
       content.push(
-        <Loading message="Loading discussions ..." />
+        <Loading message="Loading discussions ..." key="loading-top-level-panel" />
       );
     }
 

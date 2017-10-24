@@ -46,8 +46,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
       if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
 
       if (action.distance === 1) { //if this action is from an immediate child 
-        if (action.shape === 'open' && action.shortId) {
-          delta.shortId = action.shortId;
+        if (action.shape === 'open' && action.shortId) { // a child is opening
+          if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+            this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+          delta.shortId = action.shortId; // the new child will be open
         } else {
           delta.shortId = null; // turn off the shortId
         } 

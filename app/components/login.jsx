@@ -139,7 +139,7 @@ class Login extends React.Component {
         <ButtonGroup block>
           <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />
-            <span className={ Component.classList(this) } inline> Facebook</span>
+            <span className={ Component.classList(this) }> Facebook</span>
           </Button>
 
           <Button medium info onClick={ this.loginWithTwitter } className="login-with-twitter">

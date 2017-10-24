@@ -189,7 +189,7 @@ class JoinForm extends React.Component {
         <ButtonGroup block>
           <Button primary onClick={this.loginWithFacebook} medium className="join-with-facebook">
             <Icon icon="facebook" />
-            <span className={Component.classList(this)} inline> Facebook</span>
+            <span className={Component.classList(this)}> Facebook</span>
           </Button>
 
           <Button info onClick={this.loginWithTwitter} medium className="join-with-twitter">
