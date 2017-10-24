@@ -9,16 +9,15 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, rasp, noHeading } = this.props;
+    const { heading, className, rasp, noHeading, ...sectionProps } = this.props;
     const vShape=rasp ? rasp.shape : '';
     const cShape= vShape ? 'vs-'+vShape : '';
 
 
     return (
       <section
-        { ...this.props }
+        { ...sectionProps }
         className     =   {ClassNames((className || ''), "syn-panel", cShape )}
-        ref           =   "panel"
       >
         <section className={ClassNames("syn-panel-heading", cShape, {'no-heading': vShape==='collapsed'})}>
           { heading }
