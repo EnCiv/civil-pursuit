@@ -119,12 +119,13 @@ class PanelHead extends React.Component {
                 <Panel
                     className={name+' vs-'+rasp.shape}
                     heading={[
-                        (<h4>{title}</h4>), (type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
+                        (<h4 key="title">{title}</h4>), (type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
                             (
                             <Icon
                                 icon="plus"
                                 className="toggle-creator"
                                 onClick={()=>rasp.toParent({type: "TOGGLE_CREATOR"})}
+                                key="plus"
                             />
                             )
                         ]}
