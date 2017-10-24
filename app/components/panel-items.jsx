@@ -93,7 +93,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
     if(nextRASP.shortId)parts.push(nextRASP.shortId);
     if(nextRASP.shortId && nextRASP.shortId.length!==5)console.error("PanelItems.actionToState shortId length should be 5, was",nextRASP.shortId.length);
     if(parts.length) nextRASP.pathSegment=parts.join(',');
-    else delta.pathSegment=null;
+    else nextRASP.pathSegment=null;
 
     return nextRASP;
   }
@@ -141,10 +141,8 @@ class RASPPanelItems extends ReactActionStatePathClient {
       var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
       console.info("PanelItems.render buttons:", buttons);
 
-
-
       content = items.map(item => {
-          let shape = rasp.shape === 'open' && rasp.shortId === item.id ? 'open' : rasp.shape !== 'open' ? rasp.shape :  'truncated';
+          let shape = rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated';
           //if(items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
           var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
           if (!this.mounted[item.id]) { // only render this once
@@ -161,7 +159,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={(rasp.shape === 'open' && rasp.shortId === item.id) || rasp.shape !== 'open'} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={(rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );
