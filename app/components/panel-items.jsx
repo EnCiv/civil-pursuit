@@ -76,10 +76,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
-    } else if (action.type==="DECENCANT_FOCUS") {
+    } else if (action.type==="DECENDANT_FOCUS") {
         if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
           delta.decendantFocus=true;
-    } else if (action.type==="DECENCANT_UNFOCUS") {
+    } else if (action.type==="DECENDANT_UNFOCUS") {
       if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
     } else 
       return null; // don't know this action, null so the default methods can have a shot at it

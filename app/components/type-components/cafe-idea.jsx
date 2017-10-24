@@ -48,15 +48,33 @@ class RASPCafeIdea extends ReactActionStatePathClient {
         if(action.type==="POST_ITEM"){
             setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item, parent: this.props.parent, type: this.props.type}}))
             // no state change, the action will be consumed here
-        }else
+        } else if (action.type === "DECENDANT_FOCUS"){
+            if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){
+              if(action.distance>1) {
+                delta.decendantFocus=true;
+              }
+            }
+          } else if (action.type === "DECENDANT_UNFOCUS" && action.distance===1){
+            if(rasp.decendantFocus) delta.decendantFocus=false;  // my child has unfocused
+          } else
             return null;
         Object.assign(nextRASP,rasp,delta);
+        if(nextRASP.decendantFocus) nextRASP.shape='view'; else nextRASP.shape='open';
+        if(nextRASP.decendantFocus) nextRASP.pathSegment='d';
+        else nextRASP.pathSegment=null;
         return nextRASP;
+    }
+
+    segmentToState(action,initialRASP){
+        var nextRASP={shape: initialRASP.shape, pathSegment: action.segment}
+        if(action.segment==='d') nextRASP.decendantFocus=true;
+        if(nextRASP.decendantFocus) nextRASP.shape='view'; else nextRASP.shape='open';
+        return {nextRASP, setBeforeWait: true}
     }
 
     componentDidMount(){
         console.info("CafeIdea.componentDidMount change shape to open");
-        setTimeout(()=>this.toMeFromChild('creator',{type: "CHANGE_SHAPE", shape: 'open', distance: 1}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
+        setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
