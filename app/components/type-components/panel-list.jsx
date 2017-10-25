@@ -302,7 +302,7 @@ class RASPPanelList extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetListoType(typeList) {
-    for (let i = 0; i < typeList.length; i++) { this.panelList[i] = { content: [] }; }
+    for (let i = 0; i < typeList.length; i++) { this.panelList[i] = { content: null }; }
     this.setState({ typeList: typeList });
   }
 
@@ -316,7 +316,6 @@ class RASPPanelList extends React.Component {
 
   render() {
     console.info("RASPPanelList.render",this.props);
-    const content = [];
     let loading;
     let crumbs = [];
     let { typeList } = this.state;
@@ -353,7 +352,8 @@ class RASPPanelList extends React.Component {
                   boxSizing: "border-box",
                   backgroundColor: active ? "#000" : visible ? "#fff" : "#fff",
                   color: active ? "#fff" : visible ? "#000" : null
-                }}>
+                }}
+                key={type.name+'-'+i}>
                 {type.name}
               </button>
             )
@@ -373,7 +373,7 @@ class RASPPanelList extends React.Component {
       );
 
       if (rasp.shape==='open' && typeList.length) {
-        this.panelList[currentPanel].content = [(
+        this.panelList[currentPanel].content = 
           <TypeComponent component={typeList[currentPanel].component}
             parent={panel.parent}
             type={typeList[currentPanel]}
@@ -384,7 +384,6 @@ class RASPPanelList extends React.Component {
             limit={panel.limit}
             rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this,currentPanel) }}
           />
-        )];
       }
 
       return (
@@ -400,10 +399,11 @@ class RASPPanelList extends React.Component {
                   }}
                 >
                   {this.panelList.map((panelListItem, i) => {
-                    if (panelListItem.content.length) {
+                    if (panelListItem.content) {
                       return (
                         <div id={`panel-list-${i}`}
                           ref={`panel-list-${i}`}
+                          key={typeList[i]._id+'-'+(panel.parent._id||'none')+'-'+i}
                           style={{
                             display: rasp.shape==='open'?"inline-block":'none',
                             verticalAlign: 'top',
@@ -415,7 +415,7 @@ class RASPPanelList extends React.Component {
                         </div>
                       );
                     } else
-                      return [];
+                      return null;
                   })}
                 </div>
               }

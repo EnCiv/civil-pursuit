@@ -169,7 +169,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 );
                 setTimeout(()=>rasp.toParent({ type: "RESULTS", results: this.results}),0);
             } else 
-                setTimmeout(()=>rasp.toParent({ type: "ISSUES"}),0);
+                setTimeout(()=>rasp.toParent({ type: "ISSUES"}),0);
         }
         return (
             <section id="syn-panel-qsort-harmony">
