@@ -110,7 +110,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
         if (!Object.keys(this.props.finale).length) {
             loading.push(
-                <div className="gutter text-center">
+                <div key="loading" className="gutter text-center">
                     <p>Loading ...</p>
                 </div>
             );
@@ -139,7 +139,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
             <section id="syn-panel-qsort-finale">
                 {direction}
                 {done}
-                <div style={{ position: 'relative', display: 'block'}}>
+                <div key="flip-list" style={{ position: 'relative', display: 'block'}}>
                     <div className="qsort-flip-move-articles">
                         { content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />) }
                     </div>

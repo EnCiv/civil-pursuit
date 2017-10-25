@@ -115,7 +115,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         if (!Object.keys(this.props.index).length) {
             loading.push(
-                <div className="gutter text-center">Nothing here?</div>
+                <div key="loading" className="gutter text-center">Nothing here?</div>
             );
         } else {
             if (this.props.sections['unsorted'].length) { issues++ }
@@ -125,7 +125,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 if (qb.max) {
                     if (this.props.sections[criteria].length > qb.max) {
                         direction.push(
-                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
+                            <div key="max" className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
                                 {qb.direction}
                             </div>
                         )
@@ -137,7 +137,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     if(!this.mounted[item._id] || this.mounted[item._id].criteria !== criteria){
                         this.mounted[item._id]=(
                             {   content: 
-                                <div style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
+                                <div key={item._id} style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
@@ -156,7 +156,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             });
             if (!issues) {
                 done.push(
-                    <div className='instruction-text'>
+                    <div key="instruction" className='instruction-text'>
                         {this.QSortButtonList['unsorted'].direction}
                         <Button small shy
                             onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
@@ -175,7 +175,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             <section id="syn-panel-qsort-harmony">
                 {direction}
                 {done}
-                <div style={{
+                <div key="flip-list" style={{
                     position: 'relative',
                     display: 'block',
                 }}>

@@ -119,7 +119,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         if ( ! (shared && shared.why && shared.why[this.whyName] && Object.keys(shared.why[this.whyName]).length)) {
             // if we don't have any data to work with 
             direction.push(
-                <div className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>Click next to continue.</div>
+                <div key="direction" className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>Click next to continue.</div>
             )
         } else {
             this.buttons.forEach((name) => {
@@ -129,7 +129,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                     console.info("QSortRefine qb")
                     if (this.state.sections[name].length > qb.max) {
                         direction.push(
-                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
+                            <div key={'direction-'+name}className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
                                 {qb.direction}
                             </div>
                         )
@@ -157,7 +157,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         }
         if (!issues) {
             done.push(
-                <div className='instruction-text'>
+                <div key="done" className='instruction-text'>
                     {this.ButtonList['unsorted'].direction}
                     <Button small shy
                         onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
@@ -176,7 +176,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
             <section id="syn-panel-qsort">
                 {direction}
                 {done}
-                <div style={{ position: 'relative', display: 'block'}}>
+                <div key="flip-move-list" style={{ position: 'relative', display: 'block'}}>
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                             {content.map(article => <QSortRefineItem {...article} key={article.id} />)}
