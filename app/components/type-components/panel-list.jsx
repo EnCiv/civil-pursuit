@@ -187,9 +187,9 @@ class RASPPanelList extends React.Component {
         for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== "issues") { panelStatus[i] = "issues";}
       }
     }else if(action.type==="PANEL_BUTTON"){
-      const {currentPanel}=action;
-      if( currentPanel===0 || panelStatus[currentPanel]==='done' || panelStatus[currentPanel-1]==='done') {
-        delta.currentPanel=currentPanel;
+      const {nextPanel}=action;
+      if( nextPanel===0 || panelStatus[nextPanel]==='done' || panelStatus[nextPanel-1]==='done') {
+        delta.currentPanel=nextPanel;
         delta.shape='open';
       }
     } else if(action.type==="PANEL_LIST_CLOSE"){
@@ -347,7 +347,7 @@ class RASPPanelList extends React.Component {
             let active = (currentPanel === i );
             let buttonActive = active || visible;
             return(
-              <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", currentPanel: i}) : null}
+              <button onClick={buttonActive ? ()=>rasp.toParent({type: "PANEL_BUTTON", nextPanel: i}) : null}
                 className={!(active || visible) ? 'inactive' : ''}
                 title={type.instruction}
                 style={{

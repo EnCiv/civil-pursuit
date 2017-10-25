@@ -142,7 +142,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
             // if we don't have any data to work with 
             direction.push(<div key="instruction" className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}}>
-                    No values were tagged ${this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
+                    No values were tagged {this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
             </div>)
         } else {
             this.buttons.forEach((name) => {

@@ -82,34 +82,43 @@ class RASPNextStep extends ReactActionStatePathClient {
     render() {
 
         const { user, rasp, panelNum, parent } = this.props;
-        var results=null;
 
-        const onServer = typeof window === 'undefined';
+        const buttonStyle={
+            display: "inline",
+            padding: "0.5em",
+            border: "1px solid #666",
+            boxSizing: "border-box",
+            backgroundColor: "#000" ,
+            color: "#fff"
+          };
 
         return (
             <section id="syn-next-step">
                 <div className="syn-next-step">
-                    <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", currentPanel: 0})}
+                    <button
+                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 0})}
+                            title={"Answer this question again"}
                             className="next-step"
-                            style={{ backgroundColor: 'black', color: 'white' }}
+                            style={buttonStyle}
                             >
                             <span className="civil-button-text">{"Contribute Another Idea"}</span>
-                    </Button>
-                    <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", currentPanel: 1})}
+                    </button>
+                    <button 
+                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 1})}
                             className="next-step"
-                            style={{ backgroundColor: 'black', color: 'white' }}
+                            title={"Sort through more ideas that people have written"}
+                            style={buttonStyle}
                             >
                             <span className="civil-button-text">{"Sort More Ideas"}</span>
-                    </Button>
-                    <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "PANEL_LIST_CLOSE"})}
+                    </button>
+                    <button 
+                            onClick={()=>{this.props.rasp.toParent({type: "PANEL_LIST_CLOSE"}); setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}),0)}}
                             className="next-step"
-                            style={{ backgroundColor: 'black', color: 'white' }}
+                            title={"Move on to the next question"}
+                            style={buttonStyle}
                             >
                             <span className="civil-button-text">{"Continue to the next Question"}</span>
-                    </Button>
+                    </button>
                 </div>
             </section>
         );
