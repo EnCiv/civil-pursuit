@@ -222,7 +222,7 @@ class RASPItem extends ReactActionStatePathClient {
       } else {
         var nextState={};
         if(this.state.hint) nextState.hint=false;
-        if(this.min && !this.props.position) { // do we need put in a smaller minHeight because there is not enough to fill the minimum
+        if(this.props.min && !this.props.position) { // do we need put in a smaller minHeight because there is not enough to fill the minimum
 
           let buttonsR = this.refs.buttons.getBoundingClientRect();
           let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
