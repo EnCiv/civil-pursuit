@@ -83,41 +83,37 @@ class RASPNextStep extends ReactActionStatePathClient {
 
         const { user, rasp, panelNum, parent } = this.props;
 
-        const buttonStyle={
-            display: "inline",
-            padding: "0.5em",
-            border: "1px solid #666",
-            boxSizing: "border-box",
-            backgroundColor: "#000" ,
-            color: "#fff"
-          };
-
         return (
             <section id="syn-next-step">
                 <div className="syn-next-step">
                     <button
                             onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 0})}
                             title={"Answer this question again"}
-                            className="next-step"
-                            style={buttonStyle}
+                            className="syn-next-step-button"
                             >
-                            <span className="civil-button-text">{"Contribute Another Idea"}</span>
+                            <span >{"Contribute Another Idea"}</span>
                     </button>
                     <button 
                             onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 1})}
-                            className="next-step"
+                            className="syn-next-step-button"
                             title={"Sort through more ideas that people have written"}
-                            style={buttonStyle}
                             >
-                            <span className="civil-button-text">{"Sort More Ideas"}</span>
+                            <span >{"Sort More Ideas"}</span>
                     </button>
                     <button 
                             onClick={()=>{this.props.rasp.toParent({type: "PANEL_LIST_CLOSE"}); setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}),0)}}
-                            className="next-step"
+                            className="syn-next-step-button"
                             title={"Move on to the next question"}
-                            style={buttonStyle}
                             >
-                            <span className="civil-button-text">{"Continue to the next Question"}</span>
+                            <span >{"Continue to the next Question"}</span>
+                    </button>
+                    
+                    <button 
+                            onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: {}})}
+                            className="syn-next-step-button"
+                            title={"Move on to the next question"}
+                            >
+                            <span >{"Community Review"}</span>
                     </button>
                 </div>
             </section>
