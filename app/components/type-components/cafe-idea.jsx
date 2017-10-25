@@ -88,9 +88,11 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
         return (
             <section id="syn-cafe-idea">
-                <div>
-                    <div>{parent.subject}></div>
-                    <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
+                <div className="syn-cafe-idea">
+                    <Item item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
+                    <div className="syn-cafe-idea-creator">
+                        <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
+                    </div>
                 </div>
             </section>
         );
