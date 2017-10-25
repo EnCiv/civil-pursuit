@@ -28,8 +28,7 @@ class RASPHarmony extends ReactActionStatePathClient {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
-    var raspProps={rasp: props.rasp};
-    super(raspProps, 'side', 1);
+    super(props, 'side', 1);
     console.info("RASPHarmony.constructor", this.props)
   }
 
