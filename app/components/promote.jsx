@@ -30,8 +30,7 @@ export default class Promote extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class RASPPromote extends ReactActionStatePathClient {
     constructor(props) {
-        var raspProps = { rasp: props.rasp };
-        super(raspProps, 'side');
+        super(props, 'side');
         //console.info("RASPPromote.constructor", this.props)
         this.transitionedOC = [];
         if(!(props.rasp)) logger.error("RASPPromote rasp missing");

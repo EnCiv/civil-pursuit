@@ -58,14 +58,15 @@ export default class TransitionOC extends React.Component {
     }
 
     render () {
+        const {children, active, className, newProps}=this.props; // consume children and active
         var classes = ClassNames( 
-            this.props.className, 
+            className, 
             'opened-closed',
             this.state.shape
         )
 
         return (
-            <div {...this.props} className={classes} ref='ele'  >
+            <div {...newProps} className={classes} ref='ele'  >
                 { this.props.children }
             </div>
         );
