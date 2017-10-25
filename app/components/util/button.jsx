@@ -27,11 +27,11 @@ class Button extends React.Component {
 
   render () {
     const classes = [this.props.className || ''];
-    var buttonProps=Object.assign({},this.props);
+    var {children, ...buttonProps}=this.props;
 
     for ( let prop in this.constructor.propTypes ) {
-      if ( this.props[prop] ) {
-        classes.push(prop);
+      if ( typeof this.props[prop] !== 'undefined') {
+        if(this.props[prop]) classes.push(prop);
         delete buttonProps[prop];
       }
     }

@@ -21,7 +21,7 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   state = {
-    video:        false,
+    video: '',
     title: '',
     titleLookingUp: false,
     titleError: false
@@ -239,8 +239,8 @@ class Creator extends React.Component {
       ];
     }
     if(this.props.type.referenceMethod!="disabled"){
-      reference=[
-                      <Row center-items>
+      reference=
+              <Row center-items>-
                 <Icon
                   icon        =   "globe"
                   spin        =   { true }
@@ -281,8 +281,6 @@ class Creator extends React.Component {
                   key           = "pencil"
                   />
               </Row>
-
-      ]
     }
   
 
