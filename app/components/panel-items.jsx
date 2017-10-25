@@ -184,6 +184,33 @@ class RASPPanelItems extends ReactActionStatePathClient {
         if(parts.length) rasp.pathSegment=parts.join(',');
         else rasp.pathSegment=null;
       }
+    },
+    decendant: {
+      itemActive: (rasp,item)=>{
+        return (rasp.shortId === item.id) || (!rasp.shortId)
+      },
+      itemShape: (rasp, item)=>{
+        return (rasp.shortId === item.id ? 'open' : 'truncated')
+      },
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if (action.type==="DECENDANT_FOCUS") {
+            delta.decendantFocus=true;
+        } else if (action.type==="DECENDANT_UNFOCUS") {
+            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+        } else
+          return false; // action has not been processed
+        return true; // action has been processed
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        rasp.shape = rasp.decendantFocus ? 'decendant' : (rasp.shortId ? 'open' : initialRASP.shape);
+        let parts=[];
+        if(rasp.decendantFocus)parts.push('d');
+        if(rasp.shortId)parts.push(rasp.shortId);
+        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
+        if(parts.length) rasp.pathSegment=parts.join(',');
+        else rasp.pathSegment=null;
+      }
     }
   }
 
