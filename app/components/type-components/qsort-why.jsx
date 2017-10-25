@@ -189,9 +189,9 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                     </Button>
                 </div>
             );
-            this.props.rasp.toParent({ type: "RESULTS", results: this.results});
+            setTimeout(()=>this.props.rasp.toParent({ type: "RESULTS", results: this.results}),0);
         }else 
-            rasp.toParent({ type: "ISSUES"});
+            setTimeout(()=>rasp.toParent({ type: "ISSUES"}),0);
 
         return (
             <section id="syn-panel-qsort">

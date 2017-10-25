@@ -150,8 +150,8 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                         </Button>
                     </div>
                 )
-                this.props.rasp.toParent({type: "RESULTS", results});
-            } else this.props.rasp.toParent({type: "ISSUES"});
+                setTimeout(()=>this.props.rasp.toParent({type: "RESULTS", results}),0);
+            } else setTimeout(()=>this.props.rasp.toParent({type: "ISSUES"}),0);
 
             let creatorPanel;
 
