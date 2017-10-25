@@ -192,7 +192,12 @@ class RASPPanelList extends React.Component {
         delta.currentPanel=currentPanel;
         delta.shape='open';
       }
-    } else return null;
+    } else if(action.type==="PANEL_LIST_CLOSE"){
+      delta.shape='truncated';
+      Object.keys(this.toChild).forEach(child => { // send the action to every child
+        this.toChild[child]({type: "CLEAR_PATH"})
+      });
+    }else return null;
     Object.assign(nextRASP,rasp,delta);
     var parts=[];
     if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}

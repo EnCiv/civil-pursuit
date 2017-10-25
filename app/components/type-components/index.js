@@ -14,6 +14,7 @@ var  Components={
         'LoginPanel': require('./login-panel').default,
         'ProfilePanel': require('./profile-panel').default,
         'CafeIdea': require('./cafe-idea').default,
+        'NextStep': require('./next-step').default,
         'QSortRandomItems': require('./qsort-random-items').default,
         'QSortTotals': require('./qsort-totals').default
     }
