@@ -62,8 +62,8 @@ class PanelHead extends React.Component {
         if (this.props.children && this.props.children.length && this.props.children.length !== 1) console.error("PanelHead expected 1 child received:", this.props.children.length);
         return React.Children.map(this.props.children, (child, i) => {
             var rasp=Object.assign({}, this.props.rasp, {toParent: this.toMeFromChild.bind(this, i)})
-            var newProps = Object.assign({}, this.props, moreProps, {rasp} );
-            if(newProps.children) delete newProps.children;
+            var {children, ...newProps} = this.props;
+            Object.assign(newProps, moreProps, {rasp} );
             return React.cloneElement(child, newProps, child.props.children)
         });
     }

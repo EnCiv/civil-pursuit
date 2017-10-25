@@ -6,14 +6,12 @@ import Components                  from "./item-components/"
 
 class ItemComponent extends React.Component{
     render(){
-        var newProps=Object.assign(this.props);
-        if(newProps.children) delete newProps.children;
+        const {children, component, part, ...newProps}=this.props; // children to be discarded from newProps
         logger.trace("ItemComponent", this.props );
-        const {component, part} = this.props;
         const cObj=Components[component];
         if(typeof cObj !== "object" ) logger.error("ItemComponent component not defined", {component, part});
         else {
-            const Component = cObj[newProps.part];
+            const Component = cObj[part];
             if(typeof Component !== "function" ) logger.trace("ItemComponent part not defined", {component, part});
             else return(<Component {...newProps} /> );
         }
