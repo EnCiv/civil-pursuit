@@ -125,11 +125,21 @@ class RASPItem extends ReactActionStatePathClient {
         }
       }
     } else if (action.type === "DECENDANT_UNFOCUS" && action.distance===1){
-      if(rasp.decendantFocus) delta.decendantFocus=false;  // my child has unfocused
+      // my child has unfocused
+        delta.shape='truncated'; 
+        delta.button=null; 
+        if(rasp.decendantFocus) delta.decendantFocus=false;
+        delta.readMore=false;
     }else if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.distance>1){
         delta.readMore = false; // if the user is working on stuff further below, close the readmore
         // don't change the shape.
+      } else if(action.distance===1 && action.shape==='truncated'){
+        // child changed to truncated
+        delta.shape='truncated'; 
+        delta.button=null; 
+        if(rasp.decendantFocus) delta.decendantFocus=false;
+        delta.readMore=false;
       }
     } else
       return null;  // if you don't handle the type, let the default handlers prevail
