@@ -29,6 +29,11 @@ class RASPPanelItems extends ReactActionStatePathClient {
     //var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
     super(props, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
+    let visMeth=this.props.type && this.props.type.visualMethod || 'default';
+    if(!(this.vM= this.visualMethod[visMeth])) {
+      console.error("PanelItems.constructor visualMethod unknown:",visMeth)
+      this.vM=this.visualMethod['default'];
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,42 +83,28 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
-    } else if (action.type==="DECENDANT_FOCUS") {
-        if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
-          delta.decendantFocus=true;
-    } else if (action.type==="DECENDANT_UNFOCUS") {
-      if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
-    } else 
+    } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta))
+        ; //then do nothing - it's been done if (action.type==="DECENDANT_FOCUS") {
+     else 
       return null; // don't know this action, null so the default methods can have a shot at it
 
     Object.assign(nextRASP, rasp, delta);
-    if(nextRASP.shortId)
-      nextRASP.shape=nextRASP.decendantFocus ? 'title' : 'open';
-    else nextRASP.shape=defaultRASP.shape;
-    let parts=[];
-    if(nextRASP.decendantFocus)parts.push('d');
-    if(nextRASP.shortId)parts.push(nextRASP.shortId);
-    if(nextRASP.shortId && nextRASP.shortId.length!==5)console.error("PanelItems.actionToState shortId length should be 5, was",nextRASP.shortId.length);
-    if(parts.length) nextRASP.pathSegment=parts.join(',');
-    else nextRASP.pathSegment=null;
-
+    this.vM.deriveRASP(nextRASP,defaultRASP)
     return nextRASP;
   }
 
   // set the state from the pathSegment. 
   // the shortId is the path segment
   segmentToState(action, initialRASP) {
-    var nextRASP={shape: initialRASP.shape, pathSegment: action.segment};
+    var nextRASP={};
     var parts = action.segment.split(',');
     parts.forEach(part=>{
       if(part==='d') nextRASP.decendantFocus=true;
       else if(part.length===5) nextRASP.shortId=part;
       else console.info("PanelItems.segmentToState unexpected part:", part);
-    })
-    if(!nextRASP.shortId) 
-      console.error("PanelItems.segmentToState no shortId found!");
-    else
-      nextRASP.shape=nextRASP.decendantFocus? 'title' : 'open';
+    }) 
+    this.vM.deriveRASP(nextRASP,initialRASP);
+    if(nextRASP.pathSegment !== action.segment) console.error("PanelItems.segmentToAction calculated path did not match",action.pathSegment, nextRASP.pathSegment )
     return { nextRASP, setBeforeWait: true }
   }
 
@@ -127,6 +118,73 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.rasp.toParent({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
       },0)
     }
+    let visMeth=newProps.type && newProps.type.visualMethod || 'default';
+    if(!(this.vM= this.visualMethod[visMeth])) {
+      console.error("PanelItems.componentWillReceiveProps visualMethod unknown:", visMeth)
+      this.vM=this.visualMethod['default'];
+    }
+  }
+
+  visualMethod={
+    default: {
+      // whether or not to show items in this list.  
+      itemActive: (rasp,item)=>{
+        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
+      },
+      // the shape to give child items in the Panel
+      itemShape: (rasp, item)=>{
+        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
+      },
+      // process actions for this visualMethod
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if (action.type==="DECENDANT_FOCUS") {
+          if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+            delta.decendantFocus=true;
+        } else if (action.type==="DECENDANT_UNFOCUS") {
+            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+        } else
+          return false;
+        return true; 
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : initialRASP.shape;
+        let parts=[];
+        if(rasp.decendantFocus)parts.push('d');
+        if(rasp.shortId)parts.push(rasp.shortId);
+        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
+        if(parts.length) rasp.pathSegment=parts.join(',');
+        else rasp.pathSegment=null;
+      }
+    },
+    ooview: {
+      itemActive: (rasp,item)=>{
+        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
+      },
+      itemShape: (rasp, item)=>{
+        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
+      },
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if (action.type==="DECENDANT_FOCUS") {
+          if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+            delta.decendantFocus=true;
+        } else if (action.type==="DECENDANT_UNFOCUS") {
+            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+        } else
+          return false;
+        return true; 
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : initialRASP.shape;
+        let parts=[];
+        if(rasp.decendantFocus)parts.push('d');
+        if(rasp.shortId)parts.push(rasp.shortId);
+        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
+        if(parts.length) rasp.pathSegment=parts.join(',');
+        else rasp.pathSegment=null;
+      }
+    }
   }
 
   mounted = [];  // we render items and store them in this array.  No need to rerender them every time
@@ -134,25 +192,21 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, user, rasp } = this.props;
+    const { limit, skip, type, parent, items, count, user, rasp, visualMethod='ooview' } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
     let bgc = 'white';
 
       var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
-      console.info("PanelItems.render buttons:", buttons);
 
       content = items.map(item => {
-          let shape = rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated';
-          //if(items.length===1 && rasp && rasp.shape==='truncated') shape='open';  // if there is only one item and in the list and the panel is 'truncated' then render it open
-          var itemRASP = { shape: shape, depth: this.props.rasp.depth, toParent: this.toMeFromChild.bind(this, item.id) };  // inserting me between my parent and my child
           if (!this.mounted[item.id]) { // only render this once
             this.mounted[item.id] = (<ItemStore item={item} key={`item-${item._id}`}>
               <Item
                 item={item}
                 user={user}
-                rasp={itemRASP}
+                rasp={this.childRASP(this.vM.itemShape(rasp, item), item.id)}
                 hideFeedback={this.props.hideFeedback}
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}
@@ -161,7 +215,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={(rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={this.vM.itemActive(rasp,item)} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );
