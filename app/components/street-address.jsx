@@ -24,7 +24,7 @@ class StreetAddress extends React.Component {
     addressString(){
         const {line1, city, state, zip}=this.info;
         return (
-            (line1 || '') + ', ' + (city || '') + ' ' + (DynamicSelector.value('state',state,()=>this.forceUpdate()) || '') + (zip || '') // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
+            (line1 || '') + ', ' + (city || '') + ' ' + (DynamicSelector.value('state',state,()=>this.forceUpdate()) || '') +' '+ (zip || '') // DynamicSelector might return null the first time, but the civic api will probably figure out the state from the zip
         )
     }
 
