@@ -39,6 +39,11 @@ class RASPItem extends ReactActionStatePathClient {
     //var raspProps = { rasp: props.rasp };
     super(props, 'button');
     if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
+    let visMeth=this.props.type && this.props.type.visualMethod || 'default';
+    if(!(this.vM= this.visualMethods[visMeth])) {
+      console.error("RASPItem.constructor visualMethod unknown:",visMeth)
+      this.vM=this.visualMethods['default'];
+    }
     console.info("RASPItem.constructor");
   }
 
@@ -54,8 +59,64 @@ class RASPItem extends ReactActionStatePathClient {
     return button;
   }
 
+  visualMethods={
+    default: {
+      // whether or not to show this component
+      active: (rasp)=>{
+        return (rasp.shape !== 'collapsed');
+      },
+      // whether or not to show a child
+      childActive: (rasp,button)=>{
+        return (rasp.button === button)
+      },
+      // the shape to give a child, when it is initially mounted
+      childShape: (rasp, button)=>{
+        switch(rasp.shape){
+          case 'title':
+            if(rasp.button === button) return 'open';
+            else return 'truncated';
+          case 'open':
+            if(rasp.button === button) return 'open'
+            else return 'truncated';
+          case 'truncated':
+            return 'truncated';
+          default:
+            return rasp.shape;
+        }
+      },
+      // process actions for this visualMethod
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if (action.type==="DECENDANT_FOCUS") {
+          if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+            delta.decendantFocus=true;
+        } else if (action.type==="DECENDANT_UNFOCUS") {
+            if(action.distance==1 && rasp.decendantFocus) {
+                delta.decendantFocus=false;
+                delta.button=null;
+                delta.readMore=false;
+            }
+        } else
+          return false;
+        return true; 
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        if(rasp.button || rasp.readMore){
+          rasp.shape=rasp.decendantFocus ? 'title' : 'open'
+        } else 
+          rasp.shape=initialRASP.shape;
+        // calculate the pathSegment and return the new state
+        let parts = [];
+        if (rasp.readMore) parts.push('r');
+        if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
+        if (rasp.decendantFocus) parts.push('d');
+        rasp.pathSegment = parts.join(',');
+      }
+    }
+  }
+
   segmentToState(action,initialRASP) {  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
-    var nextRASP = { shape: initialRASP.shape, pathSegment: action.segment };
+    var nextRASP = {};
     let parts = action.segment.split(',');
     let button = null;
     let matched = 0;
@@ -63,22 +124,20 @@ class RASPItem extends ReactActionStatePathClient {
       if (part === 'r') {
         nextRASP.readMore = true;
         matched += 1;
-        nextRASP.shape = nextRASP.decendantFocus ? 'title': 'open';
       } else if (part==='d'){
         nextRASP.decendantFocus = true;
         matched +=1;
-        nextRASP.shape = 'title';
       } else if (button=this.someButton(part)) {
         nextRASP.button = button;
         matched += 1;
-        nextRASP.shape = nextRASP.decendantFocus ? 'title': 'open';
       }
     });
     if (!matched || matched < parts.length) logger.error("RASPItem SET_PATH didn't match all pathSegments", { matched }, { parts }, { action });
+    this.vM.deriveRASP(nextRASP,initialRASP);
     return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, rasp, source = 'CHILD', defaultRASP) { // this function is going to be called by the RASP manager, rasp is the current RASP state
+  actionToState(action, rasp, source = 'CHILD', initialRASP) { // this function is going to be called by the RASP manager, rasp is the current RASP state
     logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextRASP = {};
     let delta = {};
@@ -118,18 +177,8 @@ class RASPItem extends ReactActionStatePathClient {
         delta.readMore = true;
         if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
       } 
-    } else if (action.type === "DECENDANT_FOCUS"){
-      if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){
-        if(action.distance>1) {
-          delta.decendantFocus=true;
-        }
-      }
-    } else if (action.type === "DECENDANT_UNFOCUS" && action.distance===1){
-      // my child has unfocused
-        delta.shape='truncated'; 
-        delta.button=null; 
-        if(rasp.decendantFocus) delta.decendantFocus=false;
-        delta.readMore=false;
+    } else if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
+        ; // do nothing - it's already been done
     }else if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.distance>1){
         delta.readMore = false; // if the user is working on stuff further below, close the readmore
@@ -145,16 +194,7 @@ class RASPItem extends ReactActionStatePathClient {
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
     Object.assign(nextRASP, rasp, delta);
-    if(nextRASP.button || nextRASP.readMore){
-      nextRASP.shape=nextRASP.decendantFocus ? 'title' : 'open'
-    } else 
-      nextRASP.shape=defaultRASP.shape;
-    // calculate the pathSegment and return the new state
-    let parts = [];
-    if (nextRASP.readMore) parts.push('r');
-    if (nextRASP.button) parts.push(nextRASP.button[0]); // must ensure no collision of first character of item-component names
-    if (nextRASP.decendantFocus) parts.push('d');
-    nextRASP.pathSegment = parts.join(',');
+    this.vM.deriveRASP(nextRASP, initialRASP);
     return nextRASP;
   }
 
@@ -176,7 +216,6 @@ class RASPItem extends ReactActionStatePathClient {
       truncable.addEventListener('click', this.transparentEventListener, false);
       this.textHint(); //see if we need to give a hint
     }
-    //if(this.props.rasp.shape==='open' && !this.props.rasp.button && !this.props.rasp.readMore ) this.props.rasp.toParent({type: "CHANGE_SHAPE", shape: 'open'}); // to set the initial state for open
   }
 
   componentWillUnmount() { // if item is null, only a simple div is returned.
@@ -206,6 +245,11 @@ class RASPItem extends ReactActionStatePathClient {
     this.textHint();
     setTimeout(this.textHint.bind(this), 500); // this sucks but double check the hint in 500Ms in case the environment has hanged - like you are within a double wide that's collapsing
     if (newProps.item && newProps.item.subject && newProps.item.subject !== this.title) { this.title = newProps.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
+    let visMeth=newProps.type && newProps.type.visualMethod || 'default';
+    if(!(this.vM= this.visualMethods[visMeth])) {
+      console.error("RASPItem.componentWillReceiveProps visualMethod unknown:", visMeth)
+      this.vM=this.visualMethods['default'];
+    }
   }
 
 
@@ -222,7 +266,7 @@ class RASPItem extends ReactActionStatePathClient {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (!(this.props.rasp && this.props.rasp.readMore) && this.props.rasp.shape!=='title') {
+    if (!(this.props.rasp && this.props.rasp.readMore) && !this.props.rasp.decendantFocus) {
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
       let truncableR = truncable.getBoundingClientRect();
@@ -265,7 +309,7 @@ class RASPItem extends ReactActionStatePathClient {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    if (this.props.rasp.shape === 'truncated') { return this.readMore(e); }
+    if (!this.props.rasp.readMore) { return this.readMore(e); }
 
     let win = window.open(this.refs.link.href, this.refs.link.target);
     if (win) {
@@ -298,46 +342,29 @@ class RASPItem extends ReactActionStatePathClient {
       noReference = false;
     }
 
-    var childShape=(shape,button)=>{
-      switch(shape){
-        case 'title':
-          if(rasp.button === button) return 'open';
-          else return 'truncated';
-        case 'open':
-          if(rasp.button === button) return 'open'
-          else return 'truncated';
-        case 'truncated':
-          return 'truncated';
-        case 'collapsed':
-          return 'collapsed';
-        default:
-          return shape;
-      }
-    }
-
     // a button could be a string, or it could be an object which must have a property component
     var renderPanel = (button) => {
       if(typeof button==='string')
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
-          rasp={{ depth: rasp.depth, shape: childShape(shape,button), toParent: this.toMeFromChild.bind(this, button) }}
-          item={item} active={rasp.button === button} style={style} />);
+          rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
+          item={item} active={this.vM.childActive(rasp, button)} style={style} />);
       else if (typeof button==='object')
         return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button.component}
-          rasp={{ depth: rasp.depth, shape: childShape(shape, button.component), toParent: this.toMeFromChild.bind(this, button.component) }}
-          item={item} active={rasp.button === button.component } style={style} {...button} />);
+          rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
+          item={item} active={this.vM.childActive(rasp, button.component)} style={style} {...button} />);
     }
 
     // a button could be a string, or it could be an object which must have a property component
     var renderButton = (button) => {
       if(typeof button === 'string')
-        return (<ItemComponent {...this.props} component={button} part={'button'} active={rasp.button === button} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} />);
+        return (<ItemComponent {...this.props} component={button} part={'button'} active={this.vM.childActive(rasp, button)} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} />);
       else if (typeof button === 'object')
-        return (<ItemComponent {...this.props} {...button} part={'button'} active={rasp.button === button.component} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}/>);
+        return (<ItemComponent {...this.props} {...button} part={'button'} active={this.vM.childActive(rasp, button.component)} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}/>);
     }
 
     return (
       <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={`item-${item._id}`} >
-        <Accordion active={shape !== 'collapsed'} text={true} >
+        <Accordion active={this.vM.active(rasp)} text={true} >
           <ItemMedia className={classShape} onClick={this.readMore.bind(this)}
             item={item}
             ref="media"

@@ -30,9 +30,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
     super(props, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
     let visMeth=this.props.type && this.props.type.visualMethod || 'default';
-    if(!(this.vM= this.visualMethod[visMeth])) {
+    if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("PanelItems.constructor visualMethod unknown:",visMeth)
-      this.vM=this.visualMethod['default'];
+      this.vM=this.visualMethods['default'];
     }
   }
 
@@ -119,20 +119,20 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },0)
     }
     let visMeth=newProps.type && newProps.type.visualMethod || 'default';
-    if(!(this.vM= this.visualMethod[visMeth])) {
+    if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("PanelItems.componentWillReceiveProps visualMethod unknown:", visMeth)
-      this.vM=this.visualMethod['default'];
+      this.vM=this.visualMethods['default'];
     }
   }
 
-  visualMethod={
+  visualMethods={
     default: {
       // whether or not to show items in this list.  
-      itemActive: (rasp,item)=>{
+      childActive: (rasp,item)=>{
         return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
       },
       // the shape to give child items in the Panel
-      itemShape: (rasp, item)=>{
+      childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
       },
       // process actions for this visualMethod
@@ -158,10 +158,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
       }
     },
     ooview: {
-      itemActive: (rasp,item)=>{
+      childActive: (rasp,item)=>{
         return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
       },
-      itemShape: (rasp, item)=>{
+      childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
@@ -180,16 +180,16 @@ class RASPPanelItems extends ReactActionStatePathClient {
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
-        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
+        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
         if(parts.length) rasp.pathSegment=parts.join(',');
         else rasp.pathSegment=null;
       }
     },
     decendant: {
-      itemActive: (rasp,item)=>{
+      childActive: (rasp,item)=>{
         return (rasp.shortId === item.id) || (!rasp.shortId)
       },
-      itemShape: (rasp, item)=>{
+      childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : 'truncated')
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
@@ -207,7 +207,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
-        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
+        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
         if(parts.length) rasp.pathSegment=parts.join(',');
         else rasp.pathSegment=null;
       }
@@ -219,7 +219,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, user, rasp, visualMethod='ooview' } = this.props;
+    const { limit, skip, type, parent, items, count, user, rasp } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
@@ -233,7 +233,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
               <Item
                 item={item}
                 user={user}
-                rasp={this.childRASP(this.vM.itemShape(rasp, item), item.id)}
+                rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
                 hideFeedback={this.props.hideFeedback}
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}
@@ -242,7 +242,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
             );
           }
           return (
-            <Accordion active={this.vM.itemActive(rasp,item)} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={this.vM.childActive(rasp,item)} name='item' key={item._id +'-panel-item'}>
               {this.mounted[item.id]}
             </Accordion>
           );
