@@ -83,9 +83,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.items.push(action.item);
       }
       delta.shortId = action.item.id;
-    } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta))
+    } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
         ; //then do nothing - it's been done if (action.type==="DECENDANT_FOCUS") {
-     else 
+     } else 
       return null; // don't know this action, null so the default methods can have a shot at it
 
     Object.assign(nextRASP, rasp, delta);
@@ -205,10 +205,16 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if (action.distance >= 0 && rasp.decendantFocus) delta.decendantFocus = false;
         } else if (action.type === "FOCUS") {
           delta.focus = true;
-          setTimeout(() => rasp.toParent("DECENDANT_FOCUS"), 0)
+          if(rasp.shape!=='open'){
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "CHANGE_SHAPE", shape: 'truncated'}));
+          }
+          setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
         } else if (action.type === "UNFOCUS") {
           delta.focus = false;
-          setTimeout(() => rasp.toParent("DECENDANT_UNFOCUS"), 0)
+          if(rasp.shape!=='title'){
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "CHANGE_SHAPE", shape: 'title'}));
+          }
+          setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
         } else
           return false; // action has not been processed continute checking
         return true; // action has been processed

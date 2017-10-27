@@ -49,22 +49,21 @@ class RASPHarmony extends ReactActionStatePathClient {
     if(action.type==="CHILD_SHAPE_CHANGED"){
       if(action.shape==='open'){
         delta.side=action.side; // action is to open, this side is going to be the open side
-        delta.shape='open'
       } else if(action.side === rasp.side) { 
         delta.side=null; // if action is to truncate (not open), and it's from the side that's open then truncate this
-        delta.shape=defaultRASP.shape;
         this.toChild[rasp.side]({type: "CHANGE_SHAPE", shape: defaultRASP.shape});
       }
       if(delta.side && rasp.side && rasp.side!== delta.side) this.toChild[rasp.side]({type: "RESET_STATE"}); // if a side is going to be open, and it's not the side that is open, close the other side
-      if(delta.side) delta.pathSegment=delta.side; // if a side is open, include it in the pathSegment
-      else delta.pathSegment=null; //otherwise no path segment
-      Object.assign(nextRASP, rasp, delta);
-      return nextRASP; // return the new state
-    } else if(action.type==="DECENDANT_FOCUS"){
-        delta.shape=open;
-        // if not previously open, open the other side too
+    } else if(action.type==="DECENDANT_FOCUS") {
         this.toChild[(action.side === 'L') ? 'R' : 'L']({type: "CHANGE_SHAPE", shape: "open"}) 
-    } else return null; // don't know the action type so let the default handler have it
+    } else if(action.type==="DECENDANT_UNFOCUS") {
+      this.toChild[(action.side === 'L') ? 'R' : 'L']({type: "RESET_SHAPE"}) 
+    } else 
+      return null; // don't know the action type so let the default handler have it
+    Object.assign(nextRASP,rasp,delta);
+    nextRASP.shape = nextRASP.side ? 'open' : defaultRASP.shape;
+    nextRASP.pathSegment= nextRASP.side ? nextRASP.side : null;
+    return nextRASP;
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

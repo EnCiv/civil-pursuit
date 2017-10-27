@@ -190,6 +190,10 @@ class RASPItem extends ReactActionStatePathClient {
                 delta.button=null;
                 delta.readMore=false;
             }
+        } else if(action.type==="FOCUS"){
+          delta.focus=true;
+        } else if (action.type==="UNFOCUS"){
+          delta.focus=false;
         } else
           return false;
         return true; 
@@ -199,7 +203,7 @@ class RASPItem extends ReactActionStatePathClient {
         if(rasp.button || rasp.readMore){
           rasp.shape=rasp.decendantFocus ? 'title' : 'open'
         } else 
-          rasp.shape=initialRASP.shape;
+          rasp.shape= rasp.focus ? 'truncated' : initialRASP.shape;
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');
