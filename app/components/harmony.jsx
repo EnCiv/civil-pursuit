@@ -45,8 +45,8 @@ class RASPHarmony extends ReactActionStatePathClient {
   actionToState(action,rasp, source, defaultRASP) {
     if(this.debug) console.info("RASPHarmony.actionToState", ...arguments);
     var nextRASP={};
+    let delta={};
     if(action.type==="CHILD_SHAPE_CHANGED"){
-      let delta={};
       if(action.shape==='open'){
         delta.side=action.side; // action is to open, this side is going to be the open side
         delta.shape='open'
@@ -60,32 +60,32 @@ class RASPHarmony extends ReactActionStatePathClient {
       else delta.pathSegment=null; //otherwise no path segment
       Object.assign(nextRASP, rasp, delta);
       return nextRASP; // return the new state
+    } else if(action.type==="DECENDANT_FOCUS"){
+        delta.shape=open;
+        // if not previously open, open the other side too
+        if(rasp.shape!=='open') this.toChild[(action.side === 'L') ? 'R' : 'L']({type: "CHANGE_SHAPE", shape: "open"}) 
     } else return null; // don't know the action type so let the default handler have it
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { active, item, user, rasp } = this.props;
+    const { active, item, rasp, ...otherProps } = this.props;
     console.info("Harmony.render",this.props);
-    const {depth}=rasp;
     var shape=rasp.shape === 'open' ? 'truncated' : rasp.shape;
-
-    const leftRASP={shape, depth, toParent: this.toMeFromChild.bind(this, 'L')};  // inserting me between my parent and my child
-    const rightRASP={shape, depth, toParent: this.toMeFromChild.bind(this, 'R')};  // inserting me between my parent and my child
 
     let  contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side==='L'} key={item._id+'-left'}>
-          <PanelStore type={ item.harmony.types[0] } parent={ item } limit={this.props.limit}>
-              <PanelItems user={ user } rasp={leftRASP} hideFeedback = {this.props.hideFeedback}/>
+          <PanelStore type={ item.harmony.types[0] } parent={ item } >
+              <PanelItems {...otherProps} rasp={this.childRASP(shape, 'L')} />
           </PanelStore>
         </DoubleWide>
       );
 
     let contentRight = (
         <DoubleWide className="harmony-con" right expanded={rasp.side==='R'}  key={item._id+'-right'} >
-          <PanelStore type={ item.harmony.types[1] } parent={ item } limit={this.props.limit}>
-              <PanelItems user={ user } rasp={rightRASP} hideFeedback = {this.props.hideFeedback} />
+          <PanelStore type={ item.harmony.types[1] } parent={ item } >
+              <PanelItems {...otherProps} rasp={this.childRASP(shape,'R')} />
           </PanelStore>
         </DoubleWide>
       );
