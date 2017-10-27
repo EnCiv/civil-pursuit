@@ -29,7 +29,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
     //var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
     super(props, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
-    let visMeth=this.props.type && this.props.type.visualMethod || 'default';
+    let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
     if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("PanelItems.constructor visualMethod unknown:",visMeth)
       this.vM=this.visualMethods['default'];
@@ -118,7 +118,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         this.props.rasp.toParent({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
       },0)
     }
-    let visMeth=newProps.type && newProps.type.visualMethod || 'default';
+    let visMeth=newProps.visualMethod || newProps.type && newProps.type.visualMethod || 'default';
     if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("PanelItems.componentWillReceiveProps visualMethod unknown:", visMeth)
       this.vM=this.visualMethods['default'];
@@ -138,8 +138,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
-          if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
-            delta.decendantFocus=true;
+          ; // just ignore it
         } else if (action.type==="DECENDANT_UNFOCUS") {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
         } else
@@ -166,7 +165,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
-          if((action.distance>1) && this.props.type && this.props.type.visualMethod && (this.props.type.visualMethod==='ooview'))
+          if(action.distance>1)
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS") {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
@@ -185,25 +184,26 @@ class RASPPanelItems extends ReactActionStatePathClient {
         else rasp.pathSegment=null;
       }
     },
-    decendant: {
+    titleize: {
       childActive: (rasp,item)=>{
         return (rasp.shortId === item.id) || (!rasp.shortId)
       },
       childShape: (rasp, item)=>{
-        return (rasp.shortId === item.id ? 'open' : 'truncated')
+        return (rasp.shortId === item.id ? 'open' : (rasp.decendantFocus? 'truncated' :'title'))
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
+          if(action.distance>=0)
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+            if(action.distance>=0 && rasp.decendantFocus) delta.decendantFocus=false;
         } else
-          return false; // action has not been processed
+          return false; // action has not been processed continute checking
         return true; // action has been processed
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
-        rasp.shape = rasp.decendantFocus ? 'decendant' : (rasp.shortId ? 'open' : initialRASP.shape);
+        rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : 'title'; //if something hapens with a decendant, display the list as open or truncated. otherwise it's titleized.
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);

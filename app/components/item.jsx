@@ -39,7 +39,7 @@ class RASPItem extends ReactActionStatePathClient {
     //var raspProps = { rasp: props.rasp };
     super(props, 'button');
     if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
-    let visMeth=this.props.item && this.props.item.type && this.props.item.type.visualMethod || 'default';
+    let visMeth=this.props.visualMethod || this.props.item && this.props.item.type && this.props.item.type.visualMethod || 'default';
     if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("RASPItem.constructor visualMethod unknown:",visMeth)
       this.vM=this.visualMethods['default'];
@@ -103,6 +103,59 @@ class RASPItem extends ReactActionStatePathClient {
       }
     },
     ooview: {
+      // whether or not to show this component
+      active: (rasp)=>{
+        return (rasp.shape !== 'collapsed');
+      },
+      // whether or not to show a child
+      childActive: (rasp,button)=>{
+        return (rasp.button === button)
+      },
+      // the shape to give a child, when it is initially mounted
+      childShape: (rasp, button)=>{
+        switch(rasp.shape){
+          case 'title':
+            if(rasp.button === button) return 'open';
+            else return 'truncated';
+          case 'open':
+            if(rasp.button === button) return 'open'
+            else return 'truncated';
+          case 'truncated':
+            return 'truncated';
+          default:
+            return rasp.shape;
+        }
+      },
+      // process actions for this visualMethod
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if (action.type==="DECENDANT_FOCUS") {
+          if(action.distance>1)
+            delta.decendantFocus=true;
+        } else if (action.type==="DECENDANT_UNFOCUS") {
+            if(action.distance===1 && rasp.decendantFocus) {
+                delta.decendantFocus=false;
+                delta.button=null;
+                delta.readMore=false;
+            }
+        } else
+          return false;
+        return true; 
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        if(rasp.button || rasp.readMore){
+          rasp.shape=rasp.decendantFocus ? 'title' : 'open'
+        } else 
+          rasp.shape=initialRASP.shape;
+        // calculate the pathSegment and return the new state
+        let parts = [];
+        if (rasp.readMore) parts.push('r');
+        if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
+        if (rasp.decendantFocus) parts.push('d');
+        rasp.pathSegment = parts.join(',');
+      }
+    },
+    titleize: {  // same as ooView 
       // whether or not to show this component
       active: (rasp)=>{
         return (rasp.shape !== 'collapsed');
@@ -286,7 +339,7 @@ class RASPItem extends ReactActionStatePathClient {
     this.textHint();
     setTimeout(this.textHint.bind(this), 500); // this sucks but double check the hint in 500Ms in case the environment has hanged - like you are within a double wide that's collapsing
     if (newProps.item && newProps.item.subject && newProps.item.subject !== this.title) { this.title = newProps.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
-    let visMeth=newProps.item && newProps.item.type && newProps.item.type.visualMethod || 'default';
+    let visMeth=newProps.visualMethod || newProps.item && newProps.item.type && newProps.item.type.visualMethod || 'default';
     if(!(this.vM= this.visualMethods[visMeth])) {
       console.error("RASPItem.componentWillReceiveProps visualMethod unknown:", visMeth)
       this.vM=this.visualMethods['default'];
