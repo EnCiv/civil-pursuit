@@ -63,7 +63,7 @@ class RASPHarmony extends ReactActionStatePathClient {
     } else if(action.type==="DECENDANT_FOCUS"){
         delta.shape=open;
         // if not previously open, open the other side too
-        if(rasp.shape!=='open') this.toChild[(action.side === 'L') ? 'R' : 'L']({type: "CHANGE_SHAPE", shape: "open"}) 
+        this.toChild[(action.side === 'L') ? 'R' : 'L']({type: "CHANGE_SHAPE", shape: "open"}) 
     } else return null; // don't know the action type so let the default handler have it
   }
 

@@ -169,7 +169,13 @@ class RASPPanelItems extends ReactActionStatePathClient {
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS") {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
-        } else
+        } else if(action.type==="FOCUS"){
+           delta.focus=true;
+           setTimeout(()=>rasp.toParent("DECENDANT_FOCUS"),0)
+         }else if(action.type==="UNFOCUS"){
+          delta.focus=false;
+          setTimeout(()=>rasp.toParent("DECENDANT_UNFOCUS"),0)
+       } else
           return false;
         return true; 
       },
@@ -189,21 +195,27 @@ class RASPPanelItems extends ReactActionStatePathClient {
         return (rasp.shortId === item.id) || (!rasp.shortId)
       },
       childShape: (rasp, item)=>{
-        return (rasp.shortId === item.id ? 'open' : (rasp.decendantFocus? 'truncated' :'title'))
+        return (rasp.shortId === item.id ? 'open' : ((rasp.decendantFocus || rasp.focus)? 'truncated' :'title'))
       },
-      actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS") {
-          if(action.distance>=0)
-            delta.decendantFocus=true;
-        } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance>=0 && rasp.decendantFocus) delta.decendantFocus=false;
+      actionToState: (action, rasp, source, initialRASP, delta) => {
+        if (action.type === "DECENDANT_FOCUS") {
+          if (action.distance >= 0)
+            delta.decendantFocus = true;
+        } else if (action.type === "DECENDANT_UNFOCUS") {
+          if (action.distance >= 0 && rasp.decendantFocus) delta.decendantFocus = false;
+        } else if (action.type === "FOCUS") {
+          delta.focus = true;
+          setTimeout(() => rasp.toParent("DECENDANT_FOCUS"), 0)
+        } else if (action.type === "UNFOCUS") {
+          delta.focus = false;
+          setTimeout(() => rasp.toParent("DECENDANT_UNFOCUS"), 0)
         } else
           return false; // action has not been processed continute checking
         return true; // action has been processed
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
-        rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : 'title'; //if something hapens with a decendant, display the list as open or truncated. otherwise it's titleized.
+        rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : (rasp.focus ? 'truncated' : 'title'); //if something hapens with a decendant, display the list as open or truncated. otherwise it's titleized.
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
