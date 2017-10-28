@@ -135,6 +135,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
       },
+      childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
@@ -147,7 +148,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
-        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : initialRASP.shape;
+        rasp.shape = rasp.shortId ? 'open' : 'truncated';
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
@@ -163,6 +164,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
       },
+      childVisualMethod: ()=>'ooview',
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
           if(action.distance>1)
@@ -181,7 +183,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
-        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : initialRASP.shape;
+        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : truncated;
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
@@ -197,6 +199,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childShape: (rasp, item)=>{
         return (rasp.shortId === item.id ? 'open' : ((rasp.decendantFocus || rasp.focus)? 'truncated' :'title'))
       },
+      childVisualMethod: ()=>'titleize',
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "DECENDANT_FOCUS") {
           if (action.distance >= 0)
@@ -206,13 +209,13 @@ class RASPPanelItems extends ReactActionStatePathClient {
         } else if (action.type === "FOCUS") {
           delta.focus = true;
           if(rasp.shape!=='open'){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "CHANGE_SHAPE", shape: 'truncated'}));
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
           setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
         } else if (action.type === "UNFOCUS") {
           delta.focus = false;
           if(rasp.shape!=='title'){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "CHANGE_SHAPE", shape: 'title'}));
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }
           setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
         } else
@@ -255,6 +258,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
                 hideFeedback={this.props.hideFeedback}
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}
+                visualMethod={this.vM.childVisualMethod()}
               />
             </ItemStore>
             );

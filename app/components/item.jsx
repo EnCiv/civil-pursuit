@@ -84,6 +84,7 @@ class RASPItem extends ReactActionStatePathClient {
             return rasp.shape;
         }
       },
+      childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         return false;
@@ -93,7 +94,7 @@ class RASPItem extends ReactActionStatePathClient {
         if(rasp.button || rasp.readMore){
           rasp.shape= 'open'
         } else 
-          rasp.shape=initialRASP.shape;
+          rasp.shape='truncated';
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');
@@ -126,6 +127,7 @@ class RASPItem extends ReactActionStatePathClient {
             return rasp.shape;
         }
       },
+      childVisualMethod: ()=>'ooview',
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
@@ -146,7 +148,7 @@ class RASPItem extends ReactActionStatePathClient {
         if(rasp.button || rasp.readMore){
           rasp.shape=rasp.decendantFocus ? 'title' : 'open'
         } else 
-          rasp.shape=initialRASP.shape;
+          rasp.shape='truncated';
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');
@@ -179,6 +181,7 @@ class RASPItem extends ReactActionStatePathClient {
             return rasp.shape;
         }
       },
+      childVisualMethod: ()=>'titleize',
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
@@ -194,6 +197,10 @@ class RASPItem extends ReactActionStatePathClient {
           delta.focus=true;
         } else if (action.type==="UNFOCUS"){
           delta.focus=false;
+        } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
+          delta.untitleize=false;
+        } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
+          delta.untitleize=true;
         } else
           return false;
         return true; 
@@ -201,9 +208,9 @@ class RASPItem extends ReactActionStatePathClient {
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
         if(rasp.button || rasp.readMore){
-          rasp.shape=rasp.decendantFocus ? 'title' : 'open'
+          rasp.shape=rasp.decendantFocus ? ((rasp.untitleize || rasp.focus)? 'truncated': 'title') : 'open'
         } else 
-          rasp.shape= rasp.focus ? 'truncated' : initialRASP.shape;
+          rasp.shape= (rasp.focus || rasp.untitleize) ? 'truncated' : 'titleize';
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');
@@ -445,19 +452,29 @@ class RASPItem extends ReactActionStatePathClient {
       if(typeof button==='string')
         return (<ItemComponent {...this.props} component={button} part={'panel'} key={item._id + '-' + button}
           rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
+          visualMethod={this.vM.childVisualMethod()}
           item={item} active={this.vM.childActive(rasp, button)} style={style} />);
       else if (typeof button==='object')
         return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button.component}
           rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
+          visualMethod={this.vM.childVisualMethod()}
           item={item} active={this.vM.childActive(rasp, button.component)} style={style} {...button} />);
     }
 
     // a button could be a string, or it could be an object which must have a property component
     var renderButton = (button) => {
       if(typeof button === 'string')
-        return (<ItemComponent {...this.props} component={button} part={'button'} active={this.vM.childActive(rasp, button)} rasp={rasp} onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} />);
+        return ( <ItemComponent {...this.props} 
+                         component={button} part={'button'} active={this.vM.childActive(rasp, button)} 
+                         rasp={rasp} visualMethod={this.vM.childVisualMethod()}
+                         onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} 
+          />);
       else if (typeof button === 'object')
-        return (<ItemComponent {...this.props} {...button} part={'button'} active={this.vM.childActive(rasp, button.component)} rasp={rasp} onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}/>);
+        return ( <ItemComponent {...this.props} {...button}
+                         part={'button'} active={this.vM.childActive(rasp, button.component)} 
+                         rasp={rasp} visualMethod={this.vM.childVisualMethod()}
+                         onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}
+        />);
     }
 
     return (
