@@ -86,6 +86,7 @@ class RASPItem extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
+      enableHint: ()=>true,
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         return false;
       },
@@ -129,6 +130,9 @@ class RASPItem extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'ooview',
       // process actions for this visualMethod
+      enableHint: ()=>{
+        return (!this.props.rasp.decendantFocus)
+      },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
           if(action.distance>1)
@@ -182,6 +186,9 @@ class RASPItem extends ReactActionStatePathClient {
         }
       },
       childVisualMethod: ()=>'titleize',
+      enableHint: ()=>{
+        return (!this.props.rasp.decendantFocus && this.props.rasp.untitleize)
+      },
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DECENDANT_FOCUS") {
@@ -193,10 +200,6 @@ class RASPItem extends ReactActionStatePathClient {
                 delta.button=null;
                 delta.readMore=false;
             }
-        } else if(action.type==="FOCUS"){
-          delta.focus=true;
-        } else if (action.type==="UNFOCUS"){
-          delta.focus=false;
         } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
           delta.untitleize=false;
         } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
@@ -208,9 +211,9 @@ class RASPItem extends ReactActionStatePathClient {
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
         if(rasp.button || rasp.readMore){
-          rasp.shape=rasp.decendantFocus ? ((rasp.untitleize || rasp.focus)? 'truncated': 'title') : 'open'
+          rasp.shape=rasp.decendantFocus ? (rasp.untitleize? 'truncated': 'title') : 'open'
         } else 
-          rasp.shape= (rasp.focus || rasp.untitleize) ? 'truncated' : 'titleize';
+          rasp.shape=  rasp.untitleize ? 'truncated' : 'title';
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');
@@ -371,7 +374,7 @@ class RASPItem extends ReactActionStatePathClient {
     //console.info("textHint before", this.state, this.props.vs.state);
     if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
 
-    if (!(this.props.rasp && this.props.rasp.readMore) && !this.props.rasp.decendantFocus) {
+    if (!(this.props.rasp && this.props.rasp.readMore) && this.vM.enableHint()) {
       let truncable = ReactDOM.findDOMNode(this.refs.truncable);
       let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
       let truncableR = truncable.getBoundingClientRect();
