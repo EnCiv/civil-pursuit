@@ -11,15 +11,19 @@ import Promote from '../promote';
 exports.button=class PromoteButton extends React.Component {
 
   render() {
-    const { active, panel, item, onClick, user } = this.props;
+    const { active, panel, item, onClick, user, promoteMethod } = this.props;
     let promoteButtonLabel = null;
     var success = false;
     var inactive = false;
     let title = null;
+    const type=panel && panel.type;
 
-    if (item.type && item.type.promoteMethod !== "hidden") {
-      if (panel && panel.type && panel.type.promoteButtonLabel) {
-        promoteButtonLabel = item.upvote.userDidUpvote ? panel.type.promoteButtonLabel.active : panel.type.promoteButtonLabel.inactive;
+    let promoteValue= promoteMethod || (type && type.promoteMethod) || 'visible'; // passed in by props overrides what's in type
+    promoteValue= (type && type.promoteMethod && (type.promoteMethod[type.promoteMethod.length-1]==='!') && type.promoteMethod.substring(0,type.promoteMethod.length-1)) || promoteValue;  // unless what's in type ends in !
+
+    if (promoteValue!=='hidden') {
+      if (type && type.promoteButtonLabel) {
+        promoteButtonLabel = item.upvote.userDidUpvote ? type.promoteButtonLabel.active : type.promoteButtonLabel.inactive;
       } else {
         promoteButtonLabel = item.upvote.userDidUpvote ? "Upvoted" : "Upvote";
       }

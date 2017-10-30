@@ -70,7 +70,7 @@ class PanelHead extends React.Component {
 
     render() {
         if(this.degug) console.info("RASPPanelHead.render", this.childName, this.props);
-        const { panel, cssName, rasp, user } = this.props;
+        const { panel, cssName, rasp, user, createMethod } = this.props;
         var title, name, instruction = [], content=[], creator=[];
         // decompose panel into it's props if applicable
         const type= (typeof this.props.type === 'object' && this.props.type) || panel && panel.type || this.props.type || null;
@@ -79,6 +79,10 @@ class PanelHead extends React.Component {
         const items=this.props.items || panel && panel.items || [];
         const skip=this.props.skip || panel && panel.skip || 0;
         const bgc="white";
+        let createValue= createMethod || (type && type.createMethod) || 'visible'; // passed in by props overrides what's in type
+        createValue= (type && type.createMethod && (type.createMethod[type.createMethod.length-1]==='!') && type.createMethod.substring(0,type.createMethod.length-1)) || createValue;  // unless what's in type ends in !
+
+
         if (type) {
             name = cssName + '--' + (type._id || type);
             title = type.name;
@@ -105,7 +109,7 @@ class PanelHead extends React.Component {
                     />
                 </Accordion>
             );            
-            if (!items.length && !(type && type.createMethod === 'hidden')) {
+            if (!items.length && !(createValue==='hidden')) {
                 content.push(
                 <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
                     <a href="#" onClick={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
@@ -121,7 +125,7 @@ class PanelHead extends React.Component {
                     heading={[
                         (<h4 onClick={()=>rasp.toParent({type: rasp.focus ? "UNFOCUS" : "FOCUS"})}
                             key="title">{title}</h4>), 
-                        (type.createMethod == "hidden" && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
+                        ((createValue==='hidden') && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
                             (
                             <Icon
                                 icon="plus"
