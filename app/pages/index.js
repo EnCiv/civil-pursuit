@@ -2,6 +2,7 @@
 
 import { Document, Element, Elements }  from 'cinco/dist';
 import publicConfig                     from '../../public.json';
+import fixedScroll                      from '../lib/util/fixed-scroll';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -37,6 +38,7 @@ class Script extends Element {
   }
 }
 
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class GoogleAnalytics extends Element {
@@ -47,6 +49,19 @@ class GoogleAnalytics extends Element {
   }
 }
 
+class ResponsiveFontSize extends Element {
+  constructor () {
+    super('script');
+    this.text("if(navigator.userAgent.match(/iPhone|Android|Blackberry|Opera Mini|IEMobile/i)) document.getElementsByTagName('html')[0].style.fontSize='8px'")
+  }
+}
+
+class noScrollFlip extends Element {
+  constructor () {
+    super('script');
+    this.text(fixedScroll.toString()+"\nfixedScroll();")
+  }
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Layout extends Document {
@@ -61,7 +76,9 @@ class Layout extends Document {
     this.add(
       new Element('title').text('Civil Pursuit | Solutions to what Divides Us'),
       this.uACompatible(),
-      this.viewport()
+      this.viewport(),
+      new ResponsiveFontSize(),
+      new noScrollFlip()
     );
 
     this.favicon();
