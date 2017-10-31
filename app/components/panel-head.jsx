@@ -123,7 +123,7 @@ class PanelHead extends React.Component {
                 <Panel
                     className={name+' vs-'+rasp.shape}
                     heading={[
-                        (<h4 onClick={()=>rasp.toParent({type: rasp.focus ? "UNFOCUS" : "FOCUS"})}
+                        (<h4 onClick={()=>rasp.toParent({type: "TOGGLE_FOCUS"})}
                             key="title">{title}</h4>), 
                         ((createValue==='hidden') && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
                             (

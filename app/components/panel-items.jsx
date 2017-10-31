@@ -173,17 +173,17 @@ class RASPPanelItems extends ReactActionStatePathClient {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
         } else if(action.type==="FOCUS"){
            delta.focus=true;
-           setTimeout(()=>rasp.toParent("DECENDANT_FOCUS"),0)
+           setTimeout(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
          }else if(action.type==="UNFOCUS"){
           delta.focus=false;
-          setTimeout(()=>rasp.toParent("DECENDANT_UNFOCUS"),0)
+          setTimeout(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
        } else
           return false;
         return true; 
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
-        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : truncated;
+        rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : 'truncated';
         let parts=[];
         if(rasp.decendantFocus)parts.push('d');
         if(rasp.shortId)parts.push(rasp.shortId);
@@ -206,13 +206,19 @@ class RASPPanelItems extends ReactActionStatePathClient {
             delta.decendantFocus = true;
         } else if (action.type === "DECENDANT_UNFOCUS") {
           if (action.distance >= 0 && rasp.decendantFocus) delta.decendantFocus = false;
-        } else if (action.type === "FOCUS") {
+          if (action.distance===1) {
+            delta.focus=false;
+            if(rasp.shape!=='title'){
+              this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
+            }
+          }
+        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus)) {
           delta.focus = true;
           if(rasp.shape!=='open'){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
           setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
-        } else if (action.type === "UNFOCUS") {
+        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus)) {
           delta.focus = false;
           if(rasp.shape!=='title'){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));

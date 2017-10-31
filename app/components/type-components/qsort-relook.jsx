@@ -103,9 +103,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, shared } = this.props;
+        const { user, rasp, shared, type } = this.props;
         const items=shared.items;
         const qbuttons=this.props.qbuttons || this.QSortButtonList
+
+        const {createMethod="visible", promoteMethod="visible", feedbackMethod="visible"} = type;
 
         console.info("RASPQSortReLook");
 
@@ -141,9 +143,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
-                                            buttons={['QSortButtons', { component: 'Harmony', visualMethod: 'titleize', shape: 'title', limit: 5, hideFeedback: true, createMethod: 'visible', promoteMethod: 'visible', active: criteria === 'unsorted' }]}
+                                            buttons={['QSortButtons', { component: 'Harmony', visualMethod: 'titleize', shape: 'title', limit: 5, hideFeedback: feedbackMethod==='hidden', createMethod: createMethod, promoteMethod: promoteMethod, active: criteria === 'unsorted' }]}
                                             qbuttons={qbuttons}
-                                            rasp={ {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)} }
+                                            rasp={ this.childRASP('truncated', item._id) }
                                         />
                                     </ItemStore>
                                 </div>,

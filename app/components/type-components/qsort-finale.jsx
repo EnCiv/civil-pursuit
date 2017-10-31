@@ -101,8 +101,9 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { user, rasp, shared } = this.props;
+        const { user, rasp, shared, type } = this.props;
         const items=shared.items;
+        const {createMethod="visible", promoteMethod="visible", feedbackMethod='visible'} = type;
 
         console.info("QSortFinale");
         const onServer = typeof window === 'undefined';
@@ -120,7 +121,6 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                 Object.keys(this.QSortButtonList).forEach(button => qbuttonTotals[button]=Object.assign({},QSortButtonList[button],{total: qobj[button] || 0}) );
                 var item = items[qobj.index];
                 let active = rasp.shortId ? rasp.shortId === item.id ? true : false : true;
-                let shape = 'truncated';
                 content.push(
                     {
                         user: user,
@@ -128,8 +128,11 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                         buttons: [{component: 'QSortButtons', qbuttons: qbuttonTotals},{ component: 'Harmony', shape: 'truncated-no-instructions' }],
                         qbuttons: qbuttonTotals,
                         id: item._id,
-                        rasp: {shape: shape, depth: rasp.depth, toParent: this.toMeFromChild.bind(this,item.id)},
-                        active: active
+                        rasp: this.childRASP('truncated', item.id),
+                        active: active,
+                        createMethod: createMethod,
+                        promoteMethod: promoteMethod,
+                        hideFeedback: feedbackMethod==='hidden'
                     }
                 );
             });
@@ -150,23 +153,15 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     }
 }
 
-//                            <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-//                            </FlipMove>
 
 class QSortFlipItemHarmony extends React.Component {
-    constructor(props){
-        super(props)
-        console.info("QSortFlipItemHarmony.constructor",props);
-    }
     render() {
-        const { qbuttons, buttons, item, user, rasp, active } = this.props;
+        const { active, item, qbuttons, ...otherProps} = this.props;
         return (
             <Accordion active={active} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
                 <ItemStore item={item} key={`item-${item._id}`}>
                     <Item
-                        user={user}
-                        buttons={buttons}
-                        rasp={rasp}
+                        {...otherProps}
                     />
                 </ItemStore>
             </Accordion>
