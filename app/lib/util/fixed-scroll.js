@@ -15,7 +15,7 @@ function fixedScroll(){
     }
     h.setAttribute("style","position: fixed; width:"+b.width+'px; top:'+(-b.top)+'px;');
     var l1=h.addEventListener("wheel",handler);
-    var l2=h.addEventListener("touchmove",handler);
+    var l2=h.addEventListener("touchmove",handler, {passive: false});
 }
 
 export default fixedScroll;
