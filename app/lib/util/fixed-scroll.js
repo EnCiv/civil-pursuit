@@ -13,9 +13,9 @@ function fixedScroll(){
         else if (top>0) top=0;
         h.style.top=top+'px'
     }
-    h.setAttribute("style","position: fixed; width:"+b.width+'px; top:'+(-b.top)+'px;');
     var l1=h.addEventListener("wheel",handler);
     var l2=h.addEventListener("touchmove",handler, {passive: false});
+    h.setAttribute("style","position: fixed; width:"+b.width+'px; top:'+(-b.top)+'px;');
 }
 
 export default fixedScroll;
