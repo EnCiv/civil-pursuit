@@ -1,5 +1,5 @@
 'use strict';
-var ScrollSwipe = require('../lib/ScrollSwipe'); //or just use the global window.ScrollDirect if using this on the client;
+var ScrollSwipe = require('scroll-swipe'); //or just use the global window.ScrollDirect if using this on the client;
 
 class FixedScroll{
 	constructor() {

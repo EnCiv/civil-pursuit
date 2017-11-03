@@ -2,7 +2,6 @@
 
 import { Document, Element, Elements }  from 'cinco/dist';
 import publicConfig                     from '../../public.json';
-import fixedScroll                      from '../lib/util/fixed-scroll';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -56,12 +55,7 @@ class ResponsiveFontSize extends Element {
   }
 }
 
-class noScrollFlip extends Element {
-  constructor () {
-    super('script');
-    this.text(fixedScroll.toString()+"\nfixedScroll();")
-  }
-}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Layout extends Document {
@@ -78,7 +72,6 @@ class Layout extends Document {
       this.uACompatible(),
       this.viewport(),
       new ResponsiveFontSize(),
-      new noScrollFlip()
     );
 
     this.favicon();

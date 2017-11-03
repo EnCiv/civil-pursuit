@@ -16,6 +16,7 @@ import PanelList                        from './type-components/panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
 import ODGCongrat         from './odg-congrat';
+import fixedScroll                      from '../lib/util/fixed-scroll';
 
 class App extends React.Component {
 
@@ -31,6 +32,7 @@ class App extends React.Component {
         this.getTendency();
       }
       //window.onbeforeunload = this.confirmOnPageExit.bind(this);
+      fixedScroll();
     }
 
     this.state.path = props.path ;
