@@ -66,12 +66,8 @@ class FixedScroll{
 	}
 }
 
-
-function fixedScroll(){
-    var fS=new FixedScroll();
-
-    var ss = new ScrollSwipe({
-        target: document.body, // can be a div, or anything else you want to track scroll/touch events on
+var ss = new ScrollSwipe({
+        target: document.getElementsByTagName("html")[0], // can be a div, or anything else you want to track scroll/touch events on
         scrollSensitivity: 0, // the lower the number, the more sensitive
         touchSensitivity: 0, // the lower the number, the more senitive,
         scrollPreventDefault: true, // prevent default option for scroll events
@@ -80,6 +76,9 @@ function fixedScroll(){
         touchCb: fS.touchCb(),
         touchMoveCb: fS.touchMoveCb()
     });
+
+function fixedScroll(){
+    var fS=new FixedScroll();
 }
 
 export default fixedScroll;
