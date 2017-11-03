@@ -3,9 +3,12 @@ var ScrollSwipe = require('scroll-swipe'); //or just use the global window.Scrol
 
 class FixedScroll{
 	constructor() {
-		this.target=document.getElementsByTagName("html")[0];
+        this.target=document.getElementsByTagName("html")[0];
+        let w=this.target.getBoundingClientRect().width;
+        this.target.style.top="0px";
+        this.target.width=w+'px';
 		this.target.style.position="fixed";
-		this.target.style.top="0px";
+
 		return this;
 	}
 
@@ -66,6 +69,8 @@ class FixedScroll{
 	}
 }
 
+if(typeof window!== 'undefined'){
+var fS = fS=new FixedScroll();
 var ss = new ScrollSwipe({
         target: document.getElementsByTagName("html")[0], // can be a div, or anything else you want to track scroll/touch events on
         scrollSensitivity: 0, // the lower the number, the more sensitive
@@ -76,9 +81,10 @@ var ss = new ScrollSwipe({
         touchCb: fS.touchCb(),
         touchMoveCb: fS.touchMoveCb()
     });
+}
 
 function fixedScroll(){
-    var fS=new FixedScroll();
+    return;
 }
 
 export default fixedScroll;
