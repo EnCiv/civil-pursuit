@@ -75,6 +75,7 @@
     "react-flip-move": "^2.9.17",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#master",
     "redtea": "^3.4.1",
+    "scroll-swipe": "file:../scroll-swipe",
     "shallowequal": "^0.2.2",
     "should": "^7.1.0",
     "sniffr": "^1.1.4",
