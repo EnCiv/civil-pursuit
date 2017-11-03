@@ -339,8 +339,14 @@ class HttpServer extends EventEmitter {
       let segments=req.params[0].split('/');
       if(!segments || !segments.length || !segments[0].length) next();
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+      let parts=segments[0].split(',');
+      var shortId;
+      parts.forEach(part=>{
+        if(part.length===5) shortId=part;
+      });
+      if(!shortId) next();
       try {
-        Item.findOne({ id : segments[0] }).then(
+        Item.findOne({ id : shortId }).then(
           item => {
             if ( ! item ) {
               return next();
