@@ -88,7 +88,19 @@ class RASPItem extends ReactActionStatePathClient {
       // process actions for this visualMethod
       enableHint: ()=>true,
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        return false;
+        if(action.type==="CHILD_SHAPE_CHANGED"){
+          if(action.distance>1){
+            delta.readMore = false; // if the user is working on stuff further below, close the readmore
+            // don't change the shape.
+          } else if(action.distance===1 && action.shape==='truncated'){
+            // child changed to truncated
+            delta.shape='truncated'; 
+            delta.button=null; 
+            delta.readMore=false;
+          }
+        } else
+          return false;
+        return true;
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
@@ -134,7 +146,17 @@ class RASPItem extends ReactActionStatePathClient {
         return (!this.props.rasp.decendantFocus)
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS") {
+        if(action.type==="CHILD_SHAPE_CHANGED"){
+          if(action.distance>1){
+            delta.readMore = false; // if the user is working on stuff further below, close the readmore
+            // don't change the shape.
+          } else if(action.distance===1 && action.shape==='truncated'){
+            // child changed to truncated
+            delta.shape='truncated'; 
+            delta.button=null; 
+            delta.readMore=false;
+          }
+        } else if (action.type==="DECENDANT_FOCUS") {
           if(action.distance>1)
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS") {
@@ -288,17 +310,7 @@ class RASPItem extends ReactActionStatePathClient {
       } 
     } else if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
         ; // do nothing - it's already been done
-    }else if(action.type==="CHILD_SHAPE_CHANGED"){
-      if(action.distance>1){
-        delta.readMore = false; // if the user is working on stuff further below, close the readmore
-        // don't change the shape.
-      } else if(action.distance===1 && action.shape==='truncated'){
-        // child changed to truncated
-        delta.shape='truncated'; 
-        delta.button=null; 
-        delta.readMore=false;
-      }
-    } else
+    }else 
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
     Object.assign(nextRASP, rasp, delta);

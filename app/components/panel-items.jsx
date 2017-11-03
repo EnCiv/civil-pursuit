@@ -47,21 +47,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
   actionToState(action, rasp, source, defaultRASP) {
     var nextRASP = {}, delta = {};
     console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
-    if (action.type === "CHILD_SHAPE_CHANGED") {
-      if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-
-      if (action.distance === 1) { //if this action is from an immediate child 
-        if (action.shape === 'open' && action.shortId) { // a child is opening
-          if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-            this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
-          delta.shortId = action.shortId; // the new child will be open
-        } else {
-          delta.shortId = null; // turn off the shortId
-        } 
-      } else { // it's not my child that changed shape
-        delta.shortId=rasp.shortId;
-      }
-    } else if (action.type === "TOGGLE_CREATOR") {
+    if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
         delta.creator=false;
       } else { // it's off so toggle it on
@@ -138,7 +124,20 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS") {
+        if (action.type === "CHILD_SHAPE_CHANGED") {
+          if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
+          if (action.distance === 1) { //if this action is from an immediate child 
+            if (action.shape === 'open' && action.shortId) { // a child is opening
+              if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+                this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+              delta.shortId = action.shortId; // the new child will be open
+            } else {
+              delta.shortId = null; // turn off the shortId
+            } 
+          } else { // it's not my child that changed shape
+            delta.shortId=rasp.shortId;
+          }
+        } else if (action.type==="DECENDANT_FOCUS") {
           ; // just ignore it
         } else if (action.type==="DECENDANT_UNFOCUS") {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
@@ -166,7 +165,20 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'ooview',
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS") {
+        if (action.type === "CHILD_SHAPE_CHANGED") {
+          if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
+          if (action.distance === 1) { //if this action is from an immediate child 
+            if (action.shape === 'open' && action.shortId) { // a child is opening
+              if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+                this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+              delta.shortId = action.shortId; // the new child will be open
+            } else {
+              delta.shortId = null; // turn off the shortId
+            } 
+          } else { // it's not my child that changed shape
+            delta.shortId=rasp.shortId;
+          }
+        } else if (action.type==="DECENDANT_FOCUS") {
           if(action.distance>1)
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS") {
