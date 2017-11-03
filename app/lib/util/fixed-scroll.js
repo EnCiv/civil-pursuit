@@ -1,12 +1,12 @@
 'use strict';
-var ScrollSwipe = require('scroll-swipe'); //or just use the global window.ScrollDirect if using this on the client;
+var ScrollSwipe = require('./ScrollSwipe'); //or just use the global window.ScrollDirect if using this on the client;
 
 class FixedScroll{
 	constructor() {
         this.target=document.getElementsByTagName("html")[0];
         let w=this.target.getBoundingClientRect().width;
         this.target.style.top="0px";
-        this.target.width=w+'px';
+        this.target.style.width=w+'px';
 		this.target.style.position="fixed";
 
 		return this;
