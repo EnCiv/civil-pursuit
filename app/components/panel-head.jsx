@@ -63,7 +63,7 @@ class PanelHead extends React.Component {
         return React.Children.map(this.props.children, (child, i) => {
             var rasp=Object.assign({}, this.props.rasp, {toParent: this.toMeFromChild.bind(this, i)})
             var {children, ...newProps} = this.props;
-            Object.assign(newProps, moreProps, {rasp} );
+            Object.assign(newProps, moreProps, {rasp}, {key: 'ph-'+i} );
             return React.cloneElement(child, newProps, child.props.children)
         });
     }
@@ -111,7 +111,7 @@ class PanelHead extends React.Component {
             );            
             if (!items.length && !(createValue==='hidden')) {
                 content.push(
-                <div className={`syn-panel-gutter text-center vs-${rasp.shape}`}>
+                <div className={`syn-panel-gutter text-center vs-${rasp.shape}`} key='be-the-first'>
                     <a href="#" onClick={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
                     Click the + to be the first to add something here
                     </a>

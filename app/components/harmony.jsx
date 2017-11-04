@@ -12,6 +12,8 @@ import PanelStore from './store/panel';
 import DoubleWide from './util/double-wide';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 
+var other={L: 'R', R: 'L'};
+
 export default class Harmony extends React.Component {
   render() {
     console.info("Harmony above.render");
@@ -124,22 +126,22 @@ class RASPHarmony extends ReactActionStatePathClient {
           if(action.distance===1){
             if(!rasp.focus ){
               delta.focus=true;
-              this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "FOCUS" });
+              this.toChild[other[action.side]]({ type: "FOCUS" });
               setTimeout(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
             }
           }else if (action.distance===2){
             if(!rasp.focus) delta.focus=true;
             delta.side=action.side;
-            if(rasp.side && rasp.side!==action.side)  this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "RESET_SHAPE" });
+            if(rasp.side && rasp.side!==action.side)  this.toChild[other[action.side]]({ type: "RESET_SHAPE" });
           }
         } else if (action.type === "DECENDANT_UNFOCUS") {
           if(action.distance===1){
             if(rasp.focus) {
               delta.focus=false;
-              if(rasp.side) this.toChild[action.side]({ type: "UNFOCUS" })
+              this.toChild[other[action.side]]({ type: "UNFOCUS" })
               setTimeout(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
             }
-          } 
+          }
         } else
           return false;
         return true;
