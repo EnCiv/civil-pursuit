@@ -71,12 +71,13 @@ class RASPHarmony extends ReactActionStatePathClient {
   }
 
   deriveRASP = (rasp, initialRASP) => {
-    if (rasp.side) rasp.shape = 'open'
+    if (rasp.side || rasp.focus) rasp.shape = 'open'
     else rasp.shape = initialRASP.shape;
     // calculate the pathSegment and return the new state
     let parts = [];
     if (rasp.side) parts.push(rasp.side);
     if (rasp.decendantFocus) parts.push('d');
+    if (rasp.focus) parts.push('f');
     rasp.pathSegment = parts.join(',');
   }
 
@@ -101,10 +102,44 @@ class RASPHarmony extends ReactActionStatePathClient {
             this.toChild[rasp.side]({ type: "CHANGE_SHAPE", shape: initialRASP.shape });
           }
           if (delta.side && rasp.side && rasp.side !== delta.side) this.toChild[rasp.side]({ type: "RESET_STATE" }); // if a side is going to be open, and it's not the side that is open, close the other side
-        } else if (action.type === "DECENDANT_FOCUS") {
-          this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "CHANGE_SHAPE", shape: "open" })
+        } else
+          return false;
+        return true;
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: this.deriveRASP
+    },
+    titleize: {
+      // the shape to give a child, when it is initially mounted
+      childShape: (side) => {
+        let rasp = this.props.rasp;
+        return rasp.shape === 'open' ? 'truncated' : rasp.shape;
+      },
+      // visualMethod for the child
+      childVisualMethod: () => this.props.visualMethod,  // pass it on
+
+      // process actions for this visualMethod
+      actionToState: (action, rasp, source, initialRASP, delta) => {
+        if (action.type === "DECENDANT_FOCUS") {
+          if(action.distance===1){
+            if(!rasp.focus ){
+              delta.focus=true;
+              this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "CHANGE_SHAPE", shape: "open" });
+              setTimeout(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
+            }
+          }else if (action.distance===2){
+            if(!rasp.focus) delta.focus=true;
+            delta.side=action.side;
+            if(rasp.side && rasp.side!==action.side)  this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "RESET_SHAPE" });
+          }
         } else if (action.type === "DECENDANT_UNFOCUS") {
-          this.toChild[(action.side === 'L') ? 'R' : 'L']({ type: "RESET_SHAPE" })
+          if(action.distance===1){
+            if(rasp.focus) {
+              delta.focus=false;
+              if(rasp.side) this.toChild[action.side]({ type: "RESET_SHAPE" })
+              setTimeout(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
+            }
+          } 
         } else
           return false;
         return true;

@@ -272,7 +272,12 @@ class RASPItem extends ReactActionStatePathClient {
     logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextRASP = {};
     let delta = {};
-    if (action.type === "TOGGLE_BUTTON") {
+    if (action.type === "SET_BUTTON") {
+      delta.button = action.button;
+      delta.readMore = false; // if turning off a button, close readMore too
+    } else if (action.type === "RESET_BUTTON") {
+      if(rasp.button === action.button) delta.button=null;
+    }else if (action.type === "TOGGLE_BUTTON") {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
