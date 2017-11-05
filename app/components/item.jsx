@@ -281,7 +281,7 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
-      setTimeout(()=>this.props.rasp.toParent({type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
+      this.qaction(()=>this.props.rasp.toParent({type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -291,7 +291,7 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      setTimeout(()=>this.props.rasp.toParent({type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
+      this.qaction(()=>this.props.rasp.toParent({type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');
@@ -302,7 +302,7 @@ class RASPItem extends ReactActionStatePathClient {
       } else if (action.winner) { // we have a winner but it's some other item
         delta.readMore = false;
         delta.button = null;
-        setTimeout(() => this.props.rasp.toParent({ type: "OPEN_ITEM", item: action.winner, distance: -1 }));
+        this.qaction(() => this.props.rasp.toParent({ type: "OPEN_ITEM", item: action.winner, distance: -1 }));
       } else { // there wasn't a winner but we finish the promote
         delta.readMore = 'false';
         delta.button = null;

@@ -57,7 +57,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      setTimeout(()=>this.props.rasp.toParent({type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"}),0);
+      this.qaction(()=>this.props.rasp.toParent({type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
@@ -100,7 +100,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
     let oldLength = this.props.items && this.props.items.length || 0;
     if(newProps.items && (newProps.items.length > oldLength)){  // if the length changes, history needs to be updated
       console.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
-      setTimeout(()=>{
+      this.qaction(()=>{
         this.props.rasp.toParent({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
       },0)
     }
@@ -185,10 +185,10 @@ class RASPPanelItems extends ReactActionStatePathClient {
             if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
         } else if(action.type==="FOCUS"){
            delta.focus=true;
-           setTimeout(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
+           this.qaction(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
          }else if(action.type==="UNFOCUS"){
           delta.focus=false;
-          setTimeout(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
+          this.qaction(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
        } else
           return false;
         return true; 
@@ -229,13 +229,13 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if(rasp.shape!=='open'){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
-          setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
+          this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus)) {
           delta.focus = false;
           if(rasp.shape!=='title'){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }
-          setTimeout(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
+          this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
         } else
           return false; // action has not been processed continute checking
         return true; // action has been processed
