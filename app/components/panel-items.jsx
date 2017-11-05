@@ -239,6 +239,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if(action.type!=="UNFOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
         } else
           return false; // action has not been processed continute checking
+        action.toBeContinued=true; // supress shape_changed events
         return true; // action has been processed
       },
       // derive shape and pathSegment from the other parts of the RASP

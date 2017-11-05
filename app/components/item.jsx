@@ -216,11 +216,13 @@ class RASPItem extends ReactActionStatePathClient {
         if (action.type==="DECENDANT_FOCUS") {
           if(action.distance>1)
             delta.decendantFocus=true;
+            action.toBeContinued=true; // supress shape_changed events
         } else if (action.type==="DECENDANT_UNFOCUS") {
             if(action.distance===1 && rasp.decendantFocus) {
                 delta.decendantFocus=false;
                 delta.button=null;
                 delta.readMore=false;
+                action.toBeContinued=true; // supress shape_changed events
             }
         } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
           delta.untitleize=false;

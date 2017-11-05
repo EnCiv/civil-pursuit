@@ -144,6 +144,7 @@ class RASPHarmony extends ReactActionStatePathClient {
           }
         } else
           return false;
+        action.toBeContinued=true; // supress shape_changed events
         return true;
       },
       // derive shape and pathSegment from the other parts of the RASP
