@@ -126,8 +126,8 @@ class RASPHarmony extends ReactActionStatePathClient {
           if(action.distance===1){
             if(!rasp.focus ){
               delta.focus=true;
-              this.toChild[other[action.side]]({ type: "FOCUS" });
-              qaction(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
+              this.toChild[other[action.side]]({ type: "FOCUS_STATE" });
+              this.qaction(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
             }
           }else if (action.distance===2){
             if(!rasp.focus) delta.focus=true;
@@ -138,8 +138,8 @@ class RASPHarmony extends ReactActionStatePathClient {
           if(action.distance===1){
             if(rasp.focus) {
               delta.focus=false;
-              this.toChild[other[action.side]]({ type: "UNFOCUS" })
-              qaction(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
+              this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
+              this.qaction(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
             }
           }
         } else

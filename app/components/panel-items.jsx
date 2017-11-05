@@ -220,22 +220,23 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if (action.distance >= 0 && rasp.decendantFocus) delta.decendantFocus = false;
           if (action.distance===1) {
             delta.focus=false;
-            if(rasp.shape!=='title'){
+            if(rasp.focus){
               this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
             }
+            action.distance=0; // reseting distance because we are unfocused
           }
-        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus)) {
+        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
-          if(rasp.shape!=='open'){
+          if(!rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
-          this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
-        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus)) {
+          if(action.state!=="FOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
+        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
-          if(rasp.shape!=='title'){
+          if(rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }
-          this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
+          if(action.type!=="UNFOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
         } else
           return false; // action has not been processed continute checking
         return true; // action has been processed

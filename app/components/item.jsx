@@ -224,8 +224,10 @@ class RASPItem extends ReactActionStatePathClient {
             }
         } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
           delta.untitleize=false;
+          action.toBeContinuted=true;  // supress messages on shape change
         } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
           delta.untitleize=true;
+          action.toBeContinuted=true;  // supress messages on shape change
         } else
           return false;
         return true; 
