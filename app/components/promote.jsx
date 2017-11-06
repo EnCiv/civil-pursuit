@@ -67,7 +67,7 @@ class RASPPromote extends ReactActionStatePathClient {
                 delta.left = delta.cursor - 1;
                 delta.right = delta.cursor;
           } else { // done with evaluations
-              setTimeout(()=>this.props.rasp.toParent({type: "CHANGE_SHAPE", shape: 'truncated', distance: -1}),0);  // after the evaluation is done, the panel should go away
+            this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}),0);  // the uses action results in unfocusing on this component
           }
         } else if (action.type==="PROMOTE"){
           const cursor = rasp.cursor + 1;
@@ -78,12 +78,13 @@ class RASPPromote extends ReactActionStatePathClient {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             //delta.cursor=cursor; do not increment cursor past limit
+            this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}),0); // the uses action results in unfocusing on this component
             if(winner._id === this.props.itemId){ // voted up the one we started with
-                setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -1}),0);
+                this.qaction(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -1}),0);
             } else { // voted up a different one
-                setTimeout(()=>{
+                this.qaction(()=>{
                     this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinued: true})
-                    setTimeout(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -2}),0); // needs to go to the panel above this item
+                    this.qaction(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -2}),0); // needs to go to the panel above this item
                 },0);
                 //setTimeout(()=>this.props.rasp.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
             }
