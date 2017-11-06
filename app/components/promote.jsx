@@ -42,7 +42,7 @@ class RASPPromote extends ReactActionStatePathClient {
     // this is where component specific actions are converted to component specific states
     //
 
-    segmentToState(action) {
+    segmentToState(action, initialRASP) {
         const lookup = { l: 'left', r: 'right' }
         var parts = action.segment.split(',');
         var side = lookup[parts[0]] || '';  // if the first entry is not in lookup, the side is not set. 
@@ -50,13 +50,14 @@ class RASPPromote extends ReactActionStatePathClient {
         return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
-    actionToState(action, rasp) {
+    actionToState(action, rasp,source, initialRASP) {
         logger.trace("RASPPromote.actionToState", { action }, { rasp });
         var nextRASP = {}, delta={};
-        if (action.type === "CHILD_SHAPE_CHANGED") {
-            if (action.shape === 'open') delta.side = action.side; // action is to open, this side is going to be the open side
-            else if (action.side === rasp.side) delta.side = null; // if action is to truncate (not open), and it's from the side that's open then truncate this
-            if (delta.side && rasp.side && rasp.side !== delta.side) this.toChild[rasp.side]({ type: "CHANGE_STATE", shape: 'truncated' }); // if a side is going to be open, and it's not the side that is open, close the other side
+        if (action.type === "DECENDANT_FOCUS"){
+            delta.side=action.side;
+            if(rasp.side && (action.side!==rasp.side)) this.toChild[rasp.side]({ type: "CHANGE_STATE", shape: 'truncated' }); // if a side is going to be open, and it's not the side that is open, close the other side
+        } else if(action.type==="DECENDANT_UNFOCUS") {
+            delta.side=null;
         } else if (action.type === "CLEAR_EXPANDERS") {
             delta.side = null; // action is to open, this side is going to be the open side
         } else if (action.type === "NEXT"){

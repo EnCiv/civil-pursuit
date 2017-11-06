@@ -55,7 +55,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
         if (action.type === "DECENDANT_FOCUS") {
-            if (!action.itemId) logger.error("RASPQFortFinale.actionToState action without itemId", action);
+            if (!action.itemId) logger.error("RASPQFortRelook.actionToState action without itemId", action);
             if (action.itemId) {
                 delta.itemId = action.itemId;
                 delta.shape='open';

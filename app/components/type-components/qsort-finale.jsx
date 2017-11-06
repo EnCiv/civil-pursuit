@@ -52,21 +52,20 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     actionToState(action, rasp, source, initialRASP) {
         var nextRASP = {}, delta = {};
         console.info("RASPQSortFinale.actionToState", ...arguments);
-        if (action.type === "CHILD_SHAPE_CHANGED") {
+        if (action.type === "DECENDANT_FOCUS") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
-            if (action.distance === 1) { //if this action is from an immediate child 
-                if (action.shape === 'open' && action.shortId) {
-                    delta.shortId = action.shortId;
-                    if (rasp.shortId) {
-                        if (rasp.shortId !== action.shortId) {
-                            this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
-                        }
+            if (action.shortId) {
+                delta.shortId = action.shortId;
+                delta.shape='open';
+                if(rasp.shortId){
+                    if(rasp.shortId !== action.shortId){
+                        this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
                     }
-                } else {
-                    if (rasp.shortId) this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
-                    delta.shortId = null; // turn off the shortId
                 }
-            }
+            } 
+        } else if(action.type === "DECENDANT_UNFOCUS" && action.distance===1) {
+            delta.shortId = null; // turn off the shortId
+            delta.shape = 'truncated';
         } else
             return null;
         Object.assign(nextRASP, rasp, delta);
