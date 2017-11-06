@@ -16,7 +16,8 @@ var  Components={
         'CafeIdea': require('./cafe-idea').default,
         'NextStep': require('./next-step').default,
         'QSortRandomItems': require('./qsort-random-items').default,
-        'QSortTotals': require('./qsort-totals').default
+        'QSortTotals': require('./qsort-totals').default,
+        'RuleList': require('./rule-list').default
     }
 
 export default Components;

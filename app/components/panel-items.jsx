@@ -57,7 +57,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
+      this.qaction(()=>this.props.rasp.toParent({type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
