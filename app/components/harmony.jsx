@@ -96,14 +96,13 @@ class RASPHarmony extends ReactActionStatePathClient {
 
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta) => {
-        if (action.type === "CHILD_SHAPE_CHANGED") {
-          if (action.shape === 'open') {
-            delta.side = action.side; // action is to open, this side is going to be the open side
-          } else if (action.side === rasp.side) {
-            delta.side = null; // if action is to truncate (not open), and it's from the side that's open then truncate this
-            this.toChild[rasp.side]({ type: "CHANGE_SHAPE", shape: initialRASP.shape });
-          }
-          if (delta.side && rasp.side && rasp.side !== delta.side) this.toChild[rasp.side]({ type: "RESET_STATE" }); // if a side is going to be open, and it's not the side that is open, close the other side
+        if (action.type === "DECENDANT_FOCUS") {
+          delta.side = action.side; // action is to open, this side is going to be the open side
+        } else if (action.type==="DECENDANT_UNFOCUS" && (action.distance===1 || action.distance===2)) {
+            delta.side= null; 
+            if (rasp.side && action.side === rasp.side) {
+              this.toChild[rasp.side]({ type: "RESET_STATE" });  // CHANGE_SHAPE ?
+            }
         } else
           return false;
         return true;
@@ -123,28 +122,25 @@ class RASPHarmony extends ReactActionStatePathClient {
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "DECENDANT_FOCUS") {
-          if(action.distance===1){
+          if(action.distance===1 || action.distance===2){
             if(!rasp.focus ){
               delta.focus=true;
               this.toChild[other[action.side]]({ type: "FOCUS_STATE" });
               this.qaction(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
             }
-          }else if (action.distance===2){
-            if(!rasp.focus) delta.focus=true;
-            delta.side=action.side;
-            if(rasp.side && rasp.side!==action.side)  this.toChild[other[action.side]]({ type: "RESET_SHAPE" });
-          }
+            if(action.distance===2) delta.side=action.side; 
+          } 
         } else if (action.type === "DECENDANT_UNFOCUS") {
-          if(action.distance===1){
+          if(action.distance===1 || action.distsance===2){
             if(rasp.focus) {
               delta.focus=false;
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
               this.qaction(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
             }
+            delta.side=null;
           }
         } else
           return false;
-        action.toBeContinued=true; // supress shape_changed events
         return true;
       },
       // derive shape and pathSegment from the other parts of the RASP

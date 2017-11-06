@@ -54,19 +54,20 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     actionToState(action,rasp) {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
-        if (action.type === "CHILD_SHAPE_CHANGED") {
+        if (action.type === "DECENDANT_FOCUS") {
             if (!action.itemId) logger.error("RASPQFortFinale.actionToState action without itemId", action);
-                if (action.shape === 'open' && action.itemId) {
-                    delta.itemId = action.itemId;
-                    if(rasp.shape==='open' && rasp.itemId){
-                        if(rasp.itemId !== action.itemId){
-                            this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
-                        }
+            if (action.itemId) {
+                delta.itemId = action.itemId;
+                delta.shape='open';
+                if(rasp.itemId){
+                    if(rasp.itemId !== action.itemId){
+                        this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
                     }
-                } else {
-                    delta.itemId = null; // turn off the itemId
-                } 
-                delta.shape = action.shape;
+                }
+            } 
+        } else if(action.type === "DECENDANT_UNFOCUS" && action.distance===1) {
+            delta.itemId = null; // turn off the itemId
+            delta.shape = 'truncated';
         } else if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
@@ -169,9 +170,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                         </Button>
                     </div>
                 );
-                setTimeout(()=>rasp.toParent({ type: "RESULTS", results: this.results}),0);
+                this.qaction(()=>rasp.toParent({ type: "RESULTS", results: this.results}),0);
             } else 
-                setTimeout(()=>rasp.toParent({ type: "ISSUES"}),0);
+                this.qaction(()=>rasp.toParent({ type: "ISSUES"}),0);
         }
         return (
             <section id="syn-panel-qsort-harmony">

@@ -57,7 +57,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      this.qaction(()=>this.props.rasp.toParent({type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"}),0);
+      this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}),0);
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
@@ -124,23 +124,16 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "CHILD_SHAPE_CHANGED") {
-          if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-          if (action.distance === 1) { //if this action is from an immediate child 
-            if (action.shape === 'open' && action.shortId) { // a child is opening
-              if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-                this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
-              delta.shortId = action.shortId; // the new child will be open
-            } else {
-              delta.shortId = null; // turn off the shortId
-            } 
-          } else { // it's not my child that changed shape
-            delta.shortId=rasp.shortId;
-          }
-        } else if (action.type==="DECENDANT_FOCUS") {
-          ; // just ignore it
-        } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+        if (action.type === "DECENDANT_FOCUS" && action.distance===1) {
+          if (action.shortId) { // a child is opening
+            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+            delta.shortId = action.shortId; // the new child will be open
+          } 
+        } else if(action.type ==="DECENDANT_UNFOCUS" && action.distance===1){
+            if(rasp.shortId) {
+              delta.shortId=false;
+            }
         } else
           return false;
         return true; 
@@ -165,29 +158,25 @@ class RASPPanelItems extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'ooview',
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "CHILD_SHAPE_CHANGED") {
+        if (action.type === "DECENDANT_FOCUS" && action.distance===1) {
           if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
-          if (action.distance === 1) { //if this action is from an immediate child 
-            if (action.shape === 'open' && action.shortId) { // a child is opening
-              if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-                this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
-              delta.shortId = action.shortId; // the new child will be open
-            } else {
-              delta.shortId = null; // turn off the shortId
-            } 
-          } else { // it's not my child that changed shape
-            delta.shortId=rasp.shortId;
+          if (action.shortId) { // a child is opening
+            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+            delta.shortId = action.shortId; // the new child will be open
           }
-        } else if (action.type==="DECENDANT_FOCUS") {
-          if(action.distance>1)
+        } else if (action.type==="DECENDANT_FOCUS" && action.distance>1) {
             delta.decendantFocus=true;
-        } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance==1 && rasp.decendantFocus) delta.decendantFocus=false;
+        } else if (action.type==="DECENDANT_UNFOCUS"  && action.distance===1) {
+            delta.shortId=null;
+            delta.decendantFocus=false;
         } else if(action.type==="FOCUS"){
            delta.focus=true;
+           this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'open'});
            this.qaction(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
          }else if(action.type==="UNFOCUS"){
           delta.focus=false;
+          if(rasp.shortId) this.toChild[rasp.shortId]({type: "CHANGE_SHAPE", shape: 'title'});
           this.qaction(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
        } else
           return false;
@@ -223,7 +212,6 @@ class RASPPanelItems extends ReactActionStatePathClient {
             if(rasp.focus){
               this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
             }
-            action.distance=0; // reseting distance because we are unfocused
           }
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
@@ -233,6 +221,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if(action.state!=="FOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
+          delta.decendantFocus=false;
           if(rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }

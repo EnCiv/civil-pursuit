@@ -88,16 +88,13 @@ class RASPItem extends ReactActionStatePathClient {
       // process actions for this visualMethod
       enableHint: ()=>true,
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if(action.type==="CHILD_SHAPE_CHANGED"){
-          if(action.distance>1){
+        if(action.type==="DECENDANT_FOCUS" && action.distance>1 ){
             delta.readMore = false; // if the user is working on stuff further below, close the readmore
-            // don't change the shape.
-          } else if(action.distance===1 && action.shape==='truncated'){
+        }else if(action.type==="DECENDANT_UNFOCUS" && action.distance===1) {
             // child changed to truncated
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
-          }
         } else
           return false;
         return true;
@@ -146,25 +143,14 @@ class RASPItem extends ReactActionStatePathClient {
         return (!this.props.rasp.decendantFocus)
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if(action.type==="CHILD_SHAPE_CHANGED"){
-          if(action.distance>1){
-            delta.readMore = false; // if the user is working on stuff further below, close the readmore
-            // don't change the shape.
-          } else if(action.distance===1 && action.shape==='truncated'){
-            // child changed to truncated
-            delta.shape='truncated'; 
-            delta.button=null; 
-            delta.readMore=false;
-          }
-        } else if (action.type==="DECENDANT_FOCUS") {
-          if(action.distance>1)
-            delta.decendantFocus=true;
-        } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance===1 && rasp.decendantFocus) {
-                delta.decendantFocus=false;
-                delta.button=null;
-                delta.readMore=false;
-            }
+        if(action.type==="DECENDANT_FOCUS" && action.distance>1){
+          delta.readMore = false;
+          delta.decendantFocus=true;
+        }else if(action.type==="DECENDANT_UNFOCUS" && action.distance===1  && rasp.decendantFocus){
+          delta.shape='truncated'; 
+          delta.button=null; 
+          delta.readMore=false;
+          delta.decendantFocus=false;
         } else
           return false;
         return true; 
@@ -213,26 +199,19 @@ class RASPItem extends ReactActionStatePathClient {
       },
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS") {
-          if(action.distance>1)
+        if (action.type==="DECENDANT_FOCUS" && action.distance>1) {
             delta.decendantFocus=true;
-            action.toBeContinued=true; // supress shape_changed events
-        } else if (action.type==="DECENDANT_UNFOCUS") {
-            if(action.distance===1 && rasp.decendantFocus) {
+        } else if (action.type==="DECENDANT_UNFOCUS" && action.distance===1 && rasp.decendantFocus) {
                 delta.decendantFocus=false;
                 delta.button=null;
                 delta.readMore=false;
-                action.toBeContinued=true; // supress shape_changed events
-            }
         } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
           delta.untitleize=false;
-          action.toBeContinuted=true;  // supress messages on shape change
         } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
           delta.untitleize=true;
-          action.toBeContinuted=true;  // supress messages on shape change
         } else
           return false;
-        return true; 
+        return true;
       },
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{

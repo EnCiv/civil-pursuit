@@ -52,7 +52,7 @@ class PanelHead extends React.Component {
         if (action.type === "CLEAR_PATH" && source==='PARENT') {  // clear the path and reset the RASP state back to what the const
             if (this.instruction) this.instruction.show();
             return true; // pass it on
-        } else if (action.type === "CHILD_SHAPE_CHANGED" && source==='CHILD') {
+        } else if (action.type === "DECENDANT_FOCUS" /*&& source==='CHILD'*/) {
             if (this.instruction) this.instruction.hide();
             return true; // pass it on
         } else return true;
