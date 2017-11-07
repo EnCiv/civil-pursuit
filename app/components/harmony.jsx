@@ -138,7 +138,7 @@ class RASPHarmony extends ReactActionStatePathClient {
               this.qaction(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
             }
             delta.side=null;
-          }else if(action.distance==2){
+          }else if(action.distance===2){
             delta.side=null;
           }
         } else

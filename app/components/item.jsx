@@ -207,6 +207,8 @@ class RASPItem extends ReactActionStatePathClient {
                 delta.readMore=false;
         } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
           delta.untitleize=false;
+          delta.readMore=false;
+          delta.button=null;
         } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
           delta.untitleize=true;
         } else
