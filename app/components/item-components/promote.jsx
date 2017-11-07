@@ -16,7 +16,7 @@ exports.button=class PromoteButton extends React.Component {
     var success = false;
     var inactive = false;
     let title = null;
-    const type=panel && panel.type;
+    const type=(panel && panel.type) || (item && item.type);
 
     let promoteValue= promoteMethod || (type && type.promoteMethod) || 'visible'; // passed in by props overrides what's in type
     promoteValue= (type && type.promoteMethod && (type.promoteMethod[type.promoteMethod.length-1]==='!') && type.promoteMethod.substring(0,type.promoteMethod.length-1)) || promoteValue;  // unless what's in type ends in !
