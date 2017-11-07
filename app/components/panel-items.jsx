@@ -203,16 +203,21 @@ class RASPPanelItems extends ReactActionStatePathClient {
       childVisualMethod: ()=>'titleize',
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "DECENDANT_FOCUS") {
-          if (action.distance >= 0)
+          if (action.distance >= 0) {
             delta.decendantFocus = true;
-        } else if (action.type === "DECENDANT_UNFOCUS") {
-          if (action.distance >= 0 && rasp.decendantFocus) delta.decendantFocus = false;
-          if (action.distance===1) {
-            delta.focus=false;
-            if(rasp.focus){
-              this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
+            delta.focus=true;
+            if(!rasp.focus){
+              this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
             }
           }
+        } else if (action.type === "DECENDANT_UNFOCUS") {
+          if (action.distance ===1 && rasp.decendantFocus) delta.decendantFocus = false;
+          //if (action.distance===1) {
+          //  delta.focus=false;
+          //  if(rasp.focus){
+          //    this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
+          //  }
+          //}
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
           if(!rasp.focus){
