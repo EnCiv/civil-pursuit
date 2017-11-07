@@ -461,7 +461,7 @@ class RASPItem extends ReactActionStatePathClient {
           item={item} active={this.vM.childActive(rasp, button)} style={style} />);
       else if (typeof button==='object')
         return (<ItemComponent {...this.props}  part={'panel'} key={item._id + '-' + button.component}
-          rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
+          rasp={this.childRASP(this.vM.childShape(rasp,button.component),button.component)}
           visualMethod={this.vM.childVisualMethod()}
           item={item} active={this.vM.childActive(rasp, button.component)} style={style} {...button} />);
     }
