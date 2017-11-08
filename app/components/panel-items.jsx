@@ -254,7 +254,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, user, rasp, promoteMethod } = this.props;
+    const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel,  ...otherProps } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
@@ -266,14 +266,13 @@ class RASPPanelItems extends ReactActionStatePathClient {
           if (!this.mounted[item.id]) { // only render this once
             this.mounted[item.id] = (<ItemStore item={item} key={`item-${item._id}`}>
               <Item
+                {...otherProps}
                 item={item}
-                user={user}
+                parent={parent}
                 rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
-                hideFeedback={this.props.hideFeedback}
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}
                 visualMethod={this.vM.childVisualMethod()}
-                promoteMethod={promoteMethod}
               />
             </ItemStore>
             );
