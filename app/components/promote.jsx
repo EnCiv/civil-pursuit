@@ -186,8 +186,8 @@ class RASPPromote extends ReactActionStatePathClient {
             const renderFeedback = () => {
                 if (!hideFeedback) {
                     return (
-                        [<Feedback itemId={item._id} user={user} className="gutter-top solid" />,
-                        <Sliders itemId={item._id} user={user} criterias={criterias} className="promote-sliders" />]
+                        [<Feedback itemId={item._id} user={user} className="gutter-top solid" key={'feedback-'+item._id+'-'+side} />,
+                        <Sliders itemId={item._id} user={user} criterias={criterias} className="promote-sliders"  key={'slider-'+item._id+'-'+side}/>]
                     );
                 } else return null;
             }
@@ -196,7 +196,9 @@ class RASPPromote extends ReactActionStatePathClient {
               if ( ! item ) { return ( <div></div> ); }
               else return (
                 <Column span="50" className={ `promote-${side} promote-item-${side}` } >
-                  <Button block className= "gutter-bottom promote-item-button" id={ `promote-item-button-${this.props._id}` } onClick={ this.promote.bind(this,side)}>{ item.subject }</Button>
+                  <Button block className= "gutter-bottom promote-item-button" id={ `promote-item-button-${this.props._id}` } onClick={ this.promote.bind(this,side)} key={'promote-'+side}>
+                    { item.subject }
+                  </Button>
                 </Column>
               );
             }

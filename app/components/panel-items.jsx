@@ -254,7 +254,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel,  ...otherProps } = this.props;
+    const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel, ...otherProps } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
@@ -264,17 +264,17 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
       content = items.map(item => {
           if (!this.mounted[item.id]) { // only render this once
-            this.mounted[item.id] = (<ItemStore item={item} key={`item-${item._id}`}>
-              <Item
-                {...otherProps}
-                item={item}
-                parent={parent}
-                rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
-                buttons={buttons}
-                style={{ backgroundColor: bgc }}
-                visualMethod={this.vM.childVisualMethod()}
-              />
-            </ItemStore>
+            this.mounted[item.id] = (
+              <ItemStore item={item} key={`item-${item._id}`}>
+                <Item
+                  {...otherProps}
+                  parent={parent}
+                  rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
+                  buttons={buttons}
+                  style={{ backgroundColor: bgc }}
+                  visualMethod={this.vM.childVisualMethod()}
+                />
+              </ItemStore>
             );
           }
           return (
