@@ -167,7 +167,7 @@ class RASPPromote extends ReactActionStatePathClient {
     //**********************************************************
 
     render() {
-        const { panel, hideFinish, limit, items, criterias, user, rasp } = this.props;
+        const { hideFinish, limit, items, criterias, user, rasp } = this.props;
         //console.info(this.constructor.name,"RASPPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){
@@ -178,8 +178,8 @@ class RASPPromote extends ReactActionStatePathClient {
           );
         }
 
-        const hideFeedback = (panel && panel.type && panel.type.feedbackMethod) ? panel.type.feedbackMethod === 'hidden' : false;
-        const evaluateQuestion= (panel && panel.type && panel.type.evaluateQuestion) ? panel.type.evaluateQuestion : "Which of these is most important for the community to consider?";
+        const hideFeedback = this.props.hideFeedback || ((item && item.type && item.type.feedbackMethod) ? item.type.feedbackMethod === 'hidden' : false);
+        const evaluateQuestion= (item && item.type && item.type.evaluateQuestion) ? item.type.evaluateQuestion : "Which of these is most important for the community to consider?";
         const foo = ( ! items[rasp.left] || ! items[rasp.right] ) ? ( <div></div> ) : (<h5 className="text-center gutter solid">{ evaluateQuestion }</h5>)
 
         const renderSide = (side, item) => {

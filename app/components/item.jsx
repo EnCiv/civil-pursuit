@@ -433,7 +433,7 @@ class RASPItem extends ReactActionStatePathClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { item, user, buttons, rasp, style } = this.props;
+    const { item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
     const shape = rasp ? rasp.shape : '';
     const classShape = shape ? 'vs-' + shape : '';
     const readMore = (rasp && rasp.readMore);
@@ -469,13 +469,13 @@ class RASPItem extends ReactActionStatePathClient {
     // a button could be a string, or it could be an object which must have a property component
     var renderButton = (button) => {
       if(typeof button === 'string')
-        return ( <ItemComponent {...this.props} 
+        return ( <ItemComponent {...otherProps} 
                          component={button} part={'button'} active={this.vM.childActive(rasp, button)} 
                          rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                          onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button} 
           />);
       else if (typeof button === 'object')
-        return ( <ItemComponent {...this.props} {...button}
+        return ( <ItemComponent {...otherProps} {...button}
                          part={'button'} active={this.vM.childActive(rasp, button.component)} 
                          rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                          onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.component}
