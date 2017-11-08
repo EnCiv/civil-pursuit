@@ -167,7 +167,7 @@ class RASPPromote extends ReactActionStatePathClient {
     //**********************************************************
 
     render() {
-        const { hideFinish, limit, items, criterias, user, rasp } = this.props;
+        const { item, hideFinish, limit, items, criterias, user, rasp } = this.props;
         //console.info(this.constructor.name,"RASPPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){
@@ -238,8 +238,8 @@ class RASPPromote extends ReactActionStatePathClient {
                 </header>
                 <div className="solid">
                     <div className="solid clear">
-                        {renderSide('left', this.props.items[rasp.left])}
-                        {renderSide('right', this.props.items[rasp.right])}
+                        {renderSide('left', items[rasp.left])}
+                        {renderSide('right', items[rasp.right])}
                     </div>
                     <div className="solid clear" style={{ width: '100%' }}>
                         {foo}
