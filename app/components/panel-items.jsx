@@ -254,7 +254,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, user, rasp } = this.props;
+    const { limit, skip, type, parent, items, count, user, rasp, promoteMethod } = this.props;
 
     let title = 'Loading items', name, content, loadMore;
 
@@ -273,6 +273,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
                 buttons={buttons}
                 style={{ backgroundColor: bgc }}
                 visualMethod={this.vM.childVisualMethod()}
+                promoteMethod={promoteMethod}
               />
             </ItemStore>
             );
