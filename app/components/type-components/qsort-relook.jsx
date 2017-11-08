@@ -144,7 +144,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
-                                            buttons={['QSortButtons', { component: 'Harmony', visualMethod: 'titleize', shape: 'title', limit: 5, hideFeedback: feedbackMethod==='hidden', createMethod: createMethod, promoteMethod: promoteMethod, active: criteria === 'unsorted' }]}
+                                            buttons={['QSortButtons', { component: 'Harmony', visualMethod: 'titleize', shape: 'title', limit: 5, hideFeedback: feedbackMethod==='hidden', createMethod: 'visible', promoteMethod: 'visible', active: criteria === 'unsorted' }]}
                                             qbuttons={qbuttons}
                                             rasp={ this.childRASP('truncated', item._id) }
                                         />
