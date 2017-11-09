@@ -25,7 +25,7 @@ class QSortRandomItems extends React.Component {
     constructor(props) {
         super(props);
         if (typeof window !== 'undefined' && this.props.type && this.props.type.harmony && this.props.type.harmony.length) {
-            this.state={typeList: []};
+            this.state={typeList: null};
             this.getHarmony=true;
         } else 
             this.getHarmony=false;
@@ -33,17 +33,18 @@ class QSortRandomItems extends React.Component {
     }
 
     componentDidMount(){
-        if (this.getHarmony) {
+        if (this.getHarmony) 
             window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this))
     }
 
     okGetListoType(typeList) {
-        this.setState({ typeList: typeList });
         this.props.shared.type=typeList[0];
+        this.setState({ typeList: typeList });
+        //this.forceUpdate();
     }
 
     render(){
-        if(this.getHarmony && !this.state.typeList.length) 
+        if(this.getHarmony && !this.state.typeList) 
             return null;
         else 
             return(
