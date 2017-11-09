@@ -144,7 +144,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
         let articles = [], creator,
             direction = [], instruction = [], issues = 0, done = [], loading=[];
 
-        if(rasp.itemId==='redirect') {
+        if(rasp.itemId==='redirect' && this.state.typeList.length) {
             const newPanel = {
                 parent: panel.parent,
                 type: this.state.typeList[0],

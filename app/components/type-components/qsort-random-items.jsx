@@ -28,8 +28,8 @@ class QSortRandomItems extends React.Component {
             window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this))
             this.state={typeList: []};
             this.getHarmony=true;
-        }
-        this.getHarmony=false;
+        } else 
+            this.getHarmony=false;
         Object.assign(this.props.shared, {parent: this.props.parent});
     }
 
