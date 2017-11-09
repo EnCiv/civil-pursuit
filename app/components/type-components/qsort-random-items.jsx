@@ -22,21 +22,39 @@ import {RASPQSortItems} from './qsort-items';
 
 // 8 is hard coded. But it should come from something user configurable
 class QSortRandomItems extends React.Component {
+    constructor(props) {
+        super(props);
+        if (typeof window !== 'undefined' && this.props.type && this.props.type.harmony && this.props.type.harmony.length) {
+            window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this))
+            this.state={typeList: []};
+            this.getHarmony=true;
+        }
+        this.getHarmony=false;
+        Object.assign(this.props.shared, {parent: this.props.parent});
+    }
+
+    okGetListoType(typeList) {
+        this.setState({ typeList: typeList });
+        this.props.shared.type=typeList[0];
+    }
+
     render(){
-        logger.info("QSortRandomItems.render", this.props);
-        return(
-            <RandomItemStore parent={this.props.shared.parent || this.props.parent}
-                        type={this.props.shared.type || this.props.type}
-                        sampleSize={this.props.sampleSize || 8} >
-                <QVoteStore {...this.props}>
-                    <PanelHead  cssName={'syn-qsort-items'} >
-                        <ReactActionStatePath>
-                            <RASPQSortItems />
-                        </ReactActionStatePath>
-                    </PanelHead>
-                </QVoteStore>
-            </RandomItemStore>
-        );
+        if(this.getHarmony && !this.state.typeList.length) 
+            return null;
+        else 
+            return(
+                <RandomItemStore parent={this.props.shared.parent || this.props.parent}
+                            type={ this.props.shared.type || this.props.type}
+                            sampleSize={this.props.sampleSize || 8} >
+                    <QVoteStore {...this.props}>
+                        <PanelHead  cssName={'syn-qsort-items'} >
+                            <ReactActionStatePath>
+                                <RASPQSortItems />
+                            </ReactActionStatePath>
+                        </PanelHead>
+                    </QVoteStore>
+                </RandomItemStore>
+            );
     }
 }
 
