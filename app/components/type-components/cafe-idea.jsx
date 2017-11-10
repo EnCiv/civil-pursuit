@@ -48,16 +48,18 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     actionToState(action, rasp, source,initialRASP){
         var nextRASP={}, delta={};
         if(action.type==="POST_ITEM"){
-            var results={idea: action.item, parent: this.props.parent, type: this.props.type};
-            if(this.props.shared.items && this.props.shared.sections && this.props.shared.index && action.item._id){  // if the previous step had resulted in a qsorted list.
-                this.props.shared.items.push(action.item);
-                results.items=this.props.shared.items;
-                if(this.props.shared.sections.most) this.props.shared.sections.most.push(action.item._id);
-                else this.props.shared.sections.most=[item._id];
-                results.sections=this.props.shared.sections;
-                this.props.shared.index[item._id]=this.props.shared.items.length-1;
-                results.index=this.props.shared.index;
-                window.socket.emit('insert qvote', { item: action.itemId, criteria: 'most' });
+            let item=action.item;
+            let shared=this.props.shared;
+            var results={idea: item, parent: this.props.parent, type: this.props.type};
+            if(shared.items && shared.sections && shared.index && item._id){  // if the previous step had resulted in a qsorted list.
+                shared.items.push(item);
+                results.items=shared.items;
+                if(shared.sections.most) shared.sections.most.push(item._id);
+                else shared.sections.most=[item._id];
+                results.sections=shared.sections;
+                this.props.shared.index[item._id]=shared.items.length-1;
+                results.index=shared.index;
+                window.socket.emit('insert qvote', { item: item._id, criteria: 'most' });
             }
             setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results}))
             // no state change, the action will be consumed here

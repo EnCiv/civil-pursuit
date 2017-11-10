@@ -71,7 +71,7 @@ class PanelHead extends React.Component {
     render() {
         if(this.degug) console.info("RASPPanelHead.render", this.childName, this.props);
         const { panel, cssName, rasp, user, createMethod } = this.props;
-        var title, name, instruction = [], content=[], creator=[];
+        var title, name, instruction = [], content=[], creator=null;
         // decompose panel into it's props if applicable
         const type= (typeof this.props.type === 'object' && this.props.type) || panel && panel.type || this.props.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
@@ -97,18 +97,21 @@ class PanelHead extends React.Component {
                     </Instruction>
                 );
             }
-            creator = (
-                <Accordion
-                    active={(rasp && rasp.creator)}
-                    style={{ backgroundColor: bgc }}
-                >
-                    <Creator
-                        type={type}
-                        parent={parent}
-                        toggle={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })}
-                    />
-                </Accordion>
-            );            
+            if(this.creatorMounted || (rasp && rasp.creator)){
+                this.creatorMounted=true;
+                creator = (
+                    <Accordion
+                        active={(rasp && rasp.creator)}
+                        style={{ backgroundColor: bgc }}
+                    >
+                        <Creator
+                            type={type}
+                            parent={parent}
+                            toggle={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })}
+                        />
+                    </Accordion>
+                );
+            }      
             if (!items.length && !(createValue==='hidden')) {
                 content.push(
                 <div className={`syn-panel-gutter text-center vs-${rasp.shape}`} key='be-the-first'>
