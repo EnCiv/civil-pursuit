@@ -40,6 +40,7 @@ class ListItemCreators extends React.Component {
                         <ItemCreator
                             {...this.props}
                             item={item}
+                            key={'item-creator-'+item._id}
                         />
                     )
                 })

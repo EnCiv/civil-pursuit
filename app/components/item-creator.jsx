@@ -37,7 +37,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     componentWillReceiveProps(newProps){
  //       console.info("QSortWhyCreate.constructor", newProps);
-        if(this.item && newProps.item && this.item._id !== newProps.item._id) {
+        if(this.item && newProps.item && (this.item._id !== newProps.item._id) && Object.keys(newProps.item).length) {
             this.props.toggle('set', newProps.item._id); // passing the Id of the item created
             this.props.rasp.toParent({type: "SET_DISPLAY"})
         }
@@ -120,6 +120,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
                     />
                 </div>
                 <div style={{display: rasp.display ? 'block' : 'none'}}>
+                    <div style={{display: this.state.postWhenIdReady ? 'block' : 'none', position: 'absolute', color: '#666'}}>{"Saving"}</div>
                     {!item===null || !Object.keys(item).length ? null :
                         <Item
                             {...this.props}
