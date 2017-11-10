@@ -147,7 +147,9 @@ class Creator extends React.Component {
       if(item._id){
         console.info("creator: update item");
         window.socket.emit('update item', item);
-      }else window.socket.emit('create item', item);
+      }else window.socket.emit('create item', item, (item)=>{
+        this.props.toParent && this.props.toParent({results: {item: item}})
+      });
     };
 
     if ( this.file ) {

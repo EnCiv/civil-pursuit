@@ -3,7 +3,7 @@
 import Item from '../models/item';
 import Mungo from 'mungo';
 
-function createItem (item) {
+function createItem (item, cb) {
   try {
     item.user = Mungo.mongodb.ObjectID(this.synuser.id);
 
@@ -14,6 +14,7 @@ function createItem (item) {
             .toPanelItem()
             .then(
               item => {
+                if(typeof cb === 'function') cb(item);
                 this.emit('OK create item', item);
               },
               error => this.error(error)
