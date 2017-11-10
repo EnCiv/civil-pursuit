@@ -22,6 +22,7 @@ import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHead from '../panel-head';
 
+
 class CafeIdea extends React.Component {
     render(){
         return (
@@ -47,14 +48,18 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     actionToState(action, rasp, source,initialRASP){
         var nextRASP={}, delta={};
         if(action.type==="POST_ITEM"){
+            var results={idea: action.item, parent: this.props.parent, type: this.props.type};
             if(this.props.shared.items && this.props.shared.sections && this.props.shared.index && action.item._id){  // if the previous step had resulted in a qsorted list.
                 this.props.shared.items.push(action.item);
-                if(this.props.shared.sections.most) this.shared.sections.most.push(action.item._id);
+                results.items=this.props.shared.items;
+                if(this.props.shared.sections.most) this.props.shared.sections.most.push(action.item._id);
                 else this.props.shared.sections.most=[item._id];
-                this.props.shared.index[item._id]=this.shared.items.length-1;
+                results.sections=this.props.shared.sections;
+                this.props.shared.index[item._id]=this.props.shared.items.length-1;
+                results.index=this.props.shared.index;
                 window.socket.emit('insert qvote', { item: action.itemId, criteria: 'most' });
             }
-            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item, parent: this.props.parent, type: this.props.type}}))
+            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results}))
             // no state change, the action will be consumed here
         } else if (action.type === "DECENDANT_FOCUS"){
             if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){

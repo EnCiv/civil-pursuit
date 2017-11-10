@@ -22,6 +22,7 @@ export default class ItemCreator extends React.Component {
 class RASPItemCreator extends ReactActionStatePathClient {
     set = false; // not part of state because we don't want to rerender on seting this. And once set, it's never changed.
     item = {};  // a local copy of the item data, passed up by the child. No need for it to be part of state - it's only being changed by the child. but we keep a copy here so we don't rerender null
+    state={postWhenIdReady: false};
 
     constructor(props){
         console.info("ItemCreator.constructor", props);
@@ -79,6 +80,10 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     onChange(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
         if(val.results) Object.assign(this.item,val.results.item);
+        if(this.state.postWhenIdReady && this.item._id) {
+            this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}); // notifiy parents that a post has been made
+            this.setState({postWhenIdReady: false})
+        }
         let t=new Date();
         if((t-this.timestamp) > 500)  this.props.rasp.toParent({type: "DECENDANT_FOCUS"}); // let the ancestors know that the user focus is here  
     }
@@ -86,7 +91,10 @@ class RASPItemCreator extends ReactActionStatePathClient {
     post(){  // in the creator, user hit the post button
         this.props.rasp.toParent({type: "SET_DISPLAY"});
         //if(!this.props.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
-        setTimeout(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}),0); // notifiy parents that a post has been made
+        if(this.item._id)
+            setTimeout(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}),0); // notifiy parents that a post has been made
+        else   
+            this.setState({postWhenIdReady: true});
     }
 
     render(){
@@ -102,6 +110,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
         return(
             <div style={{marginBottom: '0.5em'}} >
                 <div style={{display: rasp.display ? 'none' : 'block', backgroundColor: defaultColor}}>
+                    <div style={{display: this.state.postWhenIdReady ? 'block' : 'none', position: 'absolute', color: '#666'}}>{"Saving"}</div>
                     <Creator
                         type={type}
                         parent={parent}
