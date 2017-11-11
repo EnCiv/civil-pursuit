@@ -172,11 +172,11 @@ class RASPPanelItems extends ReactActionStatePathClient {
             delta.decendantFocus=false;
         } else if(action.type==="FOCUS"){
            delta.focus=true;
-           this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'truncated'});
+           this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'open'});
            this.qaction(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
          }else if(action.type==="UNFOCUS"){
           delta.focus=false;
-          if(rasp.shortId) this.toChild[rasp.shortId]({type: "CHANGE_SHAPE", shape: 'truncated'});
+          if(rasp.shortId) this.toChild[rasp.shortId]({type: "CHANGE_SHAPE", shape: 'title'});
           this.qaction(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
        } else
           return false;
