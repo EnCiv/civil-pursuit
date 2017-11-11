@@ -167,17 +167,20 @@ class RASPPanelItems extends ReactActionStatePathClient {
         } else if (action.type==="DECENDANT_FOCUS" && action.distance>1) {
             delta.decendantFocus=true;
         } else if (action.type==="DECENDANT_UNFOCUS"  && action.distance===1) {
+            if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
             delta.shortId=null;
             delta.decendantFocus=false;
-        } else if(action.type==="FOCUS"){
-           delta.focus=true;
-           this.toChild[rasp.shortId]({ type: "CHANGE_SHAPE", shape: 'open'});
-           this.qaction(()=>this.props.rasp.toParent("DECENDANT_FOCUS"),0)
-         }else if(action.type==="UNFOCUS"){
-          delta.focus=false;
-          if(rasp.shortId) this.toChild[rasp.shortId]({type: "CHANGE_SHAPE", shape: 'title'});
-          this.qaction(()=>this.props.rasp.toParent("DECENDANT_UNFOCUS"),0)
-       } else
+        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
+          delta.focus = true;
+          delta.decendantFocus=false;
+          if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+          delta.shortId=null;
+          if(action.state!=="FOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_FOCUS"}), 0);
+        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
+          delta.focus = false;
+          delta.decendantFocus=false;
+          if(action.type!=="UNFOCUS_STATE") this.qaction(() => this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}), 0)
+        } else
           return false;
         return true; 
       },
