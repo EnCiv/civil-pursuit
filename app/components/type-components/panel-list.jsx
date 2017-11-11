@@ -32,6 +32,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
     if (this.props.rasp.toParent) {
       this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
     } else console.error("RASPPanelList no rasp.toParent", this.props);
+    this.panelStatus=[];
   }
 
   actionToState(action, rasp, source) {
@@ -56,7 +57,6 @@ class RASPPanelList extends ReactActionStatePathMulti {
     } else if(action.type==="RESULTS") {
       const {currentPanel, results}=action;
       let newStatus=false;
-      var panelStatus = this.panelStatus;
       if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; newStatus = true }
       //if (newStatus) this.panelStatus=panelStatus;
       if (results) this.shared = merge({}, this.shared, results);
