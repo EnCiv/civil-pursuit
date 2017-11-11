@@ -32,8 +32,8 @@ class Button extends React.Component {
     for ( let prop in this.constructor.propTypes ) {
       if ( typeof this.props[prop] !== 'undefined') {
         if(this.props[prop]) classes.push(prop);
-        delete buttonProps[prop];
       }
+      delete buttonProps[prop]; // outside of the loop because props={..., success: undefined} happens
     }
 
     return (
