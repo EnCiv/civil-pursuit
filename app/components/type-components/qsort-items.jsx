@@ -48,8 +48,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props){
-        var raspProps = { rasp: props.rasp }; // do this to reduce name conflict and sometimes a loop
-        super(raspProps, 'itemId');  // shortId is the key for indexing to child RASP functions
+        super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         console.info("RASPQSortItems.constructor");
     }
