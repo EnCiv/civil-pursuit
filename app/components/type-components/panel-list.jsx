@@ -7,7 +7,7 @@ import TypeComponent from '../type-component';
 import Panel from '../panel';
 import Instruction from '../instruction';
 import merge from 'lodash/merge';
-import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
+import { ReactActionStatePath, ReactActionStatePathMulti } from 'react-action-state-path';
 import PanelHead from '../panel-head';
 
 class PanelList extends React.Component {
@@ -24,129 +24,14 @@ class PanelList extends React.Component {
   }
 }
 
-class RASPPanelList extends React.Component {
+class RASPPanelList extends ReactActionStatePathMulti {
 
   constructor(props) {
     console.log("RASPPanelList.constructor", props);
-    super(props);
-    this.toChild = [];
-    this.keyField = 'currentPanel';
-    this.waitingOn = null;
-    this.panelStatus=[];
-    if (!this.props.rasp) logger.error("ReactActionStatePathClient no rasp", this.constructor.name, this.props);
+    super(props, 'currentPanel', 1);
     if (this.props.rasp.toParent) {
       this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
-    } else logger.error("ReactActionStatePathClient no rasp.toParent", this.props);
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // this is a one to many pattern for the RASP, insert yourself between the RASP and each child
-  // send all unhandled actions to the parent RASP
-  //
-  toMeFromChild(key, action) {
-    logger.trace(" ReactActionStatePathClient.toMeFromChild", this.props.rasp.depth, key, action);
-    if (action.type === "SET_TO_CHILD") { // child is passing up her func
-      this.toChild[key] = action.function; // don't pass this to parent
-      if (this.waitingOn) {
-        if (this.waitingOn.nextRASP) {
-          let nextRASP = this.waitingOn.nextRASP;
-          if (key === nextRASP[this.keyField] && this.toChild[key]) {
-            logger.trace("ReactActionStatePathClient.toMeFromParent got waitingOn nextRASP", nextRASP);
-            var nextFunc = this.waitingOn.nextFunc;
-            this.waitingOn = null;
-            if (nextFunc) setTimeout(nextFunc, 0);
-            else setTimeout(() => this.props.rasp.toParent({ type: "SET_STATE_AND_CONTINUE", nextRASP: nextRASP, function: this.toChild[key] }), 0);
-          }
-        }
-      }
-    } else {
-      action[this.keyField] = key; // actionToState may need to know the child's id
-      var result = this.props.rasp.toParent(action);
-      // logger.trace(this.constructor.name, this.title, action,'->', this.props.rasp);
-      return result;
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // this can handle a one to many pattern for the RASP, handle each action  appropriatly
-  //
-  toMeFromParent(action) {
-    logger.trace("ReactActionStatePathClient.toMeFromParent", this.props.rasp.depth, action);
-    if (action.type === "ONPOPSTATE") {
-      console.log("RASPPanelList.toMeFromParent ONPOPSTATE", this.props.rasp.depth, action);
-      let { stackDepth, stateStack } = action;
-
-      let keepChild = [];
-      Object.keys(this.toChild).forEach(child => keepChild[child] = false);
-
-      stateStack[stackDepth+1].raspChildren.forEach(child => {
-        if (this.toChild[child.key]) {
-          this.toChild[child.key]({ type: "ONPOPSTATE", stateStack: child.stateStack, stackDepth: 0 });
-          keepChild[child.key] = true;
-        } else console.error("RASPPanelList.toMeFromParent ONPOPSTATE no child:", child.key);
-      })
-
-      keepChild.forEach((keep, child) => { // child id is the index
-        if (!keep) {
-          console.error("RASPPanelList.toMeFromParent ONPOPSTATE child not kept", child);
-          this.toChild[child]({ type: "CLEAR_PATH" }); // only one button panel is open, any others are truncated (but inactive)
-        }
-      })
-      return;// this was the end of the line
-    } else if (action.type === "GET_STATE") {
-      // get the state info from all the children and combind them into one Object
-      console.log("RASPPanelList.toMeFromParent GET_STATE", this.props.rasp.depth, action);
-      var raspChildren = Object.keys(this.toChild).map(child => {
-        return {
-          stateStack: this.toChild[child]({ type: "GET_STATE" }),
-          key: child
-        }
-      });
-      if(raspChildren.length===1 && !raspChildren[0].stateStack) return null; // if the only child doesn't really exist yet (because it returns null) just return null
-      var curPath = raspChildren.reduce((acc, cur, i) => { // parse the state to build the curreent path
-        if (cur.stateStack && cur.stateStack[i] && cur.stateStack[i].pathSegment) acc.push(cur.stateStack[i].pathSegment);
-        return acc;
-      }, []);
-      if (raspChildren.length) {
-        var result = { raspChildren: raspChildren, depth: this.props.rasp.depth + 1, shape: 'multichild' };
-        if (curPath.length) result.pathSegment = curPath.join(':');
-        console.log("RASPPanelList.toMeFromParent GET_STATE returns", result);
-        return [result];
-      } else
-        return null;
-    } else if (action.type === "CLEAR_PATH") {  // clear the path and reset the RASP state back to what the const
-      Object.keys(this.toChild).forEach(child => { // send the action to every child
-        this.toChild[child](action)
-      });
-    } else if (action.type === "SET_PATH") {
-      const { nextRASP, setBeforeWait } = this.segmentToState(action);
-      console.info("RASPPanelList.toMeFromParent SET_PATH", action)
-      if (nextRASP[this.keyField]) {
-        let key = nextRASP[this.keyField];
-        /*if (this.toChild[key]) this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: this.toChild[key] }); // note: toChild of button might be undefined becasue ItemStore hasn't loaded it yet
-        else */ if (setBeforeWait) {
-          var that=this;
-          var setPredicessors=()=>{
-            let predicessors=that.toChild.length;
-            console.info("RASPPanelList.toMeFromParent.setPredicessors", key, predicessors);
-            if(predicessors < key) {
-              var predicessorRASP=Object.assign({},nextRASP,{[that.keyField]: predicessors});
-              that.waitingOnResults={ nextFunc: setPredicessors.bind(this)};
-              that.props.rasp.toParent({ type: "SET_STATE", nextRASP: predicessorRASP });
-            }else {
-              that.waitingOn={ nextRASP, nextFunc: () => that.props.rasp.toParent({ type: "CONTINUE_SET_PATH", function: that.toChild[key] }) };
-              that.props.rasp.toParent({ type: "SET_STATE", nextRASP });
-            }
-          }
-          setPredicessors();
-        } else {
-          logger.trace("ReactActionStatePathClient.toMeFromParent SET_PATH waitingOn", nextRASP);
-          this.waitingOn = { nextRASP };
-        }
-      } else {
-        this.props.rasp.toParent({ type: 'SET_STATE_AND_CONTINUE', nextRASP: nextRASP, function: null });
-      }
-    } else logger.error("ReactActionStatePathClient.toMeFromParent action type unknown not handled", action)
+    } else console.error("RASPPanelList no rasp.toParent", this.props);
   }
 
   actionToState(action, rasp, source) {
@@ -192,6 +77,7 @@ class RASPPanelList extends React.Component {
         delta.currentPanel=nextPanel;
         delta.shape='open';
       }
+      this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}));
     } else if(action.type==="PANEL_LIST_CLOSE"){
       delta.shape='truncated';
       Object.keys(this.toChild).forEach(child => { // send the action to every child
