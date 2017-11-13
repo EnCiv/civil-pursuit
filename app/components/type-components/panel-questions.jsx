@@ -56,6 +56,9 @@ class RASPPanelItems extends ReactActionStatePathClient {
                 this.props.items.push(action.item);
             }
             delta.shortId = action.item.id;
+        } else if (action.type=== "CHILD_UPDATE"){
+            if(this.toChild[action.shortId]) this.toChild[action.shortId](action);
+            return rasp; // there is no state change here
         } else if (this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
             ; //then do nothing - it's been done if (action.type==="DECENDANT_FOCUS") {
         } else
@@ -331,6 +334,9 @@ class AnswerCount extends React.Component {
         // index points to the items, so does panel.items.  Changing answerCount through either pointer changes the item pointed to, which can be referenced by either pointer.  Think 'C' pointers.
         if (results) {
             results.forEach(result => {
+                if((typeof this.index[result._id].answerCount !== 'undefined') && (this.index[result._id].answerCount !== result.count)) {
+                    this.props.rasp.toParent({type: "CHILD_UPDATE", shortId: result.id, item: {answerCount: result.count}});
+                }
                 this.index[result._id].answerCount = result.count;
             })
         }

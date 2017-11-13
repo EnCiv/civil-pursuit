@@ -297,6 +297,11 @@ class RASPItem extends ReactActionStatePathClient {
         delta.readMore = true;
         if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
       } 
+    } else if (action.type === "CHILD_UPDATE") {
+      if(action.shortId===this.props.item.id && action.item ) {
+        Object.assign(this.props.item, action.item);
+        delta.forceUpdate= (rasp.forceUpdate || 0) + 1; // cause a state change resulting in a rerender
+      }
     } else if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
         ; // do nothing - it's already been done
     }else 
