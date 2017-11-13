@@ -321,14 +321,16 @@ class AnswerCount extends React.Component{
     }
 
     okGetQVoteItemParentCount(results){
+        // index points to the items, so does panel.items.  Changing answerCount through either pointer changes the item pointed to, which can be referenced by either pointer.  Think 'C' pointers.
         if(results){
             results.forEach(result=>{
                 this.index[result._id].answerCount=result.count;
             })
-            var newList=this.props.panel.items.slice(); // copy the list
-            newList.sort((a,b)=>a.answerCount-b.answerCount) // smallest answer count first
-            this.setState({sortedItems: newList});
         }
+        var newList=this.props.panel.items.slice(); // copy the list
+        newList.forEach(item=>{if(typeof item.answerCount === 'undefined')item.answerCount=0;}) // no votes don't get a result so initialize to 0
+        newList.sort((a,b)=>a.answerCount-b.answerCount) // smallest answer count first
+        this.setState({sortedItems: newList});
     }
 
     renderChildren(moreProps) {
@@ -358,23 +360,24 @@ class RASPPanelQuestions extends RASPPanelItems {
     let title = 'Loading items', name, content, loadMore;
 
     let bgc = 'white';
-    let positiveBGC='#666';
+    let positiveBGC='#d3d3d3';
 
       var buttons=type.buttons || ['Answer'];
 
       content = sortedItems.map(item => {
           if (!this.mounted[item.id]) { // only render this once
             this.mounted[item.id] = (
-              <ItemStore item={item} key={`item-${item._id}`}>
-                <Item
-                  {...otherProps}
-                  parent={parent}
-                  rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
-                  buttons={buttons}
-                  style={{ backgroundColor: item.answerCount>0 ? positiveBGC : bgc }}
-                  visualMethod={this.vM.childVisualMethod()}
-                />
-              </ItemStore>
+                <div style={{backgroundColor: (item.answerCount>0 && rasp.shape==='truncated') ? positiveBGC : bgc}} key={ `item-${item._id}` }>
+                    <ItemStore item={item}>
+                        <Item
+                        {...otherProps}
+                        parent={parent}
+                        rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
+                        buttons={buttons}
+                        visualMethod={this.vM.childVisualMethod()}
+                        />
+                    </ItemStore>
+                </div>
             );
           }
           return (
