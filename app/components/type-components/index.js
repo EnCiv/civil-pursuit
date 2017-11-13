@@ -17,7 +17,8 @@ var  Components={
         'NextStep': require('./next-step').default,
         'QSortRandomItems': require('./qsort-random-items').default,
         'QSortTotals': require('./qsort-totals').default,
-        'RuleList': require('./rule-list').default
+        'RuleList': require('./rule-list').default,
+        'PanelQuestions': require('./panel-questions').default
     }
 
 export default Components;

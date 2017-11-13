@@ -16,7 +16,7 @@ exports.button = class SubtypeButton extends React.Component {
   }
 
   render() {
-    let { active, item, min, buttonName, buttonTitle } = this.props;
+    let { active, item, min, buttonName, buttonTitle, numberField='children' } = this.props;
     if (item.subtype) {
       if(typeof buttonName==='undefined') buttonName = item.subtype.buttonName || "Delve";
       if(typeof min === 'undefined') min = item.subtype.min || 2;
@@ -25,7 +25,7 @@ exports.button = class SubtypeButton extends React.Component {
         success: "Return to the higher level of this discusion",
         inactive: "After 2 people Upvote this, the discussion can continue at a deeper level"
       };
-      var number = buttonName === 'Start Here' ? ' ' : (item.children ? item.children : 0);
+      var number = buttonName === 'Start Here' ? ' ' : (item[numberField] ? item[numberField] : 0);
       var success = false, inactive = false;
       var title = "";
       var onClick = this.props.onClick;
