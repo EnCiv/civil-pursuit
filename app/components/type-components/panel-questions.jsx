@@ -318,6 +318,11 @@ class AnswerCount extends React.Component{
         if( !this.props.panel) return this.updateSort(newProps);
         if((newProps.panel.items!==this.props.panel.items) || (newProps.panel.items.length != this.props.panel.items.length) || newProps.panel.items.some((item, i)=>item._id != this.props.panel.items[i]._id) )
             this.updateSort(newProps);
+        if(this.props.rasp.shape === 'title' && newProps.rasp.shape!=='title') {
+            let parentId;
+            if(parentId=((newProps.parent && newProps.parent._id) || (newProps.panel && newProps.panel.parent && newProps.panel.parent._id) || newProps.parent || (newProps.panel && newProps.panel.parent)))
+                window.socket.emit("get qvote item parent count",parentId,this.okGetQVoteItemParentCount.bind(this)); // update votes
+        }
     }
 
     okGetQVoteItemParentCount(results){
@@ -403,15 +408,15 @@ export class PanelQuestions extends React.Component {
   
       logger.trace("PanelQuestions render");
       return (
-          <PanelStore { ...storeProps }>
-              <AnswerCount>
-                  <ReactActionStatePath {...this.props} >
-                      <PanelHead  cssName={'syn-panel-item'} >
-                          <RASPPanelQuestions />
-                      </PanelHead>
-                  </ReactActionStatePath>
-              </AnswerCount>
-          </PanelStore>
+        <PanelStore { ...storeProps }>
+            <ReactActionStatePath {...this.props} >
+                <AnswerCount>
+                    <PanelHead  cssName={'syn-panel-item'} >
+                        <RASPPanelQuestions />
+                    </PanelHead>
+                </AnswerCount>
+            </ReactActionStatePath>
+        </PanelStore>
       );
     }
   }

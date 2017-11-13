@@ -84,7 +84,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
         delta.currentPanel=nextPanel;
         delta.shape='open';
         let i;
-        for(i=this.panelList.length; i>=0; i--) {
+        for(i=this.panelList.length-1; i>=0; i--) {
           this.panelList[i].component=null;
           panelStatus[i]="issues";
         }
