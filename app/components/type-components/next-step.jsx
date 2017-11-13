@@ -86,34 +86,26 @@ class RASPNextStep extends ReactActionStatePathClient {
         return (
             <section id="syn-next-step">
                 <div className="syn-next-step">
-                    <button
-                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 0})}
-                            title={"Answer this question again"}
-                            className="syn-next-step-button"
-                            >
-                            <span >{"Contribute Another Idea"}</span>
-                    </button>
-                    <button 
-                            onClick={()=>this.props.rasp.toParent({type: "PANEL_BUTTON", nextPanel: 1})}
-                            className="syn-next-step-button"
-                            title={"Sort through more ideas that people have written"}
-                            >
-                            <span >{"Sort More Ideas"}</span>
-                    </button>
-                    <button 
-                            onClick={()=>{this.props.rasp.toParent({type: "PANEL_LIST_CLOSE"}); setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_UNFOCUS"}),0)}}
-                            className="syn-next-step-button"
-                            title={"Move on to the next question"}
-                            >
-                            <span >{"Continue to the next Question"}</span>
-                    </button>
-                    
                     <button 
                             onClick={()=>rasp.toParent({ type: "FOCUS_STATE", distance: (4- rasp.depth)})} // send action to RASP at depth 4
                             className="syn-next-step-button"
                             title={"Move on to the next question"}
                             >
-                            <span >{"Community Review"}</span>
+                            <span >{"Continue to the next Question"}</span>
+                    </button>
+                    <button
+                            onClick={()=>this.props.rasp.toParent({type: "RESET_TO_BUTTON", nextPanel: 1})}
+                            title={"Provide an answer for this question"}
+                            className="syn-next-step-button"
+                            >
+                            <span >{"Contribute an Idea"}</span>
+                    </button>
+                    <button 
+                            onClick={()=>this.props.rasp.toParent({type: "RESET_TO_BUTTON", nextPanel: 0})}
+                            className="syn-next-step-button"
+                            title={"Sort through more of the ideas that people have written"}
+                            >
+                            <span >{"Sort More Ideas"}</span>
                     </button>
                 </div>
             </section>

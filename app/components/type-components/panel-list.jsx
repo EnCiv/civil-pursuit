@@ -78,7 +78,19 @@ class RASPPanelList extends ReactActionStatePathMulti {
         delta.shape='open';
       }
       this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}));
-    } else if(action.type==="PANEL_LIST_CLOSE"){
+    } else if(action.type==="RESET_TO_BUTTON"){
+      const {nextPanel}=action;
+      if( nextPanel===0 || panelStatus[nextPanel]==='done' || panelStatus[nextPanel-1]==='done') {
+        delta.currentPanel=nextPanel;
+        delta.shape='open';
+        let i;
+        for(i=this.panelList.length; i>=0; i--) {
+          this.panelList[i].component=null;
+          panelStatus[i]="issues";
+        }
+      }
+      this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}));
+    }else if(action.type==="PANEL_LIST_CLOSE"){
       delta.shape='truncated';
       Object.keys(this.toChild).forEach(child => { // send the action to every child
         this.toChild[child]({type: "CLEAR_PATH"})
