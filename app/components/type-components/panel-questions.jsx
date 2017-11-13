@@ -367,7 +367,6 @@ class RASPPanelQuestions extends RASPPanelItems {
       content = sortedItems.map(item => {
           if (!this.mounted[item.id]) { // only render this once
             this.mounted[item.id] = (
-                <div style={{backgroundColor: (item.answerCount>0 && rasp.shape==='truncated') ? positiveBGC : bgc}} key={ `item-${item._id}` }>
                     <ItemStore item={item}>
                         <Item
                         {...otherProps}
@@ -377,11 +376,10 @@ class RASPPanelQuestions extends RASPPanelItems {
                         visualMethod={this.vM.childVisualMethod()}
                         />
                     </ItemStore>
-                </div>
             );
           }
           return (
-            <Accordion active={this.vM.childActive(rasp,item)} name='item' key={item._id +'-panel-item'}>
+            <Accordion active={this.vM.childActive(rasp,item)} name='item' key={item._id +'-panel-item'} style={{backgroundColor: (item.answerCount>0 && rasp.shape==='truncated') ? positiveBGC : bgc}} >
               {this.mounted[item.id]}
             </Accordion>
           );
