@@ -240,6 +240,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
       var renderCrumbs = ()=>{
         return (
           typeList.map((type, i) => {
+            if(type.component==="NextStep") return null; // hack for now 11/13/2017, need a more generic way to do this.  Don't show NextStep in crumbs
             let visible = (   (panelStatus[i] === 'done') 
                           || ((i > 0) && panelStatus[i - 1] === 'done'));
             let active = (currentPanel === i );
