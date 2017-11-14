@@ -18,7 +18,8 @@ var  Components={
         'QSortRandomItems': require('./qsort-random-items').default,
         'QSortTotals': require('./qsort-totals').default,
         'RuleList': require('./rule-list').default,
-        'PanelQuestions': require('./panel-questions').default
+        'PanelQuestions': require('./panel-questions').default,
+        'ProfileCheck': require('./profile-check').default
     }
 
 export default Components;
