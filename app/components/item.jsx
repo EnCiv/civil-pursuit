@@ -43,7 +43,7 @@ class RASPItem extends ReactActionStatePathClient {
       console.error("RASPItem.constructor visualMethod unknown:",visMeth)
       this.vM=this.visualMethods['default'];
     }
-    console.info("RASPItem.constructor");
+    //onsole.info("RASPItem.constructor");
   }
 
   someButton(part){
@@ -444,7 +444,7 @@ class RASPItem extends ReactActionStatePathClient {
     const truncShape = shape !== 'collapsed' && readMore ? 'vs-open' : 'vs-'+shape;
     let noReference = true;
 
-    console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
+    //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
     if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
 

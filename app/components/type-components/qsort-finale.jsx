@@ -22,7 +22,7 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
 class QSortFinale extends React.Component{
     render (){
-        console.info("QSortFinale");
+        //onsole.info("QSortFinale");
         return(
             <QVoteTotals {...this.props} >
                 <PanelHead cssName={'syn-qsort-finale'} >
@@ -51,7 +51,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source, initialRASP) {
         var nextRASP = {}, delta = {};
-        console.info("RASPQSortFinale.actionToState", ...arguments);
+        //onsole.info("RASPQSortFinale.actionToState", ...arguments);
         if (action.type === "DECENDANT_FOCUS") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
             if (action.shortId) {
@@ -104,7 +104,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         const items=shared.items;
         const {createMethod="visible", promoteMethod="visible", feedbackMethod='visible'} = type;
 
-        console.info("QSortFinale");
+        //onsole.info("QSortFinale");
         const onServer = typeof window === 'undefined';
         let content = [], direction = [], instruction = [], issues = 0, done = [], loading=[];
 

@@ -16,7 +16,7 @@ var other={L: 'R', R: 'L'};
 
 export default class Harmony extends React.Component {
   render() {
-    console.info("Harmony above.render");
+    //onsole.info("Harmony above.render");
     return (
       <ReactActionStatePath {...this.props}>
         <RASPHarmony />
@@ -36,7 +36,7 @@ class RASPHarmony extends ReactActionStatePathClient {
       console.error("RASPHarmony.constructor visualMethod unknown:", visMeth)
       this.vM = this.visualMethods['default'];
     }
-    console.info("RASPHarmony.constructor", this.props)
+    //onsole.info("RASPHarmony.constructor", this.props)
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ class RASPHarmony extends ReactActionStatePathClient {
       if(part==='L') nextRASP.side='L';
       if(part==='R') nextRASP.side='R';
       if(part==='d') nextRASP.decendantFocus=true;
-      else console.info("PanelItems.segmentToState unexpected part:", part);
+      else console.error("PanelItems.segmentToState unexpected part:", part);
     })
     this.vM.deriveRASP(nextRASP,initialRASP);
     if(nextRASP.pathSegment !== action.segment) console.error("Harmony.segmentToAction calculated path did not match",action.pathSegment, nextRASP.pathSegment )
@@ -155,7 +155,7 @@ class RASPHarmony extends ReactActionStatePathClient {
 
     render() {
       const { active, item, rasp, ...otherProps } = this.props;
-      console.info("Harmony.render", this.props);
+      //onsole.info("Harmony.render", this.props);
 
 
       let contentLeft = (

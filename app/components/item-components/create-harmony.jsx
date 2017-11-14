@@ -31,7 +31,7 @@ exports.panel = class CreateHarmonyPanel extends React.Component {
 
 class ListItemCreators extends React.Component {
     render (){
-        console.info("ListItemCreators", this.props);
+        //onsole.info("ListItemCreators", this.props);
         var items=this.props.panel && this.props.panel.items && this.props.panel.items.length ? this.props.panel.items : [{}]; // items must have at least one entry
         return (
             <div>{

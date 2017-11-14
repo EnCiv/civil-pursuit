@@ -39,7 +39,7 @@ class ProfileCheck extends React.Component {
         const { userInfo } = this.state;
         const { buttons } = panel.type || type || {buttons: { zip: ["90274"] }};
 
-        console.info("ProfileCheck", this.props);
+        //onsole.info("ProfileCheck", this.props);
 
         if (this.state.ready) { // if there is a users and the user info in ready or if input is going to be needed
             if (buttons && buttons.zip && buttons.zip.some(zip => (zip == (userInfo.street_address && userInfo.street_address.zip))) && userInfo.street_address.validatedAt) { // we have a match

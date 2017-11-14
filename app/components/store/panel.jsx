@@ -93,7 +93,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info("PanelStore.render, this.props, this.state")
+    //onsole.info("PanelStore.render, this.props, this.state")
     const panelout = this.renderChildren();
 
     

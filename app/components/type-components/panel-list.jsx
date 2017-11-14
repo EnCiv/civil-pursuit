@@ -13,7 +13,7 @@ import PanelHead from '../panel-head';
 class PanelList extends React.Component {
   initialRASP={currentPanel: 0};
   render() {
-    console.info("PanelList.render", this.props);
+    //onsole.info("PanelList.render", this.props);
     return (
       <PanelHead {...this.props} cssName={'syn-panel-list'} >
         <ReactActionStatePath initialRASP={this.initialRASP}>
@@ -218,7 +218,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    console.info("RASPPanelList.render",this.props);
+    //onsole.info("RASPPanelList.render",this.props);
     let loading;
     let crumbs = [];
     let { typeList } = this.state;

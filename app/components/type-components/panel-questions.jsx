@@ -33,7 +33,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source, defaultRASP) {
         var nextRASP = {}, delta = {};
-        console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
+        //onsole.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
         if (action.type === "TOGGLE_CREATOR") {
             if (rasp.creator) {// it's on so toggle it off
                 delta.creator = false;
@@ -77,7 +77,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         parts.forEach(part => {
             if (part === 'd') nextRASP.decendantFocus = true;
             else if (part.length === 5) nextRASP.shortId = part;
-            else console.info("PanelItems.segmentToState unexpected part:", part);
+            else console.error("PanelItems.segmentToState unexpected part:", part);
         })
         this.vM.deriveRASP(nextRASP, initialRASP);
         if (nextRASP.pathSegment !== action.segment) console.error("PanelItems.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
@@ -89,7 +89,7 @@ class RASPPanelItems extends ReactActionStatePathClient {
         if (newProps.type && newProps.type.name && newProps.type.name !== this.title) { this.title = newProps.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
         let oldLength = this.props.items && this.props.items.length || 0;
         if (newProps.items && (newProps.items.length > oldLength)) {  // if the length changes, history needs to be updated
-            console.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
+            //onsole.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
             this.qaction(() => {
                 this.props.rasp.toParent({ type: "CHILD_STATE_CHANGED", length: newProps.items.length })
             }, 0)

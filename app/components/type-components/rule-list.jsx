@@ -41,7 +41,7 @@ const RuleButtonList = {
 
 export class RuleList extends React.Component {
     render(){
-        logger.info("RuleList.render", this.props);
+        //logger.info("RuleList.render", this.props);
         return(
             <PanelStore parent={this.props.item}
                         type={this.props.type || (this.props.panel && this.props.panel.type)}
@@ -71,7 +71,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     constructor(props){
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || RuleButtonList;
-        console.info("RASPRuleList.constructor", props);
+        //onsole.info("RASPRuleList.constructor", props);
         if (typeof window !== 'undefined' && this.props.type.harmony) 
         window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this));
     }
@@ -135,7 +135,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        console.info("RASPRuleList.render");
+        //onsole.info("RASPRuleList.render");
 
         const { count, user, rasp, items, type, parent, panel, ...otherProps } = this.props;
 

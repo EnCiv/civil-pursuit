@@ -52,14 +52,14 @@ class RASPQSortRefine extends ReactActionStatePathClient {
             if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortRefine button name not found in type name:", qbuttons, this.props.type.name)}
         } this.results.refine[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
-        console.info("qsort-refine constructor")
+        //onsole.info("qsort-refine constructor")
         this.state.sections = {};
         this.buttons = Object.keys(this.ButtonList);
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
         this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
-        console.info("qsortRefine constructor");
+        //onsole.info("qsortRefine constructor");
     }
 
     actionToState(action, rasp, source) {
@@ -79,7 +79,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
-        console.info("qsortWhy componentWillReceiveProps");
+        //onsole.info("qsortWhy componentWillReceiveProps");
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
@@ -126,7 +126,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                 if (this.state.sections['unsorted'].length) { issues++ }
                 let qb = this.ButtonList[name];
                 if (qb.max) {
-                    console.info("QSortRefine qb")
+                    //onsole.info("QSortRefine qb")
                     if (this.state.sections[name].length > qb.max) {
                         direction.push(
                             <div key={'direction-'+name}className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>

@@ -39,7 +39,6 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     constructor(props) {
         super(props, 'itemId',1);
-        console.info("CafeIdea constructor");
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
     }
 
@@ -88,7 +87,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     }
 
     componentDidMount(){
-        console.info("CafeIdea.componentDidMount change shape to open");
+        //onsole.info("CafeIdea.componentDidMount change shape to open");
         setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
     }
 

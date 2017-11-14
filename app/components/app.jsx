@@ -85,7 +85,7 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    console.info("app componentDidMount", this.props.browserConfig);
+    //onsole.info("app componentDidMount", this.props.browserConfig);
 
     var topHTML = document.getElementsByTagName('html')[0];
     if(this.props.browserConfig.type==='phone') {
@@ -223,7 +223,7 @@ class App extends React.Component {
 
           const panelId2 = Object.keys(this.props.panels)[0];
 
-          console.info("App.render items", { panelId2 });
+          //onsole.info("App.render items", { panelId2 });
 
           const panel2 = Object.assign({}, this.props.panels[panelId2].panel);
 
@@ -232,7 +232,7 @@ class App extends React.Component {
           //console.info("app item panel filtered", panel );
 
           const component2=panel2.type.component || 'Subtype';
-                    console.info("App.render panel2", { panel2 });
+                    //onsole.info("App.render panel2", { panel2 });
 
           page = (
             <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } />

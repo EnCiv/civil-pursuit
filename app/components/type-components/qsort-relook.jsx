@@ -22,7 +22,7 @@ import { QSortToggle } from './qsort-items';
 
 class QSortReLook extends React.Component {
     render() {
-        console.info("QSortReLook");
+        //onsole.info("QSortReLook");
         return (
             <PanelHead {...this.props} cssName={'syn-qsort-relook'} >
                 <QVoteLocal  >
@@ -46,7 +46,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
-        console.info("QsortReLook.constructor",props);
+        //onsole.info("QsortReLook.constructor",props);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,7 +110,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         const {createMethod="visible", promoteMethod="visible", feedbackMethod="visible"} = type;
 
-        console.info("RASPQSortReLook");
+        //onsole.info("RASPQSortReLook");
 
         const onServer = typeof window === 'undefined';
 

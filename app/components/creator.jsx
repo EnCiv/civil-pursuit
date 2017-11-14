@@ -141,11 +141,11 @@ class Creator extends React.Component {
   create () {
     var item = this.makeDbItem();
 
-    console.info('CREATE ITEM');
+    //onsole.info('CREATE ITEM');
 
     let insert = () => {
       if(item._id){
-        console.info("creator: update item");
+        //onsole.info("creator: update item");
         window.socket.emit('update item', item);
       }else window.socket.emit('create item', item, (item)=>{
         this.props.toParent && this.props.toParent({results: {item: item}})
@@ -169,7 +169,7 @@ class Creator extends React.Component {
     else {
       insert();
     }
-    console.info("Creator.create");
+    //onsole.info("Creator.create");
 
     if(this.props.toggle) this.props.toggle();
   }

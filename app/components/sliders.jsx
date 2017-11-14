@@ -19,7 +19,7 @@ class Sliders extends React.Component {
   constructor(props){
     super(props);
     this.props.criterias.forEach(criteria=>this.votes[criteria._id]=cloneDeep({item: this.props.itemId, user: this.props.user, criteria: criteria}));
-    console.info("Sliders.constructor", this.votes)
+    //onsole.info("Sliders.constructor", this.votes)
   }
 
   componentDidMount(){
@@ -27,7 +27,7 @@ class Sliders extends React.Component {
   }
 
   okGetVotes(votes){
-    console.info("Sliders.gotVotes",votes)
+    //onsole.info("Sliders.gotVotes",votes)
     if(!votes) return;
     votes.forEach(vote=>this.votes[vote.criteria._id]=cloneDeep(vote));
     this.forceUpdate();  // were not using state here because most of this Object won't change anymore but we need to keep the object in this shape to write it back out again

@@ -38,7 +38,7 @@ class RASPNextStep extends ReactActionStatePathClient {
 
     constructor(props) {
         super(props, 'itemId',1);
-        console.info("RASPNextStep constructor");
+        //onsole.info("RASPNextStep constructor");
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  

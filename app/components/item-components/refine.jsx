@@ -17,7 +17,7 @@ exports.panel = class RefinePanel extends React.Component {
     state={chosen: 'promote'};
     
     toMeFromChild(key, action) {
-        console.info("RefinePanel.toMeFromChild", this.props.rasp.depth, key, action);
+        //onsole.info("RefinePanel.toMeFromChild", this.props.rasp.depth, key, action);
         if (action.type === "SET_TO_CHILD") { // child is passing up her func
             if(Object.keys(this.toChild).length) {
                  this.toChild[key] = action.function;
@@ -36,7 +36,7 @@ exports.panel = class RefinePanel extends React.Component {
     }
 
     toMeFromParent(action) {
-        console.info("RefinePanel.toMeFromParent", this.props.rasp.depth, action);
+        //onsole.info("RefinePanel.toMeFromParent", this.props.rasp.depth, action);
         if (action.type === "CLEAR_PATH") {  // clear the path and reset the RASP state back to what the const
             this.setState({chosen: 'promote'});
         }

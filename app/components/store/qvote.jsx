@@ -71,7 +71,7 @@ class QVoteStore extends React.Component {
 
 
     okGetQVoteInfo(accumulation) {
-        console.info("QVote got qvote info length", accumulation.length);
+        //onsole.info("QVote got qvote info length", accumulation.length);
         if (accumulation) {
             var sections=this.cloneSections(this.state.sections);
             accumulation.forEach(qvote => {

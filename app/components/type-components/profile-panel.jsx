@@ -105,7 +105,7 @@ class ProfilePanel extends React.Component {
 
         var properties=ProfileComponent.properties(profiles);
 
-        console.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
+        //onsole.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
 
         if((this.props.user && this.state.ready) || this.neededInputAtStart) // if there is a users and the user info in ready or if input is going to be needed
         {

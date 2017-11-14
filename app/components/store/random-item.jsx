@@ -55,9 +55,7 @@ class RandomItemStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderChildren () {
-    console.info("RandomItemStore.renderChildren",this.props);
     return React.Children.map(this.props.children, child =>{
-      console.info("RandomItemStore.renderChildren.map",child.props.children);
       return React.cloneElement(child, Object.assign({}, this.state), child.props.children );
     });
   }
@@ -65,11 +63,9 @@ class RandomItemStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.info("RandomItemStore.render", this.props, this.state)
+    //onsole.info("RandomItemStore.render", this.props, this.state)
     const panelout = this.renderChildren();
 
-    console.info("RandomItemStore children rendered");
-    
     return (  
       <section>
         { panelout }

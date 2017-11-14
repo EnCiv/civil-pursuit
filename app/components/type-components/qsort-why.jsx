@@ -47,7 +47,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId');
         var unsortedList = [];
-        console.info("qsortWhy constructor");
+        //onsole.info("qsortWhy constructor");
         this.ButtonList['unsorted']=QSortButtonList['unsorted'];
         const qbuttons=Object.keys(QSortButtonList);
         if(!(this.whyName=this.props.whyName)){
@@ -59,7 +59,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         }
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
-        console.info("qsort-why constructor buttonlist")
+        //onsole.info("qsort-why constructor buttonlist")
         this.state.sections = {};
         this.buttons = Object.keys(this.ButtonList);
         this.buttons.forEach(button => {
@@ -73,7 +73,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
-        console.info("qsortWhy componentWillReceiveProps");
+        //onsole.info("qsortWhy componentWillReceiveProps");
         var newSections=[];
         this.buttons.forEach(button=> newSections[button]=[] );
 
@@ -93,7 +93,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     toggle(itemId, button, set, whyItemId) {
-        console.info("QsortWhy.toggle", ...arguments);
+        //onsole.info("QsortWhy.toggle", ...arguments);
         //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
 
         if (button==='harmony') return;
@@ -149,7 +149,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 if (this.state.sections['unsorted'].length) { issues++ }
                 let qb = this.ButtonList[name];
                 if (qb.max) {
-                    console.info("QSortWhy qb")
+                    //onsole.info("QSortWhy qb")
                     if (this.state.sections[name].length > qb.max) {
                         direction.push(
                             <div key={'direction'+name} className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>

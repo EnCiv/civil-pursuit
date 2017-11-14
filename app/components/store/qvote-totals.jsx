@@ -28,7 +28,7 @@ class QVoteTotals extends React.Component {
   }
 
     componentWillReceiveProps(newProps) { //just read in the new props and through out the old ones and fetch new votes
-    console.info("qvote-totals: newProps");
+    //onsole.info("qvote-totals: newProps");
       var newFinale=[];
       var idList=[];
       if(newProps.shared && newProps.shared.items){
@@ -45,7 +45,7 @@ class QVoteTotals extends React.Component {
 
   okGetQVoteInfo(accumulation) {
       var newFinale=this.state.finale.slice(0);
-      console.info("QVoteTotal got qvote info length,accumulation.length");
+      //onsole.info("QVoteTotal got qvote info length,accumulation.length");
       if(accumulation.length){
         accumulation.forEach(qvote => {
             newFinale.some((qobj, i)=>{

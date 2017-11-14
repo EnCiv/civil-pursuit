@@ -10,7 +10,7 @@ export default class ItemCreator extends React.Component {
     render(){
         const {item=null}=this.props;
         const initialRASP={display: item!==null && Object.keys(item).length>0}; // if there is a populated item, then start in display mode
-        console.info("ItemCreator", this.props);
+        //onsole.info("ItemCreator", this.props);
         return (
             <ReactActionStatePath {...this.props} initialRASP={initialRASP}>
                 <RASPItemCreator />
@@ -25,7 +25,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
     state={postWhenIdReady: false};
 
     constructor(props){
-        console.info("ItemCreator.constructor", props);
+        //onsole.info("ItemCreator.constructor", props);
         const {toggle, item}=props;
         super(props);
         if(props.rasp.display){  // this is could be set by initialRASP above
@@ -36,7 +36,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
     }
 
     componentWillReceiveProps(newProps){
- //       console.info("QSortWhyCreate.constructor", newProps);
+        //onsole.info("QSortWhyCreate.constructor", newProps);
         if(this.item && newProps.item && (this.item._id !== newProps.item._id) && Object.keys(newProps.item).length) {
             this.props.toggle('set', newProps.item._id); // passing the Id of the item created
             this.props.rasp.toParent({type: "SET_DISPLAY"})
@@ -46,7 +46,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
     }
     
     actionToState(action,rasp,source){
-        console.info("ItemCreator.actionToState",action,rasp,source);
+        //onsole.info("ItemCreator.actionToState",action,rasp,source);
         const {type}=action;
         var nextRASP={}, delta={};
         if (type==="SET_EDIT"){
@@ -99,7 +99,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
 
     render(){
         var defaultColor = '#fff'
-        console.info("ItemCreator.render", this.props);
+        //onsole.info("ItemCreator.render", this.props);
         const { panel, toggle, user, rasp } = this.props; // items is Object.assign'ed as a prop through PanelStore
 
         const type= this.props.type || panel.type || null;

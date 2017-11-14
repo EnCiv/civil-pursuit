@@ -23,7 +23,7 @@ import PanelHead from '../panel-head';
 export class QSortItems extends React.Component {
     
     render(){
-        logger.info("QSortItems.render", this.props);
+        //logger.info("QSortItems.render", this.props);
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
@@ -50,7 +50,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     constructor(props){
         super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
-        console.info("RASPQSortItems.constructor");
+        //onsole.info("RASPQSortItems.constructor");
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,7 +88,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        console.info("RASPQSortItems.render");
+        //onsole.info("RASPQSortItems.render");
 
         const { count, user, rasp, items, type, parent } = this.props;
 
@@ -98,7 +98,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             direction = [], instruction = [], issues = 0, done = [], loading=[];
 
         if (!Object.keys(this.props.index).length) {
-            console.info("qsort-items creator")
+            //onsole.info("qsort-items creator")
             loading.push(
                 <div className="gutter text-center" key="creator">
                     <a href="#" onClick={ this.toMeFromChild.bind(this, null, {type: "TOGGLE_CREATOR"}) } className="click-to-create">
