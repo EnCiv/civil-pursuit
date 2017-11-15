@@ -12,27 +12,33 @@ import QSortFinale from '../type-components/qsort-finale';
 import QSortButtonList from '../qsort-button-list';
 
 exports.button = class TotalsButton extends React.Component {
+    donothing() {
+        return false;
+      }
+
     render() {
-        const { item } = this.props;
-        var active;
+        const { active, item } = this.props;
+        var inactive=false;
 
         if(typeof item.answeredAll !== 'undefined') {
-            active=item.answeredAll;
-        } else active=this.props.active;
-
+            inactive=!item.answeredAll;
+        } 
         const buttonName = this.props.buttonName || "Totals";
         const buttonTitle = this.props.buttonTitle || {
-            active: "See the dynamic totals",
+            active: "See the community totals",
             success: "Return to the higher level of this discusion",
             inactive: "You need to participate before you can see the totals"
         };
         var number = ' ';
-        var success = false, inactive = false;
+        var success = false;
         var title = "";
         var onClick=this.props.onClick;
         if(!this.props.user) return null; // no button if user not logged in
 
-        if (active) {
+        if(inactive){
+            onClick = this.donothing.bind(this);
+            title = buttonTitle.inactive;
+        } else if (active) {
             success = true;
             title = buttonTitle.success;
         } else {

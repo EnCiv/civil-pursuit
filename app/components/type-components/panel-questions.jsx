@@ -299,8 +299,6 @@ class RASPPanelItems extends ReactActionStatePathClient {
     }
 }
 
-
-
 class AnswerCount extends React.Component {
     constructor(props) {
         super(props);
@@ -375,7 +373,7 @@ class RASPPanelQuestions extends RASPPanelItems {
 
     render() {
 
-        const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, sortedItems, panel, ...otherProps } = this.props;
+        const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, sortedItems, panel, answeredAll, ...otherProps } = this.props;
         delete otherProps['new']; // this is a bad name for a property
 
         let title = 'Loading items', name, content, loadMore;
@@ -410,6 +408,9 @@ class RASPPanelQuestions extends RASPPanelItems {
 
         return (
             <section>
+                <Accordion active={answeredAll && !rasp.shortId} key="done-directions" className='instruction-text'>
+                    {this.props.doneDirections || "Congratulations!! You have completed the community discussion.\n\nYou can use the Community button to see the overal response from the community.\n\n Be sure to come back to this discussion again to add things that you have thought of, or to check on the community response."}
+                </Accordion>
                 {content}
                 {loadMore}
             </section>
