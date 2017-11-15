@@ -13,7 +13,13 @@ import QSortButtonList from '../qsort-button-list';
 
 exports.button = class TotalsButton extends React.Component {
     render() {
-        const { active, item } = this.props;
+        const { item } = this.props;
+        var active;
+
+        if(typeof item.answeredAll !== 'undefined') {
+            active=item.answeredAll;
+        } else active=this.props.active;
+
         const buttonName = this.props.buttonName || "Totals";
         const buttonTitle = this.props.buttonTitle || {
             active: "See the dynamic totals",

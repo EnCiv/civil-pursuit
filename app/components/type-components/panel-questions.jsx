@@ -305,7 +305,7 @@ class AnswerCount extends React.Component {
     constructor(props) {
         super(props);
         this.updateSort(props);
-        this.state = { sortedItems: [] };
+        this.state = { sortedItems: [], answeredAll: false };
     }
 
     index = [];
@@ -314,7 +314,11 @@ class AnswerCount extends React.Component {
         let parentId;
         if (parentId = ((props.parent && props.parent._id) || (props.panel && props.panel.parent && props.panel.parent._id) || props.parent || (props.panel && props.panel.parent))) {
             window.socket.emit("get qvote item parent count", parentId, this.okGetQVoteItemParentCount.bind(this))
-            props.panel.items.forEach((item, i) => this.index[item._id] = item); // indexify the items
+            props.panel.items.forEach((item, i) =>{
+                 this.index[item._id] = item; // indexify the items
+                 if(typeof item.answeredAll === 'undefined') item.answeredAll=false;
+                 if(typeof item.answerCount === 'undefined') item.answerCount=0;
+            })
         }
     }
 
@@ -335,15 +339,19 @@ class AnswerCount extends React.Component {
         if (results) {
             results.forEach(result => {
                 if((typeof this.index[result._id].answerCount !== 'undefined') && (this.index[result._id].answerCount !== result.count)) {
+                    this.index[result._id].answerCount=result.count; // set it here but also notify child
                     this.props.rasp.toParent({type: "CHILD_UPDATE", shortId: result.id, item: {answerCount: result.count}});
                 }
-                this.index[result._id].answerCount = result.count;
             })
         }
-        var newList = this.props.panel.items.slice(); // copy the list
-        newList.forEach(item => { if (typeof item.answerCount === 'undefined') item.answerCount = 0; }) // no votes don't get a result so initialize to 0
-        newList.sort((a, b) => a.answerCount - b.answerCount) // smallest answer count first
-        this.setState({ sortedItems: newList });
+        var sortedItems = this.props.panel.items.slice().sort((a, b) => a.answerCount - b.answerCount)
+        var answeredAll= !sortedItems.some(item=>item.answerCount===0)
+        if(answeredAll !== this.state.answeredAll) 
+            sortedItems.forEach(item=>{
+                this.props.rasp.toParent({type: "CHILD_UPDATE", shortId: item.id, item: {answeredAll}});
+                item.answeredAll=answeredAll;
+            })
+        this.setState({ sortedItems, answeredAll });
     }
 
     renderChildren(moreProps) {
