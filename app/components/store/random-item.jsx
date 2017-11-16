@@ -46,6 +46,14 @@ class RandomItemStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  randomItemStoreRefresh(){
+    var panel = Object.assign({},this.state.panel);
+    panel.items=[];
+    window.socket.emit('get random items', panel, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   okGetRandomItems (panel) {
     if ( makePanelId(panel) === this.id ) {
       this.setState({ panel });
@@ -56,7 +64,7 @@ class RandomItemStore extends React.Component {
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>{
-      return React.cloneElement(child, Object.assign({}, this.state), child.props.children );
+      return React.cloneElement(child, Object.assign({}, this.state, {randomItemStoreRefresh: this.randomItemStoreRefresh.bind(this)}), child.props.children );
     });
   }
 
