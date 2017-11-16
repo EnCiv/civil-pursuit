@@ -10,7 +10,7 @@ import ReactActionStatePath from 'react-action-state-path';
 import Item from '../item';
 import PanelHead from '../panel-head';
 import PanelItems from '../panel-items';
-import {RASPPanelItems} from '../panel-items';
+import RASPPanelItems from '../rasp-panel-items';
 
 class AnswerCount extends React.Component {
     constructor(props) {
