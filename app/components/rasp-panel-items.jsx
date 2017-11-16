@@ -10,6 +10,17 @@ import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-st
 import Item from './item';
 import PanelHead from './panel-head';
 
+/**************************************************
+ * This file was once part of panel-items. It was separated out when I wanted to import RASPPanelItems into panel-questions separate from PanelItems
+ * 
+ * Whenever I did this, the generated panel-questions.js file would have _panelItems=require('../panel-items'); but the result would  be {default: undefined, RASPPanelItems: undefined}
+ * so there would be a runtime error trying to load PanelQuestions.
+ * 
+ * Separating rasp-panel-items into a separate file fixed this, but I can not figure out what the problem was before.  It would be nice to understand this one day, and to recombine RASPPanelItems into panel-items
+ * RASPQSortItems seems to work as intended from qsort-items into qsort-random-items.
+ * 
+ **************************************************/
+
 
 export default class RASPPanelItems extends ReactActionStatePathClient {
 
