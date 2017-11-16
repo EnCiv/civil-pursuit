@@ -10,7 +10,7 @@ import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-st
 import Item from './item';
 import PanelHead from './panel-head';
 
-export class PanelItems extends React.Component {
+class PanelItems extends React.Component {
   render() {
     logger.trace("PanelItems render");
     return (
@@ -23,7 +23,7 @@ export class PanelItems extends React.Component {
   }
 }
 
-export class RASPPanelItems extends ReactActionStatePathClient {
+class RASPPanelItems extends ReactActionStatePathClient {
 
   constructor(props) {
     super(props, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
@@ -306,8 +306,6 @@ export class RASPPanelItems extends ReactActionStatePathClient {
   }
 }
 
-export default PanelItems;
-
-
+export { PanelItems as default, RASPPanelItems }
 
 
