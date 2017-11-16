@@ -112,7 +112,7 @@ class PanelHead extends React.Component {
                     </Accordion>
                 );
             }      
-            if (!items.length && !(createValue==='hidden')) {
+            if (!items.length && !(createValue==='hidden') && (typeof type === 'object')) {
                 content.push(
                 <div className={`syn-panel-gutter text-center vs-${rasp.shape}`} key='be-the-first'>
                     <a href="#" onClick={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })} className="click-to-create">
@@ -128,7 +128,7 @@ class PanelHead extends React.Component {
                     heading={[
                         (<h4 onClick={()=>rasp.toParent({type: "TOGGLE_FOCUS"})}
                             key="title">{title}</h4>), 
-                        ((createValue==='hidden') && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
+                        ((createValue==='hidden' || (typeof type !== "object")) && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? (null) :
                             (
                             <Icon
                                 icon="plus"
