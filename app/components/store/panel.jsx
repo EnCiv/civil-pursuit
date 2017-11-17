@@ -84,11 +84,13 @@ class PanelStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  renderChildren () {
-    return React.Children.map(this.props.children, child =>{
-      return React.cloneElement(child, Object.assign({}, this.state), child.props.children );
+  renderChildren() {
+    return React.Children.map(this.props.children, child => {
+        var {children, type, parent, items, limit, own, ...newProps}=this.props;
+        Object.assign(newProps, this.state, child.props);
+        return React.cloneElement(child, newProps, child.props.children);
     });
-  }
+}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
