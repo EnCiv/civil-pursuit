@@ -47,6 +47,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         //onsole.info("QsortReLook.constructor",props);
+        this.createDefaults();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

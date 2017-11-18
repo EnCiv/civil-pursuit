@@ -74,6 +74,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
         //onsole.info("RASPRuleList.constructor", props);
         if (typeof window !== 'undefined' && this.props.type.harmony) 
         window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this));
+        this.createDefaults();
     }
 
     okGetListoType(typeList) {

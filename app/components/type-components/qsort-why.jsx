@@ -68,6 +68,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if(this.props.shared.sections[this.whyName]){ // if theres nothing in the list, there might not be a list especially for Least
             this.state.sections['unsorted'] = this.props.shared.sections[this.whyName].slice(0);
         } else this.state.sections['unsorted'] = [];
+        this.createDefaults();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  

@@ -60,6 +60,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         });
         this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
         //onsole.info("qsortRefine constructor");
+        this.createDefaults();
     }
 
     actionToState(action, rasp, source) {

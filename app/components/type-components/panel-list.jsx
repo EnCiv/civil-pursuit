@@ -33,6 +33,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
       this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
     } else console.error("RASPPanelList no rasp.toParent", this.props);
     this.panelStatus=[];
+    this.createDefaults();
   }
 
   actionToState(action, rasp, source) {
@@ -84,8 +85,8 @@ class RASPPanelList extends ReactActionStatePathMulti {
         delta.currentPanel=nextPanel;
         delta.shape='open';
         let i;
-        for(i=this.panelList.length-1; i>=0; i--) {
-          this.panelList[i].component=<div></div>;
+        for(i=nextPanel;i<this.panelList.length;i++){
+          this.toChild[i]({type: "RESET"})
           panelStatus[i]="issues";
         }
       }

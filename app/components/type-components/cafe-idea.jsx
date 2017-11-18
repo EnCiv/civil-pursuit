@@ -40,6 +40,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId',1);
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
+        this.createDefaults();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  

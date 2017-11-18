@@ -32,6 +32,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       console.error("PanelItems.constructor visualMethod unknown:",visMeth)
       this.vM=this.visualMethods['default'];
     }
+    this.createDefaults();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

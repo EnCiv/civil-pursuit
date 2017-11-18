@@ -47,6 +47,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         super(props, 'shortId', 1);
         if(this.props.qbuttons){ this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList=QSortButtonList; }
+        this.createDefaults();
     }
 
     actionToState(action, rasp, source, initialRASP) {

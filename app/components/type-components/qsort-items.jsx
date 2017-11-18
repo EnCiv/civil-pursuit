@@ -51,6 +51,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         //onsole.info("RASPQSortItems.constructor");
+        this.createDefaults();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
