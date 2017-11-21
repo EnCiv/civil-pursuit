@@ -70,6 +70,10 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
+        } else if (action.type==="RESET"){
+            console.info("RASPQSortItems RESET");
+            if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
+            return; // no need to return a state, it's being reset
         } else return null;
         Object.assign(nextRASP, rasp, delta);
         return(nextRASP);
