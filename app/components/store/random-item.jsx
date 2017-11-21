@@ -48,7 +48,7 @@ class RandomItemStore extends React.Component {
 
   randomItemStoreRefresh(){
     var panel = Object.assign({},this.state.panel);
-    panel.items=[];
+    //panel.items=[];
     window.socket.emit('get random items', panel, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
   }
 
