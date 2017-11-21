@@ -76,7 +76,7 @@ function toPanelItem (userId) {
           Object.keys(item.user).forEach(userProp=>{
             if(userProp[0]==='$') 
               subObjects.push(userProp);
-            else if(!noIdUserProps.includes(userProp)) //$props are special for the prototype
+            else if(!noIdUserProps.includes(userProp) && !(userProp==='_id' && item.user._id === userId)) //$props are special for the prototype
               delete item.user[userProp];
           });
           subObjects.forEach(subObj=>{

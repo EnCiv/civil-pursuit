@@ -81,7 +81,19 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if(newProps.shared.sections[this.whyName]){
             newProps.shared.sections[this.whyName].forEach(itemId=>{
                 if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
-                else{ newSections['unsorted'].push(itemId) }
+                else { 
+                    let harmony=ItemStore.index[itemId] && ItemStore.index[itemId].harmony;
+                    if(harmony) {
+                        let type=harmony.types[this.whyName==='most'? 0:1];
+                        if(type) {
+                            if(ItemStore.findOne({parent: itemId, type: type })){
+                                newSections[this.whyName].push(itemId);
+                                return;
+                            }
+                        }
+                    }
+                    newSections['unsorted'].push(itemId) 
+                }
             });
             this.setState({sections: newSections});
         }
