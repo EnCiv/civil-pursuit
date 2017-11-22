@@ -5,6 +5,25 @@ import update from 'immutability-helper';
 import merge from 'lodash/merge';
 import { QSortToggle } from '../type-components/qsort-items';
 
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
 class QVoteLocal extends React.Component {
 
     constructor(props) {
@@ -17,7 +36,8 @@ class QVoteLocal extends React.Component {
         if (this.props.shared && this.props.shared.sections && this.props.shared.index) {
             Object.keys(this.props.shared.sections).forEach(section => state.sections[section] = []);
             Object.keys(this.props.shared.index).map(itemId => state.sections['unsorted'].push(itemId));
-            state.index = merge({}, this.props.shared.index)
+            shuffle(state.sections['unsorted']);  // randomize the list
+            state.index = merge({}, this.props.shared.index);
         } 
         return state;
     }

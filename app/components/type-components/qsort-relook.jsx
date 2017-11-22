@@ -109,8 +109,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, shared, type } = this.props;
-        const items=shared.items;
+        const { user, rasp, shared, type, sections } = this.props;
+        const {items, index} = shared;
         const qbuttons=this.props.qbuttons || this.QSortButtonList
 
         const {createMethod="visible", promoteMethod="visible", feedbackMethod="visible"} = type;
@@ -121,17 +121,17 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         let content = [], direction = [], instruction = [], issues = 0, done = [], loading = [];
 
-        if (!Object.keys(this.props.index).length) {
+        if (!Object.keys(index).length) {
             loading.push(
                 <div key="loading" className="gutter text-center">Nothing here?</div>
             );
         } else {
-            if (this.props.sections['unsorted'].length) { issues++ }
+            if (sections['unsorted'].length) { issues++ }
             Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
-                if (!this.props.sections[criteria]) { return; }
+                if (!sections[criteria]) { return; }
                 let qb = this.QSortButtonList[criteria];
                 if (qb.max) {
-                    if (this.props.sections[criteria].length > qb.max) {
+                    if (sections[criteria].length > qb.max) {
                         direction.push(
                             <div key="max" className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
                                 {qb.direction}
@@ -140,8 +140,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                         issues++;
                     }
                 }
-                this.props.sections[criteria].forEach(itemId => {
-                    let item = items[this.props.index[itemId]];
+                sections[criteria].forEach(itemId => {
+                    let item = items[index[itemId]];
                     if(!this.mounted[item._id] || this.mounted[item._id].criteria !== criteria){
                         this.mounted[item._id]=(
                             {   content: 
