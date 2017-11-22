@@ -80,7 +80,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
-        } else return null;
+        } else if (action.type==="RESET"){
+            if(this.props.resetStore) this.props.resetStore();
+            return null;
+        } else 
+            return null;
         Object.assign(nextRASP, rasp, delta);
         //if(nextRASP.shape==='open') nextRASP.pathSegment=items[this.shared.index[nextRASP.itemId].id; 
         //else nextRASP.pathSegment=null;

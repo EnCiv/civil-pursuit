@@ -67,7 +67,10 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         } else if(action.type === "DECENDANT_UNFOCUS" && action.distance===1) {
             delta.shortId = null; // turn off the shortId
             delta.shape = 'truncated';
-        } else
+        } else if (action.type==="RESET"){
+            if(this.props.resetStore) this.props.resetStore();
+            return null;
+        }else
             return null;
         Object.assign(nextRASP, rasp, delta);
         if (nextRASP.shortId) nextRASP.shape = 'open';

@@ -7,16 +7,24 @@ import { QSortToggle } from '../type-components/qsort-items';
 
 class QVoteLocal extends React.Component {
 
-    state = { sections: { unsorted: [] } };
-
     constructor(props) {
         super(props);
-        //onsole.info("QVoteLocal constructor");
+        this.state=this.getDefaultState();
+    }
+
+    getDefaultState(){
+        var state={ sections: { unsorted: [] } };
         if (this.props.shared && this.props.shared.sections && this.props.shared.index) {
-            Object.keys(this.props.shared.sections).forEach(section => this.state.sections[section] = []);
-            Object.keys(this.props.shared.index).map(itemId => this.state.sections['unsorted'].push(itemId));
-            this.state.index = merge({}, this.props.shared.index)
-        }
+            Object.keys(this.props.shared.sections).forEach(section => state.sections[section] = []);
+            Object.keys(this.props.shared.index).map(itemId => state.sections['unsorted'].push(itemId));
+            state.index = merge({}, this.props.shared.index)
+        } 
+        return state;
+    }
+
+    resetStore(){
+        var state=this.getDefaultState();
+        this.setState({...state});
     }
 
     componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
@@ -51,7 +59,7 @@ class QVoteLocal extends React.Component {
     renderChildren() {
         return React.Children.map(this.props.children, child => {
             var {children, ...newProps}=this.props; // discard children
-            Object.assign(newProps, this.state, { toggle: this.toggle.bind(this) });
+            Object.assign(newProps, this.state, { toggle: this.toggle.bind(this), resetStore: this.resetStore.bind(this) });
             return React.cloneElement(child, newProps, child.props.children)
         });
     }

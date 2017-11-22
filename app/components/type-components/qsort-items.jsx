@@ -75,6 +75,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             let results={index: null, sections: null, items: this.null }
             Object.assign(this.props.shared, results)
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
+            if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
         } else return null;
         Object.assign(nextRASP, rasp, delta);
