@@ -31,6 +31,8 @@ exports.panel = class RefinePanel extends React.Component {
         } else if(action.type ==="ITEM_DELVE") {
             this.setState({chosen: 'winner'});
             action.type="ITEM_REFINE"; // changing the action so that <Item> does not process it, and passes it to <QSortRefine> 
+        } else if(action.type==="RESET"){
+            this.setState({chosen: 'promote'});
         }
         return this.props.rasp.toParent(action);
     }
