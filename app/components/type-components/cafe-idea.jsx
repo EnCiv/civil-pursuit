@@ -45,38 +45,38 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-    actionToState(action, rasp, source,initialRASP){
-        var nextRASP={}, delta={};
-        if(action.type==="POST_ITEM"){
-            let item=action.item;
-            let shared=this.props.shared;
-            var results={idea: item, parent: this.props.parent, type: this.props.type};
-            if(shared.items && shared.sections && shared.index && item._id){  // if the previous step had resulted in a qsorted list.
+    actionToState(action, rasp, source, initialRASP) {
+        var nextRASP = {}, delta = {};
+        if (action.type === "POST_ITEM") {
+            let item = action.item;
+            let shared = this.props.shared;
+            var results = { idea: item, parent: this.props.parent, type: this.props.type };
+            if (shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
                 shared.items.push(item);
-                results.items=shared.items;
-                if(shared.sections.most) shared.sections.most.push(item._id);
-                else shared.sections.most=[item._id];
-                results.sections=shared.sections;
-                this.props.shared.index[item._id]=shared.items.length-1;
-                results.index=shared.index;
+                results.items = shared.items;
+                if (shared.sections.most) shared.sections.most.push(item._id);
+                else shared.sections.most = [item._id];
+                results.sections = shared.sections;
+                this.props.shared.index[item._id] = shared.items.length - 1;
+                results.index = shared.index;
                 window.socket.emit('insert qvote', { item: item._id, criteria: 'most' });
             }
-            setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results}))
+            setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }))
             // no state change, the action will be consumed here
-        } else if (action.type === "DECENDANT_FOCUS"){
-            if(this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod==='ooview')){
-              if(action.distance>1) {
-                delta.decendantFocus=true;
-              }
+        } else if (action.type === "DECENDANT_FOCUS") {
+            if (this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
+                if (action.distance > 1) {
+                    delta.decendantFocus = true;
+                }
             }
-          } else if (action.type === "DECENDANT_UNFOCUS" && action.distance===1){
-            if(rasp.decendantFocus) delta.decendantFocus=false;  // my child has unfocused
-          } else
+        } else if (action.type === "DECENDANT_UNFOCUS" && action.distance === 1) {
+            if (rasp.decendantFocus) delta.decendantFocus = false;  // my child has unfocused
+        } else
             return null;
-        Object.assign(nextRASP,rasp,delta);
-        if(nextRASP.decendantFocus) nextRASP.shape='view'; else nextRASP.shape='open';
-        if(nextRASP.decendantFocus) nextRASP.pathSegment='d';
-        else nextRASP.pathSegment=null;
+        Object.assign(nextRASP, rasp, delta);
+        if (nextRASP.decendantFocus) nextRASP.shape = 'view'; else nextRASP.shape = 'open';
+        if (nextRASP.decendantFocus) nextRASP.pathSegment = 'd';
+        else nextRASP.pathSegment = null;
         return nextRASP;
     }
 

@@ -21,6 +21,7 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHead from '../panel-head';
+import clone from 'clone';
 
 class QSortWhy extends React.Component {
     render(){
@@ -100,6 +101,10 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     }
 
     actionToState(action, rasp, source){
+        if(action.type==="RESET"){
+            Object.assign(this.props.shared,clone(this._defaults.this.results));
+            return null;
+        } else
         return null;
     }
 

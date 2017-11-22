@@ -11,6 +11,7 @@ import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
 import PanelHead from '../panel-head';
+import clone from 'clone';
 
 class QSortRefine extends React.Component {
     render(){
@@ -73,7 +74,10 @@ class RASPQSortRefine extends ReactActionStatePathClient {
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
             return rasp;
-        } else 
+        } else if(action.type==="RESET"){
+            Object.assign(this.props.shared,clone(this._defaults.this.results));
+            return null;
+        } else
             return null;
     }
 
