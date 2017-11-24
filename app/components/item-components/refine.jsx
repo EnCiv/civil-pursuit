@@ -38,9 +38,8 @@ class RASPRefinePanel extends ReactActionStatePathClient {
         } else if(action.type ==="ITEM_DELVE") {
             delta.chosen='winner';
             //action.type="ITEM_REFINE"; // changing the action so that <Item> does not process it, and passes it to <QSortRefine> 
-            this.qaction(()=>this.props.rasp.toParent({type: "ITEM_REFINE"}));
-        } else if(action.type==="RESET"){
-            delta.chosen='promote';
+            var nextAction=Object.assign({},action,{type: "ITEM_REFINE"}); // create a new action with all the parameters of the old action
+            this.qaction(()=>this.props.rasp.toParent(nextAction));
         } else
             return null;
         Object.assign(nextRASP,rasp,delta);
