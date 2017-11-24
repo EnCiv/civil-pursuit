@@ -65,9 +65,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
     }
 
     actionToState(action, rasp, source) {
-        if(action.type ==="SHOW_ITEM") {
-            return rasp;
-        } else if(action.type ==="ITEM_REFINE") {
+        if((action.type ==="ITEM_REFINE") || (action.type ==="SHOW_ITEM")) {  // ** ITEM_REFINE is if the user chose the item he created, show_item if the item the user didn't just create
             this.results.refine[this.whyName][action.itemId]=action.item;
             this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
             var doc = document.documentElement;
