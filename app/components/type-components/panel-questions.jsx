@@ -51,7 +51,7 @@ class AnswerCount extends React.Component {
             results.forEach(result => {
                 if((typeof this.index[result._id].answerCount !== 'undefined') && (this.index[result._id].answerCount !== result.count)) {
                     this.index[result._id].answerCount=result.count; // set it here but also notify child
-                    this.props.rasp.toParent({type: "CHILD_UPDATE", shortId: result.id, item: {answerCount: result.count}});
+                    this.props.rasp.toParent({type: "CHILD_UPDATE", direction: "DESCEND", shortId: result.id, item: {answerCount: result.count}});
                 }
             })
         }
@@ -59,7 +59,7 @@ class AnswerCount extends React.Component {
         var answeredAll= !sortedItems.some(item=>item.answerCount===0)
         if(answeredAll !== this.state.answeredAll) 
             sortedItems.forEach(item=>{
-                this.props.rasp.toParent({type: "CHILD_UPDATE", shortId: item.id, item: {answeredAll}});
+                this.props.rasp.toParent({type: "CHILD_UPDATE", direction: "DESCEND", shortId: item.id, item: {answeredAll}});
                 item.answeredAll=answeredAll;
             })
         this.setState({ sortedItems, answeredAll });
