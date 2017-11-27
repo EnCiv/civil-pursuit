@@ -265,7 +265,7 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
-      this.qaction(()=>this.props.rasp.toParent({type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
+      this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"})),0); // user focus is on me
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -275,7 +275,7 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      this.qaction(()=>this.props.rasp.toParent({type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS" }),0); // user focus is on me
+      this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"})),0); // user focus is on me
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');

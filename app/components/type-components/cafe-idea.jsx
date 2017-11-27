@@ -89,7 +89,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     componentDidMount(){
         //onsole.info("CafeIdea.componentDidMount change shape to open");
-        setTimeout(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
+        this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_FOCUS"})),0);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
