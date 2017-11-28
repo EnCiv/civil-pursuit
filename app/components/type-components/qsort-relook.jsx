@@ -65,10 +65,12 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                         this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
                     }
                 }
+                if((action.distance===1 || action.distance===3) && action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "FOCUS_STATE"});
             } 
-        } else if(action.type === "DECENDANT_UNFOCUS" && action.distance===1) {
+        } else if(action.type === "DECENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
             delta.itemId = null; // turn off the itemId
             delta.shape = 'truncated';
+            if(action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
         } else if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
@@ -145,7 +147,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     if(!this.mounted[item._id] || this.mounted[item._id].criteria !== criteria){
                         this.mounted[item._id]=(
                             {   content: 
-                                <div key={item._id} style={{ backgroundColor: qbuttons[criteria].color }} key={item._id}>
+                                <div style={{ backgroundColor: qbuttons[criteria].color }}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
@@ -159,7 +161,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                             }
                         );
                     }
-                    content.push(this.mounted[item._id].content);
+                    content.push(
+                        <Accordion active={(this.props.rasp.itemId && this.props.rasp.itemId===item._id) || !this.props.rasp.itemId} key={item._id} >
+                            {this.mounted[item._id].content}
+                        </Accordion>
+                    );
                 });
             });
             if (!issues) {
