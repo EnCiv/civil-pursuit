@@ -55,7 +55,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     actionToState(action,rasp) {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
-        if (action.type === "DECENDANT_FOCUS") {
+        if (action.type === "DESCENDANT_FOCUS") {
             if (!action.itemId) logger.error("RASPQFortRelook.actionToState action without itemId", action);
             if (action.itemId) {
                 delta.itemId = action.itemId;
@@ -67,7 +67,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }
                 if((action.distance===1 || action.distance===3) && action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "FOCUS_STATE"});
             } 
-        } else if(action.type === "DECENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
+        } else if(action.type === "DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
             delta.itemId = null; // turn off the itemId
             delta.shape = 'truncated';
             if(action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
@@ -181,9 +181,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                         </Button>
                     </div>
                 );
-                this.qaction(()=>rasp.toParent({ type: "RESULTS", results: this.results}),0);
+                this.queueAction({type: "RESULTS", results: this.results});
             } else 
-                this.qaction(()=>rasp.toParent({ type: "ISSUES"}),0);
+                this.queueAction({type: "ISSUES"});
         }
         return (
             <section id="syn-panel-qsort-harmony">

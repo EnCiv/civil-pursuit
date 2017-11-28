@@ -33,7 +33,7 @@ class RASPRefinePanel extends ReactActionStatePathClient {
 
     actionToState(action,rasp,source,initialRASP) {
         var nextRASP={}, delta={};
-        if(action.type === "DECENDANT_UNFOCUS"){
+        if(action.type === "DESCENDANT_UNFOCUS"){
             delta.chosen='winner';
         } else if(action.type ==="ITEM_DELVE") {
             //action.type="ITEM_REFINE"; // changing the action so that <Item> does not process it, and passes it to <QSortRefine> 

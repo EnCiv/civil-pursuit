@@ -63,13 +63,13 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             }
             setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }))
             // no state change, the action will be consumed here
-        } else if (action.type === "DECENDANT_FOCUS") {
+        } else if (action.type === "DESCENDANT_FOCUS") {
             if (this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
                 if (action.distance > 1) {
                     delta.decendantFocus = true;
                 }
             }
-        } else if (action.type === "DECENDANT_UNFOCUS" && action.distance === 1) {
+        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
             if (rasp.decendantFocus) delta.decendantFocus = false;  // my child has unfocused
         } else
             return null;
@@ -89,7 +89,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     componentDidMount(){
         //onsole.info("CafeIdea.componentDidMount change shape to open");
-        this.qaction(()=>this.props.rasp.toParent({type: "DECENDANT_FOCUS"}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
+        this.queueAction({type: "DESCENDANT_FOCUS"});
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

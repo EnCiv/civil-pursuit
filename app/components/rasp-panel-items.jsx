@@ -56,7 +56,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: delta.creator ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"})),0); 
+      this.queueAction({type: delta.creator ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
@@ -69,7 +69,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       }
       delta.shortId = action.item.id;
     } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
-        ; //then do nothing - it's been done if (action.type==="DECENDANT_FOCUS") {
+        ; //then do nothing - it's been done if (action.type==="DESCENDANT_FOCUS") {
      } else 
       return null; // don't know this action, null so the default methods can have a shot at it
 
@@ -123,13 +123,13 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       childVisualMethod: ()=>undefined,
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "DECENDANT_FOCUS" && action.distance===1) {
+        if (action.type === "DESCENDANT_FOCUS" && action.distance===1) {
           if (action.shortId) { // a child is opening
             if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
               this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
             delta.shortId = action.shortId; // the new child will be open
           } 
-        } else if(action.type ==="DECENDANT_UNFOCUS" && action.distance===1){
+        } else if(action.type ==="DESCENDANT_UNFOCUS" && action.distance===1){
             if(rasp.shortId) {
               delta.shortId=false;
             }
@@ -157,16 +157,16 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'ooview',
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "DECENDANT_FOCUS" && action.distance===1) {
+        if (action.type === "DESCENDANT_FOCUS" && action.distance===1) {
           if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
           if (action.shortId) { // a child is opening
             if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
               this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
             delta.shortId = action.shortId; // the new child will be open
           }
-        } else if (action.type==="DECENDANT_FOCUS" && action.distance>1) {
+        } else if (action.type==="DESCENDANT_FOCUS" && action.distance>1) {
             delta.decendantFocus=true;
-        } else if (action.type==="DECENDANT_UNFOCUS"  && action.distance===1) {
+        } else if (action.type==="DESCENDANT_UNFOCUS"  && action.distance===1) {
             if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
             delta.shortId=null;
             delta.decendantFocus=false;
@@ -176,12 +176,12 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
           delta.shortId=null;
           if(action.state!=="FOCUS_STATE") 
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_FOCUS"})),0);
+            this.queueAction({type: "DESCENDANT_FOCUS"});
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
           if(action.type!=="UNFOCUS_STATE")
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_UNFOCUS"})),0); 
+            this.queueAction({type: "DESCENDANT_UNFOCUS"});
         } else
           return false;
         return true; 
@@ -206,7 +206,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'titleize',
       actionToState: (action, rasp, source, initialRASP, delta) => {
-        if (action.type === "DECENDANT_FOCUS") {
+        if (action.type === "DESCENDANT_FOCUS") {
           if (action.distance >= 0) {
             delta.decendantFocus = true;
             delta.focus=true;
@@ -214,7 +214,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
               this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
             }
           }
-        } else if (action.type === "DECENDANT_UNFOCUS") {
+        } else if (action.type === "DESCENDANT_UNFOCUS") {
           if (action.distance ===1 && rasp.decendantFocus) delta.decendantFocus = false;
           //if (action.distance===1) {
           //  delta.focus=false;
@@ -228,7 +228,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
           if(action.state!=="FOCUS_STATE")
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_FOCUS"})),0);
+            this.queueAction({type: "DESCENDANT_FOCUS"});
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
@@ -236,7 +236,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }
           if(action.type!=="UNFOCUS_STATE")
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_UNFOCUS"})),0);
+            this.queueAction({type: "DESCENDANT_UNFOCUS"});
         } else
           return false; // action has not been processed continute checking
         action.toBeContinued=true; // supress shape_changed events

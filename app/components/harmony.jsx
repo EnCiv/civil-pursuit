@@ -63,7 +63,7 @@ class RASPHarmony extends ReactActionStatePathClient {
     let delta = {};
 
     if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
-      ; //then do nothing - it's been done if (action.type==="DECENDANT_FOCUS") {
+      ; //then do nothing - it's been done if (action.type==="DESCENDANT_FOCUS") {
     } else
       return null; // don't know this action, null so the default methods can have a shot at it
 
@@ -96,9 +96,9 @@ class RASPHarmony extends ReactActionStatePathClient {
 
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta) => {
-        if (action.type === "DECENDANT_FOCUS") {
+        if (action.type === "DESCENDANT_FOCUS") {
           delta.side = action.side; // action is to open, this side is going to be the open side
-        } else if (action.type==="DECENDANT_UNFOCUS" && (action.distance===1 || action.distance===2)) {
+        } else if (action.type==="DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===2)) {
             delta.side= null; 
             if (rasp.side && action.side === rasp.side) {
               this.toChild[rasp.side]({ type: "RESET_STATE" });  // CHANGE_SHAPE ?
@@ -129,21 +129,21 @@ class RASPHarmony extends ReactActionStatePathClient {
           delta.focus=false;
           this.toChild['L']({ type: "UNFOCUS_STATE" });
           this.toChild['R']({ type: "UNFOCUS_STATE" });
-        } else if (action.type === "DECENDANT_FOCUS") {
+        } else if (action.type === "DESCENDANT_FOCUS") {
           if(action.distance===1 || action.distance===2){
             if(!rasp.focus ){
               delta.focus=true;
               this.toChild[other[action.side]]({ type: "FOCUS_STATE" });
-              this.qaction(()=>this.props.rasp.toParent({type: "SET_BUTTON", button: "Harmony"}))
+              this.queueAction({type: "SET_BUTTON", button: "Harmony"});
             }
             if(action.distance===2) delta.side=action.side; 
           } 
-        } else if (action.type === "DECENDANT_UNFOCUS") {
+        } else if (action.type === "DESCENDANT_UNFOCUS") {
           if(action.distance===1){
             if(rasp.focus) {
               delta.focus=false;
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
-              this.qaction(()=>this.props.rasp.toParent({type: "RESET_BUTTON", button: "Harmony"}))
+              this.queueAction({type: "RESET_BUTTON", button: "Harmony"});
             }
             delta.side=null;
           }else if(action.distance===2){

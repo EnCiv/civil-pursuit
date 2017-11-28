@@ -53,7 +53,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     actionToState(action, rasp, source, initialRASP) {
         var nextRASP = {}, delta = {};
         //onsole.info("RASPQSortFinale.actionToState", ...arguments);
-        if (action.type === "DECENDANT_FOCUS") {
+        if (action.type === "DESCENDANT_FOCUS") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
             if (action.shortId) {
                 delta.shortId = action.shortId;
@@ -64,7 +64,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                     }
                 }
             } 
-        } else if(action.type === "DECENDANT_UNFOCUS" && action.distance===1) {
+        } else if(action.type === "DESCENDANT_UNFOCUS" && action.distance===1) {
             delta.shortId = null; // turn off the shortId
             delta.shape = 'truncated';
         } else if (action.type==="RESET"){

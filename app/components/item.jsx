@@ -87,9 +87,9 @@ class RASPItem extends ReactActionStatePathClient {
       // process actions for this visualMethod
       enableHint: ()=>true,
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if(action.type==="DECENDANT_FOCUS" && action.distance>1 ){
+        if(action.type==="DESCENDANT_FOCUS" && action.distance>1 ){
             delta.readMore = false; // if the user is working on stuff further below, close the readmore
-        }else if(action.type==="DECENDANT_UNFOCUS" && action.distance===1) {
+        }else if(action.type==="DESCENDANT_UNFOCUS" && action.distance===1) {
             // child changed to truncated
             delta.shape='truncated'; 
             delta.button=null; 
@@ -142,10 +142,10 @@ class RASPItem extends ReactActionStatePathClient {
         return (!this.props.rasp.decendantFocus)
       },
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if(action.type==="DECENDANT_FOCUS" && action.distance>0){
+        if(action.type==="DESCENDANT_FOCUS" && action.distance>0){
           delta.readMore = false;
           delta.decendantFocus=true;
-        }else if(action.type==="DECENDANT_UNFOCUS" && action.distance===1  && rasp.decendantFocus){
+        }else if(action.type==="DESCENDANT_UNFOCUS" && action.distance===1  && rasp.decendantFocus){
           delta.shape='truncated'; 
           delta.button=null; 
           delta.readMore=false;
@@ -198,9 +198,9 @@ class RASPItem extends ReactActionStatePathClient {
       },
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DECENDANT_FOCUS" && action.distance>1) {
+        if (action.type==="DESCENDANT_FOCUS" && action.distance>1) {
             delta.decendantFocus=true;
-        } else if (action.type==="DECENDANT_UNFOCUS" && action.distance===1 && rasp.decendantFocus) {
+        } else if (action.type==="DESCENDANT_UNFOCUS" && action.distance===1 && rasp.decendantFocus) {
                 delta.decendantFocus=false;
                 delta.button=null;
                 delta.readMore=false;
@@ -265,7 +265,7 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
-      this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: delta.button ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"})),0); // user focus is on me
+      this.queueAction({type: delta.botton ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -275,7 +275,7 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: delta.readMore ? "DECENDANT_FOCUS" : "DECENDANT_UNFOCUS"})),0); // user focus is on me
+      this.queueAction({type:  delta.readMore ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');
@@ -286,7 +286,7 @@ class RASPItem extends ReactActionStatePathClient {
       } else if (action.winner) { // we have a winner but it's some other item
         delta.readMore = false;
         delta.button = null;
-        this.qaction(() => this.props.rasp.toParent({ type: "OPEN_ITEM", item: action.winner, distance: -1 }));
+        this.queueAction({type:  "OPEN_ITEM", item: action.winner, distance: -1 });
       } else { // there wasn't a winner but we finish the promote
         delta.readMore = 'false';
         delta.button = null;

@@ -85,7 +85,7 @@ class RASPItemCreator extends ReactActionStatePathClient {
             this.setState({postWhenIdReady: false})
         }
         let t=new Date();
-        if((t-this.timestamp) > 500)  this.props.rasp.toParent({type: "DECENDANT_FOCUS"}); // let the ancestors know that the user focus is here  
+        if((t-this.timestamp) > 500)  this.props.rasp.toParent({type: "DESCENDANT_FOCUS"}); // let the ancestors know that the user focus is here  
     }
 
     post(){  // in the creator, user hit the post button

@@ -53,10 +53,10 @@ class RASPPromote extends ReactActionStatePathClient {
     actionToState(action, rasp,source, initialRASP) {
         logger.trace("RASPPromote.actionToState", { action }, { rasp });
         var nextRASP = {}, delta={};
-        if (action.type === "DECENDANT_FOCUS"){
+        if (action.type === "DESCENDANT_FOCUS"){
             delta.side=action.side;
             if(rasp.side && (action.side!==rasp.side)) this.toChild[rasp.side]({ type: "CHANGE_STATE", shape: 'truncated' }); // if a side is going to be open, and it's not the side that is open, close the other side
-        } else if(action.type==="DECENDANT_UNFOCUS") {
+        } else if(action.type==="DESCENDANT_UNFOCUS") {
             delta.side=null;
         } else if (action.type === "CLEAR_EXPANDERS") {
             delta.side = null; // action is to open, this side is going to be the open side
@@ -67,7 +67,7 @@ class RASPPromote extends ReactActionStatePathClient {
                 delta.left = delta.cursor - 1;
                 delta.right = delta.cursor;
           } else { // done with evaluations
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_UNFOCUS"})),0); // the users action results in unfocusing on this component
+            this.queueAction({type: "DESCENDANT_UNFOCUS"});
           }
         } else if (action.type==="PROMOTE"){
           const cursor = rasp.cursor + 1;
@@ -78,13 +78,13 @@ class RASPPromote extends ReactActionStatePathClient {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             //delta.cursor=cursor; do not increment cursor past limit
-            this.qaction(()=>this.props.rasp.toParent(Object.assign({},action,{wasType: action.type, type: "DECENDANT_UNFOCUS"})),0); // the users action results in unfocusing on this component
+            this.queueAction({type: "DESCENDANT_UNFOCUS"});
             if(winner._id === this.props.itemId){ // voted up the one we started with
-                this.qaction(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -1}),0);
+                this.queueAction({type: "ITEM_DELVE", item: winner, distance: -1});
             } else { // voted up a different one
                 this.qaction(()=>{
                     this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinued: true})
-                    this.qaction(()=>this.props.rasp.toParent({type: "ITEM_DELVE", item: winner, distance: -2}),0); // needs to go to the panel above this item
+                    this.queueAction({type: "ITEM_DELVE", item: winner, distance: -2});
                 },0);
                 //setTimeout(()=>this.props.rasp.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
             }
