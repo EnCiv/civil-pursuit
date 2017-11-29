@@ -72,11 +72,6 @@ class RASPNextStep extends ReactActionStatePathClient {
         return {nextRASP, setBeforeWait: true}
     }
 
-    //componentDidMount(){
-    //    console.info("NextStep.componentDidMount change shape to open");
-    //    setTimeout(()=>this.props.rasp.toParent({type: "DESCENDANT_FOCUS"}))  // after this commponent renders, change the shape to open causing the CHANGE_SHAPE event to tricle up
-    //}
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {

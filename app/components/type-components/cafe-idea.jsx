@@ -89,7 +89,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     componentDidMount(){
         //onsole.info("CafeIdea.componentDidMount change shape to open");
-        this.queueAction({type: "DESCENDANT_FOCUS"});
+        this.queueFocus({type: "COMPONENT_DID_MOUNT"});
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

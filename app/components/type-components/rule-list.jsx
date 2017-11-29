@@ -96,14 +96,14 @@ export class RASPRuleList extends ReactActionStatePathClient {
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
             window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
             delta.creator=false;
-            this.queueAction({type: "DESCENDANT_FOCUS"});
+            this.queueFocus(action);
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
             this.queueAction({type: delta.creator ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
         } else if (action.type==="REDIRECT"){
             delta.shape='redirect';
             delta.itemId='redirect';
-            this.queueAction({type: "DESCENDANT_FOCUS"});
+            this.queueFocus(action);
         } else return null;
         Object.assign(nextRASP, rasp, delta);
         if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';

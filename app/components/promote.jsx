@@ -67,7 +67,7 @@ class RASPPromote extends ReactActionStatePathClient {
                 delta.left = delta.cursor - 1;
                 delta.right = delta.cursor;
           } else { // done with evaluations
-            this.queueAction({type: "DESCENDANT_UNFOCUS"});
+            this.queueUnfocus(action);
           }
         } else if (action.type==="PROMOTE"){
           const cursor = rasp.cursor + 1;
@@ -78,7 +78,7 @@ class RASPPromote extends ReactActionStatePathClient {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
             //delta.cursor=cursor; do not increment cursor past limit
-            this.queueAction({type: "DESCENDANT_UNFOCUS"});
+            this.queueUnfocus(action);
             if(winner._id === this.props.itemId){ // voted up the one we started with
                 this.queueAction({type: "ITEM_DELVE", item: winner, distance: -1});
             } else { // voted up a different one

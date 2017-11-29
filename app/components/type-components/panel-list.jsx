@@ -78,7 +78,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
         delta.currentPanel=nextPanel;
         delta.shape='open';
       }
-      this.queueAction({type: "DESCENDANT_FOCUS"});
+      this.queueFocus(action);
     } else if(action.type==="RESET_TO_BUTTON"){
       const {nextPanel}=action;
       if( nextPanel===0 || panelStatus[nextPanel]==='done' || panelStatus[nextPanel-1]==='done') {
@@ -90,7 +90,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
           panelStatus[i]="issues";
         }
       }
-      this.queueAction({type: "DESCENDANT_FOCUS"});
+      this.queueFocus(action);
     }else if(action.type==="PANEL_LIST_CLOSE"){
       delta.shape='truncated';
       Object.keys(this.toChild).forEach(child => { // send the action to every child
