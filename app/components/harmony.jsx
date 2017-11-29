@@ -123,12 +123,17 @@ class RASPHarmony extends ReactActionStatePathClient {
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "FOCUS_STATE") {
           delta.focus=true;
-          this.toChild['L']({ type: "FOCUS_STATE" });
-          this.toChild['R']({ type: "FOCUS_STATE" });
+          if(!rasp.focus){
+            this.toChild['L']({ type: "FOCUS_STATE" });
+            this.toChild['R']({ type: "FOCUS_STATE" });
+          }
         } else if(action.type==="UNFOCUS_STATE"){
           delta.focus=false;
-          this.toChild['L']({ type: "UNFOCUS_STATE" });
-          this.toChild['R']({ type: "UNFOCUS_STATE" });
+          delta.side=null;
+          if(rasp.focus){
+            this.toChild['L']({ type: "UNFOCUS_STATE" });
+            this.toChild['R']({ type: "UNFOCUS_STATE" });
+          }
         } else if (action.type === "DESCENDANT_FOCUS") {
           if(action.distance===1 || action.distance===2){
             if(!rasp.focus ){
