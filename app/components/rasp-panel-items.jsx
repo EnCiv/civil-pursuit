@@ -175,7 +175,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.decendantFocus=false;
           if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
           delta.shortId=null;
-          if(action.state!=="FOCUS_STATE") 
+          if(action.type!=="FOCUS_STATE") 
             this.queueAction({type: "DESCENDANT_FOCUS"});
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
@@ -227,7 +227,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           if(!rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
           }
-          if(action.state!=="FOCUS_STATE")
+          if(action.type!=="FOCUS_STATE")
             this.queueAction({type: "DESCENDANT_FOCUS"});
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
