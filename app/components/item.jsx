@@ -265,7 +265,8 @@ class RASPItem extends ReactActionStatePathClient {
       delta.button = rasp.button === action.button ? null : action.button; // toggle the button 
       if (action.button && !delta.button) delta.readMore = false; // if turning off a button, close readMore too
       else delta.readMore = rasp.readMore;
-      this.queueAction({type: delta.button ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
+      if(delta.button) this.queueFocus(action); 
+      else this.queueUnfocus(action)
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
@@ -275,7 +276,8 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      this.queueAction({type:  delta.readMore ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
+      if(delta.readMore) this.queueFocus(action); 
+      else this.queueUnfocus(action)
     } else if (action.type === "ITEM_DELVE") {
       delta.readMore = true;
       if(this.props.item.subType) delta.button=this.someButton('S');

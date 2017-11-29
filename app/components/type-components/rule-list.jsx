@@ -99,7 +99,8 @@ export class RASPRuleList extends ReactActionStatePathClient {
             this.queueFocus(action);
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;
-            this.queueAction({type: delta.creator ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
+            if(delta.creator) this.queueFocus(action); 
+            else this.queueUnfocus(action);
         } else if (action.type==="REDIRECT"){
             delta.shape='redirect';
             delta.itemId='redirect';

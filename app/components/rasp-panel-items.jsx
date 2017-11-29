@@ -56,7 +56,8 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = null;
         }
       }
-      this.queueAction({type: delta.creator ? "DESCENDANT_FOCUS" : "DESCENDANT_UNFOCUS"});
+      if(delta.creator) this.queueFocus(action); 
+      else this.queueUnfocus(action)
     } else if (action.type === "ITEM_DELVE") {
       if(rasp.shortId) {
         var nextFunc = () => this.toChild[rasp.shortId](action);
