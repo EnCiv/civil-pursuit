@@ -59,7 +59,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         this.buttons.forEach(button => {
             this.state.sections[button] = [];
         });
-        this.state.sections['unsorted'] = Object.keys(this.props.shared.why[this.whyName]);
+        this.state.sections['unsorted'] = this.props.shared.why[this.whyName] ? Object.keys(this.props.shared.why[this.whyName]) : [];
         //onsole.info("qsortRefine constructor");
         this.createDefaults();
     }

@@ -72,7 +72,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             delta.creator= !rasp.creator;
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
-            let results={index: null, sections: null, items: this.null }
+            let results={index: null, sections: null, items: null }
             Object.assign(this.props.shared, results)
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
@@ -144,7 +144,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                 });
             });
             if (!issues) {
-                var results={index: this.props.index, sections: this.props.sections, items: this.props.items }
+                var results={index: this.props.index, sections: this.props.sections, items: items }
                 done.push(
                     <div className='instruction-text' key="done">
                         {this.QSortButtonList['unsorted'].direction}
