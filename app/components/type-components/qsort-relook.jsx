@@ -59,7 +59,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             if (!action.itemId) logger.error("RASPQFortRelook.actionToState action without itemId", action);
             if (action.itemId) {
                 delta.itemId = action.itemId;
-                delta.shape='open';
                 if(rasp.itemId){
                     if(rasp.itemId !== action.itemId){
                         this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
@@ -69,9 +68,12 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             } 
         } else if(action.type === "DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
             delta.itemId = null; // turn off the itemId
-            delta.shape = 'truncated';
             if(action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
         } else if(action.type==="TOGGLE_QBUTTON") {
+            delta.itemId=null;
+            if(rasp.itemId){
+                this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
+            }
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
             var doc = document.documentElement;
@@ -88,9 +90,25 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         } else 
             return null;
         Object.assign(nextRASP, rasp, delta);
-        //if(nextRASP.shape==='open') nextRASP.pathSegment=items[this.shared.index[nextRASP.itemId].id; 
-        //else nextRASP.pathSegment=null;
+        nextRASP.shape=nextRASP.itemId ? 'open' : 'truncated';
+        let {items, index} = this.props.shared;
+        if(nextRASP.itemId) nextRASP.pathSegment=items[index[nextRASP.itemId]].id; // get the short id
+        else nextRASP.pathSegment=null;
         return(nextRASP);
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    segmentToState(action, initialRASP) {
+        let {items} = this.props.shared;
+        var nextRASP={};
+        var parts = action.segment.split(',');
+        parts.forEach(part=>{
+          if(part.length===5) items.some((item)=>item.id===part ? (nextRASP.itemId=item._id) : false);
+          else console.error("QSortReLook.segmentToState unexpected part:", part);
+        }) 
+        if(nextRASP.pathSegment !== action.segment) console.error("QSortReLook.segmentToAction calculated path did not match",action.pathSegment, nextRASP.pathSegment )
+        return { nextRASP, setBeforeWait: true }
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
