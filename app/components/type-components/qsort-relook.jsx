@@ -161,20 +161,31 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 }
                 sections[criteria].forEach(itemId => {
                     let item = items[index[itemId]];
-                    if(!this.mounted[item._id] || this.mounted[item._id].criteria !== criteria){
+                    let active=item._id===rasp.itemId; // this item is active
+                    if(!this.mounted[item._id] || (this.mounted[item._id].criteria !== criteria) || (this.mounted[item._id].active !== active )){
                         this.mounted[item._id]=(
                             {   content: 
                                 <div style={{ backgroundColor: qbuttons[criteria].color }}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
-                                            buttons={['QSortButtons', { component: 'Harmony', visualMethod: 'titleize', shape: 'title', limit: 5, hideFeedback: feedbackMethod==='hidden', createMethod: 'visible', promoteMethod: 'visible', active: criteria === 'unsorted' }]}
+                                            buttons={['QSortButtons', { component: 'Harmony', 
+                                                                        visualMethod: 'titleize', 
+                                                                        shape: 'title', 
+                                                                        limit: 5, 
+                                                                        hideFeedback: 
+                                                                        feedbackMethod==='hidden', 
+                                                                        createMethod: 'visible', 
+                                                                        promoteMethod: 'visible', 
+                                                                        active: (criteria === 'unsorted' || active)
+                                                                        }]}
                                             qbuttons={qbuttons}
                                             rasp={ this.childRASP('truncated', item._id) }
                                         />
                                     </ItemStore>
                                 </div>,
-                                criteria: criteria
+                                criteria: criteria,
+                                active: active
                             }
                         );
                     }
