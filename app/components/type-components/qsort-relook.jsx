@@ -55,8 +55,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     actionToState(action,rasp) {
         //find the section that the itemId is in, take it out, and put it in the new section
         var nextRASP={}, delta={};
-        if (action.type === "DESCENDANT_FOCUS" && action.button && action.button==="Harmony" ) {
-            if (!action.itemId) logger.error("RASPQFortRelook.actionToState action without itemId", action);
+        if (action.type === "DESCENDANT_FOCUS" && (!action.button || action.button==='Harmony')) {  // any decendant focus action except a qsortbutton
             if (action.itemId) {
                 delta.itemId = action.itemId;
                 if(rasp.itemId){
@@ -64,8 +63,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                         this.toChild[rasp.itemId]({type: "RESET_SHAPE"});
                     }
                 }
-                if((action.distance===1 || action.distance===3) && action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "FOCUS_STATE"});
-            } 
+                if(this.toChild[action.itemId]) this.toChild[action.itemId]({type: "FOCUS_STATE"});
+            }
         } else if(action.type === "DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
             delta.itemId = null; // turn off the itemId
             if(action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
