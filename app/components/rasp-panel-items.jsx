@@ -171,6 +171,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
             if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
             delta.shortId=null;
             delta.decendantFocus=false;
+            delta.creator=false;
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
           delta.decendantFocus=false;
@@ -181,6 +182,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
+          delta.creator=false;
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
         } else
@@ -233,6 +235,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
+          delta.creator=false;
           if(rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
           }
