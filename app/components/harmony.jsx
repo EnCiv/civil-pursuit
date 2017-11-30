@@ -141,7 +141,7 @@ class RASPHarmony extends ReactActionStatePathClient {
               this.toChild[other[action.side]]({ type: "FOCUS_STATE" });
               this.queueAction({type: "SET_BUTTON", button: "Harmony"});
             }
-            if(action.distance===2) delta.side=action.side; 
+            delta.side=action.side; 
           } 
         } else if (action.type === "DESCENDANT_UNFOCUS") {
           if(action.distance===1){
