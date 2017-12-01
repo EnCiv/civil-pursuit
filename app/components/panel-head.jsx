@@ -70,13 +70,14 @@ class PanelHead extends React.Component {
 
     render() {
         if(this.debug) console.info("RASPPanelHead.render", this.childName, this.props);
-        const { panel, cssName, rasp, user, createMethod } = this.props;
+        const { cssName, user, createMethod } = this.props;
+        var {panel, rasp}=this.props;
         var title, name, instruction = [], content=[], creator=null;
         // decompose panel into it's props if applicable
         const type= (typeof this.props.type === 'object' && this.props.type) || panel && panel.type || this.props.type || null;
         const parent=this.props.parent || panel && panel.parent || null;
         const limit=this.props.limit || panel && panel.limit || 10;
-        const items=this.props.items || panel && panel.items || [];
+        var items=this.props.items || panel && panel.items || [];
         const skip=this.props.skip || panel && panel.skip || 0;
         const bgc="white";
         let createValue= createMethod || (type && type.createMethod) || 'visible'; // passed in by props overrides what's in type
