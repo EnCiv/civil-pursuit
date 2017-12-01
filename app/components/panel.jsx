@@ -9,7 +9,7 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, rasp, noHeading, ...sectionProps } = this.props;
+    const { children, heading, className, rasp, noHeading, ...sectionProps } = this.props;
     const vShape=rasp ? rasp.shape : '';
     const cShape= vShape ? 'vs-'+vShape : '';
 
@@ -23,7 +23,7 @@ class Panel extends React.Component {
           { heading }
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
-          { this.props.children }
+          { children }
         </section>
       </section>
     );
