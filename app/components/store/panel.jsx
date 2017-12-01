@@ -8,7 +8,7 @@ class PanelStore extends React.Component {
 
   id;
 
-  state = { panel : null, count : null, new : false };
+  state = { panel : null, count : null };
 
   constructor(props){
     super(props);
@@ -67,18 +67,10 @@ class PanelStore extends React.Component {
     const parentId = this.props.parent ? this.props.parent._id || this.props.parent : undefined;
     const itemParentId= item.parent ? item.parent._id || item.parent : undefined;
 
-
     if ( item.type._id === this.props.type._id && itemParentId === parentId ) {
-
-      let { items } = this.state.panel;
-
-      if ( ! items ) {
-        items = [];
-      }
-
-      items = [item].concat(items);
-
-      this.setState( {panel: { items, new : item, type: this.props.type, parent: this.props.parent } } );
+      let oldItems = this.state.panel.items || [];
+      var items= [item].concat(oldItems);
+      this.setState( {panel: { items: items, type: this.props.type, parent: this.props.parent } } );
     }
   }
 

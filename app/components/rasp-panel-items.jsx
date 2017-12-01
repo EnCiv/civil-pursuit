@@ -265,7 +265,6 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
   render() {
 
     const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel, ...otherProps } = this.props;
-    delete otherProps['new']; // this is a bad name for a property
 
     let title = 'Loading items', name, content, loadMore;
 
