@@ -63,13 +63,13 @@ class PanelHead extends React.Component {
         return React.Children.map(this.props.children, (child, i) => {
             var rasp=Object.assign({}, this.props.rasp, {toParent: this.toMeFromChild.bind(this, i)})
             var {children, ...newProps} = this.props;
-            Object.assign(newProps, moreProps, {rasp}, {key: 'ph-'+i} );
+            Object.assign(newProps, moreProps, {rasp} );
             return React.cloneElement(child, newProps, child.props.children)
         });
     }
 
     render() {
-        if(this.degug) console.info("RASPPanelHead.render", this.childName, this.props);
+        if(this.debug) console.info("RASPPanelHead.render", this.childName, this.props);
         const { panel, cssName, rasp, user, createMethod } = this.props;
         var title, name, instruction = [], content=[], creator=null;
         // decompose panel into it's props if applicable
