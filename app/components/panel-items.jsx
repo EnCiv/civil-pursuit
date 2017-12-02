@@ -4,6 +4,7 @@ import React from 'react';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import PanelHead from './panel-head';
+import Item from './item';
 import ClassNames from 'classnames';
 import RASPPanelItems from './rasp-panel-items';
 
