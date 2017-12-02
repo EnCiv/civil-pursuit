@@ -31,6 +31,9 @@ class PanelHeading extends React.Component {
     var {children, panelButtons, panelButtons = [], ...lessProps} = this.props;
     Object.assign(lessProps,{...panel});
     let name = cssName + '--' + (type._id || type);
+    const vShape=rasp ? rasp.shape : '';
+    const cShape= vShape ? 'vs-'+vShape : '';
+    
     return (
       <section style={style} className={ClassNames(name, 'vs-' + rasp.shape, "syn-panel", cShape)} >
         <section className={ClassNames("syn-panel-heading", cShape, { 'no-heading': vShape === 'collapsed' })}>
