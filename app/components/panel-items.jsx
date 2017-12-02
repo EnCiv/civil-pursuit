@@ -3,8 +3,8 @@
 import React from 'react';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
-import Item from './item';
 import PanelHead from './panel-head';
+import Item from './item';
 import RASPPanelItems from './rasp-panel-items';
 import ClassNames from 'classnames';
 
