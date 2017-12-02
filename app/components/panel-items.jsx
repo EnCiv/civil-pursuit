@@ -24,6 +24,7 @@ export default class PanelItems extends React.Component {
   }
 }
 
+/**
 class PanelHeading extends React.Component {
   render() {
     const {rasp, cssName, panel } = this.props;
@@ -50,3 +51,5 @@ class PanelHeading extends React.Component {
     );
   }
 }
+
+**/
