@@ -4,9 +4,9 @@ import React from 'react';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import PanelHead from './panel-head';
-import RASPPanelItems from './rasp-panel-items';
 import Item from './item';
 import ClassNames from 'classnames';
+import RASPPanelItems from './rasp-panel-items';
 
 export default class PanelItems extends React.Component {
   render() {
