@@ -70,7 +70,7 @@
     "postcode-validator": "^1.2.0",
     "promise-sequencer": "^2.0.1",
     "react": "^15.6.2",
-    "react-action-state-path": "github:ddfridley/react-action-state-path#actionfilters",
+    "react-action-state-path": "github:ddfridley/react-action-state-path#decendant",
     "react-dom": "^15.6.2",
     "react-flip-move": "^2.9.17",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#master",
