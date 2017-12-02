@@ -33,7 +33,7 @@ class PanelHeading extends React.Component {
     let name = cssName + '--' + (type._id || type);
     const vShape=rasp ? rasp.shape : '';
     const cShape= vShape ? 'vs-'+vShape : '';
-    
+
     return (
       <section style={style} className={ClassNames(name, 'vs-' + rasp.shape, "syn-panel", cShape)} >
         <section className={ClassNames("syn-panel-heading", cShape, { 'no-heading': vShape === 'collapsed' })}>
@@ -43,7 +43,7 @@ class PanelHeading extends React.Component {
           {panelButtons}
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
-          {React.Children.map(React.children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
+          {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
         </section>
       </section>
     );
