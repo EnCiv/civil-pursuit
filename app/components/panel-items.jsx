@@ -12,9 +12,9 @@ export default class PanelItems extends React.Component {
     logger.trace("PanelItems render");
     return (
       <ReactActionStatePath {...this.props} >
-        <PanelHead  cssName={'syn-panel-item'} >
+        <PanelHeading  cssName={'syn-panel-item'} >
           <RASPPanelItems />
-        </PanelHead>
+        </PanelHeading>
       </ReactActionStatePath>
     );
   }
