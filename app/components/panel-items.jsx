@@ -7,6 +7,7 @@ import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import RASPPanelItems from './rasp-panel-items';
 import ClassNames          from 'classnames';
+import PanelHead from './panel-head';
 
 
 
@@ -15,9 +16,9 @@ export default class PanelItems extends React.Component {
     logger.trace("PanelItems render");
     return (
       <ReactActionStatePath {...this.props} >
-        <PanelHeading  cssName={'syn-panel-item'} >
+        <PanelHead  cssName={'syn-panel-item'} >
           <RASPPanelItems />
-        </PanelHeading>
+        </PanelHead>
       </ReactActionStatePath>
     );
   }
