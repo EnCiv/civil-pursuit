@@ -1,7 +1,6 @@
 'use strict';
 
 import React                from 'react';
-import Component            from '../lib/app/component';
 import ClassNames          from 'classnames';
 
 class Panel extends React.Component {
