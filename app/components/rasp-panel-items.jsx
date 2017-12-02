@@ -8,7 +8,6 @@ import EditAndGoAgain from './edit-and-go-again';
 import config from '../../public.json';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
-import PanelHead from './panel-head';
 
 /**************************************************
  * This file was once part of panel-items. It was separated out when I wanted to import RASPPanelItems into panel-questions separate from PanelItems
