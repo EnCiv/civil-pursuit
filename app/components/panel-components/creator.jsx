@@ -56,6 +56,7 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
   render(){
     let bgc="white";
     var creator=null;
+    const {rasp, type, parent}=this.props;
     if(this.mounted || (rasp && rasp.creator)){
       this.mounted=true;
       creator = (
@@ -71,10 +72,6 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
           </Accordion>
       );
     }
-    return 
-      <section>
-        {creator}
-        {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
-      </section>
+    return creator;
   }
 }

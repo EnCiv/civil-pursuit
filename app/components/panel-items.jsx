@@ -9,8 +9,6 @@ import RASPPanelItems from './rasp-panel-items';
 
 import Components from "./panel-components/";
 import ListComponent from './list-component';
-class PanelComponent extends ListComponent{};  // creats from ListComponent and Components
-
 
 export default class PanelItems extends React.Component {
   render() {
@@ -18,9 +16,7 @@ export default class PanelItems extends React.Component {
     return (
       <ReactActionStatePath {...this.props} >
         <PanelHeading  cssName={'syn-panel-item'} panelButtons={['Creator']}>
-          <PanelCreator>
-            <RASPPanelItems />
-          </PanelCreator>
+          <RASPPanelItems />
         </PanelHeading>
       </ReactActionStatePath>
     );
@@ -44,9 +40,9 @@ class PanelHeading extends React.Component {
     // a button could be a string, or it could be an object which must have a property component
     var renderComponents = (part, button) => {
       if(typeof button==='string')
-        return (<PanelComponent {...lessProps} component={button} part={part} key={type._id + '-' + button} />);
+        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={type._id + '-' + button} />);
       else if (typeof button==='object')
-        return (<PanelComponent {...lessProps}  part={part} key={item._id + '-' + button.component} {...button} />);
+        return (<ListComponent Components={Components} {...lessProps}  part={part} key={item._id + '-' + button.component} {...button} />);
     }
 
     return (
@@ -55,10 +51,10 @@ class PanelHeading extends React.Component {
           <h4 onClick={() => rasp.toParent({ type: "TOGGLE_FOCUS" })} key="title">
             {title}
           </h4>
-          {buttons.map(button=>renderComponents('button',button))}
+          {panelButtons.map(button=>renderComponents('button',button))}
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
-          {buttons.map(button=>renderComponents('panel',button))}
+          {panelButtons.map(button=>renderComponents('panel',button))}
           {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
         </section>
       </section>
