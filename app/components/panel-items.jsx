@@ -15,7 +15,7 @@ export default class PanelItems extends React.Component {
     logger.trace("PanelItems render");
     return (
       <ReactActionStatePath {...this.props} >
-        <PanelHeading  cssName={'syn-panel-item'} panelButtons={['Creator']}>
+        <PanelHeading  cssName={'syn-panel-item'} panelButtons={['Creator','Instruction']}>
           <RASPPanelItems />
         </PanelHeading>
       </ReactActionStatePath>
