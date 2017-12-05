@@ -36,12 +36,13 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
 
   actionFilters={
     TOGGLE_CREATOR: (action, delta)=>{
+      let rasp=this.props.rasp;
       if (rasp.creator)// it's on so toggle it off
         delta.creator=false;
       else { // it's off so toggle it on
         delta.creator = true;
         if (rasp.shortId) {//there is an item that's open
-          this.props.rasp.toParent({ type: "RESET_SHAPE", shortId: rasp.shortId, direction: "DESCEND"});
+          rasp.toParent({ type: "RESET_SHAPE", shortId: rasp.shortId, direction: "DESCEND"});
           delta.shortId = null;
         }
       }
