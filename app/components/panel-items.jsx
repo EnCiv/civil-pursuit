@@ -26,9 +26,10 @@ export default class PanelItems extends React.Component {
 class PanelHeading extends React.Component {
   render() {
     const {rasp, cssName, panel } = this.props;
-    if(!(panel && panel.items && panel.items.length)) return null;
 
     const type= (typeof this.props.type === 'object' && this.props.type) || (panel && panel.type) || this.props.type || null;
+    if(!type) return null;
+
     const style = Object.assign({}, { backgroundColor: 'white' }, this.props.style);
     const title=type.name;
     var {children, panelButtons = [], ...lessProps} = this.props;
