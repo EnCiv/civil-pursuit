@@ -66,8 +66,10 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       }
       delta.shortId = action.item.id;
     } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
-        ; //then do nothing - it's been done if (action.type==="DESCENDANT_FOCUS") {
-     } else 
+        ; //then do nothing - it's been done
+     } else if(Object.keys(delta).length>0) {
+       ; // then do nothing - it's already beend done but skip over the final else statement
+     } else
       return null; // don't know this action, null so the default methods can have a shot at it
 
     Object.assign(nextRASP, rasp, delta);
