@@ -11,7 +11,7 @@ exports.button = class PanelInstructionButton extends React.Component {
         const {rasp, type}=this.props;
         if(!type.instruction) return null; // no button if no instruction
         return (
-            <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
+            <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={()=>rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
                 <Icon icon="envelope-open-o" />
             </div>
         );
@@ -34,10 +34,10 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     return (
       <section className={instructionClass} >
         <Accordion
-          onClick={rasp.toParent({type: "TOGGLE_INSTRUCTION"})}
+          onClick={()=>rasp.toParent({type: "TOGGLE_INSTRUCTION"})}
           active={!rasp.instructionHidden}
           text={true}
-          onComplete={rasp.toParent({type: "TOGGLE_INSTRUCTION_HINT"})}
+          onComplete={()=>rasp.toParent({type: "TOGGLE_INSTRUCTION_HINT"})}
           >
           <div className={ClassNames(this.props.classNames, "instruction-text")} >
             {type.instruction}
@@ -45,10 +45,10 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
         </Accordion>
 
         <div className={ClassNames(this.props.classNames, 'instruction-hint', (!rasp.instructionHint) ? 'hint-visible' : 'hint-hidden')}>
-          <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
+          <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={()=>rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
             <Icon icon="envelope-open-o" />
           </div>
-          <div className={ClassNames(this.props.classNames, 'instruction-hint', (!rasp.instructionHint) ? 'hint-closed' : '')} onClick={rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
+          <div className={ClassNames(this.props.classNames, 'instruction-hint', (!rasp.instructionHint) ? 'hint-closed' : '')} onClick={()=>rasp.toParent({type: "TOGGLE_INSTRUCTION"})} >
             <Icon icon="envelope-o" />
           </div>
         </div>

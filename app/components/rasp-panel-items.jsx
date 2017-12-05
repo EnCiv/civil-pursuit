@@ -39,8 +39,8 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
     // window.Dispatcher.emit('get items', this.props.panel);
   }
 
-  actionToState(action, rasp, source, defaultRASP) {
-    var nextRASP = {}, delta = {};
+  actionToState(action, rasp, source, defaultRASP, delta) {
+    var nextRASP = {};
     //onsole.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
