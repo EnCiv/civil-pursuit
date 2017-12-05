@@ -4,7 +4,7 @@ import React from 'react';
 import Icon               from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
 import ClassNames          from 'classnames';
-import ReactActionStatePathFilter from 'react-action-state-path';
+import {ReactActionStatePathFilter} from 'react-action-state-path';
 
 exports.button = class PanelInstructionButton extends React.Component {
     render(){
