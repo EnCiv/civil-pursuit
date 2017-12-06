@@ -72,3 +72,73 @@
     padding-right: .5em;
     cursor: pointer;
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.panel-instruction {
+    background-color: inherit;
+    position: relative;
+  
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+.panel-instruction-text{
+    background-color: lightgray !important;
+    position: relative; /* otherwise things that are relative will obscure this when they move around */
+    padding: 2em;
+    border: 1px solid #666;
+    margin: 1em;
+    box-shadow:  0 0 0.5em 0.25em rgba(0, 0, 0, 0.3);
+    white-space:      pre-line;
+    text-align:       left;
+    color: black;
+    font-size: 1.2em;
+}
+
+.panel-instruction-hint{
+        display: inline;
+        position: absolute;
+            &:hover {
+         cursor: pointer;
+        }
+        transition: all 0.25s linear;
+        background-color: transparent!important;
+}
+
+.panel-instruction-hint.hint-visible{
+    top: ~"calc(100% - 1.5em)";
+    color: black;
+ }
+
+ .panel-instruction-hint.hint-hidden{
+    color: white;
+    top: -2em;
+
+    i {
+        padding-left: 0;
+        padding-right: 0;
+    }
+ }
+
+ .panel-instruction-button{
+    position: absolute;
+    display: inline;
+    background-color: transparent!important;
+    color: white;
+    i {
+        padding-left: 0;
+        padding-right: 0;
+    }
+ }
+
+ .panel-creator-button{
+    position:absolute;
+    display: inline;
+    background-color: transparent!important;
+    color: white;
+    i {
+        padding-left: 0;
+        padding-right: 0;
+    }
+ }
+

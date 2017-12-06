@@ -60,10 +60,10 @@ class PanelHeading extends React.Component {
           <h4 onClick={() => rasp.toParent({ type: "TOGGLE_FOCUS" })} key="title">
             {title}
           </h4>
-          {panelButtons.map((button,i)=>renderComponents('button',button, i*this.iconWidth))}
+          {panelButtons.map((button,i)=>renderComponents('button',button, (i+0.5)*this.iconWidth))}
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
-          {panelButtons.map((button,i)=>renderComponents('panel',button, i*this.iconWidth))}
+          {panelButtons.map((button,i)=>renderComponents('panel',button, (i+0.5)*this.iconWidth))}
           {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
         </section>
       </section>

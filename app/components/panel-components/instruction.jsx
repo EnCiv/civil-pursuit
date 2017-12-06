@@ -30,7 +30,7 @@ exports.button = class PanelInstructionButton extends React.Component {
     const { rasp, type, position } = this.props;
     if (!type.instruction) return null; // no button if no instruction
     return (
-      <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
+      <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
         <Icon icon={this.vM.icon(rasp)} /> 
       </div>
     );
@@ -64,7 +64,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   render() {
     const { rasp, type, position } = this.props;
     if (!type.instruction) return null;
-    var instructionClass = ClassNames("instruction", this.props.className);
+    var instructionClass = ClassNames("panel-instruction", this.props.className);
 
     return (
       <section className={instructionClass} ref={(el)=>this.setWidth(el)} >
@@ -74,14 +74,14 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           text={true}
           onComplete={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION_HINT" })}
         >
-          <div className={ClassNames(this.props.classNames, "instruction-text")} >
+          <div className={ClassNames(this.props.classNames, "panel-instruction-text")} >
             {type.instruction}
           </div>
         </Accordion>
 
-        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'instruction-hint', this.vM.visible(rasp) ? 'hint-visible' : 'hint-hidden')} ref="hint">
-          <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
-            <Icon icon={"envelope-open-o"} />
+        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.visible(rasp) ? 'hint-visible' : 'hint-hidden')} ref="hint">
+          <div className={ClassNames(this.props.classNames, 'panel-instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
+            <Icon icon={this.vM.icon(rasp)} />
           </div>
         </div>
       </section>

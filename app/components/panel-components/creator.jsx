@@ -18,7 +18,7 @@ exports.button = class PanelCreatorButton extends React.PureComponent {
         return (
             ((createValue==='hidden' || (typeof type !== "object")) && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? 
             null :
-            <div style={{right: position+'px'}}>
+            <div style={{right: position+'px'}} className="panel-creator-button">
               <Icon
                   icon="plus"
                   className="toggle-creator"
