@@ -68,8 +68,6 @@
     display: inline;
     color: white;
     background-color: transparent!important;
-    font-size: 1.25rem;
-    padding-right: .5em;
     cursor: pointer;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,6 +101,27 @@
         }
         transition: all 0.25s linear;
         background-color: transparent!important;
+        font-size: 1rem;
+}
+
+.panel-instruction-hint.opening{
+    top: ~"calc(100% - 1.5em)";
+    color: black;
+}
+
+.panel-instruction-hint.open{
+    top: ~"calc(100% - 1.5em)";
+    color: black;
+}
+
+.panel-instruction-hint.closing {
+    top: -2em;
+    color: white;
+}
+
+.panel-instruction-hint.closed {
+    color: white;
+    top: -2em;
 }
 
 .panel-instruction-hint.hint-visible{

@@ -6,25 +6,92 @@ import Accordion from 'react-proactive-accordion';
 import ClassNames from 'classnames';
 import { ReactActionStatePathFilter } from 'react-action-state-path';
 
+// a 4 state transition machine that starts at 'undefined' because that will be the initial value after construction, but the finish state is null, and null is also a start state. 
+const Transition ={
+  [undefined]: 'forward',
+  [null]: 'forward',
+  forward: 'finish',
+  finish: 'backward',
+  backward: null
+}
+
+// default and ooview, the instruction starts out open, but in titleize, the instruction starts out closed.
 const visualMethods={
-  default: { // default the instruction is visibile initially
-    visible: (rasp)=>!rasp.instructionHidden,
-    icon: (rasp)=>rasp.instructionHidden ? "envelope-o" : "envelope-open-o"
+  default: {
+     visible: {
+      [undefined]: true,
+      [null]: true,
+      forward: true,
+      finish: false,
+      backward: true
+     },
+    shape: {
+      [undefined]: 'open',
+      [null]: 'open',
+      forward: 'closing',
+      finish: 'closed',
+      backward: 'opening'
+    },
+    buttonIcon: {
+      [undefined]: "envelope-open-o",
+      [null]: "envelope-open-o",
+      forward: 'envelope-o',
+      finish: 'envelope-o',
+      backward: "envelope-open-o"
+    },
+    panelIcon: {
+      [undefined]: "envelope-open-o",
+      [null]: "envelope-open-o",
+      forward: 'envelope-o',
+      finish: null,
+      backward: "envelope-open-o"
+    },
   },
-  titleize: { // the instruction is not visibile initially
-    visible: (rasp)=>rasp.instructionHidden,
-    icon: (rasp)=>rasp.instructionHidden ? "envelope-open-o" : "envelope-o"
+  titleized: {
+    visible: {
+      [undefined]: false,
+      [null]: false,
+      forward: true,
+      finish: true,
+      backward: false
+    },
+    shape: {
+      [undefined]: 'closed',
+      [null]: 'closed',
+      forward: 'opening',
+      finish: 'open',
+      backward: 'closing'
+    },
+    buttonIcon: {
+      [undefined]: "envelope-o",
+      [null]: "envelope-o",
+      forward: 'envelope-open-o',
+      finish: 'envelope-open-o',
+      backward: "envelope-open-o"
+    },
+    panelIcon: {
+      [undefined]: null,
+      [null]: null,
+      forward: 'envelope-open-o',
+      finish: 'envelope-open-o',
+      backward: "envelope-open-o"
+    }
   }
 }
+
+visualMethods.ooview=visualMethods.default;
+
 
 exports.button = class PanelInstructionButton extends React.Component {
   constructor(props){
     super(props);
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
-    if(!(this.vM= visualMethods[visMeth])) {
-      console.error("PanelInstructionsButton.constructor visualMethod unknown:",visMeth)
-      this.vM=visualMethods['default'];
+    if(!visualMethods[visMeth]){
+      console.error("PanelInstructionsButton.constructor visualMethod unknown:",visMeth);
+      visMeth='default';
     }
+    this.vM={}
+    Object.keys(visualMethod[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethod[visMeth][meth][rasp.instruction]);
   }
   render() {
     const { rasp, type, position } = this.props;
@@ -41,17 +108,19 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   constructor(props){
     super(props,'shortId', 1);  // need to set the keyField
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
-    if(!(this.vM= visualMethods[visMeth])) {
-      console.error("PanelInstructionsPanel.constructor visualMethod unknown:",visMeth)
-      this.vM=visualMethods['default'];
+    if(!visualMethods[visMeth]){
+      console.error("PanelInstructionsButton.constructor visualMethod unknown:",visMeth);
+      visMeth='default';
     }
+    this.vM={}
+    Object.keys(visualMethod[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethod[visMeth][meth][rasp.instruction]);
     this.width=512; // just a starting point
   }
 
   actionFilters = {
-    "TOGGLE_INSTRUCTION": (action, delta) => { delta.instructionHidden = !this.props.rasp.instructionHidden; return false },
-    "TOGGLE_INSTRUCTION_HINT": (action, delta) => { delta.instructionHint != this.props.rasp.instructionHint; return false },
-    "DECENDANT_FOCUS": (action, delta) => { delta.instructionHidden = true; delta.instructionHint = false; return true; }
+    "TOGGLE_INSTRUCTION": (action, delta) => { delta.instruction = Transition[rasp.instruction]; return false },
+    "TOGGLE_INSTRUCTION_HINT": (action, delta) => { delta.instruction = Transition[rasp.instruction]; return false },
+    "DECENDANT_FOCUS": (action, delta) => { delta.instruction = Transition['backward']; return true; }
   }
 
   setWidth(el){
@@ -79,8 +148,8 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           </div>
         </Accordion>
 
-        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.visible(rasp) ? 'hint-visible' : 'hint-hidden')} ref="hint">
-          <div className={ClassNames(this.props.classNames, 'panel-instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
+        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} ref="hint">
+          <div className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
             <Icon icon={this.vM.icon(rasp)} />
           </div>
         </div>
