@@ -96,7 +96,7 @@ class App extends React.Component {
     );
 
 
-    if ( error ) {
+    if ( error && Object.keys(error).length ) { // falsy an empty obect is not an error
       page = (
         <Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
           <section style={{ padding: 10 }}>

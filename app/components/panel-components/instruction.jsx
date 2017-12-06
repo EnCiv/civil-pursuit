@@ -47,7 +47,7 @@ const visualMethods={
       backward: "envelope-open-o"
     },
   },
-  titleized: {
+  titleize: {
     visible: {
       [undefined]: false,
       [null]: false,
@@ -91,14 +91,14 @@ exports.button = class PanelInstructionButton extends React.Component {
       visMeth='default';
     }
     this.vM={}
-    Object.keys(visualMethod[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethod[visMeth][meth][rasp.instruction]);
+    Object.keys(visualMethods[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethods[visMeth][meth][rasp.instruction]);
   }
   render() {
     const { rasp, type, position } = this.props;
     if (!type.instruction) return null; // no button if no instruction
     return (
       <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
-        <Icon icon={this.vM.icon(rasp)} /> 
+        <Icon icon={this.vM.buttonIcon(rasp)} /> 
       </div>
     );
   }
@@ -113,14 +113,24 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
       visMeth='default';
     }
     this.vM={}
-    Object.keys(visualMethod[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethod[visMeth][meth][rasp.instruction]);
+    Object.keys(visualMethods[visMeth]).forEach(meth=>this.vM[meth]=(rasp)=>visualMethods[visMeth][meth][rasp.instruction]);
     this.width=512; // just a starting point
   }
 
   actionFilters = {
-    "TOGGLE_INSTRUCTION": (action, delta) => { delta.instruction = Transition[rasp.instruction]; return false },
-    "TOGGLE_INSTRUCTION_HINT": (action, delta) => { delta.instruction = Transition[rasp.instruction]; return false },
-    "DECENDANT_FOCUS": (action, delta) => { delta.instruction = Transition['backward']; return true; }
+    "TOGGLE_INSTRUCTION": (action, delta) => { 
+      let inst=this.props.rasp.instruction; 
+      if(!inst || inst==='finish') 
+        delta.instruction = Transition[this.props.rasp.instruction]; 
+        return false 
+    },
+    "TOGGLE_INSTRUCTION_HINT": (action, delta) => { 
+      let inst=this.props.rasp.instruction; 
+      if(inst==='forward' || inst==='backward') 
+        delta.instruction = Transition[this.props.rasp.instruction]; 
+      return false 
+    },
+    "DESCENDANT_FOCUS": (action, delta) => { delta.instruction = Transition['backward']; return true; }
   }
 
   setWidth(el){
@@ -133,10 +143,9 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   render() {
     const { rasp, type, position } = this.props;
     if (!type.instruction) return null;
-    var instructionClass = ClassNames("panel-instruction", this.props.className);
 
     return (
-      <section className={instructionClass} ref={(el)=>this.setWidth(el)} >
+      <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} >
         <Accordion
           onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })}
           active={this.vM.visible(rasp)}
@@ -148,10 +157,12 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           </div>
         </Accordion>
 
-        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} ref="hint">
-          <div className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
-            <Icon icon={this.vM.icon(rasp)} />
-          </div>
+        <div  style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}}
+              className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} 
+              onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} 
+              ref="hint"
+        >
+          <Icon icon={this.vM.panelIcon(rasp)} />
         </div>
       </section>
     );
