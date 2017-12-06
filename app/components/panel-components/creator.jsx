@@ -10,7 +10,7 @@ import {ReactActionStatePathFilter} from 'react-action-state-path';
 
 exports.button = class PanelCreatorButton extends React.PureComponent {
     render(){
-        const {createMethod, user, rasp, parent}=this.props;
+        const {createMethod, user, rasp, parent, position}=this.props;
         const type= (typeof this.props.type === 'object' && this.props.type) || (panel && panel.type) || this.props.type || null;
         let createValue= createMethod || (type && type.createMethod) || 'visible'; // passed in by props overrides what's in type
         createValue= (type && type.createMethod && (type.createMethod[type.createMethod.length-1]==='!') && type.createMethod.substring(0,type.createMethod.length-1)) || createValue;  // unless what's in type ends in !
@@ -18,12 +18,14 @@ exports.button = class PanelCreatorButton extends React.PureComponent {
         return (
             ((createValue==='hidden' || (typeof type !== "object")) && !(user && user.id && parent && parent.user && parent.user._id && (user.id == parent.user._id))) ? 
             null :
-            <Icon
-                icon="plus"
-                className="toggle-creator"
-                onClick={()=>rasp.toParent({type: "TOGGLE_CREATOR"})}
-                key="plus"
-            />
+            <div style={{right: position+'px'}}>
+              <Icon
+                  icon="plus"
+                  className="toggle-creator"
+                  onClick={()=>rasp.toParent({type: "TOGGLE_CREATOR"})}
+                  key="plus"
+              />
+            </div>
         )
     }
 }

@@ -26,11 +26,6 @@ class App extends React.Component {
     super(props);
 
     if ( typeof window !== 'undefined' ) {
-      if(!window.Synapp) {
-        window.Synapp = {};
-        Synapp.tendencyChoice = [];
-        this.getTendency();
-      }
       //window.onbeforeunload = this.confirmOnPageExit.bind(this);
       fixedScroll();
     }
@@ -64,25 +59,6 @@ class App extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- getTendency () {
-  Promise
-    .all([
-      new Promise((ok, ko) => {
-        window.socket.emit('get political tendency', ok);
-      })
-    ])
-    .then(
-      results => {
-        let [ politicalTendency ] = results;
-        if(politicalTendency) {
-            politicalTendency.forEach( choice => {
-            window.Synapp.tendencyChoice[choice._id]=choice.name;
-          } );
-        }
-      }
-    );
-  }
 
   componentDidMount(){
     //onsole.info("app componentDidMount", this.props.browserConfig);

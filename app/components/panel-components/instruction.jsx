@@ -27,10 +27,10 @@ exports.button = class PanelInstructionButton extends React.Component {
     }
   }
   render() {
-    const { rasp, type } = this.props;
+    const { rasp, type, position } = this.props;
     if (!type.instruction) return null; // no button if no instruction
     return (
-      <div className={ClassNames(this.props.classNames, 'instruction-button-hint', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
+      <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
         <Icon icon={this.vM.icon(rasp)} /> 
       </div>
     );
@@ -45,6 +45,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
       console.error("PanelInstructionsPanel.constructor visualMethod unknown:",visMeth)
       this.vM=visualMethods['default'];
     }
+    this.width=512; // just a starting point
   }
 
   actionFilters = {
@@ -53,16 +54,23 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     "DECENDANT_FOCUS": (action, delta) => { delta.instructionHidden = true; delta.instructionHint = false; return true; }
   }
 
+  setWidth(el){
+    if(!el) return;
+    this.width=el.getBoundingClientRect().width;
+    if(this.vM.visible(this.props.rasp))
+      this.refs.hint.style.right=(this.width/2-window.Synapp.fontSize)+'px';
+  }
+
   render() {
-    const { rasp, type } = this.props;
+    const { rasp, type, position } = this.props;
     if (!type.instruction) return null;
     var instructionClass = ClassNames("instruction", this.props.className);
 
     return (
-      <section className={instructionClass} >
+      <section className={instructionClass} ref={(el)=>this.setWidth(el)} >
         <Accordion
           onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })}
-          active={this.vM.visible}
+          active={this.vM.visible(rasp)}
           text={true}
           onComplete={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION_HINT" })}
         >
@@ -71,7 +79,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           </div>
         </Accordion>
 
-        <div className={ClassNames(this.props.classNames, 'instruction-hint', this.vM.visible(rasp) ? 'hint-visible' : 'hint-hidden')}>
+        <div style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}} className={ClassNames(this.props.classNames, 'instruction-hint', this.vM.visible(rasp) ? 'hint-visible' : 'hint-hidden')} ref="hint">
           <div className={ClassNames(this.props.classNames, 'instruction-hint', (rasp.instructionHint) ? 'hint-open' : '')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
             <Icon icon={"envelope-open-o"} />
           </div>

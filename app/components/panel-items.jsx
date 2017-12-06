@@ -24,6 +24,14 @@ export default class PanelItems extends React.Component {
 }
 
 class PanelHeading extends React.Component {
+  constructor(props){
+    super(props);
+    if(typeof window !== 'undefined')
+      this.iconWidth=window.Synapp.fontSize*2;
+    else
+      this.iconWidth=13*2;
+  }
+
   render() {
     const {rasp, cssName, panel } = this.props;
 
@@ -39,11 +47,11 @@ class PanelHeading extends React.Component {
     const cShape= vShape ? 'vs-'+vShape : '';
 
     // a button could be a string, or it could be an object which must have a property component
-    var renderComponents = (part, button) => {
+    var renderComponents = (part, button, position) => {
       if(typeof button==='string')
-        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={type._id + '-' + button} />);
+        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={type._id + '-' + button} position={position} />);
       else if (typeof button==='object')
-        return (<ListComponent Components={Components} {...lessProps}  part={part} key={item._id + '-' + button.component} {...button} />);
+        return (<ListComponent Components={Components} {...lessProps}  part={part} key={item._id + '-' + button.component} {...button} position={position} />);
     }
 
     return (
@@ -52,10 +60,10 @@ class PanelHeading extends React.Component {
           <h4 onClick={() => rasp.toParent({ type: "TOGGLE_FOCUS" })} key="title">
             {title}
           </h4>
-          {panelButtons.map(button=>renderComponents('button',button))}
+          {panelButtons.map((button,i)=>renderComponents('button',button, i*this.iconWidth))}
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
-          {panelButtons.map(button=>renderComponents('panel',button))}
+          {panelButtons.map((button,i)=>renderComponents('panel',button, i*this.iconWidth))}
           {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
         </section>
       </section>

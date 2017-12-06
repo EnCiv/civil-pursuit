@@ -39,6 +39,8 @@ if(typeof window !== 'undefined') {
 
 function render (props) {
   window.reactContainer=document.getElementById('synapp');
+  window.Synapp={};
+  window.Synapp.fontSize=parseFloat(window.getComputedStyle(window.reactContainer, null).getPropertyValue('font-size'));
   console.log('Rendering app', props);
   logger.info('Rendering app', props);
   ReactDOM.render(<App { ...props } />, window.reactContainer );
