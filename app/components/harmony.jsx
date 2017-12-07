@@ -150,10 +150,17 @@ class RASPHarmony extends ReactActionStatePathClient {
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
               this.queueAction({type: "RESET_BUTTON", button: "Harmony"});
             }
-            delta.side=null;
           }else if(action.distance===2){
-            delta.side=null;
+            ;
+          }else if(action.distance===3){ // unfocus child was promote
+            if(rasp.focus) {
+              delta.focus=false;
+              this.toChild[action.side]({ type: "UNFOCUS_STATE" });
+              this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
+              this.queueAction({type: "RESET_BUTTON", button: "Harmony"});
+            }
           }
+          delta.side=null;
         } else
           return false;
         return true;
