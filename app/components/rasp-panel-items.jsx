@@ -181,6 +181,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.focus = false;
           delta.decendantFocus=false;
           delta.creator=false;
+          if(rasp.shortId)this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
         } else
@@ -208,21 +209,26 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       childVisualMethod: ()=>'titleize',
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "DESCENDANT_FOCUS") {
-          if (action.distance >= 0) {
-            delta.decendantFocus = true;
-            delta.focus=true;
-            if(!rasp.focus){
-              this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
-            }
+          delta.decendantFocus = true;
+          delta.focus=true;
+          if(!rasp.focus){
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
+          }
+          if (action.shortId) { // a child is opening
+            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+            delta.shortId = action.shortId; // the new child will be open
           }
         } else if (action.type === "DESCENDANT_UNFOCUS") {
-          if (action.distance ===1 && rasp.decendantFocus) delta.decendantFocus = false;
-          //if (action.distance===1) {
-          //  delta.focus=false;
-          //  if(rasp.focus){
-          //    this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
-          //  }
-          //}
+            if (action.distance ===1 && rasp.decendantFocus) {
+              if(rasp.shortId) {
+                this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
+                delta.shortId=null;
+              }
+              delta.shortId=null;
+              delta.decendantFocus=false;
+              delta.creator=false;
+            }
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
           if(!rasp.focus){
@@ -236,6 +242,10 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.creator=false;
           if(rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
+          }
+          if(rasp.shortId) {
+            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+            delta.shortId=null;
           }
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
