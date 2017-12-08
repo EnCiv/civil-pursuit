@@ -54,17 +54,6 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       }
       if(delta.creator) this.queueFocus(action); 
       else this.queueUnfocus(action)
-    } else if (action.type === "ITEM_DELVE") {
-      if(rasp.shortId) {
-        var nextFunc = () => this.toChild[rasp.shortId](action);
-        if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
-        else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
-      }
-    } else if (action.type === "SHOW_ITEM") {
-      if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
-        this.props.items.push(action.item);
-      }
-      delta.shortId = action.item.id;
     } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
         ; //then do nothing - it's been done
      } else if(Object.keys(delta).length>0) {
@@ -132,6 +121,17 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
             if(rasp.shortId) {
               delta.shortId=false;
             }
+        } else if (action.type === "ITEM_DELVE") {
+          if(rasp.shortId) {
+            var nextFunc = () => this.toChild[rasp.shortId](action);
+            if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
+            else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
+          }
+        } else if (action.type === "SHOW_ITEM") {
+          if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
+            this.props.items.push(action.item);
+          }
+          delta.shortId = action.item.id;
         } else
           return false;
         return true; 
@@ -184,6 +184,17 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           if(rasp.shortId)this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
+        } else if (action.type === "ITEM_DELVE") {
+          if(rasp.shortId) {
+            var nextFunc = () => this.toChild[rasp.shortId](action);
+            if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
+            else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
+          }
+        } else if (action.type === "SHOW_ITEM") {
+          if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
+            this.props.items.push(action.item);
+          }
+          delta.shortId = action.item.id;
         } else
           return false;
         return true; 
@@ -248,7 +259,11 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           //}
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
-        } else
+        }  else if (action.type === "ITEM_DELVE") {
+          ; // do nothing and consume the action
+        } else if (action.type === "SHOW_ITEM") {
+          ; // do nothing and consume the action
+        }else
           return false; // action has not been processed continute checking
         action.toBeContinued=true; // supress shape_changed events
         return true; // action has been processed
