@@ -94,6 +94,9 @@ class RASPItem extends ReactActionStatePathClient {
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
+        } else if (action.type === "ITEM_DELVE") {
+          delta.readMore = true;
+          if(this.props.item.subType) delta.button=this.someButton('S');
         } else
           return false;
         return true;
@@ -150,7 +153,10 @@ class RASPItem extends ReactActionStatePathClient {
           delta.button=null; 
           delta.readMore=false;
           delta.decendantFocus=false;
-        } else
+        } else if (action.type === "ITEM_DELVE") {
+          delta.readMore = true;
+          if(this.props.item.subType) delta.button=this.someButton('S');
+        }else
           return false;
         return true; 
       },
@@ -211,7 +217,9 @@ class RASPItem extends ReactActionStatePathClient {
           delta.button=null;
         } else if (action.type==="FOCUS_STATE"){
           delta.focus=true;
-        } else
+        } else if (action.type === "ITEM_DELVE") {
+          ; // do nothing, consume the action
+        }else
           return false;
         return true;
       },
@@ -279,9 +287,6 @@ class RASPItem extends ReactActionStatePathClient {
       }
       if(delta.readMore) this.queueFocus(action); 
       else this.queueUnfocus(action)
-    } else if (action.type === "ITEM_DELVE") {
-      delta.readMore = true;
-      if(this.props.item.subType) delta.button=this.someButton('S');
     } else if (action.type === "FINISH_PROMOTE") {
       if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore = true; 
