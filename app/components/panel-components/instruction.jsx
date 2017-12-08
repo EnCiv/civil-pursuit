@@ -21,7 +21,7 @@ const visualMethods={
      visible: {
       [undefined]: true,
       [null]: true,
-      forward: true,
+      forward: false,
       finish: false,
       backward: true
      },
@@ -46,6 +46,13 @@ const visualMethods={
       finish: null,
       backward: "envelope-open-o"
     },
+    unFocus: {
+      [undefined]: 'finish',
+      [null]: 'finish',
+      forward: 'finish',
+      finish: 'finish',
+      backward: 'finish'
+    }
   },
   titleize: {
     visible: {
@@ -75,6 +82,13 @@ const visualMethods={
       forward: 'envelope-open-o',
       finish: 'envelope-open-o',
       backward: "envelope-open-o"
+    },
+    unFocus: {
+      [undefined]: null,
+      [null]: null,
+      forward: null,
+      finish: null,
+      backward: null
     }
   }
 }
@@ -130,7 +144,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
         delta.instruction = Transition[this.props.rasp.instruction]; 
       return false 
     },
-    "DESCENDANT_FOCUS": (action, delta) => { delta.instruction = Transition['backward']; return true; }
+    "DESCENDANT_FOCUS": (action, delta) => { delta.instruction = this.vM.unFocus(this.props.rasp); return true; }
   }
 
   setWidth(el){

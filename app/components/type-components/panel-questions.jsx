@@ -8,7 +8,7 @@ import PanelStore from '../store/panel';
 import config from '../../../public.json';
 import ReactActionStatePath from 'react-action-state-path';
 import Item from '../item';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import PanelItems from '../panel-items';
 import RASPPanelItems from '../rasp-panel-items';
 
@@ -145,11 +145,11 @@ export class PanelQuestions extends React.Component {
         return (
             <PanelStore { ...storeProps }>
                 <ReactActionStatePath {...this.props} >
-                    <AnswerCount>
-                        <PanelHead cssName={'syn-panel-item'} >
+                    <PanelHeading cssName={'syn-panel-item'} panelButtons={['Creator','Instruction']} >
+                        <AnswerCount>
                             <RASPPanelQuestions />
-                        </PanelHead>
-                    </AnswerCount>
+                        </AnswerCount>
+                    </PanelHeading>
                 </ReactActionStatePath>
             </PanelStore>
         );
