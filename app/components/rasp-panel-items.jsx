@@ -240,12 +240,12 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.focus = false;
           delta.decendantFocus=false;
           delta.creator=false;
-          if(rasp.focus){
+          //if(rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "UNFOCUS_STATE"}));
-          } else if(rasp.shortId) {
-            this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"}); // RESET_SHAPE
+          //} else if(rasp.shortId) {
+          //  this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"}); // RESET_SHAPE
             delta.shortId=null;
-          }
+          //}
           if(action.type!=="UNFOCUS_STATE")
             this.queueUnfocus(action);
         } else
