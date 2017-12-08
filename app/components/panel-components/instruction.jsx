@@ -42,7 +42,7 @@ const visualMethods={
     panelIcon: {
       [undefined]: "envelope-open-o",
       [null]: "envelope-open-o",
-      forward: 'envelope-o',
+      forward: 'envelope-open-o',
       finish: null,
       backward: "envelope-open-o"
     },
