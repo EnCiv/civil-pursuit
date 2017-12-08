@@ -16,7 +16,7 @@ import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import update from 'immutability-helper';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 
 
   // 20 is hard coded, but where should this be? type or item?
@@ -29,11 +29,11 @@ export class QSortItems extends React.Component {
                     type={this.props.type}
                     limit={20} >
             <QVoteStore {...this.props}>
-                <PanelHead  cssName={'syn-qsort-items'} >
-                    <ReactActionStatePath>
+                <ReactActionStatePath>
+                    <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
                         <RASPQSortItems />
-                    </ReactActionStatePath>
-                </PanelHead>
+                    </PanelHeading>
+                </ReactActionStatePath>
             </QVoteStore>
         </PanelStore>
         );
