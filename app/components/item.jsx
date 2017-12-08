@@ -194,22 +194,23 @@ class RASPItem extends ReactActionStatePathClient {
       },
       childVisualMethod: ()=>'titleize',
       enableHint: ()=>{
-        return (!this.props.rasp.decendantFocus && this.props.rasp.untitleize)
+        return (!this.props.rasp.decendantFocus && this.props.rasp.focus)
       },
       // process actions for this visualMethod
       actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type==="DESCENDANT_FOCUS" && action.distance>1) {
-            delta.decendantFocus=true;
-        } else if (action.type==="DESCENDANT_UNFOCUS" && action.distance===1 && rasp.decendantFocus) {
-                delta.decendantFocus=false;
-                delta.button=null;
-                delta.readMore=false;
-        } else if (action.type==="VM_TITLEIZE_ITEM_TITLEIZE"){
-          delta.untitleize=false;
+        if (action.type==="DESCENDANT_FOCUS" /*&& action.distance>1*/) {
+          delta.decendantFocus=true;
+        } else if (action.type==="DESCENDANT_UNFOCUS" && action.distance===1 /*&& rasp.decendantFocus*/) {
+          delta.decendantFocus=false;
+          delta.button=null;
+          delta.readMore=false;
+        } else if (action.type==="UNFOCUS_STATE"){
+          delta.decendantFocus=false;
+          delta.focus=false;
           delta.readMore=false;
           delta.button=null;
-        } else if (action.type==="VM_TITLEIZE_ITEM_UNTITLEIZE"){
-          delta.untitleize=true;
+        } else if (action.type==="FOCUS_STATE"){
+          delta.focus=true;
         } else
           return false;
         return true;
@@ -217,9 +218,9 @@ class RASPItem extends ReactActionStatePathClient {
       // derive shape and pathSegment from the other parts of the RASP
       deriveRASP: (rasp, initialRASP)=>{
         if(rasp.button || rasp.readMore){
-          rasp.shape=rasp.decendantFocus ? (rasp.untitleize? 'truncated': 'title') : 'open'
+          rasp.shape=rasp.decendantFocus ? (rasp.focus? 'truncated': 'title') : 'open'
         } else 
-          rasp.shape=  rasp.untitleize ? 'truncated' : 'title';
+          rasp.shape=  rasp.focus ? 'truncated' : 'title';
         // calculate the pathSegment and return the new state
         let parts = [];
         if (rasp.readMore) parts.push('r');

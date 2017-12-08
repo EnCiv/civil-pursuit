@@ -212,19 +212,19 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.decendantFocus = true;
           delta.focus=true;
           if(!rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "FOCUS_STATE"}));
           }
           if (action.shortId) { // a child is opening
             if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+              this.toChild[rasp.shortId]({ type: "UNFOCUS_STATE"}); //RESET_SHAPE
             delta.shortId = action.shortId; // the new child will be open
           }
         } else if (action.type === "DESCENDANT_UNFOCUS") {
-            if (action.distance ===1 && rasp.decendantFocus) {
-              if(rasp.shortId) {
-                this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
-                delta.shortId=null;
-              }
+            if (action.distance ===1 /*&& rasp.decendantFocus*/) {
+              //if(rasp.shortId) {
+              //  this.toChild[rasp.shortId]({type: "FOCUS_STATE"})
+              //  delta.shortId=null;
+              //}
               delta.shortId=null;
               delta.decendantFocus=false;
               delta.creator=false;
@@ -232,7 +232,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
           if(!rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_UNTITLEIZE"}));
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "FOCUS_STATE"}));
           }
           if(action.type!=="FOCUS_STATE")
             this.queueFocus(action);
@@ -241,10 +241,9 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.decendantFocus=false;
           delta.creator=false;
           if(rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "VM_TITLEIZE_ITEM_TITLEIZE"}));
-          }
-          if(rasp.shortId) {
-            this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+            this.props.items.forEach(item=>this.toChild[item.id]({type: "UNFOCUS_STATE"}));
+          } else if(rasp.shortId) {
+            this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"}); // RESET_SHAPE
             delta.shortId=null;
           }
           if(action.type!=="UNFOCUS_STATE")
