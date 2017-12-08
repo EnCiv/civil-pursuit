@@ -4,6 +4,7 @@ import React from 'react';
 import ClassNames from 'classnames';
 import Components from "./panel-components/";
 import ListComponent from './list-component';
+import smoothScroll from '../lib/app/smooth-scroll';
 
 export default class PanelHeading extends React.Component {
   constructor(props){
@@ -37,9 +38,9 @@ export default class PanelHeading extends React.Component {
     }
 
     return (
-      <section style={style} className={ClassNames(name, 'vs-' + rasp.shape, "syn-panel", cShape)} >
+      <section style={style} className={ClassNames(name, 'vs-' + rasp.shape, "syn-panel", cShape)} ref="top">
         <section className={ClassNames("syn-panel-heading", cShape, { 'no-heading': vShape === 'collapsed' })}>
-          <h4 onClick={() => rasp.toParent({ type: "TOGGLE_FOCUS" })} key="title">
+          <h4 onClick={() =>{ rasp.toParent({ type: "TOGGLE_FOCUS" }); setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500)) }} key="title">
             {title}
           </h4>
           {panelButtons.map((button,i)=>renderComponents('button',button, (i+0.5)*this.iconWidth))}

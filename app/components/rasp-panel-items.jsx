@@ -5,6 +5,7 @@ import Accordion          from 'react-proactive-accordion';
 import ItemStore from '../components/store/item';
 import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
+import smoothScroll from '../lib/app/smooth-scroll';
 
 /**************************************************
  * This file was once part of panel-items. It was separated out when I wanted to import RASPPanelItems into panel-questions separate from PanelItems
@@ -175,8 +176,9 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.decendantFocus=false;
           if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
           delta.shortId=null;
-          if(action.type!=="FOCUS_STATE") 
+          if(action.type!=="FOCUS_STATE") {
             this.queueFocus(action);
+          }
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
@@ -245,8 +247,9 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           if(!rasp.focus){
             this.props.items.forEach(item=>this.toChild[item.id]({type: "FOCUS_STATE"}));
           }
-          if(action.type!=="FOCUS_STATE")
+          if(action.type!=="FOCUS_STATE"){
             this.queueFocus(action);
+          }
         } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
           delta.decendantFocus=false;
@@ -327,7 +330,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         //       }
 
     return (
-      <section>
+      <section ref="top">
         {content}
         {loadMore}
       </section>
