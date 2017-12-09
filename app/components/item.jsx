@@ -377,7 +377,8 @@ class RASPItem extends ReactActionStatePathClient {
 
   // when the user clicks on an item's button
   onClick(button) {
-    this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button })
+    this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button });
+    setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -423,6 +424,8 @@ class RASPItem extends ReactActionStatePathClient {
       this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
     }
     if (this.props.rasp.toParent) this.props.rasp.toParent({ type: "TOGGLE_READMORE" })
+    setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
+    
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
