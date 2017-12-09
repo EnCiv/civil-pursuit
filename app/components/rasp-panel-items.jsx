@@ -232,6 +232,8 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
               this.toChild[rasp.shortId]({ type: "UNFOCUS_STATE"}); //RESET_SHAPE
             delta.shortId = action.shortId; // the new child will be open
           }
+          if(action.distance===1 || action.distance==3)
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
         } else if (action.type === "DESCENDANT_UNFOCUS") {
             if (action.distance ===1 /*&& rasp.decendantFocus*/) {
               //if(rasp.shortId) {
