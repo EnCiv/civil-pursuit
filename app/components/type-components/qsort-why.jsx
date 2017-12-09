@@ -102,7 +102,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source){
         if(action.type==="RESET"){
-            Object.assign(this.props.shared,clone(this._defaults.this.results));
+            Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
         } else
         return null;
