@@ -16,7 +16,7 @@ import QVoteLocal from '../store/qvote-local';
 import Accordion          from 'react-proactive-accordion';
 import Item from '../item';
 import Harmony from '../harmony';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import { QSortToggle } from './qsort-items';
 
@@ -24,13 +24,13 @@ class QSortReLook extends React.Component {
     render() {
         //onsole.info("QSortReLook");
         return (
-            <PanelHead {...this.props} cssName={'syn-qsort-relook'} >
-                <QVoteLocal  >
-                    <ReactActionStatePath>
+            <ReactActionStatePath {...this.props} >
+                <PanelHeading  cssName={'syn-qsort-relook'} >
+                    <QVoteLocal  >
                         <RASPQSortReLook />
-                    </ReactActionStatePath>
-                </QVoteLocal>
-            </PanelHead>
+                    </QVoteLocal>
+                </PanelHeading>
+            </ReactActionStatePath>
         );
     }
 }
