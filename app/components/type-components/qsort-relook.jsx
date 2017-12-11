@@ -17,7 +17,7 @@ import Accordion          from 'react-proactive-accordion';
 import Item from '../item';
 import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
-import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
+import { ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter } from 'react-action-state-path';
 import { QSortToggle } from './qsort-items';
 
 class QSortReLook extends React.Component {
@@ -25,16 +25,52 @@ class QSortReLook extends React.Component {
         //onsole.info("QSortReLook");
         return (
             <ReactActionStatePath {...this.props} >
-                <PanelHeading  cssName={'syn-qsort-relook'} >
-                    <QVoteLocal  >
-                        <RASPQSortReLook />
-                    </QVoteLocal>
-                </PanelHeading>
+                <DescendantFocusHere>
+                    <PanelHeading  cssName={'syn-qsort-relook'} >
+                        <QVoteLocal  >
+                            <RASPQSortReLook />
+                        </QVoteLocal>
+                    </PanelHeading>
+                </DescendantFocusHere>
             </ReactActionStatePath>
         );
     }
 }
 export default QSortReLook;
+
+class DescendantFocusHere extends ReactActionStatePathFilter {
+    actionFilters={
+        "DESCENDANT_FOCUS": (action, delta) => {
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+            return true;
+        }
+    }
+
+    render(){
+        const {children, ...lessProps}=this.props;
+        return(
+            <section ref="top">
+                {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
+            </section>
+        );
+    }
+}
+
+class DescendantUnFocusHere extends ReactActionStatePathFilter {
+    actionFilters={
+        "DESCENDANT_UNFOCUS": (action, delta) => {
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+            return true;
+        }
+    }
+    render(){
+        return(
+            <section ref="top" style={this.props.style}>
+                {this.props.children}
+            </section>
+        )
+    }
+}
 
 class RASPQSortReLook extends ReactActionStatePathClient {
 
@@ -165,7 +201,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     if(!this.mounted[item._id] || (this.mounted[item._id].criteria !== criteria) || (this.mounted[item._id].active !== active )){
                         this.mounted[item._id]=(
                             {   content: 
-                                <div style={{ backgroundColor: qbuttons[criteria].color }}>
+                                <DescendantUnFocusHere style={{ backgroundColor: qbuttons[criteria].color }} rasp={this.props.rasp}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
@@ -183,7 +219,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                                             rasp={ this.childRASP('truncated', item._id) }
                                         />
                                     </ItemStore>
-                                </div>,
+                                </DescendantUnFocusHere>,
                                 criteria: criteria,
                                 active: active
                             }
