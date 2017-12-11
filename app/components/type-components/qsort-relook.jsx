@@ -56,22 +56,6 @@ class DescendantFocusHere extends ReactActionStatePathFilter {
     }
 }
 
-class DescendantUnFocusHere extends ReactActionStatePathFilter {
-    actionFilters={
-        "DESCENDANT_UNFOCUS": (action, delta) => {
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
-            return true;
-        }
-    }
-    render(){
-        return(
-            <section ref="top" style={this.props.style}>
-                {this.props.children}
-            </section>
-        )
-    }
-}
-
 class RASPQSortReLook extends ReactActionStatePathClient {
 
     motionDuration = 500; //500mSec
@@ -103,7 +87,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             }
         } else if(action.type === "DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===3)) {
             delta.itemId = null; // turn off the itemId
-            if(action.itemId && this.toChild[action.itemId]) this.toChild[action.itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
+            var itemId;
+            if((itemId=action.itemId) && this.toChild[itemId]) this.toChild[itemId]({type: "UNFOCUS_STATE", button: "Harmony"});
+            this.mounted[itemId] && this.mounted[itemId].ref && setTimeout(()=>Synapp.ScrollFocus(this.mounted[itemId].ref,500),500); //scroll to here
         } else if(action.type==="TOGGLE_QBUTTON") {
             delta.itemId=null;
             if(rasp.itemId){
@@ -198,10 +184,10 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 sections[criteria].forEach(itemId => {
                     let item = items[index[itemId]];
                     let active=item._id===rasp.itemId; // this item is active
-                    if(!this.mounted[item._id] || (this.mounted[item._id].criteria !== criteria) || (this.mounted[item._id].active !== active )){
+                    if(!this.mounted[item._id] || (this.mounted[item._id].criteria !== criteria) || (this.mounted[item._id].active !== active )) {
                         this.mounted[item._id]=(
                             {   content: 
-                                <DescendantUnFocusHere style={{ backgroundColor: qbuttons[criteria].color }} rasp={this.props.rasp}>
+                                <div style={{ backgroundColor: qbuttons[criteria].color }} ref={(ref)=>{ref && (this.mounted[item._id].ref=ref)}}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
                                         <Item
                                             user={user}
@@ -219,7 +205,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                                             rasp={ this.childRASP('truncated', item._id) }
                                         />
                                     </ItemStore>
-                                </DescendantUnFocusHere>,
+                                </div>,
                                 criteria: criteria,
                                 active: active
                             }
