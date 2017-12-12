@@ -97,7 +97,12 @@ class RASPItem extends ReactActionStatePathClient {
         } else if (action.type === "ITEM_DELVE") {
           delta.readMore = true;
           if(this.props.item.subType) delta.button=this.someButton('S');
-        } else
+        } else if (action.type==="UNFOCUS_STATE"){
+          delta.readMore=false;
+          delta.button=null;
+        } else if (action.type==="FOCUS_STATE"){
+          delta.readMore=true;
+        }else
           return false;
         return true;
       },
@@ -156,6 +161,13 @@ class RASPItem extends ReactActionStatePathClient {
         } else if (action.type === "ITEM_DELVE") {
           delta.readMore = true;
           if(this.props.item.subType) delta.button=this.someButton('S');
+        } else if (action.type==="UNFOCUS_STATE"){
+          delta.decendantFocus=false;
+          delta.readMore=false;
+          delta.button=null;
+        } else if (action.type==="FOCUS_STATE") {
+          delta.decendantFocus=false;
+          delta.readMore=true;
         }else
           return false;
         return true; 
