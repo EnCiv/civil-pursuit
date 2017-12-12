@@ -14,13 +14,13 @@ import PanelHead from '../panel-head';
 import clone from 'clone';
 
 class QSortRefine extends React.Component {
-    render(){
+    render() {
         return (
-            <PanelHead {...this.props} cssName={'syn-qsort-refine'} >
-                <ReactActionStatePath>
+            <ReactActionStatePath>
+                <PanelHeading cssName={'syn-qsort-refine'} panelButtons={['Creator', 'Instruction']}>
                     <RASPQSortRefine />
-                </ReactActionStatePath>
-            </PanelHead>
+                </PanelHeading>
+            </ReactActionStatePath>
         )
     }
 }
@@ -64,19 +64,23 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         this.createDefaults();
     }
 
-    actionToState(action, rasp, source) {
+    actionToState(action, rasp, source, initialRASP, delta) {
+        var nextRASP={};
         if((action.type ==="ITEM_REFINE") || (action.type ==="SHOW_ITEM")) {  // ** ITEM_REFINE is if the user chose the item he created, show_item if the item the user didn't just create
             this.results.refine[this.whyName][action.itemId]=action.item;
             this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
             var doc = document.documentElement;
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
-            return rasp;
         } else if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
+        } else if(Object.keys(delta).length){
+            ;
         } else
             return null;
+        Object.assign(nextRASP,rasp,delta);
+        return nextRASP;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
