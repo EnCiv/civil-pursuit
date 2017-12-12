@@ -20,17 +20,17 @@ import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 
 
 class CafeIdea extends React.Component {
     render(){
         return (
-            <PanelHead {...this.props} cssName={'syn-cafe-idea'} >
-                <ReactActionStatePath>
+            <ReactActionStatePath {...this.props}>
+                <PanelHeading  cssName={'syn-cafe-idea'} panelButtons={['Creator','Instruction']}>
                     <RASPCafeIdea />
-                </ReactActionStatePath>
-            </PanelHead>
+                </PanelHeading>
+            </ReactActionStatePath>
         )
     }
 }
