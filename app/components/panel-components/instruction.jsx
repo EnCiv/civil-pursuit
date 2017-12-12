@@ -35,7 +35,7 @@ const visualMethods={
     buttonIcon: {
       [undefined]: "envelope-open-o",
       [null]: "envelope-open-o",
-      forward: 'envelope-o',
+      forward: 'envelope-open-o',
       finish: 'envelope-o',
       backward: "envelope-open-o"
     },
