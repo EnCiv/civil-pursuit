@@ -10,7 +10,6 @@ import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';
 import QSortFlipItem from '../qsort-flip-item';
 import smoothScroll from '../../lib/app/smooth-scroll';
-import Instruction from '../instruction';
 import Color from 'color';
 import Button           from '../util/button';
 import ButtonGroup           from '../util/button-group';

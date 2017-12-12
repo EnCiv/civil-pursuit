@@ -111,7 +111,7 @@ exports.button = class PanelInstructionButton extends React.Component {
     const { rasp, type, position } = this.props;
     if (!type.instruction) return null; // no button if no instruction
     return (
-      <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} >
+      <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} key='instruction'>
         <Icon icon={this.vM.buttonIcon(rasp)} /> 
       </div>
     );
@@ -144,7 +144,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
         delta.instruction = Transition[this.props.rasp.instruction]; 
       return false 
     },
-    "DESCENDANT_FOCUS": (action, delta) => { delta.instruction = this.vM.unFocus(this.props.rasp); return true; }
+    "DESCENDANT_FOCUS": (action, delta) => { if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; } 
   }
 
   setWidth(el){
@@ -159,7 +159,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     if (!type.instruction) return null;
 
     return (
-      <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} >
+      <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key="instruction" >
         <Accordion
           onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })}
           active={this.vM.visible(rasp)}
