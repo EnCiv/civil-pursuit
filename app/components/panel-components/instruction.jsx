@@ -144,7 +144,8 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
         delta.instruction = Transition[this.props.rasp.instruction]; 
       return false 
     },
-    "DESCENDANT_FOCUS": (action, delta) => { if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; } 
+    "DESCENDANT_FOCUS": (action, delta) => { if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; },
+    "NEXT_PANEL": (action, delta) => {if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; }
   }
 
   setWidth(el){

@@ -20,17 +20,17 @@ import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import clone from 'clone';
 
 class QSortWhy extends React.Component {
-    render(){
+    render() {
         return (
-            <PanelHead {...this.props} cssName={'syn-qsort-why'} >
-                <ReactActionStatePath>
+            <ReactActionStatePath {...this.props} >
+                <PanelHeading cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
                     <RASPQSortWhy />
-                </ReactActionStatePath>
-            </PanelHead>
+                </PanelHeading>
+            </ReactActionStatePath>
         )
     }
 }
@@ -100,12 +100,17 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         }
     }
 
-    actionToState(action, rasp, source){
+    actionToState(action, rasp, source, defaultRASP, delta){
+        var nextRASP={};
         if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
+        } else if(Object.keys(delta).length){
+            ;
         } else
-        return null;
+            return null;
+        Object.assign(nextRASP,rasp,delta);
+        return nextRASP;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
