@@ -288,6 +288,7 @@ class RASPItem extends ReactActionStatePathClient {
       else delta.readMore = rasp.readMore;
       if(delta.button) this.queueFocus(action); 
       else this.queueUnfocus(action)
+      if(rasp.button && this.toChild[rasp.button]) this.toChild[rasp.button]({type: "UNFOCUS_STATE"}); // turning off a button, tell child to unfocus
     } else if (action.type === "TOGGLE_READMORE") {
       if(!this.state.hint && !rasp.readMore && rasp.button==='Harmony') { // hint is not showing, readMore is not showing, and Harmony is showing. 
           rasp.button=null;
