@@ -147,6 +147,7 @@ class RASPHarmony extends ReactActionStatePathClient {
           if(action.distance===1){
             if(rasp.side) {
               this.toChild[rasp.side]({type: "FOCUS_STATE"}); // the panel should stay focused
+              action.type="NOP"; // this action should stop propogating.  This does not seem to be the elegant way to do that
             } else if(rasp.focus) {
               delta.focus=false;
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
