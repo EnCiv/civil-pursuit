@@ -9,7 +9,6 @@ import smoothScroll from '../../lib/app/smooth-scroll';
 import Color from 'color';
 import Button           from '../util/button';
 import QSortButtonList from '../qsort-button-list';
-import Creator            from '../creator';
 import Accordion          from 'react-proactive-accordion';
 import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
@@ -56,9 +55,9 @@ export class RASPQSortItems extends ReactActionStatePathClient {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // 
-    actionToState(action,rasp) {
+    actionToState(action, rasp, source, defaultRASP, delta) {
         //find the section that the itemId is in, take it out, and put it in the new section
-        var nextRASP={}, delta={};
+        var nextRASP={};
         if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
@@ -68,8 +67,6 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
             window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
             delta.creator=false;
-        } else if (action.type==="TOGGLE_CREATOR"){
-            delta.creator= !rasp.creator;
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
             let results={index: null, sections: null, items: null }
@@ -77,7 +74,10 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
-        } else return null;
+        } else if (Object.keys(delta).length){
+            ; // do nothing, but proceed to building nextRASP because one of the actionFilters has updated the state
+        } else 
+            return null;
         Object.assign(nextRASP, rasp, delta);
         return(nextRASP);
     }
@@ -102,7 +102,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
 
         const onServer = typeof window === 'undefined';
 
-        let articles = [], creator,
+        let articles = [],
             direction = [], instruction = [], issues = 0, done = [], loading=[];
 
         if (!Object.keys(this.props.index).length) {
@@ -159,32 +159,11 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                 )
                 setTimeout(()=>this.props.rasp.toParent({type: "RESULTS", results}),0);
             } else setTimeout(()=>this.props.rasp.toParent({type: "ISSUES"}),0);
-
-            let creatorPanel;
-
-            creatorPanel = (
-            <Creator
-                type    =   { type }
-                parent  =   { parent }
-                toggle  =   { this.toMeFromChild.bind(this, null, {type: "TOGGLE_CREATOR"}) }
-                />
-            );
-
-            creator = (
-                <Accordion
-                active    =   { (this.props.rasp.creator) }
-                poa       =   { this.refs.panel }
-                name      = 'creator'
-                >
-                { creatorPanel }
-                </Accordion>
-            );
         }
 
 
         return (
             <section id="syn-panel-qsort">
-                {creator}
                 {direction}
                 {done}
                 <div style={{ position: 'relative',

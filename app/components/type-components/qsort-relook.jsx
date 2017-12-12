@@ -72,9 +72,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // 
-    actionToState(action,rasp) {
+    actionToState(action, rasp, source, defaultRASP, delta) {
         //find the section that the itemId is in, take it out, and put it in the new section
-        var nextRASP={}, delta={};
+        var nextRASP={};
         if (action.type === "DESCENDANT_FOCUS" && (!action.button || action.button==='Harmony')) {  // any decendant focus action except a qsortbutton
             if (action.itemId) {
                 delta.itemId = action.itemId;
@@ -108,7 +108,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         } else if (action.type==="RESET"){
             if(this.props.resetStore) this.props.resetStore();
             return null;
-        } else 
+        } else if(Object.keys(delta).length){
+            ; // do nothing but generate the nextRASP 
+        } else
             return null;
         Object.assign(nextRASP, rasp, delta);
         nextRASP.shape=nextRASP.itemId ? 'open' : 'truncated';
