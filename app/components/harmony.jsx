@@ -145,7 +145,9 @@ class RASPHarmony extends ReactActionStatePathClient {
           } 
         } else if (action.type === "DESCENDANT_UNFOCUS") {
           if(action.distance===1){
-            if(rasp.focus) {
+            if(rasp.side) {
+                ; // one side was focused and we are unfocusing that. Leave the harmony panel focused.
+            } else if(rasp.focus) {
               delta.focus=false;
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })
               this.queueAction({type: "UNFOCUS_STATE"}); //{type: "RESET_BUTTON", button: "Harmony"});
