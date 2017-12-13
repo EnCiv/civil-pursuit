@@ -10,7 +10,7 @@ import Item from '../item';
 import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import clone from 'clone';
 
 class QSortRefine extends React.Component {
