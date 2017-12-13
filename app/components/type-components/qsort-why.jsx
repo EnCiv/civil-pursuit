@@ -225,7 +225,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 }}>
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {content.map(article => <QSortWhyItem {...article} key={article.id} />)}
+                            {content.map(article => <QSortWhyItem {...article} key={article.id+'-article'} />)}
                         </FlipMove>
                     </div>
                 </div>
@@ -238,10 +238,10 @@ export default QSortWhy;
 
 class QSortWhyItem extends React.Component {
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName, rasp } = this.props;
+        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName, rasp, key } = this.props;
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}} key={ `item-${item._id}` }>
-                    <ItemStore item={ item } key={ `item-${item._id}` }>
+                <div style={{backgroundColor: qbuttons[sectionName].color}} key={ key }>
+                    <ItemStore item={ item } key={ key+'-why' }>
                         <Item
                             {...this.props}
                             buttons =   { ['CreateHarmony']}
