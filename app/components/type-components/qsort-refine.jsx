@@ -204,10 +204,9 @@ class QSortRefineItem extends React.Component {
         const {qbuttons, sectionName, item,  whyItemId, user, type, winner, rasp } = this.props;
 
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}}>
-                    <ItemStore item={ item } key={ `item-${item._id}` }>
+                <div style={{backgroundColor: qbuttons[sectionName].color}}  key={ `item-${item._id}` }>
+                    <ItemStore item={ item }>
                         <Item
-                            item    =   { item }
                             user    =   { user }
                             rasp    =   { rasp }
                             buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
