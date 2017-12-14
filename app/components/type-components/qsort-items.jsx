@@ -69,7 +69,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             delta.creator=false;
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
-            let results={index: null, sections: null, items: null }
+            let results={index: {}, sections: {}, items: [] }
             Object.assign(this.props.shared, results)
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();

@@ -145,6 +145,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                 }
                 this.state.sections[name].forEach(itemId => {
                     let item = items[shared.index[itemId]];
+                    if(!item) return; // this happens during the proccess of resetting the state.
                     let winner = this.results.refine[this.whyName][itemId] || null;
                     content.push(
                         {

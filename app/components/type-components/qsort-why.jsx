@@ -40,7 +40,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     buttons=[];
     motionDuration = 500; //500mSec
     state = {};
-    results = {why: {}};
+    results = {};
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
     whyName = '';
@@ -58,6 +58,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
             });
             if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortWhy button name not found in type name:", qbuttons, this.props.type.name)}
         }
+        this.results.why=this.props.shared.why || {};
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
         //onsole.info("qsort-why constructor buttonlist")

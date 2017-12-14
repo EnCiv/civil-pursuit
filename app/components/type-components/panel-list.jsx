@@ -49,7 +49,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
         for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
       }
       //if (newStatus) this.panelStatus=panelStatus;
-      if (results) this.shared = merge({}, this.shared, results);
+      if (results) Object.assign(this.shared, results);
       // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
       if (status === 'done' && currentPanel === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
         delta.currentPanel = rasp.currentPanel+1;
@@ -60,7 +60,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
       let newStatus=false;
       if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; newStatus = true }
       //if (newStatus) this.panelStatus=panelStatus;
-      if (results) this.shared = merge({}, this.shared, results);
+      if (results) Object.assign(this.shared, results);
       if(this.waitingOnResults && this.waitingOnResults.nextFunc) {
         var nextFunc=this.waitingOnResults.nextFunc;
         this.waitingOnResults=null;
