@@ -16,7 +16,7 @@ import clone from 'clone';
 class QSortRefine extends React.Component {
     render() {
         return (
-            <ReactActionStatePath>
+            <ReactActionStatePath {...this.props}>
                 <PanelHeading cssName={'syn-qsort-refine'} panelButtons={['Creator', 'Instruction']}>
                     <RASPQSortRefine />
                 </PanelHeading>
