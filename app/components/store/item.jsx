@@ -45,13 +45,15 @@ class ItemStore extends React.Component {
   }
 
   componentDidMount () {
-    window.socket.on('item changed', this.itemChanged.bind(this));
-    window.socket.on('OK create item', this.itemCreated.bind(this));
+    this.itemChangedBound=this.itemChanged.bind(this);
+    this.itemCreatedBound=this.itemCreated.bind(this);
+    window.socket.on('item changed', this.itemChangedBound);
+    window.socket.on('OK create item', this.itemCreatedBound);
   }
 
   componentWillUnmount () {
-    window.socket.off('item changed', this.itemChanged.bind(this));
-    window.socket.off('OK create item', this.itemCreated.bind(this));
+    window.socket.off('item changed', this.itemChangedBound);
+    window.socket.off('OK create item', this.itemCreatedBound);
   }
 
   itemChanged (item) {
