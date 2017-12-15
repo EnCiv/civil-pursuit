@@ -91,7 +91,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         this.buttons.forEach(button=> newSections[button]=[] );
 
         Object.keys(newProps.shared.why[this.whyName]).forEach(itemId=>{
-            if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
+            if(this.results.refine[this.whyName][itemId]){ newSections[this.whyName].push(itemId)} // if we already have results on this item, don't do it again
             else{ newSections['unsorted'].push(itemId) }
         });
 
