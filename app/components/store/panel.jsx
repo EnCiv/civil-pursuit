@@ -25,7 +25,8 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount() {
-    window.socket.on('OK create item', this.okCreateItem.bind(this));
+    this.okCreateItemBound=this.okCreateItem.bind(this);
+    window.socket.on('OK create item', this.okCreateItemBound);
 
     if ( ! this.state.panel ) {
       const panel = { type : this.props.type };
@@ -49,7 +50,7 @@ class PanelStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillUnmount() {
-    window.socket.off('OK create item', this.okCreateItem.bind(this));
+    window.socket.off('OK create item', this.okCreateItemBound);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
