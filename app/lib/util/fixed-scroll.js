@@ -21,6 +21,10 @@ class FixedScroll{
 	}
 
 	touchMove(data) {
+		if(this.inDecelerate) {
+			clearTimeout(this.decelerator);
+			this.inDecelerate=false;
+		}
 		let {deltaX, deltaY}=data;
         let top=parseFloat(this.target.style.top) || 0;
         let b=this.target.getBoundingClientRect();
@@ -31,6 +35,10 @@ class FixedScroll{
 	}
 
 	touch(data){
+		if(this.inDecelerate) {
+			clearTimeout(this.decelerator);
+			this.inDecelerate=false;
+		}
 		let {deltaX, deltaY}=data;
 		var top=parseFloat(this.target.style.top) || 0;
 		if(Math.abs(deltaY)>2){
@@ -55,6 +63,8 @@ class FixedScroll{
 	}
 
 	decelerate(top,deltaY){
+		this.inDecelerate=true;
+
         top=top+deltaY;
         
         let b=this.target.getBoundingClientRect();
@@ -63,9 +73,9 @@ class FixedScroll{
 
 		this.target.style.top=top+'px';
 
-		if(Math.abs(deltaY)>2) return setTimeout(()=>this.decelerate(top,deltaY*.99),10)
-		else if(deltaY<0) return setTimeout(()=>this.target.style.top=Math.ceil(top)-1+'px',10)
-		else return setTimeout(()=>this.target.top=Math.ceil(top)+'px',10)
+		if(Math.abs(deltaY)>2) { this.decelerator=setTimeout(()=>this.decelerate(top,deltaY*.99),10); return }
+		else if(deltaY<0) { this.decelerator=setTimeout(()=>{this.target.style.top=Math.ceil(top)-1+'px';this.inDecelerate=false;},10); return}
+		else { this.decelerator=setTimeout(()=>{this.target.top=Math.ceil(top)+'px';this.inDecelerate=false},10); return}
 	}
 }
 
