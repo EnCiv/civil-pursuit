@@ -63,9 +63,9 @@ class FixedScroll{
 
 		this.target.style.top=top+'px';
 
-		if(Math.abs(deltaY)>2) return setTimeout(()=>this.decelerate(top,deltaY*.9),20)
-		else if(deltaY<0) return setTimeout(()=>this.target.style.top=Math.ceil(top)-1+'px',20)
-		else return setTimeout(()=>this.target.top=Math.ceil(top)+'px',20)
+		if(Math.abs(deltaY)>2) return setTimeout(()=>this.decelerate(top,deltaY*.99),10)
+		else if(deltaY<0) return setTimeout(()=>this.target.style.top=Math.ceil(top)-1+'px',10)
+		else return setTimeout(()=>this.target.top=Math.ceil(top)+'px',10)
 	}
 }
 
