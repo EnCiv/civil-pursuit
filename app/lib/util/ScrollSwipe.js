@@ -11,7 +11,8 @@ var acceptedParams = {
   touchCb: true,
   scrollPreventDefault: true,
   touchPreventDefault: true,
-  touchMoveCb: true
+  touchMoveCb: true,
+  touchStartCb: true
 };
 
 if (typeof module !== 'undefined') {
@@ -122,6 +123,8 @@ ScrollSwipe.prototype.touchMove = function touchMove(e) {
   if (this.touchPreventDefault) {
       e.preventDefault();
     }
+
+    if(!this.touchArrX.length && this.touchStartCb) this.touchStartCb();
 
     var changedTouches = e.changedTouches[0];
     var x = changedTouches.clientX;

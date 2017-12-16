@@ -62,6 +62,17 @@ class FixedScroll{
 		ss.listen();
 	}
 
+	touchStartCb(){
+		this.touchStart.bind(this);
+	}
+
+	touchStart(){
+		if(this.inDecelerate) {
+			clearTimeout(this.decelerator)
+			this.inDecelerate=false;
+		}
+	}
+
 	decelerate(top,deltaY){
 		this.inDecelerate=true;
 
@@ -73,7 +84,7 @@ class FixedScroll{
 
 		this.target.style.top=top+'px';
 
-		if(Math.abs(deltaY)>2) { this.decelerator=setTimeout(()=>this.decelerate(top,deltaY*.99),10); return }
+		if(Math.abs(deltaY)>2) { this.decelerator=setTimeout(()=>this.decelerate(top,deltaY*.95),10); return }
 		else if(deltaY<0) { this.decelerator=setTimeout(()=>{this.target.style.top=Math.ceil(top)-1+'px';this.inDecelerate=false;},10); return}
 		else { this.decelerator=setTimeout(()=>{this.target.top=Math.ceil(top)+'px';this.inDecelerate=false},10); return}
 	}
@@ -89,7 +100,8 @@ var ss = new ScrollSwipe({
         touchPreventDefault: true, // prevent default option for touch events
         scrollCb: fS.scrollCb(),
         touchCb: fS.touchCb(),
-        touchMoveCb: fS.touchMoveCb()
+		touchMoveCb: fS.touchMoveCb(),
+		touchStartCb: fS.touchStartCb()
 	});
 if(!window.Synapp) window.Synapp={};
 window.Synapp.ScrollFocus=(target, duration=500)=>{
