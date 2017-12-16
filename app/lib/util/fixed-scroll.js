@@ -27,7 +27,7 @@ class FixedScroll{
         top+=deltaY;
         if(top<(-b.height))top= (-b.height);
         else if (top>0) top=0;
-		this.target.style.top=top+deltaY+'px';
+		this.target.style.top=top+'px';
 	}
 
 	touch(data){
