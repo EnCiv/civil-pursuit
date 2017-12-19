@@ -135,10 +135,6 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
 
-    topRef(element){
-        if(element)
-            this.topRefEle=element;
-    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
@@ -195,7 +191,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         }
 
         return (
-            <section id="syn-panel-qsort" ref={this.topRef.bind(this)}>
+            <section id="syn-panel-qsort">
                 {direction}
                 {done}
                 <div style={{ position: 'relative', display: 'block' }} 

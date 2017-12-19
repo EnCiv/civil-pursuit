@@ -22,14 +22,17 @@ import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
 import clone from 'clone';
+import ResultsFocusHere from '../results-focus-here';
 
 class QSortWhy extends React.Component {
     render() {
         return (
             <ReactActionStatePath {...this.props} >
-                <PanelHeading cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
-                    <RASPQSortWhy />
-                </PanelHeading>
+                <ResultsFocusHere>
+                    <PanelHeading cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
+                        <RASPQSortWhy />
+                    </PanelHeading>
+                </ResultsFocusHere>
             </ReactActionStatePath>
         )
     }

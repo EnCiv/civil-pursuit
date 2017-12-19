@@ -19,6 +19,7 @@ import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter } from 'react-action-state-path';
 import { QSortToggle } from './qsort-items';
+import ResultsFocusHere from '../results-focus-here';
 
 class QSortReLook extends React.Component {
     render() {
@@ -26,11 +27,13 @@ class QSortReLook extends React.Component {
         return (
             <ReactActionStatePath {...this.props} >
                 <DescendantFocusHere>
-                    <PanelHeading  cssName={'syn-qsort-relook'} >
-                        <QVoteLocal  >
-                            <RASPQSortReLook />
-                        </QVoteLocal>
-                    </PanelHeading>
+                    <ResultsFocusHere>
+                        <PanelHeading  cssName={'syn-qsort-relook'} >
+                            <QVoteLocal  >
+                                <RASPQSortReLook />
+                            </QVoteLocal>
+                        </PanelHeading>
+                    </ResultsFocusHere>
                 </DescendantFocusHere>
             </ReactActionStatePath>
         );

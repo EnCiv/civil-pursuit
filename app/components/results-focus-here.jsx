@@ -3,7 +3,7 @@
 import React from 'react';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
 
-class ResultsFocusHere extends ReactActionStatePathFilter {
+export default class ResultsFocusHere extends ReactActionStatePathFilter {
     actionFilters={
         "RESULTS": (action, delta) => {
             setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
