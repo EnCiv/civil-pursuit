@@ -50,7 +50,53 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         //onsole.info("RASPQSortItems.constructor");
+        this.state={done: this.isDone(props)}
         this.createDefaults();
+       
+    }
+
+    // if initially done, notify panel list, otherwise notify list of issues
+    componentDidMount(){
+        if(this.state.done){
+            setTimeout(()=>Synapp.ScrollFocus(this.topRefEle,500),500); //scroll to here
+            this.queueAction({type: "RESULTS", results: this.results()});
+        } else {
+            this.queueAction({type: "ISSUES"});
+        }
+    }
+
+    //  notify panel list of done status of this panel
+    componentWillReceiveProps(newProps){
+        if (this.isDone(newProps)) {
+            setTimeout(()=>Synapp.ScrollFocus(this.topRefEle,500),500); //scroll to here
+            this.queueAction({type: "RESULTS", results: this.results()});
+            if(!this.state.done) // [there are no issues now] and there were issues previously
+                this.setState({done: true});
+        } else { // there are issues
+            this.queueAction({type: "ISSUES"});
+            if(this.state.done) 
+                this.setState({done: false});
+        }
+    }
+
+    // the results to be passed forward to other pannels in the list
+    results(reset){
+        if(reset) return {index: {}, sections: {}, items: [] };
+        else return {index: this.props.index, sections: this.props.sections, items: this.props.items };
+    }
+
+    // if the panel is done, say so
+    isDone(props){
+        return (
+            !props.sections['unsorted'].length // if there are no unsorted items
+            && !Object.keys(this.QSortButtonList).some(criteria=>{ // there is no some section[criteria] where
+                let max=this.QSortButtonList[criteria].max; 
+                if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
+                    return true; 
+                else 
+                    return false;
+            })
+        )
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +116,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
             let results={index: {}, sections: {}, items: [] }
-            Object.assign(this.props.shared, results)
+            Object.assign(this.props.shared, this.results(true)); // reset the results
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
@@ -90,9 +136,10 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+    topRef(element){
+        if(element)
+            this.topRefEle=element;
+    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
@@ -103,19 +150,9 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         const onServer = typeof window === 'undefined';
 
         let articles = [],
-            direction = [], instruction = [], issues = 0, done = [], loading=[];
+            direction = [], instruction = [], done=[];
 
-        if (!Object.keys(this.props.index).length) {
-            //onsole.info("qsort-items creator")
-            loading.push(
-                <div className="gutter text-center" key="creator">
-                    <a href="#" onClick={ this.toMeFromChild.bind(this, null, {type: "TOGGLE_CREATOR"}) } className="click-to-create">
-                        Click the + to be the first to add something here
-                    </a>
-                </div>
-            );
-        } else {
-            if (this.props.sections['unsorted'].length) { issues++ }  
+        if (Object.keys(this.props.index).length) {
             Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
                 if(!this.props.sections[criteria]){ return; }
                 let qb = this.QSortButtonList[criteria];
@@ -126,7 +163,6 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                                 {qb.direction}
                             </div>
                         )
-                        issues++;
                     }
                 }
                 this.props.sections[criteria].forEach(itemId => {
@@ -143,39 +179,35 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                     );
                 });
             });
-            if (!issues) {
-                var results={index: this.props.index, sections: this.props.sections, items: items }
-                done.push(
-                    <div className='instruction-text' key="done">
+            done=(
+                <Accordion key="done" active={this.state.done}>
+                    <div  className='instruction-text'>
                         {this.QSortButtonList['unsorted'].direction}
                         <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results})}
+                            onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}
                             className="qsort-done"
                             style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                             >
                             <span className="civil-button-text">{"next"}</span>
                         </Button>
                     </div>
-                )
-                setTimeout(()=>this.props.rasp.toParent({type: "RESULTS", results}),0);
-            } else setTimeout(()=>this.props.rasp.toParent({type: "ISSUES"}),0);
+                </Accordion>
+            )
         }
 
-
         return (
-            <section id="syn-panel-qsort">
+            <section id="syn-panel-qsort" ref={this.topRef.bind(this)}>
                 {direction}
                 {done}
-                <div style={{ position: 'relative',
-                                display: 'block',
-                }} key="fliplist">
+                <div style={{ position: 'relative', display: 'block' }} 
+                    key="fliplist"
+                >
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
                             {articles.map(article => <QSortFlipItem {...article} key={article.id} />)}
                         </FlipMove>
                     </div>
                 </div>
-                {loading}
             </section>
         );
     }
