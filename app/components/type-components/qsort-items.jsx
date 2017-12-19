@@ -13,7 +13,7 @@ import Accordion          from 'react-proactive-accordion';
 import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
-import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter} from 'react-action-state-path';
 import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
 
@@ -29,12 +29,36 @@ export class QSortItems extends React.Component {
                     limit={20} >
             <QVoteStore {...this.props}>
                 <ReactActionStatePath>
-                    <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
-                        <RASPQSortItems />
-                    </PanelHeading>
+                    <ResultsFocusHere>
+                        <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
+                            <RASPQSortItems />
+                        </PanelHeading>
+                    </ResultsFocusHere>
                 </ReactActionStatePath>
             </QVoteStore>
         </PanelStore>
+        );
+    }
+}
+
+class ResultsFocusHere extends ReactActionStatePathFilter {
+    constructor(props){
+        super(props,'itemId', 1);  // need to set the keyField
+    }
+
+    actionFilters={
+        "RESULTS": (action, delta) => {
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+            return true;
+        }
+    }
+
+    render(){
+        const {children, ...lessProps}=this.props;
+        return(
+            <section ref="top">
+                {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
+            </section>
         );
     }
 }
@@ -52,13 +76,11 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         //onsole.info("RASPQSortItems.constructor");
         this.state={done: this.isDone(props)}
         this.createDefaults();
-       
     }
 
     // if initially done, notify panel list, otherwise notify list of issues
     componentDidMount(){
         if(this.state.done){
-            setTimeout(()=>Synapp.ScrollFocus(this.topRefEle,500),500); //scroll to here
             this.queueAction({type: "RESULTS", results: this.results()});
         } else {
             this.queueAction({type: "ISSUES"});
@@ -68,7 +90,6 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     //  notify panel list of done status of this panel
     componentWillReceiveProps(newProps){
         if (this.isDone(newProps)) {
-            setTimeout(()=>Synapp.ScrollFocus(this.topRefEle,500),500); //scroll to here
             this.queueAction({type: "RESULTS", results: this.results()});
             if(!this.state.done) // [there are no issues now] and there were issues previously
                 this.setState({done: true});
