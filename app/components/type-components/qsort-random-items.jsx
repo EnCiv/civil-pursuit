@@ -7,6 +7,7 @@ import QVoteStore from '../store/qvote';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import PanelHeading from '../panel-heading';
 import { RASPQSortItems } from './qsort-items';
+import ResultsFocusHere from '../results-focus-here';
 
 
 // 8 is hard coded. But it should come from something user configurable
@@ -42,9 +43,11 @@ class QSortRandomItems extends React.Component {
                     sampleSize={this.props.sampleSize || 8} >
                     <ReactActionStatePath {...this.props} >
                         <QVoteStore >
-                            <PanelHeading cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
-                                <RASPQSortItems />
-                            </PanelHeading>
+                            <ResultsFocusHere>
+                                <PanelHeading cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
+                                    <RASPQSortItems />
+                                </PanelHeading>
+                            </ResultsFocusHere>
                         </QVoteStore>
                     </ReactActionStatePath>
                 </RandomItemStore>

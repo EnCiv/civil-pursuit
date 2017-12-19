@@ -16,7 +16,7 @@ import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter} from 'react-action-state-path';
 import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
-
+import ResultsFocusHere from '../results-focus-here';
 
   // 20 is hard coded, but where should this be? type or item?
 export class QSortItems extends React.Component {
@@ -37,28 +37,6 @@ export class QSortItems extends React.Component {
                 </ReactActionStatePath>
             </QVoteStore>
         </PanelStore>
-        );
-    }
-}
-
-class ResultsFocusHere extends ReactActionStatePathFilter {
-    constructor(props){
-        super(props,'itemId', 1);  // need to set the keyField
-    }
-
-    actionFilters={
-        "RESULTS": (action, delta) => {
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
-            return true;
-        }
-    }
-
-    render(){
-        const {children, ...lessProps}=this.props;
-        return(
-            <section ref="top">
-                {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
-            </section>
         );
     }
 }
