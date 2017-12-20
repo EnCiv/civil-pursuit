@@ -1,6 +1,8 @@
 'use strict';
 
 import Item from '../models/item';
+import QVote from '../models/qvote';
+import Mungo from 'mungo';
 
 function getRandomItems (panel, size, cb) {
   try {
@@ -31,7 +33,26 @@ function getRandomItems (panel, size, cb) {
       }
     }
 
-    Item
+    QVote.aggregate([
+      // items the use has voted on
+      {$match: {user: Mungo.Type.ObjectID.convert(userId)}},
+      // add the itemInfo about the items the user has voted on
+      { $lookup: {
+        from: "items",
+        localField: "item",
+        foreignField: "_id",
+        as: "itemInfo"
+      }},
+      {$unwind: "$itemInfo"},
+      {$match: {"itemInfo.type":  Mungo.Type.ObjectID.convert(panel.type), "itemInfo.parent" : Mungo.Type.ObjectID.convert(panel.parent)}},
+      {$group: {_id: "nin", "nin": {$addToSet: "$itemInfo._id"}}},
+      {$project: {"nin": true, "_id":false }}
+    ]).then(results=>{
+      if(results && results.length){
+        let nin=results[0].nin;
+        if(nin.length) query._id={["$nin"]: nin};  // exclude items the users has already voted on
+      }
+      Item
       .getRandomItems(query, size, userId)
       .then(
         results => {
@@ -46,6 +67,7 @@ function getRandomItems (panel, size, cb) {
         },
         this.error.bind(this)
       );
+    })
   }
 
   catch ( error ) {
