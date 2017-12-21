@@ -115,8 +115,10 @@ var ss = new ScrollSwipe({
 	});
 if(!window.Synapp) window.Synapp={};
 window.Synapp.ScrollFocus=(target, duration=500)=>{
-	var body=document.getElementsByTagName("body")[0];
-	if(body.style.zoom) body.style.zoom=null;
+	let viewportmeta = document.querySelector('meta[name="viewport"]');
+	if (viewportmeta) {
+        viewportmeta.setAttribute('content', 'width=device-width, maximum-scale=1.0, initial-scale=1.0');
+    }
 	if(!target) return;
 	var html=document.getElementsByTagName("html")[0];
 	var bannerHeight=document.getElementsByClassName("syn-top_bar-wrapper")[0].getBoundingClientRect().height;
