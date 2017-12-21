@@ -55,7 +55,7 @@
     "express-session": "~1.10.1",
     "firefox-profile": "^0.3.11",
     "immutability-helper": "^2.4.0",
-    "less": "^2.7.2",
+    "less": "^2.7.3",
     "lodash": "^4.17.4",
     "log4js": "^1.1.1",
     "log4js-extend": "^0.1.2",
