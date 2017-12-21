@@ -115,10 +115,6 @@ var ss = new ScrollSwipe({
 	});
 if(!window.Synapp) window.Synapp={};
 window.Synapp.ScrollFocus=(target, duration=500)=>{
-	let viewportmeta = document.querySelector('meta[name="viewport"]');
-	if (viewportmeta) {
-        viewportmeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
-    }
 	if(!target) return;
 	var html=document.getElementsByTagName("html")[0];
 	var bannerHeight=document.getElementsByClassName("syn-top_bar-wrapper")[0].getBoundingClientRect().height;

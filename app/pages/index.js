@@ -150,7 +150,7 @@ class Layout extends Document {
   viewport () {
     return new Element('meta', {
         name            :     'viewport',
-        content         :     'width=device-width, initial-scale=1.0'
+        content         :     'width=device-width, maximum-scale=1.0, initial-scale=1.0'
       })
       .close();
   }

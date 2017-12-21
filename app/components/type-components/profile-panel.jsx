@@ -83,7 +83,6 @@ class ProfilePanel extends React.Component {
         if(this.props.user){ // if the user already exists, update the info immediatly
             window.socket.emit('set user info', info);
         }
-        Synapp.ScrollFocus(); // clear out any zoom but don't change position
     }
 
     okGetUserInfo(userInfo) {
