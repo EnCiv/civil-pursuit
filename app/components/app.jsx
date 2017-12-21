@@ -28,6 +28,11 @@ class App extends React.Component {
     if ( typeof window !== 'undefined' ) {
       //window.onbeforeunload = this.confirmOnPageExit.bind(this);
       fixedScroll();
+      if(navigator.userAgent.match(/SM-N950U/)) { 
+        let b=document.getElementsByTagName('body')[0];
+        b.style.paddingRight='9px';
+        b.style.paddingLeft='9px'
+      }
     }
 
     this.state.path = props.path ;
