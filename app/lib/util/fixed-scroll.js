@@ -29,7 +29,7 @@ class FixedScroll{
 		let {deltaX, deltaY}=data;
 		let zoom=parseFloat(this.body.style.zoom) || 1;
 		let b=this.target.getBoundingClientRect();
-		if(/*(zoom > 1) &&*/ (deltaX > deltaY)){
+		if(/*(zoom > 1) &&*/ (Math.abs(deltaX) > Math.abs(deltaY))){
 			let left=parseFloat(this.target.style.left) || 0;
 			left+=deltaX;
 			if(left>(b.width*0.9))left=b.width*0.9;
