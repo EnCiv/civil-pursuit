@@ -51,7 +51,7 @@ class GoogleAnalytics extends Element {
 class ResponsiveFontSize extends Element {
   constructor () {
     super('script');
-    this.text("if(navigator.userAgent.match(/iPhone|Android|Blackberry|Opera Mini|IEMobile/i)) document.getElementsByTagName('html')[0].style.fontSize='8px'")
+    this.text("if(navigator.userAgent.match(/iPhone|Android|Blackberry|Opera Mini|IEMobile/i)) {var e=document.getElementsByTagName('html')[0]; if(navigator.userAgent.match(/SM-N950U/)) { e.style.fontSize='9px'; let b=document.getElementsByTagName('body')[0];b.style.paddingRight='9px';b.style.paddingLeft='9px'} else e.style.fontSize='8px'}")
   }
 }
 
