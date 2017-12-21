@@ -3,7 +3,8 @@ var ScrollSwipe = require('./ScrollSwipe'); //or just use the global window.Scro
 
 class FixedScroll{
 	constructor() {
-        this.target=document.getElementsByTagName("html")[0];
+		this.target=document.getElementsByTagName("html")[0];
+		this.body=document.getElementsByTagName("body")[0];
         let w=this.target.getBoundingClientRect().width;
         this.target.style.top="0px";
         this.target.style.width=w+'px';
@@ -26,12 +27,21 @@ class FixedScroll{
 			this.inDecelerate=false;
 		}
 		let {deltaX, deltaY}=data;
-        let top=parseFloat(this.target.style.top) || 0;
-        let b=this.target.getBoundingClientRect();
-        top+=deltaY;
-        if(top<(-b.height))top= (-b.height);
-        else if (top>0) top=0;
-		this.target.style.top=top+'px';
+		let zoom=parseFloat(this.body.style.zoom) || 1;
+		let b=this.target.getBoundingClientRect();
+		if(/*(zoom > 1) &&*/ (deltaX > deltaY)){
+			let left=parseFloat(this.target.style.left) || 0;
+			left+=deltaX;
+			if(left>(b.width*0.9))left=b.width*0.9;
+			if(left<(b.width*-0.9))left=b.width*-0.9;
+			this.target.style.left=left+"px";
+		}else{
+			let top=parseFloat(this.target.style.top) || 0;
+			top+=deltaY;
+			if(top<(-b.height))top= (-b.height);
+			else if (top>0) top=0;
+			this.target.style.top=top+'px';
+		}
 	}
 
 	touch(data){
