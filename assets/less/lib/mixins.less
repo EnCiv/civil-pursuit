@@ -22,7 +22,7 @@
   }
 }
 
-.transform (@x: 0deg, @y: 0deg, @z: 0deg) {
+.transform(@x: 0deg, @y: 0deg, @z: 0deg) {
   -webkit-transform :   rotateX(@x) rotateY(@y) rotateZ(@z);
      -moz-transform :   rotateX(@x) rotateY(@y) rotateZ(@z);
        -o-transform :   rotateX(@x) rotateY(@y) rotateZ(@z);
@@ -36,7 +36,7 @@
           perspective :   @angle;
 }
 
-.gradient (@startColor: #eee, @endColor: white) {
+.gradient(@startColor: #eee, @endColor: white) {
   background-color: @startColor;
   background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
   background: -webkit-linear-gradient(top, @startColor, @endColor);
