@@ -45,7 +45,7 @@
     "browserify": "~14.3.0",
     "cinco": "^0.1.6",
     "classnames": "^2.2.5",
-    "clean-css": "^3.4.28",
+    "clean-css": "^4.1.9",
     "cloudinary": "^1.9.0",
     "color": "^1.0.1",
     "colors": "~1.0.3",
