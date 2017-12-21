@@ -11,13 +11,18 @@ function minifyCSS (source, destination) {
     let min = fs.createWriteStream(destination)
       .on('error', ko)
       .on('finish', ok);
+    var buffer=''; // this is a kludge - streams are used to eliminated the need to collect the whole file in one buffer. But CleanCSS needs clean breaks in the css
 
     fs.createReadStream(source)
     .on('error', ko)
       .on('data', function (data) {
+        buffer+=data.toString();
         min.write(new CleanCSS().minify(data.toString()).styles);
       })
-      .on('end', min.end.bind(min));
+      .on('end', ()=>{
+        min.write(new CleanCSS().minify(buffer).styles);
+        min.end();
+      });
   });
 }
 
