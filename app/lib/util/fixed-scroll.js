@@ -29,19 +29,19 @@ class FixedScroll{
 		let {deltaX, deltaY}=data;
 		let zoom=parseFloat(this.body.style.zoom) || 1;
 		let b=this.target.getBoundingClientRect();
-		if(/*(zoom > 1) &&*/ (Math.abs(deltaX) > Math.abs(deltaY))){
+		/*if((zoom > 1) && (Math.abs(deltaX) > Math.abs(deltaY))){
 			let left=parseFloat(this.target.style.left) || 0;
 			left+=deltaX;
 			if(left>(b.width*0.9))left=b.width*0.9;
 			if(left<(b.width*-0.9))left=b.width*-0.9;
 			this.target.style.left=left+"px";
-		}else{
+		}else{*/
 			let top=parseFloat(this.target.style.top) || 0;
 			top+=deltaY;
 			if(top<(-b.height))top= (-b.height);
 			else if (top>0) top=0;
 			this.target.style.top=top+'px';
-		}
+		/*}*/
 	}
 
 	touch(data){
