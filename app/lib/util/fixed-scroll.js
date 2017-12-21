@@ -115,6 +115,9 @@ var ss = new ScrollSwipe({
 	});
 if(!window.Synapp) window.Synapp={};
 window.Synapp.ScrollFocus=(target, duration=500)=>{
+	var body=document.getElementsByTagName("body")[0];
+	if(body.style.zoom) body.style.zoom=null;
+	if(!target) return;
 	var html=document.getElementsByTagName("html")[0];
 	var bannerHeight=document.getElementsByClassName("syn-top_bar-wrapper")[0].getBoundingClientRect().height;
 	var start=new Date().getTime();
