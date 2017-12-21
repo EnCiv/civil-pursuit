@@ -65,16 +65,7 @@ class App extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentDidMount(){
-    //onsole.info("app componentDidMount", this.props.browserConfig);
 
-    var topHTML = document.getElementsByTagName('html')[0];
-    if(this.props.browserConfig.type==='phone') {
-      topHTML.style.fontSize='8px';
-    } else {
-      topHTML.style.fontSize='13px';
-    }
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
