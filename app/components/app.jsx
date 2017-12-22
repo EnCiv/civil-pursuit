@@ -3,7 +3,6 @@
 import React                            from 'react';
 import Layout                           from './layout';
 import Profile                          from './profile';
-import TermsOfService                   from './terms-of-service';
 import Home                             from './home';
 import ResetPassword                    from './reset-password';
 import PanelItems                       from './panel-items';
@@ -15,7 +14,7 @@ import About                            from './about';
 import PanelList                        from './type-components/panel-list';
 import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
-import ODGCongrat         from './odg-congrat';
+import ODGCongrat                       from './odg-congrat';
 import fixedScroll                      from '../lib/util/fixed-scroll';
 import RenderMarkDown                   from './render-mark-down';
 
@@ -121,11 +120,8 @@ class App extends React.Component {
               break;
 
             case 'terms-of-service':
-              page = ( <TermsOfService /> );
-              break;
-
             case 'privacy-policy':
-              page = (<RenderMarkDown name={"privacy-policy"} />)
+              page = (<RenderMarkDown name={paths[1]} />)
               break;
 
             case 'about':

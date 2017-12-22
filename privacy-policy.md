@@ -6,7 +6,7 @@ For purposes of this Agreement, “Site” refers to the Company’s website, wh
 “Service” refers to the Company’s services accessed via the Site, in which users can engage in discussions with other users. 
 The terms “we,” “us,” and “our” refer to the Company.
 “You” refers to you, as a user of our Site or our Service. 
-By accessing our Site or our Service, you accept our Privacy Policy and Terms of Use (found here: http://www.civilpursuit.com/pages/terms-of-service ), and you consent to our collection, storage, use and disclosure of your Personal Information as described in this Privacy Policy.
+By accessing our Site or our Service, you accept our Privacy Policy and Terms of Use (found here: http://www.civilpursuit.com/page/terms-of-service ), and you consent to our collection, storage, use and disclosure of your Personal Information as described in this Privacy Policy.
 
 ### INFORMATION WE COLLECT
 We collect “Non-Personal Information” and “Personal Information.” Non-Personal Information includes information that cannot be used to personally identify you, such as anonymous usage data, general demographic information we may collect, referring/exit pages and URLs, platform types, preferences you submit and preferences that are generated based on the data you submit and number of clicks. Personal Information includes your email, mailing address, date of birth, marital status, contact information, etc, which you may submit to us through the registration process at the Site.

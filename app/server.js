@@ -194,7 +194,6 @@ class HttpServer extends EventEmitter {
     this.getLandingPage();
     this.getUIMPath();
     this.getOldfield();
-    this.getTermsOfServicePage();
     this.getSettings();
     this.getItemPage();
     this.getPanelPage();
@@ -316,25 +315,7 @@ class HttpServer extends EventEmitter {
       this.emit('error', error);
     }
   }
-
-  getTermsOfServicePage () {
-    this.app.get('/doc/terms-of-service.md', (req, res, next) => {
-      fs
-        .createReadStream('TOS.md')
-        .on('error', next)
-        .on('data', function (data) {
-          if ( ! this.data ) {
-            this.data = '';
-          }
-          this.data += data.toString();
-        })
-        .on('end', function () {
-          res.header({ 'Content-Type': 'text/markdown; charset=UTF-8'});
-          res.send(this.data);
-        });
-    });
-  }
-
+  
   getMarkDown () {
     this.app.get('/doc/:mddoc', (req, res, next) => {
       fs

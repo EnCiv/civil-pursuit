@@ -6,14 +6,14 @@
 Synaccord, LLC Terms of Service
 December 21, 2017
  
-Welcome to the Synaccord, LLC Terms of Service agreement. For purposes of this agreement, “Site” refers to the Company’s website, which can be accessed at www.civilpursuit.com. “Service” refers to the Company’s services accessed via the Site, in which users can participate in online discussions with other users. The terms “we,” “us,” and “our” refer to the Company. “You” refers to you, as a user of our Site or our Service. 
+Welcome to the Synaccord, LLC Terms of Service agreement. For purposes of this agreement, “Site” refers to the Company’s website, which can be accessed at http://www.civilpursuit.com. “Service” refers to the Company’s services accessed via the Site, in which users can participate in online discussions with other users. The terms “we,” “us,” and “our” refer to the Company. “You” refers to you, as a user of our Site or our Service. 
 
 The following Terms of Service apply when you view or use the Service through the web site.
 
 Please review the following terms carefully. By accessing or using the Service, you signify your agreement to these Terms of Service. If you do not agree to be bound by these Terms of Service in their entirety, you may not access or use the Service.  
 
 ### PRIVACY POLICY
-The Company respects the privacy of its Service users. Please refer to the Company’s Privacy Policy (found here: www.civilpursuit.com/page/privacy-policy) which explains how we collect, use, and disclose information that pertains to your privacy. When you access or use the Service, you signify your agreement to the Privacy Policy as well as these Terms of Service.
+The Company respects the privacy of its Service users. Please refer to the Company’s Privacy Policy (found here: http://www.civilpursuit.com/page/privacy-policy) which explains how we collect, use, and disclose information that pertains to your privacy. When you access or use the Service, you signify your agreement to the Privacy Policy as well as these Terms of Service.
 
 ### ABOUT THE SERVICE
 The Service allows you to participate in discussions with other users.  
@@ -126,4 +126,4 @@ These Terms of Service and your use of the Site are governed by the federal laws
 
 We may assign or delegate these Terms of Service and/or our Privacy Policy, in whole or in part, to any person or entity at any time with or without your consent. You may not assign or delegate any rights or obligations under the Terms of Service or Privacy Policy without our prior written consent, and any unauthorized assignment or delegation by you is void.
 
-YOU ACKNOWLEDGE THAT YOU HAVE READ THESE Terms of Service, UNDERSTAND THE Terms of Service, AND WILL BE BOUND BY THESE TERMS AND CONDITIONS. YOU FURTHER ACKNOWLEDGE THAT THESE Terms of Service TOGETHER WITH THE PRIVACY POLICY AT www.civilpursuit.com/page/privacy-policy REPRESENT THE COMPLETE AND EXCLUSIVE STATEMENT OF THE AGREEMENT BETWEEN US AND THAT IT SUPERSEDES ANY PROPOSAL OR PRIOR AGREEMENT ORAL OR WRITTEN, AND ANY OTHER COMMUNICATIONS BETWEEN US RELATING TO THE SUBJECT MATTER OF THIS AGREEMENT.
+YOU ACKNOWLEDGE THAT YOU HAVE READ THESE Terms of Service, UNDERSTAND THE Terms of Service, AND WILL BE BOUND BY THESE TERMS AND CONDITIONS. YOU FURTHER ACKNOWLEDGE THAT THESE Terms of Service TOGETHER WITH THE PRIVACY POLICY AT http://www.civilpursuit.com/page/privacy-policy REPRESENT THE COMPLETE AND EXCLUSIVE STATEMENT OF THE AGREEMENT BETWEEN US AND THAT IT SUPERSEDES ANY PROPOSAL OR PRIOR AGREEMENT ORAL OR WRITTEN, AND ANY OTHER COMMUNICATIONS BETWEEN US RELATING TO THE SUBJECT MATTER OF THIS AGREEMENT.
