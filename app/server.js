@@ -199,6 +199,7 @@ class HttpServer extends EventEmitter {
     this.getItemPage();
     this.getPanelPage();
     this.getODG();
+    this.getMarkDown();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -320,6 +321,24 @@ class HttpServer extends EventEmitter {
     this.app.get('/doc/terms-of-service.md', (req, res, next) => {
       fs
         .createReadStream('TOS.md')
+        .on('error', next)
+        .on('data', function (data) {
+          if ( ! this.data ) {
+            this.data = '';
+          }
+          this.data += data.toString();
+        })
+        .on('end', function () {
+          res.header({ 'Content-Type': 'text/markdown; charset=UTF-8'});
+          res.send(this.data);
+        });
+    });
+  }
+
+  getMarkDown () {
+    this.app.get('/doc/:mddoc', (req, res, next) => {
+      fs
+        .createReadStream(req.params.mddoc)
         .on('error', next)
         .on('data', function (data) {
           if ( ! this.data ) {

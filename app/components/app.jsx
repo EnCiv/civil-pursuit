@@ -17,6 +17,7 @@ import TypeComponent                    from './type-component';
 import OnlineDeliberationGame           from './odg';
 import ODGCongrat         from './odg-congrat';
 import fixedScroll                      from '../lib/util/fixed-scroll';
+import RenderMarkDown                   from './render-mark-down';
 
 class App extends React.Component {
 
@@ -121,6 +122,10 @@ class App extends React.Component {
 
             case 'terms-of-service':
               page = ( <TermsOfService /> );
+              break;
+
+            case 'privacy-policy':
+              page = (<RenderMarkDown name={"privacy-policy"} />)
               break;
 
             case 'about':
