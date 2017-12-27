@@ -3,80 +3,49 @@
 import React            from 'react';
 import makePanelId      from '../../lib/app/make-panel-id';
 import publicConfig     from '../../../public.json';
+import { QSortToggle } from '../type-components/qsort-items';
 
 class RandomItemStore extends React.Component {
 
   id;
 
-  state = { panel : null };
-
   constructor(props){
     super(props);
-    if(this.props.items){
-      this.state.panel={};
-      this.state.panel.type=this.props.type;
-      this.state.panel.parent=this.props.parent || null;
-      this.state.panel.items=this.props.items.slice(0);
-      this.state.panel.limit= this.props.limit || publicConfig['navigator batch size'];
-    }
-  }
-
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentDidMount() {
-    if ( ! this.state.panel ) {
-      const panel = { type : this.props.type };
-
-      if ( this.props.parent ) {
-        panel.parent = this.props.parent; //._id;
-      }
-
-      if(this.props.limit){panel.limit=this.props.limit}
-
-      if(this.props.own){panel.own=this.props.own}
-
-      this.id = makePanelId(panel);
-
-      window.socket.emit('get random items', panel, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
-    } else {
-            this.id = makePanelId({ type : this.props.type, parent: this.props.parent || null });
-    }
+    const parent=this.props.shared.parent || this.props.parent || null;
+    const type=this.props.shared.type || this.props.type;
+    const limit=this.props.shared.limit || this.props.limit || publicConfig.limit;
+    this.state={parent, type, limit, items: [], index: {}, sections: {unsorted: []}};
+    this.id=makePanelId(this.state);
+    window.socket.emit('get random items', this.state, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   randomItemStoreRefresh(){
-    var panel = Object.assign({},this.state.panel);
-    //panel.items=[];
+    var panel = Object.assign({},this.state);
     window.socket.emit('get random items', panel, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   okGetRandomItems (panel) {
     if ( makePanelId(panel) === this.id ) {
-      this.setState({ panel });
+      this.setState({ ...panel });
     }
   }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  renderChildren () {
-    return React.Children.map(this.props.children, child =>{
-      return React.cloneElement(child, Object.assign({}, this.state, {randomItemStoreRefresh: this.randomItemStoreRefresh.bind(this)}), child.props.children );
-    });
+  toggle(itemId, criteria) {
+    //find the section that the itemId is in, take it out, and put it in the new section
+    this.setState({ 'sections': QSortToggle(this.state.sections, itemId, criteria) });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   render () {
     //onsole.info("RandomItemStore.render", this.props, this.state)
-    const panelout = this.renderChildren();
+    const {children, ...childProps}=this.props;
+    Object.assign(childProps, this.state, {randomItemStoreRefresh: this.randomItemStoreRefresh.bind(this), toggle: this.toggle.bind(this)})
 
     return (  
       <section>
-        { panelout }
+        {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, childProps, child.props.children))}
       </section>
     );
   }

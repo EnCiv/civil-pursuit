@@ -3,7 +3,6 @@
 import React from 'react';
 import Accordion from 'react-proactive-accordion';
 import RandomItemStore from '../store/random-item';
-import QVoteStore from '../store/qvote';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import PanelHeading from '../panel-heading';
 import { RASPQSortItems } from './qsort-items';
@@ -30,7 +29,6 @@ class QSortRandomItems extends React.Component {
     okGetListoType(typeList) {
         this.props.shared.type = typeList[0];
         this.setState({ typeList: typeList });
-        //this.forceUpdate();
     }
 
     render() {
@@ -38,19 +36,15 @@ class QSortRandomItems extends React.Component {
             return null;
         else
             return (
-                <RandomItemStore parent={this.props.shared.parent || this.props.parent}
-                    type={this.props.shared.type || this.props.type}
-                    sampleSize={this.props.sampleSize || 8} >
-                    <ReactActionStatePath {...this.props} >
-                        <QVoteStore >
-                            <ResultsFocusHere>
-                                <PanelHeading cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
-                                    <RASPQSortItems />
-                                </PanelHeading>
-                            </ResultsFocusHere>
-                        </QVoteStore>
-                    </ReactActionStatePath>
-                </RandomItemStore>
+                <ReactActionStatePath {...this.props} >
+                    <RandomItemStore >
+                        <ResultsFocusHere>
+                            <PanelHeading cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
+                                <RASPQSortItems />
+                            </PanelHeading>
+                        </ResultsFocusHere>
+                    </RandomItemStore>
+                </ReactActionStatePath>
             );
     }
 }

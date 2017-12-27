@@ -6,93 +6,98 @@ import Mungo from 'mungo';
 
 function getRandomItems(panel, size, cb) {
   try {
-    let id = 'panel-' + panel.type._id || panel.type;
-    const query = { type: panel.type._id || panel.type };
-    const userId = this.synuser ? this.synuser.id : null;
+    const type = Mungo.Type.ObjectID.convert(panel.type._id || panel.type);
+    const parent= panel.parent && Mungo.Type.ObjectID.convert(panel.parent._id || panel.parent) || undefined;
+    const user=this.synuser ? Mungo.Type.ObjectID.convert(this.synuser.id) : null;
+    if(!panel.items) panel.items=[]; // existens of items indicates that get has been tried
+    if(!user) return cb(panel);
 
-    if (panel.parent) {
-      const parentId = panel.parent._id || panel.parent;
-      id += '-' + parentId;
-      query.parent = parentId;
-    }
+    var nin=[];
+    var rawItems=[];
 
-    if (panel.skip) {
-      query.skip = panel.skip;
-    }
-
-    if (panel.limit) {
-      query.limit = panel.limit;
-    }
-
-    if (panel.own) {
-      if (userId) {
-        query.user = userId;
-      } else {
-        cb(panel, 0); // request to get the users's own items but no user logged in so return nothing
-      }
-    }
-
-    QVote.aggregate([
-      // items the use has voted on
-      { $match: { user: Mungo.Type.ObjectID.convert(userId) } },
-      // add the itemInfo about the items the user has voted on
-      {
-        $lookup: {
-          from: "items",
-          localField: "item",
-          foreignField: "_id",
-          as: "itemInfo"
-        }
-      },
-      { $unwind: "$itemInfo" },
-      { $match: { "itemInfo.type": Mungo.Type.ObjectID.convert(panel.type), "itemInfo.parent": Mungo.Type.ObjectID.convert(panel.parent) } },
-      { $group: { _id: "$criteria", "itemIds": { $addToSet: "$itemInfo._id" } } }
-    ]).then(qsections => {
-      var nin = [];
-      var mosts=[];
-      if (qsections && qsections.length) {
-        qsections.forEach(criteria => { 
-          nin = nin.concat(criteria.itemIds); 
-          if(criteria._id==='most')
-            mosts=criteria.itemIds; 
-        });
-        if (nin.length) query._id = { ["$nin"]: nin };  // exclude items the users has already voted on
-      }
-      if ((!panel.items || !panel.items.length) && mosts.length) { // if the panel is empty, but the user has perviously voted
-        Item.find({ _id: { $in: mosts } }).then(items => {
-          if (!panel.items) panel.items = [];
-          if(items && items.length) panel.items = panel.items.concat(items);
-
-          Item
-            .getRandomItems(query, size, userId)
-            .then(results => {
-              if(results && results.items) panel.items = results.items.concat(panel.items);
-              cb(panel);
-            },
-            this.error.bind(this)
-            );
-        },
-          this.error.bind(this)
-        )
-      } else {
-        Item
-          .getRandomItems(query, size, userId)
-          .then( results => {
-            try {
-              if (!panel.items) { panel.items = []; }
-              panel.items = panel.items.concat(results.items);
-              cb(panel);
-            }
-            catch (error) {
-              ko(error);
+    function getQVoteInfo(){
+      panel.items.forEach(item=>{
+        nin.push(Mungo.Type.ObjectID.convert(item._id));
+      });
+      if(!nin.length) { // first time through - we need to check if the users has voted before
+        const query={"itemInfo.type": type};
+        if(parent) query["itemInfo.parent"]=parent;
+        QVote.aggregate([
+          { $match: { user } },// items the user has voted on
+          { $sort: { item: 1, _id: 1}}, // date sorted so the last one counts
+          { $group: { _id: "$item",  // for each item, keep the last criteria chosen
+                      criteria: {$last: "$criteria"}
             }
           },
-          this.error.bind(this)
-          );
+          { $lookup: { // add the itemInfo about the items the user has voted on
+              from: "items",
+              localField: "_id",
+              foreignField: "_id",
+              as: "itemInfo"
+            }
+          },
+          { $unwind: "$itemInfo" }, // convert the array (of 1) to an object
+          // next filter out the one's not related to this type and parent
+          { $match: query }
+        ]).then(qitems => {
+          if (qitems && qitems.length) {
+            qitems.forEach(qitem => {
+              nin.push(qitem._id);
+              rawItems.push(qitem.itemInfo);
+              if(!panel.sections[qitem.criteria]) panel.sections[qitem.criteria]=[];
+              panel.sections[qitem.criteria].push(qitem._id);
+            });
+          }
+          getRandomRawUnsortedItems();
+        })
+      } else
+        getRandomRawUnsortedItems();
+    }
+
+    function getRandomRawUnsortedItems() {
+      const query={type};
+      if(parent) query.parent=parent;
+      if(nin.length) query._id = { ["$nin"]: nin };  // exclude items the users has already voted on
+      Item.aggregate(
+        [
+            { $match: query },
+            { $sample: { size: size } }
+        ]
+      ).then(items=>{
+        if(items && items.length){
+          rawItems=items.concat(rawItems);
+          items.forEach(item=>{
+            panel.sections.unsorted.push(item._id);
+            nin.push(item._id);
+          });
+        }
+        getUnRawItems();
+      })
+    };
+
+    function getUnRawItems(){
+      if(rawItems.length){
+        if(rawItems.length){
+          Promise.all(rawItems.map(rawItem => (new Item(rawItem, true)).toPanelItem(user)))
+          .then((items)=>{
+            if(items && items.length){
+              items.forEach(item=>{
+                panel.index[item._id]=panel.items.length;
+                panel.items.push(item);
+              })
+            }
+            completeRequest();
+          })
+        } else
+          completeRequest();
       }
-    },
-      this.error.bind(this)
-      )
+    }
+
+    function completeRequest(){
+      cb(panel);
+    }
+
+    getQVoteInfo();
   }
 
   catch (error) {
