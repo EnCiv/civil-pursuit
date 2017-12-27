@@ -16,21 +16,21 @@ import QVoteTotals from '../store/qvote-totals';
 import Accordion          from 'react-proactive-accordion';
 import Item    from '../item';
 import Harmony              from '../harmony';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 
 
-class QSortFinale extends React.Component{
-    render (){
+class QSortFinale extends React.Component {
+    render() {
         //onsole.info("QSortFinale");
-        return(
-            <QVoteTotals {...this.props} >
-                <PanelHead cssName={'syn-qsort-finale'} >
-                    <ReactActionStatePath>
-                        <RASPQSortFinale/>
-                    </ReactActionStatePath>
-                </PanelHead>
-            </QVoteTotals>
+        return (
+            <ReactActionStatePath {...this.props}>
+                <QVoteTotals>
+                    <PanelHeading cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
+                        <RASPQSortFinale />
+                    </PanelHeading>
+                </QVoteTotals>
+            </ReactActionStatePath>
         );
     }
 }

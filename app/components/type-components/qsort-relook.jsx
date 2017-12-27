@@ -28,7 +28,7 @@ class QSortReLook extends React.Component {
             <ReactActionStatePath {...this.props} >
                 <DescendantFocusHere>
                     <ResultsFocusHere>
-                        <PanelHeading  cssName={'syn-qsort-relook'} >
+                        <PanelHeading  cssName={'syn-qsort-relook'} panelButtons={['Instruction']} >
                             <QVoteLocal  >
                                 <RASPQSortReLook />
                             </QVoteLocal>
