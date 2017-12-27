@@ -36,9 +36,9 @@ class RASPPanelList extends ReactActionStatePathMulti {
     this.createDefaults();
   }
 
-  actionToState(action, rasp, source) {
+  actionToState(action, rasp, source, defaultRASP, delta) {
     //find the section that the itemId is in, take it out, and put it in the new section
-    var nextRASP = {}, delta = {};
+    var nextRASP = {};
     var panelStatus = this.panelStatus;
     if(action.type==="NEXT_PANEL") {
       const {currentPanel, status='done', results}=action; 
@@ -96,7 +96,9 @@ class RASPPanelList extends ReactActionStatePathMulti {
       Object.keys(this.toChild).forEach(child => { // send the action to every child
         this.toChild[child]({type: "CLEAR_PATH"})
       });
-    }else return null;
+    } else if(Object.keys(delta).length){
+       ;
+    } else return null;
     Object.assign(nextRASP,rasp,delta);
     var parts=[];
     if(nextRASP.shape==='open') { parts.push('o'); parts.push(nextRASP.currentPanel);}

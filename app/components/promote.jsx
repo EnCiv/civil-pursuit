@@ -50,7 +50,7 @@ class RASPPromote extends ReactActionStatePathClient {
         return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
     }
 
-    actionToState(action, rasp,source, initialRASP) {
+    actionToState(action, rasp,source, initialRASP, delta) {
         logger.trace("RASPPromote.actionToState", { action }, { rasp });
         var nextRASP = {}, delta={};
         if (action.type === "DESCENDANT_FOCUS"){
@@ -89,7 +89,10 @@ class RASPPromote extends ReactActionStatePathClient {
                 //setTimeout(()=>this.props.rasp.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
             }
           }
-        } else return null; // don't know the action type so let the default handler have it
+        } else if(Object.keys(delta).length) {
+            ; // no need to do anything, but do continue to calculate nextRASP
+        } else 
+            return null; // don't know the action type so let the default handler have it
         let parts=[];
         if (delta.side) parts.push(delta.side[0]); // if a side is open, include it in the partPath
         if (delta.cursor) parts.push(delta.cursor);

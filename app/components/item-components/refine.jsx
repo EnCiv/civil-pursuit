@@ -31,14 +31,16 @@ class RASPRefinePanel extends ReactActionStatePathClient {
         this.createDefaults();
     }
 
-    actionToState(action,rasp,source,initialRASP) {
-        var nextRASP={}, delta={};
+    actionToState(action,rasp,source,initialRASP, delta) {
+        var nextRASP={};
         if(action.type === "DESCENDANT_UNFOCUS"){
             delta.chosen='winner';
         } else if(action.type ==="ITEM_DELVE") {
             //action.type="ITEM_REFINE"; // changing the action so that <Item> does not process it, and passes it to <QSortRefine> 
             var nextAction=Object.assign({},action,{type: "ITEM_REFINE"}); // create a new action with all the parameters of the old action
             this.qaction(()=>this.props.rasp.toParent(nextAction));
+        }else if(Object.keys(delta).length) {
+            ; // no need to do anything, but do continue to calculate nextRASP
         } else
             return null;
         Object.assign(nextRASP,rasp,delta);

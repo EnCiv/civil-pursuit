@@ -273,10 +273,9 @@ class RASPItem extends ReactActionStatePathClient {
     return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, rasp, source = 'CHILD', initialRASP) { // this function is going to be called by the RASP manager, rasp is the current RASP state
+  actionToState(action, rasp, source = 'CHILD', initialRASP, delta) { // this function is going to be called by the RASP manager, rasp is the current RASP state
     logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextRASP = {};
-    let delta = {};
     if (action.type === "SET_BUTTON") {
       delta.button = action.button;
       delta.readMore = false; // if turning off a button, close readMore too
@@ -325,7 +324,9 @@ class RASPItem extends ReactActionStatePathClient {
       }
     } else if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
         ; // do nothing - it's already been done
-    }else 
+    } else if(Object.keys(delta).length) {
+      ; // no need to do anything, but do continue to calculate nextRASP
+    } else 
       return null;  // if you don't handle the type, let the default handlers prevail
     //calculate the shape based on button and readMore
     Object.assign(nextRASP, rasp, delta);

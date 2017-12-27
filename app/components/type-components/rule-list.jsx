@@ -83,9 +83,9 @@ export class RASPRuleList extends ReactActionStatePathClient {
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // 
-    actionToState(action,rasp) {
+    actionToState(action,rasp,source,defaultRASP,delta) {
         //find the section that the itemId is in, take it out, and put it in the new section
-        var nextRASP={}, delta={};
+        var nextRASP={};
         if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
@@ -105,7 +105,10 @@ export class RASPRuleList extends ReactActionStatePathClient {
             delta.shape='redirect';
             delta.itemId='redirect';
             this.queueFocus(action);
-        } else return null;
+        } else if(Object.keys(delta).length){
+            ; // no need to do anything, but do continue to calculate the nextRASP
+        } else 
+            return null;
         Object.assign(nextRASP, rasp, delta);
         if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';
         return(nextRASP);

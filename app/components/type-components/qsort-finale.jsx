@@ -50,8 +50,8 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         this.createDefaults();
     }
 
-    actionToState(action, rasp, source, initialRASP) {
-        var nextRASP = {}, delta = {};
+    actionToState(action, rasp, source, initialRASP, delta) {
+        var nextRASP = {};
         //onsole.info("RASPQSortFinale.actionToState", ...arguments);
         if (action.type === "DESCENDANT_FOCUS") {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
@@ -70,7 +70,9 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         } else if (action.type==="RESET"){
             if(this.props.resetStore) this.props.resetStore();
             return null;
-        }else
+        }else if(Object.keys(delta).length){
+            ; // no need to do anything, it's been done. But do continue on to calculating the nextRASP
+        } else
             return null;
         Object.assign(nextRASP, rasp, delta);
         if (nextRASP.shortId) nextRASP.shape = 'open';

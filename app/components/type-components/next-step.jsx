@@ -43,8 +43,8 @@ class RASPNextStep extends ReactActionStatePathClient {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-    actionToState(action, rasp, source,initialRASP){
-        var nextRASP={}, delta={};
+    actionToState(action, rasp, source,initialRASP, delta){
+        var nextRASP={};
         if(action.type==="POST_ITEM"){
             setTimeout(()=>this.props.rasp.toParent({ type: "NEXT_PANEL", results: {idea: action.item, parent: this.props.parent, type: this.props.type}}))
             // no state change, the action will be consumed here
@@ -56,6 +56,8 @@ class RASPNextStep extends ReactActionStatePathClient {
             }
           } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance===1){
             if(rasp.decendantFocus) delta.decendantFocus=false;  // my child has unfocused
+          } else if(Object.keys(delta).length) {
+            ; // no need to do anything, but do continue to calculate nextRASP
           } else
             return null;
         Object.assign(nextRASP,rasp,delta);

@@ -57,13 +57,14 @@ class RASPHarmony extends ReactActionStatePathClient {
     return { nextRASP, setBeforeWait: false };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
   }
 
-  actionToState(action, rasp, source, initialRASP) {
+  actionToState(action, rasp, source, initialRASP, delta) {
     if (this.debug) console.info("RASPHarmony.actionToState", ...arguments);
     var nextRASP = {};
-    let delta = {};
 
     if (this.vM.actionToState(action, rasp, source, initialRASP, delta)) {
       ; //then do nothing - it's been done if (action.type==="DESCENDANT_FOCUS") {
+    } else if(Object.keys(delta).length) {
+      ; // no need to do anything, but do continue to calculate nextRASP
     } else
       return null; // don't know this action, null so the default methods can have a shot at it
 

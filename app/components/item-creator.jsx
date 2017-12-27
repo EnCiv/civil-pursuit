@@ -45,15 +45,18 @@ class RASPItemCreator extends ReactActionStatePathClient {
             Object.assign(this.item, newProps.item);
     }
     
-    actionToState(action,rasp,source){
+    actionToState(action,rasp,source,defaultRASP,delta){
         //onsole.info("ItemCreator.actionToState",action,rasp,source);
         const {type}=action;
-        var nextRASP={}, delta={};
+        var nextRASP={};
         if (type==="SET_EDIT"){
             delta.display= false; // toggle display
         } else if (type==="SET_DISPLAY"){
             delta.display= true; // toggle display
-        }
+        } else if(Object.keys(delta).length) {
+            ; // no need to do anything, but do continue to calculate nextRASP
+        } else
+            return null;
         let parts=[];
         if(delta.display) parts.push('D');
         delta.pathSegment=parts.join(',');
