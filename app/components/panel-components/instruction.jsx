@@ -160,7 +160,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     if (!type.instruction) return null;
 
     return (
-      <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key="instruction" >
+      <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key={"instruction-"+rasp.raspId} >
         <Accordion
           onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })}
           active={this.vM.visible(rasp)}

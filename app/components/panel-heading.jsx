@@ -32,15 +32,15 @@ export default class PanelHeading extends React.Component {
     // a button could be a string, or it could be an object which must have a property component
     var renderComponents = (part, button, position) => {
       if(typeof button==='string')
-        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={type._id + '-' + button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
       else if (typeof button==='object')
-        return (<ListComponent Components={Components} {...lessProps}  part={part} key={item._id + '-' + button.component} {...button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps}  part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
     }
 
     return (
       <section style={style} className={ClassNames(name, 'vs-' + rasp.shape, "syn-panel", cShape)} ref="top">
         <section className={ClassNames("syn-panel-heading", cShape, { 'no-heading': vShape === 'collapsed' })}>
-          <h4 onClick={() =>{ rasp.toParent({ type: "TOGGLE_FOCUS" }); }} key="title">
+          <h4 onClick={() =>{ rasp.toParent({ type: "TOGGLE_FOCUS" }); }} key={rasp.raspId+"-title"}>
             {title}
           </h4>
           {panelButtons.map((button,i)=>renderComponents('button',button, (i+0.5)*this.iconWidth))}
