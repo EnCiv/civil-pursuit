@@ -18,6 +18,7 @@ import Item from '../item';
 import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
+import union from 'lodash/union';
 
 
 class QSortFinale extends React.Component {
@@ -103,6 +104,14 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         if (this.props.onFinishAll) { return this.props.onFinishAll() }
     }
 
+    shouldComponentUpdate(newProps){
+        if(union(Object.keys(this.props.rasp),Object.keys(newProps.rasp)).some(key=>{
+            if(['toParent','depth','raspId','creator','instruction'].includes(key)) return false;  // ignore these attributes.
+            return(this.props.rasp[key]!==newProps.rasp[key])
+        })) return true;
+        if(this.props.finale != newProps.finale) {console.info("QSortFinaly.shouldComponentUpdate finale changed"); return true};
+        return false;
+    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
