@@ -19,45 +19,25 @@ import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter } from 'react-action-state-path';
 import { QSortToggle } from './qsort-items';
-import ResultsFocusHere from '../results-focus-here';
+import RASPFocusHere from '../rasp-focus-here';
 
 class QSortReLook extends React.Component {
     render() {
         //onsole.info("QSortReLook");
         return (
             <ReactActionStatePath {...this.props} >
-                <DescendantFocusHere>
-                    <ResultsFocusHere>
-                        <PanelHeading  cssName={'syn-qsort-relook'} panelButtons={['Instruction']} >
-                            <QVoteLocal  >
-                                <RASPQSortReLook />
-                            </QVoteLocal>
-                        </PanelHeading>
-                    </ResultsFocusHere>
-                </DescendantFocusHere>
+                <RASPFocusHere filterTypes={['DESCENDANT_FOCUS', 'RESULTS']}>
+                    <PanelHeading cssName={'syn-qsort-relook'} panelButtons={['Instruction']} >
+                        <QVoteLocal  >
+                            <RASPQSortReLook />
+                        </QVoteLocal>
+                    </PanelHeading>
+                </RASPFocusHere>
             </ReactActionStatePath>
         );
     }
 }
 export default QSortReLook;
-
-class DescendantFocusHere extends ReactActionStatePathFilter {
-    actionFilters={
-        "DESCENDANT_FOCUS": (action, delta) => {
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
-            return true;
-        }
-    }
-
-    render(){
-        const {children, ...lessProps}=this.props;
-        return(
-            <section ref="top">
-                {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
-            </section>
-        );
-    }
-}
 
 class RASPQSortReLook extends ReactActionStatePathClient {
 

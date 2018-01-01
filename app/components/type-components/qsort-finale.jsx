@@ -142,7 +142,19 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                     {
                         user: user,
                         item: item,
-                        buttons: [{ component: 'QSortButtons', qbuttons: qbuttonTotals }, { component: 'Harmony', shape: 'truncated-no-instructions' }],
+                        buttons: [
+                            { component: 'QSortButtons', qbuttons: qbuttonTotals },
+                            {   component: 'Harmony', 
+                                visualMethod: 'titleize', 
+                                shape: 'title', 
+                                limit: 5, 
+                                hideFeedback: 
+                                feedbackMethod==='hidden', 
+                                createMethod: 'visible', 
+                                promoteMethod: 'visible', 
+                                active: active
+                            }
+                        ],
                         qbuttons: qbuttonTotals,
                         id: item._id,
                         rasp: this.childRASP('truncated', item.id),
