@@ -68,7 +68,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                     }
                 }
             }
-        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
+        } else if (action.type === "DESCENDANT_UNFOCUS" && (action.distance === 1 || action.distance==3)) {
             delta.shortId = null; // turn off the shortId
             delta.shape = 'truncated';
         } else if (action.type === "RESET") {
