@@ -4,13 +4,19 @@ import React from 'react';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
 
 export default class RASPFocusHere extends ReactActionStatePathFilter {
+    top=null;
+
+    setTop(ele){
+        if(ele) this.top=ele;
+    }
+
     focusHere(){
-        setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+        setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
     }
 
     focusHereMatch(match, action, delta) {
         if(Object.keys(match).every(key=>match[key]===action[key])){
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+            setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
         }
     }
 
@@ -26,13 +32,13 @@ export default class RASPFocusHere extends ReactActionStatePathFilter {
 
     componentDidMount(){
         if(this.props.filterTypes.some(action=>action==='COMPONENT_DID_MOUNT')) 
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+            setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
     }
 
     render(){
         const {children, ...lessProps}=this.props;
         return(
-            <section ref="top">
+            <section ref={this.setTop.bind(this)}>
                 {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
             </section>
         );
