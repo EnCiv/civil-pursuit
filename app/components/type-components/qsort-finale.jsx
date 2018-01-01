@@ -177,9 +177,9 @@ class QSortFlipItemHarmony extends React.Component {
         return (
             <Accordion active={active} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
                 <ItemStore item={item} key={`item-${item._id}`}>
-                    <Item
-                        {...otherProps}
-                    />
+                    <RASPFocusHere {...otherProps} filterTypes={[{type: 'DESCENDANT_UNFOCUS', distance: 1}]} >
+                        <Item />
+                    </RASPFocusHere>
                 </ItemStore>
             </Accordion>
         );
