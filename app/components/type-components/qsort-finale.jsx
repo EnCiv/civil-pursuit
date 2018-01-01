@@ -19,6 +19,7 @@ import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import union from 'lodash/union';
+import RASPFocusHere from '../rasp-focus-here';
 
 
 class QSortFinale extends React.Component {
@@ -27,9 +28,11 @@ class QSortFinale extends React.Component {
         return (
             <QVoteTotals{...this.props}>
                 <ReactActionStatePath >
-                    <PanelHeading cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
-                        <RASPQSortFinale />
-                    </PanelHeading>
+                    <RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT',{type: 'DESCENDANT_FOCUS', distance: 1}, {type: 'DESCENDANT_FOCUS', distance: 2}]} >
+                        <PanelHeading cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
+                            <RASPQSortFinale />
+                        </PanelHeading>
+                    </RASPFocusHere>
                 </ReactActionStatePath>
             </QVoteTotals>
         );
