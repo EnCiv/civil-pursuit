@@ -89,11 +89,13 @@ class RASPItem extends ReactActionStatePathClient {
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if(action.type==="DESCENDANT_FOCUS" && action.distance>1 ){
             delta.readMore = false; // if the user is working on stuff further below, close the readmore
-        }else if(action.type==="DESCENDANT_UNFOCUS" && action.distance===1) {
+        }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
             // child changed to truncated
+            action.itemUnfocused=true; // let items up the chain know that an item has unfocused
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.footer,500),500);  // it would be better if this were a chained event but for now ...
         } else if (action.type === "ITEM_DELVE") {
           delta.readMore = true;
           if(this.props.item.subType) delta.button=this.someButton('S');
@@ -153,7 +155,8 @@ class RASPItem extends ReactActionStatePathClient {
         if(action.type==="DESCENDANT_FOCUS" && action.distance>0){
           delta.readMore = false;
           delta.decendantFocus=true;
-        }else if(action.type==="DESCENDANT_UNFOCUS" && action.distance===1  && rasp.decendantFocus){
+        }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused){
+          action.itemUnfocused=true;
           delta.shape='truncated'; 
           delta.button=null; 
           delta.readMore=false;
@@ -220,7 +223,8 @@ class RASPItem extends ReactActionStatePathClient {
           delta.decendantFocus=true;
           if(action.distance===1)
             setTimeout(()=>Synapp.ScrollFocus(this.refs.footer,500),500);  // it would be better if this were a chained event but for now ...
-        } else if (action.type==="DESCENDANT_UNFOCUS" && action.distance===1 /*&& rasp.decendantFocus*/) {
+        } else if (action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
+          action.itemUnfocused=true;
           delta.decendantFocus=false;
           delta.button=null;
           delta.readMore=false;
