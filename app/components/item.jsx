@@ -218,10 +218,13 @@ class RASPItem extends ReactActionStatePathClient {
       actionToState: (action, rasp, source, initialRASP, delta)=>{
         if (action.type==="DESCENDANT_FOCUS" /*&& action.distance>1*/) {
           delta.decendantFocus=true;
+          if(action.distance===1)
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.footer,500),500);  // it would be better if this were a chained event but for now ...
         } else if (action.type==="DESCENDANT_UNFOCUS" && action.distance===1 /*&& rasp.decendantFocus*/) {
           delta.decendantFocus=false;
           delta.button=null;
           delta.readMore=false;
+          setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
         } else if (action.type==="UNFOCUS_STATE"){
           delta.decendantFocus=false;
           delta.focus=false;
@@ -550,7 +553,7 @@ class RASPItem extends ReactActionStatePathClient {
         </Accordion>
         <section style={{ clear: 'both' }}>
         </section>
-        <section className={ClassNames("item-footer", classShape)}>
+        <section className={ClassNames("item-footer", classShape)} ref="footer">
           {buttons ? buttons.map(button => renderPanel(button)) : null}
         </section>
       </article>
