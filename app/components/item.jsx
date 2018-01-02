@@ -95,7 +95,7 @@ class RASPItem extends ReactActionStatePathClient {
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.footer,500),500);  // it would be better if this were a chained event but for now ...
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
         } else if (action.type === "ITEM_DELVE") {
           delta.readMore = true;
           if(this.props.item.subType) delta.button=this.someButton('S');
