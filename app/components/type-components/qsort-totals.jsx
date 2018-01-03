@@ -11,10 +11,25 @@ import QSortFinale from '../type-components/qsort-finale';
 import QSortButtonList from '../qsort-button-list';
 
 export class QSortTotals extends React.Component {
-    state = {typeList: null};
+    state = {type: null};
+
+    constructor(){
+        super(props);
+        const {type}=props;
+        if(typeof type === 'string'){
+            window.socket.emit('get listo type', [type], this.okGetListoType.bind(this))
+        }
+    }
+    okGetListoType(typeList) {
+        if(typeList && typeList.length && typeList[0]._id === this.props.type)
+            this.setState({ type: typeList[0] });
+    }
+
+    
     render() {
         const { style, item, rasp } = this.props;
-        if(!this.props.user) return null; // no panel if user not logged in
+        if(typeof this.props.type === 'string' && !this.state.type) return null;
+        else if(!this.props.user) return null; // no panel if user not logged in
         else {
             const parent= (this.props.shared && this.props.shared.parent) || (this.props.panel && this.props.panel.parent) || this.props.parent || null;
             const type=(this.props.shared && this.props.shared.type) || (this.props.panel && this.props.panel.type) || this.props.type;
@@ -27,7 +42,7 @@ export class QSortTotals extends React.Component {
                         style={style}
                     >
                         <PanelStore parent={parent} type={type} limit={limit} >
-                            <QSortTotalsPanel {...this.props} />
+                            <QSortTotalsPanel {...this.props} type={this.state.type || this.props.type} />
                         </PanelStore>
                     </Accordion>
                 </div>
