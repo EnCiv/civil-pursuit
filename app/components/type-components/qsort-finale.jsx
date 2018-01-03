@@ -23,10 +23,27 @@ import RASPFocusHere from '../rasp-focus-here';
 
 
 class QSortFinale extends React.Component {
+    state = { type: null };
+
+    constructor(props) {
+        super(props);
+        const { type } = props;
+        if (typeof type === 'string' && typeof window !== 'undefined') {
+            window.socket.emit('get listo type', [type], this.okGetListoType.bind(this))
+        } else
+            this.state.type=this.props.type;
+    }
+
+    okGetListoType(typeList) {
+        if (typeList && typeList.length && typeList[0]._id === this.props.type)
+            this.setState({ type: typeList[0] });
+    }
+
     render() {
         //onsole.info("QSortFinale");
+        if(!this.state.type) return null; // don't render until the type info has been filled in
         return (
-            <QVoteTotals{...this.props}>
+            <QVoteTotals{...this.props} type={this.state.type} >
                 <ReactActionStatePath >
                     <RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT',{type: 'DESCENDANT_FOCUS', distance: 1}, {type: 'DESCENDANT_FOCUS', distance: 2}]} >
                         <PanelHeading cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
