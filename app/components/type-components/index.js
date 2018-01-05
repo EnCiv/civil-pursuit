@@ -19,7 +19,8 @@ var  Components={
         'QSortTotals': require('./qsort-totals').default,
         'RuleList': require('./rule-list').default,
         'PanelQuestions': require('./panel-questions').default,
-        'ProfileCheck': require('./profile-check').default
+        'ProfileCheck': require('./profile-check').default,
+        'Totals': require('./totals').default
     }
 
 export default Components;
