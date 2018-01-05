@@ -20,7 +20,7 @@ class TypeComponent extends React.Component{
         }
         if(newProps.component) delete newProps.component;
 
-        logger.trace("TypeComponent", component, newProps );
+        //logger.trace("TypeComponent", component, newProps );
         if(typeof Component === 'function') return(<Component {...newProps}/>);  //UIM passes props plus the UIM state to the child Component
         logger.error("TypeComponent component not defined", {component});
         return null;

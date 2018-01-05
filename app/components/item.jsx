@@ -22,7 +22,7 @@ import ItemComponent from './item-component';
 
 class Item extends React.Component {
   render() {
-    logger.trace("Item render");
+    //logger.trace("Item render");
     return (
       <ReactActionStatePath {... this.props} >
         <RASPItem />
@@ -343,7 +343,7 @@ class RASPItem extends ReactActionStatePathClient {
   }
 
   actionToState(action, rasp, source = 'CHILD', initialRASP, delta) { // this function is going to be called by the RASP manager, rasp is the current RASP state
-    logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
+    //logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
     var nextRASP = {};
     if (action.type === "SET_BUTTON") {
       delta.button = action.button;
@@ -441,7 +441,7 @@ class RASPItem extends ReactActionStatePathClient {
       if (this.props.item.subject !== newProps.item.subject) return true;
       if (this.props.item.description !== newProps.item.description) return true;
     }
-    logger.trace("Item.shouldComponentUpdate", this.props.rasp.depth, this.title, "no", this.props, newProps, this.state, newState);
+    //logger.trace("Item.shouldComponentUpdate", this.props.rasp.depth, this.title, "no", this.props, newProps, this.state, newState);
     return false;
   }
   /***/

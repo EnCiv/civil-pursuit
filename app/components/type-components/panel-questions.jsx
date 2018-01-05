@@ -141,7 +141,7 @@ export class PanelQuestions extends React.Component {
         const { panel } = this.props;
         const storeProps = panel ? panel : this.props;
 
-        logger.trace("PanelQuestions render");
+        //logger.trace("PanelQuestions render");
         return (
             <PanelStore { ...storeProps }>
                 <ReactActionStatePath {...this.props} >

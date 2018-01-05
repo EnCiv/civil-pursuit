@@ -51,7 +51,7 @@ class RASPPromote extends ReactActionStatePathClient {
     }
 
     actionToState(action, rasp,source, initialRASP, delta) {
-        logger.trace("RASPPromote.actionToState", { action }, { rasp });
+        //logger.trace("RASPPromote.actionToState", { action }, { rasp });
         var nextRASP = {}, delta={};
         if (action.type === "DESCENDANT_FOCUS"){
             delta.side=action.side;
