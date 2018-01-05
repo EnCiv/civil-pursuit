@@ -162,9 +162,9 @@ class Layout extends Document {
   //----------- adapted from https://realfavicongenerator.net/
   favicon() {
     this.add(
-      new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
-      new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} ).close(),
-      new Element('link', {rel : "apple-touch-icon", sizes: "180x180",  href: "assets/images/apple-touch-icon.png" } ).close(),
+      new Element('link', {rel : 'icon', type : 'image/png', href : '/assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
+      new Element('link', {rel : 'icon', type : 'image/png', href : '/assets/images/favicon-32x32.png', sizes: '32x32'} ).close(),
+      new Element('link', {rel : "apple-touch-icon", sizes: "180x180",  href: "/assets/images/apple-touch-icon.png" } ).close(),
       new Element('link', {rel : "manifest",  href: "/assets/images/manifest.json"} ).close(),
       new Element('link', {rel : "mask-icon", href: "/assets/images/safari-pinned-tab.svg", color: "#3f038e"} ).close(),
       new Element('link', {rel : "shortcut icon", href: "/assets/images/favicon.ico" } ).close(),
