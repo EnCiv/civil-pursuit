@@ -122,6 +122,68 @@ class RASPItem extends ReactActionStatePathClient {
         rasp.pathSegment = parts.join(',');
       }
     },
+    defaultNoScroll: {
+      // whether or not to show this component
+      active: (rasp)=>{
+        return (rasp.shape !== 'collapsed');
+      },
+      // whether or not to show a child
+      childActive: (rasp,button)=>{
+        return (rasp.button === button)
+      },
+      // the shape to give a child, when it is initially mounted
+      childShape: (rasp, button)=>{
+        switch(rasp.shape){
+          case 'title':
+            if(rasp.button === button) return 'open';
+            else return 'truncated';
+          case 'open':
+            if(rasp.button === button) return 'open'
+            else return 'truncated';
+          case 'truncated':
+            return 'truncated';
+          default:
+            return rasp.shape;
+        }
+      },
+      childVisualMethod: ()=>'defaultNoScroll',
+      // process actions for this visualMethod
+      enableHint: ()=>true,
+      actionToState: (action, rasp, source, initialRASP, delta)=>{
+        if(action.type==="DESCENDANT_FOCUS" && action.distance>1 ){
+            delta.readMore = false; // if the user is working on stuff further below, close the readmore
+        }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
+            // child changed to truncated
+            action.itemUnfocused=true; // let items up the chain know that an item has unfocused
+            delta.shape='truncated'; 
+            delta.button=null; 
+            delta.readMore=false;
+        } else if (action.type === "ITEM_DELVE") {
+          delta.readMore = true;
+          if(this.props.item.subType) delta.button=this.someButton('S');
+        } else if (action.type==="UNFOCUS_STATE"){
+          delta.readMore=false;
+          delta.button=null;
+        } else if (action.type==="FOCUS_STATE"){
+          delta.readMore=true;
+        }else
+          return false;
+        return true;
+      },
+      // derive shape and pathSegment from the other parts of the RASP
+      deriveRASP: (rasp, initialRASP)=>{
+        if(rasp.button || rasp.readMore){
+          rasp.shape= 'open'
+        } else 
+          rasp.shape='truncated';
+        // calculate the pathSegment and return the new state
+        let parts = [];
+        if (rasp.readMore) parts.push('r');
+        if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
+        if (rasp.decendantFocus) parts.push('d');
+        rasp.pathSegment = parts.join(',');
+      }
+    },
     ooview: {
       // whether or not to show this component
       active: (rasp)=>{

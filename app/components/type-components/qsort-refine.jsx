@@ -214,6 +214,7 @@ class QSortRefineItem extends React.Component {
                             rasp    =   { rasp }
                             buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
                             hideFeedback = {this.props.hideFeedback}
+                            visualMethod = "defaultNoScroll"
                         />
                     </ItemStore>
                 </div>
