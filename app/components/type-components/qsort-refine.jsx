@@ -12,17 +12,17 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 import {QSortToggle} from './qsort-items';
 import PanelHeading from '../panel-heading';
 import clone from 'clone';
-import ResultsFocusHere from '../results-focus-here';
+import RASPFocusHere from '../rasp-focus-here';
 
 class QSortRefine extends React.Component {
     render() {
         return (
             <ReactActionStatePath {...this.props}>
-                <ResultsFocusHere>
+                <RASPFocusHere filterTypes={['DESCENDANT_UNFOCUS', 'RESULTS']}>
                     <PanelHeading cssName={'syn-qsort-refine'} panelButtons={['Creator', 'Instruction']}>
                         <RASPQSortRefine />
                     </PanelHeading>
-                </ResultsFocusHere>
+                </RASPFocusHere>
             </ReactActionStatePath>
         )
     }
