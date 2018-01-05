@@ -57,24 +57,24 @@ exports.button = class UseComponentButton extends React.Component {
 
 exports.panel = class UseComponentPanel extends React.Component {
     mounted = false;
-    state = { type: null };
+    state = { componentType: null };
 
     constructor(props) {
         super(props);
-        const { type } = props;
-        if (typeof type === 'string' && typeof window !== 'undefined') {
-            window.socket.emit('get listo type', [type], this.okGetListoType.bind(this))
+        const { componentType } = props;
+        if (typeof componentType === 'string' && typeof window !== 'undefined') {
+            window.socket.emit('get listo type', [componentType], this.okGetListoType.bind(this))
         } else
-            this.state.type = this.props.type;
+            this.state.componentType = this.props.componentType;
     }
 
     okGetListoType(typeList) {
-        if (typeList && typeList.length && typeList[0]._id === this.props.type)
-            this.setState({ type: typeList[0] });
+        if (typeList && typeList.length && typeList[0]._id === this.props.componentType)
+            this.setState({ componentType: typeList[0] });
     }
 
     render() {
-        if (!this.state.type) return null;
+        if (!this.state.componentType) return null;
         const { active, style, item, rasp } = this.props;
         if (this.mounted === false && active === false) return null; // don't render this unless it's active, or been rendered before
         else {
@@ -89,8 +89,9 @@ exports.panel = class UseComponentPanel extends React.Component {
                         <TypeComponent
                             {...this.props}
                             rasp={nextRASP}
-                            panel={{ parent: item.parent, type: item.type, skip: 0, limit: config['navigator batch size'] }}
-                            component={this.state.type.component}
+                            panel={{ parent: item, type: item.subtype, skip: 0, limit: config['navigator batch size'] }}
+                            component={this.state.componentType.component}
+                            componentType={this.state.componentType}
                         />
                     </Accordion>
                 </div>

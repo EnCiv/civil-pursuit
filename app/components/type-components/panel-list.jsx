@@ -131,8 +131,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount() {
-    if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
-      window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
+    var harmony;
+    if(typeof window !== 'undefined'){
+      if((this.props.componentType && (harmony=this.props.componentType.harmony)) 
+       || (this.props.panel && (harmony=this.props.panel.type.harmony)))
+        window.socket.emit('get listo type', harmony, this.okGetListoType.bind(this));
     }
     this.setState({
       containerWidth: this.refs.panel.clientWidth
