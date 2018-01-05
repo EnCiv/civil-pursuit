@@ -66,6 +66,7 @@ class RASPPromote extends ReactActionStatePathClient {
           if ( delta.cursor <= this.props.limit) { // next evaluation
                 delta.left = delta.cursor - 1;
                 delta.right = delta.cursor;
+                this.queueFocus(action);
           } else { // done with evaluations
             this.queueUnfocus(action);
           }
@@ -74,6 +75,7 @@ class RASPPromote extends ReactActionStatePathClient {
           if ( cursor <= this.props.limit ) {
             delta.cursor=cursor;
             delta[RASPPromote.opposite[action.position]]=cursor;
+            this.queueFocus(action);
           } else {
             const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
             this.insertUpvotes(winner._id);
