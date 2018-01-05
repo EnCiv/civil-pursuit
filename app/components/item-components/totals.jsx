@@ -74,7 +74,7 @@ exports.panel = class TotalsPanel extends React.Component {
                         style={style}
                     >
                         <PanelStore parent={this.props.item}
-                            type={this.props.type}
+                            type={this.props.item.subtype}
                             limit={20} >
                             <TotalsPanelShared {...this.props} >
                             </TotalsPanelShared>
