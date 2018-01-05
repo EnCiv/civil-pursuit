@@ -89,7 +89,7 @@ exports.panel = class UseComponentPanel extends React.Component {
                         <TypeComponent
                             {...this.props}
                             rasp={nextRASP}
-                            panel={{ parent: item, type: item.subtype, skip: 0, limit: config['navigator batch size'] }}
+                            panel={{ parent: item.parent, type: item.type, skip: 0, limit: config['navigator batch size'] }}
                             component={this.state.type.component}
                         />
                     </Accordion>
