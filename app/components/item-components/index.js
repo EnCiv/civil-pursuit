@@ -12,7 +12,8 @@ var  Components={
         'Edit': require('./edit'),
         'CreateHarmony': require('./create-harmony'),
         'Refine': require('./refine'),
-        "Totals": require('./totals')
+        "Totals": require('./totals'),
+        "UseComponent": require('./use-component')
 }
 
 export default Components;
