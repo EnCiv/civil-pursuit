@@ -12,12 +12,14 @@ export default class RASPFocusHere extends ReactActionStatePathFilter {
 
     focusHere(){
         setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
+        return true;
     }
 
     focusHereMatch(match, action, delta) {
         if(Object.keys(match).every(key=>match[key]===action[key])){
             setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
         }
+        return true;
     }
 
     componentWillMount(){
