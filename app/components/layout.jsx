@@ -4,6 +4,7 @@ import React                          from 'react';
 import TopBar                         from './top-bar';
 import Footer                         from './footer';
 import Panel                          from './panel';
+import ReactScrollBar from 'react-scrollbar-js';
 
 
 class Layout extends React.Component {
@@ -18,14 +19,12 @@ class Layout extends React.Component {
         <div id="fb-root"></div>
 
         <TopBar user={ user } setPath={setPath} />
-
-        <section role="main">
-
-          { this.props.children }
-
-          <Footer />
-
-        </section>
+          <ReactScrollBar>
+            <section role="main">
+              { this.props.children }
+              <Footer />
+            </section>
+        </ReactScrollBar>
       </section>
     );
   }
