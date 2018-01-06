@@ -24,10 +24,12 @@ class Layout extends React.Component {
 
         <TopBar user={ user } setPath={setPath} />
           <ReactScrollBar style={myScrollbar}>
-            <section role="main">
-              { this.props.children }
-              <Footer />
-            </section>
+            <div className="should-have-a-chidren scroll-me">
+              <section role="main">
+                { this.props.children }
+                <Footer />
+              </section>
+            </div>
         </ReactScrollBar>
       </section>
     );
