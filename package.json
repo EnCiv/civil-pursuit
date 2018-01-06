@@ -74,7 +74,6 @@
     "react-dom": "^15.6.2",
     "react-flip-move": "^2.9.17",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#master",
-    "react-scrollbar-js": "^1.0.1",
     "redtea": "^3.4.1",
     "shallowequal": "^0.2.2",
     "should": "^7.1.0",

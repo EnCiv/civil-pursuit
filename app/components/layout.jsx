@@ -4,7 +4,7 @@ import React                          from 'react';
 import TopBar                         from './top-bar';
 import Footer                         from './footer';
 import Panel                          from './panel';
-import ReactScrollBar from 'react-scrollbar-js';
+import ReactScrollBar from './util/react-scrollbar';
 
 
 class Layout extends React.Component {
