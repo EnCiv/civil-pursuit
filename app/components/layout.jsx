@@ -13,10 +13,7 @@ class Layout extends React.Component {
 
   render () {
     const { user, setPath } = this.props;
-    const myScrollbar = {
-      width: 900,
-      height: 1400,
-    };
+    const myScrollbar = {};
 
     return (
       <section>

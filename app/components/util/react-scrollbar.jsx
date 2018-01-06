@@ -314,7 +314,7 @@ class ScrollWrapper extends React.Component {
       <div
         onClick={this.updateSize}
         className={this.props.className}
-        ref={(c) => { this.scrollWrapper = c; }}
+        ref={(c) => { if(c) this.scrollWrapper = c; }}
         style={{ ...this.props.style, overflow: 'hidden', position: 'relative' }}
       >
 
@@ -322,7 +322,7 @@ class ScrollWrapper extends React.Component {
           className={
             className('-reactjs-scrollbar', '-area', '', this.state.dragging, this.state.scrolling)
           }
-          ref={(c) => { this.scrollArea = c; }}
+          ref={(c) => { if(c) this.scrollArea = c; }}
           onWheel={this.scroll}
           onTouchStart={this.startDrag}
           onTouchMove={this.onDrag}
@@ -348,7 +348,7 @@ class ScrollWrapper extends React.Component {
           : null }
 
 
-          { this.state.ready ?
+          { (false && this.state.ready) ?
 
             <HorizontalScrollbar
               area={{ width: this.state.scrollAreaWidth }}
