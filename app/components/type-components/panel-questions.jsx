@@ -11,6 +11,7 @@ import Item from '../item';
 import PanelHeading from '../panel-heading';
 import PanelItems from '../panel-items';
 import RASPPanelItems from '../rasp-panel-items';
+import RASPFocusHere from '../rasp-focus-here';
 
 class AnswerCount extends React.Component {
     constructor(props) {
@@ -145,11 +146,13 @@ export class PanelQuestions extends React.Component {
         return (
             <PanelStore { ...storeProps }>
                 <ReactActionStatePath {...this.props} >
-                    <PanelHeading cssName={'syn-panel-item'} panelButtons={['Creator','Instruction']} >
+                <RASPFocusHere filterTypes={['FOCUS_STATE']}> 
+                    <PanelHeading cssName={'syn-panel-question'} panelButtons={['Creator','Instruction']} >
                         <AnswerCount>
                             <RASPPanelQuestions />
                         </AnswerCount>
                     </PanelHeading>
+                    </RASPFocusHere>
                 </ReactActionStatePath>
             </PanelStore>
         );
