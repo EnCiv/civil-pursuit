@@ -23,8 +23,16 @@ class ScrollWrapper extends React.Component {
       dragging: false,  // note: dragging - fake pseudo class
       scrolling: false, // changes: scrolling (new fake pseudo class)
       reset: false, // changes: change state without rendering
-      start: { y: 0, x: 0 },
+      start: { y: 0, x: 0 }
     };
+
+    if(typeof window !== 'undefined' ){
+      this.state.viewPortHeight= Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      this.state.viewPortWidth= Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    } else {
+      this.state.viewPortHeight= null; // something
+      this.state.viewPortWidth= null; // anything
+    }
 
     this.updateSize = this.updateSize.bind(this);
     this.calculateSize = this.calculateSize.bind(this);
@@ -207,6 +215,9 @@ class ScrollWrapper extends React.Component {
       // Set the State!
       this.setState({
 
+        viewPortHeight: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) : null,
+        viewPortWidth: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : null,
+
         // Scroll Area Height and Width
         scrollAreaHeight: elementSize.scrollAreaHeight,
         scrollAreaWidth: elementSize.scrollAreaWidth,
@@ -310,12 +321,15 @@ class ScrollWrapper extends React.Component {
       isScr ? `${base + name + pos}:scrolling` : '',
     ].join(' ');
 
+    var style={...this.props.style, overflow: 'hidden', position: 'relative'};
+    if(!style.height && this.state.viewPortHeight) style.height=this.state.viewPortHeight+'px';
+
     return (
       <div
         onClick={this.updateSize}
         className={this.props.className}
         ref={(c) => { if(c) this.scrollWrapper = c; }}
-        style={{ ...this.props.style, overflow: 'hidden', position: 'relative' }}
+        style={style}
       >
 
         <div

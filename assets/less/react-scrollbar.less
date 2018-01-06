@@ -1,5 +1,6 @@
 /* react-scroll.less*/
 @size: 10px;
+@color: black;
 
 .transition {
     transition: all 0.5s ease;
@@ -29,15 +30,16 @@
     &-track {
         .transition;
         opacity: 0.5;
-        background: rgba(0, 0, 0, 0);
+        background: fade(@color, 0);
         &:hover {
-            background: rgba(0, 0, 0, 0.3);
+            background: fade(@color, 0.3);
         }
         &\:vertical {
             width: @size;
             height: 100%;
             top: 0;
             right: 0;
+            position: fixed;
         }
         &\:horizontal {
             height: @size;
@@ -48,7 +50,7 @@
     }
 
     &-thumb {
-        background: rgba(0, 0, 0, 0.5);
+        background: fade(@color, 0.5);
         cursor: default;
         width: @size;     //note: width of vertical thumb
         height: @size;    //note: height of horizontal thumb
