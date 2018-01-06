@@ -6,7 +6,7 @@ import RandomItemStore from '../store/random-item';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import PanelHeading from '../panel-heading';
 import { RASPQSortItems } from './qsort-items';
-import ResultsFocusHere from '../results-focus-here';
+import RASPFocusHere from '../rasp-focus-here';
 
 
 // 8 is hard coded. But it should come from something user configurable
@@ -38,11 +38,11 @@ class QSortRandomItems extends React.Component {
             return (
                 <ReactActionStatePath {...this.props} >
                     <RandomItemStore >
-                        <ResultsFocusHere>
+                        <RASPFocusHere filterTypes={['RESULTS','FOCUS_STATE']}>
                             <PanelHeading cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
                                 <RASPQSortItems />
                             </PanelHeading>
-                        </ResultsFocusHere>
+                        </RASPFocusHere>
                     </RandomItemStore>
                 </ReactActionStatePath>
             );
