@@ -13,13 +13,17 @@ class Layout extends React.Component {
 
   render () {
     const { user, setPath } = this.props;
+    const myScrollbar = {
+      width: 900,
+      height: 1400,
+    };
 
     return (
       <section>
         <div id="fb-root"></div>
 
         <TopBar user={ user } setPath={setPath} />
-          <ReactScrollBar>
+          <ReactScrollBar style={myScrollbar}>
             <section role="main">
               { this.props.children }
               <Footer />
