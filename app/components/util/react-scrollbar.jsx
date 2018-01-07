@@ -23,16 +23,10 @@ class ScrollWrapper extends React.Component {
       dragging: false,  // note: dragging - fake pseudo class
       scrolling: false, // changes: scrolling (new fake pseudo class)
       reset: false, // changes: change state without rendering
-      start: { y: 0, x: 0 }
+      start: { y: 0, x: 0 },
+      viewPortHeight: null,
+      viewPortWidth: null
     };
-
-    if(typeof window !== 'undefined' ){
-      this.state.viewPortHeight= Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-      this.state.viewPortWidth= Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    } else {
-      this.state.viewPortHeight= null; // something
-      this.state.viewPortWidth= null; // anything
-    }
 
     this.updateSize = this.updateSize.bind(this);
     this.calculateSize = this.calculateSize.bind(this);
@@ -215,7 +209,7 @@ class ScrollWrapper extends React.Component {
       // Set the State!
       this.setState({
 
-        viewPortHeight: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) : null,
+        viewPortHeight: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - this.scrollWrapper.getBoundingClientRect().y : null,
         viewPortWidth: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : null,
 
         // Scroll Area Height and Width
@@ -241,6 +235,9 @@ class ScrollWrapper extends React.Component {
         elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
       // Set the State!
       this.setState({
+        viewPortHeight: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - this.scrollWrapper.getBoundingClientRect().y : null,
+        viewPortWidth: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : null,
+        
         // Scroll Area Height and Width
         scrollAreaHeight: elementSize.scrollAreaHeight,
         scrollAreaWidth: elementSize.scrollAreaWidth,
