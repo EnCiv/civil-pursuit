@@ -101,8 +101,8 @@ class FixedScroll{
 }
 
 if(typeof window!== 'undefined'){
-var fS = fS=new FixedScroll();
-var ss = new ScrollSwipe({
+//var fS = fS=new FixedScroll();
+/*var ss = new ScrollSwipe({
         target: document.getElementsByTagName("html")[0], // can be a div, or anything else you want to track scroll/touch events on
         scrollSensitivity: 0, // the lower the number, the more sensitive
         touchSensitivity: 0, // the lower the number, the more senitive,
@@ -113,8 +113,10 @@ var ss = new ScrollSwipe({
 		touchMoveCb: fS.touchMoveCb(),
 		touchStartCb: fS.touchStartCb()
 	});
+	*/
 if(!window.Synapp) window.Synapp={};
-window.Synapp.ScrollFocus=(target, duration=500)=>{
+window.Synapp.ScrollFocus=(target,duration=500)=>console.info("ScrollFocus",target);
+window.Synapp.ScrollFocus1=(target, duration=500)=>{
 	if(!target) return;
 	var html=document.getElementsByTagName("html")[0];
 	var bannerHeight=document.getElementsByClassName("syn-top_bar-wrapper")[0].getBoundingClientRect().height;
