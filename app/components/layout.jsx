@@ -1,6 +1,7 @@
 'use strict';
 
 import React                          from 'react';
+import ReactDOM                       from 'react-dom';
 import TopBar                         from './top-bar';
 import Footer                         from './footer';
 import Panel                          from './panel';
@@ -10,6 +11,7 @@ import ReactScrollBar from './util/react-scrollbar';
 class Layout extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  topBar=null;
 
   render () {
     const { user, setPath } = this.props;
@@ -19,8 +21,8 @@ class Layout extends React.Component {
       <section>
         <div id="fb-root"></div>
 
-        <TopBar user={ user } setPath={setPath} />
-          <ReactScrollBar style={myScrollbar}>
+        <TopBar user={ user } setPath={setPath} ref={e=>{this.topBar=ReactDOM.findDOMNode(e)}}/>
+          <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
             <div className="should-have-a-chidren scroll-me">
               <section role="main">
                 { this.props.children }
