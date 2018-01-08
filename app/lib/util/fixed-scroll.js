@@ -116,6 +116,15 @@ if(typeof window!== 'undefined'){
 	*/
 if(!window.Synapp) window.Synapp={};
 window.Synapp.ScrollFocus=(target,duration=500)=>console.info("ScrollFocus",target);
+
+let target=document.getElementsByTagName("html")[0];
+let body=document.getElementsByTagName("body")[0];
+let w=target.getBoundingClientRect().width;
+target.style.top="0px";
+target.style.width=w+'px';
+target.style.position="fixed";
+
+
 window.Synapp.ScrollFocus1=(target, duration=500)=>{
 	if(!target) return;
 	var html=document.getElementsByTagName("html")[0];

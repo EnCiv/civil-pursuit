@@ -37,6 +37,8 @@ class ScrollWrapper extends React.Component {
     this.handleChangePosition = this.handleChangePosition.bind(this);
     this.handleScrollbarDragging = this.handleScrollbarDragging.bind(this);
     this.handleScrollbarStopDrag = this.handleScrollbarStopDrag.bind(this);
+    this.htmlElement = (typeof window!== 'undefined') ? document.getElementsByTagName("html")[0] : null;
+    if(typeof window!== 'undefined') this.htmlElement.style.position='fixed';
   }
 
   componentDidMount() {
@@ -155,6 +157,7 @@ class ScrollWrapper extends React.Component {
     const next = trim(lowerEnd, 0, nextPos);
 
     // Update the Vertical Value
+    this.htmlElement.style.top=(-next)+'px';
     this.setState({
       top: next,
       vMovement: (next / this.state.scrollAreaHeight) * 100,
@@ -339,7 +342,7 @@ class ScrollWrapper extends React.Component {
           onTouchMove={this.onDrag}
           onTouchEnd={this.stopDrag}
           onChange={this.updateSize}
-          style={{ marginTop: `${this.state.top * -1}px`, marginLeft: `${this.state.left * -1}px` }}
+          style={{ marginLeft: `${this.state.left * -1}px` }}
         >
 
           { this.props.children }
