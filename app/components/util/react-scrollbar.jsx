@@ -114,6 +114,8 @@ class ScrollWrapper extends React.Component {
 
     };
 
+    elementSize.scrollAreaHeight=elementSize.viewPortHeight-elementSize.topBarHeight;
+
     return elementSize;
   }
 
@@ -336,7 +338,7 @@ class ScrollWrapper extends React.Component {
     var verticalStyle={};
     if(!style.height && this.state.viewPortHeight) {
       verticalStyle.height=style.height=(this.state.viewPortHeight - this.state.topBarHeight)+'px';
-      verticalStyle.top=style.top=this.state.topBarHeight;
+      verticalStyle.top=this.state.topBarHeight;
     }
 
     
