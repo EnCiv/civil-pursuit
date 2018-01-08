@@ -39,6 +39,7 @@ class ScrollWrapper extends React.Component {
     this.handleScrollbarStopDrag = this.handleScrollbarStopDrag.bind(this);
     this.htmlElement = (typeof window!== 'undefined') ? document.getElementsByTagName("html")[0] : null;
     if(typeof window!== 'undefined') this.htmlElement.style.position='fixed';
+    this.scrollWrapper=this.htmlElement; //using the root as the wrapper
   }
 
   componentDidMount() {
@@ -321,14 +322,14 @@ class ScrollWrapper extends React.Component {
       isScr ? `${base + name + pos}:scrolling` : '',
     ].join(' ');
 
-    var style={...this.props.style, overflow: 'hidden', position: 'relative'};
+    var style={...this.props.style, position: 'relative'};
     if(!style.height && this.state.viewPortHeight) style.height=this.state.viewPortHeight+'px';
 
     return (
       <div
         onClick={this.updateSize}
         className={this.props.className}
-        ref={(c) => { if(c) this.scrollWrapper = c; }}
+        ref={(c) => { /*if(c) this.scrollWrapper = c;*/ }}
         style={style}
       >
 
