@@ -149,7 +149,7 @@ class VerticalScrollbar extends React.Component {
           )}
           ref={(c) => { this.container = c; }}
           onClick={this.jump}
-          style={{ position: 'fixed' }}
+          style={this.props.style}
         >
 
           <div

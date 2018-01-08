@@ -21,7 +21,7 @@ class Layout extends React.Component {
       <section>
         <div id="fb-root"></div>
 
-        <TopBar user={ user } setPath={setPath} ref={e=>{this.topBar=ReactDOM.findDOMNode(e)}}/>
+        <TopBar user={ user } setPath={setPath} ref={e=>{this.topBar=e && ReactDOM.findDOMNode(e).children[0]}}/>
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
             <div className="should-have-a-chidren scroll-me">
               <section role="main">

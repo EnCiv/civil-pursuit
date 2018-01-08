@@ -333,10 +333,13 @@ class ScrollWrapper extends React.Component {
     ].join(' ');
 
     var style={...this.props.style, position: 'relative'};
+    var verticalStyle={};
     if(!style.height && this.state.viewPortHeight) {
-      style.height=(this.state.viewPortHeight - this.state.topBarHeight)+'px';
-      style.top=this.state.topBarHeight;
+      verticalStyle.height=style.height=(this.state.viewPortHeight - this.state.topBarHeight)+'px';
+      verticalStyle.top=style.top=this.state.topBarHeight;
     }
+
+    
 
     return (
       <div
@@ -364,6 +367,7 @@ class ScrollWrapper extends React.Component {
           { this.state.ready ?
 
             <VerticalScrollbar
+              style={verticalStyle}
               area={{ height: this.state.scrollAreaHeight }}
               wrapper={{ height: this.state.scrollWrapperHeight }}
               scrolling={this.state.vMovement}
