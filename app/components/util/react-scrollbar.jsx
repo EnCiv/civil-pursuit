@@ -113,8 +113,8 @@ class ScrollWrapper extends React.Component {
       topBarHeight: topBarHeight
 
     };
-
-    elementSize.scrollAreaHeight=elementSize.viewPortHeight-elementSize.topBarHeight;
+    elementSize.scrollWrapperHeight-=topBarHeight;
+    //elementSize.scrollAreaHeight=elementSize.viewPortHeight-elementSize.topBarHeight;
 
     return elementSize;
   }
