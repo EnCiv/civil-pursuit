@@ -24,8 +24,6 @@ class ScrollWrapper extends React.Component {
       scrolling: false, // changes: scrolling (new fake pseudo class)
       reset: false, // changes: change state without rendering
       start: { y: 0, x: 0 },
-      viewPortHeight: null,
-      viewPortWidth: null,
       topBarHeight: null
     };
 
@@ -38,9 +36,20 @@ class ScrollWrapper extends React.Component {
     this.handleChangePosition = this.handleChangePosition.bind(this);
     this.handleScrollbarDragging = this.handleScrollbarDragging.bind(this);
     this.handleScrollbarStopDrag = this.handleScrollbarStopDrag.bind(this);
-    this.htmlElement = (typeof window!== 'undefined') ? document.getElementsByTagName("html")[0] : null;
-    if(typeof window!== 'undefined') this.htmlElement.style.position='fixed';
-    this.scrollWrapper=this.htmlElement; //using the root as the wrapper
+    if(typeof window!== 'undefined') {
+      this.htmlElement=document.getElementsByTagName("html")[0];
+      this.htmlElement.style.position='fixed';
+      this.htmlElement.style.overflowX='hidden';
+      window.Synapp.ScrollFocus=this.scrollToTarget.bind(this);
+      this.scrollWrapper=this.htmlElement; //using the root as the wrapper
+    } else 
+      this.htmlElement = null;
+  }
+
+  scrollToTarget(target, duration){ // duration not used
+    if(!target) return;
+    let newTop=(-this.state.scrollAreaHeight+target.getBoundingClientRect().top-this.state.topBarHeight);
+    this.scrollToY(newTop);
   }
 
   componentDidMount() {
@@ -108,13 +117,10 @@ class ScrollWrapper extends React.Component {
       scrollWrapperHeight: $scrollWrapper.clientHeight,
       scrollWrapperWidth: $scrollWrapper.clientWidth,
 
-      viewPortHeight: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) : null,
-      viewPortWidth: (typeof window!== 'undefined') ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : null,
       topBarHeight: topBarHeight
 
     };
     elementSize.scrollWrapperHeight-=topBarHeight;
-    //elementSize.scrollAreaHeight=elementSize.viewPortHeight-elementSize.topBarHeight;
 
     return elementSize;
   }
@@ -223,9 +229,6 @@ class ScrollWrapper extends React.Component {
 
         topBarHeight: elementSize.topBarHeight,
 
-        viewPortHeight: elementSize.viewPortHeight,
-        viewPortWidth: elementSize.viewPortWidth,
-
         // Scroll Area Height and Width
         scrollAreaHeight: elementSize.scrollAreaHeight,
         scrollAreaWidth: elementSize.scrollAreaWidth,
@@ -250,9 +253,6 @@ class ScrollWrapper extends React.Component {
       // Set the State!
       this.setState({
         topBarHeight: elementSize.topBarHeight,
-
-        viewPortHeight: elementSize.viewPortHeight,
-        viewPortWidth: elementSize.viewPortWidth,
         
         // Scroll Area Height and Width
         scrollAreaHeight: elementSize.scrollAreaHeight,
@@ -336,8 +336,8 @@ class ScrollWrapper extends React.Component {
 
     var style={...this.props.style, position: 'relative'};
     var verticalStyle={};
-    if(!style.height && this.state.viewPortHeight) {
-      verticalStyle.height=style.height=(this.state.viewPortHeight - this.state.topBarHeight)+'px';
+    if(!style.height && this.state.scrollWrapperHeight) {
+      verticalStyle.height=style.height=(this.state.scrollWrapperHeight /*- this.state.topBarHeight*/)+'px';
       verticalStyle.top=this.state.topBarHeight;
     }
 
