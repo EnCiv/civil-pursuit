@@ -27,6 +27,7 @@ class ScrollWrapper extends React.Component {
       topBarHeight: null
     };
 
+    this.touchable=false;
     this.updateSize = this.updateSize.bind(this);
     this.calculateSize = this.calculateSize.bind(this);
     this.scroll = this.scroll.bind(this);
@@ -330,6 +331,7 @@ class ScrollWrapper extends React.Component {
     event.stopPropagation();
 
     const e = event.changedTouches ? event.changedTouches[0] : event;
+    if(event.changedTouches && event.changedTouches.length) this.touchable=true;
 
     // Make sure the content height is not changed
     this.calculateSize(() => {
@@ -422,7 +424,7 @@ class ScrollWrapper extends React.Component {
 
           { this.props.children }
 
-          { this.state.ready ?
+          { (!this.touchable && (this.state.ready  || this.state.top)) ?
 
             <VerticalScrollbar
               style={verticalStyle}
