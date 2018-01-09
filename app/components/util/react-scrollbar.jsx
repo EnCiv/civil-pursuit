@@ -40,7 +40,7 @@ class ScrollWrapper extends React.Component {
       this.htmlElement=document.getElementsByTagName("html")[0];
       this.htmlElement.style.position='fixed';
       this.htmlElement.style.overflowX='hidden';
-      window.Synapp.ScrollFocus=this.scrollToTarget.bind(this);
+      window.Synapp.ScrollFocus=this.ScrollFocus.bind(this);
       this.scrollWrapper=this.htmlElement; //using the root as the wrapper
     } else 
       this.htmlElement = null;
@@ -52,46 +52,48 @@ class ScrollWrapper extends React.Component {
     this.scrollToY(newTop);
   }*/
 
-  scrollToTarget (target, duration = 500){
-    if (!target) return;
-    var bannerHeight = this.state.topBarHeight;
-    var start = new Date().getTime();
-    var stepPeriod = 25;
-
-    var stepper = () => {
-      let now = new Date().getTime();
-
-      let top = -parseFloat(this.htmlElement.style.top);
-      let newTop = top + target.getBoundingClientRect().top - bannerHeight;
-
-      if (now - start > duration) {
-        this.scrollToY(newTop);
+  ScrollFocus(target, duration=500){
+    if(!target) return;
+    var html=this.htmlElement;
+    var bannerHeight=this.state.topBarHeight;
+    var start=new Date().getTime();
+    var stepPeriod=25;
+  
+    var stepper= ()=>{
+      let now=new Date().getTime();
+  
+      let top=parseFloat(html.style.top);
+      let newTop=-(-top+target.getBoundingClientRect().top-bannerHeight);
+  
+      if(now-start >duration){
+        html.style.top=newTop+'px';
+        this.setState({top: -newTop});
         return;
       }
-
+  
       let timeRemaining = duration - (now - start);
       let stepsRemaining = Math.max(1, Math.round(timeRemaining / stepPeriod)); // less than one step is one step
       let distanceRemaining = newTop - top;  // could be a positive or negative number
-      let nextStepDistance = distanceRemaining / stepsRemaining;
-      if (nextStepDistance === 0 && stepsRemaining === 1) return setTimeout(stepper, timeRemaining);
-      else if (nextStepDistance === 0) return setTimeout(stepper, stepPeriod);
-      else if ((nextStepDistance > 0 && nextStepDistance <= 1) || (nextStepDistance > -1 && nextStepDistance < 0)) { // steps are less than 1 pixel at this rate
-        stepPeriod = Math.ceil(timeRemaining / distanceRemaining); // time between pixels
-        var shortStepPeriod = stepPeriod;
-        if (nextStepDistance > 0 && nextStepDistance < 0.5) {
-          shortStepPeriod = Math.max(stepPeriod, Math.ceil((1 - nextStepDistance) * stepPeriod)); // time to the next pixel but at least something
-          setTimeout(stepper, shortStepPeriod); // come back later and less often
+      let nextStepDistance=distanceRemaining/stepsRemaining;
+      if(nextStepDistance===0 && stepsRemaining===1) return setTimeout(stepper, timeRemaining); 
+      else if(nextStepDistance===0) return setTimeout(stepper,stepPeriod);
+      else if((nextStepDistance>0 && nextStepDistance<=1) || (nextStepDistance>-1 && nextStepDistance<0)) { // steps are less than 1 pixel at this rate
+        stepPeriod=Math.ceil(timeRemaining/distanceRemaining); // time between pixels
+        var shortStepPeriod=stepPeriod;
+        if(nextStepDistance>0 && nextStepDistance<0.5) {
+          shortStepPeriod=Math.max(stepPeriod, Math.ceil((1-nextStepDistance)*stepPeriod)); // time to the next pixel but at least something
+          setTimeout(stepper,shortStepPeriod); // come back later and less often
           return;
         }
-        if (nextStepDistance > -0.5 && nextStepDistance < 0) {
-          shortStepPeriod = Math.max(stepPeriod, Math.ceil((1 + nextStepDistance) * stepPeriod)); // time to the next pixel but at least something
-          setTimeout(stepper, shortStepPeriod); // come back later and less often
+        if(nextStepDistance>-0.5 && nextStepDistance<0) {
+          shortStepPeriod=Math.max(stepPeriod, Math.ceil((1+nextStepDistance)*stepPeriod)); // time to the next pixel but at least something
+          setTimeout(stepper,shortStepPeriod); // come back later and less often
           return;
         }
       }
-      let nextTop = top - nextStepDistance; // top of the next step
-      this.htmlElement.style.top=(-nextTop)+'px';
-      setTimeout(stepper, stepPeriod);
+      let nextTop = top + nextStepDistance; // top of the next step
+      html.style.top=nextTop+'px'; // set the new top
+      setTimeout(stepper,stepPeriod);
     }
     setTimeout(stepper, stepPeriod) // kick off the stepper
   }
