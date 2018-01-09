@@ -48,7 +48,7 @@ class ScrollWrapper extends React.Component {
 
   scrollToTarget(target, duration){ // duration not used
     if(!target) return;
-    let newTop=(-this.state.scrollAreaHeight+target.getBoundingClientRect().top-this.state.topBarHeight);
+    let newTop=(this.state.top+target.getBoundingClientRect().top-this.state.topBarHeight);
     this.scrollToY(newTop);
   }
 
