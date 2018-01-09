@@ -103,7 +103,10 @@ class ScrollWrapper extends React.Component {
     this.updateSize();
 
     // Attach The Event for Responsive View~
-    window.addEventListener('resize', this.updateSize);
+    window.addEventListener('resize', this.updateSize, {passive: false});
+    this.scrollWrapper.addEventListener('touchstart', this.startDrag, {passive: false});
+    this.scrollWrapper.addEventListener('touchmove', this.onDrag, {passive: false});
+    this.scrollWrapper.addEventListener('touchend', this.stopDrag, {passive: false});
     this.observer = new MutationObserver(this.mutations.bind(this));
   }
 
@@ -415,9 +418,6 @@ class ScrollWrapper extends React.Component {
           }
           ref={(c) => { if(c) this.scrollArea = c; }}
           onWheel={this.scroll}
-          onTouchStart={this.startDrag}
-          onTouchMove={this.onDrag}
-          onTouchEnd={this.stopDrag}
           onChange={this.updateSize}
           style={{ marginLeft: `${this.state.left * -1}px` }}
         >
