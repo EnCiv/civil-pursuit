@@ -104,7 +104,7 @@ class ScrollWrapper extends React.Component {
 
     // Attach The Event for Responsive View~
     window.addEventListener('resize', this.updateSize, {passive: false});
-    this.scrollWrapper.addEventListener('touchstart', this.startDrag, {passive: false});
+    this.scrollWrapper.addEventListener('touchstart', this.startDrag, {passive: true});
     this.scrollWrapper.addEventListener('touchmove', this.onDrag, {passive: false});
     this.scrollWrapper.addEventListener('touchend', this.stopDrag, {passive: false});
     this.observer = new MutationObserver(this.mutations.bind(this));
@@ -330,8 +330,8 @@ class ScrollWrapper extends React.Component {
 
   // DRAG EVENT JUST FOR TOUCH DEVICE~
   startDrag(event) {
-    event.preventDefault();
-    event.stopPropagation();
+    //event.preventDefault();
+    //event.stopPropagation();
 
     const e = event.changedTouches ? event.changedTouches[0] : event;
     if(event.changedTouches && event.changedTouches.length) this.touchable=true;
