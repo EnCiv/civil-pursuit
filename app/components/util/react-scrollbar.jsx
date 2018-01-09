@@ -206,7 +206,7 @@ class ScrollWrapper extends React.Component {
 
   normalizeVertical(nextPos, nextState) {
     // Vertical Scrolling
-    const lowerEnd = this.state.scrollAreaHeight - this.state.scrollWrapperHeight;
+    const lowerEnd = this.state.scrollAreaHeight /*- this.state.scrollWrapperHeight*/;
 
     // Max Scroll Down
     // Max Scroll Up
@@ -352,7 +352,7 @@ class ScrollWrapper extends React.Component {
       const nextX = this.state.left + scrollX;
 
       // Is it Scrollable?
-      const canScrollY = this.state.scrollAreaHeight > this.state.scrollWrapperHeight;
+      const canScrollY = (this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
       const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
 
       // changes: Set scrolling state before changing position
