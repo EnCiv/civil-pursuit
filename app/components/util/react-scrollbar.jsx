@@ -103,6 +103,15 @@ class ScrollWrapper extends React.Component {
 
     // Attach The Event for Responsive View~
     window.addEventListener('resize', this.updateSize);
+    this.observer = new MutationObserver(this.mutations.bind(this));
+  }
+
+  componentDidUpdate() {
+    this.observer.observe(this.scrollArea, { attributes: true, childList: true, subtree: true });
+  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  mutations(mutations) {
+    this.updateSize();
   }
 
 // changes: update scrollbars when parent resizing
@@ -123,6 +132,7 @@ class ScrollWrapper extends React.Component {
   componentWillUnmount() {
     // Remove Event
     window.removeEventListener('resize', this.updateSize);
+    this.observer.disconnect();
   }
 
   onDrag(event) {
