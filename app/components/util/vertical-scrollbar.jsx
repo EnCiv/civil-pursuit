@@ -61,24 +61,6 @@ class VerticalScrollbar extends React.Component {
     }
   }
 
-  getSize() {
-    // The Elements
-    const $scrollArea = this.container.parentElement;
-    const $scrollWrapper = $scrollArea.parentElement;
-
-    // Get new Elements Size
-    const elementSize = {
-      // Scroll Area Height and Width
-      scrollAreaHeight: $scrollArea.children[0].clientHeight,
-      scrollAreaWidth: $scrollArea.children[0].clientWidth,
-
-      // Scroll Wrapper Height and Width
-      scrollWrapperHeight: $scrollWrapper.clientHeight,
-      scrollWrapperWidth: $scrollWrapper.clientWidth,
-    };
-    return elementSize;
-  }
-
   startDrag(event) {
     event.preventDefault();
     event.stopPropagation();

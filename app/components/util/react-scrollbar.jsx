@@ -391,7 +391,7 @@ class ScrollWrapper extends React.Component {
       <div
         onClick={this.updateSize}
         className={this.props.className}
-        ref={(c) => { /*if(c) this.scrollWrapper = c;*/ }}
+        ref={this.updateSize}
         style={style}
       >
 
