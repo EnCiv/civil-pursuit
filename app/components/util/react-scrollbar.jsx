@@ -61,7 +61,7 @@ class ScrollWrapper extends React.Component {
     var stepper = () => {
       let now = new Date().getTime();
 
-      let top = this.state.top;
+      let top = -parseFloat(this.htmlElement.style.top);
       let newTop = top + target.getBoundingClientRect().top - bannerHeight;
 
       if (now - start > duration) {
@@ -90,7 +90,7 @@ class ScrollWrapper extends React.Component {
         }
       }
       let nextTop = top - nextStepDistance; // top of the next step
-      this.scrollToY(nextTop); // set the new top
+      this.htmlElement.style.top=(-nextTop)+'px';
       setTimeout(stepper, stepPeriod);
     }
     setTimeout(stepper, stepPeriod) // kick off the stepper
