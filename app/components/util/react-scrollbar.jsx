@@ -320,14 +320,15 @@ class ScrollWrapper extends React.Component {
     //event.stopPropagation();
 
     const e = event.changedTouches ? event.changedTouches[0] : event;
+    const start={y: e.pageY, x: e.pageX}; // need to grab data out of e before it is release by setState (in calculateSize)
     if(event.changedTouches && event.changedTouches.length) this.touchable=true;
-
+    
     // Make sure the content height is not changed
     this.calculateSize(() => {
       // Prepare to drag
       this.setState({
         dragging: true,
-        start: { y: e.pageY, x: e.pageX },
+        start,
       });
     });
   }
@@ -335,18 +336,20 @@ class ScrollWrapper extends React.Component {
   scroll(e) {
     e.preventDefault();
 
+    // DOM events
+    // need to get the values out of e, because e will be release after setState (in calculateSize) is called
+    const shifted = e.shiftKey;
+    const deltaX = e.deltaX;
+    const deltaY = e.deltaY;
+    const scrollY = deltaY > 0 ? num : -(num);
+    var scrollX = deltaX > 0 ? num : -(num);
+    // Fix Mozilla Shifted Wheel~
+    if (shifted && deltaX === 0) scrollX = deltaY > 0 ? num : -(num);
+
     // Make sure the content height is not changed
     this.calculateSize(() => {
       // Set the wheel step
       const num = this.props.speed;
-
-      // DOM events
-      const shifted = e.shiftKey;
-      const scrollY = e.deltaY > 0 ? num : -(num);
-      let scrollX = e.deltaX > 0 ? num : -(num);
-
-      // Fix Mozilla Shifted Wheel~
-      if (shifted && e.deltaX === 0) scrollX = e.deltaY > 0 ? num : -(num);
 
       // Next Value
       const nextY = this.state.top + scrollY;
