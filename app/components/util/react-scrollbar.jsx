@@ -127,7 +127,7 @@ class ScrollWrapper extends React.Component {
   }
 
   componentDidUpdate() {
-    this.observer.observe(this.scrollArea, { attributes: true /*, childList: true, subtree: true*/ });
+    this.observer.observe(this.scrollArea, { attributes: true , childList: true /*, subtree: true*/ });
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations) {
@@ -322,7 +322,7 @@ class ScrollWrapper extends React.Component {
     const e = event.changedTouches ? event.changedTouches[0] : event;
     const start={y: e.pageY, x: e.pageX}; // need to grab data out of e before it is release by setState (in calculateSize)
     if(event.changedTouches && event.changedTouches.length) this.touchable=true;
-    
+
     // Make sure the content height is not changed
     this.calculateSize(() => {
       // Prepare to drag
@@ -338,6 +338,9 @@ class ScrollWrapper extends React.Component {
 
     // DOM events
     // need to get the values out of e, because e will be release after setState (in calculateSize) is called
+
+    // Set the wheel step
+    const num = this.props.speed;
     const shifted = e.shiftKey;
     const deltaX = e.deltaX;
     const deltaY = e.deltaY;
@@ -348,8 +351,6 @@ class ScrollWrapper extends React.Component {
 
     // Make sure the content height is not changed
     this.calculateSize(() => {
-      // Set the wheel step
-      const num = this.props.speed;
 
       // Next Value
       const nextY = this.state.top + scrollY;
