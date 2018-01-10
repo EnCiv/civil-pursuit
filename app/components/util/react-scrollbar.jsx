@@ -28,7 +28,7 @@ class ScrollWrapper extends React.Component {
     };
 
     this.touchable=false;
-    this.updateSize = this.updateSize.bind(this);
+    this.updateSize = this.calculateSize.bind(this,null);
     this.calculateSize = this.calculateSize.bind(this);
     this.scroll = this.scroll.bind(this);
     this.startDrag = this.startDrag.bind(this);
@@ -277,6 +277,7 @@ class ScrollWrapper extends React.Component {
     this.setState({ dragging: false });
   }
 
+  /**
   updateSize() {
     const elementSize = this.getSize();
 
@@ -284,8 +285,12 @@ class ScrollWrapper extends React.Component {
         elementSize.scrollWrapperWidth !== this.state.scrollWrapperWidth ||
         elementSize.scrollAreaHeight !== this.state.scrollAreaHeight ||
         elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
+          let top=this.state.top;
+          if(top <= -elementSize.scrollAreaHeight) top=-(elementSize.scrollAreaHeight-1);
+          if(top >= elementSize.scrollWrapperHeight) top=elementSize.scrollWrapperHeight-1;
       // Set the State!
       this.setState({
+        top,
 
         topBarHeight: elementSize.topBarHeight,
 
@@ -302,7 +307,7 @@ class ScrollWrapper extends React.Component {
       });
     }
   }
-
+**/
   calculateSize(cb) {
     const elementSize = this.getSize();
 
@@ -311,7 +316,12 @@ class ScrollWrapper extends React.Component {
         elementSize.scrollAreaHeight !== this.state.scrollAreaHeight ||
         elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
       // Set the State!
+      let top=this.state.top;
+      if(top <= -elementSize.scrollAreaHeight) top=-(elementSize.scrollAreaHeight-1);
+      if(top >= elementSize.scrollWrapperHeight) top=elementSize.scrollWrapperHeight-1;
       this.setState({
+        top,
+
         topBarHeight: elementSize.topBarHeight,
         
         // Scroll Area Height and Width
@@ -325,7 +335,7 @@ class ScrollWrapper extends React.Component {
         // Make sure The wrapper is Ready, then render the scrollbar
         ready: true,
       }, cb);
-    } else cb();
+    } else cb && cb();
   }
 
   // DRAG EVENT JUST FOR TOUCH DEVICE~
@@ -471,7 +481,7 @@ ScrollWrapper.propTypes = {
 };
 
 ScrollWrapper.defaultProps = {
-  speed: 53,
+  speed: 27,
   className: 'react-scrollbar-default',
   style: { },
   children: null,
