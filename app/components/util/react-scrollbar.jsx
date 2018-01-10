@@ -3,6 +3,12 @@ import React from 'react';
 import VerticalScrollbar from './vertical-scrollbar';
 import HorizontalScrollbar from './horizontal-scrollbar';
 
+function trim(max, min, val){
+  let tmax = (val > max) ? max : val;
+  let tmin = (tmax < min) ? min : tmax;
+  return tmin;
+};
+
 class ScrollWrapper extends React.Component {
 
   constructor() {
@@ -65,6 +71,9 @@ class ScrollWrapper extends React.Component {
   
       let top=parseFloat(html.style.top);
       let newTop=-(-top+target.getBoundingClientRect().top-bannerHeight);
+      let extent=this.props.extent;
+      const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
+      newTop = trim(lowerEnd, -extent, newTop);
   
       if(now-start >duration){
         html.style.top=newTop+'px';
@@ -93,6 +102,7 @@ class ScrollWrapper extends React.Component {
         }
       }
       let nextTop = top + nextStepDistance; // top of the next step
+      nextTop = trim(lowerEnd, -extent, newTop);
       html.style.top=nextTop+'px'; // set the new top
       setTimeout(stepper,stepPeriod);
     }
@@ -220,16 +230,11 @@ class ScrollWrapper extends React.Component {
 
   normalizeVertical(nextPos, nextState) {
     // Vertical Scrolling
-    const lowerEnd = this.state.scrollAreaHeight /*- this.state.scrollWrapperHeight*/;
-
     // Max Scroll Down
     // Max Scroll Up
-    const trim = (max, min, val) => {
-      const tmax = (val > max) ? max : val;
-      const tmin = (tmax < min) ? min : tmax;
-      return tmin;
-    };
-    const next = trim(lowerEnd, 0, nextPos);
+    let extent=this.props.extent;
+    const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
+    const next = trim(lowerEnd, -extent, nextPos);
 
     // Update the Vertical Value
     this.htmlElement.style.top=(-next)+'px';
@@ -245,11 +250,6 @@ class ScrollWrapper extends React.Component {
 
     // Max Scroll Right
     // Max Scroll Right
-    const trim = (max, min, val) => {
-      const tmax = (val > max) ? max : val;
-      const tmin = (tmax < min) ? min : tmax;
-      return tmin;
-    };
     const next = trim(rightEnd, 0, nextPos);
 
     // Update the Horizontal Value
@@ -277,37 +277,6 @@ class ScrollWrapper extends React.Component {
     this.setState({ dragging: false });
   }
 
-  /**
-  updateSize() {
-    const elementSize = this.getSize();
-
-    if (elementSize.scrollWrapperHeight !== this.state.scrollWrapperHeight ||
-        elementSize.scrollWrapperWidth !== this.state.scrollWrapperWidth ||
-        elementSize.scrollAreaHeight !== this.state.scrollAreaHeight ||
-        elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
-          let top=this.state.top;
-          if(top <= -elementSize.scrollAreaHeight) top=-(elementSize.scrollAreaHeight-1);
-          if(top >= elementSize.scrollWrapperHeight) top=elementSize.scrollWrapperHeight-1;
-      // Set the State!
-      this.setState({
-        top,
-
-        topBarHeight: elementSize.topBarHeight,
-
-        // Scroll Area Height and Width
-        scrollAreaHeight: elementSize.scrollAreaHeight,
-        scrollAreaWidth: elementSize.scrollAreaWidth,
-
-        // Scroll Wrapper Height and Width
-        scrollWrapperHeight: elementSize.scrollWrapperHeight,
-        scrollWrapperWidth: elementSize.scrollWrapperWidth,
-
-        // Make sure The wrapper is Ready, then render the scrollbar
-        ready: true,
-      });
-    }
-  }
-**/
   calculateSize(cb) {
     const elementSize = this.getSize();
 
@@ -317,8 +286,9 @@ class ScrollWrapper extends React.Component {
         elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
       // Set the State!
       let top=this.state.top;
-      if(top <= -elementSize.scrollAreaHeight) top=-(elementSize.scrollAreaHeight-1);
-      if(top >= elementSize.scrollWrapperHeight) top=elementSize.scrollWrapperHeight-1;
+      let extent=this.props.extent;
+      if(top <= -(elementSize.scrollAreaHeight-extent)) top=-(elementSize.scrollAreaHeight-extent);
+      if(top >= (elementSize.scrollWrapperHeight-extent)) top=elementSize.scrollWrapperHeight-extent;
       this.setState({
         top,
 
@@ -478,6 +448,7 @@ ScrollWrapper.propTypes = {
   className: React.PropTypes.string,
   style: React.PropTypes.shape(),
   children: React.PropTypes.node,
+  extent: React.PropTypes.number
 };
 
 ScrollWrapper.defaultProps = {
@@ -485,6 +456,7 @@ ScrollWrapper.defaultProps = {
   className: 'react-scrollbar-default',
   style: { },
   children: null,
+  extent: 100
 };
 
 export default ScrollWrapper;
