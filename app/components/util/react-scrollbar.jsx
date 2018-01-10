@@ -73,9 +73,10 @@ class ScrollWrapper extends React.Component {
       let newTop=-(-top+target.getBoundingClientRect().top-bannerHeight);
       let extent=this.props.extent;
       const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
-      newTop = trim(lowerEnd, -extent, newTop);
+
   
       if(now-start >duration){
+        newTop = -trim(lowerEnd, -extent, -newTop);
         html.style.top=newTop+'px';
         this.setState({top: -newTop});
         return;
@@ -102,7 +103,7 @@ class ScrollWrapper extends React.Component {
         }
       }
       let nextTop = top + nextStepDistance; // top of the next step
-      nextTop = trim(lowerEnd, -extent, newTop);
+      nextTop = -trim(lowerEnd, -extent, -newTop);
       html.style.top=nextTop+'px'; // set the new top
       setTimeout(stepper,stepPeriod);
     }
