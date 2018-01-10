@@ -70,10 +70,15 @@ class ScrollWrapper extends React.Component {
       let now=new Date().getTime();
   
       let top=parseFloat(html.style.top);
-      let newTop=-(-top+target.getBoundingClientRect().top-bannerHeight);
+      let tRect=target.getBoundingClientRect(); // target Rect
+      let newTop=-(-top + tRect.top -bannerHeight);
       let extent=this.props.extent;
       const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
 
+      // if bottom of target is above the top of the wrapper, then hyperjump (old)top to the position just before it is visible.
+      if(tRect.bottom< bannerHeight){
+        top= -(-top + -tRect.top)
+      }
   
       if(now-start >duration){
         newTop = -trim(lowerEnd, -extent, -newTop);
