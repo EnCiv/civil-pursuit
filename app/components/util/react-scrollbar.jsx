@@ -127,7 +127,7 @@ class ScrollWrapper extends React.Component {
   }
 
   componentDidUpdate() {
-    this.observer.observe(this.scrollArea, { attributes: true, childList: true, subtree: true });
+    this.observer.observe(this.scrollArea, { attributes: true /*, childList: true, subtree: true*/ });
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations) {
