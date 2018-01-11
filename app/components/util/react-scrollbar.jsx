@@ -48,6 +48,7 @@ class ScrollWrapper extends React.Component {
       this.htmlElement=document.getElementsByTagName("html")[0];
       this.htmlElement.style.position='fixed';
       this.htmlElement.style.overflowX='hidden';
+      this.htmlElement.style.transition=null;
       window.Synapp.ScrollFocus=this.ScrollFocus.bind(this);
       this.scrollWrapper=this.htmlElement; //using the root as the wrapper
     } else 
@@ -83,6 +84,7 @@ class ScrollWrapper extends React.Component {
   
       if(now-start >duration){
         newTop = -trim(lowerEnd, -extent, -newTop);
+        html.style.transition=null;
         html.style.top=newTop+'px';
         this.setState({top: -newTop});
         return;
@@ -110,6 +112,7 @@ class ScrollWrapper extends React.Component {
       }
       let nextTop = top + nextStepDistance; // top of the next step
       nextTop = -trim(lowerEnd, -extent, -newTop);
+      html.style.transition=null;
       html.style.top=nextTop+'px'; // set the new top
       setTimeout(stepper,stepPeriod);
     }
@@ -387,6 +390,7 @@ class ScrollWrapper extends React.Component {
       // changes: Set scrolling state before changing position
       this.setState({ scrolling: true }, () => {
         // Vertical Scrolling
+        this.htmlElement.style.transition=null;
         if (canScrollY && !shifted) {
           this.normalizeVertical(nextY, { scrolling: false, reset: true });
         }
