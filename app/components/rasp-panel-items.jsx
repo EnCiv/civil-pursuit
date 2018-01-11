@@ -174,7 +174,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
           delta.focus = true;
           delta.decendantFocus=false;
-          if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
+          if(rasp.shortId) this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"});
           delta.shortId=null;
           if(action.type!=="FOCUS_STATE") {
             this.queueFocus(action);
