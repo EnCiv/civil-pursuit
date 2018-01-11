@@ -29,7 +29,7 @@ class ScrollWrapper extends React.Component {
       dragging: false,  // note: dragging - fake pseudo class
       scrolling: false, // changes: scrolling (new fake pseudo class)
       reset: false, // changes: change state without rendering
-      start: { y: 0, x: 0 },
+      start: { y: 0, x: 0, t: 0 },
       topBarHeight: null
     };
 
@@ -43,6 +43,7 @@ class ScrollWrapper extends React.Component {
     this.handleChangePosition = this.handleChangePosition.bind(this);
     this.handleScrollbarDragging = this.handleScrollbarDragging.bind(this);
     this.handleScrollbarStopDrag = this.handleScrollbarStopDrag.bind(this);
+    this.transitionEnd=this.transitionEnd.bind(this);
     if(typeof window!== 'undefined') {
       this.htmlElement=document.getElementsByTagName("html")[0];
       this.htmlElement.style.position='fixed';
@@ -123,6 +124,7 @@ class ScrollWrapper extends React.Component {
     this.scrollWrapper.addEventListener('touchstart', this.startDrag, {passive: true});
     this.scrollWrapper.addEventListener('touchmove', this.onDrag, {passive: false});
     this.scrollWrapper.addEventListener('touchend', this.stopDrag, {passive: false});
+    this.scrollWrapper.addEventListener('transitionend', this.transitionEnd, {passive: true});
     this.observer = new MutationObserver(this.mutations.bind(this));
   }
 
@@ -132,6 +134,10 @@ class ScrollWrapper extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mutations(mutations) {
     this.updateSize();
+  }
+
+  transitionEnd(event){
+    event.target.style.transition=null;
   }
 
 // changes: update scrollbars when parent resizing
@@ -163,9 +169,11 @@ class ScrollWrapper extends React.Component {
       // Invers the Movement
       const yMovement = this.state.start.y - e.clientY;
       const xMovement = this.state.start.x - e.clientX;
-
+      const deltaT=event.timeStamp - this.state.start.t;
+      this.dragVelocityY=yMovement/deltaT*1000; // velociy in pixels per second
+      this.dragVelocityX=xMovement/deltaT*1000;
       // Update the last e.client
-      this.setState({ start: { y: e.clientY, x: e.clientX } });
+      this.setState({ start: { y: e.clientY, x: e.clientX, t: event.timeStamp } });
 
       // The next Vertical Value will be
       const nextY = this.state.top + yMovement;
@@ -201,7 +209,20 @@ class ScrollWrapper extends React.Component {
     return elementSize;
   }
 
-  stopDrag() {
+  stopDrag(event) {
+    if(event.changedTouches && event.changedTouches.length){
+      const e=event.changedTouches[0];
+      const yMovement=this.dragVelocityY*0.25;  // how much farther it will go in half a second.
+      const xMovement=this.dragVelocityX*0.25;
+
+      const nextY = this.state.top + yMovement;
+      const nextX = this.state.left + xMovement;
+      this.htmlElement.style.transition="top 0.5s ease-out";
+
+      this.normalizeVertical(nextY);
+      this.normalizeHorizontal(nextX);
+    }
+
     this.setState({ dragging: false });
   }
 
@@ -320,8 +341,11 @@ class ScrollWrapper extends React.Component {
     //event.stopPropagation();
 
     const e = event.changedTouches ? event.changedTouches[0] : event;
-    const start={y: e.pageY, x: e.pageX}; // need to grab data out of e before it is release by setState (in calculateSize)
+    const start={y: e.pageY, x: e.pageX, t: event.timeStamp}; // need to grab data out of e before it is release by setState (in calculateSize)
+    this.dragVelocityX=0;
+    this.dragVelocityY=0;
     if(event.changedTouches && event.changedTouches.length) this.touchable=true;
+    this.htmlElement.style.transition=null; // make sure transition is off when you start
 
     // Make sure the content height is not changed
     this.calculateSize(() => {
