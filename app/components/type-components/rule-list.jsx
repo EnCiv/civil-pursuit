@@ -105,6 +105,10 @@ export class RASPRuleList extends ReactActionStatePathClient {
             delta.shape='redirect';
             delta.itemId='redirect';
             this.queueFocus(action);
+        } else if (action.type==='RESET_SHAPE'){
+            delta.shape='truncated';
+            if(action.itemId) this.toChild[itemId]({type: 'RESET_SHAPE'});
+            delta.itemId=null;
         } else if(Object.keys(delta).length){
             ; // no need to do anything, but do continue to calculate the nextRASP
         } else 
