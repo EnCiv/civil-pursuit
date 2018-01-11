@@ -109,6 +109,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
             delta.shape='truncated';
             if(action.itemId) this.toChild[itemId]({type: 'RESET_SHAPE'});
             delta.itemId=null;
+            this.neededInputAtStart=false;
         } else if(Object.keys(delta).length){
             ; // no need to do anything, but do continue to calculate the nextRASP
         } else 
