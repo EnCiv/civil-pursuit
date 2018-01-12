@@ -553,13 +553,13 @@ class RASPItem extends ReactActionStatePathClient {
     // a button could be a string, or it could be an object which must have a property component
     var renderPanel = (button) => {
       if(typeof button==='string')
-        return (<ItemComponent {...otherProps} component={button} part={'panel'} key={item._id + '-' + button}
+        return (<ItemComponent {...otherProps} component={button} part={'panel'} key={item._id + '-panel-' + button}
           rasp={this.childRASP(this.vM.childShape(rasp,button),button)}
           visualMethod={this.vM.childVisualMethod()}
           item={item} active={this.vM.childActive(rasp, button)} style={style}
           user={user} />);
       else if (typeof button==='object')
-        return (<ItemComponent {...otherProps}  part={'panel'} key={item._id + '-' + button.buttonName}
+        return (<ItemComponent {...otherProps}  part={'panel'} key={item._id + '-panel-' + (button.buttonName || button.component)}
           rasp={this.childRASP(this.vM.childShape(rasp,button.component),button.component)}
           visualMethod={this.vM.childVisualMethod()}
           user={user}
@@ -573,14 +573,14 @@ class RASPItem extends ReactActionStatePathClient {
                          component={button} part={'button'} active={this.vM.childActive(rasp, button)} 
                          rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                          user={user}
-                         onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-' + button}
+                         onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-button-' + button}
           />);
       else if (typeof button === 'object')
         return ( <ItemComponent {...otherProps} {...button}
                          part={'button'} active={this.vM.childActive(rasp, button.component)} 
                          rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                          user={user}
-                         onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-' + button.buttonName}
+                         onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-panel-' + (button.buttonName || button.component)}
         />);
     }
 

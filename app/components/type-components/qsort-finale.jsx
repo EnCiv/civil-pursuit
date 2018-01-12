@@ -165,11 +165,11 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                                 visualMethod: 'titleize', 
                                 shape: 'title', 
                                 limit: 5, 
-                                hideFeedback: 
-                                feedbackMethod==='hidden', 
+                                hideFeedback: feedbackMethod==='hidden', 
                                 createMethod: 'visible', 
                                 promoteMethod: 'visible', 
-                                active: active
+                                active: active,
+                                buttonName: 'Disect'
                             }
                         ],
                         qbuttons: qbuttonTotals,
