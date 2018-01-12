@@ -138,7 +138,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     neededInputAtStart=false;
 
     componentWillReceiveProps(newProps){
-        if(!newProps.rasp.itemId!=='redirect' && this.state.typeList.length && newProps.sections['unsorted'].length===0 && newProps.sections['agree'].length && !this.neededInputAtStart)
+        if(newProps.rasp.itemId!=='redirect' && this.state.typeList.length && newProps.sections['unsorted'].length===0 && newProps.sections['agree'].length && !this.neededInputAtStart)
             this.props.rasp.toParent({type: "REDIRECT"});
     }
 
