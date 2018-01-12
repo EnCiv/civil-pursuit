@@ -96,6 +96,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
       Object.keys(this.toChild).forEach(child => { // send the action to every child
         this.toChild[child]({ type: "CLEAR_PATH" })
       });
+    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape==='open') || (action.type==="UNFOCUS_STATE")) {
+      delta.shape = "truncated";
+      delta.currentPanel =0;
+    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape!=='open') || (action.type==="FOCUS_STATE")) {
+      delta.shape = "open";
     } else if (Object.keys(delta).length) {
       ;
     } else return null;
