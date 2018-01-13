@@ -14,7 +14,7 @@ import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import {QSortToggle} from './qsort-items';
 import TypeComponent from '../type-component';
 
@@ -49,9 +49,9 @@ export class RuleList extends React.Component {
             >
                 <QVoteStore {...this.props}>
                     <ReactActionStatePath>
-                        <PanelHead  cssName={'syn-rule-list'} >
+                        <PanelHeading  cssName={'syn-rule-list'} >
                             <RASPRuleList />
-                        </PanelHead>
+                        </PanelHeading>
                     </ReactActionStatePath>
                 </QVoteStore>
             </PanelStore>
