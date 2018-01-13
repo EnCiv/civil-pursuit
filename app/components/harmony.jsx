@@ -30,7 +30,7 @@ class RASPHarmony extends ReactActionStatePathClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor(props) {
-    super(props, 'side', 1);
+    super(props, 'side', 0);
     let visMeth = this.props.visualMethod || (this.props.item && this.props.item.type && this.props.item.type.visualMethod) || (this.props.type && this.props.type.visualMethod) || 'default';
     if (!(this.vM = this.visualMethods[visMeth])) {
       console.error("RASPHarmony.constructor visualMethod unknown:", visMeth)

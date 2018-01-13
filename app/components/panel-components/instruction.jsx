@@ -120,7 +120,7 @@ exports.button = class PanelInstructionButton extends React.Component {
 
 exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   constructor(props){
-    super(props,'shortId', 1);  // need to set the keyField
+    super(props,'shortId', 0);  // need to set the keyField
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
     if(!visualMethods[visMeth]){
       console.error("PanelInstructionsButton.constructor visualMethod unknown:",visMeth);

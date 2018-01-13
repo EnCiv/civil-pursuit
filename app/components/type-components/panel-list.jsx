@@ -31,7 +31,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 
   constructor(props) {
     console.log("RASPPanelList.constructor", props);
-    super(props, 'currentPanel', 1);
+    super(props, 'currentPanel', 0);
     if (this.props.rasp.toParent) {
       this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
     } else console.error("RASPPanelList no rasp.toParent", this.props);

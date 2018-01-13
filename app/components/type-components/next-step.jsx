@@ -37,7 +37,7 @@ class NextStep extends React.Component {
 class RASPNextStep extends ReactActionStatePathClient {
 
     constructor(props) {
-        super(props, 'itemId',1);
+        super(props, 'itemId', 0);
         //onsole.info("RASPNextStep constructor");
     }
 

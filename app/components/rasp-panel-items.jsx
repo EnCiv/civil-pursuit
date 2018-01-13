@@ -22,7 +22,7 @@ import smoothScroll from '../lib/app/smooth-scroll';
 export default class RASPPanelItems extends ReactActionStatePathClient {
 
   constructor(props) {
-    super(props, 'shortId', 1);  // shortId is the key for indexing to child RASP functions, debug is on
+    super(props, 'shortId', 0);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
     if(!(this.vM= this.visualMethods[visMeth])) {

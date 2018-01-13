@@ -65,7 +65,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
     scrollBackToTop = false;
 
     constructor(props) {
-        super(props, 'shortId', 1);
+        super(props, 'shortId', 0);
         if (this.props.qbuttons) { this.QSortButtonList = this.props.qbuttons; }
         else { this.QSortButtonList = QSortButtonList; }
         this.createDefaults();

@@ -37,7 +37,7 @@ class CafeIdea extends React.Component {
 class RASPCafeIdea extends ReactActionStatePathClient {
 
     constructor(props) {
-        super(props, 'itemId',1);
+        super(props, 'itemId',0);
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         this.createDefaults();
     }

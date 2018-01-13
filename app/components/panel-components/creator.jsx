@@ -32,7 +32,7 @@ exports.button = class PanelCreatorButton extends React.PureComponent {
 
 exports.panel = class PanelCreator extends ReactActionStatePathFilter {
   constructor(props){
-    super(props,'shortId', 1);
+    super(props,'shortId', 0);
     this.mounted=false;
   }
 
