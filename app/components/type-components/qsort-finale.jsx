@@ -91,7 +91,11 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         } else if (action.type === "RESET") {
             if (this.props.resetStore) this.props.resetStore();
             return null;
-        } else if (Object.keys(delta).length) {
+        } else if ((action.type === "TOGGLE_FOCUS" && rasp.shortId) || (action.type==="UNFOCUS_STATE")) {
+            delta.shortId = null;
+        } else if ((action.type === "TOGGLE_FOCUS" && !rasp.shortId) || (action.type==="FOCUS_STATE")) {
+            if(action.shortId && this.toChild[action.shortId]) delta.shortId=action.shortId;
+        }else if (Object.keys(delta).length) {
             ; // no need to do anything, it's been done. But do continue on to calculating the nextRASP
         } else
             return null;
