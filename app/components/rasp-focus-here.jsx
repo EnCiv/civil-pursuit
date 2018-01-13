@@ -38,7 +38,7 @@ export default class RASPFocusHere extends ReactActionStatePathFilter {
     }
 
     render(){
-        const {children, ...lessProps}=this.props;
+        const {children, filterTypes, ...lessProps}=this.props; // filterTypes is not propogated to children
         return(
             <section ref={this.setTop.bind(this)}>
                 {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
