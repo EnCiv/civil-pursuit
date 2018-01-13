@@ -9,6 +9,7 @@ import Instruction from '../instruction';
 import merge from 'lodash/merge';
 import { ReactActionStatePath, ReactActionStatePathMulti } from 'react-action-state-path';
 import PanelHeading from '../panel-heading';
+import RASPFocusHere from '../rasp-focus-here';
 
 class PanelList extends React.Component {
   initialRASP = { currentPanel: 0 };
@@ -16,9 +17,11 @@ class PanelList extends React.Component {
     //onsole.info("PanelList.render", this.props);
     return (
       <ReactActionStatePath {...this.props} initialRASP={this.initialRASP}>
-        <PanelHeading cssName={'syn-panel-list'} panelButtons={['Instruction']} >
-          <RASPPanelList />
-        </PanelHeading>
+        <RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT', {type: "DECENDANT_UNFOCUS", distance: 1}]}>
+          <PanelHeading cssName={'syn-panel-list'} panelButtons={['Instruction']} >
+            <RASPPanelList />
+          </PanelHeading>
+        </RASPFocusHere>
       </ReactActionStatePath>
     );
   }
@@ -96,10 +99,10 @@ class RASPPanelList extends ReactActionStatePathMulti {
       Object.keys(this.toChild).forEach(child => { // send the action to every child
         this.toChild[child]({ type: "CLEAR_PATH" })
       });
-    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape==='open') || (action.type==="UNFOCUS_STATE")) {
+    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape === 'open') || (action.type === "UNFOCUS_STATE")) {
       delta.shape = "truncated";
-      delta.currentPanel =0;
-    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape!=='open') || (action.type==="FOCUS_STATE")) {
+      delta.currentPanel = 0;
+    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape !== 'open') || (action.type === "FOCUS_STATE")) {
       delta.shape = "open";
     } else if (Object.keys(delta).length) {
       ;
