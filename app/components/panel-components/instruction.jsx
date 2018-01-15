@@ -136,7 +136,8 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
       let inst=this.props.rasp.instruction; 
       if(!inst || inst==='finish') 
         delta.instruction = Transition[this.props.rasp.instruction]; 
-        return false 
+      this.queueFocus(action); // causes a descendant focus from this RASP
+      return false 
     },
     "TOGGLE_INSTRUCTION_HINT": (action, delta) => { 
       let inst=this.props.rasp.instruction; 
