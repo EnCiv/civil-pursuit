@@ -85,6 +85,10 @@ export class RASPRuleList extends ReactActionStatePathClient {
     // 
     actionToState(action,rasp,source,defaultRASP,delta) {
         //find the section that the itemId is in, take it out, and put it in the new section
+        if(rasp.itemId==='redirect') {
+            action.distance-=1; // if redirect, don't add to distance
+            return null;
+        }
         var nextRASP={};
         if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
