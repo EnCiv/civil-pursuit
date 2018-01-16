@@ -111,7 +111,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
       if(action.type!=="FOCUS_STATE") {
         this.queueFocus(action);
       }
-    } else if (action.type === "DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
+    } else if ((action.type === "DESCENDANT_UNFOCUS") && !action.itemUnfocused && (action.distance >0)) {
       delta.shape= "truncated";
       delta.currentPanel=0;
       action.itemUnfocused=1;
