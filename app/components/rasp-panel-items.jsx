@@ -1,9 +1,9 @@
 'use strict';
 
 import React from 'react';
-import Accordion          from 'react-proactive-accordion';
+import Accordion from 'react-proactive-accordion';
 import ItemStore from '../components/store/item';
-import {ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
+import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import Item from './item';
 import smoothScroll from '../lib/app/smooth-scroll';
 
@@ -24,10 +24,10 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
   constructor(props) {
     super(props, 'shortId', 0);  // shortId is the key for indexing to child RASP functions, debug is on
     if (props.type && props.type.name && props.type.name !== this.title) { this.title = props.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
-    let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
-    if(!(this.vM= this.visualMethods[visMeth])) {
-      console.error("PanelItems.constructor visualMethod unknown:",visMeth)
-      this.vM=this.visualMethods['default'];
+    let visMeth = this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
+    if (!(this.vM = this.visualMethods[visMeth])) {
+      console.error("PanelItems.constructor visualMethod unknown:", visMeth)
+      this.vM = this.visualMethods['default'];
     }
     this.createDefaults();
   }
@@ -45,40 +45,40 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
     //onsole.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
     if (action.type === "TOGGLE_CREATOR") {
       if (rasp.creator) {// it's on so toggle it off
-        delta.creator=false;
+        delta.creator = false;
       } else { // it's off so toggle it on
         delta.creator = true;
         if (rasp.shortId) {//there is an item that's open
-          this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+          this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
           delta.shortId = null;
         }
       }
-      if(delta.creator) this.queueFocus(action); 
+      if (delta.creator) this.queueFocus(action);
       else this.queueUnfocus(action)
-    } else if(this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
-        ; //then do nothing - it's been done
-     } else if(Object.keys(delta).length>0) {
-       ; // then do nothing - it's already beend done but skip over the final else statement
-     } else
+    } else if (this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
+      ; //then do nothing - it's been done
+    } else if (Object.keys(delta).length > 0) {
+      ; // then do nothing - it's already beend done but skip over the final else statement
+    } else
       return null; // don't know this action, null so the default methods can have a shot at it
 
     Object.assign(nextRASP, rasp, delta);
-    this.vM.deriveRASP(nextRASP,defaultRASP)
+    this.vM.deriveRASP(nextRASP, defaultRASP)
     return nextRASP;
   }
 
   // set the state from the pathSegment. 
   // the shortId is the path segment
   segmentToState(action, initialRASP) {
-    var nextRASP={};
+    var nextRASP = {};
     var parts = action.segment.split(',');
-    parts.forEach(part=>{
-      if(part==='d') nextRASP.decendantFocus=true;
-      else if(part.length===5) nextRASP.shortId=part;
+    parts.forEach(part => {
+      if (part === 'd') nextRASP.decendantFocus = true;
+      else if (part.length === 5) nextRASP.shortId = part;
       else console.error("PanelItems.segmentToState unexpected part:", part);
-    }) 
-    this.vM.deriveRASP(nextRASP,initialRASP);
-    if(nextRASP.pathSegment !== action.segment) console.error("PanelItems.segmentToAction calculated path did not match",action.pathSegment, nextRASP.pathSegment )
+    })
+    this.vM.deriveRASP(nextRASP, initialRASP);
+    if (nextRASP.pathSegment !== action.segment) console.error("PanelItems.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
     return { nextRASP, setBeforeWait: true }
   }
 
@@ -86,47 +86,47 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
   componentWillReceiveProps(newProps) {
     if (newProps.type && newProps.type.name && newProps.type.name !== this.title) { this.title = newProps.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
     let oldLength = this.props.items && this.props.items.length || 0;
-    if(newProps.items && (newProps.items.length > oldLength)){  // if the length changes, history needs to be updated
+    if (newProps.items && (newProps.items.length > oldLength)) {  // if the length changes, history needs to be updated
       //onsole.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
-      this.qaction(()=>{
-        this.props.rasp.toParent({type: "CHILD_STATE_CHANGED", length: newProps.items.length})
-      },0)
+      this.qaction(() => {
+        this.props.rasp.toParent({ type: "CHILD_STATE_CHANGED", length: newProps.items.length })
+      }, 0)
     }
-    let visMeth=newProps.visualMethod || newProps.type && newProps.type.visualMethod || 'default';
-    if(!(this.vM= this.visualMethods[visMeth])) {
+    let visMeth = newProps.visualMethod || newProps.type && newProps.type.visualMethod || 'default';
+    if (!(this.vM = this.visualMethods[visMeth])) {
       console.error("PanelItems.componentWillReceiveProps visualMethod unknown:", visMeth)
-      this.vM=this.visualMethods['default'];
+      this.vM = this.visualMethods['default'];
     }
   }
 
-  visualMethods={
+  visualMethods = {
     default: {
       // whether or not to show items in this list.  
-      childActive: (rasp,item)=>{
-        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
+      childActive: (rasp, item) => {
+        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape !== 'title')
       },
       // the shape to give child items in the Panel
-      childShape: (rasp, item)=>{
-        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
+      childShape: (rasp, item) => {
+        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape !== 'title') ? rasp.shape : 'truncated')
       },
-      childVisualMethod: ()=>undefined,
+      childVisualMethod: () => undefined,
       // process actions for this visualMethod
-      actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "DESCENDANT_FOCUS" && action.distance===1) {
+      actionToState: (action, rasp, source, initialRASP, delta) => {
+        if (action.type === "DESCENDANT_FOCUS" && action.distance === 1) {
           if (action.shortId) { // a child is opening
-            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+            if (rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
             delta.shortId = action.shortId; // the new child will be open
-          } 
-        } else if(action.type ==="DESCENDANT_UNFOCUS" && action.distance===1){
-            if(rasp.shortId) {
-              delta.shortId=false;
-            }
+          }
+        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
+          if (rasp.shortId) {
+            delta.shortId = false;
+          }
         } else if (action.type === "ITEM_DELVE") {
-          if(rasp.shortId) {
+          if (rasp.shortId) {
             var nextFunc = () => this.toChild[rasp.shortId](action);
             if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
-            else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
+            else this.waitingOn = { nextRASP: Object.assign({}, rasp), nextFunc: nextFunc };
           }
         } else if (action.type === "SHOW_ITEM") {
           if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
@@ -135,65 +135,68 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = action.item.id;
         } else
           return false;
-        return true; 
+        return true;
       },
       // derive shape and pathSegment from the other parts of the RASP
-      deriveRASP: (rasp, initialRASP)=>{
+      deriveRASP: (rasp, initialRASP) => {
         rasp.shape = rasp.shortId ? 'open' : 'truncated';
-        let parts=[];
-        if(rasp.decendantFocus)parts.push('d');
-        if(rasp.shortId)parts.push(rasp.shortId);
-        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
-        if(parts.length) rasp.pathSegment=parts.join(',');
-        else rasp.pathSegment=null;
+        let parts = [];
+        if (rasp.decendantFocus) parts.push('d');
+        if (rasp.shortId) parts.push(rasp.shortId);
+        if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
+        if (parts.length) rasp.pathSegment = parts.join(',');
+        else rasp.pathSegment = null;
       }
     },
     ooview: {
-      childActive: (rasp,item)=>{
-        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape!=='title')
+      childActive: (rasp, item) => {
+        return (rasp.shortId === item.id) || (rasp.shape !== 'open' && rasp.shape !== 'title')
       },
-      childShape: (rasp, item)=>{
-        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape!=='title') ? rasp.shape :  'truncated')
+      childShape: (rasp, item) => {
+        return (rasp.shortId === item.id ? 'open' : (rasp.shape !== 'open' && rasp.shape !== 'title') ? rasp.shape : 'truncated')
       },
-      childVisualMethod: ()=>'ooview',
-      actionToState: (action, rasp, source, initialRASP, delta)=>{
-        if (action.type === "DESCENDANT_FOCUS" && action.distance===1) {
+      childVisualMethod: () => 'ooview',
+      actionToState: (action, rasp, source, initialRASP, delta) => {
+        if (action.type === "DESCENDANT_FOCUS" && action.distance === 1) {
           if (!action.shortId) logger.error("PanelItems.actionToState action without shortId", action)
           if (action.shortId) { // a child is opening
-            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-              this.toChild[rasp.shortId]({ type: "RESET_SHAPE"});
+            if (rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
             delta.shortId = action.shortId; // the new child will be open
           }
-        } else if (action.type==="DESCENDANT_FOCUS" && action.distance>1) {
-            delta.decendantFocus=true;
-        } else if (action.type==="DESCENDANT_UNFOCUS"  && action.distance===1) {
-            if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
-            delta.shortId=null;
-            delta.decendantFocus=false;
-            delta.creator=false;
-        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.shortId) || (action.type === "FOCUS_STATE")) {
-          delta.decendantFocus=false;
-          if(rasp.shortId && (action.shortId !== rasp.shortId)) this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"});
-          if(!action.shortId && !rasp.shortId) {
-            if(action.type!=="FOCUS_STATE")
+        } else if (action.type === "DESCENDANT_FOCUS" && action.distance > 1) {
+          delta.decendantFocus = true;
+        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
+          //if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
+          delta.shortId = null;
+          delta.decendantFocus = false;
+          delta.creator = false;
+        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 2) {
+          delta.decendantFocus = false;
+          delta.creator = false;
+        } else if ((action.type === "FOCUS") || (action.type === "TOGGLE_FOCUS" && !rasp.shortId) || (action.type === "FOCUS_STATE")) {
+          delta.decendantFocus = false;
+          if (rasp.shortId && (action.shortId !== rasp.shortId)) this.toChild[rasp.shortId]({ type: "UNFOCUS_STATE" });
+          if (!action.shortId && !rasp.shortId) {
+            if (action.type !== "FOCUS_STATE")
               this.queueUnfocus(action);
           } else {
-            delta.shortId=action.shortId;
-            if(action.type!=="FOCUS_STATE")
+            delta.shortId = action.shortId;
+            if (action.type !== "FOCUS_STATE")
               this.queueFocus(action);
           }
-        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.shortId) || (action.type === "UNFOCUS_STATE")) {
-          delta.decendantFocus=false;
-          delta.creator=false;
-          if(rasp.shortId)this.toChild[rasp.shortId]({type: "RESET_SHAPE"});
-          delta.shortId=null;
-          if(action.type!=="UNFOCUS_STATE")
+        } else if ((action.type === "UNFOCUS") || (action.type === "TOGGLE_FOCUS" && rasp.shortId) || (action.type === "UNFOCUS_STATE")) {
+          delta.decendantFocus = false;
+          delta.creator = false;
+          if (rasp.shortId) this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
+          delta.shortId = null;
+          if (action.type !== "UNFOCUS_STATE")
             this.queueUnfocus(action);
         } else if (action.type === "ITEM_DELVE") {
-          if(rasp.shortId) {
+          if (rasp.shortId) {
             var nextFunc = () => this.toChild[rasp.shortId](action);
             if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
-            else this.waitingOn = { nextRASP: Object.assign({},rasp), nextFunc: nextFunc };
+            else this.waitingOn = { nextRASP: Object.assign({}, rasp), nextFunc: nextFunc };
           }
         } else if (action.type === "SHOW_ITEM") {
           if (!this.props.items.some(item => item._id === action.item._id)) { // if the new item is not in the list
@@ -202,89 +205,89 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           delta.shortId = action.item.id;
         } else
           return false;
-        return true; 
+        return true;
       },
       // derive shape and pathSegment from the other parts of the RASP
-      deriveRASP: (rasp, initialRASP)=>{
+      deriveRASP: (rasp, initialRASP) => {
         rasp.shape = rasp.shortId ? (rasp.decendantFocus ? 'title' : 'open') : 'truncated';
-        let parts=[];
-        if(rasp.decendantFocus)parts.push('d');
-        if(rasp.shortId)parts.push(rasp.shortId);
-        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
-        if(parts.length) rasp.pathSegment=parts.join(',');
-        else rasp.pathSegment=null;
+        let parts = [];
+        if (rasp.decendantFocus) parts.push('d');
+        if (rasp.shortId) parts.push(rasp.shortId);
+        if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
+        if (parts.length) rasp.pathSegment = parts.join(',');
+        else rasp.pathSegment = null;
       }
     },
     titleize: {
-      childActive: (rasp,item)=>{
+      childActive: (rasp, item) => {
         return (rasp.shortId === item.id) || (!rasp.shortId)
       },
-      childShape: (rasp, item)=>{
-        return (rasp.shortId === item.id ? 'open' : ((rasp.decendantFocus || rasp.focus)? 'truncated' :'title'))
+      childShape: (rasp, item) => {
+        return (rasp.shortId === item.id ? 'open' : ((rasp.decendantFocus || rasp.focus) ? 'truncated' : 'title'))
       },
-      childVisualMethod: ()=>'titleize',
+      childVisualMethod: () => 'titleize',
       actionToState: (action, rasp, source, initialRASP, delta) => {
         if (action.type === "DESCENDANT_FOCUS") {
           delta.decendantFocus = true;
-          delta.focus=true;
-          if(!rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "FOCUS_STATE"}));
+          delta.focus = true;
+          if (!rasp.focus) {
+            this.props.items.forEach(item => this.toChild[item.id]({ type: "FOCUS_STATE" }));
           }
           if (action.shortId) { // a child is opening
-            if(rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
-              this.toChild[rasp.shortId]({ type: "UNFOCUS_STATE"}); //RESET_SHAPE
+            if (rasp.shortId && rasp.shortId !== action.shortId) // if a different child is already open, reset the SHAPE of the current child
+              this.toChild[rasp.shortId]({ type: "UNFOCUS_STATE" }); //RESET_SHAPE
             delta.shortId = action.shortId; // the new child will be open
           }
-          if(action.distance===1 || action.distance==3)
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.top,500),500);
+          if (action.distance === 1 || action.distance == 3)
+            setTimeout(() => Synapp.ScrollFocus(this.refs.top, 500), 500);
         } else if (action.type === "DESCENDANT_UNFOCUS") {
-            if (action.distance ===1 /*&& rasp.decendantFocus*/) {
-              //if(rasp.shortId) {
-              //  this.toChild[rasp.shortId]({type: "FOCUS_STATE"})
-              //  delta.shortId=null;
-              //}
-              delta.shortId=null;
-              delta.decendantFocus=false;
-              delta.creator=false;
-            }
-        } else if ((action.type === "FOCUS") || (action.type==="TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
-          delta.focus = true;
-          if(!rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "FOCUS_STATE"}));
+          if (action.distance === 1 /*&& rasp.decendantFocus*/) {
+            //if(rasp.shortId) {
+            //  this.toChild[rasp.shortId]({type: "FOCUS_STATE"})
+            //  delta.shortId=null;
+            //}
+            delta.shortId = null;
+            delta.decendantFocus = false;
+            delta.creator = false;
           }
-          if(action.type!=="FOCUS_STATE"){
+        } else if ((action.type === "FOCUS") || (action.type === "TOGGLE_FOCUS" && !rasp.focus) || (action.type === "FOCUS_STATE")) {
+          delta.focus = true;
+          if (!rasp.focus) {
+            this.props.items.forEach(item => this.toChild[item.id]({ type: "FOCUS_STATE" }));
+          }
+          if (action.type !== "FOCUS_STATE") {
             this.queueFocus(action);
           }
-        } else if ((action.type === "UNFOCUS") || (action.type==="TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
+        } else if ((action.type === "UNFOCUS") || (action.type === "TOGGLE_FOCUS" && rasp.focus) || (action.type === "UNFOCUS_STATE")) {
           delta.focus = false;
-          delta.decendantFocus=false;
-          delta.creator=false;
+          delta.decendantFocus = false;
+          delta.creator = false;
           //if(rasp.focus){
-            this.props.items.forEach(item=>this.toChild[item.id]({type: "UNFOCUS_STATE"}));
+          this.props.items.forEach(item => this.toChild[item.id]({ type: "UNFOCUS_STATE" }));
           //} else if(rasp.shortId) {
           //  this.toChild[rasp.shortId]({type: "UNFOCUS_STATE"}); // RESET_SHAPE
-            delta.shortId=null;
+          delta.shortId = null;
           //}
-          if(action.type!=="UNFOCUS_STATE")
+          if (action.type !== "UNFOCUS_STATE")
             this.queueUnfocus(action);
-        }  else if (action.type === "ITEM_DELVE") {
+        } else if (action.type === "ITEM_DELVE") {
           ; // do nothing and consume the action
         } else if (action.type === "SHOW_ITEM") {
           ; // do nothing and consume the action
-        }else
+        } else
           return false; // action has not been processed continute checking
-        action.toBeContinued=true; // supress shape_changed events
+        action.toBeContinued = true; // supress shape_changed events
         return true; // action has been processed
       },
       // derive shape and pathSegment from the other parts of the RASP
-      deriveRASP: (rasp, initialRASP)=>{
+      deriveRASP: (rasp, initialRASP) => {
         rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : (rasp.focus ? 'truncated' : 'title'); //if something hapens with a decendant, display the list as open or truncated. otherwise it's titleized.
-        let parts=[];
-        if(rasp.decendantFocus)parts.push('d');
-        if(rasp.shortId)parts.push(rasp.shortId);
-        if(rasp.shortId && rasp.shortId.length!==5)console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was",rasp.shortId.length);
-        if(parts.length) rasp.pathSegment=parts.join(',');
-        else rasp.pathSegment=null;
+        let parts = [];
+        if (rasp.decendantFocus) parts.push('d');
+        if (rasp.shortId) parts.push(rasp.shortId);
+        if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
+        if (parts.length) rasp.pathSegment = parts.join(',');
+        else rasp.pathSegment = null;
       }
     }
   }
@@ -300,39 +303,39 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 
     let bgc = 'white';
 
-      var buttons=type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
+    var buttons = type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
 
-      content = items.map(item => {
-          if (!this.mounted[item.id]) { // only render this once
-            this.mounted[item.id] = (
-              <ItemStore item={item} key={`item-${item._id}`}>
-                <Item
-                  {...otherProps}
-                  parent={parent}
-                  rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
-                  buttons={buttons}
-                  style={{ backgroundColor: bgc }}
-                  visualMethod={this.vM.childVisualMethod()}
-                />
-              </ItemStore>
-            );
-          }
-          return (
-            <Accordion active={this.vM.childActive(rasp,item)} name='item' key={item._id +'-panel-item'}>
-              {this.mounted[item.id]}
-            </Accordion>
-          );
-        });
+    content = items.map(item => {
+      if (!this.mounted[item.id]) { // only render this once
+        this.mounted[item.id] = (
+          <ItemStore item={item} key={`item-${item._id}`}>
+            <Item
+              {...otherProps}
+              parent={parent}
+              rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
+              buttons={buttons}
+              style={{ backgroundColor: bgc }}
+              visualMethod={this.vM.childVisualMethod()}
+            />
+          </ItemStore>
+        );
+      }
+      return (
+        <Accordion active={this.vM.childActive(rasp, item)} name='item' key={item._id + '-panel-item'}>
+          {this.mounted[item.id]}
+        </Accordion>
+      );
+    });
 
-        const end = skip + limit;
+    const end = skip + limit;
 
-        //       if ( count > limit ) {
-        //         loadMore = (
-        //           <h5 className="gutter text-center">
-        //             <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
-        //           </h5>
-        //         );
-        //       }
+    //       if ( count > limit ) {
+    //         loadMore = (
+    //           <h5 className="gutter text-center">
+    //             <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
+    //           </h5>
+    //         );
+    //       }
 
     return (
       <section ref="top">
