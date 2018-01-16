@@ -99,17 +99,19 @@ class RASPPanelList extends ReactActionStatePathMulti {
       Object.keys(this.toChild).forEach(child => { // send the action to every child
         this.toChild[child]({ type: "CLEAR_PATH" })
       });
-    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape === 'open') || (action.type === "UNFOCUS_STATE")) {
+    } else if (action.type === "TOGGLE_FOCUS" && rasp.shape === 'open') {
       delta.shape = "truncated";
       delta.currentPanel = 0;
-      if(action.type!=="UNFOCUS_STATE")
-        this.queueUnfocus(action);
     } else if (action.type === "TOGGLE_FOCUS" && rasp.shape !== 'open'){
-        this.queueUnfocus(action);
+      this.queueUnfocus(action);
+    } else if (action.type === "UNFOCUS_STATE") {
+      delta.shape = "truncated";
+      delta.currentPanel = 0;
     } else if(action.type === "FOCUS_STATE") {
       delta.shape = "open";
-      if(action.type!=="FOCUS_STATE") {
-        this.queueFocus(action);
+      let nextPanel=action.currentPanel;
+      if(typeof nextPanel==='number' && (nextPanel === 0 || panelStatus[nextPanel] === 'done' || panelStatus[nextPanel - 1] === 'done')){
+        detla.currentPanel = nextPanel;
       }
     } else if ((action.type === "DESCENDANT_UNFOCUS") && !action.itemUnfocused && (action.distance >0)) {
       delta.shape= "truncated";
