@@ -166,7 +166,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           }
         } else if (action.type === "DESCENDANT_FOCUS" && action.distance > 1) {
           delta.decendantFocus = true;
-        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
+        } else if (action.type === "DESCENDANT_UNFOCUS" && (action.distance === 1 || (action.distance===2 && action.itemUnfocused))) {
           //if(rasp.shortId) this.toChild[rasp.shortId]({type: "RESET_SHAPE"})
           delta.shortId = null;
           delta.decendantFocus = false;
