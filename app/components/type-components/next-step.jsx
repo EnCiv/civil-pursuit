@@ -86,7 +86,7 @@ class RASPNextStep extends ReactActionStatePathClient {
             <section id="syn-next-step">
                 <div className="syn-next-step">
                     <button 
-                            onClick={()=>rasp.toParent({ type: "FOCUS_STATE", distance: (4- rasp.depth)})} // send action to RASP at depth 4
+                            onClick={()=>rasp.toParent({ type: "UNFOCUS_STATE", distance: (4- rasp.depth)})} // send action to RASP at depth 4
                             className="syn-next-step-button"
                             title={"Move on to the next question"}
                             >

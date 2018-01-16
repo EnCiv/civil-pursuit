@@ -113,7 +113,6 @@ class RASPPanelList extends ReactActionStatePathMulti {
       }
     } else if ((action.type === "DESCENDANT_UNFOCUS") && !action.itemUnfocused && (action.distance >0)) {
       delta.shape= "truncated";
-      delta.currentPanel=0;
       action.itemUnfocused=1;
     } else if (Object.keys(delta).length) {
       ;
