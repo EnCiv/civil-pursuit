@@ -91,6 +91,10 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         } else if (action.type==="RESET"){
             if(this.props.resetStore) this.props.resetStore();
             return null;
+        } else if (action.type === "TOGGLE_FOCUS" && rasp.itemId) {
+            delta.shortId = null;
+        } else if (action.type === "TOGGLE_FOCUS" && !rasp.itemId) {
+            this.queueUnfocus(action);
         } else if(Object.keys(delta).length){
             ; // do nothing but generate the nextRASP 
         } else

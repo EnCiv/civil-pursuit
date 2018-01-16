@@ -114,6 +114,8 @@ export class RASPRuleList extends ReactActionStatePathClient {
             if(action.itemId) this.toChild[itemId]({type: 'RESET_SHAPE'});
             delta.itemId=null;
             this.neededInputAtStart=false;
+        } else if (action.type === "TOGGLE_FOCUS") {
+            this.queueUnfocus(action);
         } else if(Object.keys(delta).length){
             ; // no need to do anything, but do continue to calculate the nextRASP
         } else 

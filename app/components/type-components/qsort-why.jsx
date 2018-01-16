@@ -109,6 +109,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
+        }  else if (action.type === "TOGGLE_FOCUS") {
+            this.queueUnfocus(action);
         } else if(Object.keys(delta).length){
             ;
         } else
