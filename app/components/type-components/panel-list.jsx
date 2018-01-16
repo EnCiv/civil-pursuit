@@ -104,7 +104,9 @@ class RASPPanelList extends ReactActionStatePathMulti {
       delta.currentPanel = 0;
       if(action.type!=="UNFOCUS_STATE")
         this.queueUnfocus(action);
-    } else if ((action.type === "TOGGLE_FOCUS" && rasp.shape !== 'open') || (action.type === "FOCUS_STATE")) {
+    } else if (action.type === "TOGGLE_FOCUS" && rasp.shape !== 'open'){
+        this.queueUnfocus(action);
+    } else if(action.type === "FOCUS_STATE") {
       delta.shape = "open";
       if(action.type!=="FOCUS_STATE") {
         this.queueFocus(action);
