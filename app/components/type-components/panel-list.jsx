@@ -101,12 +101,10 @@ class RASPPanelList extends ReactActionStatePathMulti {
       });
     } else if (action.type === "TOGGLE_FOCUS" && rasp.shape === 'open') {
       delta.shape = "truncated";
-      delta.currentPanel = 0;
     } else if (action.type === "TOGGLE_FOCUS" && rasp.shape !== 'open'){
       this.queueUnfocus(action);
     } else if (action.type === "UNFOCUS_STATE") {
       delta.shape = "truncated";
-      delta.currentPanel = 0;
     } else if(action.type === "FOCUS_STATE") {
       delta.shape = "open";
       let nextPanel=action.currentPanel;
