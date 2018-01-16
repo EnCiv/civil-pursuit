@@ -119,6 +119,8 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
+        } else if (action.type==="TOGGLE_FOCUS") {
+            this.queueUnfocus(action);
         } else if (Object.keys(delta).length){
             ; // do nothing, but proceed to building nextRASP because one of the actionFilters has updated the state
         } else 
