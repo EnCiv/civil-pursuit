@@ -91,7 +91,7 @@ class RASPItem extends ReactActionStatePathClient {
             delta.readMore = false; // if the user is working on stuff further below, close the readmore
         }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
             // child changed to truncated
-            action.itemUnfocused=true; // let items up the chain know that an item has unfocused
+            action.itemUnfocused=1; // let items up the chain know that an item has unfocused
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
@@ -154,7 +154,7 @@ class RASPItem extends ReactActionStatePathClient {
             delta.readMore = false; // if the user is working on stuff further below, close the readmore
         }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
             // child changed to truncated
-            action.itemUnfocused=true; // let items up the chain know that an item has unfocused
+            action.itemUnfocused=1; // let items up the chain know that an item has unfocused
             delta.shape='truncated'; 
             delta.button=null; 
             delta.readMore=false;
@@ -218,7 +218,7 @@ class RASPItem extends ReactActionStatePathClient {
           delta.readMore = false;
           delta.decendantFocus=true;
         }else if(action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused){
-          action.itemUnfocused=true;
+          action.itemUnfocused=1;
           delta.shape='truncated'; 
           delta.button=null; 
           delta.readMore=false;
@@ -286,7 +286,7 @@ class RASPItem extends ReactActionStatePathClient {
           if(action.distance===1)
             setTimeout(()=>Synapp.ScrollFocus(this.refs.footer,500),500);  // it would be better if this were a chained event but for now ...
         } else if (action.type==="DESCENDANT_UNFOCUS" && !action.itemUnfocused) {
-          action.itemUnfocused=true;
+          action.itemUnfocused=1;
           delta.decendantFocus=false;
           delta.button=null;
           delta.readMore=false;
