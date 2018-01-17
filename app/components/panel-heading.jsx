@@ -24,7 +24,7 @@ export default class PanelHeading extends React.Component {
     const style = Object.assign({}, { backgroundColor: 'white' }, this.props.style);
     const title=type.name;
     var {children, panelButtons = [], ...lessProps} = this.props;
-    Object.assign(lessProps,{...panel});
+    Object.assign(lessProps,{...panel}); // this is over riding 'type' that was calculating above
     let name = cssName + '--' + (type._id || type);
     const vShape=rasp ? rasp.shape : '';
     const cShape= vShape ? 'vs-'+vShape : '';
@@ -32,9 +32,9 @@ export default class PanelHeading extends React.Component {
     // a button could be a string, or it could be an object which must have a property component
     var renderComponents = (part, button, position) => {
       if(typeof button==='string')
-        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} type={type} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
       else if (typeof button==='object')
-        return (<ListComponent Components={Components} {...lessProps}  part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} type={type} part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
     }
 
     return (
