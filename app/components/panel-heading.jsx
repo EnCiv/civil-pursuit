@@ -47,7 +47,12 @@ export default class PanelHeading extends React.Component {
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
           {panelButtons.map((button,i)=>renderComponents('panel',button, (i+0.5)*this.iconWidth))}
-          {lessProps.items ? React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children)) : <div>{"Loading..."}</div>}
+          { lessProps.items ? React.Children.map(React.Children.only(children), child=>{
+              var newProps=Object.assign({},lessProps);
+              Object.keys(child.props).forEach(prop=>delete newProps[prop]);
+              return React.cloneElement(child, newProps, child.props.children)
+            }) : <div className="panel-heading-loading">{"Loading..."}</div>
+          }
         </section>
       </section>
     );
