@@ -37,11 +37,16 @@ export default class RASPFocusHere extends ReactActionStatePathFilter {
             setTimeout(()=>Synapp.ScrollFocus(this.top,500),500);
     }
 
-    render(){
-        const {children, filterTypes, ...lessProps}=this.props; // filterTypes is not propogated to children
-        return(
+    render() {
+        const { children, filterTypes, ...lessProps } = this.props; // filterTypes is not propogated to children
+        return (
             <section ref={this.setTop.bind(this)}>
-                {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
+                {   React.Children.map(React.Children.only(children), child => {
+                    var newProps = Object.assign({}, lessProps);
+                    Object.keys(child.props).forEach(prop => delete newProps[prop]);
+                    return React.cloneElement(child, newProps, child.props.children)
+                    })
+                }
             </section>
         );
     }
