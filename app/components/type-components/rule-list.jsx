@@ -42,14 +42,15 @@ const RuleButtonList = {
 export class RuleList extends React.Component {
     render(){
         //logger.info("RuleList.render", this.props);
+        const {type}=this.props.panel;
         return(
             <PanelStore parent={this.props.item}
-                        type={this.props.type || (this.props.panel && this.props.panel.type)}
+                        type={type}
                         limit={20}
             >
                 <QVoteStore {...this.props}>
                     <ReactActionStatePath>
-                        <PanelHeading  cssName={'syn-rule-list'} >
+                        <PanelHeading  type={type} cssName={'syn-rule-list'} >
                             <RASPRuleList />
                         </PanelHeading>
                     </ReactActionStatePath>
@@ -144,7 +145,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     neededInputAtStart=false;
 
     componentWillReceiveProps(newProps){
-        if(newProps.rasp.itemId!=='redirect' && this.state.typeList.length && newProps.sections['unsorted'].length===0 && newProps.sections['agree'].length && !this.neededInputAtStart)
+        if(newProps.rasp.itemId!=='redirect' && this.state.typeList.length && newProps.sections['unsorted'].length===0 && newProps.sections['agree'] && newProps.sections['agree'].length && !this.neededInputAtStart)
             this.props.rasp.toParent({type: "REDIRECT"});
     }
 

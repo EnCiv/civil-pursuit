@@ -18,7 +18,7 @@ export default class PanelHeading extends React.Component {
   render() {
     const {rasp, cssName, panel } = this.props;
 
-    const type= (typeof this.props.type === 'object' && this.props.type) || (panel && panel.type) || this.props.type || null;
+    const type= (typeof this.props.type === 'object' && this.props.type) || null;
     if(!type) return null;
 
     const style = Object.assign({}, { backgroundColor: 'white' }, this.props.style);
@@ -32,9 +32,9 @@ export default class PanelHeading extends React.Component {
     // a button could be a string, or it could be an object which must have a property component
     var renderComponents = (part, button, position) => {
       if(typeof button==='string')
-        return (<ListComponent Components={Components} {...lessProps} type={type} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
       else if (typeof button==='object')
-        return (<ListComponent Components={Components} {...lessProps} type={type} part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
     }
 
     return (
@@ -47,7 +47,7 @@ export default class PanelHeading extends React.Component {
         </section>
         <section className={ClassNames("syn-panel-body", cShape)}>
           {panelButtons.map((button,i)=>renderComponents('panel',button, (i+0.5)*this.iconWidth))}
-          {React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children))}
+          {lessProps.items ? React.Children.map(React.Children.only(children), child=>React.cloneElement(child, lessProps, child.props.children)) : <div>{"Loading..."}</div>}
         </section>
       </section>
     );

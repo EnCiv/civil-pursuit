@@ -11,8 +11,8 @@ class RandomItemStore extends React.Component {
 
   constructor(props){
     super(props);
-    const parent=this.props.shared.parent || this.props.parent || null;
-    const type=this.props.shared.type || this.props.type;
+    const parent=this.props.parent || null;
+    const type=this.props.type;
     const limit=this.props.shared.limit || this.props.limit || publicConfig.limit;
     this.state={parent, type, limit, items: [], index: {}, sections: {unsorted: []}};
     this.id=makePanelId(this.state);

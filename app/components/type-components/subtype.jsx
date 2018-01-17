@@ -17,7 +17,7 @@ class Subtype extends React.Component {
     // all other props are passed to PanelItems
       content = (
         <PanelStore { ...storeProps }>
-          <PanelItems {...this.props} /> 
+          <PanelItems {...this.props} type={storeProps.type} /> 
         </PanelStore>
       );
 

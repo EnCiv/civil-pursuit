@@ -26,10 +26,10 @@ class AnswerCount extends React.Component {
         let parentId;
         if (parentId = ((props.parent && props.parent._id) || (props.panel && props.panel.parent && props.panel.parent._id) || props.parent || (props.panel && props.panel.parent))) {
             window.socket.emit("get qvote item parent count", parentId, this.okGetQVoteItemParentCount.bind(this))
-            props.panel.items.forEach((item, i) =>{
-                 this.index[item._id] = item; // indexify the items
-                 if(typeof item.answeredAll === 'undefined') item.answeredAll=false;
-                 if(typeof item.answerCount === 'undefined') item.answerCount=0;
+            props.panel.items.forEach((item, i) => {
+                this.index[item._id] = item; // indexify the items
+                if (typeof item.answeredAll === 'undefined') item.answeredAll = false;
+                if (typeof item.answerCount === 'undefined') item.answerCount = 0;
             })
         }
     }
@@ -50,18 +50,18 @@ class AnswerCount extends React.Component {
         // index points to the items, so does panel.items.  Changing answerCount through either pointer changes the item pointed to, which can be referenced by either pointer.  Think 'C' pointers.
         if (results) {
             results.forEach(result => {
-                if((typeof this.index[result._id].answerCount !== 'undefined') && (this.index[result._id].answerCount !== result.count)) {
-                    this.index[result._id].answerCount=result.count; // set it here but also notify child
-                    this.props.rasp.toParent({type: "CHILD_UPDATE", direction: "DESCEND", shortId: result.id, item: {answerCount: result.count}});
+                if ((typeof this.index[result._id].answerCount !== 'undefined') && (this.index[result._id].answerCount !== result.count)) {
+                    this.index[result._id].answerCount = result.count; // set it here but also notify child
+                    this.props.rasp.toParent({ type: "CHILD_UPDATE", direction: "DESCEND", shortId: result.id, item: { answerCount: result.count } });
                 }
             })
         }
         var sortedItems = this.props.panel.items.slice().sort((a, b) => a.answerCount - b.answerCount)
-        var answeredAll= !sortedItems.some(item=>item.answerCount===0)
-        if(answeredAll !== this.state.answeredAll) 
-            sortedItems.forEach(item=>{
-                this.props.rasp.toParent({type: "CHILD_UPDATE", direction: "DESCEND", shortId: item.id, item: {answeredAll}});
-                item.answeredAll=answeredAll;
+        var answeredAll = !sortedItems.some(item => item.answerCount === 0)
+        if (answeredAll !== this.state.answeredAll)
+            sortedItems.forEach(item => {
+                this.props.rasp.toParent({ type: "CHILD_UPDATE", direction: "DESCEND", shortId: item.id, item: { answeredAll } });
+                item.answeredAll = answeredAll;
             })
         this.setState({ sortedItems, answeredAll });
     }
@@ -84,7 +84,7 @@ class AnswerCount extends React.Component {
 }
 
 class RASPPanelQuestions extends RASPPanelItems {
-    constructor(props){
+    constructor(props) {
         super(props);
         console.info("RASPPanelQuestions.constructor");
     }
@@ -146,12 +146,12 @@ export class PanelQuestions extends React.Component {
         return (
             <PanelStore { ...storeProps }>
                 <ReactActionStatePath {...this.props} >
-                <RASPFocusHere filterTypes={['FOCUS_STATE']}> 
-                    <PanelHeading cssName={'syn-panel-question'} panelButtons={['Creator','Instruction']} >
-                        <AnswerCount>
-                            <RASPPanelQuestions />
-                        </AnswerCount>
-                    </PanelHeading>
+                    <RASPFocusHere filterTypes={['FOCUS_STATE']}>
+                        <PanelHeading type={storeProps.type} cssName={'syn-panel-question'} panelButtons={['Creator', 'Instruction']} >
+                            <AnswerCount>
+                                <RASPPanelQuestions />
+                            </AnswerCount>
+                        </PanelHeading>
                     </RASPFocusHere>
                 </ReactActionStatePath>
             </PanelStore>
