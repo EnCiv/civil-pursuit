@@ -29,7 +29,7 @@ class QSortWhy extends React.Component {
         return (
             <ReactActionStatePath {...this.props} >
                 <ResultsFocusHere>
-                    <PanelHeading cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
+                    <PanelHeading items={[]} cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
                         <RASPQSortWhy />
                     </PanelHeading>
                 </ResultsFocusHere>

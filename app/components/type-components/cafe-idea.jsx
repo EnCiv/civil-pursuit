@@ -26,7 +26,7 @@ class CafeIdea extends React.Component {
     render(){
         return (
             <ReactActionStatePath {...this.props}>
-                <PanelHeading  cssName={'syn-cafe-idea'} panelButtons={['Creator','Instruction']}>
+                <PanelHeading  items={[]} cssName={'syn-cafe-idea'} panelButtons={['Creator','Instruction']}>
                     <RASPCafeIdea />
                 </PanelHeading>
             </ReactActionStatePath>

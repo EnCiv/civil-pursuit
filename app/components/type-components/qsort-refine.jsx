@@ -19,7 +19,7 @@ class QSortRefine extends React.Component {
         return (
             <ReactActionStatePath {...this.props}>
                 <RASPFocusHere filterTypes={['DESCENDANT_UNFOCUS', 'RESULTS']}>
-                    <PanelHeading cssName={'syn-qsort-refine'} panelButtons={['Creator', 'Instruction']}>
+                    <PanelHeading items={[]} cssName={'syn-qsort-refine'} panelButtons={['Creator', 'Instruction']}>
                         <RASPQSortRefine />
                     </PanelHeading>
                 </RASPFocusHere>

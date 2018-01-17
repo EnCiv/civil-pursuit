@@ -46,7 +46,7 @@ class QSortFinale extends React.Component {
             <QVoteTotals{...this.props} type={this.state.type} >
                 <ReactActionStatePath >
                     <RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT',{type: 'DESCENDANT_FOCUS', distance: 1}, {type: 'DESCENDANT_FOCUS', distance: 2}]} >
-                        <PanelHeading cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
+                        <PanelHeading items={[]} cssName={'syn-qsort-finale'} panelButtons={['Instruction']} >
                             <RASPQSortFinale />
                         </PanelHeading>
                     </RASPFocusHere>
