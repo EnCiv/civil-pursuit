@@ -8,7 +8,7 @@ import PanelItems from './panel-items';
 import makePanelId from '../lib/app/make-panel-id';
 import itemType from '../lib/proptypes/item';
 import panelType from '../lib/proptypes/panel';
-import PanelStore from './store/panel';
+import ItemsStore from './store/items';
 import DoubleWide from './util/double-wide';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 
@@ -184,17 +184,17 @@ class RASPHarmony extends ReactActionStatePathClient {
 
       let contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side === 'L'} key={item._id + '-left'}>
-          <PanelStore type={item.harmony.types[0]} parent={item} >
-            <PanelItems {...otherProps} visualMethod={this.vM.childVisualMethod()} rasp={this.childRASP(this.vM.childShape('L'), 'L')} />
-          </PanelStore>
+          <ItemsStore {...otherProps} type={item.harmony.types[0]} >
+            <PanelItems  visualMethod={this.vM.childVisualMethod()} rasp={this.childRASP(this.vM.childShape('L'), 'L')} />
+          </ItemsStore>
         </DoubleWide>
       );
 
       let contentRight = (
         <DoubleWide className="harmony-con" right expanded={rasp.side === 'R'} key={item._id + '-right'} >
-          <PanelStore type={item.harmony.types[1]} parent={item} >
-            <PanelItems {...otherProps} visualMethod={this.vM.childVisualMethod()} rasp={this.childRASP(this.vM.childShape('R'), 'R')} />
-          </PanelStore>
+          <ItemsStore {...otherProps} type={item.harmony.types[1]} parent={item}  >
+            <PanelItems visualMethod={this.vM.childVisualMethod()} rasp={this.childRASP(this.vM.childShape('R'), 'R')} />
+          </ItemsStore>
         </DoubleWide>
       );
 
