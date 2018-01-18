@@ -184,7 +184,7 @@ class RASPHarmony extends ReactActionStatePathClient {
 
       let contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side === 'L'} key={item._id + '-left'}>
-          <ItemsStore {...otherProps} type={item.harmony.types[0]} >
+          <ItemsStore {...otherProps} type={item.harmony.types[0]} parent={item} >
             <PanelItems  visualMethod={this.vM.childVisualMethod()} rasp={this.childRASP(this.vM.childShape('L'), 'L')} />
           </ItemsStore>
         </DoubleWide>
