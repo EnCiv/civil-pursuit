@@ -263,7 +263,7 @@ class ScrollWrapper extends React.Component {
     // Max Scroll Down
     // Max Scroll Up
     let extent=this.props.extent;
-    const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
+    const lowerEnd = this.state.scrollAreaHeight-(this.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
     const next = trim(lowerEnd, -extent, nextPos);
 
     // Update the Vertical Value
