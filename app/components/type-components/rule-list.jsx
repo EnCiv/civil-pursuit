@@ -116,7 +116,8 @@ export class RASPRuleList extends ReactActionStatePathClient {
             delta.itemId=null;
             this.neededInputAtStart=false;
         } else if (action.type === "TOGGLE_FOCUS") {
-            this.queueUnfocus(action);
+            if(action.distance===0) // if TOGGLE action is from further away, it should have been consumed but consume it here.
+                this.queueUnfocus(action);
         } else if(Object.keys(delta).length){
             ; // no need to do anything, but do continue to calculate the nextRASP
         } else 
