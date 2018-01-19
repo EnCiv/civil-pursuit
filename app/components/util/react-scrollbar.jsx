@@ -67,8 +67,10 @@ class ScrollWrapper extends React.Component {
     var bannerHeight=this.state.topBarHeight;
     var start=null;
     var last=null;
+    var that=this;
+    var extent=this.props.extent;
   
-    var stepper= (now)=>{
+    function stepper(now){
       if(!start) {
         start = now; // now is milliseconds not seconds
         last=now;
@@ -79,31 +81,31 @@ class ScrollWrapper extends React.Component {
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
       let newTop=-(-top + tRect.top -bannerHeight);
-      let extent=this.props.extent;
-      const lowerEnd = this.state.scrollAreaHeight-(this.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
+
+      const lowerEnd = that.state.scrollAreaHeight-(that.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
 
       // if bottom of target is above the top of the wrapper, then hyperjump (old)top to the position just before it is visible.
-      if(tRect.bottom< bannerHeight){
-        top= -(-top + -tRect.top)
-      }
+      //if(tRect.bottom< bannerHeight){
+      //  top= -(-top + -tRect.top)
+      //}
+      newTop = -trim(lowerEnd, -extent, -newTop);
   
       if(now-start >duration){
-        newTop = -trim(lowerEnd, -extent, -newTop);
         html.style.transition=null;
         html.style.top=newTop+'px';
-        this.setState({top: -newTop});
+        that.setState({top: -newTop});
         return;
       }
   
       let timeRemaining = duration - (now - start);
-      let stepsRemaining = Math.max(1, Math.round(timeRemaining / (last-now))); // less than one step is one step
+      let stepsRemaining = Math.max(1, Math.round(timeRemaining / (now-last))); // less than one step is one step
       let distanceRemaining = newTop - top;  // could be a positive or negative number
       let nextStepDistance=distanceRemaining/stepsRemaining;
       if(nextStepDistance>-1 && nextStepDistance<1){ // the next step isnt'a full pixel - don't step yet
         return window.requestAnimationFrame(stepper);
       }
       let nextTop = top + nextStepDistance; // top of the next step
-      nextTop = -trim(lowerEnd, -extent, -newTop);
+      nextTop = -trim(lowerEnd, -extent, -nextTop);
       html.style.transition=null;
       html.style.top=nextTop+'px'; // set the new top
       last=now;
@@ -137,13 +139,9 @@ class ScrollWrapper extends React.Component {
       that.calculateSize(()=>{
         that.normalizeVertical(that.state.top);
         that.mutationAnimationFrame=0;
-        that.viewportUpdateCount=(that.viewportUpdateCount || 0) + 1;
-        console.info("viewport",that.viewportUpdateCount);
       });
     }
     this.mutationAnimationFrame=window.requestAnimationFrame(viewportUpdate);
-    this.mutationsCount=(this.mutationsCount || 0) + 1;
-    console.info("mutation",this.mutationsCount);
   }
 
   transitionEnd(event){
