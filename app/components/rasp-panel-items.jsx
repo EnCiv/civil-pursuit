@@ -190,6 +190,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
           this.queueUnfocus(action);
         } else if(action.type === "TOGGLE_FOCUS" && rasp.shortId){ 
           delta.decendantFocus = false;
+          if (rasp.shortId) this.toChild[rasp.shortId]({ type: "RESET_SHAPE" });
           delta.shortId=null;
           delta.creator=false;
         }else if ((action.type === "UNFOCUS") || (action.type === "UNFOCUS_STATE")) {
