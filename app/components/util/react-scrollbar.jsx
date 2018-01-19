@@ -131,7 +131,17 @@ class ScrollWrapper extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   mutations(mutations) {
-    this.calculateSize(()=>this.normalizeVertical(this.state.top));
+    if(this.mutationAnimationFrame) return;
+    var that=this;
+    function viewportUpdate(now){
+      that.calculateSize(()=>{
+        that.normalizeVertical(that.state.top);
+        that.mutationAnimationFrame=0;
+        that.viewportUpdateCount=(that.viewportUpdateCount || 0) + 1;
+        console.info("viewport",that.viewportUpdateCount);
+      });
+    }
+    this.mutationAnimationFrame=window.requestAnimationFrame(viewportUpdate);
     this.mutationsCount=(this.mutationsCount || 0) + 1;
     console.info("mutation",this.mutationsCount);
   }
