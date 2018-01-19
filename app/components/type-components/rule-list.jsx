@@ -131,7 +131,9 @@ export class RASPRuleList extends ReactActionStatePathClient {
         var nextRASP={}, delta={};
         if(action.segment==='r') delta.itemId="redirect"
         Object.assign(nextRASP,initialRASP,delta);
-        if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';
+        if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';  // derive pathSegment
+        if(nextRASP.itemId==='redirect') nextRASP.shape='redirect'; // derive shape
+        else nextRASP.shape='truncated';
         return {nextRASP, setBeforeWait: true}
     }
 

@@ -61,21 +61,23 @@ class ScrollWrapper extends React.Component {
     this.scrollToY(newTop);
   }*/
 
-  ScrollFocus(target, duration=500){
+  ScrollFocus(target, duration=500000){
     if(!target) return;
     var html=this.htmlElement;
     var bannerHeight=this.state.topBarHeight;
-    var start=new Date().getTime();
-    var stepPeriod=25;
+    var start=null;
+    var last=performance.now();
+    var stepPeriod; // 1000mS divide by 60 second frame rate - initial guess at step period.
   
-    var stepper= ()=>{
-      let now=new Date().getTime();
+    var stepper= (now)=>{
+      if(!start) start = now; // now is milliseconds not seconds
+      stepPeriod=last-now;
   
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
       let newTop=-(-top + tRect.top -bannerHeight);
       let extent=this.props.extent;
-      const lowerEnd = this.state.scrollAreaHeight-extent; /*- this.state.scrollWrapperHeight*/;
+      const lowerEnd = this.state.scrollAreaHeight-(this.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
 
       // if bottom of target is above the top of the wrapper, then hyperjump (old)top to the position just before it is visible.
       if(tRect.bottom< bannerHeight){
@@ -94,29 +96,18 @@ class ScrollWrapper extends React.Component {
       let stepsRemaining = Math.max(1, Math.round(timeRemaining / stepPeriod)); // less than one step is one step
       let distanceRemaining = newTop - top;  // could be a positive or negative number
       let nextStepDistance=distanceRemaining/stepsRemaining;
-      if(nextStepDistance===0 && stepsRemaining===1) return setTimeout(stepper, timeRemaining); 
-      else if(nextStepDistance===0) return setTimeout(stepper,stepPeriod);
-      else if((nextStepDistance>0 && nextStepDistance<=1) || (nextStepDistance>-1 && nextStepDistance<0)) { // steps are less than 1 pixel at this rate
-        stepPeriod=Math.ceil(timeRemaining/distanceRemaining); // time between pixels
-        var shortStepPeriod=stepPeriod;
-        if(nextStepDistance>0 && nextStepDistance<0.5) {
-          shortStepPeriod=Math.max(stepPeriod, Math.ceil((1-nextStepDistance)*stepPeriod)); // time to the next pixel but at least something
-          setTimeout(stepper,shortStepPeriod); // come back later and less often
-          return;
-        }
-        if(nextStepDistance>-0.5 && nextStepDistance<0) {
-          shortStepPeriod=Math.max(stepPeriod, Math.ceil((1+nextStepDistance)*stepPeriod)); // time to the next pixel but at least something
-          setTimeout(stepper,shortStepPeriod); // come back later and less often
-          return;
-        }
+      if(nextStepDistance>-1 && nextStepDistance<1){ // the next step isnt'a full pixel - don't step yet
+        return window.requestAnimationFrame(stepper);
       }
       let nextTop = top + nextStepDistance; // top of the next step
       nextTop = -trim(lowerEnd, -extent, -newTop);
       html.style.transition=null;
       html.style.top=nextTop+'px'; // set the new top
-      setTimeout(stepper,stepPeriod);
+      window.requestAnimationFrame(stepper);
     }
-    setTimeout(stepper, stepPeriod) // kick off the stepper
+
+    window.requestAnimationFrame(stepper);
+    //setTimeout(stepper, stepPeriod) // kick off the stepper
   }
 
   componentDidMount() {
