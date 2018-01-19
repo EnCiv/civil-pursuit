@@ -71,7 +71,7 @@ class ScrollWrapper extends React.Component {
   
     var stepper= (now)=>{
       if(!start) start = now; // now is milliseconds not seconds
-      stepPeriod=last-now;
+      stepPeriod=now-last;
   
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
