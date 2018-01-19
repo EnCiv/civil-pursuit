@@ -61,18 +61,21 @@ class ScrollWrapper extends React.Component {
     this.scrollToY(newTop);
   }*/
 
-  ScrollFocus(target, duration=500000){
+  ScrollFocus(target, duration=500){
     if(!target) return;
     var html=this.htmlElement;
     var bannerHeight=this.state.topBarHeight;
     var start=null;
-    var last=performance.now();
-    var stepPeriod; // 1000mS divide by 60 second frame rate - initial guess at step period.
+    var last=null;
   
     var stepper= (now)=>{
-      if(!start) start = now; // now is milliseconds not seconds
-      stepPeriod=now-last;
-  
+      if(!start) {
+        start = now; // now is milliseconds not seconds
+        last=now;
+        window.requestAnimationFrame(stepper);
+        return;
+      }
+
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
       let newTop=-(-top + tRect.top -bannerHeight);
@@ -93,7 +96,7 @@ class ScrollWrapper extends React.Component {
       }
   
       let timeRemaining = duration - (now - start);
-      let stepsRemaining = Math.max(1, Math.round(timeRemaining / stepPeriod)); // less than one step is one step
+      let stepsRemaining = Math.max(1, Math.round(timeRemaining / (last-now))); // less than one step is one step
       let distanceRemaining = newTop - top;  // could be a positive or negative number
       let nextStepDistance=distanceRemaining/stepsRemaining;
       if(nextStepDistance>-1 && nextStepDistance<1){ // the next step isnt'a full pixel - don't step yet
@@ -103,11 +106,11 @@ class ScrollWrapper extends React.Component {
       nextTop = -trim(lowerEnd, -extent, -newTop);
       html.style.transition=null;
       html.style.top=nextTop+'px'; // set the new top
+      last=now;
       window.requestAnimationFrame(stepper);
     }
 
     window.requestAnimationFrame(stepper);
-    //setTimeout(stepper, stepPeriod) // kick off the stepper
   }
 
   componentDidMount() {
