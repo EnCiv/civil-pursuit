@@ -93,7 +93,10 @@ class ScrollWrapper extends React.Component {
       if(now-start >duration){
         html.style.transition=null;
         html.style.top=newTop+'px';
-        that.setState({top: -newTop});
+        //that.setState({top: -newTop});
+        that.calculateSize(()=>{
+          that.normalizeVertical(-newTop);
+        });
         return;
       }
   
