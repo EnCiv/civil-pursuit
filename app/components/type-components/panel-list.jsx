@@ -16,7 +16,7 @@ class PanelList extends React.Component {
   render() {
     //onsole.info("PanelList.render", this.props);
     return (
-      <ReactActionStatePath {...this.props} type={this.props.componentType} initialRASP={this.initialRASP}>
+      <ReactActionStatePath {...this.props} type={this.props.componentType || this.props.type || this.props.panel.type} initialRASP={this.initialRASP}>
         <RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT', {type: "DECENDANT_UNFOCUS", distance: 1}]}>
           <PanelHeading cssName={'syn-panel-list'} panelButtons={['Instruction']} items={[]} >
             <RASPPanelList />
