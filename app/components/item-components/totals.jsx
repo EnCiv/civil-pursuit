@@ -61,6 +61,7 @@ exports.panel = class TotalsPanel extends React.Component {
     mounted = false;
     render() {
         const { active, style, item, rasp } = this.props;
+        const panelType=this.props.type || this.props.item.subtype; // might be passed as part of the button definition
         if(!this.props.user) return null; // no panel if user not logged in
         if ((this.mounted === false && active === false)) return null; // don't render this unless it's active, or been rendered before
         else {
@@ -74,7 +75,7 @@ exports.panel = class TotalsPanel extends React.Component {
                         style={style}
                     >
                         <PanelStore parent={this.props.item}
-                            type={this.props.item.subtype}
+                            type={panelType}
                             limit={20} >
                             <TotalsPanelShared {...this.props} >
                             </TotalsPanelShared>
