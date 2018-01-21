@@ -191,6 +191,7 @@ class HttpServer extends EventEmitter {
     if ( process.env.NODE_ENV !== 'production' ) this.timeout();
     this.getBrowserConfig();
     this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
+    if ( process.env.NODE_ENV === 'production' ) this.httpToHttps();
     this.getLandingPage();
     this.getUIMPath();
     this.getOldfield();
@@ -213,6 +214,16 @@ class HttpServer extends EventEmitter {
         throw new Error('Test error > asynchronous error');
       });
     });
+  }
+
+  httpToHttps(){
+    this.app.get('*',function(req,res,next){
+      if(req.headers['x-forwarded-proto']!=='https' || req.protocol !== 'https'){
+        res.redirect('https://'+req.hostname+req.url);
+        console.info("server.httpToHttos redirecting to ", 'https://'+req.hostname+req.url )
+      } else
+        next() /* Continue to other routes if we're not redirecting */
+    })
   }
 
   // a minute after a request has been received, check and see if the response has been sent.
