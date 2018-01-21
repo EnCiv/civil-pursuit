@@ -217,7 +217,7 @@ class HttpServer extends EventEmitter {
   }
 
   httpToHttps(){
-    this.app.get('*',(req,res,next) => {
+    this.app.use((req,res,next) => {
       if(req.headers['x-forwarded-proto']!=='https' || req.protocol !== 'https'){
         console.info("server.httpToHttps redirecting to ", 'https://'+req.hostname+req.url )
         res.redirect('https://'+req.hostname+req.url);
