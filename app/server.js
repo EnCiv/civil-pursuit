@@ -220,7 +220,7 @@ class HttpServer extends EventEmitter {
   httpToHttps(){
     this.app.enable('trust proxy');
     this.app.use((req,res,next) => {
-      if(req.secure){
+      if(!req.secure){
         console.info("server.httpToHttps redirecting to ", req.secure, 'https://' + req.headers.host + req.url)
         res.redirect('https://' + req.headers.host + req.url);
       } else
