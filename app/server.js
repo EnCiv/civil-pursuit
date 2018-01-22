@@ -220,11 +220,19 @@ class HttpServer extends EventEmitter {
   httpToHttps(){
     this.app.enable('trust proxy');
     this.app.use((req,res,next) => {
-      if(!req.secure){
-        console.info("server.httpToHttps redirecting to ", req.secure, 'https://' + req.headers.host + req.url)
-        res.redirect('https://' + req.headers.host + req.url);
+      let hostName=req.hostname;
+      if(hostName==='localhost') return next();
+      let hostParts=hostName.split('.');
+      let addWWW=false;
+      if(!hostParts.length || hostParts[0]!=='www'){
+        hostParts.unshift("www");
+        hostName=hostParts.join('.');
+        addWWW=true;
+      }
+      if(!req.secure || addWWW){
+        console.info("server.httpToHttps redirecting to ", req.secure, 'https://' + req.hostname + req.url)
+        res.redirect('https://' + hostName + req.url);
       } else
-        console.info("httpToHttps got https request", req.secure, req.headers['x-forwarded-proto'], req.protocol, req.hostname, req.url );
         next(); /* Continue to other routes if we're not redirecting */
     })
   }
