@@ -224,7 +224,7 @@ class HttpServer extends EventEmitter {
       if(hostName==='localhost') return next();
       let hostParts=hostName.split('.');
       let addWWW=false;
-      if(!hostParts.length || hostParts[0]!=='www'){
+      if((hostParts.length && hostParts[1]!=="herokuapp") && (!hostParts.length || hostParts[0]!=='www')){
         hostParts.unshift("www");
         hostName=hostParts.join('.');
         addWWW=true;
