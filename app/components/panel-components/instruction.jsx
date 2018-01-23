@@ -145,6 +145,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
         delta.instruction = Transition[this.props.rasp.instruction]; 
       return false 
     },
+    "REDIRECT": (action, delta) => { if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; },
     "DESCENDANT_FOCUS": (action, delta) => { if(action.distance >0 ) delta.instruction = this.vM.unFocus(this.props.rasp); return true; },
     "NEXT_PANEL": (action, delta) => { delta.instruction=this.vM.unFocus(this.props.rasp); action.duration=1; return true; },  // the action will be consumed by the state change, so add one to it's duration
   }
@@ -152,7 +153,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   setWidth(el){
     if(!el) return;
     this.width=el.getBoundingClientRect().width;
-    if(this.vM.visible(this.props.rasp))
+    if(this.vM.visible(this.props.rasp)&&(this.props.rasp.shape!=='redirect'))
       this.refs.hint.style.right=(this.width/2-window.Synapp.fontSize)+'px';
   }
 
@@ -164,7 +165,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
       <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key={"instruction-"+rasp.raspId} >
         <Accordion
           onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })}
-          active={this.vM.visible(rasp)}
+          active={this.vM.visible(rasp)&&(rasp.shape!=='redirect')}
           text={true}
           onComplete={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION_HINT" })}
         >
@@ -173,7 +174,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           </div>
         </Accordion>
 
-        <div  style={{right: (this.vM.visible(rasp) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}}
+        <div  style={{right: ((this.vM.visible(rasp)&&(rasp.shape!=='redirect')) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}}
               className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} 
               onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} 
               ref="hint"
