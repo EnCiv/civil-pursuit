@@ -50,7 +50,7 @@ export class RuleList extends React.Component {
             >
                 <QVoteStore {...this.props}>
                     <ReactActionStatePath>
-                        <PanelHeading  type={type} cssName={'syn-rule-list'} >
+                        <PanelHeading  type={type} cssName={'syn-rule-list'} panelButtons={['Instruction']} >
                             <RASPRuleList />
                         </PanelHeading>
                     </ReactActionStatePath>
