@@ -32,9 +32,9 @@ export default class PanelHeading extends React.Component {
     // a button could be a string, or it could be an object which must have a property component
     var renderComponents = (part, button, position) => {
       if(typeof button==='string')
-        return (<ListComponent Components={Components} {...lessProps} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} type={type} component={button} part={part} key={rasp.raspId + '-' + button} position={position} />);
       else if (typeof button==='object')
-        return (<ListComponent Components={Components} {...lessProps} part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
+        return (<ListComponent Components={Components} {...lessProps} type={type} component={button} part={part} key={rasp.raspId + '-' + button.component} {...button} position={position} />);
     }
 
     return (
