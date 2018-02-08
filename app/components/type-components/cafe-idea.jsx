@@ -20,6 +20,16 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
+import Accordion from 'react-proactive-accordion';
+
+
+Number.prototype.map = function(f){
+    var a=[];
+    let n=0;
+    while(n<this)
+        a.push(f(n++));
+    return a;
+};
 
 
 class CafeIdea extends React.Component {
@@ -35,9 +45,10 @@ class CafeIdea extends React.Component {
 }
 
 class RASPCafeIdea extends ReactActionStatePathClient {
+    state={ideaCount: 0};
 
     constructor(props) {
-        super(props, 'itemId',0);
+        super(props, 'ideaNum',0);
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         this.createDefaults();
     }
@@ -60,7 +71,10 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 results.index = shared.index;
                 window.socket.emit('insert qvote', { item: item._id, criteria: 'most' });
             }
-            setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }))
+            let ideaCount=this.state.ideaCount+1;
+            if(this.props.minIdeas===0)
+                setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }));
+            this.setState({ideaCount});
             // no state change, the action will be consumed here
         } else if (action.type === "DESCENDANT_FOCUS") {
             if (this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
@@ -97,22 +111,24 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panelNum, parent } = this.props;
+        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1 } = this.props;
         var results=null;
 
         const onServer = typeof window === 'undefined';
 
         var done=(
-            <div className='instruction-text' key="done">
-                {"Continute without contributing an additional idea. "}
-                <Button small shy
-                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})}
-                    className="cafe-idea-done"
-                    style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
-                    >
-                    <span className="civil-button-text">{"next"}</span>
-                </Button>
-            </div>
+            <Accordion active={this.state.ideaCount >= minIdeas} >
+                <div className='instruction-text' key="done">
+                    {minIdeas ? "Continue" : "Continute without contributing an additional idea."}
+                    <Button small shy
+                        onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})}
+                        className="cafe-idea-done"
+                        style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
+                        >
+                        <span className="civil-button-text">{"next"}</span>
+                    </Button>
+                </div>
+            </Accordion>
         );
 
 
@@ -122,7 +138,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 <div className="syn-cafe-idea" key='idea'>
                     <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
                     <div className="syn-cafe-idea-creator">
-                        <ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','creator')}/>
+                        {numIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
             </section>
