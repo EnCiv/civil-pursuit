@@ -86,7 +86,7 @@ class AnswerCount extends React.Component {
 class RASPPanelQuestions extends RASPPanelItems {
     constructor(props) {
         super(props);
-        console.info("RASPPanelQuestions.constructor");
+        //console.info("RASPPanelQuestions.constructor");
     }
 
     render() {
