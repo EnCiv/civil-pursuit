@@ -105,6 +105,7 @@ class RASPNextStep extends ReactActionStatePathClient {
                                 onClick={()=>rasp.toParent(nextButton.action)} 
                                 className="syn-next-step-button"
                                 title={nextButton.title}
+                                key={nextButton.name}
                             >
                                 <span>{nextButton.name}</span>
                             </button>
