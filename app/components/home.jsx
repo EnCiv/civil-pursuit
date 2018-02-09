@@ -91,7 +91,7 @@ class Home extends React.Component {
       content.push(
         <div key="top-level-panel">
           <div id="top-level-panel">
-            <TypeComponent component={'Subtype'} {...this.props} panel={panel} style={{backgroundColor: "white"}} user={ this.props.user } />
+            <TypeComponent component={'Subtype'} debugObject={{noop: false, near: false}} {...this.props} panel={panel} style={{backgroundColor: "white"}} user={ this.props.user } />
           </div>
         </div>
       );
