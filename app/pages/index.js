@@ -37,6 +37,7 @@ class Script extends Element {
   }
 }
 
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class GoogleAnalytics extends Element {
@@ -46,6 +47,14 @@ class GoogleAnalytics extends Element {
     this.text(`(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', "${publicConfig['google analytics'].key}", 'auto'); ga('send', 'pageview');`);
   }
 }
+
+class ResponsiveFontSize extends Element {
+  constructor () {
+    super('script');
+    this.text("if(navigator.userAgent.match(/iPhone|Android|Blackberry|Opera Mini|IEMobile/i)) {var e=document.getElementsByTagName('html')[0]; if(navigator.userAgent.match(/SM-N950U/)) e.style.fontSize='10px'; else e.style.fontSize='8px'}")
+  }
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -61,7 +70,8 @@ class Layout extends Document {
     this.add(
       new Element('title').text('Civil Pursuit | Solutions to what Divides Us'),
       this.uACompatible(),
-      this.viewport()
+      this.viewport(),
+      new ResponsiveFontSize(),
     );
 
     this.favicon();
@@ -140,7 +150,7 @@ class Layout extends Document {
   viewport () {
     return new Element('meta', {
         name            :     'viewport',
-        content         :     'width=device-width, initial-scale=1.0'
+        content         :     'width=device-width, maximum-scale=1.0, initial-scale=1.0'
       })
       .close();
   }
@@ -152,9 +162,9 @@ class Layout extends Document {
   //----------- adapted from https://realfavicongenerator.net/
   favicon() {
     this.add(
-      new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
-      new Element('link', {rel : 'icon', type : 'image/png', href : 'assets/images/favicon-32x32.png', sizes: '32x32'} ).close(),
-      new Element('link', {rel : "apple-touch-icon", sizes: "180x180",  href: "assets/images/apple-touch-icon.png" } ).close(),
+      new Element('link', {rel : 'icon', type : 'image/png', href : '/assets/images/favicon-16x16.png', sizes: '16x16'} ).close(),
+      new Element('link', {rel : 'icon', type : 'image/png', href : '/assets/images/favicon-32x32.png', sizes: '32x32'} ).close(),
+      new Element('link', {rel : "apple-touch-icon", sizes: "180x180",  href: "/assets/images/apple-touch-icon.png" } ).close(),
       new Element('link', {rel : "manifest",  href: "/assets/images/manifest.json"} ).close(),
       new Element('link', {rel : "mask-icon", href: "/assets/images/safari-pinned-tab.svg", color: "#3f038e"} ).close(),
       new Element('link', {rel : "shortcut icon", href: "/assets/images/favicon.ico" } ).close(),

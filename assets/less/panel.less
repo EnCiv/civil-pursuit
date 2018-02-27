@@ -47,15 +47,19 @@
   .syn-row();
   align-items: center;
   background:         @panel-heading-bg;
-  .gradient           (rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+  .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
   color:              #fff;
   text-align:         center;
   vertical-align:     baseline;
+  position: relative;
 /**  border-radius:      6px 0 0 6px; **/
 
   h4 {
     text-align: center;
     flex-grow: 3;
+    text-decoration: underline;
+    cursor: pointer;
+    color: #fff;
   }
 
   h4, i.fa-plus {
@@ -80,8 +84,20 @@
   display: none;
 }
 
-.syn-panel-heading.vs-title{  // if titleized don't show the heading
+.syn-panel-heading.vs-redirect{ // if redirected don't show it.
   display: none;
+}
+
+.syn-panel-heading.vs-title{  // if titleized don't show the heading
+  background: white;
+  h4 {
+    font-size: 1em;
+    color: darkslategray;
+    padding-left: 0.5em;
+    text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }
 
 .syn-panel.focused .syn-panel-heading a i.fa {
@@ -94,8 +110,47 @@
     background-color: inherit;
   }
 }
+
+// manage the overflow so that things render quicker - and without scroll bars
+section#syn-panel-qsort-harmony{
+  overflow: visible;
+}
+
+section.syn-panel-body.vs-title{
+  overflow: hidden;
+}
+
+.item-harmony{
+  overflow: visible;
+}
+
+.instruction{
+  overflow:visible;
+}
 // .syn-panel + .syn-panel {
 //   margin-top: 10px
 // }
+
+.syn-next-step {
+  text-align: center;
+}
+
+.syn-next-step-button {
+  display: inline;
+  padding: 0.5em;
+  border: 1px solid #666;
+  box-sizing: border-box;
+  background-color: #000;
+  color: #fff;
+}
+
+.syn-panel-heading.vs-redirect{
+  display: none;
+}
+
+.syn-panel-heading.vs-open h4{
+  text-decoration: none;
+  font-style: italic;
+}
 
 /**-------------------------------------------------------------// panel       */

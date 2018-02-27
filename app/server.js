@@ -64,6 +64,7 @@ class HttpServer extends EventEmitter {
       process.nextTick(() => {
         try {
           this.app = express();
+ 
 
           this.set();
 
@@ -191,13 +192,15 @@ class HttpServer extends EventEmitter {
     if ( process.env.NODE_ENV !== 'production' ) this.timeout();
     this.getBrowserConfig();
     this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
+    if ( process.env.NODE_ENV === 'production' ) this.httpToHttps();
     this.getLandingPage();
+    this.getUIMPath();
     this.getOldfield();
-    this.getTermsOfServicePage();
     this.getSettings();
     this.getItemPage();
     this.getPanelPage();
     this.getODG();
+    this.getMarkDown();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -212,6 +215,26 @@ class HttpServer extends EventEmitter {
         throw new Error('Test error > asynchronous error');
       });
     });
+  }
+
+  httpToHttps(){
+    this.app.enable('trust proxy');
+    this.app.use((req,res,next) => {
+      let hostName=req.hostname;
+      if(hostName==='localhost') return next();
+      let hostParts=hostName.split('.');
+      let addWWW=false;
+      if((hostParts.length && hostParts[1]!=="herokuapp") && (!hostParts.length || hostParts[0]!=='www')){
+        hostParts.unshift("www");
+        hostName=hostParts.join('.');
+        addWWW=true;
+      }
+      if(!req.secure || addWWW){
+        console.info("server.httpToHttps redirecting to ", req.secure, 'https://' + req.hostname + req.url)
+        res.redirect('https://' + hostName + req.url);
+      } else
+        next(); /* Continue to other routes if we're not redirecting */
+    })
   }
 
   // a minute after a request has been received, check and see if the response has been sent.
@@ -262,6 +285,33 @@ class HttpServer extends EventEmitter {
     }
   }
 
+    getUIMPath () {
+    try {
+      this.app.get('/h/*',
+        (req, res, next) => {
+          logger.info("server.getUIMPath", req.path)
+          if ( ! req.cookies.synapp ) {
+            res.cookie('synapp',
+              { training : true },
+              {
+                "path":"/",
+                "signed": false,
+                "maxAge": 604800000,
+                "httpOnly": true
+              });
+          }
+          // else {
+
+          // }
+          next();
+        },
+        serverReactRender.bind(this));
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
+  }
+
   getSettings () {
     try {
       this.app.get('/settings', (req, res, next) => {
@@ -287,11 +337,11 @@ class HttpServer extends EventEmitter {
       this.emit('error', error);
     }
   }
-
-  getTermsOfServicePage () {
-    this.app.get('/doc/terms-of-service.md', (req, res, next) => {
+  
+  getMarkDown () {
+    this.app.get('/doc/:mddoc', (req, res, next) => {
       fs
-        .createReadStream('TOS.md')
+        .createReadStream(req.params.mddoc)
         .on('error', next)
         .on('data', function (data) {
           if ( ! this.data ) {
@@ -307,10 +357,18 @@ class HttpServer extends EventEmitter {
   }
 
   getItemPage () {
-    this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
+    this.app.get('/item/*', (req, res, next) => {
+      let segments=req.params[0].split('/');
+      if(!segments || !segments.length || !segments[0].length) next();
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+      let parts=segments[0].split(',');
+      var shortId;
+      parts.forEach(part=>{
+        if(part.length===5) shortId=part;
+      });
+      if(!shortId) next();
       try {
-        Item.findOne({ id : req.params.item_short_id }).then(
+        Item.findOne({ id : shortId }).then(
           item => {
             if ( ! item ) {
               return next();

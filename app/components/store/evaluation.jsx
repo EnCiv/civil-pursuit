@@ -1,6 +1,5 @@
 'use strict';
 
-import { EventEmitter }   from 'events';
 import React              from 'react';
 import selectors          from '../../../selectors.json';
 import screens            from '../../../screens.json';
@@ -11,86 +10,38 @@ class EvaluationStore extends React.Component {
 
   state = {
     evaluation : null,
-    cursor : 1,
-    limit : 5,
-    left : null,
-    right : null
+    limit : 5
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  emitter = new EventEmitter();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  constructor (props) {
-    super(props);
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   componentDidMount () {
-    if ( ! this.state.evaluation ) {
+    if ( ! this.state.items ) {
       window.socket.emit(
         'get evaluation',
         this.props['item-id'],
         this.okGetEvaluation.bind(this)
       );
     }
-
-    this.panelEmitter = this.props.emitter;
-
-    this.emitter
-      .on('next', this.next.bind(this))
-      .on('promote', this.promote.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate () {
-    if ( ! this.state.evaluation && this.props.active && this.props.active.item === this.props['item-id'] && this.props.active.section === 'promote' ) {
+    if ( ! this.state.items && this.props.active && this.props.active.item === this.props['item-id'] && this.props.active.section === 'promote' ) {
       window.socket.emit(
         'get evaluation',
         this.props['item-id'],
         this.okGetEvaluation.bind(this)
       );
     }
-
-    if (document.getElementById('left_description') != null && document.getElementById('right_description') != null) {
-        var ly = document.getElementById('left_description').offsetHeight;
-        var ry = document.getElementById('right_description').offsetHeight;
-        if (ly < ry) {
-          document.getElementById('left_description').style.height = ry + "px";
-        }
-        else {
-          document.getElementById('right_description').style.height = ly + "px";
-        }  
-    }
-
-    if (document.getElementById('h5_left') != null && document.getElementById('h5_right') != null) {
-        var ly = document.getElementById('h5_left').offsetHeight;
-        var ry = document.getElementById('h5_right').offsetHeight;
-        if (ly < ry) {
-          document.getElementById('h5_left').style.height = ry + "px";
-        }
-        else {
-          document.getElementById('h5_right').style.height = ly + "px";
-        }  
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentWillUnmount () {
-    this.emitter
-      .removeListener('next', this.next.bind(this))
-      .removeListener('promote', this.promote.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   okGetEvaluation (evaluation) {
-    if ( evaluation.item === this.props['item-id'] ) {
+    const item=evaluation.item;
+    if ( item === this.props['item-id'] ) {
 
       let limit = this.state.limit;
 
@@ -102,183 +53,16 @@ class EvaluationStore extends React.Component {
         case 6: limit = 5; break;
       }
 
-      let left, right;
-
-      if ( evaluation.items[1] ) {
-        right = evaluation.items[1];
-        // window.socket.emit('add view', evaluation.items[1]);
-      }
-
-      if ( evaluation.items[0] ) {
-        left = evaluation.items[0];
-
-       // if ( right ) {
-       //   window.socket.emit('add view', evaluation.items[0]);
-       // }
-      }
-
-      this.setState({ evaluation, limit, left, right });
+      this.setState({ items: evaluation.items, criterias: evaluation.criterias, itemId: item, limit });
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  next () {
-    let cursor = this.state.cursor;
-    let regular = true;
-
-    if ( cursor + 2 > this.state.limit ) {
-      cursor += 1;
-      regular = false;
-    }
-    else {
-      cursor += 2;
-    }
-
-    let left, right;
-
-    if ( this.state.left ) {
-      this.insertVotes('left', this.state.left._id);
-      this.insertFeedback('left', this.state.left._id);
-    }
-
-    if ( this.state.right ) {
-      this.insertVotes('right', this.state.right._id);
-      this.insertFeedback('right', this.state.right._id);
-    }
-
-    if ( cursor <= this.state.limit ) {
- //     document.getElementById('left_description').style.height = "auto";
- //     document.getElementById('right_description').style.height = "auto";
-
-      left = this.state.evaluation.items[cursor - 1];
-      right = this.state.evaluation.items[cursor];
-
- //     if ( left && right ) {
- //       window.socket.emit('add view', left);
- //       window.socket.emit('add view', right);
-  //    }
-
-      this.setState({ cursor, left, right });
-    }
-    else {
-      this.setState({ evaluation : null, cursor : 1 });
-      this.props.toggle('promote', null); // there was no winner
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  getScreen () {
-    return window.innerWidth < screens.phone ? 'up-to-phone' : 'phone-and-up';
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  insertUpvotes(itemId) {
-    const upvotes = [];
-    const evaluation = this.state.evaluation.items;
-
-
-    if ( this.state.evaluation && this.state.evaluation.items.length ) {
-      var itm;
-
-      for(itm in evaluation)
-      {   window.socket.emit('add view', evaluation[itm]._id);
-          if(evaluation[itm]._id == itemId) {
-            upvotes.push({
-              item: evaluation[itm]._id,
-               value: 1
-            });
-            window.socket.emit('promote', evaluation[itm]._id);
-          } else {
-            upvotes.push({
-              item: evaluation[itm]._id,
-              value: 0
-            });
-          }
-      }
-
-      window.socket.emit('insert upvote', upvotes);
-    }
-  }
-
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  insertVotes(position, itemId) {
-    const sliders = this.refs.view.querySelectorAll(`[data-screen="${this.getScreen()}"] .promote-${position} [type="range"]`);
-
-    if ( sliders.length ) {
-      const votes = [];
-
-      for ( let i = 0; i < sliders.length; i ++ ) {
-        const vote = sliders[i];
-
-        votes.push({
-          criteria  :   vote.dataset.criteria,
-          value     :   vote.value,
-          item      :   itemId
-        });
-      }
-
-      window.socket.emit('insert votes', votes);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  insertFeedback(position, itemId) {
-    const feedback = this.refs.view
-      .querySelector(`[data-screen="${this.getScreen()}"] .promote-${position} .user-feedback`);
-
-    if ( feedback ) {
-      window.socket.emit('insert feedback', this.state.evaluation.item, feedback.value);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  promote (position) {
-    const opposite = position === 'left' ? 'right' : 'left';
-
-    const cursor = this.state.cursor + 1;
-
-    let right = this.state.right, left = this.state.left;
-
-  //  if ( cursor > this.state.limit ) {
- //     window.socket.emit('promote', this.state[position]);
- //   }
-
-    if(this.state[opposite] && this.state[opposite]._id) this.insertVotes(opposite, this.state[opposite]._id);  // it wouldn't exist if there was only one thing to vote on
-
-    if ( cursor <= this.state.limit ) {
-
- //     if ( left && right ) {
- //       window.socket.emit('add view', this.state[position]);
- //       window.socket.emit('add view', this.state[opposite]);
- //     }
-
-      this.setState({
-        cursor,
-        [opposite] : this.state.evaluation.items[cursor]
-      });
-    }
-
-    else {
-      const winner=this.state[position];
-      this.insertVotes(position, winner._id );
-      this.insertUpvotes(winner._id);
-      this.setState({ evaluation : null, cursor : 1 });
-      this.props.toggle('promote', winner);
-    }
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderChildren () {
     return React.Children.map(this.props.children, child =>
-      React.cloneElement(child, Object.assign({}, this.state, { emitter : this.emitter, panelEmitter : this.panelEmitter }))
+      React.cloneElement(child, Object.assign({}, this.state))
     );
   }
 
@@ -291,11 +75,11 @@ class EvaluationStore extends React.Component {
       items : []
     };
 
-    if ( this.state.evaluation ) {
+    if ( this.state.items ) {
       attr.id = selectors.evaluation.id.prefix.replace(/^#/, '') +
-        this.state.evaluation.item;
+        this.state.itemId;
 
-      dataset.items = this.state.evaluation.items.map(item => item._id);
+      dataset.items = this.state.items.map(item => item._id);
     }
 
     return (

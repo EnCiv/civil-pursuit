@@ -19,20 +19,20 @@ class Slider extends React.Component {
   }
 
   render () {
-    let { criteria } = this.props;
+    let { criteria, value, onChange } = this.props;
 
     return (
       <div id={ `criteria-slider-${criteria._id}` } className="criteria-slider">
         <Row>
           <Column span="40">
             <h5 className="syn-sliders-criteria-name" onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h5>
-            <h5 className="syn-sliders-criteria-description" ref="description">{ criteria.description }</h5>
           </Column>
 
           <Column span="60">
-            <Range block step="1" min="-1" max="1" defaultValue="0" data-criteria={ criteria._id } className="syn-sliders-slider" />
+            <Range block step="1" min="-1" max="1" value={value} defaultValue="0" data-criteria={ criteria._id } className="syn-sliders-slider" onChanage={onChange} />
           </Column>
         </Row>
+        <h5 className="syn-sliders-criteria-description" ref="description">{ criteria.description }</h5>
       </div>
     );
   }

@@ -1,44 +1,29 @@
 
 'use strict';
 
-import React                            from 'react';
-import QHome                            from './qhome';
-import PanelList                        from './panel-list';
-import Subtype                          from './subtype';
-import QSortItems                       from './qsort-items';
-import QSortWhy                         from './qsort-why';
-import QSortRefine                      from './qsort-refine';
-import QSortReLook                      from './qsort-harmony';
-import QSortFinale                      from './qsort-finale';
-import LoginPanel                       from './login-panel';
-import ProfilePanel                     from './profile-panel';
+import React                       from 'react';
+import Components                  from "./type-components/";
+import ReactActionStatePath        from "react-action-state-path";
 
 class TypeComponent extends React.Component{
-
-    static components={
-        'PanelList': PanelList,
-        'QHome': QHome,
-        'Subtype': Subtype,
-        'QSortItems': QSortItems,
-        'QSortWhy': QSortWhy,
-        'QSortRefine': QSortRefine,
-        'QSortReLook': QSortReLook,
-        'LoginPanel': LoginPanel,
-        'QSortFinale': QSortFinale,
-        'ProfilePanel': ProfilePanel,        
-    }
-
     render(){
+        const component=this.props.component || (this.props.panel && this.props.panel.type && this.props.panel.type.component) || 'Subtype';
         var Component;
-        if(this.props.component){
-            Component=TypeComponent.components[this.props.component];
-        } else if(this.props.panel && this.props.panel.type && this.props.panel.type.component) {
-            Component=TypeComponent.components[this.props.panel.type.component];
+        var newProps={};
+
+        if(typeof component === 'object'){
+            Object.assign(newProps,this.props,component);
+            Component=Components[component.component];
         } else {
-            Component=Subtype;
+            Object.assign(newProps,this.props);
+            Component=Components[component];
         }
-        logger.info("TypeComponent", this.props );
-        return(<Component {...this.props} /> );
+        if(newProps.component) delete newProps.component;
+
+        //logger.trace("TypeComponent", component, newProps );
+        if(typeof Component === 'function') return(<Component {...newProps}/>);  //UIM passes props plus the UIM state to the child Component
+        logger.error("TypeComponent component not defined", {component});
+        return null;
     }
 }
 

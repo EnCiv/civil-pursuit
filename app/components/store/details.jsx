@@ -7,7 +7,8 @@ class DetailsStore extends React.Component {
   state = { details : null };
 
   componentDidMount() {
-    window.socket.on('OK get item details', this.okGetItemdetails.bind(this));
+    this.okGetItemdetailsBound=this.okGetItemdetails.bind(this);
+    window.socket.on('OK get item details', this.okGetItemdetailsBound);
 
     if ( ! this.state.details ) {
       window.socket.emit('get item details', this.props.item);
@@ -15,7 +16,7 @@ class DetailsStore extends React.Component {
   }
 
   componentWillUnmount() {
-    window.socket.off('OK get item details', this.okGetItemdetails.bind(this));
+    window.socket.off('OK get item details', this.okGetItemdetailsBound);
   }
 
   okGetItemdetails (details) {

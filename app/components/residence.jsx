@@ -12,8 +12,12 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import DynamicSelector                from './dynamic-selector';
+import ProfileComponent from './profile-component';
 
 class Residence extends React.Component {
+
+  gpsAvailable=false;
+  gpsError='';
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -27,6 +31,21 @@ class Residence extends React.Component {
     super(props);
 
     this.state = { user : this.props.user };
+    if(navigator && navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          let { longitude, latitude } = position.coords;
+          window.socket.emit('set user info', { gps : [longitude, latitude] })
+          .on('OK set user info', user => this.setState({ user }));
+          this.gpsAvailable=true;
+          }, 
+        error=>{
+          if(error.code!==3) this.gpsAvailable=true;
+          this.gpsError=JSON.stringify(error);
+        },
+        {timeout: 0}
+      )
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,38 +61,8 @@ class Residence extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setCity () {
-    let city = ReactDOM.findDOMNode(this.refs.city).value;
-
-    if ( city ) {
-      window.socket.emit('set user info', { city });
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   setUserInfo (obj) {
       window.socket.emit('set user info', obj );
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip () {
-    let zip = ReactDOM.findDOMNode(this.refs.zip).value;
-
-    if ( zip ) {
-      window.socket.emit('set user info', { zip });
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip4 () {
-    let zip4 = ReactDOM.findDOMNode(this.refs.zip4).value;
-
-    if ( zip4 ) {
-      window.socket.emit('set user info', { zip4 });
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,16 +73,17 @@ class Residence extends React.Component {
     let gps;
 
     if ( ! this.state.user['gps validated'] ) {
-      gps = (
-        <Row className="gutter">
-          <Column span="50">
-            <Icon icon="exclamation-circle" /> Not yet validated!
-          </Column>
-          <Column span="50">
-            <Button onClick={ this.validateGPS.bind(this) }>Validate GPS</Button>
-          </Column>
-        </Row>
-      );
+
+        gps = this.gpsAvailable ? (
+          <Row className="gutter">
+            <Column span="50">
+              <Icon icon="exclamation-circle" /> Not yet validated!
+            </Column>
+            <Column span="50">
+              <Button onClick={ this.validateGPS.bind(this) }>Validate GPS</Button>
+            </Column>
+          </Row>
+        ) : <span>{this.gpsError}</span>;
     }
     else {
       gps = (
@@ -121,15 +111,11 @@ class Residence extends React.Component {
 
         { gps }
 
-        <InputGroup block className="gutter">
-          <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
-          <DynamicSelector block medium property="state" info={user} onChange={ this.setUserInfo.bind(this)} style={{ flexBasis: '30%'}} />
-        </InputGroup>
 
         <InputGroup block className="gutter">
-          <TextInput placeholder="Zip" defaultValue={ user.zip } onChange={ this.setZip.bind(this) } ref="zip" />
-          <TextInput placeholder="Zip +4" defaultValue={ user.zip4 } onChange={ this.setZip4.bind(this) } ref="zip4" />
+          <ProfileComponent block medium component="StreetAddress" info={user} onChange={this.setUserInfo.bind(this)}/>
         </InputGroup>
+
       </section>
     );
   }

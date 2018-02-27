@@ -106,6 +106,9 @@ class Form extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    var {handler, ...buttonProps} = this.props;
+    delete buttonProps['form-center'];
+    delete buttonProps.flash;
 
     let flash;
 
@@ -128,7 +131,7 @@ class Form extends React.Component {
     }
 
     return (
-      <form { ...this.props } method="POST" role="form" noValidate onSubmit={ this.submitHandler.bind(this) } ref="form" className={ Component.classList(this, ...classes) }>
+      <form { ...buttonProps } method="POST" role="form" noValidate onSubmit={ this.submitHandler.bind(this) } ref="form" className={ Component.classList(this, ...classes) }>
         <h2>{ this.props.title }</h2>
         { flash }
         { this.props.children }

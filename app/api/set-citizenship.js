@@ -19,17 +19,17 @@ function setCitizenship ( countryId, position, cb) {
           }
           catch ( error ) {
             this.error(error);
-            console.info("setCitizenship error 24");
+            console.error("setCitizenship error 24");
           }
         },
         error => { this.error(error);
-                    console.info("setCitizenship error 28"); 
+                    console.error("setCitizenship error 28"); 
                 }
       );
   }
   catch ( error ) {
     this.error(error);
-    console.info("setCitizenship error 34");
+    console.errof("setCitizenship error 34");
   }
 }
 

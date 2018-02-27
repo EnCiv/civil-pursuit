@@ -5,20 +5,21 @@ import React from 'react';
 class Icon extends React.Component {
   render () {
     let classes = ['fa'];
+    const {icon, size, list, spin, circle, mute, ...newProps }=this.props;
 
-    if ( this.props.icon ) {
-      classes.push(`fa-${this.props.icon}`);
+    if ( icon ) {
+      classes.push(`fa-${icon}`);
     }
 
-    if ( this.props.size ) {
-      classes.push(`fa-${this.props.size}x`);
+    if ( size ) {
+      classes.push(`fa-${size}x`);
     }
 
-    if ( this.props.list ) {
+    if ( list ) {
       classes.push('fa-li');
     }
 
-    if ( this.props.spin ) {
+    if ( spin ) {
       classes.push('fa-spin');
     }
 
@@ -28,19 +29,19 @@ class Icon extends React.Component {
       }
     }
 
-    if ( this.props.circle ) {
+    if ( circle ) {
       classes.push('fa-stack-1x');
       return (
         <span className="fa-stack fa-lg">
           <i className="fa fa-circle-o fa-stack-2x"></i>
-          <i { ...this.props } className={ classes.join(' ') }></i>
+          <i { ...newProps } className={ classes.join(' ') }></i>
         </span>
       );
     }
 
     else {
       return (
-        <i { ...this.props } className={ classes.join(' ') }></i>
+        <i { ...newProps } className={ classes.join(' ') }></i>
       );
     }
   }

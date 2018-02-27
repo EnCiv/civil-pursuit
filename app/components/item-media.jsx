@@ -8,11 +8,8 @@ import itemType                       from '../lib/proptypes/item';
 import ClassNames          from 'classnames';
 
 class ItemMedia extends React.Component {
-  static propTypes = {
-    item : itemType
-  };
 
-state={mediaThin: {} };
+state={mediaThin: '' };
 
 afterLoad() {
   if(! this.refs.wrapper || ! this.refs.media) { return }

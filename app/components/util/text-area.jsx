@@ -11,6 +11,7 @@ class Textarea extends React.Component {
 
   render () {
     let classes = [];
+    let textAreaProps=Object.assign({},this.props);
 
     let props = [
       'block',
@@ -29,11 +30,12 @@ class Textarea extends React.Component {
     for ( let prop of props ) {
       if ( this.props[prop] ) {
         classes.push(prop);
+        delete textAreaProps[prop];
       }
     }
 
     return (
-      <textarea className={ classes.join(' ') } { ...this.props } ref="view">{ this.props.children }</textarea>
+      <textarea className={ classes.join(' ') } { ...textAreaProps } ref="view">{ this.props.children }</textarea>
     );
   }
 }

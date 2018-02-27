@@ -76,9 +76,13 @@
     }
 }
 
+.item-media-wrapper.vs-title{
+  display: none;
+}
+
 .item .item-text {
   padding: 0;
-  padding-right: 0.5em;
+  padding-right: @item-visual-gap;
   background-color: transparent; /* so it doesn't cover up the image and the buttons */
   transition: height 0.5s linear;
 }
@@ -175,7 +179,7 @@
   float                 :     right;
   text-align            :     right;
   margin-top            :     ~"calc( -1 * ( 0.5em - 2px ) )"; /** @item-visual-gap is not working here **/
-  margin-right          :     -0.25em; /** move it to the right negatting the padding of the item-text 2px; /** Top and right margin of buttons should be 2px **/
+  margin-right          :     -@item-visual-gap; /** move it to the right negatting the padding of the item-text **/
 }
 
 .item-buttons.vs-collapsed{ /* not visible but ready to be rendered */
@@ -354,7 +358,7 @@ blockquote {
     font-size: 1.2rem;
 }
 .qsort-flip-move-articles h4.item-subject {
-    font-family: helvetica;
+    /*font-family: helvetica;*/
     font-size: 1rem;
     padding-left: 3em;
 }
@@ -366,4 +370,22 @@ blockquote {
 
 .qsort-flip-move-articles textarea.block {
     font-size: 1.2rem; 
+}
+
+.syn-cafe-idea {
+  padding: 1em;
+  padding-right: 0;
+}
+
+.syn-cafe-idea .item {
+  border: none;
+}
+
+.syn-cafe-idea-creator {
+  padding: 1em;
+  padding-right: 0;
+}
+
+.syn-cafe-idea-creator .item {
+  border: 1px solid #666;
 }

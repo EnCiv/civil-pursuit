@@ -93,7 +93,11 @@ class Schema extends Mungo.Model {
 
       "neighborhood"      :     String,
 
-      "member_type"       :     String
+      "member_type"       :     String,
+
+      "year_of_birth"     :     Number,
+
+      "street_address"    :     Mungo.Mixed
     };
   }
 }

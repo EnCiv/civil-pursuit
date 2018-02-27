@@ -27,15 +27,17 @@ class Button extends React.Component {
 
   render () {
     const classes = [this.props.className || ''];
+    var {children, ...buttonProps}=this.props;
 
     for ( let prop in this.constructor.propTypes ) {
-      if ( this.props[prop] ) {
-        classes.push(prop);
+      if ( typeof this.props[prop] !== 'undefined') {
+        if(this.props[prop]) classes.push(prop);
       }
+      delete buttonProps[prop]; // outside of the loop because props={..., success: undefined} happens
     }
 
     return (
-      <button { ...this.props } onClick={this.props.inactive ? Button.buttonInactive : this.props.onClick } type={ this.props.type || "button" } className={ classes.join(' ') }>
+      <button { ...buttonProps } onClick={this.props.inactive ? Button.buttonInactive : this.props.onClick } type={ this.props.type || "button" } className={ classes.join(' ') }>
         { this.props.children }
       </button>
     );

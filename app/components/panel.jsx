@@ -1,7 +1,6 @@
 'use strict';
 
 import React                from 'react';
-import Component            from '../lib/app/component';
 import ClassNames          from 'classnames';
 
 class Panel extends React.Component {
@@ -9,22 +8,21 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const { heading, className, vs, noHeading } = this.props;
-    const vState=vs ? vs.state : '';
-    const cState= vState ? 'vs-'+vState : '';
+    const { children, heading, className, rasp, noHeading, ...sectionProps } = this.props;
+    const vShape=rasp ? rasp.shape : '';
+    const cShape= vShape ? 'vs-'+vShape : '';
 
 
     return (
       <section
-        { ...this.props }
-        className     =   {ClassNames((className || ''), "syn-panel", cState )}
-        ref           =   "panel"
+        { ...sectionProps }
+        className     =   {ClassNames((className || ''), "syn-panel", cShape )}
       >
-        <section className={ClassNames("syn-panel-heading", cState, {'no-heading': noHeading})}>
+        <section className={ClassNames("syn-panel-heading", cShape, {'no-heading': vShape==='collapsed'})}>
           { heading }
         </section>
-        <section className={ClassNames("syn-panel-body", cState)}>
-          { this.props.children }
+        <section className={ClassNames("syn-panel-body", cShape)}>
+          { children }
         </section>
       </section>
     );

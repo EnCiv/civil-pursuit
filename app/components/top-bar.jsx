@@ -20,7 +20,7 @@ class TopBar extends React.Component {
   renderMenuItem(name, onClick, href){
       // on desktop the menu is a strip across the top
       this.topStrip.push(
-      <div className="syn-top_bar-menu-item">
+      <div className="syn-top_bar-menu-item" key={name}>
         <button onClick={onClick} >
           <a href={href}>{name}</a>
         </button>
@@ -28,7 +28,7 @@ class TopBar extends React.Component {
       );
       // on smartphone the menu is a hamber in the upper right corner
       this.topBurger.push(
-        <li>
+        <li key={name}>
           <button onClick={onClick}>
             <a href={href}>{name}</a>
           </button>

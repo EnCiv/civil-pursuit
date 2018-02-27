@@ -1,13 +1,13 @@
 'use strict';
 
 import Item from '../models/item';
+import Type from '../models/type';
 
 function getItems (panel, cb) {
   try {
     let id        =   'panel-' + panel.type._id || panel.type;
     const query   =   { type : panel.type._id || panel.type};
     const userId = this.synuser ? this.synuser.id : null;
-
 
     if ( panel.parent ) {
       const parentId = panel.parent._id || panel.parent; 
@@ -38,7 +38,14 @@ function getItems (panel, cb) {
           try {
             if(!panel.items) { panel.items = []; }
             panel.items = panel.items.concat(results.items);
-            cb(panel, results.count);
+
+            if(typeof panel.type !== 'object'){
+              Type.findOne({_id: panel.type}).then(typeInfo=>{
+                panel.type=typeInfo.toJSON();
+                cb(panel, results.count);
+              })
+            }else 
+              cb(panel, results.count);
           }
           catch ( error ) {
             ko(error);

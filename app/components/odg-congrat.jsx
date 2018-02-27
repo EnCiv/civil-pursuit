@@ -38,7 +38,7 @@ class ODGCongrat extends React.Component {
     this.setState({response: "Sending ...."});
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
-      console.info("contactUs response:", response);
+      //onsole.info("contactUs response:", response);
       if ( response && response.error ) {
         let { error } = response;
 
@@ -49,7 +49,7 @@ class ODGCongrat extends React.Component {
       }
     });
 
-    console.info("contactUs");
+    //onsole.info("contactUs");
   }
 
   // credit to http://www.w3resource.com/javascript/form/email-validation.php#
@@ -62,7 +62,7 @@ class ODGCongrat extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    console.info("odgCongrats", this.props);
+    //onsole.info("odgCongrats", this.props);
     const page = (
       <section>
         <div className="civil-pursuit">

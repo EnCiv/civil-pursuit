@@ -21,7 +21,7 @@ class Creator extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   state = {
-    video:        false,
+    video: '',
     title: '',
     titleLookingUp: false,
     titleError: false
@@ -31,8 +31,8 @@ class Creator extends React.Component {
 
   constructor(props){
     super(props);
-
-    if(this.props.item ) Creator.keys.forEach(key => {this.state[key]=props.item[key] || ''});
+    let item=props.item;
+    if(item && Object.keys(item)  ) Creator.keys.forEach(key => {this.state[key]=item[key] || ''});
     else Creator.keys.forEach(key => {this.state[key]=''}); 
     if(this.props.references && this.props.references[0]){
       this.state.reference=this.props.references[0].url;
@@ -141,13 +141,15 @@ class Creator extends React.Component {
   create () {
     var item = this.makeDbItem();
 
-    console.info('CREATE ITEM');
+    //onsole.info('CREATE ITEM');
 
     let insert = () => {
       if(item._id){
-        console.info("creator: update item");
+        //onsole.info("creator: update item");
         window.socket.emit('update item', item);
-      }else window.socket.emit('create item', item);
+      }else window.socket.emit('create item', item, (item)=>{
+        this.props.toParent && this.props.toParent({results: {item: item}})
+      });
     };
 
     if ( this.file ) {
@@ -167,7 +169,7 @@ class Creator extends React.Component {
     else {
       insert();
     }
-    console.info("Creator.create");
+    //onsole.info("Creator.create");
 
     if(this.props.toggle) this.props.toggle();
   }
@@ -227,7 +229,7 @@ class Creator extends React.Component {
 
     if(this.props.type.mediaMethod!="disabled"){
       media=[
-          <section className="item-media-wrapper">
+          <section className="item-media-wrapper" key="media">
             <section className="item-media" ref="media" style={{width: "calc(13em - 8px)"}}>
               <Uploader
                 ref       =   "uploader"
@@ -239,17 +241,17 @@ class Creator extends React.Component {
       ];
     }
     if(this.props.type.referenceMethod!="disabled"){
-      reference=[
-                      <Row center-items>
+      reference=
+              <Row center-items>-
                 <Icon
                   icon        =   "globe"
                   spin        =   { true }
-                  text-muted
                   className   =   {`looking-up ${this.state.lookingUp ? 'visible' : ''}`}
                   ref         =   "lookingUp"
+                  key         =   "globe"
                   />
 
-                <Icon icon="exclamation" text-warning className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
+                <Icon icon="exclamation" className={`error ${this.state.titleError ? 'visible' : ''}`} ref="errorLookingUp" />
 
                 <TextInput
                   block
@@ -260,6 +262,7 @@ class Creator extends React.Component {
                   className     =    {`url-editor ${this.state.title ? 'hide' : ''}`}
                   name          =   "reference"
                   value         =   { this.state.reference }
+                  key           =   "reference"
                   />
 
                 <TextInput
@@ -268,6 +271,7 @@ class Creator extends React.Component {
                   value         =   {this.state.title}
                   className     =   {`url-title ${this.state.title ? 'visible' : ''}`}
                   ref           =   "title"
+                  key           =   "title"
                   />
 
                 <Icon
@@ -276,53 +280,52 @@ class Creator extends React.Component {
                   className     =   {`syn-edit-url ${this.state.title ? 'visible' : ''}`}
                   ref           =   "editURL"
                   onClick       =   { this.editURL.bind(this) }
+                  key           = "pencil"
                   />
               </Row>
-
-      ]
     }
   
 
     return (
-      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
+      <Form handler={this.create.bind(this)} className="syn-creator" ref="form" name="creator">
         <article className="item" ref="creator">
           {media}
-          <section className="item-buttons">
-            <section className="syn-button-group">
-              <span className="civil-button-info">{' '}</span>
-              <Submit small shy>
-                <span className="civil-button-text">Post</span>
-              </Submit>
-            </section>
-          </section>
 
           <section className="item-text">
+            <section className="item-buttons">
+              <section className="syn-button-group">
+                <span className="civil-button-info">{' '}</span>
+                <Submit small shy>
+                  <span className="civil-button-text">Post</span>
+                </Submit>
+              </section>
+            </section>
             <div className="item-inputs">
-              <TextInput block 
-                placeholder={this.props.type.subjectPlaceholder || "Subject" }
-                ref="subject" 
-                required 
-                name="subject" 
-                value={ this.state.subject }
-                onChange = {this.onChangeKey.bind(this,'subject')}
-                />
+              <TextInput block
+                placeholder={this.props.type.subjectPlaceholder || "Subject"}
+                ref="subject"
+                required
+                name="subject"
+                value={this.state.subject}
+                onChange={this.onChangeKey.bind(this, 'subject')}
+                key="subject"
+              />
 
-              { reference }
+              {reference}
 
               <TextArea
-                placeholder     =   "Description"
-                ref             =   "description"
-                name            =   "description"
-                value           =   { this.state.description }
-                onChange      =    {this.onChangeKey.bind(this,'description')}
+                placeholder="Description"
+                ref="description"
+                name="description"
+                value={this.state.description}
+                onChange={this.onChangeKey.bind(this, 'description')}
                 block
                 required
-                ></TextArea>
+                key="description"
+              ></TextArea>
             </div>
           </section>
-
-
-          <section style={ { clear : 'both' }}></section>
+          <section style={{ clear: 'both' }}></section>
         </article>
       </Form>
     );

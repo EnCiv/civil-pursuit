@@ -142,7 +142,7 @@ class JoinForm extends React.Component {
 
   loginWithFacebook() {
     // location.href = '/sign/in/facebook/';
-    console.info("Join.loginWithFacebook");
+    //onsole.info("Join.loginWithFacebook");
     Facebook.connect();
   }
 
@@ -189,7 +189,7 @@ class JoinForm extends React.Component {
         <ButtonGroup block>
           <Button primary onClick={this.loginWithFacebook} medium className="join-with-facebook">
             <Icon icon="facebook" />
-            <span className={Component.classList(this)} inline> Facebook</span>
+            <span className={Component.classList(this)}> Facebook</span>
           </Button>
 
           <Button info onClick={this.loginWithTwitter} medium className="join-with-twitter">
@@ -242,7 +242,7 @@ class JoinForm extends React.Component {
 
         <ButtonGroup block>
           <Button primary onClick={this.login.bind(this)} medium inactive={!this.state.loginActive} className="syn-form-group syn-form-submit login-button">
-            <span className={Component.classList(this)} inline> Login</span>
+            <span className={Component.classList(this)}> Login</span>
           </Button>
 
           <Button info onClick={this.signup.bind(this)} medium inactive={!this.state.joinActive} className="syn-form-group syn-form-submit join-button">

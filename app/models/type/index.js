@@ -54,7 +54,7 @@ class Type extends Mungo.Model {
       "visualMethod":     String,
       "evaluateQuestion" :  String,
       "instruction"      :  String,
-      "component"        : String,
+      "component"        : Mungo.Mixed,
       "min"              : Number,
       "buttonName"       : String,
       "buttonTitle" : {
@@ -63,7 +63,8 @@ class Type extends Mungo.Model {
       },
       "mediaMethod":       String,
       "referenceMethod":   String,
-      "subjectPlaceholder": String
+      "subjectPlaceholder": String,
+      "buttons": Mungo.Mixed,
     }
   }
 

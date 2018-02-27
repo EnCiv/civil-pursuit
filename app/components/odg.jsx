@@ -7,7 +7,7 @@ import CloudinaryImage    from './util/cloudinary-image';
 import ClassNames          from 'classnames';
 import Footer               from './footer';
 import TypeComponent                    from './type-component';
-import Accordion          from './util/accordion';
+import Accordion          from 'react-proactive-accordion';
 
 
 
@@ -223,7 +223,7 @@ class OnlineDeliberationGame extends React.Component {
     }
 
     resizeListener() {
-        console.info("OnlineDeliberationGame.resizeListener");
+        //onsole.info("OnlineDeliberationGame.resizeListener");
         this.forceUpdate();
     }
 
@@ -238,7 +238,7 @@ class OnlineDeliberationGame extends React.Component {
     toChild=null;
 
     toMeFromChild(vs) {
-        console.info("ODG.toMeFromChild", vs);
+        //onsole.info("ODG.toMeFromChild", vs);
         if(vs.state) this.setState({vs: Object.assign({},this.state.vs, {state: vs.state})});
         if(vs.toChild) this.toChild=vs.toChild;
     }

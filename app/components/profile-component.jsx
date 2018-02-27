@@ -7,7 +7,12 @@ import Birthdate from './birthdate';
 import MemberType from './member-type';
 import Neighborhood from './neighborhood';
 import DynamicSelector from './dynamic-selector';
+import YearOfBirth from './year-of-birth';
 import S from 'string';
+import Zip from './zip';
+import City from './city';
+import Line1 from './line1';
+import StreetAddress from './street-address';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -25,7 +30,12 @@ class ProfileComponent extends React.Component {
         'Birthdate': Birthdate,
         'MemberType': MemberType,
         'Neighborhood': Neighborhood,
-        'DynamicSelector': DynamicSelector
+        'DynamicSelector': DynamicSelector,
+        'YearOfBirth': YearOfBirth,
+        'Zip': Zip,
+        'City': City,
+        'Line1': Line1,
+        'StreetAddress': StreetAddress
     }
 
     static title(component) {
@@ -88,7 +98,8 @@ class ProfileComponent extends React.Component {
         if (profile[0]) {
             Component = ProfileComponent.components[profile[0]];
         } else { return (null); };
-        return (<Component {...this.props} property={ProfileComponent.property(this.props.component)} collection={ProfileComponent.collection(this.props.component)}/>);
+        if(typeof Component === 'function') return (<Component {...this.props} property={ProfileComponent.property(this.props.component)} collection={ProfileComponent.collection(this.props.component)}/>);
+        else throw new Error('profile does not exist in ProfileCompnents', profile);
     }
 }
 
