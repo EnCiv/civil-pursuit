@@ -37,6 +37,7 @@ function signUp (req, res, next) {
           user => {
             try {
               req.user = user;
+              if(!user.email) return next();
 
               Discussion
                 .findCurrent()

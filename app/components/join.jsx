@@ -136,7 +136,7 @@ class JoinForm extends React.Component {
             break;
 
           default:
-            this.setState({ validationError: "unexpected error: " + (err || 'Unknown'), info: null });
+            this.setState({ validationError: "unexpected error: " + '(' + res.status + ') ' + (err || 'Unknown'), info: null });
             break;
         }
       });
