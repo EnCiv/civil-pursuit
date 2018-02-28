@@ -113,7 +113,7 @@ class JoinForm extends React.Component {
     var userInfo=Object.assign({},this.props.userInfo)
 
     superagent
-      .post('/sign/up')
+      .post('/tempid')
       .send(userInfo)
       .end((err, res) => {
         if (err) console.error("joinForm.skip error", err);
@@ -129,7 +129,7 @@ class JoinForm extends React.Component {
             break;
 
           default:
-            this.setState({ validationError: 'Unknown error', info: null });
+            this.setState({ validationError: "unexpected error: " + (err || 'Unknown'), info: null });
             break;
         }
       });

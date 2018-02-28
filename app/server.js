@@ -177,6 +177,16 @@ class HttpServer extends EventEmitter {
         });
       });
 
+      this.app.all('/tempid',
+      signUpRoute,
+      setUserCookie,
+      function (req, res) {
+        res.json({
+          up: true,
+          id: req.user._id
+        });
+      });
+
     this.app.all('/sign/out', signOutRoute);
   }
 
