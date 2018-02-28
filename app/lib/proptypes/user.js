@@ -8,7 +8,7 @@ const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool } =
 
 const user          =   shape({
   _id               :   string,
-  email             :   string.isRequired,
+  email             :   string,
   image             :   string,
   preferences       :   arrayOf[shape({
     name            :   string,

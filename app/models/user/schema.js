@@ -17,13 +17,11 @@ class Schema extends Mungo.Model {
     return {
       "email"             :     {
         "type"            :     String,
-        "required"        :     true,
         "unique"          :     true
       },
 
       "password"          :     {
         "type"            :     String,
-        "required"        :     true,
         "private"         :     true
       },
 
