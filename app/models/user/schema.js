@@ -16,8 +16,7 @@ class Schema extends Mungo.Model {
   static get schema () {
     return {
       "email"             :     {
-        "type"            :     String,
-        "unique"          :     true
+        "type"            :     String
       },
 
       "password"          :     {
