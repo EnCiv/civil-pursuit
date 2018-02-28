@@ -18,6 +18,7 @@ function signUp (req, res, next) {
       password = facebook + 'synapp';
     }
 
+    /**
     if ( ! email ) {
       res.statusCode = 400;
       res.json({ error: 'Missing email' });
@@ -28,7 +29,8 @@ function signUp (req, res, next) {
       res.json({ error: 'Missing password' });
     }
 
-    else {
+    else */
+    if(true) {
       User
         .create(req.body)
         .then(

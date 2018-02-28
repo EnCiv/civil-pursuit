@@ -96,6 +96,45 @@ class JoinForm extends React.Component {
       });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  skip() {
+
+    let agree = ReactDOM.findDOMNode(this.refs.agree);
+
+    this.setState({ validationError: null, info: 'Creating temporary account...' });
+
+    if (!agree.classList.contains('fa-check-square-o')) {
+      this.setState({ validationError: 'Please agree to our terms of service', info: null });
+      return;
+    }
+
+    window.onbeforeunload = null; // stop the popup about navigating away
+
+    var userInfo=Object.assign({},this.props.userInfo)
+
+    superagent
+      .post('/sign/up')
+      .send(userInfo)
+      .end((err, res) => {
+        if (err) console.error("joinForm.skip error", err);
+        switch (res.status) {
+          case 401:
+            this.setState({ validationError: 'This email address is already taken', info: null });
+            break;
+
+          case 200:
+            this.setState({ validationError: null, successMessage: 'Welcome aboard!', info: null });
+            if (this.props.onChange) setTimeout(() => this.props.onChange({ userId: JSON.parse(res.text).id }), 800);
+            else setTimeout(() => location.href = this.props.newLocation ? this.props.newLocation : window.location.pathname, 800);
+            break;
+
+          default:
+            this.setState({ validationError: 'Unknown error', info: null });
+            break;
+        }
+      });
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -247,6 +286,10 @@ class JoinForm extends React.Component {
 
           <Button info onClick={this.signup.bind(this)} medium inactive={!this.state.joinActive} className="syn-form-group syn-form-submit join-button">
             <span>Join</span>
+          </Button>
+
+          <Button info onClick={this.skip.bind(this)} medium className="syn-form-group syn-form-submit skip-button">
+            <span>Skip This for Now</span>
           </Button>
         </ButtonGroup>
 
