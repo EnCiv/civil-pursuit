@@ -21,6 +21,7 @@ import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
 import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
+import tempIdRoute              from './routes/temp-id';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
 import serverReactRender         from './routes/server-react-render';
@@ -178,7 +179,7 @@ class HttpServer extends EventEmitter {
       });
 
       this.app.all('/tempid',
-      signUpRoute,
+      tempIdRoute,
       setUserCookie,
       function (req, res) {
         res.json({
