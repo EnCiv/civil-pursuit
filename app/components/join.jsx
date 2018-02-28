@@ -112,6 +112,13 @@ class JoinForm extends React.Component {
 
     var userInfo=Object.assign({},this.props.userInfo)
 
+    let password='';
+    let length=Math.floor(Math.random()*9)+8; // the lenght will be between 8 and 16 characters
+    for(;length>0;length--){
+      password+=String.fromCharCode(65+Math.floor(Math.random()*26)); // any character between A and Z
+    }
+    userInfo.password=password;
+
     superagent
       .post('/tempid')
       .send(userInfo)
