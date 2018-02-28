@@ -17,8 +17,7 @@ class Schema extends Mungo.Model {
     return {
       "email"             :     {
         "type"            :     String,
-        "unique"          :     true,
-        "sparse"          :     true
+        "unique"          :     false
       },
 
       "password"          :     {
