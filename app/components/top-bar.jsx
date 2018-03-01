@@ -11,7 +11,7 @@ import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
 import selectors                      from '../../selectors.json';
 import menus                          from '../../fixtures/header-menu/1.json';
-
+import LogupBar                          from './logup-bar';
 
 class TopBar extends React.Component {
   topStrip=[];
@@ -226,6 +226,7 @@ class TopBar extends React.Component {
               { this.topStrip }
             </section>
           </div>
+          <LogupBar user={user}/>
         </header>
 
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
