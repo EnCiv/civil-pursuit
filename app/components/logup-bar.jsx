@@ -15,25 +15,24 @@ class Logup extends React.Component {
     state={validationError: null, successMessage: null }
 
     logup () {
-    
         let email = ReactDOM.findDOMNode(this.refs.email).value;
         if ( email ) {
-            window.socket.emit('set user info', { email });
-        }
-        if(this.props.userInfo && this.props.userInfo.password){
-            Login.signIn(email,password)
-            .then(
-                () => {
-                  this.setState({ validationError : null, successMessage : 'Welcome' });
-                  setTimeout(() => location.href = window.location.pathname, 800); 
-                },
-                error => {
-                  this.setState({ validationError : error.message })
-                }
-              );
+            window.socket.emit('set user info', { email }, this.login.bind(this,email,this.props.user && this.props.user.tempid));
         }
     }
     
+    login(email, password){
+        Login.signIn(email,this.props.user.tempid)
+        .then(
+            () => {
+                this.setState({ validationError : null, successMessage : 'Welcome' });
+                setTimeout(() => location.href = window.location.pathname, 800); 
+            },
+            error => {
+                this.setState({ validationError : error.message })
+            }
+        );
+    }
 
 
   render () {

@@ -3,7 +3,7 @@
 import User            from '../models/user';
 import Discussion      from '../models/discussion';
 
-function signUp (req, res, next) {
+function tempId (req, res, next) {
 
   try {
 
@@ -37,7 +37,10 @@ function signUp (req, res, next) {
           user => {
             try {
               req.user = user;
-              if(!user.email) return next();
+              if(!user.email) {
+                req.tempid=password; // in temp login, the password is a key that will be stored in the browsers cookie.  
+                return next();
+              }
 
               Discussion
                 .findCurrent()
@@ -84,4 +87,4 @@ function signUp (req, res, next) {
 
 }
 
-export default signUp;
+export default tempId;
