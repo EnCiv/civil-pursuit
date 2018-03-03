@@ -40,11 +40,17 @@ class Logup extends React.Component {
     if(user && user.id && !user.email)
         return (
             <div className="logup-bar">
-                <span>Complete setup</span>
-                <label>Email</label>
-                <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
-                <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>
-                <span>{this.state.successMessage}{this.state.validationError}</span>
+                <div className="logup-bar-center">
+                    <span>Complete setup</span>
+                    <label>Email</label>
+                    <div className="logup-bar-input">
+                        <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
+                    </div>
+                    <div className="logup-bar-button">
+                        <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>
+                    </div>
+                </div>
+                <div>{this.state.successMessage}{this.state.validationError}</div>
             </div>
         );
     else

@@ -225,8 +225,8 @@ class TopBar extends React.Component {
             <section className="syn-top_bar-menu-row">
               { this.topStrip }
             </section>
+            <LogupBar user={user}/>
           </div>
-          <LogupBar user={user}/>
         </header>
 
         <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
