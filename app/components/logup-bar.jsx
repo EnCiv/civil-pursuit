@@ -8,17 +8,31 @@ import Panel                          from './panel';
 import ReactScrollBar from './util/react-scrollbar';
 import EmailInput                     from './util/email-input';
 import Button from './util/button';
+import Login from './login';
 
 
 class Logup extends React.Component {
+    state={validationError: null, successMessage: null }
 
     logup () {
     
         let email = ReactDOM.findDOMNode(this.refs.email).value;
         if ( email ) {
             window.socket.emit('set user info', { email });
-          }
-      }
+        }
+        if(this.props.userInfo && this.props.userInfo.password){
+            Login.signIn(email,password)
+            .then(
+                () => {
+                  this.setState({ validationError : null, successMessage : 'Welcome' });
+                  setTimeout(() => location.href = window.location.pathname, 800); 
+                },
+                error => {
+                  this.setState({ validationError : error.message })
+                }
+              );
+        }
+    }
     
 
 
@@ -28,13 +42,10 @@ class Logup extends React.Component {
         return (
             <div className="logup-bar">
                 <span>Complete setup</span>
-                <div className="syn-form-group">
                 <label>Email</label>
                 <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
-                </div>
-                <div className="syn-form-group syn-form-submit">
                 <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>
-                </div>
+                <span>{this.state.successMessage}{this.state.validationError}</span>
             </div>
         );
     else
