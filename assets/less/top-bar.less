@@ -27,7 +27,7 @@
   width:                      100%;
   margin:                     0;
   padding:                    0;
-  height:                     60px;
+  //height:                     60px;
   line-height:                1.45em;
   -webkit-transform-style:    preserve-3d;
   -moz-transform-style:       preserve-3d;
@@ -49,10 +49,10 @@
   z-index                     :       2;
   background-color: rgba(255,255,255,0.9);
   margin: 0;
-  height: 100px;
-  @media (max-width: @screen-phone) {
-    height: 60px;
-  }
+  //height: 100px;
+  //@media (max-width: @screen-phone) {
+  //  height: 60px;
+  //}
 }
 
 .syn-top_bar-wrapper-inner {
@@ -321,14 +321,18 @@
 }
 
 .logup-bar-input{
-  font-size: 1rem;
-  padding: 0.1rem;
   display: inline-block;
+  input {
+    font-size: 1rem;
+    padding: 0.1rem;
+  }
 }
 
 .logup-bar-button{
-  font-size: 1rem;
-  padding: 0.1rem;
   display: inline-block;
+  button {
+    font-size: 1rem;
+    padding: 0.1rem;
+  }
 }
 /**-------------------------------------------------------------// top-bar    */
