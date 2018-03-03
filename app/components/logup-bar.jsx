@@ -44,7 +44,7 @@ class Logup extends React.Component {
                     <span>Complete setup</span>
                     <label>Email</label>
                     <div className="logup-bar-input">
-                        <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
+                        <EmailInput autoFocus required placeholder="Email" ref="email" name="email" />
                     </div>
                     <div className="logup-bar-button">
                         <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>

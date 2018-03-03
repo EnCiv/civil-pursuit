@@ -169,6 +169,10 @@ class TopBar extends React.Component {
     }
   }
 
+  getBannerNode(){
+    return this.refs.banner;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -195,7 +199,7 @@ class TopBar extends React.Component {
     
     return (
       <section>
-        <header role="banner" className="syn-top_bar-wrapper">
+        <header role="banner" className="syn-top_bar-wrapper" ref="banner">
           <div className="syn-top_bar-wrapper-inner">
             <section className= "syn-top_bar">
               <section className= "syn-top_bar-info">
