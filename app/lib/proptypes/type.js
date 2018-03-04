@@ -11,7 +11,7 @@ let type;
 type                =   shape({
   _id               :   string.isRequired,
   id                :   string.isRequired,
-  name              :   string.isRequired,
+  name              :   string,
   harmony           :   arrayOf(string),
   parent            :   string,
   createMethod		  : 	string,

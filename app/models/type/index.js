@@ -30,11 +30,7 @@ class Type extends Mungo.Model {
 
   static get schema () {
     return {
-      "name"        :     {
-        type        :     String,
-        unique      :     true,
-        required    :     true
-      },
+      "name"        :     String,
 
       "harmony"     :     {
         type        :     [Type],
@@ -43,7 +39,11 @@ class Type extends Mungo.Model {
 
       "parent"      :     Type,
 
-      "id"          :     String,
+      "id"          :     {
+        type        :     String,
+        unique      :     true,
+        required    :     true
+      },
       "createMethod":     String,
       "promoteMethod":    String,
       "promoteButtonLabel" : {
