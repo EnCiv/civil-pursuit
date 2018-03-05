@@ -11,13 +11,16 @@ function trim(max, min, val){
 
 class ScrollWrapper extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    if(typeof window !== 'undefined' && this.props.topBar)
+      this.topBar=this.props.topBar;
+    let topBarHeight= (this.topBar && this.topBar.getBoundingClientRect().height) || 0;
     this.state = {
       ready: false,
       scrollY: null,
       scrollX: null,
-      top: 0,
+      top: topBarHeight,
       left: 0,
       scrollAreaHeight: null,
       scrollAreaWidth: null,
@@ -30,7 +33,7 @@ class ScrollWrapper extends React.Component {
       scrolling: false, // changes: scrolling (new fake pseudo class)
       reset: false, // changes: change state without rendering
       start: { y: 0, x: 0, t: 0 },
-      topBarHeight: null
+      topBarHeight: topBarHeight
     };
 
     this.touchable=false;
@@ -49,6 +52,7 @@ class ScrollWrapper extends React.Component {
       this.htmlElement.style.position='fixed';
       this.htmlElement.style.overflowX='hidden';
       this.htmlElement.style.transition=null;
+      this.htmlElement.style.top=this.state.top+'px';
       window.Synapp.ScrollFocus=this.ScrollFocus.bind(this);
       this.scrollWrapper=this.htmlElement; //using the root as the wrapper
     } else 
@@ -69,7 +73,7 @@ class ScrollWrapper extends React.Component {
     var last=null;
     var that=this;
     var extent=this.props.extent;
-  
+
     function stepper(now){
       if(!start) {
         start = now; // now is milliseconds not seconds
@@ -81,18 +85,22 @@ class ScrollWrapper extends React.Component {
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
       let newTop=-(-top + tRect.top -bannerHeight);
+      let lowerEnd = that.state.scrollAreaHeight-(that.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
 
-      const lowerEnd = that.state.scrollAreaHeight-(that.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
+      
 
       // if bottom of target is above the top of the wrapper, then hyperjump (old)top to the position just before it is visible.
       //if(tRect.bottom< bannerHeight){
       //  top= -(-top + -tRect.top)
       //}
-      newTop = -trim(lowerEnd, -extent, -newTop);
+      if(lowerEnd<0)
+        newTop=0;
+      else
+        newTop = -trim(lowerEnd, -extent, -newTop);
   
       if(now-start >duration){
         html.style.transition=null;
-        html.style.top=newTop+'px';
+        //html.style.top=newTop+'px';
         //that.setState({top: -newTop});
         that.calculateSize(()=>{
           that.normalizeVertical(-newTop);
@@ -110,7 +118,7 @@ class ScrollWrapper extends React.Component {
       let nextTop = top + nextStepDistance; // top of the next step
       nextTop = -trim(lowerEnd, -extent, -nextTop);
       html.style.transition=null;
-      html.style.top=nextTop+'px'; // set the new top
+      html.style.top=nextTop+this.state.topBarHeight+'px'; // set the new top
       last=now;
       window.requestAnimationFrame(stepper);
     }
@@ -152,8 +160,12 @@ class ScrollWrapper extends React.Component {
   }
 
 // changes: update scrollbars when parent resizing
-  componentWillReceiveProps() {
-    this.updateSize();
+  componentWillReceiveProps(newProps) {
+    if(newProps.topBar) this.topBar=newProps.topBar;
+    //this.updateSize();
+    this.calculateSize(()=>{
+      this.normalizeVertical(this.state.top);
+    });
   }
 
 // changes: reset settings without rerendering (need for scrolling state)
@@ -199,7 +211,7 @@ class ScrollWrapper extends React.Component {
     // The Elements
     const $scrollArea = this.scrollArea;
     const $scrollWrapper = this.scrollWrapper;
-    const topBarHeight= (this.props.topBar && this.props.topBar.getBoundingClientRect().height) || 0;
+    const topBarHeight= (this.topBar && this.topBar.getBoundingClientRect().height) || 0;
     // Get new Elements Size
     const elementSize = {
       // Scroll Area Height and Width
@@ -272,10 +284,14 @@ class ScrollWrapper extends React.Component {
     // Max Scroll Up
     let extent=this.props.extent;
     const lowerEnd = this.state.scrollAreaHeight-(this.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
-    const next = trim(lowerEnd, -extent, nextPos);
+    let next;
+    if(lowerEnd <0)
+      next = 0; /*trim(Math.max(-lowerEnd,this.state.topBarHeight-extent), -extent, nextPos);*/
+    else
+      next = -trim(extent, -lowerEnd, -nextPos);
 
     // Update the Vertical Value
-    this.htmlElement.style.top=(-next)+'px';
+    this.htmlElement.style.top=(-next)+this.state.topBarHeight+'px';
     this.setState({
       top: next,
       vMovement: (next / this.state.scrollAreaHeight) * 100,

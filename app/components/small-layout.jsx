@@ -17,7 +17,7 @@ class SmallLayout extends React.Component {
     const myScrollbar = {};
 
     return (
-      <div class="syn-small-layout">
+      <div className="syn-small-layout">
         <div id="fb-root"></div>
         <ReactScrollBar style={myScrollbar}>
             <div className="should-have-a-chidren scroll-me">
