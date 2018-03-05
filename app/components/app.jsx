@@ -17,6 +17,7 @@ import OnlineDeliberationGame           from './odg';
 import ODGCongrat                       from './odg-congrat';
 import fixedScroll                      from '../lib/util/fixed-scroll';
 import RenderMarkDown                   from './render-mark-down';
+import SmallLayout                      from './small-layout';
 
 class App extends React.Component {
 
@@ -206,7 +207,9 @@ class App extends React.Component {
             let component=last.type.component || 'Subtype';
 
           return (
-            <TypeComponent component={component} { ...this.props } setPath={this.setPath.bind(this)} RASPRoot={'/i/'} user={ user } count = { 1 } panel={ last } />
+            <SmallLayout user={ user } setPath={this.setPath.bind(this)}>
+              <TypeComponent component={component} { ...this.props } setPath={this.setPath.bind(this)} RASPRoot={'/i/'} user={ user } count = { 1 } panel={ last } />
+            </SmallLayout>
           );
         }
 
