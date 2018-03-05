@@ -191,6 +191,25 @@ class App extends React.Component {
 
           break;
 
+        case 'i':
+
+          if(! this.props.panels) break;
+          else {
+            function getLastPanel(panels){
+              let keylist=Object.keys(panels);
+              let lastPanelId=keylist[keylist.length-1];
+              const panel=Object.assign({},panels[lastPanelId].panel);
+              return panel;
+            }
+
+            let last=getLastPanel(this.props.panels);
+            let component=last.type.component || 'Subtype';
+
+          return (
+            <TypeComponent component={component} { ...this.props } setPath={this.setPath.bind(this)} RASPRoot={'/i/'} user={ user } count = { 1 } panel={ last } />
+          );
+        }
+
         case 'items':
           if(! this.props.panels) { break; }
 

@@ -198,6 +198,7 @@ class HttpServer extends EventEmitter {
     this.getOldfield();
     this.getSettings();
     this.getItemPage();
+    this.getIPage();
     this.getPanelPage();
     this.getODG();
     this.getMarkDown();
@@ -410,6 +411,59 @@ class HttpServer extends EventEmitter {
     }, serverReactRender.bind(this));
   }
 
+  getIPage () {
+    this.app.get('/i/*', (req, res, next) => {
+      let segments=req.params[0].split('/');
+      if(!segments || !segments.length || !segments[0].length) next();
+      let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
+      let parts=segments[0].split(',');
+      var shortId;
+      parts.forEach(part=>{
+        if(part.length===5) shortId=part;
+      });
+      if(!shortId) next();
+      try {
+        Item.findOne({ id : shortId }).then(
+          item => {
+            if ( ! item ) {
+              return next();
+            }
+            item.toPanelItem(userId).then(
+              item => {
+                req.panels = {};
+                if(item & item.parent) {
+                  item.getLineage(userId).then( lineage => {
+                    lineage.forEach((ancestor, index) => {
+                      const panelId = makePanelId(ancestor);
+
+                      if ( ! req.panels[panelId] ) {
+                        req.panels[panelId] = makePanel(ancestor);
+                      }
+
+                      req.panels[panelId].panel.items.push(ancestor);
+
+                      req.panels[panelId].active = `${ancestor._id}-subtype`;
+                    });
+
+                  });
+                }
+                req.panels[makePanelId(item)] = makePanel(item);
+
+                req.panels[makePanelId(item)].panel.items.push(item);
+
+                next();
+              },
+              next
+            );
+          },
+          next
+        );
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, serverReactRender.bind(this));
+  }
  
   getODG () {
     try {
