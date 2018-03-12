@@ -3,7 +3,8 @@
 function lowerEmail (doc) {
   return new Promise((ok, ko) => {
     try {
-      doc.set('email', doc.email.toLowerCase());
+      if(doc.email)
+        doc.set('email', doc.email.toLowerCase());
       ok();
     }
     catch ( error ) {

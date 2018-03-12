@@ -11,7 +11,7 @@ import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
 import selectors                      from '../../selectors.json';
 import menus                          from '../../fixtures/header-menu/1.json';
-
+import LogupBar                          from './logup-bar';
 
 class TopBar extends React.Component {
   topStrip=[];
@@ -169,6 +169,10 @@ class TopBar extends React.Component {
     }
   }
 
+  getBannerNode(){
+    return this.refs.banner;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -195,7 +199,7 @@ class TopBar extends React.Component {
     
     return (
       <section>
-        <header role="banner" className="syn-top_bar-wrapper">
+        <header role="banner" className="syn-top_bar-wrapper" ref="banner">
           <div className="syn-top_bar-wrapper-inner">
             <section className= "syn-top_bar">
               <section className= "syn-top_bar-info">
@@ -225,6 +229,7 @@ class TopBar extends React.Component {
             <section className="syn-top_bar-menu-row">
               { this.topStrip }
             </section>
+            <LogupBar user={user}/>
           </div>
         </header>
 

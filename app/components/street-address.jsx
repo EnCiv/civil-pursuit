@@ -67,7 +67,7 @@ class StreetAddress extends React.Component {
     gotCivicInfo(civicInfo){
         let updated=false;
         //onsole.info("StreetAddress.validate", civicInfo);
-        if(!civicInfo || !civicInfo.kind || civicInfo.kind !== 'civicinfo#representativeInfoResponse') { this.info.validatedAd=null; return this.setState({hind: false, working: false});}
+        if(!civicInfo || !civicInfo.kind || civicInfo.kind !== 'civicinfo#representativeInfoResponse') { this.info.validatedAt=null; return this.setState({hind: false, working: false});}
         Object.assign(this.possible,this.info);
         ['line1','city','zip'].forEach(prop=>{
             if(this.possible[prop]!==civicInfo.normalizedInput[prop]){
