@@ -34,12 +34,15 @@ class Logup extends React.Component {
         );
     }
 
+    getBannerNode(){
+        return this.refs.banner;
+      }
 
   render () {
     const { user } = this.props;
     if(user && user.id && !user.email)
         return (
-            <div className="logup-bar">
+            <div className="logup-bar" ref="banner">
                 <div className="logup-bar-center">
                     <span>Complete setup</span>
                     <label>Email</label>
