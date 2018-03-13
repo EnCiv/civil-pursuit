@@ -118,7 +118,7 @@ class ScrollWrapper extends React.Component {
       let nextTop = top + nextStepDistance; // top of the next step
       nextTop = -trim(lowerEnd, -extent, -nextTop);
       html.style.transition=null;
-      html.style.top=nextTop+this.state.topBarHeight+'px'; // set the new top
+      html.style.top=nextTop+that.state.topBarHeight+'px'; // set the new top
       last=now;
       window.requestAnimationFrame(stepper);
     }

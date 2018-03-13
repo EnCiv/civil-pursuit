@@ -18,6 +18,7 @@
 **/
 
 @import "lib/screens";
+@import "lib/var";
 
 html {
   margin: 0;
@@ -42,6 +43,27 @@ body {
     padding-left: 2px;
     padding-right: 2px;
     padding-top: calc(@syn-topbar-height-up-to-phone); /** top bar is smaller on phones **/
+  }
+}
+
+.syn-small-layout{
+  .logup-bar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: @syn-gold-overlay;
+    max-width: @syn-max-width-center-column;
+    margin: auto;
+  }
+}
+
+.syn-top_bar-wrapper-inner{
+  .logup-bar{
+    background-color: @syn-gold-overlay;
+    max-width: @syn-max-width-center-column;
+    margin: auto;
   }
 }
 
