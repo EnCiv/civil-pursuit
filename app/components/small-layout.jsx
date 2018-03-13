@@ -7,15 +7,54 @@ import Footer                         from './footer';
 import Panel                          from './panel';
 import ReactScrollBar from './util/react-scrollbar';
 import LogupBar                          from './logup-bar';
-
+import PanelHeading from './panel-heading';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 
 class SmallLayout extends React.Component {
+  render() {
+      const type={
+        title: "complete login",
+        instruction: "A temporary Id has been assigned so you can continue in this discussion. This Id is stored in your browser (as a cookie). When you logout, it will be lost and un retrivable and your input will be eventually be deleted. When you set your email address your registration can be retreived using the forgot password link", 
+      };
+      const {children, ...lessProps}=this.props;
+      return (
+          <ReactActionStatePath {...lessProps} initialRASP={{key: 1}} >
+            <PanelHeading type={type} items={[]} cssName={'syn-small-layout-panel'} panelButtons={['Instruction']}>
+               <RASPSmallLayout children={children}/>
+            </PanelHeading>
+          </ReactActionStatePath>
+      )
+  }
+}
+
+
+class RASPSmallLayout extends ReactActionStatePathClient {
+
+  constructor(props) {
+    super(props, 'key');  // itemId is the key for indexing to child RASP functions
+    this.createDefaults();
+  }
+
+  actionToState(action, rasp, source, defaultRASP, delta) {
+    //find the section that the itemId is in, take it out, and put it in the new section
+    var nextRASP={};
+    if(Object.keys(delta).length){
+      ; // do nothing but generate the nextRASP 
+    } else
+      return null;
+    Object.assign(nextRASP, rasp, delta);
+    nextRASP.pathSegment=null;
+    return(nextRASP);
+  }
+
+  segmentToState=undefined; // explicitly there is no segmentToState function here. 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     const { user, setPath } = this.props;
     const myScrollbar = {};
+    const {children, ...lessProps} = this.props;
 
     return (
       <div className="syn-small-layout">
@@ -24,7 +63,11 @@ class SmallLayout extends React.Component {
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
               <div className="should-have-a-chidren scroll-me">
                   <section role="main">
-                  { this.props.children }
+                  { React.Children.map(React.Children.only(children), child=>{
+                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated', 1)});
+                      Object.keys(child.props).forEach(prop=>delete newProps[prop]);
+                      return React.cloneElement(child, newProps, child.props.children)
+                  })}
                   <Footer />
                   </section>
               </div>

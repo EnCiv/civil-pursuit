@@ -207,8 +207,8 @@ class App extends React.Component {
             let component=last.type.component || 'Subtype';
 
           return (
-            <SmallLayout user={ user } setPath={this.setPath.bind(this)}>
-              <TypeComponent component={component} { ...this.props } setPath={this.setPath.bind(this)} RASPRoot={'/i/'} user={ user } count = { 1 } panel={ last } />
+            <SmallLayout user={ user } RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
+              <TypeComponent component={component} { ...this.props } user={ user } count = { 1 } panel={ last } />
             </SmallLayout>
           );
         }

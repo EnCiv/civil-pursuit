@@ -152,6 +152,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
 
   setWidth(el){
     if(!el) return;
+    if(typeof window === 'undefined') return;
     this.width=el.getBoundingClientRect().width;
     if(this.vM.visible(this.props.rasp)&&(this.props.rasp.shape!=='redirect'))
       this.refs.hint.style.right=(this.width/2-window.Synapp.fontSize)+'px';
@@ -159,6 +160,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
 
   render() {
     const { rasp, type, position } = this.props;
+    const fontSize= typeof window !== 'undefined' ? window.Synapp.fontSize : 13;
     if (!type.instruction) return null;
 
     return (
@@ -174,7 +176,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           </div>
         </Accordion>
 
-        <div  style={{right: ((this.vM.visible(rasp)&&(rasp.shape!=='redirect')) ? ((this.width/2)-window.Synapp.fontSize) : position)+'px'}}
+        <div  style={{right: ((this.vM.visible(rasp)&&(rasp.shape!=='redirect')) ? ((this.width/2)-fontSize) : position)+'px'}}
               className={ClassNames(this.props.classNames, 'panel-instruction-hint', this.vM.shape(rasp))} 
               onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} 
               ref="hint"
