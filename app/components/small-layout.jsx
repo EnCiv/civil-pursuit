@@ -18,7 +18,7 @@ class SmallLayout extends React.Component {
       };
       const {children, ...lessProps}=this.props;
       return (
-          <ReactActionStatePath {...lessProps} initialRASP={{key: 1}} >
+          <ReactActionStatePath {...lessProps} initialRASP={{key: "1"}} >
             <PanelHeading type={type} items={[]} cssName={'syn-small-layout-panel'} panelButtons={['Instruction']}>
                <RASPSmallLayout children={children}/>
             </PanelHeading>
@@ -64,7 +64,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
               <div className="should-have-a-chidren scroll-me">
                   <section role="main">
                   { React.Children.map(React.Children.only(children), child=>{
-                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated', 1)});
+                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated', "1")});
                       Object.keys(child.props).forEach(prop=>delete newProps[prop]);
                       return React.cloneElement(child, newProps, child.props.children)
                   })}
