@@ -9,6 +9,8 @@ import ReactScrollBar from './util/react-scrollbar';
 import EmailInput                     from './util/email-input';
 import Button from './util/button';
 import Login from './login';
+import Components from "./panel-components/";
+import ListComponent from './list-component';
 
 
 class Logup extends React.Component {
@@ -39,7 +41,8 @@ class Logup extends React.Component {
       }
 
   render () {
-    const { user } = this.props;
+    const { user, rasp } = this.props;
+    const {children, ...lessProps} = this.props;
     if(user && user.id && !user.email)
         return (
             <div className="logup-bar" ref="banner">
@@ -52,8 +55,10 @@ class Logup extends React.Component {
                     <div className="logup-bar-button">
                         <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>
                     </div>
+                    <ListComponent Components={Components} {...lessProps} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5} />
                 </div>
                 <div>{this.state.successMessage}{this.state.validationError}</div>
+                <ListComponent Components={Components} {...lessProps} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5} />
             </div>
         );
     else

@@ -13,15 +13,14 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 class SmallLayout extends React.Component {
   render() {
       const type={
-        title: "complete login",
+        _id: "SmallLayout",
+        title: "Complete login",
         instruction: "A temporary Id has been assigned so you can continue in this discussion. This Id is stored in your browser (as a cookie). When you logout, it will be lost and un retrivable and your input will be eventually be deleted. When you set your email address your registration can be retreived using the forgot password link", 
       };
       const {children, ...lessProps}=this.props;
       return (
-          <ReactActionStatePath {...lessProps} initialRASP={{key: "1"}} >
-            <PanelHeading type={type} items={[]} cssName={'syn-small-layout-panel'} panelButtons={['Instruction']}>
+          <ReactActionStatePath {...lessProps} type={type} initialRASP={{key: "1"}} >
                <RASPSmallLayout children={children}/>
-            </PanelHeading>
           </ReactActionStatePath>
       )
   }
@@ -52,14 +51,13 @@ class RASPSmallLayout extends ReactActionStatePathClient {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    const { user, setPath } = this.props;
     const myScrollbar = {};
     const {children, ...lessProps} = this.props;
 
     return (
       <div className="syn-small-layout">
         <div id="fb-root"></div>
-          <LogupBar user={user} ref={e=>{this.topBar=e && e.getBannerNode()}} />
+          <LogupBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}} />
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
               <div className="should-have-a-chidren scroll-me">
                   <section role="main">
