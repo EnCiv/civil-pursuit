@@ -12,14 +12,9 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
 class SmallLayout extends React.Component {
   render() {
-      const type={
-        _id: "SmallLayout",
-        title: "Complete login",
-        instruction: "A temporary Id has been assigned so you can continue in this discussion. This Id is stored in your browser (as a cookie). When you logout, it will be lost and un retrivable and your input will be eventually be deleted. When you set your email address your registration can be retreived using the forgot password link", 
-      };
       const {children, ...lessProps}=this.props;
       return (
-          <ReactActionStatePath {...lessProps} type={type} initialRASP={{key: "1"}} >
+          <ReactActionStatePath {...lessProps} initialRASP={{key: "1"}} >
                <RASPSmallLayout children={children}/>
           </ReactActionStatePath>
       )

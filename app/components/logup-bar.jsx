@@ -43,22 +43,28 @@ class Logup extends React.Component {
   render () {
     const { user, rasp } = this.props;
     const {children, ...lessProps} = this.props;
+    const type= {
+        _id: "SmallLayout",
+        title: "Complete login",
+        instruction: "A temporary Id has been assigned so you can continue in this discussion. This Id is stored in your browser (as a cookie). When you logout, it will be lost and un retrivable and your input will be eventually be deleted. When you set your email address your registration can be retreived using the forgot password link", 
+      };
     if(user && user.id && !user.email)
         return (
             <div className="logup-bar" ref="banner">
                 <div className="logup-bar-center">
-                    <span>Complete setup</span>
-                    <label>Email</label>
+                    <span className="logup-bar-title">Complete setup</span>
                     <div className="logup-bar-input">
                         <EmailInput autoFocus required placeholder="Email" ref="email" name="email" />
                     </div>
                     <div className="logup-bar-button">
-                        <Button block large success radius onClick={this.logup.bind(this)}>Save Login</Button>
+                        <Button block large success radius onClick={this.logup.bind(this)}>Save</Button>
                     </div>
-                    <ListComponent Components={Components} {...lessProps} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5} />
+                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5} />
                 </div>
                 <div>{this.state.successMessage}{this.state.validationError}</div>
-                <ListComponent Components={Components} {...lessProps} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5} />
+                <div className="logup-bar-instruction">
+                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5} />
+                </div>
             </div>
         );
     else
