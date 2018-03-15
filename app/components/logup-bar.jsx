@@ -14,6 +14,7 @@ import ListComponent from './list-component';
 
 
 class Logup extends React.Component {
+    
     state={validationError: null, successMessage: null }
 
     logup () {
@@ -43,6 +44,7 @@ class Logup extends React.Component {
   render () {
     const { user, rasp } = this.props;
     const {children, ...lessProps} = this.props;
+    const iconWidth=(typeof window !== 'undefined') ? window.Synapp.fontSize*2 : 13*2;
     const type= {
         _id: "SmallLayout",
         title: "Complete login",
@@ -59,11 +61,11 @@ class Logup extends React.Component {
                     <div className="logup-bar-button">
                         <Button block large success radius onClick={this.logup.bind(this)}>Save</Button>
                     </div>
-                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5} />
+                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5*iconWidth} />
                 </div>
                 <div>{this.state.successMessage}{this.state.validationError}</div>
                 <div className="logup-bar-instruction">
-                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5} />
+                    <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5*iconWidth} />
                 </div>
             </div>
         );
