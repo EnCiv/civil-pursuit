@@ -137,11 +137,12 @@ class ScrollWrapper extends React.Component {
     this.scrollWrapper.addEventListener('transitionend', this.transitionEnd, {passive: true});
     this.observer = new MutationObserver(this.mutations.bind(this));
     this.banerObserver= new MutationObserver(this.mutations.bind(this));
+    if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true, attributeFilter: ["style"]});
   }
 
   componentDidUpdate() {
-    this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true });
-    if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true});
+    this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true, attributeFilter: ["style"] });
+    //if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true, attributeFilter: ["style"]});
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
