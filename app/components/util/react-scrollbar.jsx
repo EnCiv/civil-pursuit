@@ -137,12 +137,11 @@ class ScrollWrapper extends React.Component {
     this.scrollWrapper.addEventListener('transitionend', this.transitionEnd, {passive: true});
     this.observer = new MutationObserver(this.mutations.bind(this));
     this.banerObserver= new MutationObserver(this.mutations.bind(this));
-    if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true, attributeFilter: ["style"]});
   }
 
   componentDidUpdate() {
-    this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true, attributeFilter: ["style"] });
-    //if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true, attributeFilter: ["style"]});
+    this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true });
+    if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true});
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -165,7 +164,10 @@ class ScrollWrapper extends React.Component {
 
 // changes: update scrollbars when parent resizing
   componentWillReceiveProps(newProps) {
-    if(newProps.topBar) this.topBar=newProps.topBar;
+    if(newProps.topBar){
+       this.topBar=newProps.topBar;
+       this.banerObserver.observe(this.topBar, {attirbutes: true, childList: true, subtree: true});
+    }
     //this.updateSize();
     this.calculateSize(()=>{
       this.normalizeVertical(this.state.top);
