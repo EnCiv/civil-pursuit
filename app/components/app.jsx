@@ -186,11 +186,11 @@ class App extends React.Component {
 
           const component=panel.type.component || 'Subtype';
 
-          page = (
-            <TypeComponent component={component} { ...this.props } RASPRoot={'/item/'} user={ user } count = { 1 } panel={ panel } />
+          return (
+            <Layout {...this.props} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
+              <TypeComponent component={component} count = { 1 } panel={ panel } />
+            </Layout>
           );
-
-          break;
 
         case 'i':
 
@@ -207,7 +207,7 @@ class App extends React.Component {
             let component=last.type.component || 'Subtype';
 
           return (
-            <SmallLayout {...this.props} user={ user } RASPRoot={'/i/'}  setPath={this.setPath.bind(this)}>
+            <SmallLayout {...this.props} RASPRoot={'/i/'}  setPath={this.setPath.bind(this)}>
               <TypeComponent component={component} count = { 1 } panel={ last } />
             </SmallLayout>
           );
@@ -229,16 +229,16 @@ class App extends React.Component {
           const component2=panel2.type.component || 'Subtype';
                     //onsole.info("App.render panel2", { panel2 });
 
-          page = (
-            <TypeComponent component={component2} { ...this.props } user={ user } count = { 1 } panel={ panel2 } />
+          return(
+            <Layout {...this.props} setPath={this.setPath.bind(this)} >
+              <TypeComponent component={component2} count = { 1 } panel={ panel2 } />
+            </Layout>
           );
-
-          break;
       }
     }
 
     return (
-      <Layout user={ user } setPath={this.setPath.bind(this)} >
+      <Layout {...this.props} setPath={this.setPath.bind(this)} >
         { page }
       </Layout>
     );

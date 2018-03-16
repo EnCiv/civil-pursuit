@@ -177,6 +177,7 @@ class TopBar extends React.Component {
 
   render () {
     let { user, ready } = this.props;
+    const {children, ...lessProps}=this.props;
 
     let comp = 'syn-top_bar';
 
@@ -229,7 +230,7 @@ class TopBar extends React.Component {
             <section className="syn-top_bar-menu-row">
               { this.topStrip }
             </section>
-            <LogupBar user={user}/>
+            <LogupBar {...lessProps} />
           </div>
         </header>
 
