@@ -11,7 +11,7 @@ class CloudinaryImage extends React.Component {
   };
 
   render () {
-    const url = ['http:/', 'res.cloudinary.com', 'hscbexf6a', 'image', 'upload'];
+    const url = ['https:/', 'res.cloudinary.com', 'hscbexf6a', 'image', 'upload'];
 
     const filters = [];
 
