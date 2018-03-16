@@ -35,9 +35,6 @@
 }
 
 .syn-top_bar-info{
-  .flex();
-  .flex.row();
-  .flex.space-between();
   height: 100%;
 }
 
@@ -62,26 +59,22 @@
 }
 
 .syn-top_bar-left {
-  .flex();
-  .flex.row();
-  .flex.align-items(flex-start);
-  .flex.align-content(stretch);
   height: 100%;
   margin-left: 5px;
   margin-top: 5px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .syn-top_bar-center {
-  .flex();
-  .flex.row();
-  .flex.align-items();
-  .flex.align-content(stretch);
   height: 100%;
   margin-top: 5px;
   font-size: 3rem;
   font-family: 'Oswald';
   padding-bottom: 12px; /** why can't I just vertically center it **/
   margin-left: -10%;  /** why isn't this box dead center on the screen **/
+  display: inline-block;
+  
 
   span {
     padding-bottom: inherit;
@@ -93,10 +86,7 @@
 }
 
 .syn-top_bar-right {
-  .flex();
-  .flex.row();
-  .flex.align-items(baseline);
-  .flex.align-content(stretch);
+  float: right;
   //border-left: 1px solid #ccc;
   height: 100%;
   @media (max-width: @screen-phone) {
@@ -140,7 +130,7 @@
   font-size: 3rem;
   color: darkslategray;
   height: 100%;
-  display: table;
+  display: inline-block;
   vertical-align: middle;
 
   @media (max-width: @screen-phone) {
@@ -159,10 +149,15 @@
           font-size: inherit;
           text-decoration: none;
           color: darkslategray;
-          display: table-cell;
+          display: inline-block;
           vertical-align: middle;
 
     }
+}
+
+.syn-top_bar-image{
+  display: inline-block;
+  vertical-align: middle;
 }
 
 
