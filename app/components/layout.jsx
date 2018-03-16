@@ -56,7 +56,11 @@ class RASPLayout extends ReactActionStatePathClient {
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
             <div className="should-have-a-chidren scroll-me">
               <section role="main">
-                { this.props.children }
+                { React.Children.map(React.Children.only(children), child=>{
+                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated', "1")});
+                      Object.keys(child.props).forEach(prop=>delete newProps[prop]);
+                      return React.cloneElement(child, newProps, child.props.children)
+                  })}
                 <Footer />
               </section>
             </div>

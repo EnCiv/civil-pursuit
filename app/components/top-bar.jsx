@@ -201,6 +201,7 @@ class TopBar extends React.Component {
     return (
       <section>
         <header role="banner" className="syn-top_bar-wrapper" ref="banner">
+          <LogupBar {...lessProps} />
           <div className="syn-top_bar-wrapper-inner">
             <section className= "syn-top_bar">
               <section className= "syn-top_bar-info">
@@ -230,7 +231,6 @@ class TopBar extends React.Component {
             <section className="syn-top_bar-menu-row">
               { this.topStrip }
             </section>
-            <LogupBar {...lessProps} />
           </div>
         </header>
 
