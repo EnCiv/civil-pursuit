@@ -536,7 +536,7 @@ ScrollWrapper.defaultProps = {
   className: 'react-scrollbar-default',
   style: { },
   children: null,
-  extent: 10
+  extent: 0
 };
 
 export default ScrollWrapper;
