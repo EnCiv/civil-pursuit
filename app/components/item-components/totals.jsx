@@ -17,10 +17,10 @@ exports.button = class TotalsButton extends React.Component {
       }
 
     render() {
-        const { active, item } = this.props;
+        const { active, item, requireAnswered } = this.props;
         var inactive=false;
 
-        if(typeof item.answeredAll !== 'undefined') {
+        if(requireAnswered && typeof item.answeredAll !== 'undefined') {
             inactive=!item.answeredAll;
         } 
         const buttonName = this.props.buttonName || "Totals";
