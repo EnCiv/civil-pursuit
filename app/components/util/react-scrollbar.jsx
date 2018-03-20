@@ -84,7 +84,7 @@ class ScrollWrapper extends React.Component {
 
       let top=parseFloat(html.style.top);
       let tRect=target.getBoundingClientRect(); // target Rect
-      let newTop=-(-top + tRect.top -bannerHeight);
+      let newTop=-(-top + tRect.top /*-bannerHeight*/);
       let lowerEnd = that.state.scrollAreaHeight-(that.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
 
       
@@ -169,7 +169,7 @@ class ScrollWrapper extends React.Component {
     }
     this.topMutationAnimationFrame=window.requestAnimationFrame(viewportUpdate);
   }
-  
+
   transitionEnd(event){
     event.target.style.transition=null;
   }
