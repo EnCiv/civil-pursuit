@@ -17,7 +17,7 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 import PanelHeading from '../panel-heading';
 import {QSortToggle} from './qsort-items';
 import TypeComponent from '../type-component';
-
+import config from '../../../public.json';
 
 const RuleButtonList = {
     unsorted: {
