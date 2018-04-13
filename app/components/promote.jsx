@@ -189,7 +189,7 @@ class RASPPromote extends ReactActionStatePathClient {
 
         const renderSide = (side, item) => {
             const renderFeedback = () => {
-                if (!hideFeedback) {
+                if (item && !hideFeedback) {
                     return (
                         [<Feedback itemId={item._id} user={user} className="gutter-top solid" key={'feedback-'+item._id+'-'+side} />,
                         <Sliders itemId={item._id} user={user} criterias={criterias} className="promote-sliders"  key={'slider-'+item._id+'-'+side}/>]
