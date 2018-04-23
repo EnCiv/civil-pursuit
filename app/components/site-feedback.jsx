@@ -5,7 +5,7 @@ import Icon from './util/icon';
 import cx from 'classnames';
 
 const styles = cssInJS({
-    default: {
+    defaultLandscape: {
         position: 'fixed',
         zIndex: 10,
         color: 'black',
@@ -15,6 +15,25 @@ const styles = cssInJS({
         height: '5vh',
         bottom: 0,
         right: 0
+    },
+    defaultPortrait: {
+        position: 'fixed',
+        zIndex: 10,
+        color: 'black',
+        background: 'transparent',
+        transition: 'all 0.5s linear',
+        width: '6vw',
+        height: '4vh',
+        bottom: 0,
+        right: 0
+    },
+    openLandscape: {
+        width: '50vw',
+        height: '50vh'
+    },
+    openPortrait: {
+        width: '97vw',
+        height: '75vh'
     },
     wrapper: {
         margin: '1em',
@@ -61,10 +80,6 @@ const styles = cssInJS({
         height: '2em',
         color: 'white',
         background: 'linear-gradient(to bottom, #FF8F00 0%, #FF7002 51%, #FF7002 100%) repeat scroll 0% 0% transparent'
-    },
-    open: {
-        width: '50vw',
-        height: '50vh'
     },
     icon: {
         display: 'block!important',
@@ -124,6 +139,12 @@ export default class SiteFeedback extends React.Component {
 
   render() {
     const {className}=this.props;
+    let w,h,panelClass='Landscape';
+    if(typeof document !== 'undefined'){
+        w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        if(h>w) panelClass = 'Portrait';
+    }
 
     var feedbackForm=()=>{ // not a function so 'this' is inherited from caller
         return(
@@ -141,7 +162,7 @@ export default class SiteFeedback extends React.Component {
     }
 
     return (
-        <div className={cx(styles.default, this.state.open ? styles.open : null, className)} title="Comments? Feedback? Great! They will make this site even better.">
+        <div className={cx(styles['default'+panelClass], this.state.open ? styles['open'+panelClass] : null, className)} title="Comments? Feedback? Great! They will make this site even better.">
             <Icon icon="comment" className={styles.icon} onClick={()=>{
                 var willOpen=!this.state.open;
                 this.setState({open: !this.state.open},()=>{
