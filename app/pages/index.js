@@ -80,6 +80,7 @@ class Layout extends Document {
       this.add(
         new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
         new Stylesheet('/assets/css/index.css'),
+        new Stylesheet('/assets/css/bundle.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css')
       );
@@ -88,6 +89,7 @@ class Layout extends Document {
       this.add(
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
+        new Stylesheet('/assets/css/bundle.css'),
         // new Stylesheet(publicConfig['font awesome'].cdn)
         new Stylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
       );

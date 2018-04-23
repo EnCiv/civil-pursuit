@@ -9,6 +9,7 @@ import ReactScrollBar from './util/react-scrollbar';
 import LogupBar                          from './logup-bar';
 import PanelHeading from './panel-heading';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import SiteFeedback from './site-feedback';
 
 class SmallLayout extends React.Component {
   render() {
@@ -52,6 +53,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
     return (
       <div className="syn-small-layout">
         <div id="fb-root"></div>
+          <SiteFeedback />
           <LogupBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}} />
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
               <div className="should-have-a-chidren scroll-me">
