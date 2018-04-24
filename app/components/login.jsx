@@ -136,6 +136,7 @@ class Login extends React.Component {
 
     let content = (
       <div onClick={this.stopPropagation.bind(this)}>
+      {(this.socialMeida)?(
         <ButtonGroup block>
           <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />
@@ -147,6 +148,7 @@ class Login extends React.Component {
             <span> Twitter</span>
           </Button>
         </ButtonGroup>
+        ):null}
 
         <div className="syn-form-group">
           <label>Email</label>

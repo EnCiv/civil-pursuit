@@ -232,17 +232,19 @@ class JoinForm extends React.Component {
   render() {
     let content = (
       <div onClick={this.stopPropagation.bind(this)}>
-        <ButtonGroup block>
-          <Button primary onClick={this.loginWithFacebook} medium className="join-with-facebook">
-            <Icon icon="facebook" />
-            <span className={Component.classList(this)}> Facebook</span>
-          </Button>
+        {(this.socialMedia) ? (
+          <ButtonGroup block>
+            <Button primary onClick={this.loginWithFacebook} medium className="join-with-facebook">
+              <Icon icon="facebook" />
+              <span className={Component.classList(this)}> Facebook</span>
+            </Button>
 
-          <Button info onClick={this.loginWithTwitter} medium className="join-with-twitter">
-            <Icon icon="twitter" />
-            <span> Twitter</span>
-          </Button>
-        </ButtonGroup>
+            <Button info onClick={this.loginWithTwitter} medium className="join-with-twitter">
+              <Icon icon="twitter" />
+              <span> Twitter</span>
+            </Button>
+          </ButtonGroup> 
+        ):null }
 
         <div className="syn-form-group">
           <label>Email</label>
