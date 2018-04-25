@@ -34,12 +34,12 @@ class YearOfBirth extends React.Component {
 
   render() {
 
-    let { info } = this.props;
+    const {children, info, ...newProps } = this.props;
     let { hint } = this.state;
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '4em'}}/>
+            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '4em'}}/>
             <div style={{display: hint ? 'inline' : 'none'}}>A 4 digit year like 1999</div>
         </div>
     );

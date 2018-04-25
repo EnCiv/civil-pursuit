@@ -31,11 +31,11 @@ class Line1 extends React.Component {
 
   render() {
 
-    let { info } = this.props;
+    const {children, info, property, collection, ...newProps } = this.props;
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
+            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
         </div>
     );
   }

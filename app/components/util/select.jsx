@@ -7,16 +7,19 @@ class Select extends React.Component {
     let classes = ['bp_input'];
 
     let props = ['block', 'small', 'medium', 'large'];
+    const {children, className, ...newProps}=this.props;
 
     for ( let prop of props ) {
       if ( this.props[prop] ) {
         classes.push(prop);
+        delete newProps[prop];
       }
     }
 
+
     return (
-      <select type="{ this.props.type || 'text' }" className={ classes.join(' ') } { ...this.props }>
-        { this.props.children }
+      <select className={ classes.join(' ') } { ...newProps }>
+        { children }
       </select>
     );
   }

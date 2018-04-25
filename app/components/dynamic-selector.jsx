@@ -112,8 +112,10 @@ class DynamicSelector extends React.Component {
 
     render() {
 
-        const { info, property, valueOnly, style } = this.props;
+        const { info, property, valueOnly, style, ...newProps } = this.props;
         const collection = this.props.collection || property; // for backwards compatibility when there was only the property.
+        delete newProps.collection;
+
         let option1 = (this.state.loaded ? <option value=''>{property}</option> : <option value=''>Loading Options</option>);
 
         if (valueOnly)
@@ -124,7 +126,7 @@ class DynamicSelector extends React.Component {
             else return (<span></span>);
         else
             return (
-                <Select {...this.props} ref="choice" defaultValue={info[property]} onChange={this.saveChoice.bind(this)} >
+                <Select {...newProps} ref="choice" defaultValue={info[property]} onChange={this.saveChoice.bind(this)} >
                     {option1}
                     {DynamicSelector.collections[collection].options}
                 </Select>

@@ -13,6 +13,7 @@ import Zip from './zip';
 import City from './city';
 import Line1 from './line1';
 import StreetAddress from './street-address';
+import Race from './race';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -35,7 +36,8 @@ class ProfileComponent extends React.Component {
         'Zip': Zip,
         'City': City,
         'Line1': Line1,
-        'StreetAddress': StreetAddress
+        'StreetAddress': StreetAddress,
+        'Race': Race
     }
 
     static title(component) {
@@ -92,13 +94,14 @@ class ProfileComponent extends React.Component {
     }
 
     render() {
+        const {component, ...newProps}=this.props;
         var Component;
         var profile = [];
-        profile = this.props.component.split(".");
+        profile = component.split(".");
         if (profile[0]) {
             Component = ProfileComponent.components[profile[0]];
         } else { return (null); };
-        if(typeof Component === 'function') return (<Component {...this.props} property={ProfileComponent.property(this.props.component)} collection={ProfileComponent.collection(this.props.component)}/>);
+        if(typeof Component === 'function') return (<Component {...newProps} property={ProfileComponent.property(component)} collection={ProfileComponent.collection(component)}/>);
         else throw new Error('profile does not exist in ProfileCompnents', profile);
     }
 }

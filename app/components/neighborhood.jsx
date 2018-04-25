@@ -23,7 +23,7 @@ class Neighborhood extends React.Component {
 
   render() {
 
-    let { info } = this.props;
+    const { children, info, collection, property, ...newProps } = this.props;
     let neighborhoods=['Arrowhead','Lakeside','Island','All others'];
 
     let neighborhoodOptions = neighborhoods.map(nh=>(
@@ -31,7 +31,7 @@ class Neighborhood extends React.Component {
         ));
 
     return (
-        <Select {...this.props} ref="neighborhood" onChange={ this.saveNeighborhood.bind(this) } defaultValue={ info.neighborhood }>
+        <Select {...newProps} ref="neighborhood" onChange={ this.saveNeighborhood.bind(this) } defaultValue={ info.neighborhood }>
           <option value="">Choose one</option>
           {neighborhoodOptions}
         </Select>

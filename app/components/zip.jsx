@@ -38,12 +38,12 @@ class Zip extends React.Component {
 
   render() {
 
-    let { info } = this.props;
+    const {children, info, collection, property, ...newProps } = this.props;
     let { valid } = this.state;
 
     return (
         <div>
-            <Input {...this.props} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
+            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
             <div style={{display: valid ? 'inline' : 'none'}}><Icon icon="check" /></div>
         </div>
     );
