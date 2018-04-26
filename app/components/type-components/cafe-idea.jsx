@@ -113,6 +113,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
         const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1 } = this.props;
         var results=null;
+        let nIdeas=max(this.state.ideaCount+2,numIdeas);
 
         const onServer = typeof window === 'undefined';
 
@@ -138,7 +139,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 <div className="syn-cafe-idea" key='idea'>
                     <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
                     <div className="syn-cafe-idea-creator">
-                        {numIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
+                        {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
             </section>
