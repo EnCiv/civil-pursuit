@@ -134,7 +134,7 @@ class ProfilePanel extends React.Component {
                     )
                 }else { // if all the data is there
                     done=[
-                        <div className='instruction-text'>
+                        <div className='instruction-text' key='done'>
                             Complete!
                             <Button small shy
                                 onClick={this.setState.bind(this,{done: true},null)} // null is needed here so setState doesn't complain about the mouse event that's the next parameter
@@ -153,7 +153,7 @@ class ProfilePanel extends React.Component {
         this.neededInputAtStart=true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
 
         let title = panel.type.name || "Participant Profile";
-        let instruction = (<div className="instruction-text">This discussion requsts that all users provide some profile details.</div>);
+        let instruction = (<div className="instruction-text" key='instruction'>This discussion requsts that all users provide some profile details.</div>);
 
         if (panel.type && panel.type.instruction) {
             instruction = (
@@ -168,11 +168,11 @@ class ProfilePanel extends React.Component {
 
         if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
             content = [
-                <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}}>
+                <div className='item-profile-panel' style={{maxWidth: "30em", margin: "auto", padding: "1em"}} key='content'>
                     {   profiles.map(component=>{
                             var title=ProfileComponent.title(component);            
                             return(
-                                <SelectorRow name={title} >
+                                <SelectorRow name={title} key={title} >
                                     <ProfileComponent block medium component={component} info={userInfo} onChange={this.setUserInfo.bind(this)}/>
                                 </SelectorRow>
                             );

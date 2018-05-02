@@ -16,7 +16,7 @@ var shortToLongState = us_abbreviations('postal','full');
 class StreetAddress extends React.Component {
     name = 'street_address';
     street_address={};
-    profiles=['Line1', 'Zip', 'City','DynamicSelector.State.state'];
+    profiles=['Line1', 'City','DynamicSelector.State.state', 'Zip'];
     apiKey='';
     info={validatedAt: null};
     possible={};
