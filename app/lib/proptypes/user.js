@@ -41,6 +41,7 @@ const user          =   shape({
   neighborhood      :   string,
   member_type       :   string,
   gun_type          :   string,
+  starting_bloc_type:   string,
   year_of_birth     :   number,
   street_address    :   any
 });

@@ -94,6 +94,8 @@ class Schema extends Mungo.Model {
 
       "gun_type"          :     String,
 
+      "starting_bloc_type":     String,
+
       "year_of_birth"     :     Number,
 
       "street_address"    :     Mungo.Mixed

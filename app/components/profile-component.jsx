@@ -15,6 +15,7 @@ import Line1 from './line1';
 import StreetAddress from './street-address';
 import Race from './race';
 import GunType from './gun-type';
+import StartingBlocType from './starting-bloc-type';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -39,7 +40,8 @@ class ProfileComponent extends React.Component {
         'Line1': Line1,
         'StreetAddress': StreetAddress,
         'Race': Race,
-        'GunType': GunType
+        'GunType': GunType,
+        'StartingBlocType': StartingBlocType
     }
 
     static title(component) {
