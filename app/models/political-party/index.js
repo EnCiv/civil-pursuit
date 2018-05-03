@@ -7,7 +7,7 @@ import V2         from './migrations/2';
 class PoliticalParty extends Mungo.Model {
   static version = 2;
 
-  static collection = 'political_parties';
+  static collection = 'political_party';
 
   static migrations = {
     1 : V1,

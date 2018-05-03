@@ -125,7 +125,7 @@ to get the proptype, and then
 to define the variable in the class you are using it in
 
 app\models\political-party\index.js defines the class PoliticalParty which extends Mungo.Model and includes
-- the 'collection' name in the db 'political_parties'
+- the 'collection' name in the db 'political_party'
 - the 'schema' object of the collection
 - the version of the schema (used for migration)
 - the list of migrations which are .js files in ./migrations like 1.js and then 2.js
@@ -138,7 +138,7 @@ app\models\political-party\migrations\1.js
 defines 
 	- class PoliticalParty extends Mungo.Migration {
 	  	- static version 
-	  	- static collection = 'political_parties';
+	  	- static collection = 'political_party';
 		- static schema = { name : String };
 		- static do ()
 

@@ -16,7 +16,7 @@ class PoliticalParty extends Mungo.Migration {
 
   static version = 2;
 
-  static collection = 'political_parties';
+  static collection = 'political_party';
 
   static schema = { name : String };
 
