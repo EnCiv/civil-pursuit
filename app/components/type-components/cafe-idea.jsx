@@ -111,9 +111,10 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1 } = this.props;
+        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1 } = this.props;
         var results=null;
-        let nIdeas=Math.max(this.state.ideaCount+2,numIdeas);
+        let nIdeas=Math.min(Math.max(this.state.ideaCount+2,numIdeas),maxIdeas);
+    
 
         const onServer = typeof window === 'undefined';
 
