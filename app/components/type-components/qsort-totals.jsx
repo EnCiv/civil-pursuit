@@ -38,7 +38,8 @@ export class QSortTotals extends React.Component {
 class QSortTotalsPanel extends React.Component {
     render() {
         var sections={};
-        Object.keys(QSortButtonList).forEach(s=>sections[s]=[]);
+        const qbuttons=this.props.qbuttons || QSortButtonList;
+        Object.keys(qbuttons).forEach(s=>sections[s]=[]);
         return (
             <QSortFinale {...this.props} shared={{ items: this.props.panel && this.props.panel.items, sections }} />
         )

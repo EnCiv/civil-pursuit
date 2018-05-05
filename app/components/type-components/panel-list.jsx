@@ -310,6 +310,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
           shared={this.shared}
           panelNum={rasp.currentPanel}
           limit={panel.limit}
+          qbuttons={this.props.qbuttons}
           rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this, currentPanel) }}
         />
     }

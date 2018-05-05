@@ -141,7 +141,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         const { user, rasp, shared, type, sections } = this.props;
         const {items, index} = shared;
-        const qbuttons=this.props.qbuttons || this.QSortButtonList
+        const qbuttons=this.QSortButtonList
 
         const {createMethod="visible", promoteMethod="visible", feedbackMethod="visible"} = type;
 
@@ -157,9 +157,9 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             );
         } else {
             if (sections['unsorted'].length) { issues++ }
-            Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
+            Object.keys(qbuttons).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
                 if (!sections[criteria]) { return; }
-                let qb = this.QSortButtonList[criteria];
+                let qb = qbuttons[criteria];
                 if (qb.max) {
                     if (sections[criteria].length > qb.max) {
                         direction.push(
@@ -210,11 +210,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             if (!issues) {
                 done.push(
                     <div key="instruction" className='instruction-text'>
-                        {this.QSortButtonList['unsorted'].direction}
+                        {qbuttons['unsorted'].direction}
                         <Button small shy
                             onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
                             className="qsort-done"
-                            style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
+                            style={{ backgroundColor: Color(qbuttons['unsorted'].color).negate(), color: qbuttons['unsorted'].color, float: "right" }}
                         >
                             <span className="civil-button-text">{"next"}</span>
                         </Button>

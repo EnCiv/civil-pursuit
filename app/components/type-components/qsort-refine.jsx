@@ -30,7 +30,7 @@ class QSortRefine extends React.Component {
 
 class RASPQSortRefine extends ReactActionStatePathClient {
 
-    ButtonList=[];
+    ButtonList={};
     results = {refine: {}};
     buttons=[];
 
@@ -46,16 +46,17 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         super(props);
         this.keyField = 'itemId';
         var unsortedList = [];
-        this.ButtonList['unsorted']=QSortButtonList['unsorted'];
-        const qbuttons=Object.keys(QSortButtonList);
+        const qbuttons=this.props.qbuttons || QSortButtonList;
+        this.ButtonList['unsorted']=qbuttons['unsorted'];
+        const qbprops=Object.keys(qbuttons);
         if(!(this.whyName=this.props.whyName)){
-            qbuttons.slice(1).forEach(button => {
+            qbprops.slice(1).forEach(button => {
                 var regex = new RegExp('./*'+button+'./*','i');
                 if(this.props.type.name.match(regex)) this.whyName=button;
             });
-            if(!this.whyName) {this.whyName=qbuttons[1]; console.error("QSortRefine button name not found in type name:", qbuttons, this.props.type.name)}
+            if(!this.whyName) {this.whyName=qbprops[1]; console.error("QSortRefine button name not found in type name:", qbprops, this.props.type.name)}
         } this.results.refine[this.whyName]={};
-        this.ButtonList[this.whyName]=QSortButtonList[this.whyName];
+        this.ButtonList[this.whyName]=qbuttons[this.whyName];
         //onsole.info("qsort-refine constructor")
         this.state.sections = {};
         this.buttons = Object.keys(this.ButtonList);
