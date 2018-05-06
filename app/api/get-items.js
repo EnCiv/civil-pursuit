@@ -6,7 +6,9 @@ import Type from '../models/type';
 function getItems (panel, cb) {
   try {
     let id        =   'panel-' + panel.type._id || panel.type;
-    const query   =   { type : panel.type._id || panel.type};
+    const query   =   { deleted: {$exists: false},
+                        type : panel.type._id || panel.type
+                      };
     const userId = this.synuser ? this.synuser.id : null;
 
     if ( panel.parent ) {
