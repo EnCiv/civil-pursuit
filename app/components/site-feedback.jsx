@@ -162,7 +162,7 @@ export default class SiteFeedback extends React.Component {
     }
 
     return (
-        <div className={cx(styles['default'+panelClass], this.state.open ? styles['open'+panelClass] : null, className)} title="Comments? Feedback? Great! They will make this site even better.">
+        <div className={cx(styles['default'+panelClass], this.state.open ? styles['open'+panelClass] : null, className)} title="Comments? Critical Feedback? Complaints? Great! I can't wait to see them.">
             <Icon icon="comment" className={styles.icon} onClick={()=>{
                 var willOpen=!this.state.open;
                 this.setState({open: !this.state.open},()=>{
