@@ -64,13 +64,13 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             if (shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
                 shared.items.push(item);
                 results.items = shared.items;
-                if (shared.sections.most) shared.sections.most.push(item._id);
-                else shared.sections.most = [item._id];
+                let mostSection=Object.keys(this.QSortButtonList).find(b=>this.QSortButtonList[b].harmonySide==='left');  // stuff that the user writes automatically goes into the mostSection - most Important
+                if (shared.sections[mostSection]) shared.sections[mostSection].push(item._id);
+                else shared.sections[mostSection] = [item._id];
                 results.sections = shared.sections;
                 this.props.shared.index[item._id] = shared.items.length - 1;
                 results.index = shared.index;
-                let criteria=Object.keys(this.QSortButtonList).find(b=>this.QSortButtonList[b].harmonySide==='left');
-                if(criteria) window.socket.emit('insert qvote', { item: item._id, criteria });  // the most important criteria
+                if(mostSection) window.socket.emit('insert qvote', { item: item._id, criteria: mostSection });  // the most important criteria
             }
             let ideaCount=this.state.ideaCount+1;
             if(this.props.minIdeas===0)

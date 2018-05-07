@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import update from 'immutability-helper';
+import QSortButtonList from '../qsort-button-list';
 
 class QVoteTotals extends React.Component {
 
@@ -44,6 +44,8 @@ class QVoteTotals extends React.Component {
     }
 
     okGetQVoteInfo(accumulation) {
+        var qbuttons=this.props.qbuttons || QSortButtonList;
+        var sortButtons=Object.keys(qbuttons).splice(0,1); // the first element is unsorted - remove that
         var newFinale = this.state.finale.slice(0);
         //onsole.info("QVoteTotal got qvote info length,accumulation.length");
         if (accumulation.length) {
@@ -56,7 +58,14 @@ class QVoteTotals extends React.Component {
                         return false;
                 })
             })
-            newFinale.sort((a, b) => { return (b.most - a.most); })  // sort so largest most is first in list
+            newFinale.sort((a, b) => { 
+                let r; 
+                for(let p of sortButtons) {
+                    if((r=(b[p]-a[p]))!==0) 
+                    return r;
+                } 
+                return 0;
+            })
             this.setState({ finale: newFinale });
         }
     }
