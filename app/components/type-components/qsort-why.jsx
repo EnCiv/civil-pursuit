@@ -90,7 +90,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 else { 
                     let harmony=ItemStore.index[itemId] && ItemStore.index[itemId].harmony;
                     if(harmony) {
-                        let type=harmony.types[this.whyName==='most'? 0:1];
+                        let side=this.props.qbuttons[this.whyName].harmonySide;
+                        let type=harmony.types[side==='left'? 0:1];
                         if(type) {
                             if(ItemStore.findOne({parent: itemId, type: type })){
                                 newSections[this.whyName].push(itemId);
@@ -252,7 +253,7 @@ class QSortWhyItem extends React.Component {
                         <Item
                             {...this.props}
                             buttons =   { ['CreateHarmony']}
-                            side    =   { whyName === 'most' ? 'left' : 'right'}
+                            side    =   { qbuttons[whyName].harmonySide}
                             min={true}
                         />
                     </ItemStore>

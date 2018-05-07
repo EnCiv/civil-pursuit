@@ -69,7 +69,8 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 results.sections = shared.sections;
                 this.props.shared.index[item._id] = shared.items.length - 1;
                 results.index = shared.index;
-                window.socket.emit('insert qvote', { item: item._id, criteria: 'most' });
+                let criteria=Object.keys(this.QSortButtonList).find(b=>this.QSortButtonList[b].harmonySide==='left');
+                if(criteria) window.socket.emit('insert qvote', { item: item._id, criteria });  // the most important criteria
             }
             let ideaCount=this.state.ideaCount+1;
             if(this.props.minIdeas===0)

@@ -16,7 +16,8 @@ const QSortButtonList = {
                 inactive: "Put this in the most important stack"
             },
             max: 5,
-            direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks'
+            direction: 'We are limiting the number of things in the "most" stack to 5. Please  move some to other stacks',
+            harmonySide: 'left'
         },
         neutral: {
             name: 'moderate',
@@ -32,7 +33,8 @@ const QSortButtonList = {
             title: {
                 active: "This is in the least important stack of them all",
                 inactive: "Put this in the least important stack of them all"
-            }
+            },
+            harmonySide: 'right'
         }
     };
 export default QSortButtonList;
