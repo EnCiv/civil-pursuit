@@ -45,7 +45,8 @@ class QVoteTotals extends React.Component {
 
     okGetQVoteInfo(accumulation) {
         var qbuttons=this.props.qbuttons || QSortButtonList;
-        var sortButtons=Object.keys(qbuttons).splice(0,1); // the first element is unsorted - remove that
+        var sortButtons=Object.keys(qbuttons);
+        sortButtons.splice(0,1); // the first element is unsorted - remove that
         var newFinale = this.state.finale.slice(0);
         //onsole.info("QVoteTotal got qvote info length,accumulation.length");
         if (accumulation.length) {
