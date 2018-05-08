@@ -161,7 +161,8 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
   render() {
     const { rasp, type, position } = this.props;
     const fontSize= typeof window !== 'undefined' ? window.Synapp.fontSize : 13;
-    if (!type.instruction) return null;
+    const instruction=this.props.instruction || type.instruction;
+    if (instruction) return null;
 
     return (
       <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key={"instruction-"+rasp.raspId} >
@@ -172,7 +173,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
           onComplete={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION_HINT" })}
         >
           <div className={ClassNames(this.props.classNames, "panel-instruction-text")} >
-            {type.instruction}
+            {instruction}
           </div>
         </Accordion>
 
