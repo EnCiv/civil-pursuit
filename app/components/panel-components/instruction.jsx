@@ -109,7 +109,8 @@ exports.button = class PanelInstructionButton extends React.Component {
   }
   render() {
     const { rasp, type, position } = this.props;
-    if (!type.instruction) return null; // no button if no instruction
+    const instruction=this.props.instruction || type.instruction;
+    if (!instruction) return null; // no button if no instruction
     return (
       <div style={{right: position+'px'}} className={ClassNames(this.props.classNames, 'panel-instruction-button', (rasp.instructionHidden) ? '' : 'hint-open')} onClick={() => rasp.toParent({ type: "TOGGLE_INSTRUCTION" })} key='instruction'>
         <Icon icon={this.vM.buttonIcon(rasp)} /> 
@@ -162,7 +163,7 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     const { rasp, type, position } = this.props;
     const fontSize= typeof window !== 'undefined' ? window.Synapp.fontSize : 13;
     const instruction=this.props.instruction || type.instruction;
-    if (instruction) return null;
+    if (!instruction) return null;
 
     return (
       <section className={ClassNames("panel-instruction", this.props.className)} ref={(el)=>this.setWidth(el)} key={"instruction-"+rasp.raspId} >
