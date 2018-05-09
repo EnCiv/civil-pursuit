@@ -82,6 +82,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
         //onsole.info("qsortWhy componentWillReceiveProps");
         var newSections=[];
+        const qbuttons=this.props.qbuttons || QSortButtonList;
         this.buttons.forEach(button=> newSections[button]=[] );
 
         if(newProps.shared.sections[this.whyName]){
@@ -90,7 +91,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 else { 
                     let harmony=ItemStore.index[itemId] && ItemStore.index[itemId].harmony;
                     if(harmony) {
-                        let side=this.props.qbuttons[this.whyName].harmonySide;
+                        let side=qbuttons[this.whyName].harmonySide;
                         let type=harmony.types[side==='left'? 0:1];
                         if(type) {
                             if(ItemStore.findOne({parent: itemId, type: type })){
