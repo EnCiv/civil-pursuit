@@ -17,6 +17,7 @@ import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFi
 import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
 import ResultsFocusHere from '../results-focus-here';
+import insertQVote from '../../api-wrapper/insert-qvote';
 
   // 20 is hard coded, but where should this be? type or item?
 export class QSortItems extends React.Component {
@@ -110,7 +111,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
-            window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
+            insertQVote({ item: action.itemId, criteria: action.button });
             delta.creator=false;
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");

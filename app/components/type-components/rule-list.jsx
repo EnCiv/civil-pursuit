@@ -18,6 +18,7 @@ import PanelHeading from '../panel-heading';
 import {QSortToggle} from './qsort-items';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
+import insertQVote from '../../api-wrapper/insert-qvote';
 
 const RuleButtonList = {
     unsorted: {
@@ -99,7 +100,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
-            window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
+            insertQVote({ item: action.itemId, criteria: action.button });
             delta.creator=false;
             this.queueFocus(action);
         } else if (action.type==="TOGGLE_CREATOR"){

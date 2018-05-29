@@ -21,7 +21,7 @@ import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
 import Accordion from 'react-proactive-accordion';
-
+import insertQVote from '../../api-wrapper/insert-qvote';
 
 Number.prototype.map = function(f){
     var a=[];
@@ -70,7 +70,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 results.sections = shared.sections;
                 this.props.shared.index[item._id] = shared.items.length - 1;
                 results.index = shared.index;
-                if(mostSection) window.socket.emit('insert qvote', { item: item._id, criteria: mostSection });  // the most important criteria
+                if(mostSection) insertQVote({ item: item._id, criteria: mostSection });  // the most important criteria
             }
             let ideaCount=this.state.ideaCount+1;
             if(this.props.minIdeas===0)
