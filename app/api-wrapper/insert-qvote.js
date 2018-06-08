@@ -2,7 +2,7 @@
 
 import apiWrapper from '../lib/util/api-wrapper';
 
-const insertQVote=(vote)=>{
+function insertQVote(vote){
   return apiWrapper.Push.call(this,['insert qvote', vote])
 }
 

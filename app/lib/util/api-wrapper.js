@@ -8,15 +8,19 @@
 //  3) call the actual function without going through the socket if running if client code is being run on the server side
 //
 
-var queue=[];  // this variable is accessible to all the functions declared in this module, but is not globally accessible.
-
 function apiWrapperPush(message){
     if(typeof window !== undefined){
         // rendering in the browser
-        if(this && this.props && this.props.user && (this.props.user !== null))
+        let storage=window.localStorage;
+        let json=storage.getItem("queue");
+        let queue=json ? JSON.parse(json) : [];
+
+        if(this && this.props && this.props.user)
             window.socket.emit(...message);
-        else
+        else {
             queue.push(message);
+            storage.setItem("queue", JSON.stringify(queue))
+        }
     } else {
         // rendering on the server
         console.info("apiWrapper Push from server side", message)
@@ -25,9 +29,16 @@ function apiWrapperPush(message){
 }
 
 function apiWrapperFlush() {
-    let message;
-    while(message=queue.shift){
-        window.socket.emit(...message);
+    if(this && this.props && this.props.user) {
+        let message;
+        let storage=window.localStorage;
+        let json=storage.getItem("queue");
+        let queue=json ? JSON.parse(json) : [];
+
+        while(message=queue.shift()){
+            window.socket.emit(...message);
+        }
+        storage.removeItem("queue");
     }
 }
 

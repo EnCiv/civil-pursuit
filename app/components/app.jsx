@@ -18,6 +18,7 @@ import ODGCongrat                       from './odg-congrat';
 import fixedScroll                      from '../lib/util/fixed-scroll';
 import RenderMarkDown                   from './render-mark-down';
 import SmallLayout                      from './small-layout';
+import apiWrapper                       from '../lib/util/api-wrapper';
 
 class App extends React.Component {
 
@@ -36,6 +37,8 @@ class App extends React.Component {
       }
     }
 
+    apiWrapper.Flush.call(this); // if any api data was saved previously, flush it to the server
+    
     this.state.path = props.path ;
   }
 
