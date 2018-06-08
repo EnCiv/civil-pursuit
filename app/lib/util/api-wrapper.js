@@ -13,7 +13,7 @@ var queue=[];  // this variable is accessible to all the functions declared in t
 function apiWrapperPush(message){
     if(typeof window !== undefined){
         // rendering in the browser
-        if(this && this.props && this.props.user)
+        if(this && this.props && this.props.user && (this.props.user !== null))
             window.socket.emit(...message);
         else
             queue.push(message);
