@@ -11,6 +11,7 @@ import Button from './util/button';
 import Login from './login';
 import Components from "./panel-components/";
 import ListComponent from './list-component';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 
 class Logup extends React.Component {
@@ -20,7 +21,7 @@ class Logup extends React.Component {
     logup () {
         let email = ReactDOM.findDOMNode(this.refs.email).value;
         if ( email ) {
-            window.socket.emit('set user info', { email }, this.login.bind(this,email,this.props.user && this.props.user.tempid));
+            setUserInfo( { email }, this.login.bind(this,email,this.props.user && this.props.user.tempid));
         }
     }
     

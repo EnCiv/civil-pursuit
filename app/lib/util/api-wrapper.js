@@ -10,7 +10,7 @@
 
 var queue=[];  // this variable is accessible to all the functions declared in this module, but is not globally accessible.
 
-var apiWrapperPush =(message)=>{
+function apiWrapperPush(message){
     if(typeof window !== undefined){
         // rendering in the browser
         if(this && this.props && this.props.user)
@@ -24,7 +24,7 @@ var apiWrapperPush =(message)=>{
     }
 }
 
-var apiWrapperFlush=()=>{
+function apiWrapperFlush() {
     let message;
     while(message=queue.shift){
         window.socket.emit(...message);
@@ -34,7 +34,7 @@ var apiWrapperFlush=()=>{
 module.exports.apiWrapperPush=apiWrapperPush;
 module.exports.apiWrapperFlush=apiWrapperFlush;
 
-apiWrapper={
+var apiWrapper={
     Push: apiWrapperPush,
     Flush: apiWrapperFlush
 }

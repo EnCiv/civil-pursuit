@@ -15,6 +15,7 @@ import raceType                     from '../lib/proptypes/race';
 import educationType                from '../lib/proptypes/education';
 import maritalStatusType            from '../lib/proptypes/marital-status';
 import employmentType               from '../lib/proptypes/marital-status';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Demographics extends React.Component {
 
@@ -24,7 +25,7 @@ class Demographics extends React.Component {
     let education = ReactDOM.findDOMNode(this.refs.education).value;
 
     if ( education ) {
-      window.socket.emit('set user info', { education });
+      setUserInfo( { education });
     }
   }
 
@@ -34,7 +35,7 @@ class Demographics extends React.Component {
     let relationship = ReactDOM.findDOMNode(this.refs.relationship).value;
 
     if ( relationship ) {
-      window.socket.emit('set user info', { married : relationship });
+      setUserInfo( { married : relationship });
     }
   }
 
@@ -44,7 +45,7 @@ class Demographics extends React.Component {
     let employment = ReactDOM.findDOMNode(this.refs.employment).value;
 
     if ( employment ) {
-      window.socket.emit('set user info', { employment });
+      setUserInfo( { employment });
     }
   }
 

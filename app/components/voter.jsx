@@ -12,6 +12,7 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
 import DynamicSelector                from './dynamic-selector';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Voter extends React.Component {
 
@@ -27,14 +28,14 @@ class Voter extends React.Component {
     const registered_voter = ReactDOM.findDOMNode(this.refs.registered).value;
 
     if ( registered_voter ) {
-      window.socket.emit('set user info', { registered_voter });
+      setUserInfo( { registered_voter });
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setUserInfo (obj) {
-      window.socket.emit('set user info', obj );
+      setUserInfo( obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

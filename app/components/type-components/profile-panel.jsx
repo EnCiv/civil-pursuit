@@ -9,7 +9,7 @@ import Button           from '../util/button';
 import ProfileComponent from '../profile-component';
 import Row                            from '../util/row';
 import Column                         from '../util/column';
-
+import setUserInfo                  from '../../api-wrapper/set-user-info';
 
 class ProfilePanel extends React.Component {
 
@@ -63,7 +63,7 @@ class ProfilePanel extends React.Component {
             if(typeof window !== 'undefined') {
                 if(this.state.userInfo){
                     var newInfo=Object.assign({},this.state.userInfo);
-                    window.socket.emit('set user info', { newInfo }, this.okGetUserInfo.bind(this));  // apply the new info to the user
+                    setUserInfo.call(this, { newInfo }, this.okGetUserInfo.bind(this));  // apply the new info to the user
                 } else 
                     window.socket.emit('get user info', this.okGetUserInfo.bind(this));  // userId got set but there's no new info
             } this.setState({userId: vs.userId});
@@ -80,9 +80,7 @@ class ProfilePanel extends React.Component {
 
     setUserInfo(info){
         this.setState({userInfo: Object.assign({},this.state.userInfo, info) });
-        if(this.props.user){ // if the user already exists, update the info immediatly
-            window.socket.emit('set user info', info);
-        }
+        setUserInfo.call(this, info);
     }
 
     okGetUserInfo(userInfo) {
