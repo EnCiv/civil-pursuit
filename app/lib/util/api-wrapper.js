@@ -29,7 +29,7 @@ function apiWrapperPush(message){
 }
 
 function apiWrapperFlush() {
-    if(this && this.props && this.props.user) {
+    if(typeof window!== 'undefined' && this && this.props && this.props.user) {
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");

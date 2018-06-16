@@ -12,6 +12,7 @@ import Row                              from './util/row';
 import YouTube                          from './youtube';
 import itemType                         from '../lib/proptypes/item';
 import typeType                         from '../lib/proptypes/type';
+import createItem                       from '../api-wrapper/create-item';
 
 class Creator extends React.Component {
 
@@ -146,25 +147,31 @@ class Creator extends React.Component {
     let insert = () => {
       if(item._id){
         //onsole.info("creator: update item");
-        window.socket.emit('update item', item);
-      }else window.socket.emit('create item', item, (item)=>{
+        if(this.props.user)
+          window.socket.emit('update item', item);
+        else
+          console.error("can not update item if no account", item);
+      }else createItem.call(this, item, (item)=>{
         this.props.toParent && this.props.toParent({results: {item: item}})
       });
     };
 
     if ( this.file ) {
-      let stream = ss.createStream();
+      if(this.props.user){
+        let stream = ss.createStream();
 
-      ss(window.socket).emit('upload image', stream,
-        { size: this.file.size, name: this.file.name });
+        ss(window.socket).emit('upload image', stream,
+          { size: this.file.size, name: this.file.name });
 
-      ss.createBlobReadStream(this.file).pipe(stream);
+        ss.createBlobReadStream(this.file).pipe(stream);
 
-      stream.on('end', () => {
-        item.image = this.file.name;
-        this.setState({image: this.file.name});
-        insert();
-      });
+        stream.on('end', () => {
+          item.image = this.file.name;
+          this.setState({image: this.file.name});
+          insert();
+        });
+      }else
+        console.error("can not upload image if no account");
     }
     else {
       insert();
