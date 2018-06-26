@@ -3,15 +3,16 @@
 // until that day, this is manual
 'use strict';
 
-var  Components={
-        'Details': require('./details'),
-        'Harmony': require('./harmony'),
-        'Promote': require('./promote'),
-        'Subtype': require('./subtype'),
-        'QSortButtons': require('./qsort-buttons'),
-        'Edit': require('./edit'),
+var Components = {
         'CreateHarmony': require('./create-harmony'),
+        'Details': require('./details'),
+        'Edit': require('./edit'),
+        'Harmony': require('./harmony'),
+        'Post': require('./post'),
+        'Promote': require('./promote'),
+        'QSortButtons': require('./qsort-buttons'),
         'Refine': require('./refine'),
+        'Subtype': require('./subtype'),
         "Totals": require('./totals'),
         "UseComponent": require('./use-component')
 }

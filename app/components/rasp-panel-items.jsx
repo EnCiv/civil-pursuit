@@ -55,7 +55,14 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
       }
       if (delta.creator) this.queueFocus(action);
       else this.queueUnfocus(action)
-    } else if (this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
+    } else if(action.type==="POST_ITEM"){
+      if(rasp.creator)
+        delta.creator=false;
+      if(this.props.PanelCreatItem)
+        this.props.PanelCreateItem(action.item);
+      if (delta.creator) this.queueFocus(action);
+        else this.queueUnfocus(action);
+    }else if (this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
       ; //then do nothing - it's been done
     } else if (Object.keys(delta).length > 0) {
       ; // then do nothing - it's already beend done but skip over the final else statement

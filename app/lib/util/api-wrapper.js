@@ -42,12 +42,24 @@ function apiWrapperFlush() {
     }
 }
 
+function apiWrapperImmediate(message){
+    if(typeof window !== undefined){
+        // rendering in the browser
+            window.socket.emit(...message);
+    } else {
+        // rendering on the server
+        console.info("apiWrapper Push from server side", message)
+        ;
+    }
+}
 module.exports.apiWrapperPush=apiWrapperPush;
 module.exports.apiWrapperFlush=apiWrapperFlush;
+module.exports.apiWrapperImmediate=apiWrapperImmediate;
 
 var apiWrapper={
     Push: apiWrapperPush,
-    Flush: apiWrapperFlush
+    Flush: apiWrapperFlush,
+    Immediate: apiWrapperImmediate
 }
 
 export default apiWrapper;
