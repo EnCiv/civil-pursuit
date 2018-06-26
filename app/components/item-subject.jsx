@@ -3,6 +3,8 @@
 import React from 'react';
 import ClassNames from 'classnames';
 import TextInput from './util/text-input';
+import createRef from 'create-react-ref/lib/createRef';
+React.createRef=createRef; // remove for React 16
 
 
 class ItemSubject extends React.Component {
@@ -11,21 +13,12 @@ class ItemSubject extends React.Component {
       this.inputElement = React.createRef();
       this.onChangeKey = this.onChangeKey.bind(this);
       this.onBlur=this.onBlur.bind(this);
+      this.ignoreCR=this.ignoreCR.bind(this);
       this.state = { subject: this.props.item && this.props.item.subject || '' };
   }
   componentWillReceiveProps(newProps) {
       if (this.state.subject != newProps.subject)
           this.setState({ subject: newProps.subject })
-  }
-  componentDidMount(){
-      if(this.props.visualMethod==='edit'){
-          this.eventListener=this.ignoreCR.bind(this);
-          this.inputElement.addEventListener('keydown', this.eventListener, false);
-      }
-  }
-  componentWillUnmount(){
-      if(this.eventListener)
-          this.inputElement.removeEventListener('keydown', this.eventListener, false);
   }
   ignoreCR(e){
       if ( e.keyCode === 13 ) {
@@ -39,7 +32,7 @@ class ItemSubject extends React.Component {
       this.setState({ subject });
   }
   onBlur(){
-      var subject = this.state.subject,
+      var subject = this.state.subject;
       if (this.props.onChange) {
           this.props.onChange({ value: { subject } })
       }
@@ -59,6 +52,7 @@ class ItemSubject extends React.Component {
                   value={subject}
                   onChange={this.onChangeKey}
                   onBlur={this.onBlur}
+                  onKeyDown={this.ignoreCR}
                   key="subject"
               />
           )

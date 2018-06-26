@@ -6,6 +6,9 @@ import YouTube from './youtube';
 import publicConfig from '../../public.json';
 import ClassNames from 'classnames';
 import Uploader                         from './uploader';
+import createRef from 'create-react-ref/lib/createRef';
+React.createRef=createRef; // remove for React 16
+
 
 class ItemMedia extends React.Component {
 
@@ -15,9 +18,9 @@ class ItemMedia extends React.Component {
     super(props);
     this.afterLoad=this.afterLoad.bind(this);
     this.saveImage=this.saveImage.bind(this);
-    wrapper=React.createRef();
-    media=React.createRef();
-    uploader=React.createRef();
+    this.wrapper=React.createRef();
+    this.media=React.createRef();
+    this.uploader=React.createRef();
   }
 
   componentWillReceiveProps(newProps){

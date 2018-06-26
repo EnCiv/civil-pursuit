@@ -6,10 +6,11 @@ import ClassNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import Row from './util/row';
 import TextInput from './util/text-input';
-import Icon from './util/icon';
+import createRef from 'create-react-ref/lib/createRef';
+React.createRef=createRef; // remove for React 16
 
 
-// renders the reference
+// renders the references
 class ItemReference extends React.Component {
   constructor(props) {
       super(props);
@@ -18,18 +19,9 @@ class ItemReference extends React.Component {
       this.openURL = this.openURL.bind(this);
       this.onChangeKey = this.onChangeKey.bind(this);
       this.editURL = this.editURL.bind(this);
-      this.getURL = this.getURL.bind(this);
-      this.state = { reference: this.props.item && this.state.props.item.reference && this.state.props.item.reference.slice() || [] };
-  }
-  componentDidMount(){
-      if(this.props.visualMethod==='edit'){
-          this.eventListener=this.ignoreCR.bind(this);
-          this.inputElement.addEventListener('keydown', this.eventListener, false);
-      }
-  }
-  componentWillUnmount(){
-      if(this.eventListener)
-          this.inputElement.removeEventListener('keydown', this.eventListener, false);
+      this.getUrlTitle = this.getUrlTitle.bind(this);
+      this.ignoreCR=this.ignoreCR.bind(this);
+      this.state = { references: this.props.item && this.props.item.references && this.props.item.references.slice() || [] };
   }
   ignoreCR(e){
       if ( e.keyCode === 13 ) {
@@ -55,20 +47,22 @@ class ItemReference extends React.Component {
       }
   }
   componentWillReceiveProps(newProps) {
-      if (!isEqual(this.props.item && this.props.item.reference, newProps.item && newProps.item.reference))
-          setState({ reference: newProps.item.reference.slice() });
+    let newReferences=newProps.item && newProps.item.references || [];
+      if (!isEqual(this.state.references, newReferences))
+          this.setState({ references: newReferences.slice() });
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   getUrlTitle() {
-      var reference = this.state.reference;
+      var references = this.state.references;
+      let {url}=references[0] || {};
 
-      if (url && isURL(reference[0].url)) {
+      if (url && isURL(url)) {
           this.setState({
               titleLookingUp: true,
               titleError: false
           });
           superagent
-              .get(reference[0].url)
+              .get(url)
               .agent(window.navigator.userAgent)
               .timeout(8000)
               .end((err, res) => {
@@ -84,13 +78,13 @@ class ItemReference extends React.Component {
                               title = S(_title).decodeHTMLEntities().s;
                           });
                       if (title && title.length) {
-                          reference = reference.slice();
-                          reference[0].title = title;
-                          this.setState({ titleLookingUp: false, titleError: false, reference });
+                          references = references.slice();
+                          references[0].title = title;
+                          this.setState({ titleLookingUp: false, titleError: false, references });
                       } else
                           this.setState({ titleLookingUp: false, titleError: true });
                   }
-                  if (this.props.onChange) this.props.onChange({ value: { reference } })
+                  if (this.props.onChange) this.props.onChange({ value: { references } })
               })
       }
   }
@@ -98,25 +92,26 @@ class ItemReference extends React.Component {
 
   editURL() {
       this.inputElement.select();
-      var reference = this.state.reference.slice();
-      reference[0].title = '';
-      this.setState({ reference });
+      var references = this.state.references.slice();
+      references[0].title = '';
+      this.setState({ references });
   }
 
   onChangeKey() {
-      var reference = this.state.reference || [];
+      var references = this.state.references || [];
       var value = this.inputElement.value;
-      if (reference[0].url !== value) { reference = reference.slice(); reference[0].url = value }
-      this.setState({ reference });
+      if ((references[0] && references[0].url) !== value) { references = references.slice(); references[0].url = value }
+      this.setState({ references });
   }
 
   render() {
-      const { reference, lookingUp, titleError } = this.state;
+      const { references, lookingUp, titleError, noReference } = this.state;
+      const {title, url}=references[0] || {};
       if (this.props.visualMethod !== 'edit') {
-          if (!reference.length) return null;
+          if (!references.length) return null;
           return (
               <h5 className={ClassNames(this.props.className, 'item-reference', { none: noReference })} >
-                  <a href={reference[0].link} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{reference[0].title}</span></a>
+                  <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
               </h5>
           );
       } else
@@ -137,23 +132,24 @@ class ItemReference extends React.Component {
                       ref={this.inputElement}
                       onChange={this.onChangeKey}
                       onBlur={this.getUrlTitle}
-                      className={`url-editor ${reference[0].title ? 'hide' : ''}`}
+                      onKeyDown={this.ignoreCR}
+                      className={`url-editor ${title ? 'hide' : ''}`}
                       name="reference"
-                      value={reference[0].url}
+                      value={url}
                       key="reference"
                   />
                   <TextInput
                       disabled
                       name="url-title"
-                      value={reference[0].title}
-                      className={`url-title ${reference[0].title ? 'visible' : ''}`}
+                      value={title}
+                      className={`url-title ${title ? 'visible' : ''}`}
                       key="title"
                   />
 
                   <Icon
                       icon="pencil"
                       mute
-                      className={`syn-edit-url ${reference[0].title ? 'visible' : ''}`}
+                      className={`syn-edit-url ${title ? 'visible' : ''}`}
                       onClick={this.editURL}
                       key="pencil"
                   />

@@ -11,7 +11,6 @@ import ReactActionStatePath from "react-action-state-path";
 import { ReactActionStatePathClient } from 'react-action-state-path';
 import ItemStore from './store/item';
 import ItemComponent from './item-component';
-import isEqual from 'lodash/isEqual';
 import getObjectId from '../api-wrapper/get-object-id';
 import ItemSubject from './item-subject';
 import ItemReference from './item-reference';
@@ -66,7 +65,7 @@ class RASPItem extends ReactActionStatePathClient {
             getObjectId(this.newObjectId.bind(this));
     }
 
-    newObjectId({_id){
+    newObjectId(_id){
         this.onChange({value: {_id}});
     }
 
@@ -576,7 +575,7 @@ class RASPItem extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
+        const { visualMethod, item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
         const classShape = shape ? 'vs-' + shape : '';
         const readMore = (rasp && rasp.readMore);
@@ -590,7 +589,7 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, rasp, classShape, truncShape, noReference, onChange: this.onChange };
+        const childProps = { item, rasp, classShape, truncShape, noReference, onChange: this.onChange, visualMethod };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {
