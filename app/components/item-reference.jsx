@@ -8,7 +8,7 @@ import Row from './util/row';
 import TextInput from './util/text-input';
 import createRef from 'create-react-ref/lib/createRef';
 React.createRef=createRef; // remove for React 16
-
+import isURL from 'is-url';
 
 // renders the references
 class ItemReference extends React.Component {
@@ -91,7 +91,7 @@ class ItemReference extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   editURL() {
-      this.inputElement.select();
+      this.inputElement.current.select();
       var references = this.state.references.slice();
       references[0].title = '';
       this.setState({ references });
@@ -99,9 +99,12 @@ class ItemReference extends React.Component {
 
   onChangeKey() {
       var references = this.state.references || [];
-      var value = this.inputElement.value;
-      if ((references[0] && references[0].url) !== value) { references = references.slice(); references[0].url = value }
-      this.setState({ references });
+      var value = this.inputElement.current.value;
+      if ((references[0] && references[0].url) !== value) { 
+        references = references.slice(); 
+        references[0]={url: value};
+        this.setState({ references });
+      }
   }
 
   render() {

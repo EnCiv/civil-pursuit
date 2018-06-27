@@ -24,14 +24,16 @@ class ItemDescription extends React.Component {
         var description = this.state.description;
         var value = this.inputElement.current.value;
         if (description !== value) description = value.slice();
-        this.setState({touched: true, description });
-        if(!this.timeout) this.timeout=setTimeout(this.delayedUpdate,10000);
+        this.setState({touched: true, collecting: true, description });
+        if(this.timeout) clearTimeout(this.timeout);
+        this.timeout=setTimeout(this.delayedUpdate,10000);
+
     }
     delayedUpdate(){
         var description= this.state.description.slice();
         if(this.props.onChange)
             this.props.onChange({value: {description}});
-        this.timeout=null;
+        this.setState({collecting: false});
     }
     render() {
         const {truncShape, visualMethod, item, rasp}= this.props;
@@ -58,7 +60,7 @@ class ItemDescription extends React.Component {
                         key="description"
                     />
                     <div className={'item-description-saving'}>
-                        {this.state.touched ? (this.timeout ? 'collecting' : 'saved') : ' '}
+                        {this.state.touched ? (this.state.collecting ? 'collecting' : 'saved') : ' '}
                     </div>
                 </section>
             );

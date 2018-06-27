@@ -27,7 +27,7 @@ class ItemSubject extends React.Component {
   }
   onChangeKey() {
       var subject = this.state.subject;
-      var value = this.inputElement.value;
+      var value = this.inputElement.current.value;
       if (subject !== value) subject = value.slice();
       this.setState({ subject });
   }
