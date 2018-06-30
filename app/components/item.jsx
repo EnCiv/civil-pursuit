@@ -577,7 +577,7 @@ class RASPItem extends ReactActionStatePathClient {
     render() {
         const { visualMethod, item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
-        const classShape = shape ? 'vs-' + shape : '';
+        const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
         const truncShape = shape !== 'collapsed' && readMore ? 'vs-open' : 'vs-' + shape;
         let noReference = true;
@@ -589,7 +589,7 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, rasp, classShape, truncShape, noReference, onChange: this.onChange, visualMethod };
+        const childProps = { item, rasp, truncShape, noReference, onChange: this.onChange, visualMethod };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {

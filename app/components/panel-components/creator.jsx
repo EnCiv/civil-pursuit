@@ -75,9 +75,9 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
               style={{ backgroundColor: bgc }}
           >
               <Item
+                  rasp={{shape: 'edit', depth: rasp.depth, toParent: rasp.toParent }}
                   visualMethod="edit"
                   item={item}
-                  creator
                   buttons={["Post"]}
               />
           </Accordion>

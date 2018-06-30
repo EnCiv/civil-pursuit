@@ -108,12 +108,13 @@ class ItemReference extends React.Component {
   }
 
   render() {
-      const { references, lookingUp, titleError, noReference } = this.state;
+      const {truncShape, noReference, rasp}=this.props;
+      const { references, lookingUp, titleError } = this.state;
       const {title, url}=references[0] || {};
-      if (this.props.visualMethod !== 'edit') {
+      if (rasp.shape !== 'edit') {
           if (!references.length) return null;
           return (
-              <h5 className={ClassNames(this.props.className, 'item-reference', { none: noReference })} >
+              <h5 className={ClassNames(this.props.className, 'item-reference', truncShape, { none: noReference })} >
                   <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
               </h5>
           );

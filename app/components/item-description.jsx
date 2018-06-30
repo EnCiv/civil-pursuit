@@ -39,7 +39,7 @@ class ItemDescription extends React.Component {
         const {truncShape, visualMethod, item, rasp}= this.props;
         const noReference = !(item && item.reference && item.reference.length);
         const description = item && item.description || '';
-        if(visualMethod!=='edit')
+        if (rasp.shape !== 'edit')
             return (
                 <div className={ClassNames('item-description', 'pre-text', (!rasp.readMore) ? (noReference ? 'vs-truncated4' : 'vs-truncated') : truncShape)}>
                     {description}
