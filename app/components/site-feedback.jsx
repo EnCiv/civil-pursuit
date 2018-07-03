@@ -3,8 +3,9 @@
 import React from 'react';
 import Icon from './util/icon';
 import cx from 'classnames';
+import injectSheet from 'react-jss'
 
-const styles = cssInJS({
+const styles = {
     defaultLandscape: {
         position: 'fixed',
         zIndex: 10,
@@ -88,9 +89,9 @@ const styles = cssInJS({
         marginRight: '0.5em',
         cursor: 'pointer'
     }
-})
+}
 
-export default class SiteFeedback extends React.Component {
+ class SiteFeedback extends React.Component {
   elms={};
   state={   response: null,
             open: false
@@ -138,7 +139,7 @@ export default class SiteFeedback extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    const {className}=this.props;
+    const {className, classes}=this.props;
     let w,h,panelClass='Landscape';
     if(typeof document !== 'undefined'){
         w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -148,13 +149,13 @@ export default class SiteFeedback extends React.Component {
 
     var feedbackForm=()=>{ // not a function so 'this' is inherited from caller
         return(
-            <div className={styles.wrapper}>
-                <div className={styles.form}>
-                    <input ref={(e)=>{e ? this.elms.subject=e : null}} className={styles.subject} type="text" placeholder="Subject" />
-                    <textarea ref={(e)=>{e ? this.elms.message=e : null}} className={styles.message} type="text" placeholder="Message" />
+            <div className={classes.wrapper}>
+                <div className={classes.form}>
+                    <input ref={(e)=>{e ? this.elms.subject=e : null}} className={classes.subject} type="text" placeholder="Subject" />
+                    <textarea ref={(e)=>{e ? this.elms.message=e : null}} className={classes.message} type="text" placeholder="Message" />
                     <div style={this.state.response ? {display: "block"} : {display: "none"} }>{this.state.response}</div>
-                    <div className={styles.buttonRow}>
-                        <button className={styles.button} onClick={this.contactUs.bind(this)} name="Send Feedback">Send Feedback</button>
+                    <div className={classes.buttonRow}>
+                        <button className={classes.button} onClick={this.contactUs.bind(this)} name="Send Feedback">Send Feedback</button>
                     </div>
                 </div>
             </div>
@@ -162,8 +163,8 @@ export default class SiteFeedback extends React.Component {
     }
 
     return (
-        <div className={cx(styles['default'+panelClass], this.state.open ? styles['open'+panelClass] : null, className)} title="Comments? Critical Feedback? Complaints? Great! I can't wait to see them.">
-            <Icon icon="comment" className={styles.icon} onClick={()=>{
+        <div className={cx(classes['default'+panelClass], this.state.open ? classes['open'+panelClass] : null, className)} title="Comments? Critical Feedback? Complaints? Great! I can't wait to see them.">
+            <Icon icon="comment" className={classes.icon} onClick={()=>{
                 var willOpen=!this.state.open;
                 this.setState({open: !this.state.open},()=>{
                     if(willOpen) 
@@ -177,4 +178,6 @@ export default class SiteFeedback extends React.Component {
     );
   }
 }
+
+export default injectSheet(styles)(SiteFeedback);
 

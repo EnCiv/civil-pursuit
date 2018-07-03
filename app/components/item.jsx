@@ -34,6 +34,7 @@ import ItemDescription from './item-description';
 // position - if set to left or right means the item is being displayed in two or more columns, so don't honor min in order to keep spacing consistent
 // className
 
+
 class Item extends React.Component {
     render() {
         //logger.trace("Item render");
@@ -579,7 +580,7 @@ class RASPItem extends ReactActionStatePathClient {
         const shape = rasp ? rasp.shape : '';
         const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
-        const truncShape = shape !== 'collapsed' && readMore ? 'vs-open' : 'vs-' + shape;
+        const truncShape = (this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape;
         let noReference = true;
 
         //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);

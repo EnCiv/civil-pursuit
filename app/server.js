@@ -13,7 +13,6 @@ import passport                 from 'passport';
 import config                   from '../secret.json';
 
 import printIt                  from './lib/util/express-pretty';
-import getTime                  from './lib/util/print-time';
 import makePanelId              from './lib/app/make-panel-id';
 import makePanel                from './lib/app/make-panel';
 
@@ -24,8 +23,8 @@ import signUpRoute              from './routes/sign-up';
 import tempIdRoute              from './routes/temp-id';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
-import serverReactRender         from './routes/server-react-render';
-// import errorRoutes              from './routes/error';
+import serverReactRender        from './components/server-react-render';
+
 
 import User                     from './models/user';
 import Item                     from './models/item';
