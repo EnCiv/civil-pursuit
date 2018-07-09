@@ -30,7 +30,7 @@
   "license": "BSD-2-Clause",
   "engines": {
     "node": "~8.9.4",
-    "npm": "5.x.x"
+    "npm": "5.5.x"
   },
   "dependencies": {
     "autosize": "^3.0.15",
