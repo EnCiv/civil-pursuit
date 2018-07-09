@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import ItemMedia from './item-media';
 import Icon from './util/icon';
 import Accordion from 'react-proactive-accordion';
-import ClassNames from 'classnames';
+import cx from 'classnames';
 import isEqual from 'lodash/isEqual';
 import ReactActionStatePath from "react-action-state-path";
 import { ReactActionStatePathClient } from 'react-action-state-path';
@@ -15,6 +15,8 @@ import getObjectId from '../api-wrapper/get-object-id';
 import ItemSubject from './item-subject';
 import ItemReference from './item-reference';
 import ItemDescription from './item-description';
+import injectSheet from 'react-jss'
+import publicConfig from '../../public.json'
 
 
 //Item 
@@ -45,8 +47,98 @@ class Item extends React.Component {
         );
     }
 }
-export default Item;
 
+const styles = {
+    item: {
+        border: "1px solid #666",
+        "margin-top": "0px",
+        padding: `${publicConfig.itemVisualGap} 0 0 ${publicConfig.itemVisualGap}`,
+        "border-right": "none",
+        "margin-right": 0, /* -1px;border on top of border*/
+        "margin-bottom": 0, /* -2px; border on top of border */
+        "background-color": "inherit",
+        "position": "relative", /* otherwise things that are relative will obscure this when they move around */
+      
+        "div, section, article": {
+          "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
+        }
+    },
+    "item-buttons":           {
+        "float": "right",
+        "text-align": "right",
+        "margin-top": "calc( -1 * ( 0.5em - 2px ) )", /** @item-visual-gap is not working here **/
+        "margin-right": `-${publicConfig.itemVisualGap}`, /** move it to the right negating the padding of the item-text **/
+        "&$vs-collapsed, &$vs-minified, &$vs-title": {
+            display: "none"
+        }
+    },
+    "item-text":{
+        padding: 0,
+        'padding-right': `${publicConfig.itemVisualGap}`,
+        'background-color': 'transparent!important', /* so it doesn't cover up the image and the buttons */
+        transition: 'height 0.5s linear'
+    },
+    'item-truncatable':{
+        'min-height': '6.9em', /* 1.375 for subject + .5 * .5 for padding + 1.375 for reference or 1 line + 1.375 * 3 for 3 more lines  */
+        'max-height': '7em',
+        overflow: 'hidden',
+        margin: 0,
+        'margin-bottom': '0.6em', /* space below the text before the border. */
+      
+        cursor: 'pointer',
+        transition: 'height 0.5s linear', 
+           
+        'div:empty': {
+          height: '1em'
+        },
+
+        '&$vs-title': {
+            'padding-top': 0,
+            'padding-bottom': '0.25em',
+            'font-size': '1rem',
+            'min-height': '1.25rem', // the height of the subject with a little space for the line below
+            'color': '#888',
+            'margin-bottom': 0
+        },
+        '&$vs-edit': {
+            'max-height': 'none'
+        }
+    },
+    "item-trunc-hint": {
+        display: 'none',
+        position: 'absolute',
+        left: "calc( 50% - 1.5em)", /* representing half the width of the ellipsis */
+        bottom: '-1em', /* relative to the bottom of the outer border make the bottom on the bottom (not the top on the bottom)*/
+        'font-size': '1rem',
+        padding: 0,
+        'background-color': 'rgba(255,255,255,0.5)!important', // a transparent white background    
+        
+        '&$untruncate': {
+            display: 'inline'
+        },
+        '&$untruncate&$vs-ooview': {
+            display: 'none'
+        },
+        '&$vs-ooview': {
+            display: 'none'
+        },
+        '&$untruncate&$vs-collapsed': {
+            display: 'none'
+        }
+    },
+    "item-footer":{
+        'margin-right': '0px',
+        'margin-bottom': '0.5em'
+    },
+    'vs-edit':{},
+    'vs-open':{},
+    'vs-truncated':{},
+    'vs-ooview': {},
+    'vs-title': {},
+    'vs-collapsed': {},
+    'vs-minified': {},
+    'untruncate': {}
+}
 
 class RASPItem extends ReactActionStatePathClient {
     state = { hint: false, minHeight: null, item: {} }; //
@@ -561,6 +653,7 @@ class RASPItem extends ReactActionStatePathClient {
 
     readMore(e) {
         e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
+        if (this.props.rasp.shape==='edit') return;
         if (this.props.rasp.readMore) { // if readMore is on and we are going to turn it off
             this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
         }
@@ -576,7 +669,7 @@ class RASPItem extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { visualMethod, item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
+        const { classes, visualMethod, item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
         const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
@@ -627,34 +720,37 @@ class RASPItem extends ReactActionStatePathClient {
         }
 
         return (
-            <article className={ClassNames("item", this.props.className, classShape)} ref="item" id={'item-'+item._id} >
+            <article className={cx(classes["item"], this.props.className, classes[classShape])} ref="item" id={'item-'+item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
                     <ItemMedia className={classShape} onClick={this.readMore}
+                        rasp={rasp}
                         item={item}
                         ref="media"
                     />
-                    <section className={ClassNames("item-text", classShape)} ref='itemText'>
-                        <section className={ClassNames("item-buttons", classShape)} ref='buttons'>
+                    <section className={cx(classes["item-text"], classes[classShape])} ref='itemText'>
+                        <section className={cx(classes["item-buttons"], classes[classShape])} ref='buttons'>
                             <ItemStore item={item}>
                                 {buttons ? buttons.map(button => renderButton(button)) : null}
                             </ItemStore>
                         </section>
-                        <Accordion className={ClassNames("item-truncatable", truncShape)} onClick={this.readMore} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
+                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
                             <ItemSubject {...childProps} />
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} />
                         </Accordion>
                     </section>
-                    <div className={ClassNames('item-trunc-hint', { expand: this.state.hint }, classShape)}>
+                    <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[classShape])}>
                         <Icon icon="ellipsis-h" />
                     </div>
                 </Accordion>
                 <section style={{ clear: 'both' }}>
                 </section>
-                <section className={ClassNames("item-footer", classShape)} ref="footer">
+                <section className={cx(classes["item-footer"], classes[classShape])} ref="footer">
                     {buttons ? buttons.map(button => renderPanel(button)) : null}
                 </section>
             </article>
         );
     }
 }
+
+export default injectSheet(styles)(Item);

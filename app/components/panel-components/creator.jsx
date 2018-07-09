@@ -1,12 +1,10 @@
 'use strict';
 
 import React from 'react';
-import ButtonGroup from '../util/button-group';
-import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
-import Creator from '../creator';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
+import Item from '../item'
 
 exports.button = class PanelCreatorButton extends React.PureComponent {
     render(){
