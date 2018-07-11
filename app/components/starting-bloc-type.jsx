@@ -6,6 +6,7 @@ import StaticProfileSelector from './static-profile-selector';
 export default class StartingBlocType extends StaticProfileSelector {
     name = "starting_bloc_type";
     choices = [
+        "BOS'05",
         "NY'05",
         "BOS'06",
         "NY'06",
