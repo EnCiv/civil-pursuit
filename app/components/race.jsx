@@ -32,6 +32,7 @@ class Race extends React.Component {
 
         return (
             <div>
+                <Row key="header" className="checkbox-header">Check all that apply</Row>
                 {checkBoxData.map(checkBox => (
                     <Row key={checkBox._id} className={'checkbox-' + this.name} id={'checkbox-' + this.name + '-' + checkBox._id}>
                         <Column className="gutter">
