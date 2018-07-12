@@ -23,7 +23,7 @@ export default class GenderIdentity extends React.Component {
     render() {
 
         let { info={} } = this.props;
-        let { choice = '', specify = '' } = info.gender_identity;
+        let { choice = '', specify = '' } = info.gender_identity || {};
         if(this.refs.choice)
             choice=ReactDOM.findDOMNode(this.refs.choice).value;
 
