@@ -1,7 +1,9 @@
 {
   "noIdUserProps": [
+    "activation_key",
     "race",
     "gender",
+    "gender_identity",
     "married",
     "education",
     "employment",
