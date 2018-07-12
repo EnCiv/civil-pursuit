@@ -14,7 +14,7 @@ export default class GenderIdentity extends React.Component {
 
     saveInfo() {
         const choice = ReactDOM.findDOMNode(this.refs.choice).value;
-        const specify = (choice==="Other" && this.refs.input && ReactDom.findDOMNode(this.refs.input).value) || '';
+        const specify = (choice==="Other" && this.refs.input && ReactDOM.findDOMNode(this.refs.input).value) || '';
         if (this.props.onChange) this.props.onChange({ gender_identity: { choice, specify } });
     }
 
