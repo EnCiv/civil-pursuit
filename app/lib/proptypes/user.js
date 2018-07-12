@@ -43,7 +43,8 @@ const user          =   shape({
   gun_type          :   string,
   starting_bloc_type:   string,
   year_of_birth     :   number,
-  street_address    :   any
+  street_address    :   any,
+  gender_identity   :   any
 });
 
 export default user;

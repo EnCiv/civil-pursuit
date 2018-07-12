@@ -16,6 +16,7 @@ import StreetAddress from './street-address';
 import Race from './race';
 import GunType from './gun-type';
 import StartingBlocType from './starting-bloc-type';
+import GenderIdentity from './gender-identity';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -58,7 +59,8 @@ class ProfileComponent extends React.Component {
         'StreetAddress': StreetAddress,
         'Race': Race,
         'GunType': GunType,
-        'StartingBlocType': StartingBlocType
+        'StartingBlocType': StartingBlocType,
+        'GenderIdentity': GenderIdentity
     }
 
     static title(component) {
@@ -123,7 +125,7 @@ class ProfileComponent extends React.Component {
             Component = ProfileComponent.components[profile[0]];
         } else { return (null); };
         if(typeof Component === 'function') return (<Component {...newProps} property={ProfileComponent.property(component)} collection={ProfileComponent.collection(component)}/>);
-        else throw new Error('profile does not exist in ProfileCompnents', profile);
+        else throw new Error('profile does not exist in ProfileComponents', profile);
     }
 }
 
