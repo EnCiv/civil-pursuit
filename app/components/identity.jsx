@@ -7,13 +7,11 @@ import Column                         from './util/column';
 import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
-import DateInput                      from './util/date-input';
 import Uploader                       from './uploader';
-import userType                       from '../lib/proptypes/user';
-import countryType                    from '../lib/proptypes/country';
 import selectors                      from '../../selectors.json';
 import Gender                         from './gender';
 import Birthdate                      from './birthdate';
+import GenderIdentity                 from './gender-identity'
 
 class Identity extends React.Component {
 
