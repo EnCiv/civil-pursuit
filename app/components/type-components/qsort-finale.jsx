@@ -1,21 +1,12 @@
 'use strict';
 
 import React from 'react';
-import Panel from '../panel';
-import panelType from '../../lib/proptypes/panel';
 import ItemStore from '../store/item';
-import FlipMove from 'react-flip-move';
-import QSortFlipItem from '../qsort-flip-item';
 import smoothScroll from '../../lib/app/smooth-scroll';
-import Instruction from '../instruction';
-import Color from 'color';
-import Button from '../util/button';
 import QSortButtonList from '../qsort-button-list';
-import merge from 'lodash/merge';
 import QVoteTotals from '../store/qvote-totals';
 import Accordion from 'react-proactive-accordion';
 import Item from '../item';
-import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import union from 'lodash/union';
@@ -148,7 +139,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
         //onsole.info("QSortFinale");
         const onServer = typeof window === 'undefined';
-        let content = [], direction = [], instruction = [], issues = 0, done = [], loading = [];
+        let content = [], direction = [], loading = [];
 
         if (!Object.keys(this.props.finale).length) {
             loading.push(
@@ -194,14 +185,12 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         return (
             <section id="syn-panel-qsort-finale">
                 {direction}
-                {done}
                 <div key="flip-list" style={{ position: 'relative', display: 'block' }}>
                     <div className="qsort-flip-move-articles">
                         {content.map(article => <QSortFlipItemHarmony {...article} key={article.id} />)}
                     </div>
                 </div>
                 {loading}
-                {done}
             </section>
         );
     }

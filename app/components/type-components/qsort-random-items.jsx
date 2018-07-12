@@ -42,7 +42,7 @@ class QSortRandomItems extends React.Component {
             return (
                 <ReactActionStatePath {...this.props} >
                     <RandomItemStore type={randomType} parent={randomParent}>
-                        <RASPFocusHere filterTypes={['RESULTS','FOCUS_STATE']}>
+                        <RASPFocusHere filterTypes={['FOCUS_STATE']}>
                             <PanelHeading type={panelType} cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
                                 <RASPQSortItems />
                             </PanelHeading>

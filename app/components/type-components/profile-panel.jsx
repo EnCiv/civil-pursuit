@@ -181,7 +181,7 @@ class ProfilePanel extends React.Component {
             >
                 {instruction}
                 {content}
-                <DoneItem message="Complete!" doneActive={doneActive} onClick={this.setState.bind(this, { done: true }, null)} />
+                <DoneItem message="Complete!" active={doneActive} onClick={this.setState.bind(this, { done: true }, null)} />
             </Panel>
         );
     }

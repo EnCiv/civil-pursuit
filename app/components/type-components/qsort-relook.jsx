@@ -1,38 +1,29 @@
 'use strict';
 
 import React from 'react';
-import Panel from '../panel';
-import panelType from '../../lib/proptypes/panel';
 import ItemStore from '../store/item';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from '../qsort-flip-item'
 import smoothScroll from '../../lib/app/smooth-scroll';
-import Instruction from '../instruction';
 import Color from 'color';
-import Button from '../util/button';
 import QSortButtonList from '../qsort-button-list';
-import merge from 'lodash/merge';
 import QVoteLocal from '../store/qvote-local';
 import Accordion          from 'react-proactive-accordion';
 import Item from '../item';
-import Harmony from '../harmony';
 import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter } from 'react-action-state-path';
-import { QSortToggle } from './qsort-items';
 import RASPFocusHere from '../rasp-focus-here';
+import DoneItem from '../done-item';
 
 class QSortReLook extends React.Component {
     render() {
         //onsole.info("QSortReLook");
         return (
             <ReactActionStatePath {...this.props} >
-                <RASPFocusHere filterTypes={['DESCENDANT_FOCUS', 'RESULTS']}>
                     <PanelHeading items={[]} cssName={'syn-qsort-relook'} panelButtons={['Instruction']} >
                         <QVoteLocal  >
                             <RASPQSortReLook />
                         </QVoteLocal>
                     </PanelHeading>
-                </RASPFocusHere>
             </ReactActionStatePath>
         );
     }
@@ -208,18 +199,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 });
             });
             if (!issues) {
-                done.push(
-                    <div key="instruction" className='instruction-text'>
-                        {qbuttons['unsorted'].direction}
-                        <Button small shy
-                            onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
-                            className="qsort-done"
-                            style={{ backgroundColor: Color(qbuttons['unsorted'].color).negate(), color: qbuttons['unsorted'].color, float: "right" }}
-                        >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                );
                 this.queueAction({type: "RESULTS", results: this.results});
             } else 
                 this.queueAction({type: "ISSUES"});
@@ -227,7 +206,6 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         return (
             <section id="syn-panel-qsort-harmony">
                 {direction}
-                {done}
                 <div key="flip-list" style={{
                     position: 'relative',
                     display: 'block',
@@ -239,7 +217,11 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     </div>
                 </div>
                 {loading}
-                {done}
+                <DoneItem 
+                    active={!issues}
+                    message={qbuttons['unsorted'].direction}
+                    onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
+                />
             </section>
         );
     }

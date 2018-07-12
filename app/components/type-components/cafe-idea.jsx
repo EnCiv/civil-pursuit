@@ -1,26 +1,13 @@
 'use strict';
 
 import React from 'react';
-import Panel from '../panel';
-import PanelStore from '../store/panel';
-import PanelItems from '../panel-items';
-import panelType from '../../lib/proptypes/panel';
-import ItemStore from '../store/item';
-import update from 'immutability-helper';
-import FlipMove from 'react-flip-move';
-import QSortFlipItem from '../qsort-flip-item';
-import smoothScroll from '../../lib/app/smooth-scroll';
-import Color from 'color';
-import Button           from '../util/button';
-import ButtonGroup           from '../util/button-group';
 import Item from '../item';
-import Creator            from '../creator';
 import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
-import {QSortToggle} from './qsort-items';
 import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
-import Accordion from 'react-proactive-accordion';
+import DoneItem from '../done-item';
+
 
 
 Number.prototype.map = function(f){
@@ -113,38 +100,20 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     render() {
 
         const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1 } = this.props;
-        var results=null;
         let nIdeas=Math.min(Math.max(this.state.ideaCount+2,numIdeas),maxIdeas);
-    
-
-        const onServer = typeof window === 'undefined';
-
-        var done=(
-            <Accordion active={this.state.ideaCount >= minIdeas} >
-                <div className='instruction-text' key="done">
-                    {minIdeas ? "Continue" : "Continute without contributing an additional idea."}
-                    <Button small shy
-                        onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})}
-                        className="cafe-idea-done"
-                        style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
-                        >
-                        <span className="civil-button-text">{"next"}</span>
-                    </Button>
-                </div>
-            </Accordion>
-        );
-
 
         return (
             <section id="syn-cafe-idea">
-                {done}
                 <div className="syn-cafe-idea" key='idea'>
                     <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
                     <div className="syn-cafe-idea-creator">
                         {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
-                {done}
+                <DoneItem active={this.state.ideaCount>= minIdeas} 
+                    message={minIdeas ? "Continue" : "Continue without contributing an additional idea."} 
+                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})} 
+                />
             </section>
         );
     }

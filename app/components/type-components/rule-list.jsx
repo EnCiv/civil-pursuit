@@ -224,7 +224,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
                     </div>
                 </div>
                 {loading}
-                <DoneItem doneActive={doneActive} onClick={()=>this.props.rasp.toParent({type: "REDIRECT"})} message={this.QSortButtonList['unsorted'].direction} />
+                <DoneItem active={doneActive} onClick={()=>this.props.rasp.toParent({type: "REDIRECT"})} message={this.QSortButtonList['unsorted'].direction} />
             </section>
         );
     }

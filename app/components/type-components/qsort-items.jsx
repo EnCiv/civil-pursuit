@@ -1,8 +1,6 @@
 'use strict';
 
 import React from 'react';
-import panelType from '../../lib/proptypes/panel';
-import ItemStore from '../store/item';
 import FlipMove from 'react-flip-move';
 import QSortFlipItem from '../qsort-flip-item'
 import smoothScroll from '../../lib/app/smooth-scroll';
@@ -10,13 +8,12 @@ import Color from 'color';
 import Button           from '../util/button';
 import QSortButtonList from '../qsort-button-list';
 import Accordion          from 'react-proactive-accordion';
-import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter} from 'react-action-state-path';
 import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
-import ResultsFocusHere from '../results-focus-here';
+import DoneItem from '../done-item';
 
   // 20 is hard coded, but where should this be? type or item?
 export class QSortItems extends React.Component {
@@ -29,11 +26,9 @@ export class QSortItems extends React.Component {
                     limit={20} >
             <QVoteStore {...this.props}>
                 <ReactActionStatePath>
-                    <ResultsFocusHere>
                         <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
                             <RASPQSortItems />
                         </PanelHeading>
-                    </ResultsFocusHere>
                 </ReactActionStatePath>
             </QVoteStore>
         </PanelStore>
@@ -179,9 +174,9 @@ export class RASPQSortItems extends ReactActionStatePathClient {
             done=(
                 <Accordion key="done" active={this.state.done}>
                     <div  className='instruction-text'>
-                        {this.QSortButtonList['unsorted'].direction}
+                        
                         <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}
+                            
                             className="qsort-done"
                             style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
                             >
@@ -195,7 +190,6 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         return (
             <section id="syn-panel-qsort">
                 {direction}
-                {done}
                 <div style={{ position: 'relative', display: 'block' }} 
                     key="fliplist"
                 >
@@ -205,7 +199,11 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                         </FlipMove>
                     </div>
                 </div>
-                {done}
+                <DoneItem 
+                    active={this.state.done}
+                    message={this.QSortButtonList['unsorted'].direction}
+                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}
+                />
             </section>
         );
     }

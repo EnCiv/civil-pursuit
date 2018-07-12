@@ -1,38 +1,25 @@
 'use strict';
 
 import React from 'react';
-import Panel from '../panel';
-import PanelStore from '../store/panel';
-import PanelItems from '../panel-items';
-import panelType from '../../lib/proptypes/panel';
 import ItemStore from '../store/item';
-import update from 'immutability-helper';
 import FlipMove from 'react-flip-move';
-import QSortFlipItem from '../qsort-flip-item';
 import smoothScroll from '../../lib/app/smooth-scroll';
-import Instruction from '../instruction';
 import Color from 'color';
-import Button           from '../util/button';
-import ButtonGroup           from '../util/button-group';
 import Item from '../item';
-import Creator            from '../creator';
 import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import {QSortToggle} from './qsort-items';
-import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
 import clone from 'clone';
-import ResultsFocusHere from '../results-focus-here';
+import DoneItem from '../done-item'
 
 class QSortWhy extends React.Component {
     render() {
         return (
             <ReactActionStatePath {...this.props} >
-                <ResultsFocusHere>
                     <PanelHeading items={[]} cssName={'syn-qsort-why'} panelButtons={['Creator', 'Instruction']}>
                         <RASPQSortWhy />
                     </PanelHeading>
-                </ResultsFocusHere>
             </ReactActionStatePath>
         )
     }
@@ -209,18 +196,6 @@ class RASPQSortWhy extends ReactActionStatePathClient {
             });
         }
         if (!issues) {
-            done.push(
-                <div className='instruction-text' key='direction-done'>
-                    {this.ButtonList['unsorted'].direction}
-                    <Button small shy
-                        onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
-                        className="qwhy-done"
-                        style={{ backgroundColor: Color(this.ButtonList['unsorted'].color).negate(), color: this.ButtonList['unsorted'].color, float: "right" }}
-                        >
-                        <span className="civil-button-text">{"next"}</span>
-                    </Button>
-                </div>
-            );
             setTimeout(()=>this.props.rasp.toParent({ type: "RESULTS", results: this.results}),0);
         }else 
             setTimeout(()=>rasp.toParent({ type: "ISSUES"}),0);
@@ -228,7 +203,6 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         return (
             <section id="syn-panel-qsort">
                 {direction}
-                {done}
                 <div key="flip-list" style={{ position: 'relative',
                                 display: 'block',
                 }}>
@@ -238,7 +212,11 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                         </FlipMove>
                     </div>
                 </div>
-                {done}
+                <DoneItem 
+                    active={!issues}
+                    message={this.ButtonList['unsorted'].direction}
+                    onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
+                />
             </section>
         );
     }
