@@ -26,6 +26,23 @@ import StartingBlocType from './starting-bloc-type';
  *    infoPropertyName = collection
  */
 
+ /**
+  * Profile Component Props:
+  * 
+  * onChange is an option function to call when the value of a property changed, as in:
+  *     onChange({property: value});
+  * 
+  *         value should be a validated as much as possible by the component. If the value changes, and it is not valid, then a falsy value should be return - as in null or ""
+  * 
+  * info is an object holding the defaultValue for the property.  As in
+  *     info[property]
+  * 
+  * property is the name that should be used for the property
+  * 
+  * collection is the name of the database collection to be used for obtaining choices - if used but the component
+  * 
+  */
+
 class ProfileComponent extends React.Component {
 
     static components = {

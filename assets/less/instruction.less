@@ -173,3 +173,20 @@
     }
  }
 
+ .done-text {
+    position: relative; /* otherwise things that are relative will obscure this when they move around */
+    padding: 2em;
+    margin: 1em;
+    white-space:      pre-line;
+    text-align:       left;
+    color: black;
+    font-size: 1.2em;
+    transition: 0.5s all linear;
+    border: 1px solid #fff;
+    box-shadow:  0 0 0.0 0.0 rgba(255, 255, 255, 0);
+  }
+
+  .done-active {
+    border: 1px solid #666;
+    box-shadow:  0 0 0.5em 0.25em rgba(0, 0, 0, 0.3);
+  }

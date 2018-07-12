@@ -38,7 +38,7 @@ class StreetAddress extends React.Component {
 
     isAddressComplete(){
         // if the there is enough information for civic info to complete the address
-        return (this.info.line1 && (this.info.zip || this.info.city && this.info.state))
+        return (this.info.line1 && this.info.zip && this.info.city && this.info.state)
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -50,11 +50,15 @@ class StreetAddress extends React.Component {
     }
 
     saveInfo(value) { // each time a property is updated
-        let d=new Date();
         Object.assign(this.info,value);
         Object.assign(this.state.info,value); // DANGER!! we are not calling setState here because we don't want to cause a rerender. The Input element sent this data up, the data is already displayed.
-        if(!this.isAddressComplete()) return(this.setState({hint: false, working: false}));
         if(this.validateTimeout) clearTimeout(this.validateTimeout); // stop the old validate, here is new data
+        if(!this.isAddressComplete()) {
+            if(this.props.onChange) this.props.onChange({[this.name]: null});
+            if(this.state.hint || this.state.working)
+                this.setState({hint: false, working: false});
+            return;
+        }
         this.validateTimeout=setTimeout(()=>this.validate(this.addressString()),2000);
         if(!this.state.working) this.setState({working: true});
     }
@@ -86,6 +90,7 @@ class StreetAddress extends React.Component {
                 this.props.onChange({[this.name]: this.info })
                 this.setState({hint: false, working: false}); // no need to update info, it hasn't been updated
             } else {
+                this.props.onChange({[this.name]: null})
                 this.setState({hint: true, working: false, info: Object.assign({},this.possible)}) // update info displayed with 'possible' turn on hint to see if the user agrees
             }
         });  // CA - California -> $oid

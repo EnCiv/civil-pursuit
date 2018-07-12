@@ -239,6 +239,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     </div>
                 </div>
                 {loading}
+                {done}
             </section>
         );
     }

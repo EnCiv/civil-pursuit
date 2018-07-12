@@ -22,6 +22,8 @@ class Birthdate extends React.Component {
       if ( now > dob ) {
         if(this.props.onChange) this.props.onChange( { dob } );
       }
+    } else {
+      if(this.props.onChange) this.props.onChange( { dob: null } );
     }
   }
 

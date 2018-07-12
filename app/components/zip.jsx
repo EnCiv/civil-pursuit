@@ -18,8 +18,10 @@ class Zip extends React.Component {
 
   saveInfo () {
     let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
-    if(this.props.onChange) this.props.onChange({[this.name]: newValue});
-    this.setState({valid: !!this.validate(newValue)})
+    let valid=!!this.validate(newValue);
+    if(valid && this.props.onChange) this.props.onChange({[this.name]: newValue});
+    if(!valid && this.state.valid) this.props.onChange({[this.name]: ''});
+    if(this.state.valid !== valid) this.setState({valid});
   }
 
   validate(value){

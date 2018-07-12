@@ -21,6 +21,7 @@ class YearOfBirth extends React.Component {
       if(this.props.onChange) this.props.onChange({[this.name]: value});
       this.setState({hint: false})
     } else {
+      if(this.props.onChange) this.props.onChange({[this.name]: ""});
         this.setState({hint: true})
     }
   }

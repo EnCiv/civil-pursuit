@@ -13,10 +13,7 @@ export default class StaticProfileSelector extends React.Component {
 
     save() {
         let val = ReactDOM.findDOMNode(this.elem).value;
-
-        if (val) {
-            if (this.props.onChange) this.props.onChange({ [this.name]: val });
-        }
+        if (this.props.onChange) this.props.onChange({ [this.name]: val });
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,23 +1,17 @@
 'use strict';
 
 import React from 'react';
-import panelType from '../../lib/proptypes/panel';
-import ItemStore from '../store/item';
 import FlipMove from 'react-flip-move';
 import QSortFlipItem from '../qsort-flip-item'
 import smoothScroll from '../../lib/app/smooth-scroll';
 import Color from 'color';
-import Button           from '../util/button';
-import Creator            from '../creator';
-import Accordion          from 'react-proactive-accordion';
-import Icon               from '../util/icon';
 import PanelStore from '../store/panel';
 import QVoteStore from '../store/qvote';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import PanelHeading from '../panel-heading';
-import {QSortToggle} from './qsort-items';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
+import DoneItem from '../done-item';
 
 const RuleButtonList = {
     unsorted: {
@@ -163,6 +157,8 @@ export class RASPRuleList extends ReactActionStatePathClient {
 
         let articles = [], creator,
             direction = [], instruction = [], issues = 0, done = [], loading=[];
+        
+        var doneActive=false;
 
         if(rasp.itemId==='redirect' && this.state.typeList.length) {
             const newPanel = {
@@ -210,18 +206,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
                 });
             });
             if(!issues) {
-                done.push(
-                    <div className='instruction-text' key="done">
-                        {this.QSortButtonList['unsorted'].direction}
-                        <Button small shy
-                            onClick={()=>this.props.rasp.toParent({type: "REDIRECT"})} // null is needed here so setState doesn't complain about the mouse event that's the next parameter
-                            className="qsort-done"
-                            style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
-                            >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                )
+                doneActive=true;
             }
         }
 
@@ -229,7 +214,6 @@ export class RASPRuleList extends ReactActionStatePathClient {
         return (
             <section id="syn-panel-rule-list" key='syn-panel-rule-list'>
                 {direction}
-                {done}
                 <div style={{ position: 'relative',
                                 display: 'block',
                 }} key="fliplist">
@@ -240,6 +224,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
                     </div>
                 </div>
                 {loading}
+                <DoneItem doneActive={doneActive} onClick={()=>this.props.rasp.toParent({type: "REDIRECT"})} message={this.QSortButtonList['unsorted'].direction} />
             </section>
         );
     }

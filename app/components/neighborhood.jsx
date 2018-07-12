@@ -14,9 +14,8 @@ class Neighborhood extends React.Component {
   saveNeighborhood () {
     let neighborhood = ReactDOM.findDOMNode(this.refs.neighborhood).value;
 
-    if ( neighborhood ) {
-      if(this.props.onChange) this.props.onChange({neighborhood});
-    }
+    if(this.props.onChange) this.props.onChange({neighborhood});
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

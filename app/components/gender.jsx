@@ -13,10 +13,7 @@ class Gender extends React.Component {
 
   saveGender () {
     let gender = ReactDOM.findDOMNode(this.refs.gender).value;
-
-    if ( gender ) {
-      if(this.props.onChange) this.props.onChange({gender});
-    }
+    if(this.props.onChange) this.props.onChange({gender});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

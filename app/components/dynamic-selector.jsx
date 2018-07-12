@@ -69,7 +69,7 @@ class DynamicSelector extends React.Component {
         var obj = {};
         const { property } = this.props;
         obj[property] = ReactDOM.findDOMNode(this.refs.choice).value;
-        if (obj[property] && this.props.onChange) this.props.onChange(obj);
+        if (this.props.onChange) this.props.onChange(obj);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

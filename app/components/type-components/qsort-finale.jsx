@@ -201,6 +201,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
                     </div>
                 </div>
                 {loading}
+                {done}
             </section>
         );
     }

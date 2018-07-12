@@ -13,10 +13,7 @@ class MemberType extends React.Component {
 
   saveMemberType () {
     let member_type = ReactDOM.findDOMNode(this.refs.member_type).value;
-
-    if ( member_type ) {
-      if(this.props.onChange) this.props.onChange({member_type});
-    }
+    if(this.props.onChange) this.props.onChange({member_type});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

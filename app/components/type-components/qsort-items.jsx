@@ -205,6 +205,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                         </FlipMove>
                     </div>
                 </div>
+                {done}
             </section>
         );
     }

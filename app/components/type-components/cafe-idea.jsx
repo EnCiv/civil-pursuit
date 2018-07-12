@@ -144,6 +144,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                         {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
+                {done}
             </section>
         );
     }

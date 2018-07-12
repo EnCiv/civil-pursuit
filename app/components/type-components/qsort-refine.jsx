@@ -197,6 +197,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
                         </FlipMove>
                     </div>
                 </div>
+                {done}
             </section>
         );
     }

@@ -20,7 +20,7 @@ class Race extends React.Component {
         Object.keys(this.boxes).forEach(box => {
             if (this.boxes[box].checked) arr.push(box);
         })
-        if (this.props.onChange) this.props.onChange({ [this.name]: arr });
+        if(this.props.onChange) this.props.onChange({[this.name]: arr.length ? arr : null});
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
