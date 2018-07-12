@@ -33,6 +33,8 @@ class ResetPassword extends React.Component {
       successMessage    : null,
       info              : null
     };
+
+    console.info("reset-password constructor");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +43,7 @@ class ResetPassword extends React.Component {
     const password            =   this.refs.password;
     const confirmPassword     =   this.refs.confirmPassword;
     const resetKey            =   this.refs.reset;
-
+    console.info("reset-password save");
     this.setState({ validationError : null });
 
     if ( password.value !== confirmPassword.value ) {
@@ -76,6 +78,7 @@ class ResetPassword extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+    console.info("reset-password render");
     let content = ( <Loading message="Getting user info" /> );
 
     if ( this.props.user ) {
@@ -141,7 +144,7 @@ class ResetPassword extends React.Component {
           form-center
           style                       =   {{ margin : '10px' }}
           flash                       =   { this.state }
-          handler                     =   { ::this.save }
+          handler                     =   { this.save.bind(this) }
           name                        =   "reset-password"
         >
           { formContents }
