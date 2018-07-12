@@ -2,8 +2,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Row from './util/row';
-import Column from './util/column';
 import Select from './util/select';
 import Input from './util/input';
 
