@@ -83,7 +83,12 @@ class ResetPassword extends React.Component {
     let content = ( <Loading message="Getting user info" /> );
 
     if ( this.props.user ) {
-
+      if(!this.props.user.email) // no user info
+        return (
+          <Panel title="Reset Password">
+            <span>Invalid key</span>
+          </Panel>
+        );
       let formContents;
 
       if ( ! this.state.info && ! this.state.successMessage ) {

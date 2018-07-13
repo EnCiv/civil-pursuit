@@ -227,7 +227,27 @@ class JoinForm extends React.Component {
     if (this.state.joinActive && (!email || !password || !confirm || password != confirm || !agree)) this.setState({ joinActive: false });
   }
 
+  sendResetPassword () {
 
+    this.setState({ validationError : null, info : 'One moment...' });
+
+    let email = ReactDOM.findDOMNode(this.refs.email).value;
+
+    window.socket.emit('send password', email, response => {
+      if ( response.error ) {
+        let { error } = response;
+
+        if ( error === 'User not found' ) {
+          error = 'Email not found';
+        }
+
+        this.setState({ info : null, validationError : error });
+      }
+      else {
+        this.setState({ info : null, successMessage : 'Message sent! Please check your inbox' });
+      }
+    });
+  }
 
   render() {
     let content = (
@@ -273,11 +293,18 @@ class JoinForm extends React.Component {
           <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
         </InputGroup>
 
-
-
         <Row>
           <Column span="50" gutter className="text-left">
-            <p style={{ margin: 0 }}>Already a user? Just Login</p>
+            <p style={{margin: 0}} className="forgot-password-label">{"Forgot / Didn't set your password? "}
+              <a
+                href              =   "#"
+                className         =   "forgot-password-link"
+                onClick           = { this.sendResetPassword.bind(this) }
+              >
+                Click here
+              </a>
+            </p>
+            <p style={{ margin: 0, marginTop: '0.5em' }}>Already a user? Just Login</p>
           </Column>
 
           <Column span="50" text-right gutter>

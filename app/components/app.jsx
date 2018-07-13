@@ -1,67 +1,64 @@
 'use strict';
 
-import React                            from 'react';
-import Layout                           from './layout';
-import Profile                          from './profile';
-import Home                             from './home';
-import ResetPassword                    from './reset-password';
-import PanelItems                       from './panel-items';
-import panelItemType                    from '../lib/proptypes/panel-item';
-import Panel                            from './panel';
-import Icon                             from './util/icon';
-import UserStore                        from './store/user';
-import About                            from './about';
-import PanelList                        from './type-components/panel-list';
-import TypeComponent                    from './type-component';
-import OnlineDeliberationGame           from './odg';
-import ODGCongrat                       from './odg-congrat';
-import fixedScroll                      from '../lib/util/fixed-scroll';
-import RenderMarkDown                   from './render-mark-down';
-import SmallLayout                      from './small-layout';
+import React from 'react';
+import Layout from './layout';
+import Profile from './profile';
+import Home from './home';
+import ResetPassword from './reset-password';
+import Panel from './panel';
+import Icon from './util/icon';
+import UserStore from './store/user';
+import About from './about'; import PanelList from './type-components/panel-list';
+import TypeComponent from './type-component';
+import OnlineDeliberationGame from './odg';
+import ODGCongrat from './odg-congrat';
+import fixedScroll from '../lib/util/fixed-scroll';
+import RenderMarkDown from './render-mark-down';
+import SmallLayout from './small-layout';
+import StaticLayout from './static-layout';
 
 class App extends React.Component {
 
-  state = { path: null}
+  state = { path: null }
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
-    if ( typeof window !== 'undefined' ) {
+    if (typeof window !== 'undefined') {
       //window.onbeforeunload = this.confirmOnPageExit.bind(this);
       fixedScroll();
-      if(navigator.userAgent.match(/SM-N950U/)) { 
-        let b=document.getElementsByTagName('body')[0];
-        b.style.paddingRight='9px';
-        b.style.paddingLeft='9px'
+      if (navigator.userAgent.match(/SM-N950U/)) {
+        let b = document.getElementsByTagName('body')[0];
+        b.style.paddingRight = '9px';
+        b.style.paddingLeft = '9px'
       }
     }
 
-    this.state.path = props.path ;
+    this.state.path = props.path;
   }
 
   confirmOnPageExit(e) {
-      // If we haven't been passed the event get the window.event
-      e = e || window.event;
+    // If we haven't been passed the event get the window.event
+    e = e || window.event;
 
-      var message = "If you are ready to end this discussion click Leave, your input has been saved and you can return at any time.\n\nIf you didn't mean to leave this discussion, click cancel Stay";
+    var message = "If you are ready to end this discussion click Leave, your input has been saved and you can return at any time.\n\nIf you didn't mean to leave this discussion, click cancel Stay";
 
-      // For IE6-8 and Firefox prior to version 4
-      if (e) 
-      {
-          e.returnValue = message;
-      }
+    // For IE6-8 and Firefox prior to version 4
+    if (e) {
+      e.returnValue = message;
+    }
 
-      // For Safari, IE8+ and Opera 12+
-      return message;
+    // For Safari, IE8+ and Opera 12+
+    return message;
 
-      //Chrome is not showing the message
+    //Chrome is not showing the message
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setPath(p) {
     //this.setState({ path: p});
-    if(typeof window !== 'undefined') reactSetPath(p);
+    if (typeof window !== 'undefined') reactSetPath(p);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +67,7 @@ class App extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  render () {
+  render() {
 
     const {
       item,
@@ -81,7 +78,7 @@ class App extends React.Component {
       error
     } = this.props;
 
-    let path=this.state.path;
+    let path = this.state.path;
 
     let page = (
       <Panel heading={(<h4>Not found</h4>)} id="not-found">
@@ -93,31 +90,31 @@ class App extends React.Component {
     );
 
 
-    if ( error && Object.keys(error).length ) { // falsy an empty obect is not an error
+    if (error && Object.keys(error).length) { // falsy an empty obect is not an error
       page = (
         <Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
           <section style={{ padding: 10 }}>
-            <h4 style={{ color : 'red', textAlign : 'center' }}>The system glitched :(</h4>
-            <p style={{ textAlign : 'center' }}>We have encountered an error. We apologize for any inconvenience.</p>
+            <h4 style={{ color: 'red', textAlign: 'center' }}>The system glitched :(</h4>
+            <p style={{ textAlign: 'center' }}>We have encountered an error. We apologize for any inconvenience.</p>
           </section>
         </Panel>
       );
     }
 
     else {
-      if ( path === '/' ) {
-        page = <Home user={ user } path={path} />;
+      if (path === '/') {
+        page = <Home user={user} path={path} />;
       }
 
       const paths = path.split(/\//);
 
       paths.shift();
 
-      switch ( paths[0] ) {
+      switch (paths[0]) {
         case 'page':
-          switch ( paths[1] ) {
+          switch (paths[1]) {
             case 'profile':
-              page = ( <Profile /> );
+              page = (<Profile />);
               break;
 
             case 'terms-of-service':
@@ -126,14 +123,16 @@ class App extends React.Component {
               break;
 
             case 'about':
-              page = ( <About /> );
+              page = (<About />);
               break;
 
             case 'reset-password':
               return (
-                <UserStore user={ { activation_token : paths[2] } }>
-                  <ResetPassword user={ user } />
-                </UserStore>
+                <StaticLayout>
+                  <UserStore user={{ activation_token: paths[2] }}>
+                    <ResetPassword user={user} />
+                  </UserStore>
+                </StaticLayout>
               );
               break;
 
@@ -141,42 +140,42 @@ class App extends React.Component {
           break;
 
         case 'h':
-          page = <Home user={ user } path={path} RASPRoot={'/h/'} />;
+          page = <Home user={user} path={path} RASPRoot={'/h/'} />;
           break;
-          
+
         case 'about':
-              page = ( <About /> );
-              break;
+          page = (<About />);
+          break;
 
         case 'odg':
-          if(user){
-            page=(
-                    <ODGCongrat { ...this.props }/>
-                );
-                break;
+          if (user) {
+            page = (
+              <ODGCongrat {...this.props} />
+            );
+            break;
           }
 
-          if(! this.props.panels) return(
+          if (!this.props.panels) return (
             <OnlineDeliberationGame />
           );
           const keylist3 = Object.keys(this.props.panels);
 
-          const panelId3 = keylist3[keylist3.length-1];
+          const panelId3 = keylist3[keylist3.length - 1];
 
           const panel3 = Object.assign({}, this.props.panels[panelId3].panel);
 
-          const component3=panel3.type.component || 'Subtype';
+          const component3 = panel3.type.component || 'Subtype';
 
-          return( <OnlineDeliberationGame component={component3} { ...this.props } count = { 1 } panel={ panel3 } />
-                );
+          return (<OnlineDeliberationGame component={component3} {...this.props} count={1} panel={panel3} />
+          );
 
         case 'item':
 
-          if(! this.props.panels) { break; }
+          if (!this.props.panels) { break; }
 
           const keylist = Object.keys(this.props.panels);
 
-          const panelId1 = keylist[keylist.length-1];
+          const panelId1 = keylist[keylist.length - 1];
 
           const panel = Object.assign({}, this.props.panels[panelId1].panel);
 
@@ -184,37 +183,37 @@ class App extends React.Component {
 
           //console.info("app item panel filtered", panel );
 
-          const component=panel.type.component || 'Subtype';
+          const component = panel.type.component || 'Subtype';
 
           return (
             <Layout {...this.props} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
-              <TypeComponent component={component} count = { 1 } panel={ panel } />
+              <TypeComponent component={component} count={1} panel={panel} />
             </Layout>
           );
 
         case 'i':
 
-          if(! this.props.panels) break;
+          if (!this.props.panels) break;
           else {
-            function getLastPanel(panels){
-              let keylist=Object.keys(panels);
-              let lastPanelId=keylist[keylist.length-1];
-              const panel=Object.assign({},panels[lastPanelId].panel);
+            function getLastPanel(panels) {
+              let keylist = Object.keys(panels);
+              let lastPanelId = keylist[keylist.length - 1];
+              const panel = Object.assign({}, panels[lastPanelId].panel);
               return panel;
             }
 
-            let last=getLastPanel(this.props.panels);
-            let component=last.type.component || 'Subtype';
+            let last = getLastPanel(this.props.panels);
+            let component = last.type.component || 'Subtype';
 
-          return (
-            <SmallLayout {...this.props} RASPRoot={'/i/'}  setPath={this.setPath.bind(this)}>
-              <TypeComponent component={component} count = { 1 } panel={ last } />
-            </SmallLayout>
-          );
-        }
+            return (
+              <SmallLayout {...this.props} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
+                <TypeComponent component={component} count={1} panel={last} />
+              </SmallLayout>
+            );
+          }
 
         case 'items':
-          if(! this.props.panels) { break; }
+          if (!this.props.panels) { break; }
 
           const panelId2 = Object.keys(this.props.panels)[0];
 
@@ -226,12 +225,12 @@ class App extends React.Component {
 
           //console.info("app item panel filtered", panel );
 
-          const component2=panel2.type.component || 'Subtype';
-                    //onsole.info("App.render panel2", { panel2 });
+          const component2 = panel2.type.component || 'Subtype';
+          //onsole.info("App.render panel2", { panel2 });
 
-          return(
+          return (
             <Layout {...this.props} setPath={this.setPath.bind(this)} >
-              <TypeComponent component={component2} count = { 1 } panel={ panel2 } />
+              <TypeComponent component={component2} count={1} panel={panel2} />
             </Layout>
           );
       }
@@ -239,7 +238,7 @@ class App extends React.Component {
 
     return (
       <Layout {...this.props} setPath={this.setPath.bind(this)} >
-        { page }
+        {page}
       </Layout>
     );
   }

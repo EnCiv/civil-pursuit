@@ -10,7 +10,7 @@ function getUserInfo (user, cb) {
   }
 
   User.findOne(user)
-    .then(user => cb(user.toJSON()))
+    .then(user => user ? cb(user.toJSON()) : cb({}))
     .catch(this.error.bind(this));
 }
 
