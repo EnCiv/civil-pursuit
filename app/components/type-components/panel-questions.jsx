@@ -127,7 +127,7 @@ class RASPPanelQuestions extends RASPPanelItems {
             <section>
                 <Accordion active={answeredAll && !rasp.shortId} key="done-directions" >
                     <div className='instruction-text'>
-                        {this.props.doneDirections || "Congratulations!! You have completed the community discussion.\n\nYou can use the Community button to see the overall response from the community.\n\n Be sure to come back to this discussion again to add things that you have thought of, or to check on the community response."}
+                        {this.props.doneDirections || "Congratulations!! You have completed the community discussion.\n\nYou can use the Summary button to see the overall response from the community.\n\n Be sure to come back to this discussion again to add things that you have thought of, or to check on the community response."}
                     </div>
                 </Accordion>
                 {content}
