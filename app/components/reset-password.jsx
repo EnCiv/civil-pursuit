@@ -1,6 +1,7 @@
 'use strict';
 
 import React                        from 'react';
+import ReactDOM                     from 'react-dom';
 import Form                         from './util/form';
 import EmailInput                   from './util/email-input';
 import TextInput                    from './util/text-input';
@@ -40,9 +41,9 @@ class ResetPassword extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   save () {
-    const password            =   this.refs.password;
-    const confirmPassword     =   this.refs.confirmPassword;
-    const resetKey            =   this.refs.reset;
+    const password            =   ReactDOM.findDOMNode(this.refs.password);
+    const confirmPassword     =   ReactDOM.findDOMNode(this.refs.confirmPassword);
+    const resetKey            =   ReactDOM.findDOMNode(this.refs.reset);
     console.info("reset-password save");
     this.setState({ validationError : null });
 
