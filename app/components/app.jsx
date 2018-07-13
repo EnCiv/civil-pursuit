@@ -130,7 +130,7 @@ class App extends React.Component {
               break;
 
             case 'reset-password':
-              page = (
+              return (
                 <UserStore user={ { activation_token : paths[2] } }>
                   <ResetPassword user={ user } />
                 </UserStore>
