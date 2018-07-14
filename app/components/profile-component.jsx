@@ -17,6 +17,7 @@ import Race from './race';
 import GunType from './gun-type';
 import StartingBlocType from './starting-bloc-type';
 import GenderIdentity from './gender-identity';
+import StartingBlocRace from './starting-bloc-race';
 
 /**
  * ComponentName.collectionName.infoPropertyName.Title
@@ -60,7 +61,8 @@ class ProfileComponent extends React.Component {
         'Race': Race,
         'GunType': GunType,
         'StartingBlocType': StartingBlocType,
-        'GenderIdentity': GenderIdentity
+        'GenderIdentity': GenderIdentity,
+        'StartingBlocRace': StartingBlocRace
     }
 
     static title(component) {

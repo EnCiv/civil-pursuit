@@ -20,7 +20,8 @@
     "member_type",
     "starting_bloc_type",
     "gun_type",
-    "year_of_birth"
+    "year_of_birth",
+    "starting_bloc_race"
   ],
 
   "profile": {

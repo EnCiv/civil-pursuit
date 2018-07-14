@@ -100,7 +100,9 @@ class Schema extends Mungo.Model {
 
       "street_address"    :     Mungo.Mixed,
 
-      "gender_identity"   :     Mungo.Mixed
+      "gender_identity"   :     Mungo.Mixed,
+
+      "starting_bloc_race":     Mungo.Mixed
     };
   }
 }

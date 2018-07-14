@@ -183,9 +183,12 @@ class Identity extends React.Component {
           <SelectorRow name="Gender">
             <Gender info={user} onChange={this.setUserInfo.bind(this)}/>
           </SelectorRow>
-          <SelectorRow name="Gender Identity">
-            <GenderIdentity info={user} onChange={this.setUserInfo.bind(this)}/>
-          </SelectorRow>
+          { user.gender_identity ? 
+            (<SelectorRow name="Gender Identity">
+              <GenderIdentity info={user} onChange={this.setUserInfo.bind(this)}/>
+            </SelectorRow>)
+            : null
+          }
         </section>
 
       </section>
