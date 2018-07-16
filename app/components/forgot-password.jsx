@@ -2,19 +2,13 @@
 
 import React          from 'react';
 import ReactDOM       from 'react-dom';
-import superagent     from 'superagent';
 import Component      from '../lib/app/component';
 import Modal          from './util/modal';
 import Form           from './util/form';
-import Button         from './util/button';
 import Submit         from './util/submit';
-import ButtonGroup    from './util/button-group';
-import Icon           from './util/icon';
-import Link           from './util/link';
 import Row            from './util/row';
 import Column         from './util/column';
 import EmailInput     from './util/email-input';
-import Password       from './util/password';
 import Loading        from './util/loading';
 
 class ForgotPassword extends React.Component {
@@ -35,7 +29,7 @@ class ForgotPassword extends React.Component {
 
     let email = ReactDOM.findDOMNode(this.refs.email).value;
 
-    window.socket.emit('send password', email, response => {
+    window.socket.emit('send password', email, null, response => {
       if ( response.error ) {
         let { error } = response;
 

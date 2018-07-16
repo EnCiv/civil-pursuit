@@ -233,7 +233,7 @@ class JoinForm extends React.Component {
 
     let email = ReactDOM.findDOMNode(this.refs.email).value;
 
-    window.socket.emit('send password', email, response => {
+    window.socket.emit('send password', email, window.location.pathname, response => {
       if ( response.error ) {
         let { error } = response;
 

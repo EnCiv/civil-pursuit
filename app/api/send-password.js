@@ -5,13 +5,14 @@ import User               from '../models/user';
 import sendEmail          from '../lib/app/send-email';
 import secret             from '../../secret.json';
 
-function sendPassword (email, cb) {
+function sendPassword (email, return_to, cb) {
   const { host } = this.handshake.headers;
 
   function emailBody (key, token) {
+    const tail=token+(return_to||'');
     return secret['forgot password email']
       .replace(/\{key\}/g, key)
-      .replace(/\{url\}/g, `http://${host}/page/reset-password/${token}`);
+      .replace(/\{url\}/g, `http://${host}/page/reset-password/${tail}`);
   }
 
   new Promise((pass, fail) => {

@@ -63,7 +63,7 @@ class ResetPassword extends React.Component {
         .then(
           () => {
             this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
-            setTimeout(() => location.href = '/page/profile', 800);
+            setTimeout(() => location.href = this.props.return_to || '/page/profile', 800);
           },
           ko => this.setState({ validationError : 'Wrong email', info: null })
         );
@@ -81,6 +81,8 @@ class ResetPassword extends React.Component {
   render () {
     console.info("reset-password render");
     let content = ( <Loading message="Getting user info" /> );
+
+    const {activation_token}=this.props;
 
     if ( this.props.user ) {
       if(!this.props.user.email) // no user info
@@ -118,6 +120,7 @@ class ResetPassword extends React.Component {
               required
               ref                         =   "reset"
               name                        =   "reset"
+              defaultValue                = {activation_token}
               placeholder                 =   "Your reset key"
             />
 

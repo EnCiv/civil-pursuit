@@ -13,7 +13,7 @@ function randomString (size) {
         let i = 0;
 
         while ( str.length < size ) {
-          if ( token[i] !== '/' ) {
+          if ( token[i] !== '/' && token[i] !== '+') {
             str += token[i];
           }
 

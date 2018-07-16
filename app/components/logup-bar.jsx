@@ -28,8 +28,24 @@ class Logup extends React.Component {
         Login.signIn(email,this.props.user.tempid)
         .then(
             () => {
-                this.setState({ validationError : null, successMessage : 'Welcome' });
-                setTimeout(() => location.href = window.location.pathname, 800); 
+                this.setState({ validationError : null, successMessage : 'Welcome, sending password reset email' });
+                setTimeout(()=>{
+                    window.socket.emit('send password', email, window.location.pathname, response => {
+                        if ( response.error ) {
+                          let { error } = response;
+                  
+                          if ( error === 'User not found' ) {
+                            error = 'Email not found';
+                          }
+                  
+                          this.setState({ info : null, validationError : error });
+                        }
+                        else {
+                          this.setState({ info : null, successMessage : 'Message sent! Please check your inbox' });
+                        }
+                        setTimeout(() => location.href = window.location.pathname, 800); 
+                      });
+                },800);
             },
             error => {
                 this.setState({ validationError : error.message })

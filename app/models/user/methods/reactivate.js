@@ -5,7 +5,7 @@ import randomString from '../../../lib/util/random-string';
 
 function reactivate () {
   return sequencer.pipe(
-    ()        =>  Promise.all([randomString(8), randomString(8)]),
+    ()        =>  Promise.all([randomString(12), randomString(12)]),
     results   =>  Promise.all([
       this.set({ activation_key : results[0] }).save(),
       this.set({ activation_token : results[0] }).save()

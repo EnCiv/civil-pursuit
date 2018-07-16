@@ -127,10 +127,13 @@ class App extends React.Component {
               break;
 
             case 'reset-password':
+              let return_to= '';
+              for(let i=3; i<paths.length; i++)
+                return_to+='/'+paths[i];
               return (
                 <StaticLayout>
                   <UserStore user={{ activation_token: paths[2] }}>
-                    <ResetPassword user={user} />
+                    <ResetPassword activation_token={paths[2]} return_to={return_to}/>
                   </UserStore>
                 </StaticLayout>
               );
