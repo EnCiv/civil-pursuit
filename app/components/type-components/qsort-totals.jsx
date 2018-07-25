@@ -25,7 +25,7 @@ export class QSortTotals extends React.Component {
                         active={true}
                         style={style}
                     >
-                        <PanelStore parent={parent} type={type} limit={limit} >
+                        <PanelStore parent={parent} type={type} limit={100} >
                             <QSortTotalsPanel {...this.props} type={this.props.type} />
                         </PanelStore>
                     </Accordion>
