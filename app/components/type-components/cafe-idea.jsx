@@ -116,7 +116,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem active={this.state.ideaCount>= (minIdeas >= 0 ? minIdeas : (parent.answerCount > 0 ? 0 : 1 ))} 
-                    message={minIdeas ? "Continue" : "Continue without contributing an additional idea."} 
+                    message={this.state.ideaCount>0 ? "Continue" : "Continue without contributing an additional idea."} 
                     onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})} 
                 />
             </section>
