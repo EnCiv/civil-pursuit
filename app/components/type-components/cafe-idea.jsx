@@ -8,6 +8,11 @@ import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
 import DoneItem from '../done-item';
 
+/**
+ * minIdea - the number of ideas required to get the done button. if negative then an answer is required unless parent.answerCount is greater than one
+ * maxIdeas - the number of idea input boxes to show
+ * 
+ */
 
 
 Number.prototype.map = function(f){
@@ -110,7 +115,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                         {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
-                <DoneItem active={this.state.ideaCount>= minIdeas} 
+                <DoneItem active={this.state.ideaCount>= (minIdeas >= 0 ? minIdeas : (parent.answerCount > 0 ? 0 : 1 ))} 
                     message={minIdeas ? "Continue" : "Continue without contributing an additional idea."} 
                     onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})} 
                 />
