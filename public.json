@@ -1,4 +1,8 @@
 {
+  "dbDefaults":{
+    "limit": 10
+  },
+
   "noIdUserProps": [
     "activation_key",
     "race",

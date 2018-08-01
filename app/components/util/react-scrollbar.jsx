@@ -297,19 +297,10 @@ class ScrollWrapper extends React.Component {
 
 
   normalizeVertical(nextPos, nextState) {
-    // Vertical Scrolling
-    // Max Scroll Down
-    // Max Scroll Up
-    let extent=this.props.extent;
-    const lowerEnd = this.state.scrollAreaHeight-(this.state.scrollWrapperHeight-extent); /*- this.state.scrollWrapperHeight*/;
-    let next;
-    if(lowerEnd <0)
-      next = 0; /*trim(Math.max(-lowerEnd,this.state.topBarHeight-extent), -extent, nextPos);*/
-    else
-      next = -trim(extent, -lowerEnd, -nextPos);
-
+    let extent=this.props.extent || 0;
+    let next=this.clampTop(nextPos+this.state.topBarHeight, this.state, extent);
     // Update the Vertical Value
-    this.htmlElement.style.top=(-next)+this.state.topBarHeight+'px';
+    this.htmlElement.style.top=(-next)+'px';
     this.setState({
       top: next,
       vMovement: (next / this.state.scrollAreaHeight) * 100,
@@ -349,6 +340,23 @@ class ScrollWrapper extends React.Component {
     this.setState({ dragging: false });
   }
 
+  /**
+   * clampTop
+   * 
+   * top is a positive number (the negative of html.style.top) that represents the number of pixels above the viewport that the scrollable area starts rendering
+   * es is element size object with
+   * extent is the number of pixels extra that can be visible below the bottom or above the top of the scrollable area
+   */
+
+  clampTop(top, es, extent){
+    var newTop=Math.max(-(es.topBarHeight+extent),top); // how far below the top of the viewport and the top of the scrollable area go
+    if(es.scrollAreaHeight<(es.topBarHeight+es.scrollWrapperHeight)) // scroll area is smaller than viewport
+      newTop=Math.min(0,newTop); // how far above the top of the viewport can the top of the scrollable area go (0)
+    else // scroll area is bigger than viewport
+      newTop=Math.min(es.scrollAreaHeight-es.topBarHeight-es.scrollWrapperHeight+extent,newTop); 
+    return newTop;
+  }
+
   calculateSize(cb) {
     const elementSize = this.getSize();
 
@@ -359,8 +367,7 @@ class ScrollWrapper extends React.Component {
       // Set the State!
       let top=this.state.top;
       let extent=this.props.extent;
-      if(top <= -(elementSize.scrollAreaHeight-extent)) top=-(elementSize.scrollAreaHeight-extent);
-      if(top >= (elementSize.scrollWrapperHeight-extent)) top=elementSize.scrollWrapperHeight-extent;
+      top=this.clampTop(top,elementSize,extent)
       this.setState({
         top,
 

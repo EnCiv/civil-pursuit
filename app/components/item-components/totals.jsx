@@ -3,13 +3,9 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
-import TypeComponent from '../type-component';
-import config from '../../../public.json';
-import PanelStore from '../store/panel';
-import QSortFinale from '../type-components/qsort-finale';
 import QSortButtonList from '../qsort-button-list';
+import QSortItemsSummary from '../type-components/qsort-items-summary'
 
 exports.button = class TotalsButton extends React.Component {
     donothing() {
@@ -57,11 +53,10 @@ exports.button = class TotalsButton extends React.Component {
 }
 
 exports.panel = class TotalsPanel extends React.Component {
-    state = {typeList: null};
     mounted = false;
     render() {
         const { active, style, item, rasp } = this.props;
-        const panelType=this.props.type || this.props.item.subtype; // might be passed as part of the button definition
+        const type=this.props.type || this.props.item.subtype; // might be passed as part of the button definition
         if(!this.props.user) return null; // no panel if user not logged in
         if ((this.mounted === false && active === false)) return null; // don't render this unless it's active, or been rendered before
         else {
@@ -74,12 +69,7 @@ exports.panel = class TotalsPanel extends React.Component {
                         active={active}
                         style={style}
                     >
-                        <PanelStore parent={this.props.item}
-                            type={panelType}
-                            limit={100} >
-                            <TotalsPanelShared {...this.props} >
-                            </TotalsPanelShared>
-                        </PanelStore>
+                        <QSortItemsSummary parent={this.props.item} type={type} qbuttons={this.props.qbuttons || QSortButtonList} rasp={rasp} />
                     </Accordion>
                 </div>
             )
@@ -87,13 +77,3 @@ exports.panel = class TotalsPanel extends React.Component {
     }
 }
 
-class TotalsPanelShared extends React.Component {
-    render() {
-        var sections={};
-        let qbuttons=this.props.qbuttons || QSortButtonList;
-        Object.keys(qbuttons).forEach(s=>sections[s]=[]);
-        return (
-            <QSortFinale {...this.props} shared={{ items: this.props.panel && this.props.panel.items, sections }} />
-        )
-    }
-}
