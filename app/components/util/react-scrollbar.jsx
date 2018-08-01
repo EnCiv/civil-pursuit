@@ -72,7 +72,7 @@ class ScrollWrapper extends React.Component {
     var start=null;
     var last=null;
     var that=this;
-    var extent=this.props.extent;
+    var extent=this.props.extent || 0;
 
     function stepper(now){
       if(!start) {
@@ -298,7 +298,7 @@ class ScrollWrapper extends React.Component {
 
   normalizeVertical(nextPos, nextState) {
     let extent=this.props.extent || 0;
-    let next=this.clampTop(nextPos+this.state.topBarHeight, this.state, extent);
+    let next=this.clampTop(nextPos, this.state, extent);
     // Update the Vertical Value
     this.htmlElement.style.top=(-next)+'px';
     this.setState({
@@ -366,7 +366,7 @@ class ScrollWrapper extends React.Component {
         elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
       // Set the State!
       let top=this.state.top;
-      let extent=this.props.extent;
+      let extent=this.props.extent || 0;
       top=this.clampTop(top,elementSize,extent)
       this.setState({
         top,
