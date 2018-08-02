@@ -55,7 +55,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
         <div id="fb-root"></div>
           <SiteFeedback />
           <LogupBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}} />
-          <ReactScrollBar style={myScrollbar} topBar={this.topBar} extent={40}>
+          <ReactScrollBar style={myScrollbar} topBar={this.topBar} extent={0}>
               <div className="should-have-a-chidren scroll-me">
                   <section role="main">
                   { React.Children.map(React.Children.only(children), child=>{
