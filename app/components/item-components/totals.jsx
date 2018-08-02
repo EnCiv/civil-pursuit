@@ -16,14 +16,18 @@ exports.button = class TotalsButton extends React.Component {
         const { active, item, requireAnswered } = this.props;
         var inactive=false;
 
-        if(requireAnswered && typeof item.answeredAll !== 'undefined') {
-            inactive=!item.answeredAll;
+        if( requireAnswered >1 && item.answeredAll )  {
+            inactive=true;
+        } 
+
+        if(requireAnswered===1 && item.answerCount) {
+            inactive=true;
         } 
         const buttonName = this.props.buttonName || "Totals";
         const buttonTitle = this.props.buttonTitle || {
-            active: "See the community totals",
+            active: "See the community summary",
             success: "Return to the higher level of this discusion",
-            inactive: "You need to participate before you can see the totals"
+            inactive: "Answer the question to see the summary - we need your fresh unbiased thinking"
         };
         var number = ' ';
         var success = false;
