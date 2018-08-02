@@ -207,7 +207,8 @@ class App extends React.Component {
 
             let last = getLastPanel(this.props.panels);
             let component = last.type.component || 'Subtype';
-
+            if(typeof document !== 'undefined' && last.items && last.items[0] && last.items[0].subject )
+              document.title=last.items[0].subject;
             return (
               <SmallLayout {...this.props} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
                 <TypeComponent component={component} count={1} panel={last} />
