@@ -52,7 +52,7 @@ class ScrollWrapper extends React.Component {
       this.htmlElement.style.position='fixed';
       this.htmlElement.style.overflowX='hidden';
       this.htmlElement.style.transition=null;
-      this.htmlElement.style.top=this.state.top+'px';
+      this.htmlElement.style.top= -this.state.top+'px';
       window.Synapp.ScrollFocus=this.ScrollFocus.bind(this);
       this.scrollWrapper=this.htmlElement; //using the root as the wrapper
     } else 
@@ -137,10 +137,12 @@ class ScrollWrapper extends React.Component {
     this.scrollWrapper.addEventListener('transitionend', this.transitionEnd, {passive: true});
     this.observer = new MutationObserver(this.mutations.bind(this));
     this.banerObserver= new MutationObserver(this.topMutations.bind(this));
+    if(this.scrollArea) this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true });
+    if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true});
   }
 
   componentDidUpdate() {
-    this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true });
+    if (this.scrollArea) this.observer.observe(this.scrollArea, { attributes: true , childList: true , subtree: true });
     if(this.props.topBar) this.banerObserver.observe(this.props.topBar, {attirbutes: true, childList: true, subtree: true});
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,8 +178,14 @@ class ScrollWrapper extends React.Component {
 
 // changes: update scrollbars when parent resizing
   componentWillReceiveProps(newProps) {
-    if(newProps.topBar){
+    if(this.topBar !== newProps.topBar){
        this.topBar=newProps.topBar;
+
+       // no need to call set state here - we will rerender because of new props
+       this.state.topBarHeight= (this.topBar && this.topBar.getBoundingClientRect().height) || 0;
+       this.state.top=this.state.top-this.state.topBarHeight;
+       this.htmlElement.style.top= -this.state.top+'px';
+
        this.banerObserver.observe(this.topBar, {attirbutes: true, childList: true, subtree: true});
     }
     //this.updateSize();
@@ -363,10 +371,13 @@ class ScrollWrapper extends React.Component {
     if (elementSize.scrollWrapperHeight !== this.state.scrollWrapperHeight ||
         elementSize.scrollWrapperWidth !== this.state.scrollWrapperWidth ||
         elementSize.scrollAreaHeight !== this.state.scrollAreaHeight ||
-        elementSize.scrollAreaWidth !== this.state.scrollAreaWidth) {
+        elementSize.scrollAreaWidth !== this.state.scrollAreaWidth ||
+        elementSize.topBarHeight !== this.state.topBarHeight) {
       // Set the State!
       let top=this.state.top;
       let extent=this.props.extent || 0;
+      if(elementSize.topBarHeight !== this.state.topBarHeight) 
+          top=top-(elementSize.topBarHeight-this.state.topBarHeight)
       top=this.clampTop(top,elementSize,extent)
       this.setState({
         top,

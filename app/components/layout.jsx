@@ -25,6 +25,7 @@ class RASPLayout extends ReactActionStatePathClient {
   constructor(props) {
     super(props, 'key');  // itemId is the key for indexing to child RASP functions
     this.createDefaults();
+    this.getTopBar=this.getTopBar.bind(this)
   }
 
   actionToState(action, rasp, source, defaultRASP, delta) {
@@ -41,8 +42,17 @@ class RASPLayout extends ReactActionStatePathClient {
 
   segmentToState=undefined; // explicitly there is no segmentToState function here. 
 
+  getTopBar(e){
+    if(e){
+      let topBar=e.getBannerNode();
+      if(this.topBar!==topBar) {
+        this.topBar=topBar;
+        this.forceUpdate();
+      }
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  topBar=null;
 
   render () {
     const { user, setPath } = this.props;
@@ -52,7 +62,7 @@ class RASPLayout extends ReactActionStatePathClient {
     return (
       <section>
         <div id="fb-root"></div>
-        <TopBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}}/>
+        <TopBar {...lessProps} ref={this.getTopBar}/>
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
             <div className="should-have-a-chidren scroll-me">
               <section role="main">
