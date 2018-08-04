@@ -444,7 +444,7 @@ class ScrollWrapper extends React.Component {
       const nextX = this.state.left + scrollX;
 
       // Is it Scrollable?
-      const canScrollY = (this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
+      const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
       const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
 
       // changes: Set scrolling state before changing position
