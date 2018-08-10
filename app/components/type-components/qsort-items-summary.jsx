@@ -26,7 +26,7 @@ const styles = cssInJS({
     "synLoadMoreButton:hover": {
         'background-color': '#e0eff'
     }
-})
+});
 
 export default class QSortItemsSummary extends React.Component {
     state = { type: null, limit: publicConfig.dbDefaults.limit };

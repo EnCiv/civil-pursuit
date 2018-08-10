@@ -16,7 +16,20 @@ class RandomItemStore extends React.Component {
     const limit=this.props.shared.limit || this.props.limit || publicConfig.limit;
     this.state={parent, type, limit, items: [], index: {}, sections: {unsorted: []}};
     this.id=makePanelId(this.state);
-    window.socket.emit('get random items', this.state, this.props.sampleSize || 8, this.okGetRandomItems.bind(this));
+    window.socket.emit('get random items', this.state, this.props.sampleSize || 8, this.okGetRandomItemsAndInit.bind(this));
+  }
+
+  okGetRandomItemsAndInit(panel){
+    if ( makePanelId(panel) === this.id ) {
+      // add the initial items to the list of random items, at the end
+      this.props.items && this.props.items.forEach(itm=>{
+        let next=panel.items.length;
+        panel.items[next]=itm; // push this on the end
+        panel.index[itm._id]=next;
+        panel.sections.unsorted.push(itm._id);
+      });
+      this.setState({ ...panel });
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

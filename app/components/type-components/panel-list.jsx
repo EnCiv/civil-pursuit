@@ -45,13 +45,10 @@ class RASPPanelList extends ReactActionStatePathMulti {
     var panelStatus = this.panelStatus;
     if (action.type === "NEXT_PANEL") {
       const { currentPanel, status = 'done', results } = action;
-      var currentPanel = currentPanel;
-      let newStatus = false;
-      if (panelStatus[currentPanel] !== status) { panelStatus[currentPanel] = status; newStatus = true }
+      if (panelStatus[currentPanel] !== status) { panelStatus[currentPanel] = status; }
       if (status !== 'done' && currentPanel < (panelStatus.length - 1)) {  // if the panel is not done, mark all existing forward panels as that
-        for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; newStatus = true }
+        for (let i = currentPanel + 1; i < panelStatus.length; i++) if (panelStatus[i] !== status) { panelStatus[i] = status; }
       }
-      //if (newStatus) this.panelStatus=panelStatus;
       if (results) Object.assign(this.shared, results);
       // advance to next panel if this was called by the current panel and it is done - other panels might call this with done
       if (status === 'done' && currentPanel === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
@@ -60,9 +57,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
       }
     } else if (action.type === "RESULTS") {
       const { currentPanel, results } = action;
-      let newStatus = false;
-      if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; newStatus = true }
-      //if (newStatus) this.panelStatus=panelStatus;
+      if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; }
       if (results) Object.assign(this.shared, results);
       if (this.waitingOnResults && this.waitingOnResults.nextFunc) {
         var nextFunc = this.waitingOnResults.nextFunc;
@@ -282,7 +277,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
                 color: active ? "#fff" : visible ? "#000" : null
               }}
               key={type.name + '-' + i}>
-              {type.name}
+              {(i+1)+': '+type.name}
             </button>
           )
         })

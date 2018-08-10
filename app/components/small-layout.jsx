@@ -63,7 +63,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
                       Object.keys(child.props).forEach(prop=>delete newProps[prop]);
                       return React.cloneElement(child, newProps, child.props.children)
                   })}
-                  <Footer />
+                  <Footer user={this.props.user} />
                   </section>
               </div>
           </ReactScrollBar>

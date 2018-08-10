@@ -290,7 +290,7 @@ class OnlineDeliberationGame extends React.Component {
                             <TypeComponent {...this.props} vs={this.state.vs} newLocation="/odg" />
                         </div>
                     </section>
-                    <Footer />
+                    <Footer user={this.props.user}/>
                 </section>
             );
         return (page);

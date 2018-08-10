@@ -9,6 +9,7 @@ import ProfileComponent from '../profile-component';
 import Row from '../util/row';
 import Column from '../util/column';
 import DoneItem from '../done-item';
+import LoginSpan from '../login-span';
 
 
 
@@ -161,7 +162,8 @@ class ProfilePanel extends React.Component {
 
         if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
             content = [
-                <div className='item-profile-panel' style={{ maxWidth: "30em", margin: "auto", padding: "1em" }} key='content'>
+                <div className='item-profile-panel' style={{ maxWidth: "30em", margin: "auto", padding: "1em 0" }} key='content'>
+                    <LoginSpan />
                     {profiles.map(component => {
                         var title = ProfileComponent.title(component);
                         return (
@@ -192,8 +194,8 @@ export default ProfilePanel;
 class SelectorRow extends React.Component {
     render() {
         return (
-            <div className='item-profile-panel' style={{ maxWidth: "30em", margin: "auto", padding: "1em" }}>
-                <Row baseline className="gutter">
+            <div className='item-profile-panel' style={{ maxWidth: "30em", margin: "auto", padding: "1em 0"}}>
+                <Row baseline style={{padding: "1em 0"}}>
                     <Column span="25">
                         {this.props.name}
                     </Column>

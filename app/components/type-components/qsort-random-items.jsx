@@ -35,13 +35,14 @@ class QSortRandomItems extends React.Component {
         const panelType=this.props.type;
         const randomType=this.props.shared.type;
         const randomParent=this.props.shared.parent;
+        const randomItems=this.props.shared.items;
 
         if (this.getHarmony && !this.state.typeList)
             return null;
         else
             return (
                 <ReactActionStatePath {...this.props} >
-                    <RandomItemStore type={randomType} parent={randomParent}>
+                    <RandomItemStore type={randomType} parent={randomParent} items={randomItems}>
                         <RASPFocusHere filterTypes={['FOCUS_STATE']}>
                             <PanelHeading type={panelType} cssName={'syn-qsort-random-items'} panelButtons={['Creator', 'Instruction']}>
                                 <RASPQSortItems />

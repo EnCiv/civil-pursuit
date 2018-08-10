@@ -71,7 +71,7 @@ class RASPLayout extends ReactActionStatePathClient {
                       Object.keys(child.props).forEach(prop=>delete newProps[prop]);
                       return React.cloneElement(child, newProps, child.props.children)
                   })}
-                <Footer />
+                <Footer user={user}/>
               </section>
             </div>
         </ReactScrollBar>

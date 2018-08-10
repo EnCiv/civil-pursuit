@@ -37,7 +37,7 @@ class CafeIdea extends React.Component {
 }
 
 class RASPCafeIdea extends ReactActionStatePathClient {
-    state={ideaCount: 0};
+    ideaState={}; // tracking the state of children
 
     constructor(props) {
         super(props, 'ideaNum',0);
@@ -48,11 +48,15 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     actionToState(action, rasp, source, initialRASP, delta) {
+        const ideaCount=()=>{  // the number of ideas posted less those being edited
+            return Object.keys(this.ideaState).length-Object.keys(this.ideaState).reduce((a,k)=>(a + (this.ideaState[k].posted ? 0 : 1)),0);
+        }
         var nextRASP = {};
         if (action.type === "POST_ITEM") {
             let item = action.item;
             let shared = this.props.shared;
             var results = { idea: item, parent: this.props.parent, type: this.props.type };
+            this.ideaState[action.ideaNum]={posted: true, item};
             if (shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
                 shared.items.push(item);
                 results.items = shared.items;
@@ -64,10 +68,9 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 results.index = shared.index;
                 if(mostSection) window.socket.emit('insert qvote', { item: item._id, criteria: mostSection });  // the most important criteria
             }
-            let ideaCount=this.state.ideaCount+1;
+            delta.ideaCount=ideaCount();
             if(this.props.minIdeas===0)
                 setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }));
-            this.setState({ideaCount});
             // no state change, the action will be consumed here
         } else if (action.type === "DESCENDANT_FOCUS") {
             if (this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
@@ -75,6 +78,11 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                     delta.decendantFocus = true;
                 }
             }
+            if(action.distance===2 && action.button==='Edit'){
+            // user is editing something already posted
+                this.ideaState[action.ideaNum].posted=false;
+                delta.ideaCount=ideaCount();
+            }            
         } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
             if (rasp.decendantFocus) delta.decendantFocus = false;  // my child has unfocused
         } else if(Object.keys(delta).length){
@@ -105,8 +113,15 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     render() {
 
         const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1 } = this.props;
-        let nIdeas=Math.min(Math.max(this.state.ideaCount+2,numIdeas),maxIdeas);
-
+        let ideaCount=rasp.ideaCount || 0;
+        let nIdeas=Math.min(Math.max(ideaCount+2,numIdeas),maxIdeas);
+        let constraints=[];
+        let needed = -(ideaCount - (minIdeas >= 0 ? minIdeas : parent.answerCount>0 ? 0 : 1));
+        if(needed===1) constraints.push("One more to continue");
+        else if(needed > 1) constraints.push(needed+" more to continue");
+        let editing=Object.keys(this.ideaState).reduce((a,k)=>(a+(this.ideaState[k].posted ? 0 : 1)), 0);
+        if(editing === 1) constraints.push("One item waiting to be posted");
+        else if(editing > 1) constraints.push(editing+" items waiting to be posted");
         return (
             <section id="syn-cafe-idea">
                 <div className="syn-cafe-idea" key='idea'>
@@ -115,9 +130,10 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                         {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
-                <DoneItem active={this.state.ideaCount>= (minIdeas >= 0 ? minIdeas : (parent.answerCount > 0 ? 0 : 1 ))} 
-                    message={this.state.ideaCount>0 ? "Continue" : "Continue without contributing an additional idea."} 
-                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {}})} 
+                <DoneItem active={!constraints.length} 
+                    constraints={constraints}
+                    message={ideaCount>0 ? "Continue" : "Continue without contributing an additional idea."} 
+                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {items: Object.keys(this.ideaState).map(k=>this.ideaState[k].item)}})} 
                 />
             </section>
         );
