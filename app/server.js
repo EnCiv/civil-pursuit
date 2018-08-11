@@ -456,14 +456,14 @@ class HttpServer extends EventEmitter {
 
                       req.panels[panelId].active = `${ancestor._id}-subtype`;
                     });
+                    next();
+                  }, next);
+                } else {
+                  req.panels[makePanelId(item)] = makePanel(item);
 
-                  });
+                  req.panels[makePanelId(item)].panel.items.push(item);
+                   next();
                 }
-                req.panels[makePanelId(item)] = makePanel(item);
-
-                req.panels[makePanelId(item)].panel.items.push(item);
-
-                next();
               },
               next
             );
