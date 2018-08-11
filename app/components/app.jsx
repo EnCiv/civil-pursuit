@@ -131,10 +131,8 @@ class App extends React.Component {
               for(let i=3; i<paths.length; i++)
                 return_to+='/'+paths[i];
               return (
-                <StaticLayout>
-                  <UserStore user={{ activation_token: paths[2] }}>
-                    <ResetPassword activation_token={paths[2]} return_to={return_to}/>
-                  </UserStore>
+                <StaticLayout {...this.props}>
+                  <ResetPassword activation_token={paths[2]} return_to={return_to}/>
                 </StaticLayout>
               );
               break;

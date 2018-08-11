@@ -204,6 +204,7 @@ class HttpServer extends EventEmitter {
     this.getBrowserConfig();
     this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
     if ( process.env.NODE_ENV === 'production' ) this.httpToHttps();
+    this.resetPassword(); // before /page/:page
     this.getLandingPage();
     this.getUIMPath();
     this.getOldfield();
@@ -213,6 +214,8 @@ class HttpServer extends EventEmitter {
     this.getPanelPage();
     this.getODG();
     this.getMarkDown();
+
+    this.app.get('/page/:page', serverReactRender.bind(this));
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -289,8 +292,6 @@ class HttpServer extends EventEmitter {
           next();
         },
         serverReactRender.bind(this));
-
-      this.app.get('/page/:page', serverReactRender.bind(this));
     }
     catch ( error ) {
       this.emit('error', error);
@@ -605,6 +606,29 @@ class HttpServer extends EventEmitter {
         next(error);
       }
     }, serverReactRender.bind(this));
+  }
+
+  resetPassword(){
+    this.app.get(['/page/reset-password/:token','/page/reset-password/:token/*'], (req, res, next) => {
+      try{
+        if(req.params.token){
+          User.findOne({activation_token: req.params.token}).then(user=>{
+              if(user && user._id){
+                req.user=user.toJSON();
+                req.cookies.synuser={id: req.user._id, email: req.user.email} // passing the activation key also
+                req.activation_key=user.activation_key;
+                setUserCookie(req,res,next);
+              }else
+                next();
+            },
+            (error)=>{console.info("resetPassord found error",error); next(error)}
+          )
+        }
+      }
+      catch(error){
+        next(error);
+      }
+    },serverReactRender.bind(this))
   }
 
   cdn () {

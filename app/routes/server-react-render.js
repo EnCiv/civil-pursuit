@@ -27,13 +27,13 @@ function serverReactRender (req, res, next) {
       }
     }
     
-    let isIn=null;
+    let user=null;
 
     if ( req.cookies && req.cookies.synuser ) {
-        isIn = req.cookies.synuser;
+        user = req.cookies.synuser;
 
-        if ( typeof isIn === 'string' ) {
-          isIn = JSON.parse(isIn);
+        if ( typeof user === 'string' ) {
+          user = JSON.parse(user);
         } 
     }
 
@@ -44,7 +44,8 @@ function serverReactRender (req, res, next) {
       panel           :   JSON.parse(JSON.stringify(req.panel || null)),
       panels          :   JSON.parse(JSON.stringify(req.panels || null)),
       ready           :   false,
-      user            :   isIn,
+      user            :   user,
+      activation_key  :   req.activation_key,
       notFound        :   req.notFound,
       error           :   res.locals.error,
       browserConfig   :   JSON.parse(JSON.stringify(this.browserConfig || null))

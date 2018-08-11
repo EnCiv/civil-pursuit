@@ -30,7 +30,7 @@ class ResetPassword extends React.Component {
     super(props);
 
     this.state = {
-      validationError   : null,
+      validationError   : (this.props.activation_token && this.props.activation_token === this.props.activation_key) ? null : "Reset Key Not Valid",
       successMessage    : null,
       info              : null
     };
@@ -52,28 +52,19 @@ class ResetPassword extends React.Component {
       return;
     }
 
-    if ( resetKey.value !== this.props.user.activation_key ) {
+    if ( resetKey.value !== this.props.activation_key ) {
       this.setState({ validationError : 'Wrong reset key' });
       return;
     }
 
-    this.props.actions['reset password'](password.value, user => {
-      Login
-        .signIn(this.props.user.email, password.value)
-        .then(
-          () => {
-            this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
-            setTimeout(() => location.href = this.props.return_to || '/page/profile', 800);
-          },
-          ko => this.setState({ validationError : 'Wrong email', info: null })
-        );
-    });
-
-    this.setState({ info : 'Resetting your password' });
-
-    // window.Dispatcher.on('password reset', () => {
-
-    // });
+    this.setState({info: 'Resetting your password'}, ()=>{
+      window.socket.emit('reset password', this.props.activation_key, resetKey.value, password.value, (result)=>{
+        this.setState({ validationError : null, info: null, successMessage : 'Welcome back' }, ()=>{
+          setTimeout(() => location.href = this.props.return_to || '/page/profile', 800);
+        });
+      })
+    })
+    
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,14 +79,14 @@ class ResetPassword extends React.Component {
       if(!this.props.user.email) // no user info
         return (
           <Panel title="Reset Password">
-            <span>Invalid key</span>
+            <span>Missing email</span>
           </Panel>
         );
       let formContents;
 
       if ( ! this.state.info && ! this.state.successMessage ) {
         formContents = (
-          <div>
+          <div style={{maxWidth: "30em", margin: 'auto'}}>
             <h3 className="text-center">Your email</h3>
 
             <EmailInput
