@@ -27,7 +27,7 @@ const styles=cssInJS({
         width: '75%'
     },
     submit: {
-        display: 'inline-block',
+        display: 'table-cell',
         overflow: 'hidden',
         'text-overflow': 'clip',
         width: '25%'
@@ -46,16 +46,16 @@ const styles=cssInJS({
         display: 'inline-block'
     },
     intro: {
-        display: 'table-row'
+        display: 'block',
+        'text-align': 'left',
+        'padding-bottom': '.5em'
     },
     info: {
-        display: 'table-row',
         overflow: 'hidden',
         'text-overflow': 'clip',
         'text-align': 'left'
     },
     error: {
-        display: 'table-row',
         color: 'red',
         overflow: 'hidden',
         'text-overflow': 'clip',
@@ -65,11 +65,14 @@ const styles=cssInJS({
         'border-color': 'gray',
         'border-width': '1px',
         'border-radius': '3px',
-        'padding': '.25em',
-        'margin': '.25em',
+        'padding': '.5em',
+        'margin': '.25em 0',
         'border-style': 'solid',
         'background-color': 'white',
-        'display': 'table'
+    },
+    buttonTable: {
+        display: 'table',
+        width: '100%'
     }
 })
 
@@ -109,9 +112,22 @@ export default class LogoutSpan extends React.Component {
             return this.setState({error: "email address not valid", info: null});
         } else {
             window.socket.emit('set user info', { email }, ()=>{
-                this.setState({info: "Welcome! When you return, use the set/forgot password link to set your password", error: null}, ()=>{
-                    location.href='/sign/out';
-                    return;
+                this.setState({ error : null, info : 'Welcome, sending password reset email' },()=>{
+                    window.socket.emit('send password', email, window.location.pathname, response => {
+                        if ( response.error ) {
+                            let { error } = response;
+                    
+                            if ( error === 'User not found' ) {
+                            error = 'Email not found';
+                            }
+                    
+                            this.setState({ info : null, error: error });
+                        }
+                        else {
+                            this.setState({ error : null, info : 'Message sent! Please check your inbox' });
+                        }
+                        setTimeout(() => location.href = '/sign/out', 800); 
+                    });
                 });
             })
         }
@@ -130,11 +146,13 @@ export default class LogoutSpan extends React.Component {
                     <Accordion active={this.state.logup} >
                         <div className={styles["box"]}>
                             <div className={styles['intro']}>If you logout now, this account will be lost.  Would you like to set an email address now?</div>
-                            <div className={styles["email"]}>
-                                <input className={styles["input"]} placeholder="email" ref="email" name="email" type="email" onKeyDown={this.detectCR} />
-                            </div>
-                            <div className={styles["submit"]}>
-                                <button className={styles["input"]} className={styles["submitButton"]} onClick={this.logup}>Set email</button>
+                            <div className={styles['buttonTable']}>
+                                <div className={styles["email"]}>
+                                    <input className={styles["input"]} placeholder="email" ref="email" name="email" type="email" onKeyDown={this.detectCR} />
+                                </div>
+                                <div className={styles["submit"]}>
+                                    <button className={styles["input"]} className={styles["submitButton"]} onClick={this.logup}>Set email</button>
+                                </div>
                             </div>
                             <div className={styles["info"]}>{this.state.info}</div>
                             <div className={styles["error"]}>{this.state.error}</div>
