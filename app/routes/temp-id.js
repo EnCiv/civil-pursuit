@@ -36,7 +36,7 @@ function tempId (req, res, next) {
         .then(
           user => {
             try {
-              req.user = user;
+              req.user = user.toJSON();
               if(!user.email) {
                 req.tempid=password; // in temp login, the password is a key that will be stored in the browsers cookie.  
                 return next();

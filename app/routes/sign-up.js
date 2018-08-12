@@ -34,7 +34,7 @@ function signUp (req, res, next) {
         .then(
           user => {
             try {
-              req.user = user;
+              req.user = user.toJSON();
 
               Discussion
                 .findCurrent()

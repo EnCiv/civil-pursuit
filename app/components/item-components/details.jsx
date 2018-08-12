@@ -39,7 +39,7 @@ exports.panel = class DetailPanel extends React.Component {
       else {
         this.mounted=true;
         return(
-            <div className="toggler detail"  key={item._id+'-toggler-'+this.constructor.name}>
+            <div className="toggler detail"  key={this.props.item._id+'-toggler-'+this.constructor.name}>
                 <Accordion
                     active  =   {this.props.active}
                     style   = {this.props.style}

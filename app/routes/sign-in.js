@@ -30,7 +30,7 @@ function signIn (req, res, next) {
         .identify(email, password)
         .then(
           user => {
-            req.user = user;
+            req.user = user.toJSON();
             //onsole.info("sign-in user",user);
 
             // were we passed updated info in the signin

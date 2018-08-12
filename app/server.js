@@ -275,22 +275,7 @@ class HttpServer extends EventEmitter {
   getLandingPage () {
     try {
       this.app.get('/',
-        (req, res, next) => {
-          if ( ! req.cookies.synapp ) {
-            res.cookie('synapp',
-              { training : true },
-              {
-                "path":"/",
-                "signed": false,
-                "maxAge": 604800000,
-                "httpOnly": true
-              });
-          }
-          // else {
-
-          // }
-          next();
-        },
+        setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -303,21 +288,9 @@ class HttpServer extends EventEmitter {
       this.app.get('/h/*',
         (req, res, next) => {
           logger.info("server.getUIMPath", req.path)
-          if ( ! req.cookies.synapp ) {
-            res.cookie('synapp',
-              { training : true },
-              {
-                "path":"/",
-                "signed": false,
-                "maxAge": 604800000,
-                "httpOnly": true
-              });
-          }
-          // else {
-
-          // }
           next();
         },
+        setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -420,7 +393,8 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, serverReactRender.bind(this));
+    }, setUserCookie,
+    serverReactRender.bind(this));
   }
 
   getIPage () {
@@ -474,7 +448,8 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, serverReactRender.bind(this));
+    }, setUserCookie,
+    serverReactRender.bind(this));
   }
  
   getODG () {
@@ -482,16 +457,6 @@ class HttpServer extends EventEmitter {
       this.app.get('/odg',
         (req, res, next) => {
           var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-          if ( ! req.cookies.synapp ) {
-            res.cookie('synapp',
-              { training : true },
-              {
-                "path":"/",
-                "signed": false,
-                "maxAge": 604800000,
-                "httpOnly": true
-              });
-          }
           try {
             Type.findOne({ id : 'Polzc' }).then(
               type => {
@@ -539,6 +504,7 @@ class HttpServer extends EventEmitter {
             next(error);
           }
         },
+        setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -549,16 +515,6 @@ class HttpServer extends EventEmitter {
   getPanelPage () {
     this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
     var userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
-    if ( ! req.cookies.synapp ) {
-      res.cookie('synapp',
-        { training : true },
-        {
-          "path":"/",
-          "signed": false,
-          "maxAge": 604800000,
-          "httpOnly": true
-        });
-    }
       try {
         Type.findOne({ id : req.params.panelShortId }).then(
           type => {
@@ -605,7 +561,8 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, serverReactRender.bind(this));
+    },setUserCookie,
+    serverReactRender.bind(this));
   }
 
   resetPassword(){
