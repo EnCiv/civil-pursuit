@@ -367,8 +367,8 @@ class RASPItem extends ReactActionStatePathClient {
         else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
         else delta.button = rasp.button; // othewise keep button the same
       }
-      if(delta.readMore) this.queueFocus(action); 
-      else this.queueUnfocus(action)
+      //if(delta.readMore) this.queueFocus(action); 
+      //else this.queueUnfocus(action)
     } else if (action.type === "FINISH_PROMOTE") {
       if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
         delta.readMore = true; 
