@@ -127,7 +127,9 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
-            setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+            if(!this.isDone(this.props)) {
+                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+            }
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
@@ -137,19 +139,24 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     render() {
         //onsole.info("RASPQSortItems.render");
 
-        const { count, user, rasp, items, type, parent } = this.props;
+        const { count, user, rasp, items, type, parent, sections } = this.props;
 
         const onServer = typeof window === 'undefined';
+        var constraints=[];
 
         let articles = [],
             direction = [], instruction = [], done=[];
 
+        if(sections['unsorted'].length)
+            constraints.push(sections['unsorted'].length+' left to sort');
+
         if (Object.keys(this.props.index).length) {
             Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
-                if(!this.props.sections[criteria]){ return; }
+                if(!sections[criteria]){ return; }
                 let qb = this.QSortButtonList[criteria];
                 if (qb.max) {
-                    if (this.props.sections[criteria].length > qb.max) {
+                    if (sections[criteria].length > qb.max) {
+                        constraints.push(qb.direction);
                         direction.push(
                             <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }} key="instruction">
                                 {qb.direction}
@@ -157,7 +164,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                         )
                     }
                 }
-                this.props.sections[criteria].forEach(itemId => {
+                sections[criteria].forEach(itemId => {
                     let item = items[this.props.index[itemId]];
                     articles.push(
                         {
@@ -200,6 +207,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem 
+                    constraints={constraints}
                     active={this.state.done}
                     message={this.QSortButtonList['unsorted'].direction}
                     onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}

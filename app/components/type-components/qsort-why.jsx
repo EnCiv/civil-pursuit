@@ -136,10 +136,25 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         this.scrollBackToTop = true;
     }
 
+        // if the panel is done, say so
+        isDone(props){
+            return (
+                !props.sections['unsorted'].length // if there are no unsorted items
+                && !Object.keys(this.ButtonList).some(criteria=>{ // there is no some section[criteria] where
+                    let max=this.ButtonList[criteria].max; 
+                    if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
+                        return true; 
+                    else 
+                        return false;
+                })
+            )
+        }
+
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
-            setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+            if(!this.isDone(this.state))
+                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
@@ -156,7 +171,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
         const onServer = typeof window === 'undefined';
 
-        let content = [], direction = [], instruction = [], issues = 0, done = [];
+        let content = [], direction = [], constraints=[];
 
         if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
             // if we don't have any data to work with 
@@ -164,8 +179,9 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                     No values were tagged {this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
             </div>)
         } else {
+            if (this.state.sections['unsorted'].length) 
+                constraints.push(this.state.sections['unsorted'].length+" to go.");
             this.buttons.forEach((name) => {
-                if (this.state.sections['unsorted'].length) { issues++ }
                 let qb = this.ButtonList[name];
                 if (qb.max) {
                     //onsole.info("QSortWhy qb")
@@ -175,7 +191,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                                 {qb.direction}
                             </div>
                         )
-                        issues++;
+                        constraints.push((this.state.sections[name].length - qb.max)+' too many');
                     }
                 }
                 this.state.sections[name].forEach(itemId => {
@@ -195,7 +211,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 });
             });
         }
-        if (!issues) {
+        if (!constraints.length) {
             setTimeout(()=>this.props.rasp.toParent({ type: "RESULTS", results: this.results}),0);
         }else 
             setTimeout(()=>rasp.toParent({ type: "ISSUES"}),0);
@@ -213,7 +229,8 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem 
-                    active={!issues}
+                    constraints={constraints}
+                    active={!constraints.length}
                     message={this.ButtonList['unsorted'].direction}
                     onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
                 />

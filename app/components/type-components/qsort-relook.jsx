@@ -112,12 +112,26 @@ class RASPQSortReLook extends ReactActionStatePathClient {
         return { nextRASP, setBeforeWait: true }
     }
 
+        // if the panel is done, say so
+        isDone(props){
+            return (
+                !props.sections['unsorted'].length // if there are no unsorted items
+                && !Object.keys(this.QSortButtonList).some(criteria=>{ // there is no some section[criteria] where
+                    let max=this.QSortButtonList[criteria].max; 
+                    if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
+                        return true; 
+                    else 
+                        return false;
+                })
+            )
+        }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
-            setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+            if(!this.isDone(this.props))
+                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
         }
         if (this.props.onFinishAll) { return this.props.onFinishAll() }
     }
@@ -140,14 +154,14 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         const onServer = typeof window === 'undefined';
 
-        let content = [], direction = [], instruction = [], issues = 0, done = [], loading = [];
+        var content = [], direction = [], loading = [], constraints=[];
 
         if (!Object.keys(index).length) {
             loading.push(
                 <div key="loading" className="gutter text-center">Nothing here?</div>
             );
         } else {
-            if (sections['unsorted'].length) { issues++ }
+            if (sections['unsorted'].length) { constraints.push(sections['unsorted'].length + ' to sort') }
             Object.keys(qbuttons).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
                 if (!sections[criteria]) { return; }
                 let qb = qbuttons[criteria];
@@ -158,7 +172,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                                 {qb.direction}
                             </div>
                         )
-                        issues++;
+                        constraints.push(qb.direction);
                     }
                 }
                 sections[criteria].forEach(itemId => {
@@ -198,7 +212,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                     );
                 });
             });
-            if (!issues) {
+            if (!constraints.length) {
                 this.queueAction({type: "RESULTS", results: this.results});
             } else 
                 this.queueAction({type: "ISSUES"});
@@ -218,7 +232,8 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                 </div>
                 {loading}
                 <DoneItem 
-                    active={!issues}
+                    constraints={constraints}
+                    active={!constraints.length}
                     message={qbuttons['unsorted'].direction}
                     onClick={()=>rasp.toParent({ type: "NEXT_PANEL", results: this.results})}
                 />
