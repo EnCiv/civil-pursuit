@@ -23,10 +23,12 @@ class RandomItemStore extends React.Component {
     if ( makePanelId(panel) === this.id ) {
       // add the initial items to the list of random items, at the end
       this.props.items && this.props.items.forEach(itm=>{
-        let next=panel.items.length;
-        panel.items[next]=itm; // push this on the end
-        panel.index[itm._id]=next;
-        panel.sections.unsorted.push(itm._id);
+        if(!panel.items.some(i=>i._id===itm._id)){  // ensure the new one was not pulled up randomly - don't duplicate!
+          let next=panel.items.length;
+          panel.items[next]=itm; // push this on the end
+          panel.index[itm._id]=next;
+          panel.sections.unsorted.push(itm._id);
+        }
       });
       this.setState({ ...panel });
     }
