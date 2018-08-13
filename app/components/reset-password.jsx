@@ -71,7 +71,7 @@ class ResetPassword extends React.Component {
 
   render () {
     console.info("reset-password render");
-    let content = ( <Loading message="Getting user info" /> );
+    let content = ( <div style={{textAlign: 'center', padding: '1em 0', fontSize: "200%", color: "red"}}>Oops! Invalid key. Try sending a new forgot password email.</div> );
 
     const {activation_token}=this.props;
 
