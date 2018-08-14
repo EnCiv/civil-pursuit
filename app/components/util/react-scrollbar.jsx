@@ -186,7 +186,7 @@ class ScrollWrapper extends React.Component {
        this.state.top=this.state.top-this.state.topBarHeight;
        this.htmlElement.style.top= -this.state.top+'px';
 
-       this.banerObserver.observe(this.topBar, {attirbutes: true, childList: true, subtree: true});
+       if(this.props.topBar) this.banerObserver.observe(this.topBar, {attirbutes: true, childList: true, subtree: true});
     }
     //this.updateSize();
     this.calculateSize(()=>{
