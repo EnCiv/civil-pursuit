@@ -4,46 +4,55 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import EmailInput from './util/email-input';
 import Button from './util/button';
+import Login from './login';
 import Components from "./panel-components/";
 import ListComponent from './list-component';
 
 
 class Logup extends React.Component {
 
-    state = { error: null, info: null }
+    state = { validationError: null, successMessage: null }
+
+    logup() {
+        let email = ReactDOM.findDOMNode(this.refs.email).value;
+        if (!Logup.validateEmail(email)) {
+            return this.setState({ validationError: "email address not valid", successMessage: null });
+        } else
+            window.socket.emit('set user info', { email }, (info) => {
+                Login.signIn(email, this.props.user.tempid)
+                    .then(
+                        () => {
+                            this.setState({ validationError: null, successMessage: 'Welcome, sending password reset email' }, () => {
+                                setTimeout(() => {
+                                    window.socket.emit('send password', email, window.location.pathname, response => {
+                                        if (response.error) {
+                                            let { error } = response;
+
+                                            if (error === 'User not found') {
+                                                error = 'Email not found';
+                                            }
+
+                                            this.setState({ successMessage: null, validationError: error });
+                                        }
+                                        else {
+                                            this.setState({ validationError: null, successMessage: 'Message sent! Please check your inbox' });
+                                        }
+                                        setTimeout(() => location.href = window.location.pathname, 800);
+                                    });
+                                }, 800);
+                            });
+                        },
+                        error => {
+                            this.setState({ validationError: error.message })
+                        }
+                    );
+            });
+    }
 
     static validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
-
-    logup() {
-        let email = ReactDOM.findDOMNode(this.refs.email).value;
-        if (!LogoutSpan.validateEmail(email)) {
-            return this.setState({ error: "email address not valid", info: null });
-        } else {
-            window.socket.emit('set user info', { email }, () => {
-                this.setState({ error: null, info: 'Welcome, sending password reset email' }, () => {
-                    window.socket.emit('send password', email, window.location.pathname, response => {
-                        if (response.error) {
-                            let { error } = response;
-
-                            if (error === 'User not found') {
-                                error = 'Email not found';
-                            }
-
-                            this.setState({ info: null, error: error });
-                        }
-                        else {
-                            this.setState({ error: null, info: 'Message sent! Please check your inbox' });
-                        }
-                        setTimeout(() => location.href = '/sign/out', 800);
-                    });
-                });
-            })
-        }
-    }
-
 
     getBannerNode() {
         return this.refs.banner;
@@ -71,7 +80,7 @@ class Logup extends React.Component {
                         </div>
                         <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'button'} key={rasp.raspId + '-' + 'button'} position={0.5 * iconWidth} />
                     </div>
-                    <div>{this.state.info}{this.state.error}</div>
+                    <div>{this.state.successMessage}{this.state.validationError}</div>
                     <div className="logup-bar-instruction">
                         <ListComponent Components={Components} {...lessProps} type={type} component={'Instruction'} part={'panel'} key={rasp.raspId + '-' + 'button'} position={0.5 * iconWidth} />
                     </div>
