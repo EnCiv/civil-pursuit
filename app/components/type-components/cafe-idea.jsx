@@ -72,17 +72,18 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             if(this.props.minIdeas===0)
                 setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }));
             // no state change, the action will be consumed here
-        } else if (action.type === "DESCENDANT_FOCUS") {
-            if (this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
-                if (action.distance > 1) {
+        } else if ((action.type === "DESCENDANT_FOCUS") && (action.distance > 1) && this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
                     delta.decendantFocus = true;
-                }
-            }
-            if(action.distance===2 && action.button==='Edit'){
-            // user is editing something already posted
+                    // this is redundant with what's below. There's got to be a better way to write this. but for now...
+                    if(action.wasType ==="TOGGLE_BUTTON" && action.distance===2 && action.button==='Edit'){
+                        // user is editing something already posted
+                            this.ideaState[action.ideaNum].posted=false;
+                            delta.ideaCount=ideaCount();
+                    }
+        } else if(action.wasType ==="TOGGLE_BUTTON" && action.distance===2 && action.button==='Edit'){
+            // user is editing something already posted - this happend on DESCENDANT_FOCUS and UNFOCUS
                 this.ideaState[action.ideaNum].posted=false;
-                delta.ideaCount=ideaCount();
-            }            
+                delta.ideaCount=ideaCount();          
         } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
             if (rasp.decendantFocus) delta.decendantFocus = false;  // my child has unfocused
         } else if(Object.keys(delta).length){

@@ -59,7 +59,7 @@ exports.button = class TotalsButton extends React.Component {
 exports.panel = class TotalsPanel extends React.Component {
     mounted = false;
     render() {
-        const { active, style, item, rasp } = this.props;
+        const { active, style, item, rasp, ...otherProps } = this.props;
         const type=this.props.type || this.props.item.subtype; // might be passed as part of the button definition
         if(!this.props.user) return null; // no panel if user not logged in
         if ((this.mounted === false && active === false)) return null; // don't render this unless it's active, or been rendered before
@@ -73,7 +73,7 @@ exports.panel = class TotalsPanel extends React.Component {
                         active={active}
                         style={style}
                     >
-                        <QSortItemsSummary parent={this.props.item} type={type} qbuttons={this.props.qbuttons || QSortButtonList} rasp={rasp} />
+                        <QSortItemsSummary {...otherProps} parent={this.props.item} type={type} qbuttons={this.props.qbuttons || QSortButtonList} rasp={rasp} />
                     </Accordion>
                 </div>
             )

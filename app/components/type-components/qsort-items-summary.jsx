@@ -16,7 +16,8 @@ import publicConfig from '../../../public.json';
 
 const styles = cssInJS({
     "synLoadMore": {
-        'text-align': 'center'
+        'text-align': 'center',
+        'font-weight': 'bold'
     },
     "synLoadMoreButton": {
         padding: '0',
