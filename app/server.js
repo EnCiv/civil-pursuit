@@ -200,7 +200,7 @@ class HttpServer extends EventEmitter {
   }
 
   router () {
-    if ( process.env.NODE_ENV !== 'production' ) this.timeout();
+    /*if ( process.env.NODE_ENV !== 'production' ) */this.timeout();
     this.getBrowserConfig();
     this.app.get('/robots.txt', (req, res) => { res.type('text/plain'); res.send("User-agent: *\nAllow: /"); });
     if ( process.env.NODE_ENV === 'production' ) this.httpToHttps();
@@ -257,10 +257,10 @@ class HttpServer extends EventEmitter {
     this.app.use((req, res, next) => {
       setTimeout(() => {
          if ( ! res.headersSent ) {
-          logger.error("timeout headersSent:", res.headersSent);
+          logger.error("timeout headersSent:", res.headersSent, "originalUrl", req.originalUrl, "ip", req.ip);
           next(new Error('Test error > timeout headers not sent'));
         }
-      }, 1000 * 60);
+      }, 1000 * 29);
       next();
     });
   }
