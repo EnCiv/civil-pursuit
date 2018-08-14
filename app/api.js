@@ -139,7 +139,9 @@ class API extends EventEmitter {
       logger.info('socketIO listening');
       this.io
         .use(this.identify.bind(this))
-        .on('connection', this.connected.bind(this));
+        .on('connection', this.connected.bind(this))
+        .on('connect_error', (error)=>{logger.error("socket io connection_error",error,this)})
+        .on('connect_timeout', (error)=>{logger.error("socket io connection_timeout",error,this)} );
     }
     catch ( error ) {
       this.emit('error', error);
@@ -215,6 +217,8 @@ class API extends EventEmitter {
       this.sockets.push(socket);
 
       socket.on('error', error => this.emit('error', error));
+      socket.on('connect_timeout', error=>logger.error('socket connected timeout', error));
+      socket.on('connect_error', error=>logger.error('socket connect_error', error));
 
       socket.on('disconnect', () => {
       });
