@@ -59,7 +59,7 @@ exports.panel = class SubtypePanel extends React.Component {
   mounted = false;
   render() {
     const {active, style, item, rasp}=this.props;
-    const nextRASP={shape: 'truncated', depth: rasp.depth, toParent: rasp.toParent} // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
+    const nextRASP={...rasp, shape: 'truncated'} // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
     if ((this.mounted===false && active===false) || !item.subtype) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;

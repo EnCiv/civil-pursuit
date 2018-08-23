@@ -38,6 +38,7 @@ exports.panel = class InfoGraphicPanel extends React.Component {
           <Accordion
             active={active}
             style={style}
+            duration={1500}
           >
             <img src={infographicImg} style={{display: 'block', margin: 0, width: "100%"}} />
           </Accordion>
