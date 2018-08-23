@@ -3,18 +3,23 @@
 // until that day, this is manual
 'use strict';
 
+// IMPORTANT!!!
+//
+// This first letter of each component name must be unique in this list.  The first letter is the key being used in segment to state
+//
+
 var  Components={
-        'Details': require('./details'),
-        'Harmony': require('./harmony'),
-        'Promote': require('./promote'),
-        'Subtype': require('./subtype'),
-        'QSortButtons': require('./qsort-buttons'),
-        'Edit': require('./edit'),
         'CreateHarmony': require('./create-harmony'),
+        'Details': require('./details'),
+        'Edit': require('./edit'),
+        'Harmony': require('./harmony'),
+        "InfoGraphic": require('./info-graphic'),
+        'Promote': require('./promote'),
+        'QSortButtons': require('./qsort-buttons'),
         'Refine': require('./refine'),
+        'Subtype': require('./subtype'),
         "Totals": require('./totals'),
-        "UseComponent": require('./use-component'),
-        "InfoGraphic": require('./info-graphic')
+        "UseComponent": require('./use-component')
 }
 
 export default Components;
