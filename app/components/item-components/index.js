@@ -13,7 +13,8 @@ var  Components={
         'CreateHarmony': require('./create-harmony'),
         'Refine': require('./refine'),
         "Totals": require('./totals'),
-        "UseComponent": require('./use-component')
+        "UseComponent": require('./use-component'),
+        "InfoGraphic": require('./info-graphic')
 }
 
 export default Components;
