@@ -15,6 +15,7 @@ import AppError                 from    '../models/app-error';
 import log4js                   from 'log4js';
 import log4js_extend            from 'log4js-extend';
 import mongoAppender            from 'log4js-node-mongodb';
+import DB                       from '../lib/util/db';
 
 log4js.addAppender(
     mongoAppender.appender({connectionString: process.env.MONGOHQ_URL}),
@@ -108,7 +109,9 @@ function start (emitter = false) {
           catch ( error ) {
             ko(error);
           }
-        })
+        }),
+
+        ()=>DB.connect(process.env.MONGOHQ_URL)
       ])
 
       .then(emitter.emit.bind(emitter, 'message', 'started'))

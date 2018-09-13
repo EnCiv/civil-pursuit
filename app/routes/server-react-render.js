@@ -35,6 +35,9 @@ function serverReactRender (req, res, next) {
         if ( typeof user === 'string' ) {
           user = JSON.parse(user);
         } 
+    } else if (req.user) {  // new turk worker, the cookie won't get set until this massage goes out - so extract the synuser info from the request
+      user = {id: req.user._id, email: req.user.email}
+      if(req.user.assignmentId) user.assignmentId=req.user.assignmentId;
     }
 
     const props       =   {
@@ -48,7 +51,8 @@ function serverReactRender (req, res, next) {
       activation_key  :   req.activation_key,
       notFound        :   req.notFound,
       error           :   res.locals.error,
-      browserConfig   :   JSON.parse(JSON.stringify(this.browserConfig || null))
+      browserConfig   :   JSON.parse(JSON.stringify(this.browserConfig || null)),
+      MechanicalTurkTask : req.MechanicalTurkTask || null
     };
 
     props.react = Object.assign({}, props);

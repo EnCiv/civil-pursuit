@@ -16,6 +16,7 @@ import fixedScroll from '../lib/util/fixed-scroll';
 import RenderMarkDown from './render-mark-down';
 import SmallLayout from './small-layout';
 import StaticLayout from './static-layout';
+import MechanicalTurkTask from '../lib/mechanical-turk-task';
 
 class App extends React.Component {
 
@@ -35,6 +36,8 @@ class App extends React.Component {
     }
 
     this.state.path = props.path;
+
+    MechanicalTurkTask.setFromProps(props);
   }
 
   confirmOnPageExit(e) {

@@ -67,7 +67,7 @@ class Logup extends React.Component {
             title: "Complete login",
             instruction: "A temporary Id has been assigned so you can continue in this discussion. This Id is stored in your browser (as a cookie). When you logout, it will be lost and un retrivable and your input will be eventually be deleted. When you set your email address your registration can be retreived using the forgot password link",
         };
-        if (user && user.id && !user.email)
+        if (user && user.id && !(user.email || user.assignmentId))
             return (
                 <div className="logup-bar" ref="banner">
                     <div className="logup-bar-center">

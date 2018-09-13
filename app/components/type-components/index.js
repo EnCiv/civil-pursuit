@@ -20,7 +20,8 @@ var  Components={
         'RuleList': require('./rule-list').default,
         'PanelQuestions': require('./panel-questions').default,
         'ProfileCheck': require('./profile-check').default,
-        'Totals': require('./totals').default
+        'Totals': require('./totals').default,
+        'TurkSubmit': require('./turk-submit').default
     }
 
 export default Components;

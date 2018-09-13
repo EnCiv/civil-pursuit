@@ -26,6 +26,7 @@ import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
 import serverReactRender         from './routes/server-react-render';
 // import errorRoutes              from './routes/error';
+import turkUser                 from './routes/turk-user';
 
 import User                     from './models/user';
 import Item                     from './models/item';
@@ -398,8 +399,10 @@ class HttpServer extends EventEmitter {
   }
 
   getIPage () {
-    this.app.get('/i/*', (req, res, next) => {
-      let segments=req.params[0].split('/');
+    this.app.get('/i/*',
+    turkUser.bind(this),
+    (req, res, next) => {
+      let segments=req.params[0].toString().split('/');  // after using req.query in turkUser params in now an object rather than an array
       if(!segments || !segments.length || !segments[0].length) next();
       let userId= (req.cookies.synuser && req.cookies.synuser.id) ? req.cookies.synuser.id : null;
       let parts=segments[0].split(',');

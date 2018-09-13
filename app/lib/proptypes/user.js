@@ -45,7 +45,9 @@ const user          =   shape({
   year_of_birth     :   number,
   street_address    :   any,
   gender_identity   :   any,
-  starting_block_race:  any
+  starting_bloc_race:  any,
+  turks             :   arrayOf(any),
+  workerId          :   string
 });
 
 export default user;

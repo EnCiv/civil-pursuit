@@ -102,7 +102,11 @@ class Schema extends Mungo.Model {
 
       "gender_identity"   :     Mungo.Mixed,
 
-      "starting_bloc_race":     Mungo.Mixed
+      "starting_bloc_race":     Mungo.Mixed,
+
+      "turks":                  Mungo.Mixed,
+
+      "workerId":               String
     };
   }
 }

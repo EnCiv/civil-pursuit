@@ -87,7 +87,7 @@ export default class LogoutSpan extends React.Component {
     }
 
     logoutButton(e){
-        if(this.props.user && this.props.user.email){
+        if(this.props.user && (this.props.user.email || this.props.user.assignmentId )){
             location.href='/sign/out';
             return;
         }else
