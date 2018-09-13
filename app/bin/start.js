@@ -96,6 +96,7 @@ function start (emitter = false) {
             .on('connected', ok);
         }),
 
+        ()=>DB.connect(process.env.MONGOHQ_URL),
         
         () => new Promise((ok, ko) => {
           try {
@@ -109,9 +110,8 @@ function start (emitter = false) {
           catch ( error ) {
             ko(error);
           }
-        }),
+        })
 
-        ()=>DB.connect(process.env.MONGOHQ_URL)
       ])
 
       .then(emitter.emit.bind(emitter, 'message', 'started'))

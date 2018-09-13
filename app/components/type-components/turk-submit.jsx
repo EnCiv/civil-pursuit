@@ -63,10 +63,13 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
     }
 
     turkSubmit(){
-        window.socket.emit("set turk complete",(comment)=>{
-            if(comment.error) return this.setState({validationError: comment.error});
-            else return this.setState({successMessage: "Copy this sting and paste it into the result field of Amazon Mechanical Turk page: "+comment.comment});
-        })
+        if(!this.props.user.assignmentId)
+            return this.setState({validationError: "no assignmentId"});
+        else
+            window.socket.emit("set turk complete", this.props.user.assignmentId, (comment)=>{
+                if(comment.error) return this.setState({validationError: comment.error});
+                else return this.setState({successMessage: "Copy this sting and paste it into the result field of Amazon Mechanical Turk page: "+comment.comment});
+            })
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
