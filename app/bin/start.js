@@ -103,9 +103,10 @@ function start (emitter = false) {
             new Server(verbose)
               .on('listening', status => {
                 logger.info('HTTP server is listening', {status});
+                return ok();
               })
-              .on('error', emitter.emit.bind(emitter, 'error') )
-              .on('message', emitter.emit.bind(emitter, 'message'));
+              .on('error', ()=>{emitter.emit( 'error'); ko()} )
+              .on('message', ()=>{emitter.emit('message'); ok()});
           }
           catch ( error ) {
             ko(error);

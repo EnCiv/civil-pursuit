@@ -3,8 +3,7 @@
 import React from 'react';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import PanelHead from '../panel-head';
-import MechanicalTurkTask from '../../lib/mechanical-turk-task';
-import superagent from 'superagent';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 class TurkSubmit extends React.Component {
     render(){
@@ -62,13 +61,13 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
         return {nextRASP, setBeforeWait: true}
     }
 
-    turkSubmit(){
+    componentDidMount(){
         if(!this.props.user.assignmentId)
             return this.setState({validationError: "no assignmentId"});
         else
             window.socket.emit("set turk complete", this.props.user.assignmentId, (comment)=>{
                 if(comment.error) return this.setState({validationError: comment.error});
-                else return this.setState({successMessage: "Copy this sting and paste it into the result field of Amazon Mechanical Turk page: "+comment.comment});
+                else return this.setState({successMessage: comment.comment});
             })
     }
 
@@ -76,28 +75,25 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panelNum, parent, 
-        } = this.props;
-
         return (
             <section id="syn-turk-step">
-                <div className="syn-next-step">
-                            <button 
-                                onClick={this.turkSubmit.bind(this)}
-                                className="syn-next-step-button"
-                                title={"click to submit the task on Mechanical Turk"}
-                            >
-                                <span>{"Submit as complete to Mechanical Turk"}</span>
-                            </button>
-                </div>
-                {this.state.successMessage}
-                {this.state.validationError}
+                {this.state.successMessage ? <div>
+                    <span>Mechanical Turk Survey Code:</span>
+                    <span>{this.state.successMessage}</span>
+                    <CopyToClipboard text={this.state.successMessage} onCopy={()=>this.setState({copied: true})}>
+                        <button style={{padding: ".1em", marginLeft: ".5em", marginRight: ".5em", backgroundColor: "white" }}>Copy to clipboard</button>
+                    </CopyToClipboard>
+                    {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
+                </div>: null}
+                {this.state.validationError ? <div>
+                    <p>There was an problem, here is the message from the server. If you believe you have not been duly credited for this task, go back to the Mechanical Turk page and click on Hit Details and then Contact the This Requester</p>
+                    {this.state.validationError}
+                </div>: null}
             </section>
         );
     }
 }
 
 export default TurkSubmit;
-
 
 

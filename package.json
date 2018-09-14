@@ -76,6 +76,7 @@
     "randomstring": "^1.1.5",
     "react": "^15.6.2",
     "react-action-state-path": "github:ddfridley/react-action-state-path#actionfilters",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^15.6.2",
     "react-flip-move": "^2.9.17",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#master",

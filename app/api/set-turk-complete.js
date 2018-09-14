@@ -11,12 +11,12 @@ function setTurkComplete(assignmentId, cb) {
     }
     try {
         var comment = randomstring.generate(12);
-        DB.db.collection('users').updateOne({ _id: ObjectID(this.synuser.id), "turks.assignmentId": assignmentId }, { $set: { "turks.$.comment": comment } }).then(
+        DB.db.collection('users').updateOne({ _id: ObjectID(this.synuser.id), "turks.assignmentId": assignmentId, "turks.comment": {"$exists": false} }, { $set: { "turks.$.comment": comment } }).then(
             updateWriteOpResult => {
-                if(updateWriteOpResult.result.ok)
+                if(updateWriteOpResult.modifiedCount===1)
                 {    cb({ comment })
                 } else {
-                    cb({ error: "couldn't set result" })
+                    cb({ error: "Assignment not found or already finished" })
                 }
             },
             err => cb({ error: "update assignment returned: " + err })
