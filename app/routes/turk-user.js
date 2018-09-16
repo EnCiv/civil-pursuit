@@ -42,7 +42,7 @@ function doTurkUser(req,res,next){
     var hitId = req.query.hitId;
     var workerId = req.query.workerId;
     var turkSubmitTo = req.query.turkSubmitTo;
-    if(addignmentId==="ASSIGNMENT_ID_NOT_AVAILABLE&") return next("The assignment must be accepted to view this page");
+    if(addignmentId==="ASSIGNMENT_ID_NOT_AVAILABLE&") return next(new Error("The assignment must be accepted to view this page"));
     if (!(assignmentId && hitId && workerId && turkSubmitTo)) return next(); // nothing to do here
     if (assignmentId === turkAssignmentId) return next(); // user already logged in, there is an assignment and it's the one being worked on, so nothing to do here
     req.MechanicalTurkTask={assignmentId, turkSubmitTo, hitId};
@@ -64,7 +64,7 @@ function doTurkUser(req,res,next){
                                 req.user.assignmentId=assignmentId;
                                 return next();
                             } else 
-                                return next("Error: turkUser Empty") 
+                                return next(new Error("Error: turkUser Empty"));
                         }, 
                         error => next('turkUser insertOne error:' + error)
                     )
