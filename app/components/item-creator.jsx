@@ -5,6 +5,7 @@ import Color from 'color';
 import Item from './item';
 import Creator            from './creator';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import {isEqual, merge} from 'lodash';
 
 export default class ItemCreator extends React.Component {
     render(){
@@ -82,20 +83,26 @@ class RASPItemCreator extends ReactActionStatePathClient {
     timestamp=new Date();
 
     onChange(val){  // Creator (the child) passes back the data as it is entered. We store it in this.item in case we are asked to rerender
-        if(val.results) Object.assign(this.item,val.results.item);
-        if(this.state.postWhenIdReady && this.item._id) {
-            this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}); // notifiy parents that a post has been made
+        if(val.results && val.results.item) {
+            if(!isEqual(this.item, val.results.item)){
+                merge(this.item,val.results.item)
+                this.dirty=true;
+                this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: true})); // let the ancestors know that the user focus is here
+            }
+        } if(this.state.postWhenIdReady && this.item._id) {
+            this.qaction(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1})); // notifiy parents that a post has been made
             this.setState({postWhenIdReady: false})
         }
         let t=new Date();
-        if((t-this.timestamp) > 500)  this.props.rasp.toParent({type: "DESCENDANT_FOCUS", wasType: "ON_CHANGE", results: val.results}); // let the ancestors know that the user focus is here  
+        if((t-this.timestamp) > 500)  this.qaction(()=>this.props.rasp.toParent({type: "DESCENDANT_FOCUS", wasType: "ON_CHANGE", results: val.results})); // let the ancestors know that the user focus is here  
     }
 
     post(){  // in the creator, user hit the post button
-        this.props.rasp.toParent({type: "SET_DISPLAY"});
+        this.dirty=false;
+        this.qaction(()=>this.props.rasp.toParent({type: "SET_DISPLAY"}));
         //if(!this.props.rasp.display && this.props.toggle) this.props.toggle();  // toggle the item if it hasns't already been toggled
         if(this.item._id)
-            setTimeout(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}),0); // notifiy parents that a post has been made
+            this.qaction(()=>this.props.rasp.toParent({type: "POST_ITEM", item: this.item, distance: -1}),0); // notifiy parents that a post has been made
         else   
             this.setState({postWhenIdReady: true});
     }

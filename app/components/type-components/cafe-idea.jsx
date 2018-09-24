@@ -49,14 +49,16 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source, initialRASP, delta) {
         const ideaCount=()=>{  // the number of ideas posted less those being edited
-            return Object.keys(this.ideaState).length-Object.keys(this.ideaState).reduce((a,k)=>(a + (this.ideaState[k].posted ? 0 : 1)),0);
+            return Object.keys(this.ideaState).length-Object.keys(this.ideaState).reduce((a,k)=>(a + (this.ideaState[k].dirty ? 1 : 0)),0);
+            //return Object.keys(this.ideaState).length-Object.keys(this.ideaState).reduce((a,k)=>(a + (this.ideaState[k].posted ? 0 : 1)),0);
         }
+        const dirtyCount=()=>Object.keys(this.ideaState).reduce((a,k)=>(a + (this.ideaState[k].dirty ? 1 : 0)),0);
         var nextRASP = {};
         if (action.type === "POST_ITEM") {
             let item = action.item;
             let shared = this.props.shared;
             var results = { idea: item, parent: this.props.parent, type: this.props.type };
-            this.ideaState[action.ideaNum]={posted: true, item};
+            this.ideaState[action.ideaNum]={posted: true, dirty: false, item};
             if (shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
                 shared.items.push(item);
                 results.items = shared.items;
@@ -69,6 +71,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 if(mostSection) window.socket.emit('insert qvote', { item: item._id, criteria: mostSection });  // the most important criteria
             }
             delta.ideaCount=ideaCount();
+            delta.dirtyCount=dirtyCount();
             if(this.props.minIdeas===0)
                 setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }));
             // no state change, the action will be consumed here
@@ -80,6 +83,13 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                             this.ideaState[action.ideaNum].posted=false;
                             delta.ideaCount=ideaCount();
                     }
+        } else if (action.type === "ITEM_CREATOR_DIRTY")  {
+            if(this.ideaState[action.ideaNum])
+                this.ideaState[action.ideaNum].dirty=action.dirty;
+            else 
+                this.ideaState[action.ideaNum]={posted: false, dirty: action.dirty, item:null};
+            delta.dirtyCount=dirtyCount();
+            delta.ideaCount=ideaCount();
         } else if(action.wasType ==="TOGGLE_BUTTON" && action.distance===2 && action.button==='Edit'){
             // user is editing something already posted - this happend on DESCENDANT_FOCUS and UNFOCUS
                 this.ideaState[action.ideaNum].posted=false;
@@ -113,27 +123,29 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1 } = this.props;
+        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1, showParent=true } = this.props;
         let ideaCount=rasp.ideaCount || 0;
         let nIdeas=Math.min(Math.max(ideaCount+2,numIdeas),maxIdeas);
         let constraints=[];
         let needed = -(ideaCount - (minIdeas >= 0 ? minIdeas : parent.answerCount>0 ? 0 : 1));
         if(needed===1) constraints.push("One more to continue");
         else if(needed > 1) constraints.push(needed+" more to continue");
-        let editing=Object.keys(this.ideaState).reduce((a,k)=>(a+(this.ideaState[k].posted ? 0 : 1)), 0);
+        let editing=rasp.dirtyCount || 0;
+        //let editing=Object.keys(this.ideaState).reduce((a,k)=>(a+((this.ideaState[k].dirty) ? 1 : 0)), 0);
+        //let editing=Object.keys(this.ideaState).reduce((a,k)=>(a+((this.ideaState[k].posted) ? 0 : 1)), 0);
         if(editing === 1) constraints.push("One item waiting to be posted");
         else if(editing > 1) constraints.push(editing+" items waiting to be posted");
         return (
             <section id="syn-cafe-idea">
                 <div className="syn-cafe-idea" key='idea'>
-                    <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
+                    {showParent ? <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/> : null }
                     <div className="syn-cafe-idea-creator">
                         {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
                     </div>
                 </div>
                 <DoneItem active={!constraints.length} 
                     constraints={constraints}
-                    message={ideaCount>0 ? "Continue" : "Continue without contributing an additional idea."} 
+                    message={ideaCount>0 ? "Continue" : "Continue without contributing an idea."} 
                     onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {items: Object.keys(this.ideaState).map(k=>this.ideaState[k].item)}})} 
                 />
             </section>

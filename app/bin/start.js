@@ -105,8 +105,8 @@ function start (emitter = false) {
                 logger.info('HTTP server is listening', {status});
                 return ok();
               })
-              .on('error', ()=>{emitter.emit( 'error'); ko()} )
-              .on('message', ()=>{emitter.emit('message'); ok()});
+              .on('error', (error)=>{emitter.emit(error); ko()} )
+              .on('message', (message)=>{emitter.emit(message); ok()});
           }
           catch ( error ) {
             ko(error);
