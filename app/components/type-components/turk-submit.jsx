@@ -77,7 +77,7 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
 
         return (
             <section id="syn-turk-step">
-                {this.state.successMessage ? <div>
+                {this.state.successMessage ? <div style={{padding: "0 1em 1em 1em"}}>
                     <span>Mechanical Turk Survey Code:</span>
                     <span>{this.state.successMessage}</span>
                     <CopyToClipboard text={this.state.successMessage} onCopy={()=>this.setState({copied: true})}>
@@ -85,7 +85,7 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
                     </CopyToClipboard>
                     {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
                 </div>: null}
-                {this.state.validationError ? <div>
+                {this.state.validationError ? <div style={{padding: "0 1em 1em 1em"}}>
                     <p>There was an problem, here is the message from the server. If you believe you have not been duly credited for this task, go back to the Mechanical Turk page and click on Hit Details and then Contact the This Requester</p>
                     {this.state.validationError}
                 </div>: null}
