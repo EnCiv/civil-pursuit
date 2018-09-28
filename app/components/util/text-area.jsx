@@ -40,4 +40,13 @@ class Textarea extends React.Component {
   }
 }
 
+Object.defineProperty(Textarea.prototype,'value',{
+  get: function () {
+    return this.refs.view.value;
+  },
+  set: function (v) {
+    this.refs.view.value=v;
+  }
+})
+
 export default Textarea;

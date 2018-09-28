@@ -25,6 +25,7 @@ class Login extends React.Component {
     super(props);
 
     this.state = { validationError : null, successMessage : null, info : null };
+    this.forgotPassword=this.forgotPassword.bind(this);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,7 +175,7 @@ class Login extends React.Component {
             <a
               href              =   "#"
               className         =   "forgot-password-link"
-              onClick           = { ::this.forgotPassword }
+              onClick           = { this.forgotPassword }
             >
             Click here
             </a>

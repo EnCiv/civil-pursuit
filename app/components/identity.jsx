@@ -12,6 +12,7 @@ import selectors                      from '../../selectors.json';
 import Gender                         from './gender';
 import Birthdate                      from './birthdate';
 import GenderIdentity                 from './gender-identity'
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Identity extends React.Component {
 
@@ -37,7 +38,7 @@ class Identity extends React.Component {
     let firstName = ReactDOM.findDOMNode(this.refs.firstName).value;
 
     if ( firstName ) {
-      window.socket.emit('set user info', { first_name : firstName });
+      setUserInfo( { first_name : firstName });
     }
   }
 
@@ -47,7 +48,7 @@ class Identity extends React.Component {
     let middleName = ReactDOM.findDOMNode(this.refs.middleName).value;
 
     if ( middleName ) {
-      window.socket.emit('set user info', { middle_name : middleName });
+      setUserInfo( { middle_name : middleName });
     }
   }
 
@@ -57,7 +58,7 @@ class Identity extends React.Component {
     let lastName = ReactDOM.findDOMNode(this.refs.lastName).value;
 
     if ( lastName ) {
-      window.socket.emit('set user info', { last_name : lastName });
+      setUserInfo( { last_name : lastName });
     }
   }
 
@@ -68,8 +69,7 @@ class Identity extends React.Component {
 
     this.setState({citizenship: citizenship});
 
-      window.socket.emit('set user info', { "citizenship" : citizenship})
-        .on('OK set user info', user => { this.setState({ user })});
+      setUserInfo( { "citizenship" : citizenship}, user => { this.setState({ user })});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,14 +77,13 @@ class Identity extends React.Component {
   saveDualCitizenship (e) {
     let dualCitizenship = ReactDOM.findDOMNode(this.refs.dualCitizenship).value;
 
-      window.socket.emit('set user info', { "dualcitizenship" : dualCitizenship})
-        .on('OK set user info', user => { this.setState({ user })});
+      setUserInfo( { "dualcitizenship" : dualCitizenship}, user => { this.setState({ user })});
 
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     setUserInfo(info){
-        window.socket.emit('set user info', info);
+        setUserInfo( info);
     }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -7,7 +7,6 @@ import Home from './home';
 import ResetPassword from './reset-password';
 import Panel from './panel';
 import Icon from './util/icon';
-import UserStore from './store/user';
 import About from './about'; import PanelList from './type-components/panel-list';
 import TypeComponent from './type-component';
 import OnlineDeliberationGame from './odg';
@@ -17,6 +16,7 @@ import RenderMarkDown from './render-mark-down';
 import SmallLayout from './small-layout';
 import StaticLayout from './static-layout';
 import MechanicalTurkTask from '../lib/mechanical-turk-task';
+import apiWrapper                       from '../lib/util/api-wrapper';
 
 class App extends React.Component {
 
@@ -38,6 +38,7 @@ class App extends React.Component {
     this.state.path = props.path;
 
     MechanicalTurkTask.setFromProps(props);
+    apiWrapper.Flush.call(this); // if any api data was saved previously, flush it to the server
   }
 
   confirmOnPageExit(e) {

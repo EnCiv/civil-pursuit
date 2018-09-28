@@ -15,10 +15,13 @@ class LoginPanel extends React.Component {
 
     componentDidMount() {
     //    console.info("LoginPanel.cDM", this.props)
-        if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
-            window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
+        const {panel}=this.props;
+        const type = panel && panel.type || this.props.type;
+        if (typeof window !== 'undefined' && type.harmony) {
+            window.socket.emit('get listo type', type.harmony, this.okGetListoType.bind(this))
         }
     }
+
     okGetListoType(typeList) {
         this.setState({ typeList: typeList });
     }
@@ -29,9 +32,11 @@ class LoginPanel extends React.Component {
 
     render() {
         const { panel, user, userInfo, active } = this.props;
+        const type = panel && panel.type || this.props.type;
+        const parent = panel ? panel.parent : this.props.parent;
         //onsole.info("LoginPanel:",this.props, this.state);
         var newLocation=this.props.newLocation || null;
-        if(!newLocation && panel.parent && panel.parent.new_location) newLocation=panel.parent.new_location;  // get new Location out of the parent item if there is one
+        if(!newLocation && parent && parent.new_location) newLocation=parent.new_location;  // get new Location out of the parent item if there is one
         if(user && newLocation){
                 window.onbeforeunload=null; // don't warn on redirect
                 location.href=newLocation;
@@ -55,13 +60,13 @@ class LoginPanel extends React.Component {
             )
         }
 
-        let title = panel.type.name || "User Registration Required";
+        let title = type.name || "User Registration Required";
         let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
 
-        if (panel.type && panel.type.instruction) {
+        if (type && type.instruction) {
         instruction = (
                 <Instruction >
-                    {panel.type.instruction}
+                    {type.instruction}
                 </Instruction>
             );
         }   

@@ -7,6 +7,7 @@ import Button from './util/button';
 import Login from './login';
 import Components from "./panel-components/";
 import ListComponent from './list-component';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 
 class Logup extends React.Component {
@@ -18,7 +19,7 @@ class Logup extends React.Component {
         if (!Logup.validateEmail(email)) {
             return this.setState({ validationError: "email address not valid", successMessage: null });
         } else
-            window.socket.emit('set user info', { email }, (info) => {
+            setUserInfo({ email }, (info) => {
                 Login.signIn(email, this.props.user.tempid)
                     .then(
                         () => {

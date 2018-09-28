@@ -13,6 +13,7 @@ import PanelHeading from '../panel-heading';
 import { ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFilter } from 'react-action-state-path';
 import RASPFocusHere from '../rasp-focus-here';
 import DoneItem from '../done-item';
+import insertQVote from '../../api-wrapper/insert-qvote';
 
 class QSortReLook extends React.Component {
     render() {
@@ -75,7 +76,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
-            window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
+            insertQVote({ item: action.itemId, criteria: action.button });
             delta.creator=false;
         } else if (action.type==="TOGGLE_CREATOR"){
             delta.creator= !rasp.creator;

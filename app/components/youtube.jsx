@@ -5,20 +5,16 @@ import itemType               from '../lib/proptypes/item';
 
 class YouTube extends React.Component {
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static propTypes = {
-    item : itemType
-  };
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   state= { vHeight: 0,
             vWidth: 0
   };
 
   static isYouTube (item) {
     let is = false;
+
+    if(typeof item === 'string'){
+      return YouTube.regex.text(item);
+    }
 
     let references = item.references || [];
 
@@ -61,9 +57,8 @@ class YouTube extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { item } = this.props;
-
-    let { url } = item.references[0];
+    let { item, src } = this.props;
+    let url=src || item.references[0].url;
 
     let youTubeId = YouTube.getId(url);
 

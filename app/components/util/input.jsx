@@ -3,6 +3,9 @@
 import React from 'react';
 
 class Input extends React.Component {
+  select(){
+    return this.refs.view.select();
+  }
   render () {
     let classes = ['bp_input'];
     var inputProps=Object.assign({},this.props);
@@ -23,9 +26,17 @@ class Input extends React.Component {
     }
 
     return (
-      <input type="{ this.props.type || 'text' }" className={ classes.join(' ') } { ...inputProps }  />
+      <input type="{ this.props.type || 'text' }" className={ classes.join(' ') } { ...inputProps } ref="view"  />
     );
   }
 }
 
+Object.defineProperty(Input.prototype,'value',{
+  get: function () {
+    return this.refs.view.value;
+  },
+  set: function (v) {
+    this.refs.view.value=v;
+  }
+})
 export default Input;

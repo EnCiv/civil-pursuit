@@ -1,12 +1,10 @@
 'use strict';
 
 import React from 'react';
-import ButtonGroup from '../util/button-group';
-import Button from '../util/button';
 import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
-import Creator from '../creator';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
+import Item from '../item'
 
 exports.button = class PanelCreatorButton extends React.PureComponent {
     render(){
@@ -51,7 +49,13 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
         this.queueFocus(action); 
       else 
         this.queueUnfocus(action)
-      return false; // do not propogate this action
+      return false; // do not propagate this action
+    },
+    POST_ITEM: (action, delta)=>{
+      let rasp=this.props.rasp;
+      delta.creator=false;
+      this.queueUnfocus(action)
+      return true; // let this one propagate further
     }
   }
 
@@ -61,15 +65,18 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
     const {rasp, type, parent}=this.props;
     if(this.mounted || (rasp && rasp.creator)){
       this.mounted=true;
+      var item={type};
+      if(parent)item.parent=parent;
       creator = (
           <Accordion
               active={(rasp && rasp.creator)}
               style={{ backgroundColor: bgc }}
           >
-              <Creator
-                  type={type}
-                  parent={parent}
-                  toggle={()=>rasp.toParent({ type: "TOGGLE_CREATOR" })}
+              <Item
+                  rasp={{shape: 'edit', depth: rasp.depth, toParent: rasp.toParent }}
+                  visualMethod="edit"
+                  item={item}
+                  buttons={["Post"]}
               />
           </Accordion>
       );

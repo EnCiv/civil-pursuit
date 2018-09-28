@@ -7,6 +7,7 @@ import Column from './util/column';
 import Image from './util/image';
 import Select from './util/select';
 import StartingBlocRace from './starting-bloc-race';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Demographics extends React.Component {
 
@@ -15,8 +16,8 @@ class Demographics extends React.Component {
   setEducation() {
     let education = ReactDOM.findDOMNode(this.refs.education).value;
 
-    if (education) {
-      window.socket.emit('set user info', { education });
+    if ( education ) {
+      setUserInfo( { education });
     }
   }
 
@@ -25,8 +26,8 @@ class Demographics extends React.Component {
   setRelationship() {
     let relationship = ReactDOM.findDOMNode(this.refs.relationship).value;
 
-    if (relationship) {
-      window.socket.emit('set user info', { married: relationship });
+    if ( relationship ) {
+      setUserInfo( { married : relationship });
     }
   }
 
@@ -35,8 +36,8 @@ class Demographics extends React.Component {
   setEmployment() {
     let employment = ReactDOM.findDOMNode(this.refs.employment).value;
 
-    if (employment) {
-      window.socket.emit('set user info', { employment });
+    if ( employment ) {
+      setUserInfo( { employment });
     }
   }
 

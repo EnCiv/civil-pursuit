@@ -14,6 +14,7 @@ var  Components={
         'Edit': require('./edit'),
         'Harmony': require('./harmony'),
         "InfoGraphic": require('./info-graphic'),
+        'Post': require('./post'),
         'Promote': require('./promote'),
         'QSortButtons': require('./qsort-buttons'),
         'Refine': require('./refine'),

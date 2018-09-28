@@ -18,7 +18,6 @@ class Uploader extends React.Component {
   static propTypes = {
     handler : React.PropTypes.func,
     image : React.PropTypes.string,
-    video : React.PropTypes.string
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +86,7 @@ class Uploader extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    let { image, video } = this.props;
+    let { image } = this.props;
 
     let content = (
       <section className="syn-uploader" ref="view">
@@ -112,11 +111,11 @@ class Uploader extends React.Component {
       </section>
     )
 
-    if ( image || video ) {
+    if ( image ) {
       let media;
 
-      if ( video ) {
-        media = ( <Youtube item={ video } /> );
+      if ( YouTube.isYouTube(image) ) {
+        media = ( <Youtube src={ image } /> );
       }
       else if ( image ) {
         media = ( <Image src={ image } responsive /> );

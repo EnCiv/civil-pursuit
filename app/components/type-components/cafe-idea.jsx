@@ -4,9 +4,9 @@ import React from 'react';
 import Item from '../item';
 import QSortButtonList from '../qsort-button-list';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
-import ItemCreator from '../item-creator';
 import PanelHeading from '../panel-heading';
 import DoneItem from '../done-item';
+import insertQVote from '../../api-wrapper/insert-qvote';
 
 /**
  * minIdea - the number of ideas required to get the done button. if negative then an answer is required unless parent.answerCount is greater than one
@@ -68,7 +68,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 results.sections = shared.sections;
                 this.props.shared.index[item._id] = shared.items.length - 1;
                 results.index = shared.index;
-                if(mostSection) window.socket.emit('insert qvote', { item: item._id, criteria: mostSection });  // the most important criteria
+                if(mostSection) insertQVote({ item: item._id, criteria: mostSection });  // the most important criteria
             }
             delta.ideaCount=ideaCount();
             delta.dirtyCount=dirtyCount();
@@ -140,7 +140,11 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 <div className="syn-cafe-idea" key='idea'>
                     {showParent ? <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/> : null }
                     <div className="syn-cafe-idea-creator">
-                        {nIdeas.map(i=><ItemCreator type={this.props.type} parent={this.props.parent} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>)}
+                        {nIdeas.map(i=>{
+                            var item={type};
+                            if(parent) item.parent=parent;
+                            return (<Item visualMethod='edit' buttons={['Post']} item={item} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>);
+                        })}
                     </div>
                 </div>
                 <DoneItem active={!constraints.length} 
