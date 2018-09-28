@@ -49,7 +49,8 @@ function serverReactRender(req, res, next) {
             user: isIn,
             notFound: req.notFound,
             error: res.locals.error,
-            browserConfig: JSON.parse(JSON.stringify(this.browserConfig || null))
+            browserConfig: JSON.parse(JSON.stringify(this.browserConfig || null)),
+            MechanicalTurkTask : req.MechanicalTurkTask || null
         };
 
         const sheets= new SheetsRegistry()
@@ -71,7 +72,7 @@ function serverReactRender(req, res, next) {
                     <script>{"if(navigator.userAgent.match(/iPhone|Android|Blackberry|Opera Mini|IEMobile/i)) {var e=document.getElementsByTagName('html')[0]; if(navigator.userAgent.match(/SM-N950U/)) e.style.fontSize='10px'; else e.style.fontSize='8px'}"}
                     </script>
 
-                    <link rel='icon' type='image.png' href='assets/images/favicon-16x16.png' sizes='16x16'/>
+                    <link rel='icon' type='image.png' href='/assets/images/favicon-16x16.png' sizes='16x16'/>
                     <link rel='icon' type='image/png' href='/assets/images/favicon-32x32.png' sizes='32x32'/>
                     <link rel="apple-touch-icon" sizes="180x180"  href="/assets/images/apple-touch-icon.png" />
                     <link rel="manifest"  href="/assets/images/manifest.json"/>

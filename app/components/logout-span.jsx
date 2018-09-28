@@ -2,10 +2,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import superagent from 'superagent';
 import Accordion from 'react-proactive-accordion';
+import cx from 'classnames';
+import injectSheet from 'react-jss'
 
-const styles=cssInJS({
+const styles={
     "buttonLink":{
         display: 'inline-block',
         padding: 0,
@@ -74,9 +75,9 @@ const styles=cssInJS({
         display: 'table',
         width: '100%'
     }
-})
+}
 
-export default class LogoutSpan extends React.Component {
+class LogoutSpan extends React.Component {
     constructor(props) {
         super(props);
 
@@ -136,27 +137,27 @@ export default class LogoutSpan extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-
-        if(!this.props.user)
+        const {classes, user}=this.props;
+        if(!user)
             return(null);
         else
             return (
                 <div>
-                    <button className={styles['buttonLink']} onClick={this.logoutButton}>{"Logout"}</button>
+                    <button className={cx(classes['buttonLink'])} onClick={this.logoutButton}>{"Logout"}</button>
                     <Accordion active={this.state.logup} >
-                        <div className={styles["box"]}>
-                            <div className={styles['intro']}>If you logout now, this account will be lost.  Would you like to set an email address now?</div>
-                            <div className={styles['buttonTable']}>
-                                <div className={styles["email"]}>
-                                    <input className={styles["input"]} placeholder="email" ref="email" name="email" type="email" onKeyDown={this.detectCR} />
+                        <div className={cx(classes["box"])}>
+                            <div className={cx(classes['intro'])}>If you logout now, this account will be lost.  Would you like to set an email address now?</div>
+                            <div className={cx(classes['buttonTable'])}>
+                                <div className={cx(classes["email"])}>
+                                    <input className={cx(classes["input"])} placeholder="email" ref="email" name="email" type="email" onKeyDown={this.detectCR} />
                                 </div>
-                                <div className={styles["submit"]}>
-                                    <button className={styles["input"]} className={styles["submitButton"]} onClick={this.logup}>Set email</button>
+                                <div className={cx(classes["submit"])}>
+                                    <button className={cx(classes["input"])} className={cx(classes["submitButton"])} onClick={this.logup}>Set email</button>
                                 </div>
                             </div>
-                            <div className={styles["info"]}>{this.state.info}</div>
-                            <div className={styles["error"]}>{this.state.error}</div>
-                            <div className={styles['info']}><button className={styles['buttonLink']} onClick={()=>{location.href='/sign/out'}}>{"Logout"}</button></div>
+                            <div className={cx(classes["info"])}>{this.state.info}</div>
+                            <div className={cx(classes["error"])}>{this.state.error}</div>
+                            <div className={cx(classes['info'])}><button className={cx(classes['buttonLink'])} onClick={()=>{location.href='/sign/out'}}>{"Logout"}</button></div>
                         </div>
                     </Accordion>
                 </div>
@@ -164,3 +165,4 @@ export default class LogoutSpan extends React.Component {
     }
 }
 
+export default injectSheet(styles)(LogoutSpan);
