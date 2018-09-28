@@ -8,7 +8,7 @@
 //  3) call the actual function without going through the socket if running if client code is being run on the server side
 //
 
-function apiWrapperPush(message){
+function apiWrapperPush(message,cb){
     if(typeof window !== undefined){
         // rendering in the browser
         let storage=window.localStorage;
@@ -16,9 +16,10 @@ function apiWrapperPush(message){
         let queue=json ? JSON.parse(json) : [];
 
         if(this && this.props && this.props.user)
-            window.socket.emit(...message);
+            cb ? window.socket.emit(...message, cb) : window.socket.emit(...message); // don't send the call back if their isn't one
         else {
-            queue.push(message);
+            if(cb) console.info("apiWrapperPush: queueing message, cb won't get called", message, cb);
+            queue.push(message); // pushed without call back
             storage.setItem("queue", JSON.stringify(queue))
         }
     } else {
@@ -28,24 +29,32 @@ function apiWrapperPush(message){
     }
 }
 
-function apiWrapperFlush() {
+function apiWrapperFlush(cb) {
     if(typeof window!== 'undefined' && this && this.props && this.props.user) {
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");
+        if(!json) return cb();
         let queue=json ? JSON.parse(json) : [];
-
-        while(message=queue.shift()){
-            window.socket.emit(...message);
+        if(!queue.length) { 
+            storage.removeItem("queue");
+            return cb();
         }
-        storage.removeItem("queue");
+
+        var sent=0;
+        while(message=queue.shift()){
+            ++sent;
+            window.socket.emit(...message,()=>(--sent===0 && queue.length===0 && cb()));  // if sent is still positive or queue still has items in it, don't do anything, otherwise call the call back
+        }
+    } else {
+        cb();
     }
 }
 
-function apiWrapperImmediate(message){
+function apiWrapperImmediate(message,cb){
     if(typeof window !== undefined){
         // rendering in the browser
-            window.socket.emit(...message);
+            window.socket.emit(...message,cb);
     } else {
         // rendering on the server
         console.info("apiWrapper Push from server side", message)

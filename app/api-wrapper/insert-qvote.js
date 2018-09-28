@@ -2,8 +2,8 @@
 
 import apiWrapper from '../lib/util/api-wrapper';
 
-function insertQVote(vote){
-  return apiWrapper.Push.call(this,['insert qvote', vote])
+function insertQVote(vote, cb){
+  return apiWrapper.Push.call(this,['insert qvote', vote], cb)
 }
 
 export default insertQVote;
