@@ -5,7 +5,6 @@ import http                     from 'http';
 import { EventEmitter }         from 'events';
 
 import express                  from 'express';
-import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
@@ -73,17 +72,13 @@ class HttpServer extends EventEmitter {
 
           this.cookies();
 
-          this.session();
-
           this.passport();
 
-          this.twitterMiddleware();
+          //this.twitterMiddleware();
 
-          this.facebookMiddleware();
+          //this.facebookMiddleware();
 
           this.signers();
-
-          this.api();
 
           this.cdn();
 
@@ -145,16 +140,6 @@ class HttpServer extends EventEmitter {
 
   cookies () {
     this.app.use(cookieParser());
-  }
-
-  session () {
-    this.app.use(
-      session({
-        secret:             config.secret,
-        resave:             true,
-        saveUninitialized:  true
-      })
-    );
   }
 
   signers () {
@@ -614,27 +599,6 @@ class HttpServer extends EventEmitter {
 
       next();
     }, serverReactRender.bind(this));
-  }
-
-  api () {
-    this.app.all('/api/:handler', (req, res, next) => {
-      let apiHandler;
-
-      for ( let handler in this.socketAPI.handlers ) {
-        if ( this.socketAPI.handlers[handler].slugName === req.params.handler ) {
-          apiHandler = {
-            name : handler,
-            method : this.socketAPI.handlers[handler]
-          };
-        }
-      }
-
-      if ( ! apiHandler ) {
-        return next();
-      }
-
-
-    });
   }
 
   start () {
