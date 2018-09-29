@@ -8,7 +8,7 @@ function insertQVote (vote, cb) {
  theVote.user=this.synuser.id; // on the server side we add the userId.
   QVote
     .create(theVote)
-    .then((v) => {cb(v.toJSON())})
+    .then((v) => {cb(v && v.toJSON())})
     .catch(this.error.bind(this))
 }
 

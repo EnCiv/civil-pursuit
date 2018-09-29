@@ -90,5 +90,6 @@
     "civilpursuit": {
       "app id"        :   "1026000160811367"
     }
-  }
+  },
+  "itemVisualGap": "0.5em"
 }
