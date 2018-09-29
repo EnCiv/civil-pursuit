@@ -15,7 +15,7 @@ class YearOfBirth extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveInfo () {
-    let value = ReactDOM.findDOMNode(this.refs.inputref).value;
+    let value = parseInt(ReactDOM.findDOMNode(this.refs.inputref).value,10);
 
     if ( this.validate(value)) {
       if(this.props.onChange) this.props.onChange({[this.name]: value});
@@ -27,6 +27,8 @@ class YearOfBirth extends React.Component {
   }
 
   validate(value){
+    if(!value) return false;
+    if(Number.isNaN(value))return false;
     let year=(new Date()).getFullYear();
     if(value > (year-150) && value <=year) return true;
     else return false;

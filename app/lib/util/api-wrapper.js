@@ -29,13 +29,41 @@ function apiWrapperPush(message,cb){
     }
 }
 
+function apiWrapperUpdate1OrPush(message,cb){
+    // message is an array of 2, the first is a string where is the name of the operation, 
+    // the second is an object to which Object.assign can be applied to update/accumulate properties to be passed in the api call when it is made
+    if(typeof window !== undefined){
+        // rendering in the browser
+        let storage=window.localStorage;
+        let json=storage.getItem("queue");
+        let queue=json ? JSON.parse(json) : [];
+
+        if(this && this.props && this.props.user)
+            cb ? window.socket.emit(...message, cb) : window.socket.emit(...message); // don't send the call back if their isn't one
+        else {
+            if(cb) console.info("apiWrapperPush: queueing message, cb won't get called", message, cb);
+            let l=queue.length;
+            if(l && queue[l-1][0]===message[0]){
+                Object.assign(queue[l-1][1],message[1])
+            } else {
+                queue.push(message); // pushed without call back
+            }
+            storage.setItem("queue", JSON.stringify(queue))
+        }
+    } else {
+        // rendering on the server
+        console.info("apiWrapper Push from server side", message)
+        ;
+    }
+}
+
 function apiWrapperFlush(cb) {
     if(typeof window!== 'undefined' && this && this.props && this.props.user) {
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");
         if(!json) return cb();
-        let queue=json ? JSON.parse(json) : [];
+        var queue=json ? JSON.parse(json) : [];
         if(!queue.length) { 
             storage.removeItem("queue");
             return cb();
@@ -44,8 +72,10 @@ function apiWrapperFlush(cb) {
         var sent=0;
         while(message=queue.shift()){
             ++sent;
-            window.socket.emit(...message,()=>(--sent===0 && queue.length===0 && cb()));  // if sent is still positive or queue still has items in it, don't do anything, otherwise call the call back
+            console.info("apiWrapperFlush:", message);
+            window.socket.emit(...message,()=>(--sent<=0 && !queue.length && cb()));  // if sent is still positive or queue still has items in it, don't do anything, otherwise call the call back
         }
+        storage.removeItem("queue");
     } else {
         cb();
     }
@@ -64,11 +94,13 @@ function apiWrapperImmediate(message,cb){
 module.exports.apiWrapperPush=apiWrapperPush;
 module.exports.apiWrapperFlush=apiWrapperFlush;
 module.exports.apiWrapperImmediate=apiWrapperImmediate;
+module.exports.apiWrapperUpdate1OrPush=apiWrapperUpdate1OrPush;
 
 var apiWrapper={
     Push: apiWrapperPush,
     Flush: apiWrapperFlush,
-    Immediate: apiWrapperImmediate
+    Immediate: apiWrapperImmediate,
+    Update1OrPush: apiWrapperUpdate1OrPush
 }
 
 export default apiWrapper;
