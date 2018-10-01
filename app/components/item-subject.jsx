@@ -24,7 +24,7 @@ const styles ={
             'text-overflow': 'ellipsis!important',
             'white-space': 'nowrap!important'
         },
-        '&$vs-title': {
+        '&$vs-title, &$vs-peek': {
             overflow: 'hidden!important',
             'text-overflow': 'ellipsis!important',
             'white-space': 'nowrap!important',
@@ -34,6 +34,7 @@ const styles ={
     'vs-collapsed': {},
     'vs-minified': {},
     'vs-title': {},
+    'vs-peek': {},
     'vs-truncated': {},
     'vs-open': {},
     'edit': {

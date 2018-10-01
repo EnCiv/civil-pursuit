@@ -37,6 +37,7 @@ const styles = {
     'vs-truncated4': {},
     'vs-ooview': {},
     'vs-title': {},
+    'vs-peek': {},
     'vs-collapsed': {},
     'vs-minified': {},
     'pre-text': {},

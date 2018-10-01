@@ -61,7 +61,7 @@ const styles = {
             "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
         },
 
-        '&$vs-title': {
+        '&$vs-title, &$vs-peek': {
             'border': 'none',
             'padding-top': 0,
             'padding-bottom': 0
@@ -81,7 +81,7 @@ const styles = {
         "text-align": "right",
         "margin-top": `calc( -1 * ( ${publicConfig.itemVisualGap} - 2px ) )`, /** @item-visual-gap is not working here **/
         "margin-right": `-${publicConfig.itemVisualGap}`, /** move it to the right negating the padding of the item-text **/
-        "&$vs-collapsed, &$vs-minified, &$vs-title": {
+        "&$vs-collapsed, &$vs-minified, &$vs-title, &$vs-peek": {
             display: "none"
         }
     },
@@ -105,7 +105,7 @@ const styles = {
             height: '1em'
         },
 
-        '&$vs-title': {
+        '&$vs-title, &$vs-peek': {
             'padding-top': 0,
             'padding-bottom': '0.25em',
             'font-size': '1rem',
@@ -145,6 +145,7 @@ const styles = {
     },
     'vs-edit': {},
     'vs-open': {},
+    'vs-peek': {},
     'vs-truncated': {},
     'vs-ooview': {},
     'vs-title': {},
@@ -687,7 +688,10 @@ class RASPItem extends ReactActionStatePathClient {
         const shape = rasp ? rasp.shape : '';
         const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
-        const truncShape = (this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape;
+        /*const truncShape= (visualMethod==='titleize')
+                        ? ((this.vM.active(rasp) && readMore) ? 'vs-peek' : 'vs-' + shape) 
+                        : ((this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape);*/
+        const truncShape=((this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape);
         let noReference = true;
         var cxs=[];
 
