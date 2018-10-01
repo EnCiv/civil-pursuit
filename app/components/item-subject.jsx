@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import ClassNames from 'classnames';
+import cx from 'classnames';
 import TextInput from './util/text-input';
 import createRef from 'create-react-ref/lib/createRef';
 React.createRef = createRef; // remove for React 16
@@ -77,7 +77,7 @@ class ItemSubject extends React.Component {
         const { classes, item, rasp, truncShape } = this.props;
         const subject = this.state.subject;
         if (rasp.shape !== 'edit')
-            return (<h4 className={ClassNames(classes["item-subject"], classes[truncShape])}>{subject}</h4>)
+            return (<h4 className={cx(classes["subject"], classes[truncShape])}>{subject}</h4>)
         else {
             return (
                 <TextInput block

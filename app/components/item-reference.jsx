@@ -15,7 +15,7 @@ import S from 'string'
 import publicConfig from '../../public.json';
 
 const styles = {
-    'item-reference': {
+    'reference': {
         padding: '0!important!',
         margin: '0!important!',
         'padding-bottom': `calc( ${publicConfig.itemVisualGap} * 0.5 )!important`,
@@ -172,7 +172,7 @@ class ItemReference extends React.Component {
         if (rasp.shape !== 'edit') {
             if (!references.length) return null;
             return (
-                <h5 className={cx(className, classes['item-reference'], classes[truncShape], noReference && classes['hide'])} >
+                <h5 className={cx(className, classes['reference'], classes[truncShape], noReference && classes['hide'])} >
                     <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
                 </h5>
             );

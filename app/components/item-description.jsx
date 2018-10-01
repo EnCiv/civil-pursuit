@@ -39,6 +39,7 @@ const styles = {
     'vs-title': {},
     'vs-collapsed': {},
     'vs-minified': {},
+    'pre-text': {},
     edit: {
         'border': 'none!important',
         'line-height': '1.375em!important',
@@ -81,10 +82,13 @@ class ItemDescription extends React.Component {
     render() {
         const { classes, truncShape, visualMethod, item, rasp } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
+        // if description is truncated, not in readMore, and there is no reference - then use vs-truncated4 to show an extra line of description
+        const reviseTruncShape= truncShape==='vs-truncated'? (!rasp.readMore ? (noReference ? 'vs-truncated4' : 'vs-truncated') : 'vs-truncated' )
+            : truncShape;
         const description = item && item.description || '';
         if (rasp.shape !== 'edit')
             return (
-                <div className={cx(classes['description'], classes['pre-text'], classes[(!rasp.readMore) ? (noReference ? 'vs-truncated4' : 'vs-truncated') : truncShape])}>
+                <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape])}>
                     {description}
                 </div>
             );

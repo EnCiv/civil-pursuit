@@ -57,14 +57,29 @@ const styles = {
         "background-color": "inherit",
         "position": "relative", /* otherwise things that are relative will obscure this when they move around */
 
-        "div, section, article": {
+        "&div, &section, &article": {
             "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
+        },
+
+        '&$vs-title': {
+            'border': 'none',
+            'padding-top': 0,
+            'padding-bottom': 0
+        },
+          
+       '&$vs-ooview': {
+            border: 'none',
+            padding: 0
+        },
+
+        '&$whole-border': {
+            border: '1px solid #666'
         }
     },
     "item-buttons": {
         "float": "right",
         "text-align": "right",
-        "margin-top": "calc( -1 * ( 0.5em - 2px ) )", /** @item-visual-gap is not working here **/
+        "margin-top": `calc( -1 * ( ${publicConfig.itemVisualGap} - 2px ) )`, /** @item-visual-gap is not working here **/
         "margin-right": `-${publicConfig.itemVisualGap}`, /** move it to the right negating the padding of the item-text **/
         "&$vs-collapsed, &$vs-minified, &$vs-title": {
             display: "none"
@@ -126,7 +141,7 @@ const styles = {
     },
     "item-footer": {
         'margin-right': '0px',
-        'margin-bottom': '0.5em'
+        'margin-bottom': `${publicConfig.itemVisualGap}`
     },
     'vs-edit': {},
     'vs-open': {},
@@ -135,7 +150,8 @@ const styles = {
     'vs-title': {},
     'vs-collapsed': {},
     'vs-minified': {},
-    'untruncate': {}
+    'untruncate': {},
+    'whole-border': {}
 }
 
 class RASPItem extends ReactActionStatePathClient {
@@ -667,12 +683,21 @@ class RASPItem extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { classes, visualMethod, item, user, buttons, rasp, style, parent, ...otherProps } = this.props;
+        const { classes, visualMethod, item, user, buttons, rasp, style, parent, className, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
         const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
         const truncShape = (this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape;
         let noReference = true;
+        var cxs=[];
+
+        if(className){
+            if(className==='whole-border'){
+                cxs.push(classes['whole-border']);
+            }else{
+                console.error("Item: ignoring unsupported className:",className);
+            }
+        }
 
         //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
@@ -718,7 +743,7 @@ class RASPItem extends ReactActionStatePathClient {
         }
 
         return (
-            <article className={cx(classes["item"], this.props.className, classes[classShape])} ref="item" id={'item-' + item._id} >
+            <article className={cx(classes["item"], cxs, classes[classShape])} ref="item" id={'item-' + item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
                     <ItemMedia className={classShape} onClick={this.readMore}
                         rasp={rasp}
