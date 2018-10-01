@@ -77,6 +77,9 @@ const styles = {
     },
     hide: {
         display: 'none'
+    },
+    'vs-title': {
+        display: 'none'
     }
 }
 

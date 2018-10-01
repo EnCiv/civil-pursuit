@@ -177,7 +177,6 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
                             { component: 'QSortButtons', qbuttons: qbuttonTotals },
                             {   component: 'Harmony', 
                                 visualMethod: 'titleize', 
-                                shape: 'title', 
                                 limit: 5, 
                                 hideFeedback: feedbackMethod==='hidden', 
                                 createMethod: 'visible', 

@@ -10,25 +10,25 @@ import publicConfig from '../../public.json';
 
 const styles = {
     'description': {
-        overflow: 'visible!important',
-        display: 'inline!important',
-        'line-height': '1.375em!important',        /* fallback */
-        'max-height': 'none!important',       /* fallback */
-        'position': 'relative!important',
-        'margin-bottom': `${publicConfig.itemVisualGap}!important`,
-        'transition': 'height 0.5s linear!important',
+        overflow: 'visible',
+        display: 'inline',
+        'line-height': '1.375em',        /* fallback */
+        'max-height': 'none',       /* fallback */
+        'position': 'relative',
+        'margin-bottom': `${publicConfig.itemVisualGap}`,
+        'transition': 'height 0.5s linear',
         'pre-text': {
-            'white-space': 'pre-line!important',
-            'text-align': 'justify!important',
+            'white-space': 'pre-line',
+            'text-align': 'justify',
         },
         '&$vs-collapsed, &$vs-minified, &$vs-title': {
             display: 'none'
         },
         '&$vs-truncated': {
-            'max-height': "calc( 1.375em * 3)!important"
+            'max-height': "calc( 1.375em * 3)"
         },
         '&$vs-truncated4': {
-            'max-height': "calc( 1.375em * 4)!important"
+            'max-height': "calc( 1.375em * 4)"
         }
     },
     'vs-edit':{},
@@ -41,12 +41,12 @@ const styles = {
     'vs-minified': {},
     'pre-text': {},
     edit: {
-        'border': 'none!important',
-        'line-height': '1.375em!important',
-        'padding': '0!important',
+        'border': 'none',
+        'line-height': '1.375em',
+        'padding': '0',
     },
     saving: {
-        'text-align': 'right!important'
+        'text-align': 'right'
     }
 }
 
