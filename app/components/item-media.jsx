@@ -17,19 +17,19 @@ const styles = {
     }
   },
   'item-media': {
-    float: 'left!important',
-    'margin-right': `${publicConfig.itemVisualGap}!important`,
-    'padding-bottom': `${publicConfig.itemVisualGap}!important`,
-    height: '7em!important',
-    'max-width': '13em!important',
+    float: 'left',
+    'margin-right': `${publicConfig.itemVisualGap}`,
+    'padding-bottom': `${publicConfig.itemVisualGap}`,
+    height: '7em',
+    'max-width': '13em',
     '&$vs-collapsed, &$vs-minified, &$vs-title': {
       display: 'none'
     },
     '&$media-thin': {
-      'max-width': '7em!important',
-      overflow: 'hidden!important',
+      'max-width': '7em',
+      overflow: 'hidden',
       "img": {
-        'margin-left': "calc( ( 13em - 7em ) / -2)!important"
+        'margin-left': "calc( ( 13em - 7em ) / -2)"
       }
     }
   },

@@ -45,6 +45,7 @@ const styles = {
         'border': 'none',
         'line-height': '1.375em',
         'padding': '0',
+        'width': '100%',
     },
     saving: {
         'text-align': 'right'

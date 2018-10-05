@@ -11,24 +11,24 @@ import publicConfig from '../../public.json'
 const styles ={
     subject: {
         'font-family': 'Oswald',
-        'margin': '0!important',
-        'margin-top': '0!important',
+        'margin': '0',
+        'margin-top': '0',
         'text-align': 'left',
-        padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0!important`,
-        overflow: 'visible!important',
-        'white-space': 'normal!important',
-        'font-size': '1.375rem!important',
-        'line-height': '1.375rem!important',
+        padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0`,
+        overflow: 'visible',
+        'white-space': 'normal',
+        'font-size': '1.375rem',
+        'line-height': '1.375rem',
         '&$vs-collapsed, &$vs-minified':{
-            overflow: 'hidden!important',
-            'text-overflow': 'ellipsis!important',
-            'white-space': 'nowrap!important'
+            overflow: 'hidden',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap'
         },
         '&$vs-title, &$vs-peek': {
-            overflow: 'hidden!important',
-            'text-overflow': 'ellipsis!important',
-            'white-space': 'nowrap!important',
-            'font-size': '1rem!important'
+            overflow: 'hidden',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap',
+            'font-size': '1rem'
         }
     },
     'vs-collapsed': {},
@@ -38,9 +38,11 @@ const styles ={
     'vs-truncated': {},
     'vs-open': {},
     'edit': {
-        extend: 'subject',
-        width: '100%!important',
-        border: 'none!important',
+        'input&':{
+            extend: 'subject',
+            width: '100%',
+            border: 'none',
+        }
     }
 }
 

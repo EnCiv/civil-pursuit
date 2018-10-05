@@ -16,26 +16,26 @@ import publicConfig from '../../public.json';
 
 const styles = {
     'reference': {
-        padding: '0!important!',
-        margin: '0!important!',
-        'padding-bottom': `calc( ${publicConfig.itemVisualGap} * 0.5 )!important`,
-        overflow: 'hidden!important',
-        'text-overflow': 'ellipsis!important',
-        'white-space': 'nowrap!important',
-        'line-height': '1.375em!important',
+        padding: '0',
+        margin: '0',
+        'padding-bottom': `calc( ${publicConfig.itemVisualGap} * 0.5 )`,
+        overflow: 'hidden',
+        'text-overflow': 'ellipsis',
+        'white-space': 'nowrap',
+        'line-height': '1.375em',
         '&vs-minified, &vs-title, &vs-none': {
             display: 'none'
         },
         '&vs-truncated': {
-            overflow: 'hidden!important',
-            'text-overflow': 'ellipsis!important',
-            'white-space': 'nowrap!important',
+            overflow: 'hidden',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap',
 
             a: {
                 color: 'inherit',
-                'text-decoration': 'none!important',
+                'text-decoration': 'none',
                 '&:hover': {
-                    'text-decoration': 'none!important'
+                    'text-decoration': 'none'
                 }
 
             }
@@ -54,20 +54,26 @@ const styles = {
         }
     },
     'url-editor': {
-        'width': '100%!important',
         '&$hide': {
             display: 'none'
+        },
+        'input&': {
+            'width': '100%',
+            'border': 'none',
+            'padding-left': 0,
         }
     },
     'url-title': {
-        border: 'none',
-        'font-size': '0.9rem!important',
-        'font-weight': '300!important',
-        'font-family': "Oswald!important",
-        'background-color': 'white!important',
-        padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0!important`,
-        width: '100%!important',
         display: 'none',
+        'input&': {
+            border: 'none',
+            'font-size': '0.9rem',
+            'font-weight': '300',
+            'font-family': "Oswald",
+            'background-color': 'white',
+            padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0`,
+            width: '100%',
+        }
     },
     'edit-url': {
         display: 'none'

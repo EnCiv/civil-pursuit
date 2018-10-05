@@ -45,8 +45,8 @@ exports.button = class HarmonyButton extends React.Component {
 exports.panel = class HarmonyPanel extends React.Component {
   mounted = false;
   render() {
-    const {active, style, item, rasp, shape='truncated'}=this.props;
-    const nextRASP={shape: shape, depth: rasp.depth, toParent: rasp.toParent} // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
+    const {active, style, item, rasp, visualMethod}=this.props;
+    const nextRASP={shape: visualMethod==='titleize' ? 'title' : 'truncated' , depth: rasp.depth, toParent: rasp.toParent} // RASP 1 to 1 case - subcomponents always start truncated, I'm not saving state so no change in depth, my parent is your parent
     if (!this.mounted && !active) return null; // don't render this unless it's active, or been rendered before
     else {
       this.mounted = true;

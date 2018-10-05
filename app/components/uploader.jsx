@@ -3,13 +3,11 @@
 import React            from 'react';
 import ReactDOM         from 'react-dom';
 import Upload           from '../lib/util/upload';
-import Row              from './util/row';
-import Column           from './util/column';
 import Button           from './util/button';
 import Icon             from './util/icon';
 import Input            from './util/input';
 import Image            from './util/image';
-import Youtube          from './youtube';
+import YouTube          from './youtube';
 
 class Uploader extends React.Component {
 
@@ -49,7 +47,7 @@ class Uploader extends React.Component {
     stream.on('end', () => {
 
       if ( this.props.handler ) {
-        this.props.handler(file);
+        this.props.handler(file.name);
       }
 
     });
@@ -88,6 +86,18 @@ class Uploader extends React.Component {
   render() {
     let { image } = this.props;
 
+    // chooseAFile
+    // the <Input is never displayed. Button cause the file open wizard to open, the user selects the file, and the file name is placed in the input.
+    // the reason is that when the Input element is centered - is is centered as if it has 0 width, so the name of the button starts in the middle and then goes to the right
+    var chooseAFile=()=>{
+      return(
+        <section className="syn-uploader-legacy">
+          <Button onClick={ this.chooseFile.bind(this) }>Choose a file</Button>
+          <Input style={{display: 'none'}} type="file" name="image" ref="typeFile" />
+        </section>
+      )
+    }
+
     let content = (
       <section className="syn-uploader" ref="view">
         <section className="syn-uploader-dropbox" ref="dropbox">
@@ -95,11 +105,7 @@ class Uploader extends React.Component {
             <h4>Drop image here</h4>
             <p>or</p>
           </section>
-
-          <section className="syn-uploader-legacy">
-              <Button onClick={ this.chooseFile.bind(this) }>Choose a file</Button>
-              <Input type="file" name="image" ref="typeFile" />
-          </section>
+          {chooseAFile()}
         </section>
 
         <section className="syn-uploader-uploaded" ref="bucket"></section>
@@ -115,7 +121,7 @@ class Uploader extends React.Component {
       let media;
 
       if ( YouTube.isYouTube(image) ) {
-        media = ( <Youtube src={ image } /> );
+        media = ( <YouTube src={ image } /> );
       }
       else if ( image ) {
         media = ( <Image src={ image } responsive /> );
@@ -128,11 +134,7 @@ class Uploader extends React.Component {
               <h4>Drop image here</h4>
               <p>or</p>
             </section>
-
-            <section className="syn-uploader-legacy">
-                <Button onClick={ this.chooseFile.bind(this) }>Choose a file</Button>
-                <Input type="file" name="image" ref="typeFile" />
-            </section>
+            {chooseAFile()}
           </section>
 
           <section className="syn-uploader-uploaded show" ref="bucket">

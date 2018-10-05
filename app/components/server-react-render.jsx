@@ -81,10 +81,6 @@ function serverReactRender(req, res, next) {
                     <meta name="msapplication-config" content="/assets/images/browserconfig.xml"/>
                     <meta name="theme-color" content="#ffffff"/>
 
-                    <style type="text/css">
-                        ${sheets.toString()}
-                    </style>
-
                     ${dev && "<link rel='stylesheet' href='/assets/css/normalize.css'/>" || ''}
                     ${dev && "<link rel='stylesheet' href='/assets/css/index.css' />" || ''}
                     ${dev && "<link rel='stylesheet' href='/assets/css/bundle.css' />" || ''}                    
@@ -95,6 +91,10 @@ function serverReactRender(req, res, next) {
                     ${!dev && "<link rel='stylesheet' href='/assets/css/index.min.css' />" || ''}
                     ${!dev && "<link rel='stylesheet' href='/assets/css/bundle.css' />" || ''}
                     ${!dev && "<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' />" || ''}
+
+                    <style type="text/css">
+                        ${sheets.toString()}
+                    </style>
 
                     <script>window.reactProps=${JSON.stringify(props)+''}</script>
                     <script>window.env="${props.env}"; window.synappEnv="${process.env.SYNAPP_ENV}"</script>

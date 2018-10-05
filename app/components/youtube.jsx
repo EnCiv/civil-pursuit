@@ -1,7 +1,6 @@
 'use strict';
 
 import React                  from 'react';
-import itemType               from '../lib/proptypes/item';
 
 class YouTube extends React.Component {
 

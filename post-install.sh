@@ -10,7 +10,9 @@ echo '*************************************************************************'
 echo Symbolick link
 echo '*************************************************************************'
 
-mkdir node_modules/syn
+mkdir -p node_modules/syn
+# on windows environment make sure /tmp exisits so that stream uploads of pictures will work
+mkdir -p /tmp
 
 cp node_modules/babel-polyfill/dist/polyfill.min.js assets/js
 
