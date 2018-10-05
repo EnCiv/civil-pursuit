@@ -23,7 +23,7 @@ export default function getItemsQvoteSort(parentStr, typeStr, sort, skip, limit,
                     as: "qvotes"
                 }
             },
-            { $unwind: "$qvotes" },
+            { $unwind: {path: "$qvotes", preserveNullAndEmptyArrays: true }},
             { $sort: { "qvotes._id": 1 } },
             { $group: { _id: { item: "$_id", user: "$qvotes.user" }, criteria: { $last: "$qvotes.criteria" } } },
             { $addFields: {criteria: {$ifNull: ["$criteria","_none"]}}},
