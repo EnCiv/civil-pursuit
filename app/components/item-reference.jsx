@@ -23,10 +23,10 @@ const styles = {
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
         'line-height': '1.375em',
-        '&vs-minified, &vs-title, &vs-none': {
+        '&minified, &title, &none': {
             display: 'none'
         },
-        '&vs-truncated': {
+        '&truncated': {
             overflow: 'hidden',
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap',
@@ -84,7 +84,7 @@ const styles = {
     hide: {
         display: 'none'
     },
-    'vs-title': {
+    'title': {
         display: 'none'
     }
 }
@@ -178,7 +178,7 @@ class ItemReference extends React.Component {
         const { item, classes, className, truncShape, noReference } = this.props;
         const { references, lookingUp, titleError, errMsg } = this.state;
         const { title, url } = references[0] || {};
-        if (truncShape !== 'vs-edit') {
+        if (truncShape !== 'edit') {
             if (!references.length) return null;
             return (
                 <h5 className={cx(className, classes['reference'], classes[truncShape], noReference && classes['hide'])} >

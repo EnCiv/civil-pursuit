@@ -12,7 +12,7 @@ import injectSheet from 'react-jss'
 
 const styles = {
   'item-media-wrapper': {
-    '&$vs-title ': {
+    '&$title ': {
       display: 'none'
     }
   },
@@ -22,7 +22,7 @@ const styles = {
     'padding-bottom': `${publicConfig.itemVisualGap}`,
     height: '7em',
     'max-width': '13em',
-    '&$vs-collapsed, &$vs-minified, &$vs-title': {
+    '&$collapsed, &$minified, &$title': {
       display: 'none'
     },
     '&$media-thin': {
@@ -33,11 +33,11 @@ const styles = {
       }
     }
   },
-  'vs-collapsed': {},
-  'vs-minified': {},
-  'vs-title': {},
-  'vs-truncated': {},
-  'vs-open': {},
+  'collapsed': {},
+  'minified': {},
+  'title': {},
+  'truncated': {},
+  'open': {},
   'media-thin': {}
 }
 
@@ -81,7 +81,7 @@ class ItemMedia extends React.Component {
 
     let media;
 
-    if (truncShape === 'vs-edit') {
+    if (truncShape === 'edit') {
       if (this.props.item.type.mediaMethod != "disabled") {
         media = (
           <section className={classes["item-media-wrapper"]} key="media">

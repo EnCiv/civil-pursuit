@@ -21,25 +21,25 @@ const styles = {
             'white-space': 'pre-line',
             'text-align': 'justify',
         },
-        '&$vs-collapsed, &$vs-minified, &$vs-title': {
+        '&$collapsed, &$minified, &$title': {
             display: 'none'
         },
-        '&$vs-truncated': {
+        '&$truncated': {
             'max-height': "calc( 1.375em * 3)"
         },
-        '&$vs-truncated4': {
+        '&$truncated4': {
             'max-height': "calc( 1.375em * 4)"
         }
     },
-    'vs-edit':{},
-    'vs-open':{},
-    'vs-truncated':{},
-    'vs-truncated4': {},
-    'vs-ooview': {},
-    'vs-title': {},
-    'vs-peek': {},
-    'vs-collapsed': {},
-    'vs-minified': {},
+    'edit':{},
+    'open':{},
+    'truncated':{},
+    'truncated4': {},
+    'ooview': {},
+    'title': {},
+    'peek': {},
+    'collapsed': {},
+    'minified': {},
     'pre-text': {},
     edit: {
         'border': 'none',
@@ -107,11 +107,11 @@ class ItemDescription extends React.Component {
     render() {
         const { classes, truncShape, item, readMore } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
-        // if description is truncated, not in readMore, and there is no reference - then use vs-truncated4 to show an extra line of description
-        const reviseTruncShape= truncShape==='vs-truncated'? (!readMore ? (noReference ? 'vs-truncated4' : 'vs-truncated') : 'vs-truncated' )
+        // if description is truncated, not in readMore, and there is no reference - then use truncated4 to show an extra line of description
+        const reviseTruncShape= truncShape==='truncated'? (!readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
             : truncShape;
         const description = item && item.description || '';
-        if (truncShape !== 'vs-edit')
+        if (truncShape !== 'edit')
             return (
                 <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape])}>
                     {description}

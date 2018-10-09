@@ -61,13 +61,13 @@ const styles = {
             "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
         },
 
-        '&$vs-title, &$vs-peek': {
+        '&$title, &$peek': {
             'border': 'none',
             'padding-top': 0,
             'padding-bottom': 0
         },
           
-       '&$vs-ooview': {
+       '&$ooview': {
             border: 'none',
             padding: 0
         },
@@ -81,7 +81,7 @@ const styles = {
         "text-align": "right",
         "margin-top": `calc( -1 * ( ${publicConfig.itemVisualGap} - 2px ) )`, /** @item-visual-gap is not working here **/
         "margin-right": `-${publicConfig.itemVisualGap}`, /** move it to the right negating the padding of the item-text **/
-        "&$vs-collapsed, &$vs-minified, &$vs-title, &$vs-peek": {
+        "&$collapsed, &$minified, &$title, &$peek": {
             display: "none"
         }
     },
@@ -105,7 +105,7 @@ const styles = {
             height: '1em'
         },
 
-        '&$vs-title, &$vs-peek': {
+        '&$title, &$peek': {
             'padding-top': 0,
             'padding-bottom': '0.25em',
             'font-size': '1rem',
@@ -113,7 +113,7 @@ const styles = {
             'color': '#888',
             'margin-bottom': 0
         },
-        '&$vs-edit': {
+        '&$edit': {
             'max-height': 'none'
         }
     },
@@ -129,13 +129,13 @@ const styles = {
         '&$untruncate': {
             display: 'inline'
         },
-        '&$untruncate&$vs-ooview': {
+        '&$untruncate&$ooview': {
             display: 'none'
         },
-        '&$vs-ooview': {
+        '&$ooview': {
             display: 'none'
         },
-        '&$untruncate&$vs-collapsed': {
+        '&$untruncate&$collapsed': {
             display: 'none'
         }
     },
@@ -143,14 +143,14 @@ const styles = {
         'margin-right': '0px',
         'margin-bottom': `${publicConfig.itemVisualGap}`
     },
-    'vs-edit': {},
-    'vs-open': {},
-    'vs-peek': {},
-    'vs-truncated': {},
-    'vs-ooview': {},
-    'vs-title': {},
-    'vs-collapsed': {},
-    'vs-minified': {},
+    'edit': {},
+    'open': {},
+    'peek': {},
+    'truncated': {},
+    'ooview': {},
+    'title': {},
+    'collapsed': {},
+    'minified': {},
     'untruncate': {},
     'whole-border': {}
 }
@@ -697,12 +697,11 @@ class RASPItem extends ReactActionStatePathClient {
     render() {
         const { classes, visualMethod, item, user, buttons, rasp, style, parent, className, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
-        const classShape = (shape ? 'vs-' + shape : '');
         const readMore = (rasp && rasp.readMore);
         /*const truncShape= (visualMethod==='titleize')
-                        ? ((this.vM.active(rasp) && readMore) ? 'vs-peek' : 'vs-' + shape) 
-                        : ((this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape);*/
-        const truncShape=((this.vM.active(rasp) && readMore) ? 'vs-open' : 'vs-' + shape);
+                        ? ((this.vM.active(rasp) && readMore) ? 'peek' : '' + shape) 
+                        : ((this.vM.active(rasp) && readMore) ? 'open' : '' + shape);*/
+        const truncShape=((this.vM.active(rasp) && readMore) ? 'open' : shape);
         let noReference = true;
         var cxs=[];
 
@@ -758,15 +757,15 @@ class RASPItem extends ReactActionStatePathClient {
         }
 
         return (
-            <article className={cx(classes["item"], cxs, classes[classShape])} ref="item" id={'item-' + item._id} >
+            <article className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
-                    <ItemMedia className={classShape} onClick={this.readMore}
+                    <ItemMedia className={shape} onClick={this.readMore}
                         rasp={rasp}
                         item={item}
                         ref="media"
                     />
-                    <section className={cx(classes["item-text"], classes[classShape])} ref='itemText'>
-                        <section className={cx(classes["item-buttons"], classes[classShape])} ref='buttons'>
+                    <section className={cx(classes["item-text"], classes[shape])} ref='itemText'>
+                        <section className={cx(classes["item-buttons"], classes[shape])} ref='buttons'>
                             <ItemStore item={item}>
                                 {buttons ? buttons.map(button => renderButton(button)) : null}
                             </ItemStore>
@@ -777,13 +776,13 @@ class RASPItem extends ReactActionStatePathClient {
                             <ItemDescription {...childProps} />
                         </Accordion>
                     </section>
-                    <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[classShape])}>
+                    <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>
                         <Icon icon="ellipsis-h" />
                     </div>
                 </Accordion>
                 <section style={{ clear: 'both' }}>
                 </section>
-                <section className={cx(classes["item-footer"], classes[classShape])} ref="footer">
+                <section className={cx(classes["item-footer"], classes[shape])} ref="footer">
                     {buttons ? buttons.map(button => renderPanel(button)) : null}
                 </section>
             </article>

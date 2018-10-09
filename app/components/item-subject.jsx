@@ -19,24 +19,24 @@ const styles ={
         'white-space': 'normal',
         'font-size': '1.375rem',
         'line-height': '1.375rem',
-        '&$vs-collapsed, &$vs-minified':{
+        '&$collapsed, &$minified':{
             overflow: 'hidden',
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap'
         },
-        '&$vs-title, &$vs-peek': {
+        '&$title, &$peek': {
             overflow: 'hidden',
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap',
             'font-size': '1rem'
         }
     },
-    'vs-collapsed': {},
-    'vs-minified': {},
-    'vs-title': {},
-    'vs-peek': {},
-    'vs-truncated': {},
-    'vs-open': {},
+    'collapsed': {},
+    'minified': {},
+    'title': {},
+    'peek': {},
+    'truncated': {},
+    'open': {},
     'edit': {
         'input&':{
             extend: 'subject',
@@ -87,7 +87,7 @@ class ItemSubject extends React.Component {
     render() {
         const { classes, item, truncShape, getEditWidth } = this.props;
         const subject = this.state.subject;
-        if (truncShape !== 'vs-edit')
+        if (truncShape !== 'edit')
             return (<h4 className={cx(classes["subject"], classes[truncShape])}>{subject}</h4>)
         else {
             return (
