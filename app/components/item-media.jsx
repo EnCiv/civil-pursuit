@@ -77,11 +77,11 @@ class ItemMedia extends React.Component {
   }
 
   render() {
-    let { item, className, classes, rasp } = this.props;
+    let { item, className, classes, truncShape } = this.props;
 
     let media;
 
-    if (rasp.shape === 'edit') {
+    if (truncShape === 'vs-edit') {
       if (this.props.item.type.mediaMethod != "disabled") {
         media = (
           <section className={classes["item-media-wrapper"]} key="media">

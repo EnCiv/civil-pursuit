@@ -14,16 +14,6 @@ import insertQVote from '../../api-wrapper/insert-qvote';
  * 
  */
 
-
-Number.prototype.map = function(f){
-    var a=[];
-    let n=0;
-    while(n<this)
-        a.push(f(n++));
-    return a;
-};
-
-
 class CafeIdea extends React.Component {
     render(){
         return (
@@ -43,6 +33,15 @@ class RASPCafeIdea extends ReactActionStatePathClient {
         super(props, 'ideaNum',0);
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         this.createDefaults();
+        // calculate the number of blank ideas and initialize them
+        const {numIdeas=1, maxIdeas=1}=this.props;
+        let nIdeas=Math.min(Math.max(2,numIdeas),maxIdeas);
+        let item={type: this.props.type};
+        if(this.props.parent) item.parent=this.props.parent;
+        let i=0;
+        for(i=0;i<nIdeas;i++){
+            this.ideaState['idea'+i]={posted: false, dirty: false, item: Object.assign({},item)};
+        }
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -94,8 +93,9 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             // user is editing something already posted - this happend on DESCENDANT_FOCUS and UNFOCUS
                 this.ideaState[action.ideaNum].posted=false;
                 delta.ideaCount=ideaCount();          
-        } else if (action.type === "DESCENDANT_UNFOCUS" && action.distance === 1) {
-            if (rasp.decendantFocus) delta.decendantFocus = false;  // my child has unfocused
+        } else if(action.type === "DESCENDANT_UNFOCUS"){
+            action.itemUnfocused=1; 
+            ; // don't let the view close
         } else if(Object.keys(delta).length){
             ; // things were done in the action filters before getting here. proceed to returning the nextRASP
         } else
@@ -123,9 +123,8 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1, showParent=true } = this.props;
+        const { user, type, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1, showParent=true } = this.props;
         let ideaCount=rasp.ideaCount || 0;
-        let nIdeas=Math.min(Math.max(ideaCount+2,numIdeas),maxIdeas);
         let constraints=[];
         let needed = -(ideaCount - (minIdeas >= 0 ? minIdeas : parent.answerCount>0 ? 0 : 1));
         if(needed===1) constraints.push("One more to continue");
@@ -140,10 +139,8 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 <div className="syn-cafe-idea" key='idea'>
                     {showParent ? <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/> : null }
                     <div className="syn-cafe-idea-creator">
-                        {nIdeas.map(i=>{
-                            var item={type};
-                            if(parent) item.parent=parent;
-                            return (<Item visualMethod='edit' buttons={['Post']} item={item} rasp={this.childRASP('truncated','idea'+i)} key={'idea'+i}/>);
+                        {Object.keys(this.ideaState).map(ideaNum=>{
+                            return (<Item visualMethod='edit' buttons={['Post']} item={this.ideaState[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} key={ideaNum}/>);
                         })}
                     </div>
                 </div>

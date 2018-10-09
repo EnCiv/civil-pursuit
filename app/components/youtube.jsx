@@ -12,7 +12,7 @@ class YouTube extends React.Component {
     let is = false;
 
     if(typeof item === 'string'){
-      return YouTube.regex.text(item);
+      return YouTube.regex.test(item);
     }
 
     let references = item.references || [];

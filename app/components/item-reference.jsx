@@ -175,62 +175,66 @@ class ItemReference extends React.Component {
     }
 
     render() {
-        const { classes, className, truncShape, noReference, rasp } = this.props;
+        const { item, classes, className, truncShape, noReference } = this.props;
         const { references, lookingUp, titleError, errMsg } = this.state;
         const { title, url } = references[0] || {};
-        if (rasp.shape !== 'edit') {
+        if (truncShape !== 'vs-edit') {
             if (!references.length) return null;
             return (
                 <h5 className={cx(className, classes['reference'], classes[truncShape], noReference && classes['hide'])} >
                     <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
                 </h5>
             );
-        } else
-            return (
-                <Row center-items>
-                    <Icon
-                        icon="globe"
-                        spin={true}
-                        className={cx(classes['looking-up'], lookingUp && classes['visible'])}
-                        key="globe"
-                    />
+        } else {
+            if(item.type && item.type.referenceMethod==="disabled") 
+                return null;
+            else 
+                return (
+                    <Row center-items>
+                        <Icon
+                            icon="globe"
+                            spin={true}
+                            className={cx(classes['looking-up'], lookingUp && classes['visible'])}
+                            key="globe"
+                        />
 
-                    <Icon 
-                        icon="exclamation" 
-                        className={cx(classes['error'], titleError && classes['visible'])} 
-                        title={errMsg}
-                    />
+                        <Icon 
+                            icon="exclamation" 
+                            className={cx(classes['error'], titleError && classes['visible'])} 
+                            title={errMsg}
+                        />
 
-                    <TextInput
-                        block
-                        placeholder="https://"
-                        ref={this.inputElement}
-                        onChange={this.onChangeKey}
-                        onBlur={this.getUrlTitle}
-                        onKeyDown={this.ignoreCR}
-                        className={cx(classes['url-editor'], title && classes['hide'])}
-                        name="reference"
-                        value={url}
-                        key="reference"
-                    />
-                    <TextInput
-                        disabled
-                        name="url-title"
-                        value={title}
-                        className={cx(classes['url-title'], title && classes['visible'])}
-                        key="title"
-                        onClick={this.editURL}
-                    />
+                        <TextInput
+                            block
+                            placeholder="https://"
+                            ref={this.inputElement}
+                            onChange={this.onChangeKey}
+                            onBlur={this.getUrlTitle}
+                            onKeyDown={this.ignoreCR}
+                            className={cx(classes['url-editor'], title && classes['hide'])}
+                            name="reference"
+                            value={url}
+                            key="reference"
+                        />
+                        <TextInput
+                            disabled
+                            name="url-title"
+                            value={title}
+                            className={cx(classes['url-title'], title && classes['visible'])}
+                            key="title"
+                            onClick={this.editURL}
+                        />
 
-                    <Icon
-                        icon="pencil"
-                        mute
-                        className={cx(classes['edit-url'], title && classes['visible'])}
-                        onClick={this.editURL}
-                        key="pencil"
-                    />
-                </Row>
-            );
+                        <Icon
+                            icon="pencil"
+                            mute
+                            className={cx(classes['edit-url'], title && classes['visible'])}
+                            onClick={this.editURL}
+                            key="pencil"
+                        />
+                    </Row>
+                );
+        }
     }
 }
 

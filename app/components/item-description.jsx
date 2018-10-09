@@ -59,10 +59,12 @@ class ItemDescription extends React.Component {
         this.inputElement = React.createRef();
         this.onChangeKey = this.onChangeKey.bind(this);
         this.delayedUpdate = this.delayedUpdate.bind(this);
+        this.onBlur=this.onBlur.bind(this);
         this.state = { description: this.props.item && this.props.item.description || '' };
     }
     componentWillReceiveProps(newProps) {
         let newDescription = newProps.item && newProps.item.description || '';
+        this.dirty=false;
         if (this.state.description != newDescription)
             this.setState({ description: newDescription.slice() })
     }
@@ -73,22 +75,43 @@ class ItemDescription extends React.Component {
         this.setState({ touched: true, collecting: true, description });
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(this.delayedUpdate, 10000);
-
+        if(this.props.onDirty){
+            let dirty=(description !== (this.props.item && this.props.item.description || ''));
+            if(dirty!==this.dirty) { // only send dirty if it changes 
+                this.props.onDirty(dirty);
+                this.dirty=dirty;
+            }
+        }
     }
+
+    onBlur(){
+        if(this.timeout) {
+            var description = this.state.description;
+            clearTimeout(this.timeout);
+            this.timeout=0;
+            if (this.props.onChange)
+                this.props.onChange({ value: { description } });
+        }
+        this.setState({ collecting: false });
+        this.dirty=false;
+    }
+
     delayedUpdate() {
         var description = this.state.description.slice();
         if (this.props.onChange)
             this.props.onChange({ value: { description } });
         this.setState({ collecting: false });
+        this.timeout=0;
     }
+
     render() {
-        const { classes, truncShape, visualMethod, item, rasp } = this.props;
+        const { classes, truncShape, item, readMore } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
         // if description is truncated, not in readMore, and there is no reference - then use vs-truncated4 to show an extra line of description
-        const reviseTruncShape= truncShape==='vs-truncated'? (!rasp.readMore ? (noReference ? 'vs-truncated4' : 'vs-truncated') : 'vs-truncated' )
+        const reviseTruncShape= truncShape==='vs-truncated'? (!readMore ? (noReference ? 'vs-truncated4' : 'vs-truncated') : 'vs-truncated' )
             : truncShape;
         const description = item && item.description || '';
-        if (rasp.shape !== 'edit')
+        if (truncShape !== 'vs-edit')
             return (
                 <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape])}>
                     {description}
@@ -104,7 +127,7 @@ class ItemDescription extends React.Component {
                         name="description"
                         value={this.state.description}
                         onChange={this.onChangeKey}
-                        onBlur={this.delayedUpdate}
+                        onBlur={this.onBlur}
                         block
                         required
                         key="description"

@@ -166,6 +166,7 @@ class RASPItem extends ReactActionStatePathClient {
             this.vM = this.visualMethods['default'];
         }
         this.onChange = this.onChange.bind(this);
+        this.onDirty=this.onDirty.bind(this);
         this.readMore = this.readMore.bind(this);
         //onsole.info("RASPItem.constructor");
 
@@ -174,7 +175,7 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     newObjectId(_id) {
-        this.onChange({ value: { _id } });
+        Object.assign(this.props.item, {_id}); // add the _id to the item - but don't notify ancestors of this non-user change
     }
 
     someButton(part) {
@@ -264,9 +265,9 @@ class RASPItem extends ReactActionStatePathClient {
             },
             // the shape to give a child, when it is initially mounted
             childShape: (rasp, button) => {
-                return rasp.shape;
+                return 'edit';
             },
-            childVisualMethod: () => undefined,
+            childVisualMethod: () => 'edit',
             // process actions for this visualMethod
             enableHint: () => false,
             actionToState: (action, rasp, source, initialRASP, delta) => {
@@ -274,15 +275,10 @@ class RASPItem extends ReactActionStatePathClient {
             },
             // derive shape and pathSegment from the other parts of the RASP
             deriveRASP: (rasp, initialRASP) => {
-                if (rasp.button || rasp.readMore) {
-                    rasp.shape = 'open'
-                } else
-                    rasp.shape = 'truncated';
-                // calculate the pathSegment and return the new state
-                let parts = [];
-                if (rasp.readMore) parts.push('r');
+                let parts=[];
+                if (rasp.button==='Post') rasp.shape='open';
+                else rasp.shape='edit';
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
-                if (rasp.decendantFocus) parts.push('d');
                 rasp.pathSegment = parts.join(',');
             }
         },
@@ -677,8 +673,23 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     onChange(obj) {
-        if (obj.value)
-            Object.assign(this.props.item, obj.value);
+        if (obj.value) {
+            if(Object.keys(obj.value).some(key=>obj.value[key]!==this.props.item[key])) {  // only if something has really changed
+                Object.assign(this.props.item, obj.value);
+                this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: true})); // let the ancestors know that this item is being edited
+            }
+        }
+    }
+
+    onDirty(dirty){
+        this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty})); // let the ancestors know that this item is being edited
+    }
+
+    getEditWidth(){
+        let buttons = ReactDOM.findDOMNode(this.refs.buttons);
+        let truncable = ReactDOM.findDOMNode(this.refs.truncable);
+        if(buttons && truncable)
+            return buttons.getBoundingClientRect().x-truncable.getBoundingClientRect().x + 'px';
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -710,7 +721,7 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, rasp, truncShape, noReference, onChange: this.onChange, visualMethod };
+        const childProps = { item, readMore, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {
@@ -760,8 +771,8 @@ class RASPItem extends ReactActionStatePathClient {
                                 {buttons ? buttons.map(button => renderButton(button)) : null}
                             </ItemStore>
                         </section>
-                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
-                            <ItemSubject {...childProps} />
+                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
+                            <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} />
                         </Accordion>
