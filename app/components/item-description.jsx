@@ -63,8 +63,8 @@ class ItemDescription extends React.Component {
         this.state = { description: this.props.item && this.props.item.description || '' };
     }
     componentWillReceiveProps(newProps) {
+        if(this.dirty) return;  // race - delayedUpdate and onChangeKey when user is typing. If user is typing, it's dirty and that should have presicence
         let newDescription = newProps.item && newProps.item.description || '';
-        this.dirty=false;
         if (this.state.description != newDescription)
             this.setState({ description: newDescription.slice() })
     }

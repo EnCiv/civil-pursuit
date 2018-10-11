@@ -4,13 +4,26 @@ import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import createItem from '../../api-wrapper/create-item';
+import updateItem from '../../api-wrapper/create-item';
 
 exports.button = class PostButton extends React.Component {
 
     onClick() {
-        createItem(this.props.item);
-        this.props.rasp.toParent({type: "POST_ITEM", item: this.props.item});
-        if(this.props.onClick) this.props.onClick();
+        const rasp=this.props.rasp;
+        if(rasp.shape==='edit' && !rasp.button) { // first time through
+            createItem.call(this, this.props.item,(item)=>{
+                if(item)
+                    rasp.toParent({type: "POST_ITEM", item: item});
+                else {
+                    logger.error("error creating item on server:", this.props.item);
+                    rasp.toParent({type: "POST_ITEM", item: this.props.item})
+                }
+            });
+        }else if(rasp.shape==='edit'){
+            updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
+            rasp.toParent({type: "POST_ITEM", item: this.props.item});
+        } else 
+            rasp.toParent({type: "EDIT_ITEM"})
     };
 
     render() {
@@ -18,7 +31,7 @@ exports.button = class PostButton extends React.Component {
         var success = false;
         var title = null;
 
-        if (rasp.button !== 'Post') {
+        if (rasp.shape === 'edit') {
             success = true;
             title = "click to post this";
         } else {
@@ -36,7 +49,7 @@ exports.button = class PostButton extends React.Component {
                     title={title}
                     className="post-button"
                 >
-                    <span className="civil-button-text">{rasp.button === 'Post' ? 'Edit' : 'Post'}</span>
+                    <span className="civil-button-text">{rasp.shape === 'edit' ? 'Post' : 'edit'}</span>
                 </Button>
             </ButtonGroup>
         );

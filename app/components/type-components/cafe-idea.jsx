@@ -89,6 +89,9 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 this.ideaState[action.ideaNum]={posted: false, dirty: action.dirty, item:null};
             delta.dirtyCount=dirtyCount();
             delta.ideaCount=ideaCount();
+        } else if(action.type==="DESCENDANT_FOCUS"  && action.distance==1){
+            this.ideaState[action.ideaNum].posted=false;
+            delta.ideaCount=ideaCount();          
         } else if(action.wasType ==="TOGGLE_BUTTON" && action.distance===2 && action.button==='Edit'){
             // user is editing something already posted - this happend on DESCENDANT_FOCUS and UNFOCUS
                 this.ideaState[action.ideaNum].posted=false;
@@ -140,7 +143,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                     {showParent ? <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/> : null }
                     <div className="syn-cafe-idea-creator">
                         {Object.keys(this.ideaState).map(ideaNum=>{
-                            return (<Item visualMethod='edit' buttons={['Post']} item={this.ideaState[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} key={ideaNum}/>);
+                            return (<Item visualMethod='edit' buttons={['Post']} item={this.ideaState[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={ideaNum}/>);
                         })}
                     </div>
                 </div>

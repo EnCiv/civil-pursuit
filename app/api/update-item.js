@@ -3,7 +3,7 @@
 import Item from '../models/item';
 import Mungo from 'mungo';
 
-function updateItem (item) {
+function updateItem (item, cb) {
   try {
     item.user = Mungo.mongodb.ObjectID(this.synuser.id);
     let id=Mungo.mongodb.ObjectID(item._id)
@@ -15,20 +15,21 @@ function updateItem (item) {
             .toPanelItem()
             .then(
               item => {
+                if(typeof cb === 'function') cb(item);
                 this.emit('item changed', item);
               },
-              error => this.error(error)
+              (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
             )
         }
-        catch ( error ) {
-          this.error(error);
+        catch ( err ) {
+          if(typeof cb === 'function') cb(); this.error(err)
         }
       },
-      this.error.bind(this)
+      (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
     );
   }
-  catch ( error ) {
-    this.error(error);
+  catch ( err ) {
+    if(typeof cb === 'function') cb(); this.error(err)
   }
 }
 

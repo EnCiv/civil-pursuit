@@ -17,18 +17,18 @@ function createItem (item, cb) {
                 if(typeof cb === 'function') cb(item);
                 this.emit('OK create item', item);
               },
-              error => this.error(error)
+              (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
             )
         }
-        catch ( error ) {
-          this.error(error);
+        catch ( err ) {
+          if(typeof cb === 'function') cb(); this.error(err)
         }
       },
-      this.error.bind(this)
+      (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
     );
   }
-  catch ( error ) {
-    this.error(error);
+  catch ( err ) {
+    if(typeof cb === 'function') cb(); this.error(err)
   }
 }
 

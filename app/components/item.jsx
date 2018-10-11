@@ -25,7 +25,7 @@ import publicConfig from '../../public.json'
 //
 
 // item -- the item to render
-// buttons - list of buttons, can be component names, or can be objects with component.name
+// buttons - list of buttons, can be component names, or can be objects with component.name. If visualMethod is edit, buttons defaults to Post
 // user -- passed on to buttons and panels
 // rasp
 // style -- is passed as style to panels opened by buttons
@@ -180,7 +180,8 @@ class RASPItem extends ReactActionStatePathClient {
 
     someButton(part) {
         var button = null;
-        this.props.buttons.some(b => {
+        const buttons=this.props.buttons || visualMethod==='edit' && ['Post'] || null;
+        buttons.some(b => {
             if (typeof b === 'string') {
                 if (b[0] === part) { button = b; return true }
             } else if (typeof b === 'object') {
@@ -276,7 +277,8 @@ class RASPItem extends ReactActionStatePathClient {
             // derive shape and pathSegment from the other parts of the RASP
             deriveRASP: (rasp, initialRASP) => {
                 let parts=[];
-                if (rasp.button==='Post') rasp.shape='open';
+                if (rasp.button==='Posted') rasp.shape=rasp.readMore ? 'open' : 'truncated';
+                else if (rasp.button==='Editing') rasp.shape='edit';
                 else rasp.shape='edit';
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 rasp.pathSegment = parts.join(',');
@@ -505,7 +507,14 @@ class RASPItem extends ReactActionStatePathClient {
     actionToState(action, rasp, source = 'CHILD', initialRASP, delta) { // this function is going to be called by the RASP manager, rasp is the current RASP state
         //logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
         var nextRASP = {};
-        if (action.type === "SET_BUTTON") {
+        if (action.type === 'POST_ITEM' && action.distance==0) {
+            Object.assign(this.props.item,action.item); // this items is posted, but copy it here to avoid propagation delay
+            delta.button='Posted';
+            action.duration=1; // the parent of this RASP should know of the post too.
+        } else if (action.type === 'EDIT_ITEM'){
+            delta.button='Editing';
+            this.qaction(()=>this.props.rasp.toParent({type: "DESCENDANT_FOCUS"})); // let the ancestors know that this item is being edited
+        } else if (action.type === "SET_BUTTON") {
             delta.button = action.button;
             delta.readMore = false; // if turning off a button, close readMore too
         } else if (action.type === "RESET_BUTTON") {
@@ -595,7 +604,6 @@ class RASPItem extends ReactActionStatePathClient {
     /*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
     shouldComponentUpdate(newProps, newState) {
         if (!isEqual(this.props.rasp, newProps.rasp)) return true;
-        //if (!isEqual(this.props.buttons, newProps.buttons)) return true;  the buttons don't change
         if (this.state.hint !== newState.hint) return true;
         if (this.state.minHeight !== newState.minHeight) return true;
         if (this.props.item && newProps.item) {
@@ -695,9 +703,10 @@ class RASPItem extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { classes, visualMethod, item, user, buttons, rasp, style, parent, className, ...otherProps } = this.props;
+        const { classes, visualMethod, item, user, rasp, style, parent, className, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
         const readMore = (rasp && rasp.readMore);
+        const buttons=this.props.buttons || visualMethod==='edit' && ['Post'] || null;
         /*const truncShape= (visualMethod==='titleize')
                         ? ((this.vM.active(rasp) && readMore) ? 'peek' : '' + shape) 
                         : ((this.vM.active(rasp) && readMore) ? 'open' : '' + shape);*/

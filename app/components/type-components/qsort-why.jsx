@@ -96,7 +96,13 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source, defaultRASP, delta){
         var nextRASP={};
-        if(action.type==="RESET"){
+        const itemId=action.itemId;
+        if(action.type==="POST_ITEM"){
+            this.results.why[this.whyName][itemId]=action.item._id;
+            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.whyName,'set')});
+        } else if(action.type==="DESCENDANT_FOCUS"){
+            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.whyName)});
+        } else if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
         }  else if (action.type === "TOGGLE_FOCUS") {
@@ -251,6 +257,7 @@ class QSortWhyItem extends React.Component {
                             {...this.props}
                             buttons =   { ['CreateHarmony']}
                             side    =   { qbuttons[whyName].harmonySide}
+                            style   = {{backgroundColor: qbuttons[sectionName].color}} 
                             min={true}
                         />
                     </ItemStore>

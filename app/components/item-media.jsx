@@ -82,7 +82,7 @@ class ItemMedia extends React.Component {
     let media;
 
     if (truncShape === 'edit') {
-      if (this.props.item.type.mediaMethod != "disabled") {
+      if (!(this.props.item.type && this.props.item.type.mediaMethod === "disabled")) {
         media = (
           <section className={classes["item-media-wrapper"]} key="media">
             <section className={classes["item-media"]} ref={this.media} style={{ width: "calc(13em - 8px)" }}>

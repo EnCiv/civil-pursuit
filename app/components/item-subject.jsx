@@ -93,7 +93,7 @@ class ItemSubject extends React.Component {
             return (
                 <TextInput block
                     className={cx(classes['subject'],classes['edit'])}
-                    placeholder={item.type.subjectPlaceholder || "Subject"}
+                    placeholder={item.type && item.type.subjectPlaceholder || "Subject"}
                     ref={this.inputElement}
                     required
                     name="subject"
