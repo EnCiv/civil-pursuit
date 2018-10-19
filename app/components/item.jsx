@@ -628,7 +628,9 @@ class RASPItem extends ReactActionStatePathClient {
 
 
     // when the user clicks on an item's button
-    onClick(button) {
+    onClick(button, _id, id, func) {
+        if(typeof func === 'function') 
+            func.call(this);
         this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button });
         //setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
     }

@@ -4,26 +4,31 @@ import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 import createItem from '../../api-wrapper/create-item';
-import updateItem from '../../api-wrapper/create-item';
+import updateItem from '../../api-wrapper/update-item';
 
 exports.button = class PostButton extends React.Component {
 
-    onClick() {
+    doThisAsParent(){
         const rasp=this.props.rasp;
         if(rasp.shape==='edit' && !rasp.button) { // first time through
             createItem.call(this, this.props.item,(item)=>{
                 if(item)
-                    rasp.toParent({type: "POST_ITEM", item: item});
+                    this.queueAction({type: "POST_ITEM", item: item});
                 else {
                     logger.error("error creating item on server:", this.props.item);
-                    rasp.toParent({type: "POST_ITEM", item: this.props.item})
+                    this.queueAction({type: "POST_ITEM", item: this.props.item})
                 }
             });
         }else if(rasp.shape==='edit'){
             updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
-            rasp.toParent({type: "POST_ITEM", item: this.props.item});
+            this.queueAction({type: "POST_ITEM", item: this.props.item});
         } else 
-            rasp.toParent({type: "EDIT_ITEM"})
+            this.queueAction({type: "EDIT_ITEM"})
+    }
+
+    onClick() {
+        this.props.onClick(this.doThisAsParent)
+
     };
 
     render() {

@@ -3,6 +3,7 @@
 import React from 'react';
 import PanelStore from '../store/panel';
 import Item from '../item';
+import {ReactActionStatePathFilter} from 'react-action-state-path';
 
 
 exports.panel = class CreateHarmonyPanel extends React.Component {
@@ -25,11 +26,28 @@ exports.panel = class CreateHarmonyPanel extends React.Component {
 }
 
 // this is intended for only one item.  If you were going to support more than one item, you would need to create a RASP and multiplex the multiple items.
-class OneItemCreator extends React.Component {
+class OneItemCreator extends ReactActionStatePathFilter {
+    constructor(props){
+        super(props,'itemId',0); // parents key is itemId
+    }
+
+    componentDidMount(){
+        // parent (QSortWhy) needs to be notified with POST_ITEM when the item is posted. If it's already there, it will be in panel.items when this is mounted, because PanelStore does not render children until there are items
+        if(this.props.panel.items.length)
+            this.queueAction({type: "POST_ITEM", item: this.props.panel.items[0], distance: 1, from: "OneItemCreator"});
+    }
+
+    actionFilters={
+        POST_ITEM: (action, delta)=>{
+            if(action.from!=="OneItemCreator")  // don't react to my own actions
+                setTimeout(()=>this.props.PanelCreateItem(action.item));
+            return true; // let this one propagate further
+        }
+    }
+
     render (){
         const {panel, ...otherProps}=this.props;
-        if(!panel) return null; // not ready yet
-        const item=panel.items && panel.items.length ? panel.items[0] : {type: panel.type, parent: panel.parent}; // this type is an object, items must have at least one entry, to create them, must specify type and parent if applicable
+        const item=panel.items.length ? panel.items[0] : {type: panel.type, parent: panel.parent}; // this type is an object, items must have at least one entry, to create them, must specify type and parent if applicable
         otherProps.rasp.shape=item.subject ? 'truncated' : 'edit';  // start in edit mode if item did not exist
         return (
                 <Item
