@@ -60,6 +60,7 @@ class ScrollWrapper extends React.Component {
     this.accumulateScrollX=0;
     this.accumulateScrollY=0;
     this.scrollAnimationFrame=0;
+    this.lastScrollTimeStamp=0;
   }
 
  /* scrollToTarget(target, duration){ // duration not used
@@ -426,6 +427,39 @@ class ScrollWrapper extends React.Component {
   scroll(e) {
     e.preventDefault();
 
+    function animate(scrollX, scrollY, shifted, now){
+      // Make sure the content height is not changed
+        this.calculateSize(() => {
+  
+          // Next Value
+          const nextY = this.state.top + scrollY;
+          const nextX = this.state.left + scrollX;
+  
+          // Is it Scrollable?
+          const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
+          const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
+  
+          // changes: Set scrolling state before changing position
+          this.setState({ scrolling: true }, () => {
+            // Vertical Scrolling
+            this.htmlElement.style.transition=null;
+            if (canScrollY && !shifted) {
+              this.normalizeVertical(nextY, { scrolling: false, reset: true });
+            }
+  
+            // Horizontal Scrolling
+            if (shifted && canScrollX) {
+              this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
+            }
+  
+            this.scrollAnimationFrame=0;
+            this.lastScrollTimeStamp=(new Event('look')).timeStamp;
+          });
+        });
+      }
+
+
+
     // DOM events
     // need to get the values out of e, because e will be release after setState (in calculateSize) is called
 
@@ -445,42 +479,29 @@ class ScrollWrapper extends React.Component {
       return;
     }
 
-
-    function animate(now){
-    // Make sure the content height is not changed
-      this.calculateSize(() => {
-
-        // Next Value
-        const nextY = this.state.top + scrollY;
-        const nextX = this.state.left + scrollX;
-
-        // Is it Scrollable?
-        const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
-        const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
-
-        // changes: Set scrolling state before changing position
-        this.setState({ scrolling: true }, () => {
-          // Vertical Scrolling
-          this.htmlElement.style.transition=null;
-          if (canScrollY && !shifted) {
-            this.normalizeVertical(nextY, { scrolling: false, reset: true });
-          }
-
-          // Horizontal Scrolling
-          if (shifted && canScrollX) {
-            this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
-          }
-
-          this.scrollAnimationFrame=0;
-        });
-      });
+    if((e.timeStamp-this.lastScrollTimeStamp-50)<0){ // scroll events are happening faster than the render
+      this.accumulateScrollY+=scrollY;
+      this.accumulateScrollX+=scrollX;
+      if(!this.lateScroll) {
+        this.lateScroll=setTimeout(()=>{
+          this.accumulateScrollX=0;
+          this.accumulateScrollY=0;
+          this.scrollAnimationFrame=window.requestAnimationFrame((now)=>{animate.call(this,this.accumulateScrollX,this.accumulateScrollY,shifted,now);this.lateScroll=0});
+        },50)
+      }
+      return;
+    } else { // this scroll event came in after the last scroll completed, but there is accumulated scroll
+      if(this.lateScroll) {
+        clearTimeout(this.lateScroll);
+        this.lateScroll=0;
+      }
     }
+
     scrollX+=this.accumulateScrollX;
     scrollY+=this.accumulateScrollY;
     this.accumulateScrollX=0;
     this.accumulateScrollY=0;
-    this.scrollAnimationFrame=window.requestAnimationFrame(animate.bind(this));
-
+    this.scrollAnimationFrame=window.requestAnimationFrame(animate.bind(this,scrollX,scrollY,shifted));
   }
 
   render() {
