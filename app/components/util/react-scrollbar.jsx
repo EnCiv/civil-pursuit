@@ -57,6 +57,9 @@ class ScrollWrapper extends React.Component {
       this.scrollWrapper=this.htmlElement; //using the root as the wrapper
     } else 
       this.htmlElement = null;
+    this.accumulateScrollX=0;
+    this.accumulateScrollY=0;
+    this.scrollAnimationFrame=0;
   }
 
  /* scrollToTarget(target, duration){ // duration not used
@@ -428,39 +431,56 @@ class ScrollWrapper extends React.Component {
 
     // Set the wheel step
     const num = this.props.speed;
-    const shifted = e.shiftKey;
+    const shifted = e.shiftKey; // ??? Need to test the behavior of shifted is accumulation is taking place
     const deltaX = e.deltaX;
     const deltaY = e.deltaY;
-    const scrollY = deltaY > 0 ? num : -(num);
+    var scrollY = deltaY > 0 ? num : -(num);
     var scrollX = deltaX > 0 ? num : -(num);
     // Fix Mozilla Shifted Wheel~
     if (shifted && deltaX === 0) scrollX = deltaY > 0 ? num : -(num);
 
+    if(this.scrollAnimationFrame){
+      this.accumulateScrollY+=scrollY;
+      this.accumulateScrollX+=scrollX;
+      return;
+    }
+
+
+    function animate(now){
     // Make sure the content height is not changed
-    this.calculateSize(() => {
+      this.calculateSize(() => {
 
-      // Next Value
-      const nextY = this.state.top + scrollY;
-      const nextX = this.state.left + scrollX;
+        // Next Value
+        const nextY = this.state.top + scrollY;
+        const nextX = this.state.left + scrollX;
 
-      // Is it Scrollable?
-      const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
-      const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
+        // Is it Scrollable?
+        const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
+        const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
 
-      // changes: Set scrolling state before changing position
-      this.setState({ scrolling: true }, () => {
-        // Vertical Scrolling
-        this.htmlElement.style.transition=null;
-        if (canScrollY && !shifted) {
-          this.normalizeVertical(nextY, { scrolling: false, reset: true });
-        }
+        // changes: Set scrolling state before changing position
+        this.setState({ scrolling: true }, () => {
+          // Vertical Scrolling
+          this.htmlElement.style.transition=null;
+          if (canScrollY && !shifted) {
+            this.normalizeVertical(nextY, { scrolling: false, reset: true });
+          }
 
-        // Horizontal Scrolling
-        if (shifted && canScrollX) {
-          this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
-        }
+          // Horizontal Scrolling
+          if (shifted && canScrollX) {
+            this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
+          }
+
+          this.scrollAnimationFrame=0;
+        });
       });
-    });
+    }
+    scrollX+=this.accumulateScrollX;
+    scrollY+=this.accumulateScrollY;
+    this.accumulateScrollX=0;
+    this.accumulateScrollY=0;
+    this.scrollAnimationFrame=window.requestAnimationFrame(animate.bind(this));
+
   }
 
   render() {
