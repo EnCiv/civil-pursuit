@@ -53,8 +53,10 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
     },
     POST_ITEM: (action, delta)=>{
       let rasp=this.props.rasp;
-      delta.creator=false;
-      this.queueUnfocus(action)
+      if(rasp.creator){
+        delta.creator=false;
+        this.queueUnfocus(action)
+      }
       return true; // let this one propagate further
     }
   }

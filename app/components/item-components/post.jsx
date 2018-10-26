@@ -9,19 +9,39 @@ import updateItem from '../../api-wrapper/update-item';
 exports.button = class PostButton extends React.Component {
 
     doThisAsParent(){
+        const itemValid=()=>{
+            let item=this.props.item;
+            var errors={};
+            if(!item.subject) errors.subject="Subject is required";
+            if(!item.description) errors.description="Description is required";
+            if(Object.keys(errors).length){
+                this.queueAction({type: "POST_ERROR", errors})
+                return false;
+            } else
+                return true;
+        }
+
         const rasp=this.props.rasp;
         if(rasp.shape==='edit' && !rasp.button) { // first time through
-            createItem.call(this, this.props.item,(item)=>{
-                if(item)
-                    this.queueAction({type: "POST_ITEM", item: item});
-                else {
-                    logger.error("error creating item on server:", this.props.item);
-                    this.queueAction({type: "POST_ITEM", item: this.props.item})
-                }
-            });
+            if(itemValid()) {
+                createItem.call(this, this.props.item,(item)=>{
+                    if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
+                        logger.error("Post.doThiAsParent after createItem item is not mounted", this);
+                        return;
+                    }
+                    if(item)
+                        this.queueAction({type: "POST_ITEM", item: item});
+                    else {
+                        logger.error("error creating item on server:", this.props.item);
+                        this.queueAction({type: "POST_ITEM", item: this.props.item})
+                    }
+                });
+            }
         }else if(rasp.shape==='edit'){
-            updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
-            this.queueAction({type: "POST_ITEM", item: this.props.item});
+            if(itemValid()){
+                updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
+                this.queueAction({type: "POST_ITEM", item: this.props.item});
+            }
         } else 
             this.queueAction({type: "EDIT_ITEM"})
     }

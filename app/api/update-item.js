@@ -5,6 +5,10 @@ import Mungo from 'mungo';
 
 function updateItem (item, cb) {
   try {
+    // mungo complains about extra properties that may be in the object, so we just delete them
+		const schemaKeys = Object.keys(Item.schema).concat(['_id']);
+		Object.keys(item).forEach(inputKey => schemaKeys.includes(inputKey) || delete item[inputKey]);
+
     item.user = Mungo.mongodb.ObjectID(this.synuser.id);
     let id=Mungo.mongodb.ObjectID(item._id)
 

@@ -7,16 +7,17 @@ import Icon from './util/icon';
 import Accordion from 'react-proactive-accordion';
 import cx from 'classnames';
 import isEqual from 'lodash/isEqual';
-import ReactActionStatePath from "react-action-state-path";
+import RASP from "react-action-state-path";
 import { ReactActionStatePathClient } from 'react-action-state-path';
 import ItemStore from './store/item';
 import ItemComponent from './item-component';
-import getObjectId from '../api-wrapper/get-object-id';
 import ItemSubject from './item-subject';
 import ItemReference from './item-reference';
 import ItemDescription from './item-description';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
+import ObjectID from 'bson-objectid';
+
 
 //Item 
 // Render the Item with buttons and subpanels. This item starts out truncated, if the user clicks the text, the item opens.
@@ -39,9 +40,9 @@ class Item extends React.Component {
     render() {
         //logger.trace("Item render");
         return (
-            <ReactActionStatePath {... this.props} >
+            <RASP {... this.props} >
                 <RASPItem />
-            </ReactActionStatePath>
+            </RASP>
         );
     }
 }
@@ -152,7 +153,11 @@ const styles = {
     'collapsed': {},
     'minified': {},
     'untruncate': {},
-    'whole-border': {}
+    'whole-border': {},
+    'error-message': {
+        color: 'red',
+        'text-align': 'center'
+    }
 }
 
 class RASPItem extends ReactActionStatePathClient {
@@ -171,11 +176,14 @@ class RASPItem extends ReactActionStatePathClient {
         //onsole.info("RASPItem.constructor");
 
         if (this.props.visualMethod === 'edit' && this.props.item && this.props.item.type && !this.props.item._id) // if we are creating a new item
-            getObjectId(this.newObjectId.bind(this));
+            this.props.item._id= (new ObjectID()).toHexString();
+
+        this.getTruncableDOM=this.getTruncableDOM.bind(this);
     }
 
-    newObjectId(_id) {
-        Object.assign(this.props.item, {_id}); // add the _id to the item - but don't notify ancestors of this non-user change
+    getTruncableDOM(e){
+        if(e)
+            this.truncableDOM=ReactDOM.findDOMNode(e);
     }
 
     someButton(part) {
@@ -508,12 +516,20 @@ class RASPItem extends ReactActionStatePathClient {
         //logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
         var nextRASP = {};
         if (action.type === 'POST_ITEM' && action.distance==0) {
-            Object.assign(this.props.item,action.item); // this items is posted, but copy it here to avoid propagation delay
-            delta.button='Posted';
-            action.duration=1; // the parent of this RASP should know of the post too.
-        } else if (action.type === 'EDIT_ITEM'){
+            if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
+                logger.error("Item.actionToState item is not mounted", rasp.id, this );
+            }else{
+                Object.assign(this.props.item,action.item); // this items is posted, but copy it here to avoid propagation delay
+                delta.button='Posted';
+                if(rasp.errors) delta.errors=null;
+                action.duration=1; // the parent of this RASP should know of the post too.
+                this.queueUnfocus(action); 
+            }
+        } if (action.type === 'POST_ERROR' && action.distance==0) {
+            delta.errors=action.errors;
+        }else if (action.type === 'EDIT_ITEM'){
             delta.button='Editing';
-            this.qaction(()=>this.props.rasp.toParent({type: "DESCENDANT_FOCUS"})); // let the ancestors know that this item is being edited
+            this.queueFocus(action);
         } else if (action.type === "SET_BUTTON") {
             delta.button = action.button;
             delta.readMore = false; // if turning off a button, close readMore too
@@ -585,7 +601,7 @@ class RASPItem extends ReactActionStatePathClient {
     componentDidMount() {
 
         this.transparentEventListener = this.transparent.bind(this);
-        var truncable = ReactDOM.findDOMNode(this.refs.truncable);
+        var truncable = this.truncableDOM;
         if (truncable) { // if item is null, only a simple div is returned.
             truncable.addEventListener('mouseover', this.transparentEventListener, false);
             truncable.addEventListener('click', this.transparentEventListener, false);
@@ -594,7 +610,7 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     componentWillUnmount() { // if item is null, only a simple div is returned.
-        var truncable = ReactDOM.findDOMNode(this.refs.truncable);
+        var truncable = this.truncableDOM;
         if (truncable) {
             truncable.removeEventListener('mouseover', this.transparentEventListener);
             truncable.removeEventListener('click', this.transparentEventListener);
@@ -631,8 +647,8 @@ class RASPItem extends ReactActionStatePathClient {
     onClick(button, _id, id, func) {
         if(typeof func === 'function') 
             func.call(this);
-        this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button });
-        //setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
+        else
+            this.props.rasp.toParent({ type: "TOGGLE_BUTTON", button });
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -641,10 +657,10 @@ class RASPItem extends ReactActionStatePathClient {
         //called on mount and completion of Accordion collapse / expand
         //active when the accordion has completed open, not active when accordion has completed close. But that doesn't matter here. Parent is the master of the state.
         //console.info("textHint before", this.state, this.props.vs.state);
-        if (!(this.refs.buttons && this.refs.media && this.refs.truncable)) return; // too early
+        if (!(this.refs.buttons && this.refs.media && this.truncableDOM)) return; // too early
 
         if (!(this.props.rasp && this.props.rasp.readMore) && this.vM.enableHint()) {
-            let truncable = ReactDOM.findDOMNode(this.refs.truncable);
+            let truncable = this.truncableDOM;
             let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
             let truncableR = truncable.getBoundingClientRect();
 
@@ -696,8 +712,8 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     getEditWidth(){
-        let buttons = ReactDOM.findDOMNode(this.refs.buttons);
-        let truncable = ReactDOM.findDOMNode(this.refs.truncable);
+        let buttons = this.refs.buttons;
+        let truncable = this.truncableDOM;
         if(buttons && truncable)
             return buttons.getBoundingClientRect().x-truncable.getBoundingClientRect().x + 'px';
     }
@@ -781,10 +797,12 @@ class RASPItem extends ReactActionStatePathClient {
                                 {buttons ? buttons.map(button => renderButton(button)) : null}
                             </ItemStore>
                         </section>
-                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref='truncable' style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
+                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
                             <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>
+                            {(rasp.errors && rasp.errors.subject && <div className={classes['error-message']}>{rasp.errors.subject}</div>)}
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} />
+                            {(rasp.errors && rasp.errors.description && <div className={classes['error-message']}>{rasp.errors.description}</div>)}
                         </Accordion>
                     </section>
                     <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>

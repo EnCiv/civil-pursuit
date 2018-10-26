@@ -4,7 +4,7 @@ import React from 'react';
 import PanelStore from '../store/panel';
 import Item from '../item';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
-
+import ObjectID from 'bson-objectid';
 
 exports.panel = class CreateHarmonyPanel extends React.Component {
     render() {
@@ -35,6 +35,11 @@ class OneItemCreator extends ReactActionStatePathFilter {
         // parent (QSortWhy) needs to be notified with POST_ITEM when the item is posted. If it's already there, it will be in panel.items when this is mounted, because PanelStore does not render children until there are items
         if(this.props.panel.items.length)
             this.queueAction({type: "POST_ITEM", item: this.props.panel.items[0], distance: 1, from: "OneItemCreator"});
+        else {
+            var _id=(new ObjectID()).toHexString();
+            var item={_id, type: this.props.panel.type, parent: this.props.panel.parent}
+            setTimeout(()=>this.props.PanelCreateItem(item));
+        }
     }
 
     actionFilters={
@@ -47,7 +52,8 @@ class OneItemCreator extends ReactActionStatePathFilter {
 
     render (){
         const {panel, ...otherProps}=this.props;
-        const item=panel.items.length ? panel.items[0] : {type: panel.type, parent: panel.parent}; // this type is an object, items must have at least one entry, to create them, must specify type and parent if applicable
+        if(!(panel.items && panel.items.length)) return null;
+        const item=panel.items[0];
         otherProps.rasp.shape=item.subject ? 'truncated' : 'edit';  // start in edit mode if item did not exist
         return (
                 <Item

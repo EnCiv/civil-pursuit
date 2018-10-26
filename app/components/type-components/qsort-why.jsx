@@ -115,46 +115,19 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         return nextRASP;
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    toggle(itemId, button, set, whyItemId) {
-        //onsole.info("QsortWhy.toggle", ...arguments);
-        //find the section that the itemId is in, take it out, and put it in the new section. if set then don't toggle just set.
-
-        if (button==='harmony') return;
-        if (button == "done"){
-            if( this.props.next ){ 
-                this.props.next(this.props.panelNum,"done", this.results)
-            }
-            return;
-        }
-        if(!itemId) return;
-        if(set==='set'){
-            this.results.why[this.whyName][itemId]=whyItemId;
-        }
-        
-        this.setState({ 'sections': QSortToggle(this.state.sections,itemId,button,set) });
-
-        //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-        //this doesn't happen when moveing and object up, above the fold. 
-        var doc = document.documentElement;
-        this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-        this.scrollBackToTop = true;
+    // if the panel is done, say so
+    isDone(props){
+        return (
+            !props.sections['unsorted'].length // if there are no unsorted items
+            && !Object.keys(this.ButtonList).some(criteria=>{ // there is no some section[criteria] where
+                let max=this.ButtonList[criteria].max; 
+                if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
+                    return true; 
+                else 
+                    return false;
+            })
+        )
     }
-
-        // if the panel is done, say so
-        isDone(props){
-            return (
-                !props.sections['unsorted'].length // if there are no unsorted items
-                && !Object.keys(this.ButtonList).some(criteria=>{ // there is no some section[criteria] where
-                    let max=this.ButtonList[criteria].max; 
-                    if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
-                        return true; 
-                    else 
-                        return false;
-                })
-            )
-        }
 
     onFlipMoveFinishAll() {
         if (this.scrollBackToTop) {
@@ -164,11 +137,6 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
 
@@ -201,13 +169,17 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                     }
                 }
                 this.state.sections[name].forEach(itemId => {
-                    let item = items[shared.index[itemId]];
+                    let item= items.find(itm=>itm._id===itemId);
+                    if(!item){
+                        console.error("qsortWhy itemId:",itemId, "not found in items", items);
+                        return;
+                    }
+                    //let item = items[shared.index[itemId]];
                     content.push(
                         {
                             sectionName: name,
                             user: user,
                             item: item,
-                            toggle: this.toggle.bind(this, item._id, this.whyName), // were just toggleing most here
                             qbuttons: this.ButtonList,
                             whyName: this.whyName,
                             rasp: {shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)},
@@ -249,7 +221,7 @@ export default QSortWhy;
 
 class QSortWhyItem extends React.Component {
     render(){
-        const {qbuttons, sectionName, item, user, toggle, buttonstate, whyName, rasp, key } = this.props;
+        const {qbuttons, sectionName, item, user, whyName, rasp, key } = this.props;
         return(
                 <div style={{backgroundColor: qbuttons[sectionName].color}} key={ key }>
                     <ItemStore item={ item } key={ key+'-why' }>
