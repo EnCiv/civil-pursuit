@@ -101,7 +101,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
             this.results.why[this.whyName][itemId]=action.item._id;
             this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.whyName,'set')});
         } else if(action.type==="DESCENDANT_FOCUS"){
-            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.whyName)});
+            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.buttons[0],'set')}); // - set incase of double events to unsorted
         } else if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
