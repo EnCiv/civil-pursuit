@@ -32,7 +32,6 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'ideaNum',0);
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
-        this.createDefaults();
         // calculate the number of blank ideas and initialize them
         const {numIdeas=1, maxIdeas=1}=this.props;
         let nIdeas=Math.min(Math.max(2,numIdeas),maxIdeas);
@@ -42,6 +41,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
         for(i=0;i<nIdeas;i++){
             this.ideaState['idea'+i]={posted: false, dirty: false, item: Object.assign({},item)};
         }
+        this.createDefaults();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
