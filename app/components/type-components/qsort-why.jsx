@@ -74,15 +74,20 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
         if(newProps.shared.sections[this.whyName]){
             newProps.shared.sections[this.whyName].forEach(itemId=>{
-                if(this.state.sections[this.whyName].includes(itemId)){ newSections[this.whyName].push(itemId)} 
-                else { 
+                if(this.state.sections[this.whyName].includes(itemId)){ 
+                    newSections[this.whyName].push(itemId)
+                } else if(this.state.sections['unsorted'].includes(itemId)) { // itemId is sorted in shared, but has been unsorted in state - because user is editing
+                    newSections['unsorted'].push(itemId)
+                } else { // item is not in state.  Likely we are rebuilding state after a RESET action.  Look in Item store to see if we can find it, and it's state.
                     let harmony=ItemStore.index[itemId] && ItemStore.index[itemId].harmony;
                     if(harmony) {
                         let side=qbuttons[this.whyName].harmonySide;
                         let type=harmony.types[side==='left'? 0:1];
                         if(type) {
-                            if(ItemStore.findOne({parent: itemId, type: type })){
+                            let whyItem=ItemStore.findOne({parent: itemId, type: type });
+                            if(whyItem){
                                 newSections[this.whyName].push(itemId);
+                                this.results.why[this.whyName][itemId]=whyItem._id;
                                 return;
                             }
                         }
@@ -101,7 +106,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
             this.results.why[this.whyName][itemId]=action.item._id;
             this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.whyName,'set')});
         } else if(action.type==="DESCENDANT_FOCUS"){
-            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,this.buttons[0],'set')}); // - set incase of double events to unsorted
+            this.setState({ 'sections': QSortToggle(this.state.sections,itemId,'unsorted','set')}); // - set incase of double events to unsorted
         } else if(action.type==="RESET"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
