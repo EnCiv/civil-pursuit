@@ -115,7 +115,8 @@ const styles = {
             'margin-bottom': 0
         },
         '&$edit': {
-            'max-height': 'none'
+            'max-height': 'none',
+            'overflow': 'hidden !important' // need to override accordion when it is expanded
         }
     },
     "item-trunc-hint": {
@@ -786,9 +787,7 @@ class RASPItem extends ReactActionStatePathClient {
         return (
             <article className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
-                    <ItemMedia className={shape} onClick={this.readMore}
-                        rasp={rasp}
-                        item={item}
+                    <ItemMedia {...childProps} shape={shape} onClick={this.readMore}
                         ref="media"
                     />
                     <section className={cx(classes["item-text"], classes[shape])} ref='itemText'>

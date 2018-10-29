@@ -77,7 +77,7 @@ class ItemMedia extends React.Component {
   }
 
   render() {
-    let { item, className, classes, truncShape } = this.props;
+    let { item, shape, classes, truncShape } = this.props;
 
     let media;
 
@@ -97,7 +97,7 @@ class ItemMedia extends React.Component {
         media = null;
     } else if (YouTube.isYouTube(item)) {
       media = (
-        <section className={cx(classes['item-media-wrapper'], classes[className])} ref={this.wrapper}>
+        <section className={cx(classes['item-media-wrapper'], classes[shape])} ref={this.wrapper}>
           <section className={cx(classes['item-media'], this.state.mediaThin && classes['media-thin'])} ref={this.media} >
             <YouTube item={item} />
           </section>
@@ -105,13 +105,13 @@ class ItemMedia extends React.Component {
       );
     } else if (item.image == publicConfig['default item image'] || item.image == publicConfig['old default item image']) {
       media = (
-        <section className={cx(classes['item-media-wrapper'], classes[className])}>
+        <section className={cx(classes['item-media-wrapper'], classes[shape])}>
         </section>
       );
     }
     else if (item.image && (/^http/.test(item.image) || /^https/.test(item.image))) {
       media = (
-        <section className={cx(classes['item-media-wrapper'], classes[className])} ref={this.wrapper}>
+        <section className={cx(classes['item-media-wrapper'], classes[shape])} ref={this.wrapper}>
           <section className={cx(classes['item-media'], this.state.mediaThin && classes['media-thin'])} ref={this.media}>
             <Image src={item.image} onLoad={this.afterLoad} responsive />
           </section>
@@ -122,7 +122,7 @@ class ItemMedia extends React.Component {
       /** don't show image if
       media = ( <Image src={ publicConfig['default item image'] } responsive /> ); **/
       media = (
-        <section className={cx(classes['item-media-wrapper'], classes[className])}>
+        <section className={cx(classes['item-media-wrapper'], classes[shape])}>
         </section>
       );
     }
