@@ -142,7 +142,7 @@ class ItemReference extends React.Component {
             });
             window.socket.emit('get url title', url, title => {
                 if (!title || title.error) {
-                    this.setState({ titleLookingUp: false, titleError: true, errMsg: title.error });
+                    this.setState({ titleLookingUp: false, titleError: true, errMsg: title && title.error || "Title not accessible" });
                 } else {
                     if (title.length) {
                         references = references.slice();
