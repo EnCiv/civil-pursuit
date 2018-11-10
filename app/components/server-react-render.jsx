@@ -108,9 +108,10 @@ function serverReactRender(req, res, next) {
                         || ( props.browserConfig.browser.name=="safari" && props.browserConfig.browser.version[0] >= 11)
                         || ( props.browserConfig.browser.name=="opera" && props.browserConfig.browser.version[0] >= 41)
                         || ( props.browserConfig.browser.name=="firefox" && props.browserConfig.browser.version[0] >= 50)
+                        || ( props.browserConfig.browser.name=="edge" && props.browserConfig.browser.version[0] >= 15)
                         )
-                    ) ? (logger.info("index browser supports ES6") || '')
-                        : (`<script src='/assets/js/polyfill.min.js'/>`)
+                    ) ? (logger.info("index browser supports ES6"),'')
+                        : (logger.info("index browser does not support ES6"),`<script src='/assets/js/polyfill.min.js'></script>`)
                     }
                     <script src='/socket.io/socket.io.js' ></script>
                     ${dev ? `<script src='/assets/js/main.js' ></script>` : ''}
@@ -118,7 +119,7 @@ function serverReactRender(req, res, next) {
                     ${dev ? `<script src='/assets/bower_components/d3/d3.js'></script>` : ''}
                     ${dev ? `<script src='/assets/bower_components/c3/c3.js'></script>` : ''}
                     ${!dev ? `<script src='/assets/js/main.min.js' ></script>` : ''}
-                    ${!dev ? `<script src='/assets/js/assets.min.js' ><script>` : ''}
+                    ${!dev ? `<script src='/assets/js/assets.min.js' ></script>` : ''}
                     <script>{(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', "${publicConfig['google analytics'].key}", 'auto'); ga('send', 'pageview');}</script>
                 </body>
             </html>`
