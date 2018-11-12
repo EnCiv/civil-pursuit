@@ -35,6 +35,8 @@ import ObjectID from 'bson-objectid';
 // min - true indicates to show the minimum height
 // position - if set to left or right means the item is being displayed in two or more columns, so don't honor min in order to keep spacing consistent
 // className
+//
+//
 
 class Item extends React.Component {
     render() {
