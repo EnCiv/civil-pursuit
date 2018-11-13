@@ -3,13 +3,12 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion from 'react-proactive-accordion';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
 
 
-exports.button = class UseComponentButton extends React.Component {
+class UseComponentButton extends React.Component {
 
     donothing() {
         return false;
@@ -55,7 +54,7 @@ exports.button = class UseComponentButton extends React.Component {
     }
 }
 
-exports.panel = class UseComponentPanel extends React.Component {
+class UseComponentPanel extends React.Component {
     mounted = false;
     state = { componentType: null };
 
@@ -99,3 +98,5 @@ exports.panel = class UseComponentPanel extends React.Component {
         }
     }
 }
+
+export {UseComponentPanel as panel, UseComponentButton as button}

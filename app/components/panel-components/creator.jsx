@@ -6,7 +6,7 @@ import Accordion          from 'react-proactive-accordion';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
 import Item from '../item'
 
-exports.button = class PanelCreatorButton extends React.PureComponent {
+class PanelCreatorButton extends React.PureComponent {
     render(){
         const {createMethod, user, rasp, parent, panel, position, type}=this.props;
         let createValue= createMethod || (type.createMethod) || 'visible'; // passed in by props overrides what's in type
@@ -27,7 +27,7 @@ exports.button = class PanelCreatorButton extends React.PureComponent {
     }
 }
 
-exports.panel = class PanelCreator extends ReactActionStatePathFilter {
+class PanelCreatorPanel extends ReactActionStatePathFilter {
   constructor(props){
     super(props,'shortId', 0);
     this.mounted=false;
@@ -86,3 +86,5 @@ exports.panel = class PanelCreator extends ReactActionStatePathFilter {
     return creator;
   }
 }
+
+export {PanelCreatorPanel as panel, PanelCreatorButton as button}

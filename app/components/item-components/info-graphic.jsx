@@ -7,7 +7,7 @@ import Accordion          from 'react-proactive-accordion';
 
 
 
-exports.button = class InfoGraphicButton extends React.Component {
+class InfoGraphicButton extends React.Component {
 
   render() {
     let { active, infographicImg, onClick, buttonName='InfoGraph', buttonTitle={active: "Show the Info Graphic", success: "Hide the Info Graphic"} } = this.props;
@@ -26,7 +26,7 @@ exports.button = class InfoGraphicButton extends React.Component {
   }
 }
 
-exports.panel = class InfoGraphicPanel extends React.Component {
+class InfoGraphicPanel extends React.Component {
   mounted = false;
   render() {
     const {active, style, item, rasp, infographicImg}=this.props;
@@ -47,3 +47,5 @@ exports.panel = class InfoGraphicPanel extends React.Component {
     }
   }
 }
+
+export {InfoGraphicButton as button, InfoGraphicPanel as panel}

@@ -14,7 +14,7 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
 
 
-exports.panel = class RefinePanel extends React.Component {
+class RefinePanel extends React.Component {
     initialRASP={chosen: 'promote'};
     render(){
         return (
@@ -93,3 +93,5 @@ class RASPRefinePanel extends ReactActionStatePathClient {
         )
     }
 }
+
+export {RefinePanel as panel}

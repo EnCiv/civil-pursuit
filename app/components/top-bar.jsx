@@ -9,9 +9,8 @@ import Login                          from './login';
 import Join                           from './join';
 import ForgotPassword                 from './forgot-password';
 import userType                       from '../lib/proptypes/user';
-import selectors                      from '../../selectors.json';
-import menus                          from '../../fixtures/header-menu/1.json';
 import LogupBar                          from './logup-bar';
+import PropTypes from 'prop-types';
 
 class TopBar extends React.Component {
   topStrip=[];
@@ -40,7 +39,7 @@ class TopBar extends React.Component {
 
   static propTypes = {
     user        :   userType,
-    online      :   React.PropTypes.number
+    online      :   PropTypes.number
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

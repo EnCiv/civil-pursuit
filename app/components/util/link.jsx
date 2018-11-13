@@ -1,13 +1,14 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class Link extends React.Component {
 
   static propTypes  =     {
-    go              :     React.PropTypes.string,
-    href            :     React.PropTypes.string,
-    then            :     React.PropTypes.func
+    go              :     PropTypes.string,
+    href            :     PropTypes.string,
+    then            :     PropTypes.func
   };
 
   static go (target) {

@@ -186,8 +186,6 @@ class ProfilePanel extends React.Component {
     }
 }
 
-export default ProfilePanel;
-
 class SelectorRow extends React.Component {
     render() {
         return (
@@ -205,3 +203,4 @@ class SelectorRow extends React.Component {
     }
 }
 
+export default ProfilePanel;

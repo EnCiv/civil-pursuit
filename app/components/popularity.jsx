@@ -1,10 +1,11 @@
 'use strict';
 
 import React            from 'react';
+import PropTypes from 'prop-types';
 
 class Popularity extends React.Component {
   static propTypes = {
-    number : React.PropTypes.number
+    number : PropTypes.number
   };
 
   animate () {

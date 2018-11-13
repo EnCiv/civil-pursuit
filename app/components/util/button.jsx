@@ -1,24 +1,25 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class Button extends React.Component {
 
   static propTypes    =   {
-    block             :   React.PropTypes.bool,
-    primary           :   React.PropTypes.bool,
-    info              :   React.PropTypes.bool,
-    large             :   React.PropTypes.bool,
-    medium            :   React.PropTypes.bool,
-    radius            :   React.PropTypes.bool,
-    'cursor-pointer'  :   React.PropTypes.bool,
-    shy               :   React.PropTypes.bool,
-    chosen             :   React.PropTypes.bool,
-    success           :   React.PropTypes.bool,
-    error             :   React.PropTypes.bool,
-    warning           :   React.PropTypes.bool,
-    small             :   React.PropTypes.bool,
-    inactive          :   React.PropTypes.bool
+    block             :   PropTypes.bool,
+    primary           :   PropTypes.bool,
+    info              :   PropTypes.bool,
+    large             :   PropTypes.bool,
+    medium            :   PropTypes.bool,
+    radius            :   PropTypes.bool,
+    'cursor-pointer'  :   PropTypes.bool,
+    shy               :   PropTypes.bool,
+    chosen            :   PropTypes.bool,
+    success           :   PropTypes.bool,
+    error             :   PropTypes.bool,
+    warning           :   PropTypes.bool,
+    small             :   PropTypes.bool,
+    inactive          :   PropTypes.bool
   };
 
   static buttonInactive(e){

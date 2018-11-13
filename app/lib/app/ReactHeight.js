@@ -4,15 +4,16 @@
 
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import {shouldComponentUpdate} from 'react/lib/ReactComponentWithPureRenderMixin';
 
 
 const ReactHeight = React.createClass({
   propTypes: {
-    children: React.PropTypes.node.isRequired,
-    onHeightReady: React.PropTypes.func.isRequired,
-    hidden: React.PropTypes.bool,
-    dirty: React.PropTypes.bool
+    children: PropTypes.node.isRequired,
+    onHeightReady: PropTypes.func.isRequired,
+    hidden: PropTypes.bool,
+    dirty: PropTypes.bool
   },
 
 

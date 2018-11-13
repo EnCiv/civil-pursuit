@@ -1,9 +1,7 @@
 'use strict';
 
-import React from 'react';
 import user from './user';
-
-const { PropTypes } =   React;
+import PropTypes from 'prop-types';
 
 const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool, oneOfType } = PropTypes;
 

@@ -4,7 +4,7 @@ import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
 
-exports.button = class EditButton extends React.Component {
+class EditButton extends React.Component {
 
     onClick(button) {
         this.props.rasp.toParent({type: "TOGGLE_BUTTON", button: 'Edit', toBeContinuted: true});
@@ -40,4 +40,6 @@ exports.button = class EditButton extends React.Component {
       );
   }
 }
+
+export {EditButton as button}
 

@@ -3,13 +3,11 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
 import Harmony from '../harmony';
 
 
-exports.button = class HarmonyButton extends React.Component {
-
+class HarmonyButton extends React.Component {
   render() {
     const { active, item, onClick } = this.props;
     var success=false;
@@ -42,7 +40,7 @@ exports.button = class HarmonyButton extends React.Component {
   }
 }
 
-exports.panel = class HarmonyPanel extends React.Component {
+class HarmonyPanel extends React.Component {
   mounted = false;
   render() {
     const {active, style, item, rasp, visualMethod}=this.props;
@@ -67,3 +65,5 @@ exports.panel = class HarmonyPanel extends React.Component {
     }
   }
 }
+
+export {HarmonyPanel as panel, HarmonyButton as button}

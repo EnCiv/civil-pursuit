@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import VerticalScrollbar from './vertical-scrollbar';
 import HorizontalScrollbar from './horizontal-scrollbar';
@@ -583,11 +584,11 @@ class ScrollWrapper extends React.Component {
 
 // The Props
 ScrollWrapper.propTypes = {
-  speed: React.PropTypes.number,
-  className: React.PropTypes.string,
-  style: React.PropTypes.shape(),
-  children: React.PropTypes.node,
-  extent: React.PropTypes.number
+  speed: PropTypes.number,
+  className: PropTypes.string,
+  style: PropTypes.shape(),
+  children: PropTypes.node,
+  extent: PropTypes.number
 };
 
 ScrollWrapper.defaultProps = {

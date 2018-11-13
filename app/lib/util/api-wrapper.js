@@ -91,10 +91,6 @@ function apiWrapperImmediate(message,cb){
         ;
     }
 }
-module.exports.apiWrapperPush=apiWrapperPush;
-module.exports.apiWrapperFlush=apiWrapperFlush;
-module.exports.apiWrapperImmediate=apiWrapperImmediate;
-module.exports.apiWrapperUpdate1OrPush=apiWrapperUpdate1OrPush;
 
 var apiWrapper={
     Push: apiWrapperPush,

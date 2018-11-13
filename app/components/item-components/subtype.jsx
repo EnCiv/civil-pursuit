@@ -3,13 +3,12 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
 import TypeComponent from '../type-component';
 import config from '../../../public.json';
 
 
-exports.button = class SubtypeButton extends React.Component {
+class SubtypeButton extends React.Component {
 
   donothing() {
     return false;
@@ -55,7 +54,7 @@ exports.button = class SubtypeButton extends React.Component {
   }
 }
 
-exports.panel = class SubtypePanel extends React.Component {
+class SubtypePanel extends React.Component {
   mounted = false;
   render() {
     const {active, style, item, rasp}=this.props;
@@ -81,3 +80,5 @@ exports.panel = class SubtypePanel extends React.Component {
     }
   }
 }
+
+export {SubtypePanel as panel, SubtypeButton as button}

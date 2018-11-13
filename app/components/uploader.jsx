@@ -11,6 +11,7 @@ import YouTube from './youtube';
 import cx from 'classnames';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json';
+import PropTypes from 'prop-types';
 
 const styles = {
 	'syn-uploader': {
@@ -76,8 +77,8 @@ class Uploader extends React.Component {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	static propTypes = {
-		handler: React.PropTypes.func,
-		image: React.PropTypes.string,
+		handler: PropTypes.func,
+		image: PropTypes.string,
 	};
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

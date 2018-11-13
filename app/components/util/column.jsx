@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Component            from '../../lib/app/component';
+import PropTypes from 'prop-types';
 
 class Column extends React.Component {
   static propTypes = {
-    style : React.PropTypes.object,
-    span :  React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string])
+    style : PropTypes.object,
+    span :  PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   };
 
   style () {

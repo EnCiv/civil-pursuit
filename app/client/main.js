@@ -4,6 +4,8 @@ import React              from 'react';
 import ReactDOM			  from 'react-dom';
 import App                from '../components/app';
 import Facebook           from '../lib/app/fb-sdk';
+import bconsole  from './bconsole';
+import socketlogger from './socketlogger'
 //import log4js_extend            from 'log4js-extend';
 
 window.socket = io();
@@ -23,8 +25,12 @@ window.socket.on('welcome', user => {
 
 // process has to be defined before log4js is imported on the browser side.
 if(typeof window !== 'undefined') {
-  process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }, {type: 'socketlogger'}]};
+  //process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }, {type: 'socketlogger'}]};
+  process.env.LOG4JS_CONFIG={appenders:[]};
   var log4js = require('log4js');
+  log4js.loadAppender("bconsole",bconsole);
+  log4js.loadAppender("socketlogger",socketlogger);
+  log4js.configure({browser: [{type: 'bconsole'},{type: 'socketlogger'}]});
 
 
 //  log4js_extend(log4js, {
@@ -43,7 +49,7 @@ function render (props) {
   window.Synapp.fontSize=parseFloat(window.getComputedStyle(window.reactContainer, null).getPropertyValue('font-size'));
   console.log('Rendering app', props);
   logger.info('Rendering app', props);
-  ReactDOM.render(<App { ...props } />, window.reactContainer );
+  ReactDOM.hydrate(<App { ...props } />, window.reactContainer );
 }
 
 render(reactProps);

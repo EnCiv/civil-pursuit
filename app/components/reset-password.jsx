@@ -7,11 +7,10 @@ import EmailInput                   from './util/email-input';
 import TextInput                    from './util/text-input';
 import Password                     from './util/password';
 import Panel                        from './panel';
-import Loading                      from './util/loading';
 import Button                       from './util/button'
 import InputGroup                   from './util/input-group';
-import Login                        from './login';
 import userType                     from '../lib/proptypes/user';
+import PropTypes from 'prop-types';
 
 class ResetPassword extends React.Component {
 
@@ -19,8 +18,8 @@ class ResetPassword extends React.Component {
 
   static propTypes = {
     userToReset : userType,
-    urlParams : React.PropTypes.shape({
-      token : React.PropTypes.string
+    urlParams : PropTypes.shape({
+      token : PropTypes.string
     })
   };
 

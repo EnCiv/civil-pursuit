@@ -6,7 +6,7 @@ import Item from '../item';
 import {ReactActionStatePathFilter} from 'react-action-state-path';
 import ObjectID from 'bson-objectid';
 
-exports.panel = class CreateHarmonyPanel extends React.Component {
+ class CreateHarmonyPanel extends React.Component {
     render() {
         const { item, side, buttons, ...otherProps } = this.props;  // side is passed through Item from it's parent .. qsort-why  buttons should not be passed to the child item
         const hIndex=side==='left' ? 0 : 1;
@@ -65,3 +65,4 @@ class OneItemCreator extends ReactActionStatePathFilter {
         );
     }
 }
+export {CreateHarmonyPanel as panel}

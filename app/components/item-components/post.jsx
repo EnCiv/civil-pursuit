@@ -6,7 +6,7 @@ import Button from '../util/button';
 import createItem from '../../api-wrapper/create-item';
 import updateItem from '../../api-wrapper/update-item';
 
-exports.button = class PostButton extends React.Component {
+class PostButton extends React.Component {
 
     doThisAsParent(){
         const itemValid=()=>{
@@ -80,4 +80,4 @@ exports.button = class PostButton extends React.Component {
         );
     }
 }
-
+export {PostButton as button}

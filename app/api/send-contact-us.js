@@ -1,7 +1,5 @@
 'use strict';
 
-import sequencer          from 'promise-sequencer';
-import User               from '../models/user';
 import sendEmail          from '../lib/app/send-email';
 import secret             from '../../secret.json';
 

@@ -1,19 +1,15 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import Image                          from './util/image';
 import Icon                           from './util/icon';
 import Button                         from './util/button';
 import InputGroup                     from './util/input-group';
-import TextInput                      from './util/text-input';
-import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import DynamicSelector                from './dynamic-selector';
-import ProfileComponent from './profile-component';
-import setUserInfo                  from '../api-wrapper/set-user-info';
+import ProfileComponent               from './profile-component';
+import setUserInfo                    from '../api-wrapper/set-user-info';
 
 class Residence extends React.Component {
 
