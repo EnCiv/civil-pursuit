@@ -8,6 +8,10 @@ import bconsole  from './bconsole';
 import socketlogger from './socketlogger'
 //import log4js_extend            from 'log4js-extend';
 
+if (module.hot) {
+ module.hot.accept()
+}
+
 window.socket = io();
 window.reactSetPath = (path)=>{
   ReactDOM.unmountComponentAtNode(window.reactContainer);
