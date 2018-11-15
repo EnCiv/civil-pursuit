@@ -17,6 +17,10 @@ import SmallLayout from './small-layout';
 import StaticLayout from './static-layout';
 import MechanicalTurkTask from '../lib/mechanical-turk-task';
 import apiWrapper from '../lib/util/api-wrapper';
+import { hot } from 'react-hot-loader'
+
+if(typeof __webpack_public_path__ !== 'undefined') // if using web pack, this will be set on the browser. Dont' set it on the server
+	__webpack_public_path__ = "http://localhost:3011/";
 
 class App extends React.Component {
 
@@ -252,4 +256,4 @@ class App extends React.Component {
 	}
 }
 
-export default App;
+export default hot(module)(App)

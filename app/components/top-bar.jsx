@@ -1,7 +1,6 @@
 'use strict';
 
 import React                          from 'react';
-import Component                      from '../lib/app/component';
 import CloudinaryImage                from './util/cloudinary-image';
 import Button                         from './util/button';
 import Icon                           from './util/icon';
@@ -213,7 +212,7 @@ class TopBar extends React.Component {
                   <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
                 </section>
                 <section className={ `${comp}-right` }>
-                  <section className={ `${comp}-beta` }>Gama</section>
+                  <section className={ `${comp}-beta` }>Zeta</section>
                   <section className={ 'top_bar-hamburger'} ref="hamburger">
                     <Button onClick={ this.headerMenuHandler.bind(this) }>
                       <Icon icon="bars" />

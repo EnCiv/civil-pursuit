@@ -24,7 +24,10 @@ module.exports = {
     mode: 'development',
     watch,
     context: path.resolve(__dirname, "app"),
-    entry: "./client/main.js",
+    entry: [
+        'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
+        "./client/main.js"
+    ],
     output,
     module: {
         rules: [
@@ -59,10 +62,14 @@ module.exports = {
         fs: 'empty' // logger wants to require fs though it's not needed on the browser
     },
     devServer: {
-        contentBase: './assets/bundle',
-        publicPath: './assets/bundle',
+        publicPath: '/webpack/',
         hot: true,
         port: 3011,
+        index: '', // specify to enable root proxying
+        proxy: { // the dev server will proxy all traffic other than /webpack to target below.
+            context: () => true,
+            '/': 'http://localhost:3012'
+        }
     },
     plugins:[
         new webpack.IgnorePlugin(/categoryFilter|clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|logLevelFilter|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/,/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app

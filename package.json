@@ -26,7 +26,7 @@
     "packstart": "npm run packbuild && node dist/bin/start.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon dist/bin/start.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "echo \"these delays need to be kept up to date\" && concurrently \"npm run hot-transpile\" \"sleep 29 && npm run server\" \"sleep 35 && npm run client\""
   },
   "author": {
     "email": "david@synaccord.com",
@@ -106,6 +106,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.1",
     "react-flip-move": "^3.0.3",
+    "react-hot-loader": "^4.3.12",
     "react-jss": "^8.6.0",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#react16",
     "redtea": "^3.4.1",
@@ -127,5 +128,7 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-watch": "git+https://github.com/monathur/babel-watch.git#babel7"
+  }
 }

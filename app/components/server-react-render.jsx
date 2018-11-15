@@ -114,7 +114,7 @@ function serverReactRender(req, res, next) {
                         : (logger.info("index browser does not support ES6"),`<script src='/assets/js/polyfill.min.js'></script>`)
                     }
                     <script src='/socket.io/socket.io.js' ></script>
-                    ${dev ? `<script src='http://localhost:3011/main.js' ></script>` : ''}
+                    ${dev ? `<script src='/webpack/main.js' ></script>` : ''}
                     ${dev ? `<script src='/assets/js/socket.io-stream.js'></script>` : ''}
                     ${dev ? `<script src='/assets/bower_components/d3/d3.js'></script>` : ''}
                     ${dev ? `<script src='/assets/bower_components/c3/c3.js'></script>` : ''}
