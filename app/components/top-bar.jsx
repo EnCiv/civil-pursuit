@@ -212,7 +212,7 @@ class TopBar extends React.Component {
                   <section className={ `${comp}-logo` }><p>Civil Pursuit<sub>TM</sub></p></section>
                 </section>
                 <section className={ `${comp}-right` }>
-                  <section className={ `${comp}-beta` }>Zeta</section>
+                  <section className={ `${comp}-beta` }>Jeta</section>
                   <section className={ 'top_bar-hamburger'} ref="hamburger">
                     <Button onClick={ this.headerMenuHandler.bind(this) }>
                       <Icon icon="bars" />

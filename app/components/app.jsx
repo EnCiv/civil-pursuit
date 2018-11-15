@@ -19,9 +19,6 @@ import MechanicalTurkTask from '../lib/mechanical-turk-task';
 import apiWrapper from '../lib/util/api-wrapper';
 import { hot } from 'react-hot-loader'
 
-if(typeof __webpack_public_path__ !== 'undefined') // if using web pack, this will be set on the browser. Dont' set it on the server
-	__webpack_public_path__ = "http://localhost:3011/";
-
 class App extends React.Component {
 
 	state = { path: null }

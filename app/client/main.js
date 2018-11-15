@@ -7,6 +7,9 @@ import Facebook           from '../lib/app/fb-sdk';
 import bconsole  from './bconsole';
 import socketlogger from './socketlogger'
 
+if(typeof __webpack_public_path__ !== 'undefined') // if using web pack, this will be set on the browser. Dont' set it on the server
+	__webpack_public_path__ = "http://localhost:3011/assets/webpack/";
+
 window.socket = io();
 window.reactSetPath = (path)=>{
   ReactDOM.unmountComponentAtNode(window.reactContainer);
