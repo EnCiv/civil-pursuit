@@ -21,7 +21,7 @@ import tempIdRoute              from './routes/temp-id';
 import signOutRoute             from './routes/sign-out';
 import setUserCookie            from './routes/set-user-cookie';
 import turkUser                 from './routes/turk-user';
-import serverReactRender        from '../components/server-react-render';
+import serverReactRender        from './routes/server-react-render';
 
 
 import User                     from '../models/user';

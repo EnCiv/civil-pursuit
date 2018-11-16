@@ -1,12 +1,11 @@
 'use strict';
 
-import React from 'react';
-import {renderToString, createFactory} from 'react-dom/server';
-import App from './app';
+import React from 'react'; // needed by render to string
+import {renderToString} from 'react-dom/server';
+import App from '../../components/app';
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import publicConfig from '../../public.json';
-import path                     from 'path';
-
+import publicConfig from '../../../public.json';
+import path from 'path';
 
 function serverReactRender(req, res, next) {
     try {

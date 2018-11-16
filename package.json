@@ -4,15 +4,15 @@
   "description": "Synapp",
   "main": "index.js",
   "scripts": {
-    "test": "redtea dist/test/migrate dist/test/run --fork",
+    "test": "babel app --out-dir dist && redtea dist/test/migrate dist/test/run --fork",
     "syntest": "node dist/bin/test",
-    "start": "node --debug dist/server/start.js",
+    "start": "node dist/server/start.js",
     "magic-start": "npm install && npm start",
     "postinstall": "bash post-install.sh",
     "build": "bash bin/bundle.sh",
     "watchify": "bash bin/watchify.sh",
-    "transpile": "babel --out-dir dist app",
-    "hot-transpile": "babel --watch --out-dir dist/ app",
+    "transpile": "babel app --ignore app/test,app/vtest --out-dir dist",
+    "hot-transpile": "babel --watch app --ignore app/test,app/vtest --out-dir dist/",
     "less": "lessc assets/less/index.less assets/css/index.css && lessc assets/less/training.less assets/css/training.css",
     "watch-less": "npm run less && node dist/bin/watch-less",
     "min-css": "bash bin/min-css.sh",
@@ -26,7 +26,7 @@
     "packstart": "npm run packbuild && node dist/server/start.js",
     "client": "webpack-dev-server --config webpack-dev.config.js --devtool inline-source-map",
     "server": "nodemon dist/server/start.js",
-    "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 29 && npm run server\" \"sleep 35 && npm run client\""
+    "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 18 && npm run server\" \"sleep 24 && npm run client\""
   },
   "author": {
     "email": "david@synaccord.com",
