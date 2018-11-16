@@ -109,7 +109,7 @@ class API extends EventEmitter {
   fetchHandlers () {
     return sequencer(
 
-      () => sequencer.promisify(fs.readdir, [path.join(__dirname, 'api')]),
+      () => sequencer.promisify(fs.readdir, [path.resolve(__dirname, '../api')]),
 
       files => Promise.all(files.map(file => new Promise((ok, ko) => {
         const name      =   S(file.replace(/\.js$/, ''))
@@ -117,7 +117,7 @@ class API extends EventEmitter {
           .s
           .toLowerCase();
 
-        const handler   =   require('./api/' + file).default;
+        const handler   =   require('../api/' + file).default;
 
         if ( typeof handler !== 'function' ) {
           throw new Error(`API handler ${name} (${file}) is not a function`);
