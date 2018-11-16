@@ -2,7 +2,7 @@
 
 import sequencer          from 'promise-sequencer';
 import User               from '../models/user';
-import sendEmail          from '../lib/app/send-email';
+import sendEmail          from '../server/util/send-email';
 import secret             from '../../secret.json';
 
 function sendPassword (email, return_to, cb) {

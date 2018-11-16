@@ -3,7 +3,7 @@
 import should               from 'should';
 import Cloudinary           from 'cloudinary';
 import describe             from 'redtea';
-import cloudinary           from '../../../../lib/app/cloudinary';
+import cloudinary           from '../../../../server/util/cloudinary';
 
 function test () {
 

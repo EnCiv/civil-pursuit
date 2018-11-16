@@ -6,7 +6,7 @@
   "scripts": {
     "test": "redtea dist/test/migrate dist/test/run --fork",
     "syntest": "node dist/bin/test",
-    "start": "node --debug dist/bin/start.js",
+    "start": "node --debug dist/server/start.js",
     "magic-start": "npm install && npm start",
     "postinstall": "bash post-install.sh",
     "build": "bash bin/bundle.sh",
@@ -23,9 +23,9 @@
     "reset": "node dist/bin/reset && node dist/bin/migrate",
     "clean": "node dist/bin/drop-sandbox-dbs.js",
     "packbuild": "webpack --config webpack-prod.config.js",
-    "packstart": "npm run packbuild && node dist/bin/start.js",
+    "packstart": "npm run packbuild && node dist/server/start.js",
     "client": "webpack-dev-server --config webpack-dev.config.js --devtool inline-source-map",
-    "server": "nodemon dist/bin/start.js",
+    "server": "nodemon dist/server/start.js",
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 29 && npm run server\" \"sleep 35 && npm run client\""
   },
   "author": {

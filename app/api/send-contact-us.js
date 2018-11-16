@@ -1,6 +1,6 @@
 'use strict';
 
-import sendEmail          from '../lib/app/send-email';
+import sendEmail          from '../server/util/send-email';
 import secret             from '../../secret.json';
 
 function sendContactUs (email, fname, lname, subject, message, cb) {

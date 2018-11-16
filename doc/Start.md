@@ -12,7 +12,7 @@ npm start
 This is calling behind the curtains:
 
 ```bash
-node dist/bin/start.js
+node dist/server/start.js
 ```
 
 # Process title

@@ -1,7 +1,7 @@
 'use strict';
 
 import path                   from 'path';
-import cloudinary             from '../../../lib/app/cloudinary';
+import cloudinary             from '../../../server/util/cloudinary';
 import config                 from '../../../../secret.json';
 import Mungo                  from 'mungo';
 
