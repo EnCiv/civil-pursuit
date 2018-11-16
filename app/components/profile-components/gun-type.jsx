@@ -1,7 +1,7 @@
 'use strict';
 
 
-import StaticProfileSelector from './static-profile-selector';
+import StaticProfileSelector from './lib/static-profile-selector';
 
 export default class GunType extends StaticProfileSelector {
     name = "gun_type";

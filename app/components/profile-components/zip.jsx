@@ -2,10 +2,10 @@
 
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
-import Input                          from './util/input';
+import Input                          from '../util/input';
 import Postcode                       from 'postcode-validator';
 import Color from 'color';
-import Icon                             from './util/icon';
+import Icon                             from '../util/icon';
 
 class Zip extends React.Component {
     name='zip';

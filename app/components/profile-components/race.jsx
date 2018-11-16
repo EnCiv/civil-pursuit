@@ -1,9 +1,8 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Row from './util/row';
-import Column from './util/column';
+import Row from '../util/row';
+import Column from '../util/column';
 
 class Race extends React.Component {
     name = 'race';

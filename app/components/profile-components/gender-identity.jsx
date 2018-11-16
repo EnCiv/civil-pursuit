@@ -2,8 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Select from './util/select';
-import Input from './util/input';
+import Input from '../util/input';
 
 
 export default class GenderIdentity extends React.Component {

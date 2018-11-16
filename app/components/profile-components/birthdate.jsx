@@ -2,9 +2,9 @@
 
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
-import Row                            from './util/row';
-import Column                         from './util/column';
-import DateInput                      from './util/date-input';
+import Row                            from '../util/row';
+import Column                         from '../util/column';
+import DateInput                      from '../util/date-input';
 
 
 class Birthdate extends React.Component {

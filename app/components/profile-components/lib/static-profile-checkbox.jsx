@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import Row from './util/row';
-import Column from './util/column';
+import Row from '../../util/row';
+import Column from '../../util/column';
 
 // choices is an array of checkbox objects.
 // checkboxes must have a name.  They may have an _id (like a MongoDB _id), but if they don't the name will be used as the id.

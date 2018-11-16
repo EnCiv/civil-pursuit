@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Select from './util/select';
+import Select from '../../util/select';
 
 export default class StaticProfileSelector extends React.Component {
     name = "static_profile_type";

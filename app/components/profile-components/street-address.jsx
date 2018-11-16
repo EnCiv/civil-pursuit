@@ -1,15 +1,13 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Input from './util/input';
-import Button from './util/button';
-import ProfileComponent from './profile-component';
-import Row                            from './util/row';
-import Column                         from './util/column';
+import Button from '../util/button';
+import ProfileComponent from './component';
+import Row                            from '../util/row';
+import Column                         from '../util/column';
 import DynamicSelector from './dynamic-selector';
 import us_abbreviations from 'us-abbreviations';
-import ButtonGroup from './util/button-group';
+import ButtonGroup from '../util/button-group';
 
 var shortToLongState = us_abbreviations('postal','full');
 

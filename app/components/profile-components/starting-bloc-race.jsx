@@ -1,6 +1,6 @@
 'use strict';
 
-import StaticProfileCheckbox from './static-profile-checkbox';
+import StaticProfileCheckbox from './lib/static-profile-checkbox';
 
 export default class StartingBlocRace extends StaticProfileCheckbox {
     name = "starting_bloc_race";

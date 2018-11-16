@@ -2,13 +2,11 @@
 
 import React                          from 'react';
 import ReactDOM                       from 'react-dom';
-import Input                          from './util/input';
-import Postcode                       from 'postcode-validator';
+import Input                          from '../util/input';
 import Color from 'color';
 
-
-class City extends React.Component {
-    name='city';
+class Line1 extends React.Component {
+    name='line1';
 
     constructor(props){
       super(props);
@@ -28,18 +26,19 @@ class City extends React.Component {
       setTimeout(()=>element.style.backgroundColor=null,1000)
     }
   }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
 
-    const { children, info, property, collection, ...newProps } = this.props;
+    const {children, info, property, collection, ...newProps } = this.props;
 
     return (
         <div>
-            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em', transition: 'background-color 0.5s linear'}}/>
+            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
         </div>
     );
   }
 }
 
-export default City;
+export default Line1;

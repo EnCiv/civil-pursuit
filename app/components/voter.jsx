@@ -11,7 +11,7 @@ import InputGroup                     from './util/input-group';
 import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import DynamicSelector                from './dynamic-selector';
+import DynamicSelector                from './profile-components/dynamic-selector';
 import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Voter extends React.Component {

@@ -8,7 +8,7 @@ import Icon                           from './util/icon';
 import Button                         from './util/button';
 import InputGroup                     from './util/input-group';
 import userType                       from '../lib/proptypes/user';
-import ProfileComponent               from './profile-component';
+import ProfileComponent               from './profile-components/component';
 import setUserInfo                    from '../api-wrapper/set-user-info';
 
 class Residence extends React.Component {

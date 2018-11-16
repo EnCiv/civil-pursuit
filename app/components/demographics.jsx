@@ -6,7 +6,7 @@ import Row from './util/row';
 import Column from './util/column';
 import Image from './util/image';
 import Select from './util/select';
-import StartingBlocRace from './starting-bloc-race';
+import StartingBlocRace from './profile-components/starting-bloc-race';
 import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Demographics extends React.Component {

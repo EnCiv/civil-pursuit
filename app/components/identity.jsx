@@ -9,9 +9,9 @@ import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import Uploader                       from './uploader';
 import selectors                      from '../../selectors.json';
-import Gender                         from './gender';
-import Birthdate                      from './birthdate';
-import GenderIdentity                 from './gender-identity'
+import Gender                         from './profile-components/gender';
+import Birthdate                      from './profile-components/birthdate';
+import GenderIdentity                 from './profile-components/gender-identity'
 import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Identity extends React.Component {

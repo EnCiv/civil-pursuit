@@ -1,7 +1,7 @@
 'use strict';
 
 
-import StaticProfileSelector from './static-profile-selector';
+import StaticProfileSelector from './lib/static-profile-selector';
 
 export default class StartingBlocType extends StaticProfileSelector {
     name = "starting_bloc_type";

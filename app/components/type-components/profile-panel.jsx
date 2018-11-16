@@ -5,7 +5,7 @@ import Panel from '../panel';
 import config from 'syn/../../public.json';
 import TypeComponent from '../type-component';
 import Instruction from '../instruction';
-import ProfileComponent from '../profile-component';
+import ProfileComponent from '../profile-components/component';
 import Row from '../util/row';
 import Column from '../util/column';
 import DoneItem from '../done-item';
