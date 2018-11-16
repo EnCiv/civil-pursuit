@@ -1,8 +1,6 @@
 'use strict';
 
 import React                    from 'react';
-import Row                      from './util/row';
-import Column                   from './util/column';
 import criteriaType             from '../lib/proptypes/criteria';
 import voteType                 from '../lib/proptypes/vote';
 import itemType                 from '../lib/proptypes/item';

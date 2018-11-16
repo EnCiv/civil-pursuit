@@ -74,7 +74,6 @@ class ProfilePanel extends React.Component {
     }
 
     toMeFromParent(vs) {
-        //        console.info("VisualState.toMeFromParent");
         if (vs) { // parent is giving you a new state
             if (this.state.vs.state !== vs.state)
                 this.setState({ vs: Object.assign({}, this.state.vs, vs) });
