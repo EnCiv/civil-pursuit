@@ -10,12 +10,13 @@ const use= [
 module.exports = {
     mode: 'production',
     context: path.resolve(__dirname, "app"),
-    entry: [
-        "./client/main.js"
-    ],
+    entry: {
+    main:    "./client/main.js",
+    item:    "./vtest/item.jsx"
+    },
     output: {
         path: path.join(__dirname, "assets/webpack"),
-        filename: "main.js"
+        filename: "[name].js"
     },
     module: {
         rules: [

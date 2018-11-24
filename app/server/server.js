@@ -213,6 +213,26 @@ class HttpServer extends EventEmitter {
         throw new Error('Test error > asynchronous error');
       });
     });
+
+    if(process.env.NODE_ENV === 'development') {
+      this.app.get('/vtest/*', (req, res, next)=>{
+        res.send(`<!doctype html>
+        <html>
+            <head>
+                <meta charSet="UTF-8"/>
+                <meta httpEquiv='X-UA-Compatible' content='IE=edge'/>
+                <meta name='viewport' content='width=device-width, maximum-scale=1.0, initial-scale=1.0' />
+                <link rel='stylesheet' href='/assets/css/index.css'/>
+                <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' />
+            </head>
+            <body>
+                <div id="vtest">Hello World</div>
+                <script src='/socket.io/socket.io.js' ></script>
+                <script src='/assets/webpack/item.js'></script>
+            </body>
+        </html>`);
+      })
+    }
   }
 
   httpToHttps(){

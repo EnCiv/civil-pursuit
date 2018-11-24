@@ -17,7 +17,7 @@ const styles = {
         'position': 'relative',
         'margin-bottom': `${publicConfig.itemVisualGap}`,
         'transition': 'height 0.5s linear',
-        'pre-text': {
+        '&$pre-text': {
             'white-space': 'pre-line',
             'text-align': 'justify',
         },

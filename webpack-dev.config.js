@@ -13,13 +13,14 @@ module.exports = {
     context: path.resolve(__dirname, "app"),
     mode: 'development',
     watch: true,
-    entry: [
-        'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-        "./client/main.js"
-    ],
+    entry: {
+    'only-dev-server':    'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
+     main:   "./client/main.js",
+     item:   "./vtest/item.jsx"
+    },
     output: {
         path: path.join(__dirname, "assets/webpack"),
-        filename: "main.js"
+        filename: "[name].js"
     },
     module: {
         rules: [
