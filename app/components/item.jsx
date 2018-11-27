@@ -662,7 +662,7 @@ class RASPItem extends ReactActionStatePathClient {
         //console.info("textHint before", this.state, this.props.vs.state);
         if (!(this.refs.buttons && this.refs.media && this.truncableDOM)) return; // too early
 
-        if (!(this.props.rasp && this.props.rasp.readMore) && this.vM.enableHint()) {
+        if (!this.props.rasp.readMore && this.vM.enableHint()) {
             let truncable = this.truncableDOM;
             let innerChildR = truncable.children[0].getBoundingClientRect(); // first child of according is a div which wraps around the innards and is not constrained by min/max height
             let truncableR = truncable.getBoundingClientRect();
@@ -726,11 +726,8 @@ class RASPItem extends ReactActionStatePathClient {
     render() {
         const { classes, visualMethod, item, user, rasp, style, parent, className, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';
-        const readMore = (rasp && rasp.readMore);
+        const readMore = rasp.readMore;
         const buttons=this.props.buttons || visualMethod==='edit' && ['Post'] || null;
-        /*const truncShape= (visualMethod==='titleize')
-                        ? ((this.vM.active(rasp) && readMore) ? 'peek' : '' + shape) 
-                        : ((this.vM.active(rasp) && readMore) ? 'open' : '' + shape);*/
         const truncShape=((this.vM.active(rasp) && readMore) ? 'open' : shape);
         let noReference = true;
         var cxs=[];
@@ -750,7 +747,7 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, readMore, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty };
+        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {

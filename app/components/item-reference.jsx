@@ -6,12 +6,8 @@ import cx from 'classnames';
 import isEqual from 'lodash/isEqual';
 import Row from './util/row';
 import TextInput from './util/text-input';
-import createRef from 'create-react-ref/lib/createRef';
-React.createRef = createRef; // remove for React 16
 import isURL from 'is-url';
 import insertSheet from 'react-jss';
-import superagent from 'superagent'
-import S from 'string'
 import publicConfig from '../../public.json';
 
 const styles = {
@@ -116,7 +112,7 @@ class ItemReference extends React.Component {
             this.props.rasp.toParent({ type: "TOGGLE_READMORE" })
             return;
         }
-        let win = window.open(this.link.href, this.link.target);
+        let win = window.open(this.link.current.href, this.link.current.target);
         if (win) {
             //Browser has allowed it to be opened
             win.focus();

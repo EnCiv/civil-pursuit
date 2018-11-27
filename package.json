@@ -26,7 +26,9 @@
     "packstart": "npm run packbuild && node dist/server/start.js",
     "client": "webpack-dev-server --config webpack-dev.config.js --devtool inline-source-map",
     "server": "nodemon dist/server/start.js",
-    "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 18 && npm run server\" \"sleep 24 && npm run client\""
+    "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 18 && npm run server\" \"sleep 24 && npm run client\"",
+    "storybook": "start-storybook -s ./assets -p 6006",
+    "build-storybook": "build-storybook"
   },
   "author": {
     "email": "david@synaccord.com",
@@ -126,5 +128,14 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@storybook/addon-actions": "^4.0.8",
+    "@storybook/addon-links": "^4.0.8",
+    "@storybook/addons": "^4.0.8",
+    "@storybook/react": "^4.0.8",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "expect": "^23.6.0",
+    "storybook-addon-specifications": "^2.1.2"
+  }
 }

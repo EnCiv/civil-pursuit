@@ -3,8 +3,6 @@
 import React from 'react';
 import cx from 'classnames';
 import TextArea from './util/text-area';
-import createRef from 'create-react-ref/lib/createRef';
-React.createRef = createRef; // remove for React 16
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json';
 
@@ -105,10 +103,10 @@ class ItemDescription extends React.Component {
     }
 
     render() {
-        const { classes, truncShape, item, readMore } = this.props;
+        const { classes, truncShape, item, rasp } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
         // if description is truncated, not in readMore, and there is no reference - then use truncated4 to show an extra line of description
-        const reviseTruncShape= truncShape==='truncated'? (!readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
+        const reviseTruncShape= truncShape==='truncated'? (!rasp.readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
             : truncShape;
         const description = item && item.description || '';
         if (truncShape !== 'edit')

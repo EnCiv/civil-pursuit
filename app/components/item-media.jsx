@@ -6,8 +6,6 @@ import YouTube from './youtube';
 import publicConfig from '../../public.json';
 import cx from 'classnames';
 import Uploader from './uploader';
-import createRef from 'create-react-ref/lib/createRef';
-React.createRef = createRef; // remove for React 16
 import injectSheet from 'react-jss'
 
 const styles = {

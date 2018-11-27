@@ -33,6 +33,7 @@ const testItem={
     subject: "Test Item Subject",
     description: "Test Item Description\r\nTest Item Description\n\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\n",
     image: "https://res.cloudinary.com/hscbexf6a/image/upload/v1541640886/bscrv39ejmopxcur6xzu.jpg",
+    type: testType
 }
 
 const emptyItem={type: testType}
@@ -40,7 +41,7 @@ const emptyItem={type: testType}
 
 class Test extends React.Component{
     render(){
-        return(<Item RASPRoot={'/vtest/'} item={emptyItem} type={testType} className="whole-border" visualMethod= "edit" rasp={{shape: 'edit'}} />)
+        return(<Item RASPRoot={'/vtest/'} item={emptyItem} className="whole-border" visualMethod= "edit" rasp={{shape: 'edit'}} />)
     }
 }
 
