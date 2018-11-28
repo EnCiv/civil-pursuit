@@ -67,7 +67,10 @@ const styles = {
         '&$title, &$peek': {
             'border': 'none',
             'padding-top': 0,
-            'padding-bottom': 0
+            'padding-bottom': 0,
+            '&$whole-border': {
+                border: 'none' // need to override whole-border when title is present
+            }
         },
           
        '&$ooview': {
