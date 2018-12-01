@@ -786,6 +786,13 @@ class RASPItem extends ReactActionStatePathClient {
                 />);
         }
 
+        var itemErrors = (name)=>{
+            if(!rasp || !rasp.errors || !rasp.errors[name]) return null;
+            return (
+                <div className={classes['error-message']}>{rasp.errors[name]}</div>
+            )
+        }
+
         return (
             <article className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
@@ -800,10 +807,10 @@ class RASPItem extends ReactActionStatePathClient {
                         </section>
                         <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
                             <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>
-                            {(rasp.errors && rasp.errors.subject && <div className={classes['error-message']}>{rasp.errors.subject}</div>)}
+                            {itemErrors('subject')}
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} />
-                            {(rasp.errors && rasp.errors.description && <div className={classes['error-message']}>{rasp.errors.description}</div>)}
+                            {itemErrors('description')}
                         </Accordion>
                     </section>
                     <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>

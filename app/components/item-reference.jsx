@@ -160,9 +160,9 @@ class ItemReference extends React.Component {
         this.setState({ references });
     }
 
-    onChangeKey() {
+    onChangeKey(e) {
         var references = this.state.references || [];
-        var value = this.inputElement.current.value;
+        var value = e.target.value;
         if ((references[0] && references[0].url) !== value) {
             references = references.slice();
             references[0] = { url: value };
@@ -209,13 +209,13 @@ class ItemReference extends React.Component {
                             onKeyDown={this.ignoreCR}
                             className={cx(classes['url-editor'], title && classes['hide'])}
                             name="reference"
-                            value={url}
+                            defaultValue={url}
                             key="reference"
                         />
                         <TextInput
                             disabled
                             name="url-title"
-                            value={title}
+                            defaultValue={title}
                             className={cx(classes['url-title'], title && classes['visible'])}
                             key="title"
                             onClick={this.editURL}

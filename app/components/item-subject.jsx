@@ -62,9 +62,9 @@ class ItemSubject extends React.Component {
             e.preventDefault();
         }
     }
-    onChangeKey() {
+    onChangeKey(e) {
         var subject = this.state.subject;
-        var value = this.inputElement.current.value;
+        var value = e.target.value; //this.inputElement.current.value;
         if (subject !== value) subject = value.slice();
         this.setState({ subject });
         if(this.props.onDirty){
@@ -95,7 +95,7 @@ class ItemSubject extends React.Component {
                     ref={this.inputElement}
                     required
                     name="subject"
-                    value={subject}
+                    defaultValue={subject}
                     onChange={this.onChangeKey}
                     onBlur={this.onBlur}
                     onKeyDown={this.ignoreCR}
