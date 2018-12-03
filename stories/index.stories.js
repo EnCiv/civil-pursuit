@@ -67,6 +67,14 @@ function outerSetup(){
 	}
 }
 
+function sleep(mSec){
+	return new Promise((ok,ko)=>setTimeout(()=>ok(),mSec))
+}
+
+function RenderStory (props){
+	return <div style={outerStyle} ref={e=>{e && setTimeout(()=>props.testFunc(e))}} />;
+}
+
 const testType = {
 	"_id": "56ce331e7957d17202e996d6",
 	"name": "Intro",
@@ -408,7 +416,7 @@ storiesOf('Item', module)
 			let textInput=Wrapper.find('TextInput[name="reference"]')
 			textInput.instance().select();
 			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
-			var inputNode=Wrapper.find('input[name="reference"]').getDOMNode()
+			var inputNode=Wrapper.find('TextInput[name="reference"]').getDOMNode()
 			inputNode.blur();
 			setTimeout(()=>{ // give user a chance to see the original state before we change it
 				specs(()=>describe(`It should say ${testTitle}`, ()=>{
@@ -427,8 +435,8 @@ storiesOf('Item', module)
 					it(`The input should say ${testTitle}`, ()=>{
 						expect(Wrapper.find('input[name="url-title"]').instance().value).toBe(testTitle)
 					})
-					it(`The Item should have a reference array`,()=>{
-						expect(testItem.reference).toBe([{url: testURL, title: testTitle}])
+					it(`The Item should have a references array`,()=>{
+						expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
 					})
 				}))
 			},1000)
@@ -436,3 +444,60 @@ storiesOf('Item', module)
 		return outerDiv;
 	})
 
+	.add("Edit an Item Reference", () => {
+		outerSetup();
+
+		const testURL="https://www.civilpursuit.com"
+		const testTitle="URL Title Test Succeeded!"
+		const testMessage="get url title"
+
+		const testItem = {
+			subject: "A Test Subject",
+			description: "A Test Item",
+			type: testType,
+			references: [{url: testURL, title: testTitle}]
+		}
+
+		var emittedArgs;
+
+		window.socket.emit=(...args)=>{
+			emittedArgs=args;
+			if(args[0]===testMessage && args[1]===testURL  && (typeof args[2] === 'function')) { 
+				args[2](testTitle)
+			}
+		}
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			let textInput=Wrapper.find('TextInput[name="reference"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
+			var inputNode=Wrapper.find('TextInput[name="reference"]').getDOMNode()
+			inputNode.blur();
+			await sleep(1000);
+			specs(()=>describe(`It should say ${testTitle}`, ()=>{
+				it('The socket should have received a message',()=>{
+					expect(!!emittedArgs).toBe(true)
+				})
+				it(`the message api should have been: ${testMessage}`,()=>{
+					expect(emittedArgs[0]).toBe(testMessage)
+				})
+				it(`the message parameter should have been: ${testURL}`,()=>{
+					expect(emittedArgs[1]).toBe(testURL)
+				})
+				it(`there should have been a callback function`,()=>{
+					expect(typeof emittedArgs[2]).toBe('function')
+				})
+				it(`The input should say ${testTitle}`, ()=>{
+					expect(Wrapper.find('input[name="url-title"]').instance().value).toBe(testTitle)
+				})
+				it(`The Item should have a references array`,()=>{
+					expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
+				})
+			}))
+
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})

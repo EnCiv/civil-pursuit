@@ -8,7 +8,7 @@ class ButtonGroup extends React.Component {
   render () {
     const classes = ['syn-button-group'];
 
-    if ( this.props.block ) {
+    if ( this.props ) {
       classes.push('syn--block');
     }
 

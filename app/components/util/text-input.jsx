@@ -1,34 +1,14 @@
 'use strict';
 
 import React from 'react';
-import injectSheet from 'react-jss'
-import { Object } from 'es6-shim';
 
-const styles={
-  small: {
-    'font-size': '.80rem !important',
-    'border-width:': '2px',
-    'padding:': '0 0.4em 0.2em 0',
-  },
+//
+// can't not use react-css here because we can't export the select, getter and setter methods.
+//
+const classes=['small','medium','large','block']; // global styles tha can be turned on with props
 
-  medium: {
-    'font-size': '1.25rem',
-    'border-width': '2px',
-    'padding': '1em'
-  },
 
-  large: {
-    'font-size': '1.75rem',
-    'border-width': '2px',
-    'line-height': '1.3em'
-  },
-
-  block: {
-    'width': 'calc(100%)',
-  }
-}
-
-class TextInput extends React.Component {
+export default class TextInput extends React.Component {
   constructor(props){
     super(props);
     this.state={value: this.props.defaultValue||''};
@@ -42,6 +22,11 @@ class TextInput extends React.Component {
   }
 
   select(){
+    console.warn("TextInput: should use .focus()");
+    return this.inputRef.current.focus();
+  }
+
+  focus(){
     return this.inputRef.current.focus();
   }
 
@@ -53,11 +38,10 @@ class TextInput extends React.Component {
   }
 
   render () {
-    const {classes}=this.props;
     var classNames = [];
     var inputProps=Object.assign({},this.props);
 
-    Object.keys(classes).forEach(key=>{
+    classes.forEach(key=>{
       if(this.props[key]){
         classNames.push(classes[key]);
         delete inputProps[key];
@@ -79,6 +63,3 @@ Object.defineProperty(TextInput.prototype,'value',{
       this.setState({value: v})
   }
 })
-
-export default injectSheet(styles)(TextInput);
-
