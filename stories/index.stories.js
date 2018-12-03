@@ -37,6 +37,7 @@ expect.extend({printItOut(received,argument){
 
 import Item from "../app/components/item"
 import { Logger } from 'log4js/lib/logger';
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants';
 
 const outerStyle={maxWidth: 980, margin: 'auto'};
 
@@ -78,6 +79,16 @@ function asyncEvent (node, eventName) {
 	})
 	node[eventName]();
 	return p;
+}
+
+function getAsyncSemaphore(){
+	var result={};
+	result.p=new Promise((ok,ko)=>{
+		result.ok=ok;
+		result.ko=ko;
+	}) 
+	result.p.catch(err=>console.error("getAsyncSemaphore catch"));
+	return result;
 }
 
 function RenderStory (props){
@@ -277,14 +288,39 @@ storiesOf('Item', module)
 		return outerDiv;
 	})
 
-	.add('Create an Item', () => {
+	.add('Item VM: edit shape: edit', ()=>{
 		outerSetup();
 
 		const testItem = {
 			type: testType
 		}
 
-		const story=<div><div style={{fontSize: "300%"}}>Click in the Subject Field, type "A" and then click outside the field</div><Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} /></div>;
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+
+		const storyTest=async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			await asyncSleep(600);
+			specs(()=>describe('Test the initial state of the Creator', ()=>{
+				it(`It should not have any error messages`, ()=>{
+					const errorMessages=Wrapper.findDOMByAttrRegex('class', /Item-error-message[-|/d]+/);
+					expect(errorMessages).toBe(false)
+				})
+				it('It should have a Post button', ()=>{
+					expect(!!Wrapper.find('button[title="click to post this"]')).toBe(true)
+				})
+			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})
+
+	.add('Create an Item Subject', () => {
+		outerSetup();
+
+		const testItem = {
+			type: testType
+		}
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
 
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
@@ -315,6 +351,47 @@ storiesOf('Item', module)
 		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})
 
+	.add('Create an Item Description', () => {
+		outerSetup();
+
+		const testItem = {
+			type: testType
+		}
+
+		const description="This is a description of an item"
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			await asyncSleep(600);
+			let textInput=Wrapper.find('textarea[name="description"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: description}}))
+			var inputNode=Wrapper.find('textarea[name="description"]').getDOMNode()
+			const blurE = await asyncEvent(inputNode, 'blur');
+			specs(()=>describe('Item Description should have the input', ()=>{
+				let _id=Wrapper.find('Item').instance().props.item._id;
+				it(`Item should have a unique ObjectId. Found ${_id}`, function () {
+					expect(_id.length).toBe(24);
+				});
+				it(`Item should have "${description}" as the textarea`, ()=>{
+					expect(Wrapper.find('textarea[name="description"]').instance().value).toBe(description);
+				});
+				it(`Item should have "${description}" as Textarea`, ()=>{
+					expect(Wrapper.find("ItemDescription").find('Textarea').instance().value).toBe(description)
+				});
+				it(`Item should have "${description}" as the ItemDescription`, ()=>{
+					expect(Wrapper.find("ItemDescription").instance().state.description).toBe(description)
+				});
+				it(`Item should have "${description}" in the Item`, ()=>{
+					expect(Wrapper.find("Item").instance().props.item.description).toBe(description)
+				});
+			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})
+
 	.add("Can't creat an Item without a description", () => {
 		outerSetup();
 
@@ -325,31 +402,23 @@ storiesOf('Item', module)
 
 		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
 
-		setTimeout(()=>{ // do this after the story has rendered
-			Wrapper=mount(story,{attachTo: document.getElementById('story')});
-			setTimeout(()=>{ // give uses a chance to see the original state before we change it
-				const preTestResult=Wrapper.findDOMByAttrRegex('class', /Item-error-message[-|/d]+/);
+		const storyTest=async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			await asyncSleep(600);
+			await asyncEvent(Wrapper.find('button[title="click to post this"]').getDOMNode(),'click');
+			await asyncSleep(0);
 
-				Wrapper.find('button[title="click to post this"]').simulate('click',dummyEvent);
-
-				setTimeout(()=>
-					specs(()=>describe('It should say description is required, in red', ()=>{
-						it(`It should not have an error message to begin with`, ()=>{
-							expect(preTestResult).toBe(false)
-						})
-						let result=Wrapper.findDOMByAttrRegex('class', /Item-error-message[-|/d]+/);
-						it('It should have an error message', ()=>{
-							expect(result.innerText).toBe("Description is required")
-						});
-						it('The color should be red', ()=>{
-							expect(window.getComputedStyle(result).color).toBe("rgb(255, 0, 0)")
-						});
-					}))
-				,600)
-
-			},1000)
-		})
-		return outerDiv;
+			specs(()=>describe('It should say description is required, in red', ()=>{
+				var result=Wrapper.findDOMByAttrRegex('class', /Item-error-message[-|/d]+/);
+				it('It should have an error message', ()=>{
+					expect(result.innerText).toBe("Description is required")
+				});
+				it('The color should be red', ()=>{
+					expect(window.getComputedStyle(result).color).toBe("rgb(255, 0, 0)")
+				});
+			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})
 
 	
@@ -440,6 +509,9 @@ storiesOf('Item', module)
 					it(`The Item should have a references array`,()=>{
 						expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
 					})
+					it(`should show an edit-url icon (Pencil)`,()=>{
+						expect(!!Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|/d]+/)).toBe(true);
+					})
 				}))
 			},1000)
 		})
@@ -473,30 +545,15 @@ storiesOf('Item', module)
 
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
-			let textInput=Wrapper.find('TextInput[name="reference"]')
-			textInput.instance().select();
-			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
-			var inputNode=Wrapper.find('TextInput[name="reference"]').getDOMNode()
-			inputNode.blur();
 			await asyncSleep(1000);
-			specs(()=>describe(`It should say ${testTitle}`, ()=>{
-				it('The socket should have received a message',()=>{
-					expect(!!emittedArgs).toBe(true)
+			let editButton=Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|\d]+/);
+			editButton.click();
+			specs(()=>describe(`It should say`, ()=>{
+				it('The text input field should be present',()=>{
+					expect(!!Wrapper.find('TextInput[name="reference"]')).toBe(true)
 				})
-				it(`the message api should have been: ${testMessage}`,()=>{
-					expect(emittedArgs[0]).toBe(testMessage)
-				})
-				it(`the message parameter should have been: ${testURL}`,()=>{
-					expect(emittedArgs[1]).toBe(testURL)
-				})
-				it(`there should have been a callback function`,()=>{
-					expect(typeof emittedArgs[2]).toBe('function')
-				})
-				it(`The input should say ${testTitle}`, ()=>{
-					expect(Wrapper.find('input[name="url-title"]').instance().value).toBe(testTitle)
-				})
-				it(`The Item should have a references array`,()=>{
-					expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
+				it('The url input field should not be hidden', ()=>{
+					expect(!!Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|\d]+\s.ItemReference-hide[-|\d]+/)).toBe(false);
 				})
 			}))
 

@@ -27,7 +27,7 @@
     "client": "webpack-dev-server --config webpack-dev.config.js --devtool inline-source-map",
     "server": "nodemon dist/server/start.js",
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 18 && npm run server\" \"sleep 24 && npm run client\"",
-    "storybook": "start-storybook -s ./assets -p 6006",
+    "storybook": "echo \"make sure dev is running\" && start-storybook -s ./assets -p 6006",
     "build-storybook": "build-storybook"
   },
   "author": {

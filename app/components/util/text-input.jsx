@@ -49,7 +49,7 @@ export default class TextInput extends React.Component {
     })
 
     return (
-      <input type="text" className={ classNames.join(' ') } { ...inputProps } ref={this.inputRef} />
+      <input type="text" className={ classNames.join(' ') } { ...inputProps } value={this.state.value} ref={this.inputRef} />
     );
   }
 }

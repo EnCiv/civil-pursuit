@@ -2,7 +2,7 @@
 
 import React from 'react';
 import cx from 'classnames';
-import TextArea from './util/text-area';
+import Textarea from './util/text-area';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json';
 
@@ -66,9 +66,9 @@ class ItemDescription extends React.Component {
         if (this.state.description != newDescription)
             this.setState({ description: newDescription.slice() })
     }
-    onChangeKey() {
+    onChangeKey(e) {
         var description = this.state.description;
-        var value = this.inputElement.current.value;
+        var value = e.target.value; //this.inputElement.current.value;
         if (description !== value) description = value.slice();
         this.setState({ touched: true, collecting: true, description });
         if (this.timeout) clearTimeout(this.timeout);
@@ -118,12 +118,12 @@ class ItemDescription extends React.Component {
         else
             return (
                 <section>
-                    <TextArea
+                    <Textarea
                         className={classes['edit']}
                         placeholder="Description"
                         ref={this.inputElement}
                         name="description"
-                        value={this.state.description}
+                        defaultValue={this.state.description}
                         onChange={this.onChangeKey}
                         onBlur={this.onBlur}
                         block

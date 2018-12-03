@@ -268,14 +268,14 @@ class Creator extends React.Component {
                   onBlur        =   { this.getUrlTitle.bind(this) }
                   className     =    {`url-editor ${this.state.title ? 'hide' : ''}`}
                   name          =   "reference"
-                  value         =   { this.state.reference }
+                  defaultValue         =   { this.state.reference }
                   key           =   "reference"
                   />
 
                 <TextInput
                   disabled
                   name          =   "url-title"
-                  value         =   {this.state.title}
+                  defaultValue         =   {this.state.title}
                   className     =   {`url-title ${this.state.title ? 'visible' : ''}`}
                   ref           =   "title"
                   key           =   "title"
@@ -313,7 +313,7 @@ class Creator extends React.Component {
                 ref="subject"
                 required
                 name="subject"
-                value={this.state.subject}
+                defaultValue={this.state.subject}
                 onChange={this.onChangeKey.bind(this, 'subject')}
                 key="subject"
               />
