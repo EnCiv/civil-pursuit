@@ -67,8 +67,17 @@ function outerSetup(){
 	}
 }
 
-function sleep(mSec){
+function asyncSleep(mSec){
 	return new Promise((ok,ko)=>setTimeout(()=>ok(),mSec))
+}
+
+function asyncEvent (node, eventName) {
+	var p= new Promise((ok,ko)=>{
+		const listener=(e)=>{node.removeEventListener(eventName,listener), ok(e);}
+		node.addEventListener(eventName,listener)
+	})
+	node[eventName]();
+	return p;
 }
 
 function RenderStory (props){
@@ -122,33 +131,31 @@ storiesOf('Item', module)
 		}
 
 		const story= <div id='story' style={outerStyle}><Item item={testItem} className="whole-border" /></div>;
-		setTimeout(()=>{
-			Wrapper=mount(story,{attachTo: document.getElementById('story')})
-			setTimeout(()=>{
-				const originalHeight=parseFloat(Wrapper.getComputedStyle('height'))
-				const fontSize=parseFloat(Wrapper.getComputedStyle('font-size'))
-				Wrapper.find('a').simulate('click',dummyEvent)
-				const preTest=()=>it(`Item should be truncated`, ()=>{
-					expect(originalHeight).toBeLessThan(8.5*fontSize)
+		const storyTest=async (e)=>{
+			Wrapper=mount(story,{attachTo: e})
+			await asyncSleep(1000)
+			const originalHeight=parseFloat(Wrapper.getComputedStyle('height'))
+			const fontSize=parseFloat(Wrapper.getComputedStyle('font-size'))
+			Wrapper.find('a').simulate('click',dummyEvent)
+			const preTest=()=>it(`Item should be truncated`, ()=>{
+				expect(originalHeight).toBeLessThan(8.5*fontSize)
+			})
+			specs(()=>
+				describe('before clicked', ()=>
+					preTest()
+				)
+			)				
+			await asyncSleep(600);
+			specs(()=>
+				describe('clicked', ()=>{
+					preTest();
+					it(`Item should be open and height should be greater than ${originalHeight}`, ()=>{
+						expect(parseFloat(Wrapper.getComputedStyle('height'))).toBeGreaterThan(originalHeight)
+					})
 				})
-				specs(()=>
-					describe('before clicked', ()=>
-						preTest()
-					)
-				)				
-				setTimeout(()=>
-					specs(()=>
-						describe('clicked', ()=>{
-							preTest();
-							it(`Item should be open and height should be greater than ${originalHeight}`, ()=>{
-								expect(parseFloat(Wrapper.getComputedStyle('height'))).toBeGreaterThan(originalHeight)
-							})
-						})
-					)
-				,600)
-			},1000)
-		})
-		return outerDiv;
+			)
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})
 	.add('with Edit Button', () => {
 		outerSetup();
@@ -279,38 +286,33 @@ storiesOf('Item', module)
 
 		const story=<div><div style={{fontSize: "300%"}}>Click in the Subject Field, type "A" and then click outside the field</div><Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} /></div>;
 
-		setTimeout(()=>{ // do this after the story has rendered
-			Wrapper=mount(story,{attachTo: document.getElementById('story')});
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
 			let textInput=Wrapper.find('TextInput[name="subject"]')
 			textInput.instance().select();
 			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: 'A'}}))
 			var inputNode=Wrapper.find('input[name="subject"]').getDOMNode()
-			inputNode.addEventListener('blur',()=>
-				setTimeout(()=>{ // let the item finish it's transition
-						console.info("calling specs");
-						specs(()=>describe('Item Subject should have the input', ()=>{
-							let _id=Wrapper.find('Item').instance().props.item._id;
-							it(`Item should have a unique ObjectId. Found ${_id}`, function () {
-								expect(_id.length).toBe(24);
-							});
-							it('Item should have an A in the input', function () {
-								expect(Wrapper.find('input[name="subject"]').instance().value).toBe('A');
-							});
-							it('Item should have an A in the TextInput', function () {
-								expect(Wrapper.find("ItemSubject").find('TextInput').instance().value).toBe('A')
-							});
-							it('Item should have an A in the ItemSubject', function () {
-								expect(Wrapper.find("ItemSubject").instance().state.subject).toBe('A')
-							});
-							it('Item should have an A in the Item', function () {
-								expect(Wrapper.find("Item").instance().props.item.subject).toBe('A')
-							});
-						}));
-				})
-			)
-			inputNode.blur()
-		})
-		return outerDiv;
+			const blurE = await asyncEvent(inputNode, 'blur');
+			specs(()=>describe('Item Subject should have the input', ()=>{
+				let _id=Wrapper.find('Item').instance().props.item._id;
+				it(`Item should have a unique ObjectId. Found ${_id}`, function () {
+					expect(_id.length).toBe(24);
+				});
+				it('Item should have an A in the input', function () {
+					expect(Wrapper.find('input[name="subject"]').instance().value).toBe('A');
+				});
+				it('Item should have an A in the TextInput', function () {
+					expect(Wrapper.find("ItemSubject").find('TextInput').instance().value).toBe('A')
+				});
+				it('Item should have an A in the ItemSubject', function () {
+					expect(Wrapper.find("ItemSubject").instance().state.subject).toBe('A')
+				});
+				it('Item should have an A in the Item', function () {
+					expect(Wrapper.find("Item").instance().props.item.subject).toBe('A')
+				});
+			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})
 
 	.add("Can't creat an Item without a description", () => {
@@ -476,7 +478,7 @@ storiesOf('Item', module)
 			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
 			var inputNode=Wrapper.find('TextInput[name="reference"]').getDOMNode()
 			inputNode.blur();
-			await sleep(1000);
+			await asyncSleep(1000);
 			specs(()=>describe(`It should say ${testTitle}`, ()=>{
 				it('The socket should have received a message',()=>{
 					expect(!!emittedArgs).toBe(true)
