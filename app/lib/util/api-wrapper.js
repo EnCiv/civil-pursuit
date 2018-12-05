@@ -57,27 +57,22 @@ function apiWrapperUpdate1OrPush(message,cb){
     }
 }
 
-function apiWrapperFlush(cb) {
+function apiWrapperFlush(forceUpdate) {
     if(typeof window!== 'undefined' && this && this.props && this.props.user) {
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");
-        if(!json) return cb();
+        if(!json) return;
         var queue=json ? JSON.parse(json) : [];
-        if(!queue.length) { 
-            storage.removeItem("queue");
-            return cb();
-        }
-
-        var sent=0;
-        while(message=queue.shift()){
-            ++sent;
-            console.info("apiWrapperFlush:", message);
-            window.socket.emit(...message,()=>(--sent<=0 && !queue.length && cb()));  // if sent is still positive or queue still has items in it, don't do anything, otherwise call the call back
+        if(queue.length) { 
+            var sent=0;
+            while(message=queue.shift()){
+                ++sent;
+                console.info("apiWrapperFlush:", message);
+                window.socket.emit(...message,()=>(--sent<=0 && !queue.length && forceUpdate()));  // if sent is still positive or queue still has items in it, don't do anything, otherwise call the call back
+            }
         }
         storage.removeItem("queue");
-    } else {
-        cb();
     }
 }
 

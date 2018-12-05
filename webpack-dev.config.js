@@ -13,6 +13,7 @@ module.exports = {
     context: path.resolve(__dirname, "app"),
     mode: 'development',
     watch: true,
+    devtool: 'source-map',
     entry: {
     'only-dev-server':    'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
      main:   "./client/main.js",

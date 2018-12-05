@@ -112,22 +112,32 @@ class API extends EventEmitter {
       () => sequencer.promisify(fs.readdir, [path.resolve(__dirname, '../api')]),
 
       files => Promise.all(files.map(file => new Promise((ok, ko) => {
-        const name      =   S(file.replace(/\.js$/, ''))
-          .humanize()
-          .s
-          .toLowerCase();
+        try {
+          if(!(/[\w|\d|-]+.js$/.test(file))){ // ignore .map files, and files that don't end in .js and don't fit the pattern
+             ok(); 
+          } else {
+            const name      =   S(file.replace(/\.js$/, ''))
+              .humanize()
+              .s
+              .toLowerCase();
 
-        const handler   =   require('../api/' + file).default;
+            const handler   =   require('../api/' + file).default;
 
-        if ( typeof handler !== 'function' ) {
-          throw new Error(`API handler ${name} (${file}) is not a function`);
+            if ( typeof handler !== 'function' ) {
+              throw new Error(`API handler ${name} (${file}) is not a function`);
+            }
+
+            this.handlers[name] = handler;
+
+            this.handlers[name].slugName = file.replace(/\.js$/, '');
+
+            ok();
+          }
         }
-
-        this.handlers[name] = handler;
-
-        this.handlers[name].slugName = file.replace(/\.js$/, '');
-
-        ok();
+        catch (error) {
+          logger.error(`Error requiring api file ${file} on start, skipping`, error)
+          ok();
+        }
       })))
 
     );

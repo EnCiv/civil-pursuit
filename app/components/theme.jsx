@@ -1,7 +1,7 @@
 'use strict';
 
-class Theme {
-    static colors: {
+const Theme= {
+    colors: {
         primary: '#337ab7',
         danger: '#CD3232',
 		error: '@color-danger',
@@ -10,7 +10,7 @@ class Theme {
 		success: '#3f038e',
 		muted: '#999',
     },
-    static styles: {
+     styles: {
         primary: {color: Theme.colors.primary},
         danger: {color: Theme.colors.danger},
         error: {color: Theme.colors.error},

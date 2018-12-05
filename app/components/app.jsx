@@ -21,26 +21,27 @@ import { hot } from 'react-hot-loader'
 
 class App extends React.Component {
 
-	state = { path: null }
-
 	constructor(props) {
 		super(props);
-
 		if (typeof window !== 'undefined') {
 			//window.onbeforeunload = this.confirmOnPageExit.bind(this);
 			fixedScroll();
-			if (navigator.userAgent.match(/SM-N950U/)) {
+			if (navigator.userAgent.match(/SM-N950U/)) {f
 				let b = document.getElementsByTagName('body')[0];
 				b.style.paddingRight = '9px';
 				b.style.paddingLeft = '9px'
 			}
 		}
 
-		this.state.path = props.path;
-
 		MechanicalTurkTask.setFromProps(props);
 		this.flushed = false;
-		apiWrapper.Flush.call(this, () => {this.flushed = true; if(this.rendered)this.forceUpdate()}); // if any api data was saved previously, flush it to the server
+		apiWrapper.Flush.call(this, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+	}
+
+	updateAfterFlush(){
+		this.flushed=true;
+		if(this.rendered) 
+			this.forceUpdate()
 	}
 
 	confirmOnPageExit(e) {
@@ -63,7 +64,6 @@ class App extends React.Component {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	setPath(p) {
-		//this.setState({ path: p});
 		if (typeof window !== 'undefined') reactSetPath(p);
 	}
 
@@ -76,15 +76,11 @@ class App extends React.Component {
 	render() {
 
 		const {
-			item,
 			panels,
-			//path,
 			user,
-			notFound,
-			error
 		} = this.props;
 
-		let path = this.state.path;
+		const {notFound, error, path, browserConfig, MechanicalTurkTask, ...lessProps}=this.props;
 		this.rendered=true; // if we've rendered at least once, then apiWrapper.flush will have to force an update when it completes
 
 		let page = (
@@ -96,8 +92,9 @@ class App extends React.Component {
 			</Panel>
 		);
 
-
-		if (error && Object.keys(error).length) { // falsy an empty obect is not an error
+		if(notFound || error) {
+			;// just render page at the end
+		} else if (error && Object.keys(error).length) { // falsy an empty obect is not an error
 			page = (
 				<Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
 					<section style={{ padding: 10 }}>
@@ -106,11 +103,11 @@ class App extends React.Component {
 					</section>
 				</Panel>
 			);
-		} else if (!this.flushed) {
-			page = (<div style={{ textAlign: "center" }}>Updating...</div>);
+		//} else if (!this.flushed) {
+			//page = (<div style={{ textAlign: "center" }}>Updating...</div>);
 		} else {
 			if (path === '/') {
-				page = <Home user={user} path={path} />;
+				page = <Home user={user}/>;
 			}
 
 			const paths = path.split(/\//);
@@ -138,7 +135,7 @@ class App extends React.Component {
 							for (let i = 3; i < paths.length; i++)
 								return_to += '/' + paths[i];
 							return (
-								<StaticLayout {...this.props}>
+								<StaticLayout {...lessProps}>
 									<ResetPassword activation_token={paths[2]} return_to={return_to} />
 								</StaticLayout>
 							);
@@ -148,7 +145,7 @@ class App extends React.Component {
 					break;
 
 				case 'h':
-					page = <Home user={user} path={path} RASPRoot={'/h/'} />;
+					page = <Home user={user} RASPRoot={'/h/'} />;
 					break;
 
 				case 'about':
@@ -158,34 +155,34 @@ class App extends React.Component {
 				case 'odg':
 					if (user) {
 						page = (
-							<ODGCongrat {...this.props} />
+							<ODGCongrat {...lessProps} />
 						);
 						break;
 					}
 
-					if (!this.props.panels) return (
+					if (!panels) return (
 						<OnlineDeliberationGame />
 					);
-					const keylist3 = Object.keys(this.props.panels);
+					const keylist3 = Object.keys(panels);
 
 					const panelId3 = keylist3[keylist3.length - 1];
 
-					const panel3 = Object.assign({}, this.props.panels[panelId3].panel);
+					const panel3 = Object.assign({}, panels[panelId3].panel);
 
 					const component3 = panel3.type.component || 'Subtype';
 
-					return (<OnlineDeliberationGame component={component3} {...this.props} count={1} panel={panel3} />
+					return (<OnlineDeliberationGame component={component3} {...lessProps} count={1} panel={panel3} />
 					);
 
 				case 'item':
 
-					if (!this.props.panels) { break; }
+					if (!panels) { break; }
 
-					const keylist = Object.keys(this.props.panels);
+					const keylist = Object.keys(panels);
 
 					const panelId1 = keylist[keylist.length - 1];
 
-					const panel = Object.assign({}, this.props.panels[panelId1].panel);
+					const panel = Object.assign({}, panels[panelId1].panel);
 
 					//panel.items = panel.items.filter(item => item.id === paths[1]);
 
@@ -194,14 +191,14 @@ class App extends React.Component {
 					const component = panel.type.component || 'Subtype';
 
 					return (
-						<Layout {...this.props} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
+						<Layout {...lessProps} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
 							<TypeComponent component={component} count={1} panel={panel} />
 						</Layout>
 					);
 
 				case 'i':
 
-					if (!this.props.panels) break;
+					if (!panels) break;
 					else {
 						function getLastPanel(panels) {
 							let keylist = Object.keys(panels);
@@ -210,25 +207,25 @@ class App extends React.Component {
 							return panel;
 						}
 
-						let last = getLastPanel(this.props.panels);
+						let last = getLastPanel(panels);
 						let component = last.type.component || 'Subtype';
 						if (typeof document !== 'undefined' && last.items && last.items[0] && last.items[0].subject)
 							document.title = last.items[0].subject;
 						return (
-							<SmallLayout {...this.props} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
+							<SmallLayout {...lessProps} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
 								<TypeComponent component={component} count={1} panel={last} />
 							</SmallLayout>
 						);
 					}
 
 				case 'items':
-					if (!this.props.panels) { break; }
+					if (!panels) { break; }
 
-					const panelId2 = Object.keys(this.props.panels)[0];
+					const panelId2 = Object.keys(panels)[0];
 
 					//onsole.info("App.render items", { panelId2 });
 
-					const panel2 = Object.assign({}, this.props.panels[panelId2].panel);
+					const panel2 = Object.assign({}, panels[panelId2].panel);
 
 					//panel.items = panel.items.filter(item => item.id === paths[1]);
 
@@ -238,7 +235,7 @@ class App extends React.Component {
 					//onsole.info("App.render panel2", { panel2 });
 
 					return (
-						<Layout {...this.props} setPath={this.setPath.bind(this)} >
+						<Layout {...lessProps} setPath={this.setPath.bind(this)} >
 							<TypeComponent component={component2} count={1} panel={panel2} />
 						</Layout>
 					);
@@ -246,7 +243,7 @@ class App extends React.Component {
 		}
 
 		return (
-			<Layout {...this.props} setPath={this.setPath.bind(this)} >
+			<Layout {...lessProps} setPath={this.setPath.bind(this)} >
 				{page}
 			</Layout>
 		);

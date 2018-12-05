@@ -451,6 +451,7 @@ class HttpServer extends EventEmitter {
         );
       }
       catch ( error ) {
+        logger.error("getIpage saw error:", error);
         next(error);
       }
     }, setUserCookie,

@@ -174,8 +174,8 @@ class TopBar extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user, ready } = this.props;
-    const {children, ...lessProps}=this.props;
+    let { user } = this.props;
+    const {children, setPath, ...lessProps}=this.props;
 
     let comp = 'syn-top_bar';
 

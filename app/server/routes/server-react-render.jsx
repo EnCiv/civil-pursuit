@@ -41,10 +41,7 @@ function serverReactRender(req, res, next) {
         const props = {
             env: this.app.get('env'),
             path: req.path,
-            item: JSON.parse(JSON.stringify(req.item || null)),
-            panel: JSON.parse(JSON.stringify(req.panel || null)),
             panels: JSON.parse(JSON.stringify(req.panels || null)),
-            ready: false,
             user: isIn,
             notFound: req.notFound,
             error: res.locals.error,
