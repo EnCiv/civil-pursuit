@@ -78,9 +78,10 @@ class App extends React.Component {
 		const {
 			panels,
 			user,
+			path
 		} = this.props;
 
-		const {notFound, error, path, browserConfig, MechanicalTurkTask, ...lessProps}=this.props;
+		const {notFound, error, browserConfig, MechanicalTurkTask, ...lessProps}=this.props;
 		this.rendered=true; // if we've rendered at least once, then apiWrapper.flush will have to force an update when it completes
 
 		let page = (

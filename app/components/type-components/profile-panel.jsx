@@ -147,7 +147,7 @@ class ProfilePanel extends React.Component {
 
         if (panel.type && panel.type.instruction) {
             instruction = (
-                <Instruction >
+                <Instruction key='instruction'>
                     {panel.type.instruction}
                 </Instruction>
             );
@@ -175,11 +175,11 @@ class ProfilePanel extends React.Component {
         return (
             <Panel
                 ref="panel"
-                heading={[<h4>{title}</h4>]}
+                heading={[<h4 key='panel-title'>{title}</h4>]}
             >
                 {instruction}
                 {content}
-                <DoneItem message="Complete!" active={doneActive} onClick={this.setState.bind(this, { done: true }, null)} />
+                <DoneItem message="Complete!" active={doneActive} onClick={this.setState.bind(this, { done: true }, null)} key="done"/>
             </Panel>
         );
     }
