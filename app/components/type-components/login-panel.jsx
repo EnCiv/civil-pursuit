@@ -26,10 +26,6 @@ class LoginPanel extends React.Component {
         this.setState({ typeList: typeList });
     }
 
-    vsChange(obj){
-        if(this.props.vs & this.props.vs.toParent) this.props.vs.toParent(obj);  // let parent know the user has logged in
-    }
-
     render() {
         const { panel, user, userInfo, active } = this.props;
         const type = panel && panel.type || this.props.type;

@@ -19,24 +19,11 @@ class ProfilePanel extends React.Component {
         ready: false,
         userInfo: {},
         done: false,
-        vs: {},
         userId: ''
     }
 
     constructor(props) {
         super(props);
-
-        this.state.vs = Object.assign({},
-            {
-                state: 'truncated',
-            },
-            this.props.vs,
-            {
-                depth: (this.props.vs && this.props.vs.depth) ? this.props.vs.depth : 0,
-                toParent: this.toMeFromChild.bind(this)
-            }
-        );
-        this.toChild = null;
 
         if (typeof window !== 'undefined' && this.props.user) {
             window.socket.emit('get user info', this.okGetUserInfo.bind(this));
@@ -53,31 +40,6 @@ class ProfilePanel extends React.Component {
         if (newProps.user._id) userId = newProps.user._id;
         else userId = newProps.user;
         if (this.state.userId != userId) this.setState({ userId: userId });
-    }
-
-    componenetDidMount() {
-        if (this.props.vs.toParent) this.props.toParent({ toChild: toMeFromParent.bind(this) });
-    }
-
-    toMeFromChild(vs) {
-        if (!vs) return;
-        if (vs.toChild) this.toChild = vs.toChild;  // child is passing up her func
-        if (vs.userId) { // child is passing up a new userId (LoginPanel)
-            if(typeof window !== 'undefined') {
-                if(this.state.userInfo){
-                    var newInfo=Object.assign({},this.state.userInfo);
-                    setUserInfo.call(this, { newInfo }, this.okGetUserInfo.bind(this));  // apply the new info to the user
-                } else 
-                    window.socket.emit('get user info', this.okGetUserInfo.bind(this));  // userId got set but there's no new info
-            } this.setState({ userId: vs.userId });
-        }
-    }
-
-    toMeFromParent(vs) {
-        if (vs) { // parent is giving you a new state
-            if (this.state.vs.state !== vs.state)
-                this.setState({ vs: Object.assign({}, this.state.vs, vs) });
-        }
     }
 
     setUserInfo(info){
@@ -130,7 +92,7 @@ class ProfilePanel extends React.Component {
                         limit: panel.limit || config['navigator batch size'],
                     };
                     return (
-                        <TypeComponent  {...this.props} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} vs={this.state.vs} />
+                        <TypeComponent  {...this.props} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
                     )
                 } else { // if all the data is there
                     doneActive = true;
