@@ -93,10 +93,10 @@ class RASPQSortRefine extends ReactActionStatePathClient {
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
         //onsole.info("qsortWhy componentWillReceiveProps");
-        var newSections=[];
+        var newSections={};
         this.buttons.forEach(button=> newSections[button]=[] );
 
-        Object.keys(newProps.shared.why[this.whyName]).forEach(itemId=>{
+        newProps.shared && newProps.shared.why && newProps.shared.why[this.whyName] && Object.keys(newProps.shared.why[this.whyName]).forEach(itemId=>{  // after RESET shared might not be setup
             if(this.results.refine[this.whyName][itemId]){ newSections[this.whyName].push(itemId)} // if we already have results on this item, don't do it again
             else{ newSections['unsorted'].push(itemId) }
         });
@@ -130,7 +130,10 @@ class RASPQSortRefine extends ReactActionStatePathClient {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    componentWillUnmount(){
+        this.componentWillUnmount=true;
+        console.info("RASPQSortRefine.componentWillunmount")
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

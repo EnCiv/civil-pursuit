@@ -11,14 +11,26 @@ import Column from '../util/column';
 import DoneItem from '../done-item';
 import LoginSpan from '../login-span';
 import setUserInfo                  from '../../api-wrapper/set-user-info';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path'
+import PanelHeading from '../panel-heading'
 
 class ProfilePanel extends React.Component {
+    render() {
+        return (
+            <ReactActionStatePath {...this.props}>
+                <PanelHeading items={[]} type={this.props.panel && this.props.panel.type || this.props.type} cssName={'syn-panel-profile'} panelButtons={['Instruction']} >
+                    <RASPProfilePanel />
+                </PanelHeading>
+            </ReactActionStatePath>
+        );
+    }
+}
 
+class RASPProfilePanel extends ReactActionStatePathClient {
     state = {
         typeList: [],
-        ready: false,
+        userInfoReady: false,
         userInfo: {},
-        done: false,
         userId: ''
     }
 
@@ -32,14 +44,20 @@ class ProfilePanel extends React.Component {
             window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this));
 
         this.state.userId = this.props.user ? this.props.user._id || this.props.user : '';
+        this.processProps(props);
     }
 
     componentWillReceiveProps(newProps) {
-        if (!newProps.user) return;
+        if (!newProps.user) return this.processProps(newProps);
         var userId;
         if (newProps.user._id) userId = newProps.user._id;
         else userId = newProps.user;
         if (this.state.userId != userId) this.setState({ userId: userId });
+        this.processProps(newProps);
+    }
+
+    componentDidUpdate(){
+        this.processProps(this.props); // check again after state updates
     }
 
     setUserInfo(info){
@@ -48,7 +66,7 @@ class ProfilePanel extends React.Component {
     }
 
     okGetUserInfo(userInfo) {
-        this.setState({ ready: true, userInfo: Object.assign({}, userInfo, this.state.userInfo) });
+        this.setState({ userInfoReady: true, userInfo: Object.assign({}, userInfo, this.state.userInfo) });
     }
 
     okGetListoType(typeList) {
@@ -57,92 +75,109 @@ class ProfilePanel extends React.Component {
 
     neededInputAtStart = false;
 
-    render() {
-        const { panel, active } = this.props;
-        const { userId, userInfo } = this.state;
-        var doneActive = false;
-        var profiles = ['Gender', 'Birthdate.Birthdate..dob', 'Neighborhood', 'MemberType'];
+    processProps(props){
+        const {newLocation, rasp, panel, user}=props;
+        const {userId, userInfoReady, userInfo, typeList}=this.state;
+        this.profiles = ['Gender', 'Birthdate.Birthdate..dob', 'Neighborhood', 'MemberType'];
+        if (panel.parent && panel.parent.profiles && panel.parent.profiles.length) this.profiles = panel.parent.profiles;
+        this.properties = ProfileComponent.properties(this.profiles);
 
-        if (panel.parent && panel.parent.profiles && panel.parent.profiles.length) profiles = panel.parent.profiles;
-
-        var properties = ProfileComponent.properties(profiles);
-
-        //onsole.info("ProfilePanel profiles and properties:", this.props, profiles, properties);
-
-        if ((this.props.user && this.state.ready) || this.neededInputAtStart) // if there is a users and the user info in ready or if input is going to be needed
-        {
-            if (properties.every(prop => userInfo[prop])) { // have all the property values been filled out?? 
-                if (!this.neededInputAtStart || this.state.done) { // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
-                    if (userId && this.props.newLocation) {
+        if ((user && userInfoReady) || this.neededInputAtStart) { // if there is a users and the user info in ready or if input was needed
+           if (this.properties.every(prop => userInfo[prop])) { // have all the property values been filled out?? 
+                if (!this.neededInputAtStart || rasp.done) { // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+                    if (userId && newLocation) {
                         window.onbeforeunload = null; // don't warn on redirect
-                        location.href = this.props.newLocation;
-                        return null;
+                        location.href = newLocation;
                     }
                     if (userId && panel.parent && panel.parent.new_location) {
                         window.onbeforeunload = null; // don't warn on redirect
                         location.href = panel.parent.new_location;
-                        return null;
                     }
-                    if (!this.state.typeList.length) return (null);  // if we haven't received typeList yet, come back later - there will be another event when it comes in
-                    const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
-                    const newPanel = {
-                        parent: panel.parent,
-                        type: this.state.typeList[index],
-                        skip: panel.skip || 0,
-                        limit: panel.limit || config['navigator batch size'],
-                    };
-                    return (
-                        <TypeComponent  {...this.props} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
-                    )
+                    if (!typeList.length) 
+                        return;  // if we haven't received typeList yet, come back later - there will be another event when it comes in
+                    else 
+                        return rasp.toParent({type: 'REDIRECT'});
+                } 
+            } else
+                this.neededInputAtStart=true;
+        } else {
+            if(!user)
+                this.neededInputAtStart=true;
+        }
+    }
+
+    /*isReady(){
+        const {rasp, user}=this.props;
+        const {typeList, userInfoReady, userInfo, userId}=this.state;
+        if ((user && userInfoReady) || this.neededInputAtStart) // if there is a users and the user info in ready or if input is going to be needed
+        {
+            if (this.properties.every(prop => userInfo[prop])) { // have all the property values been filled out?? 
+                if (!this.neededInputAtStart || rasp.done) { // if the required data is initally there, then move forward, otherwise move forward when the user to hits done
+                    if (!typeList.length) return false;  // if we haven't received typeList yet, come back later - there will be another event when it comes in
+                    return true;
                 } else { // if all the data is there
-                    doneActive = true;
+                    return true;
                 }
             }
-        } else if (this.props.user) // there is user data to wait for
-            return null; // wait for it
+        } else if (user) // there is user data to wait for
+            return false; // wait for it
+        if(userInfoReady || !userId)
+            return true;
+        return false;
+    }*/
 
-        // else there is no user, so go ahead and render the input panel
-        this.neededInputAtStart = true; // user will have to fill in some data, so after she does - don't immediately jump to the next panel, offer the done button and wait for it
+    actionFilters={
+        DONE: (action, delta)=>{
+            delta.done=true;
+            return true; //  to propagate
+        },
+        REDIRECT: (action, delta)=>{
+            delta.redirect=true;
+            return true; // to propagate
+        }
+    }
 
-        let title = panel.type.name || "Participant Profile";
-        let instruction = (<div className="instruction-text" key='instruction'>This discussion requsts that all users provide some profile details.</div>);
+    deriveRASP(nextRASP, initialRASP){
+        if(nextRASP.redirect) nextRASP.shape='redirect';
+    }
 
-        if (panel.type && panel.type.instruction) {
-            instruction = (
-                <Instruction key='instruction'>
-                    {panel.type.instruction}
-                </Instruction>
-            );
+    render() {
+        const { panel, rasp } = this.props;
+        const { userId, userInfo, userInfoReady } = this.state;
+
+        if(rasp.redirect){
+            const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
+            const newPanel = {
+                parent: panel.parent,
+                type: this.state.typeList[index],
+                skip: panel.skip || 0,
+                limit: panel.limit || config['navigator batch size'],
+            };
+            return  <TypeComponent  {...this.props} rasp={this.childRASP('open','redirect')} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
         }
 
+        if(!this.neededInputAtStart)
+            return null;
 
-        let content = [];
+        var incomplete=0;
+        this.properties.forEach(prop=> !userInfo[prop] && incomplete++ )
+        const constraints=incomplete ? incomplete>1 ? [`there are ${incomplete} items remaining`] : [`there is one item remaining`] : [];
 
-        if (this.state.ready || !userId) { // if user then wait for the user info, otherwise display
-            content = [
+        return (
+            <div>
                 <div className='item-profile-panel' style={{ maxWidth: "30em", margin: "auto", padding: "1em 0" }} key='content'>
                     <LoginSpan />
-                    {profiles.map(component => {
+                    {this.profiles.map(component => {
                         var title = ProfileComponent.title(component);
                         return (
                             <SelectorRow name={title} key={title} >
                                 <ProfileComponent block medium component={component} info={userInfo} onChange={this.setUserInfo.bind(this)} />
                             </SelectorRow>
                         );
-                    })
-                    }
+                    })}
                 </div>
-            ];
-        }
-        return (
-            <Panel
-                ref="panel"
-                heading={[<h4 key='panel-title'>{title}</h4>]}
-            >
-                {instruction}
-                {content}
-                <DoneItem message="Complete!" active={doneActive} onClick={this.setState.bind(this, { done: true }, null)} key="done"/>
-            </Panel>
+                <DoneItem message="Complete!" active={!constraints.length} constraints={constraints} onClick={()=>this.props.rasp.toParent({type: "DONE"})} key="done"/>
+            </div>
         );
     }
 }

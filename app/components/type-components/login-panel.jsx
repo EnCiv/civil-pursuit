@@ -2,19 +2,37 @@
 
 import React from 'react';
 import { JoinForm } from '../join';
-import Panel from '../panel';
 import config from 'syn/../../public.json';
 import TypeComponent from '../type-component';
-import Instruction from '../instruction';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path'
+import PanelHeading from '../panel-heading'
 
 class LoginPanel extends React.Component {
+    render() {
+        return (
+            <ReactActionStatePath {...this.props}>
+                <PanelHeading items={[]} type={this.props.panel && this.props.panel.type || this.props.type} cssName={'syn-login-profile'} panelButtons={['Instruction']} >
+                    <RASPLoginPanel />
+                </PanelHeading>
+            </ReactActionStatePath>
+        );
+    }
+}
 
+class RASPLoginPanel extends ReactActionStatePathClient {
     state = {
         typeList: []
     }
+    constructor(props){
+        super(props);
+        this.processProps(props);
+    }
+
+    componentWillReceiveProps(newProps){
+        this.processProps(newProps);
+    }
 
     componentDidMount() {
-    //    console.info("LoginPanel.cDM", this.props)
         const {panel}=this.props;
         const type = panel && panel.type || this.props.type;
         if (typeof window !== 'undefined' && type.harmony) {
@@ -26,25 +44,36 @@ class LoginPanel extends React.Component {
         this.setState({ typeList: typeList });
     }
 
-    render() {
-        const { panel, user, userInfo, active } = this.props;
-        const type = panel && panel.type || this.props.type;
-        const parent = panel ? panel.parent : this.props.parent;
-        //onsole.info("LoginPanel:",this.props, this.state);
-        var newLocation=this.props.newLocation || null;
-        if(!newLocation && parent && parent.new_location) newLocation=parent.new_location;  // get new Location out of the parent item if there is one
-        if(user && newLocation){
-                window.onbeforeunload=null; // don't warn on redirect
-                location.href=newLocation;
-                return null;
+    actionFilters={
+        REDIRECT: (action, delta)=>{
+            delta.redirect=true;
+            return true; // to propagate
         }
+    }
 
-        //if(!newLocation && this.state.typeList.length) newLocation="/items/"+this.state.typeList[0].id+"/"+panel.parent.id;  //new location calculated from next type
-        //console.info("Login-Panel newlocation", newLocation);
+    deriveRASP(nextRASP, initialRASP){
+        if(nextRASP.redirect) nextRASP.shape='redirect';
+    }
 
-        if (user) {
+    processProps(props){
+        const { panel, user, rasp } = props;
+        const parent = panel ? panel.parent : props.parent;
+        this.newLocation=props.newLocation || null;
+        if(!this.newLocation && parent && parent.new_location) this.newLocation=parent.new_location;  // get new Location out of the parent item if there is one
+        if(user && this.newLocation){
+                window.onbeforeunload=null; // don't warn on redirect
+                location.href=this.newLocation;
+        } else if (user) {
+            if(this.state.typeList.length) 
+                return rasp.toParent({type: 'REDIRECT'});
+        }
+    }
 
-            if(!this.state.typeList.length) return(null);
+
+    render() {
+        const { panel, userInfo, rasp } = this.props;
+
+        if (rasp.redirect) {
             const newPanel = {
                 parent: panel.parent,
                 type: this.state.typeList[0],
@@ -52,32 +81,15 @@ class LoginPanel extends React.Component {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.state.typeList[0].component} panel={newPanel} key='type-component' />
+            )
+        } else {
+            return (
+                <div className='item-login-panel' key='join-form'>
+                    <JoinForm userInfo={userInfo} newLocation={this.newLocation} />
+                </div>
             )
         }
-
-        let title = type.name || "User Registration Required";
-        let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
-
-        if (type && type.instruction) {
-        instruction = (
-                <Instruction >
-                    {type.instruction}
-                </Instruction>
-            );
-        }   
-
-        return (
-            <Panel
-                ref="panel"
-                heading={[<h4>{title}</h4>]}
-                >
-                {instruction}
-                <div className='item-login-panel'>
-                    <JoinForm userInfo={userInfo} newLocation={newLocation} />
-                </div>
-            </Panel>
-        );
     }
 }
 

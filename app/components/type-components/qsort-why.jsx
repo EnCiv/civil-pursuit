@@ -68,7 +68,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
         //onsole.info("qsortWhy componentWillReceiveProps");
-        var newSections=[];
+        var newSections={};
         const qbuttons=this.props.qbuttons || QSortButtonList;
         this.buttons.forEach(button=> newSections[button]=[] );
 

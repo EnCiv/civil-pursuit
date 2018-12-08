@@ -82,10 +82,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
       if (nextPanel === 0 || panelStatus[nextPanel] === 'done' || panelStatus[nextPanel - 1] === 'done') {
         delta.currentPanel = nextPanel;
         delta.shape = 'open';
-        let i;
-        for (i = nextPanel; i < this.panelList.length; i++) {
+        let i=this.panelList.length-1;
+        while (i >= nextPanel) {
           this.toChild[i]({ type: "RESET" })
           panelStatus[i] = "issues";
+          i--;
         }
       }
       this.queueFocus(action);

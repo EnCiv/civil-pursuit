@@ -8,6 +8,8 @@
 //  3) call the actual function without going through the socket if running if client code is being run on the server side
 //
 
+var USER=undefined;
+
 function apiWrapperPush(message,cb){
     if(typeof window !== undefined){
         // rendering in the browser
@@ -15,7 +17,7 @@ function apiWrapperPush(message,cb){
         let json=storage.getItem("queue");
         let queue=json ? JSON.parse(json) : [];
 
-        if(this && this.props && this.props.user)
+        if(USER)
             cb ? window.socket.emit(...message, cb) : window.socket.emit(...message); // don't send the call back if their isn't one
         else {
             if(cb) console.info("apiWrapperPush: queueing message, cb won't get called", message, cb);
@@ -38,7 +40,7 @@ function apiWrapperUpdate1OrPush(message,cb){
         let json=storage.getItem("queue");
         let queue=json ? JSON.parse(json) : [];
 
-        if(this && this.props && this.props.user)
+        if(USER)
             cb ? window.socket.emit(...message, cb) : window.socket.emit(...message); // don't send the call back if their isn't one
         else {
             if(cb) console.info("apiWrapperPush: queueing message, cb won't get called", message, cb);
@@ -59,6 +61,7 @@ function apiWrapperUpdate1OrPush(message,cb){
 
 function apiWrapperFlush(forceUpdate) {
     if(typeof window!== 'undefined' && this && this.props && this.props.user) {
+        USER=this.props.user; // this is how the other methods know whether to queue or emit the api's.
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");
