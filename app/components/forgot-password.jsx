@@ -12,6 +12,11 @@ import EmailInput     from './util/email-input';
 import Loading        from './util/loading';
 
 class ForgotPassword extends React.Component {
+  constructor(props){
+    super(props)
+    this.signUp=this.signUp.bind(this)
+    this.signIn=this.signIn.bind(this)
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -104,7 +109,7 @@ class ForgotPassword extends React.Component {
           <Column span="50" gutter>
             <a
               href            =   ""
-              onClick         =   { ::this.signUp }
+              onClick         =   { this.signUp }
               className       =   "forgot-password-sign-up"
             >
               Sign up
@@ -114,7 +119,7 @@ class ForgotPassword extends React.Component {
           <Column span="50" text-right gutter>
             <a
               href            =   ""
-              onClick         =   { ::this.signIn }
+              onClick         =   { this.signIn }
               className       =   "forgot-password-sign-in"
             >
               Sign in

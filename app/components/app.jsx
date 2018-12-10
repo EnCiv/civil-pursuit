@@ -7,11 +7,10 @@ import Home from './home';
 import ResetPassword from './reset-password';
 import Panel from './panel';
 import Icon from './util/icon';
-import About from './about'; import PanelList from './type-components/panel-list';
+import About from './about'; 
 import TypeComponent from './type-component';
 import OnlineDeliberationGame from './odg';
 import ODGCongrat from './odg-congrat';
-import fixedScroll from '../lib/util/fixed-scroll';
 import RenderMarkDown from './render-mark-down';
 import SmallLayout from './small-layout';
 import StaticLayout from './static-layout';
@@ -24,18 +23,31 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		if (typeof window !== 'undefined') {
-			//window.onbeforeunload = this.confirmOnPageExit.bind(this);
-			fixedScroll();
-			if (navigator.userAgent.match(/SM-N950U/)) {f
+			this.htmlE=document.getElementsByTagName('html')[0]
+			this.htmlE.style.width=window.innerWidth+'px'; // auto margin wont work on html unless width is set
+			this.htmlE.style.margin='auto'; // auto center the window with html.  Doing this in html so the react-scroll can scroll the html top - so that elements that move and scroll of the bottom wont change the scroll position - which is what chrome does
+			if (navigator.userAgent.match(/SM-N950U/)) { // to account for the wrapped sides of the display
 				let b = document.getElementsByTagName('body')[0];
-				b.style.paddingRight = '9px';
-				b.style.paddingLeft = '9px'
+				if(b){
+					b.style.paddingRight = '9px';
+					b.style.paddingLeft = '9px'
+				}else{
+					logger.error("App: couldn't get body on N950U");
+				}
 			}
 		}
-
 		MechanicalTurkTask.setFromProps(props);
 		this.flushed = false;
 		apiWrapper.Flush.call(this, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+	}
+	
+	componentDidMount() {
+	  // Attach The Event for Responsive View~
+	  window.addEventListener('resize', ()=>this.htmlE.style.width=window.innerWidth+'px', {passive: false});
+	}
+
+	componentDidCatch(error, info) {
+		logger.error("App.componentDidCatch:", error, info)
 	}
 
 	updateAfterFlush(){
@@ -44,34 +56,9 @@ class App extends React.Component {
 			this.forceUpdate()
 	}
 
-	confirmOnPageExit(e) {
-		// If we haven't been passed the event get the window.event
-		e = e || window.event;
-
-		var message = "If you are ready to end this discussion click Leave, your input has been saved and you can return at any time.\n\nIf you didn't mean to leave this discussion, click cancel Stay";
-
-		// For IE6-8 and Firefox prior to version 4
-		if (e) {
-			e.returnValue = message;
-		}
-
-		// For Safari, IE8+ and Opera 12+
-		return message;
-
-		//Chrome is not showing the message
-	}
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 	setPath(p) {
 		if (typeof window !== 'undefined') reactSetPath(p);
 	}
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	render() {
 

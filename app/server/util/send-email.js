@@ -30,7 +30,7 @@ function sendEmail (options = {}) {
     }
 
     sequencer(
-      ()        =>    sequencer.promisify(::transporter.sendMail, [options]),
+      ()        =>    sequencer.promisify(transporter.sendMail.bind(this), [options]),
       results   =>    new Promise((pass, fail) => {
         if ( results.response === '250 Message received' ) {
           pass();

@@ -131,11 +131,19 @@ class ScrollWrapper extends React.Component {
     window.requestAnimationFrame(stepper);
   }
 
+  lastWindowUpdate=0;
+  windowUpdates(now){
+    if((now-this.lastWindowUpdate)>66) {
+      this.updateSize();
+    }
+    this.lastWindowUpdate=now;
+  }
+
   componentDidMount() {
     this.updateSize();
 
     // Attach The Event for Responsive View~
-    window.addEventListener('resize', this.updateSize, {passive: false});
+    window.addEventListener('resize', ()=>window.requestAnimationFrame(this.windowUpdates.bind(this)), {passive: false});
     this.scrollWrapper.addEventListener('touchstart', this.startDrag, {passive: true});
     this.scrollWrapper.addEventListener('touchmove', this.onDrag, {passive: false});
     this.scrollWrapper.addEventListener('touchend', this.stopDrag, {passive: false});

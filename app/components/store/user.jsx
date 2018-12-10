@@ -3,12 +3,14 @@
 import React from 'react';
 
 class UserStore extends React.Component {
+  constructor(props){
+    super(props);
+    this.state.actions['reset password']=this.resetPassword.bind(this);
+  }
 
   state = {
     user                  :   null,
-    actions               :   {
-      'reset password'    :   ::this.resetPassword
-    }
+    actions               :   {}
   };
 
   componentDidMount() {
