@@ -29,10 +29,9 @@ if(typeof window !== 'undefined') {
     __webpack_public_path__ = "http://localhost:3011/assets/webpack/";
     process.env.LOG4JS_CONFIG={appenders:[]};  // webpack doesn't initialize the socket logger right - so just prevent log4js from initializing loggers
     var log4js = require('log4js');
-    // It seems like these 3 steps should work - but on webpack there is no logger output
-    //log4js.loadAppender("bconsole",bconsole);
-    //log4js.loadAppender("socketlogger",socketlogger);
-    //log4js.configure({browser: [{type: 'bconsole'},{type: 'socketlogger'}]});
+    log4js.loadAppender("bconsole",bconsole);
+    log4js.loadAppender("socketlogger",socketlogger);
+    log4js.configure({browser: [{type: 'bconsole'},{type: 'socketlogger'}]});
   }else {
     process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }, {type: 'socketlogger'}]};
     var log4js = require('log4js');
