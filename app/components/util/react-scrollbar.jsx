@@ -224,25 +224,36 @@ class ScrollWrapper extends React.Component {
   }
 
   onDrag(event) {
-    if (this.state.dragging) {
-      event.preventDefault();
-      const e = event.changedTouches ? event.changedTouches[0] : event;
-
+    var e;
+    if(event.changedTouches){
+      for(var i=event.changedTouches.length-1;i>=0;i--) {
+        if(event.changedTouches[i].identifier===0)
+          e=event.changedTouches[i];
+      }
+    }else{
+      e=event;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    if (e && this.state.dragging) {
       // Invers the Movement
       const yMovement = this.state.start.y - e.clientY;
       const xMovement = this.state.start.x - e.clientX;
       const deltaT=event.timeStamp - this.state.start.t;
-      this.dragVelocityY=yMovement/deltaT*1000; // velociy in pixels per second
-      this.dragVelocityX=xMovement/deltaT*1000;
-      // Update the last e.client
-      this.setState({ start: { y: e.clientY, x: e.clientX, t: event.timeStamp } });
+      if(deltaT){ // deltaT can be 0 when there is more than one touchpoint involved - skip that
+        //event.preventDefault();
+        this.dragVelocityY=yMovement/deltaT*1000; // velociy in pixels per second
+        this.dragVelocityX=xMovement/deltaT*1000;
+        // Update the last e.client
+        this.setState({ start: { y: e.clientY, x: e.clientX, t: event.timeStamp } });
 
-      // The next Vertical Value will be
-      const nextY = this.state.top + yMovement;
-      const nextX = this.state.left + xMovement;
+        // The next Vertical Value will be
+        const nextY = this.state.top + yMovement;
+        const nextX = this.state.left + xMovement;
 
-      this.normalizeVertical(nextY);
-      this.normalizeHorizontal(nextX);
+        this.normalizeVertical(nextY);
+        this.normalizeHorizontal(nextX);
+      }
     }
   }
 
@@ -272,20 +283,28 @@ class ScrollWrapper extends React.Component {
   }
 
   stopDrag(event) {
-    if(event.changedTouches && event.changedTouches.length){
-      const e=event.changedTouches[0];
+    var e;
+    if(event.changedTouches){
+      for(var i=event.changedTouches.length-1;i>=0;i--) {
+        if(event.changedTouches[i].identifier===0)
+          e=event.changedTouches[i];
+      }
+    }else{
+      e=event;
+    }
+    //if(this.state.dragging) event.preventDefault()
+    if(e){
       const yMovement=this.dragVelocityY*0.25;  // how much farther it will go in half a second.
       const xMovement=this.dragVelocityX*0.25;
 
       const nextY = this.state.top + yMovement;
       const nextX = this.state.left + xMovement;
-      this.htmlElement.style.transition="top 0.5s ease-out";
+      if(!this.state.dragging) this.htmlElement.style.transition="top 0.5s ease-out";
 
       this.normalizeVertical(nextY);
       this.normalizeHorizontal(nextX);
+      this.setState({ dragging: false });
     }
-
-    this.setState({ dragging: false });
   }
 
   scrollToY(pos) {
@@ -415,22 +434,32 @@ class ScrollWrapper extends React.Component {
   startDrag(event) {
     //event.preventDefault();
     //event.stopPropagation();
+    var e;
+    if(event.changedTouches){
+      for(var i=event.changedTouches.length-1;i>=0;i--) {
+        if(event.changedTouches[i].identifier===0)
+          e=event.changedTouches[i];
+      }
+    }else{
+      e=event;
+    }
 
-    const e = event.changedTouches ? event.changedTouches[0] : event;
-    const start={y: e.pageY, x: e.pageX, t: event.timeStamp}; // need to grab data out of e before it is release by setState (in calculateSize)
-    this.dragVelocityX=0;
-    this.dragVelocityY=0;
-    if(event.changedTouches && event.changedTouches.length) this.touchable=true;
-    this.htmlElement.style.transition=null; // make sure transition is off when you start
+    if(e){
+      const start={y: e.pageY, x: e.pageX, t: event.timeStamp}; // need to grab data out of e before it is release by setState (in calculateSize)
+      this.dragVelocityX=0;
+      this.dragVelocityY=0;
+      if(event.changedTouches && event.changedTouches.length) this.touchable=true;
+      this.htmlElement.style.transition=null; // make sure transition is off when you start
 
-    // Make sure the content height is not changed
-    this.calculateSize(() => {
-      // Prepare to drag
-      this.setState({
-        dragging: true,
-        start,
+      // Make sure the content height is not changed
+      this.calculateSize(() => {
+        // Prepare to drag
+        this.setState({
+          dragging: true,
+          start,
+        });
       });
-    });
+    }
   }
 
   scroll(e) {
