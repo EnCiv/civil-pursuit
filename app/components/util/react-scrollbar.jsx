@@ -299,7 +299,7 @@ class ScrollWrapper extends React.Component {
 
       const nextY = this.state.top + yMovement;
       const nextX = this.state.left + xMovement;
-      if(!this.state.dragging) this.htmlElement.style.transition="top 0.5s ease-out";
+      this.htmlElement.style.transition="top 0.5s ease-out";
 
       this.normalizeVertical(nextY);
       this.normalizeHorizontal(nextX);
