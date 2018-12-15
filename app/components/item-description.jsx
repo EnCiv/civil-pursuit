@@ -92,6 +92,7 @@ class ItemDescription extends React.Component {
         }
         this.setState({ collecting: false });
         this.dirty=false;
+        if(this.props.onBlur) this.props.onBlur();
     }
 
     delayedUpdate() {
@@ -109,7 +110,7 @@ class ItemDescription extends React.Component {
         const reviseTruncShape= truncShape==='truncated'? (!rasp.readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
             : truncShape;
         const description = item && item.description || '';
-        if (truncShape !== 'edit')
+        if (!(['edit','headlineAfterEdit'].includes(truncShape)))
             return (
                 <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape])}>
                     {description}

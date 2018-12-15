@@ -1,10 +1,8 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-dom';
 import Input                          from '../util/input';
 import Postcode                       from 'postcode-validator';
-import Color from 'color';
 import Icon                             from '../util/icon';
 
 class Zip extends React.Component {
@@ -16,8 +14,8 @@ class Zip extends React.Component {
     }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  saveInfo () {
-    let newValue = ReactDOM.findDOMNode(this.refs.inputref).value;
+  saveInfo (v) {
+    let newValue = v.value;
     let valid=!!this.validate(newValue);
     if(valid && this.props.onChange) this.props.onChange({[this.name]: newValue});
     if(!valid && this.state.valid) this.props.onChange({[this.name]: ''});
@@ -28,14 +26,6 @@ class Zip extends React.Component {
     return Postcode.validate(value,'US');
   }
 
-  componentWillReceiveProps(newProps){
-    let element=ReactDOM.findDOMNode(this.refs.inputref);
-    if(newProps.info && (newProps.info[this.name] || '') !== element.value) {
-      element.value=newProps.info[this.name];
-      element.style.backgroundColor= Color(element.style.backgroundColor || '#ffff').darken(0.3);
-      setTimeout(()=>element.style.backgroundColor=null,1000)
-    }
-  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
@@ -45,7 +35,7 @@ class Zip extends React.Component {
 
     return (
         <div>
-            <Input {...newProps} ref="inputref" onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
+            <Input {...newProps} onChange={ this.saveInfo.bind(this) } defaultValue={ info[this.name] } style={{display: 'inline', width: '10em'}}/>
             <div style={{display: valid ? 'inline' : 'none'}}><Icon icon="check" /></div>
         </div>
     );

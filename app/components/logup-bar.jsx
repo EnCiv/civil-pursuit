@@ -1,8 +1,7 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import EmailInput from './util/email-input';
+import Input from './util/input';
 import Button from './util/button';
 import Login from './login';
 import Components from "./panel-components/";
@@ -15,7 +14,7 @@ class Logup extends React.Component {
     state = { validationError: null, successMessage: null }
 
     logup() {
-        let email = ReactDOM.findDOMNode(this.refs.email).value;
+        let email = this.refs.email.value;
         if (!Logup.validateEmail(email)) {
             return this.setState({ validationError: "email address not valid", successMessage: null });
         } else
@@ -74,7 +73,7 @@ class Logup extends React.Component {
                     <div className="logup-bar-center">
                         <span className="logup-bar-title">Complete setup</span>
                         <div className="logup-bar-input">
-                            <EmailInput autoFocus required placeholder="Email" ref="email" name="email" />
+                            <Input autoFocus required placeholder="Email" ref="email" name="email" />
                         </div>
                         <div className="logup-bar-button">
                             <Button block large success radius onClick={this.logup.bind(this)}>Save</Button>

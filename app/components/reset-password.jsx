@@ -1,11 +1,8 @@
 'use strict';
 
 import React                        from 'react';
-import ReactDOM                     from 'react-dom';
 import Form                         from './util/form';
-import EmailInput                   from './util/email-input';
-import TextInput                    from './util/text-input';
-import Password                     from './util/password';
+import Input                        from './util/input';
 import Panel                        from './panel';
 import Button                       from './util/button'
 import InputGroup                   from './util/input-group';
@@ -40,24 +37,24 @@ class ResetPassword extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   save () {
-    const password            =   ReactDOM.findDOMNode(this.refs.password);
-    const confirmPassword     =   ReactDOM.findDOMNode(this.refs.confirmPassword);
-    const resetKey            =   ReactDOM.findDOMNode(this.refs.reset);
+    const password            =   this.refs.password.value;
+    const confirmPassword     =   this.refs.confirmPassword.value;
+    const resetKey            =   this.refs.reset.value;
     console.info("reset-password save");
     this.setState({ validationError : null });
 
-    if ( password.value !== confirmPassword.value ) {
+    if ( password !== confirmPassword ) {
       this.setState({ validationError : 'Passwords don\'t match' });
       return;
     }
 
-    if ( resetKey.value !== this.props.activation_key ) {
+    if ( resetKey !== this.props.activation_key ) {
       this.setState({ validationError : 'Wrong reset key' });
       return;
     }
 
     this.setState({info: 'Resetting your password'}, ()=>{
-      window.socket.emit('reset password', this.props.activation_key, resetKey.value, password.value, (result)=>{
+      window.socket.emit('reset password', this.props.activation_key, resetKey, password, (result)=>{
         this.setState({ validationError : null, info: null, successMessage : 'Welcome back' }, ()=>{
           setTimeout(() => location.href = this.props.return_to || '/page/profile', 800);
         });
@@ -88,7 +85,7 @@ class ResetPassword extends React.Component {
           <div style={{maxWidth: "30em", margin: 'auto'}}>
             <h3 className="text-center">Your email</h3>
 
-            <EmailInput
+            <Input type='email'
               block
               autoFocus
               required
@@ -97,14 +94,14 @@ class ResetPassword extends React.Component {
               placeholder                 =   "Email"
               ref                         =   "email"
               name                        =   "email"
-              value                       =   { this.props.user.email }
+              defaultValue                       =   { this.props.user.email }
             />
 
             <h3 className="text-center">Your reset key</h3>
 
             <h5 className="text-center">Enter here the reset key that was sent to you by email</h5>
 
-            <TextInput
+            <Input type='text'
               block
               medium
               required
@@ -117,14 +114,14 @@ class ResetPassword extends React.Component {
             <h3 className="text-center">Enter a new password</h3>
 
             <InputGroup block>
-              <Password
+              <Input type='password'
                 required
                 medium
                 placeholder               =   "Password"
                 ref                       =   "password"
                 name                      =   "password"
               />
-              <Password
+              <Input type='password'
                 required
                 medium
                 placeholder               =   "Confirm password"

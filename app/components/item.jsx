@@ -17,6 +17,7 @@ import ItemDescription from './item-description';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
 import ObjectID from 'bson-objectid';
+import { Object } from 'es6-shim';
 
 
 //Item 
@@ -119,7 +120,7 @@ const styles = {
             'color': '#888',
             'margin-bottom': 0
         },
-        '&$edit': {
+        '&$edit, &$headlineAfterEdit': {
             'max-height': 'none',
             'overflow': 'hidden !important' // need to override accordion when it is expanded
         }
@@ -151,6 +152,7 @@ const styles = {
         'margin-bottom': `${publicConfig.itemVisualGap}`
     },
     'edit': {},
+    'headlineAfterEdit': {},
     'open': {},
     'peek': {},
     'truncated': {},
@@ -167,7 +169,7 @@ const styles = {
 }
 
 class RASPItem extends ReactActionStatePathClient {
-    state = { hint: false, minHeight: null }; //
+    state = { hint: false, minHeight: null, descriptionBlurred: false }; //
     constructor(props) {
         super(props, 'button');
         if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
@@ -184,7 +186,8 @@ class RASPItem extends ReactActionStatePathClient {
         if (this.props.visualMethod === 'edit' && this.props.item && this.props.item.type && !this.props.item._id) // if we are creating a new item
             this.props.item._id= (new ObjectID()).toHexString();
 
-        this.getTruncableDOM=this.getTruncableDOM.bind(this);
+        this.getTruncableDOM=this.getTruncableDOM.bind(this)
+        this.onBlur=this.onBlur.bind(this)
     }
 
     getTruncableDOM(e){
@@ -280,7 +283,7 @@ class RASPItem extends ReactActionStatePathClient {
             },
             // the shape to give a child, when it is initially mounted
             childShape: (rasp, button) => {
-                return 'edit';
+                return rasp.shape;
             },
             childVisualMethod: () => 'edit',
             // process actions for this visualMethod
@@ -292,8 +295,7 @@ class RASPItem extends ReactActionStatePathClient {
             deriveRASP: (rasp, initialRASP) => {
                 let parts=[];
                 if (rasp.button==='Posted') rasp.shape=rasp.readMore ? 'open' : 'truncated';
-                else if (rasp.button==='Editing') rasp.shape='edit';
-                else rasp.shape='edit';
+                else  rasp.shape=initialRASP.shape==='headlineAfterEdit'?'headlineAfterEdit':'edit';  // button is Editing or undefined
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 rasp.pathSegment = parts.join(',');
             }
@@ -626,8 +628,7 @@ class RASPItem extends ReactActionStatePathClient {
     /*** This is working well, but be vigilent about making sure what needs to be tested is tested ****/
     shouldComponentUpdate(newProps, newState) {
         if (!isEqual(this.props.rasp, newProps.rasp)) return true;
-        if (this.state.hint !== newState.hint) return true;
-        if (this.state.minHeight !== newState.minHeight) return true;
+        if(Object.keys(newState).some(k=>this.state[k]!==newState[k])) return true;
         if (this.props.item && newProps.item) {
             if (this.props.item.subject !== newProps.item.subject) return true;
             if (this.props.item.description !== newProps.item.description) return true;
@@ -695,8 +696,8 @@ class RASPItem extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     readMore(e) {
-        e.preventDefault(); // stop the default event processing of a div which is to stopPropogation
-        if (this.props.rasp.shape === 'edit') return;
+        e.preventDefault(); // stop the default event processing of a div which is to stopPropagation
+        if (this.props.rasp.shape === 'edit' || this.props.rasp.shape==='headlineAfterEdit') return;
         if (this.props.rasp.readMore) { // if readMore is on and we are going to turn it off
             this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
         }
@@ -724,6 +725,9 @@ class RASPItem extends ReactActionStatePathClient {
             return buttons.getBoundingClientRect().x-truncable.getBoundingClientRect().x + 'px';
     }
 
+    onBlur(){
+        this.setState({descriptionBlurred: true})
+    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
@@ -806,11 +810,13 @@ class RASPItem extends ReactActionStatePathClient {
                             </ItemStore>
                         </section>
                         <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
-                            <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>
-                            {itemErrors('subject')}
+                            {(shape !== 'headlineAfterEdit')&&<ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>}
+                            {(shape !== 'headlineAfterEdit')&&itemErrors('subject')}
                             <ItemReference {...childProps} />
-                            <ItemDescription {...childProps} />
+                            <ItemDescription {...childProps} onBlur={this.onBlur} />
                             {itemErrors('description')}
+                            {(shape === 'headlineAfterEdit' && this.state.descriptionBlurred) && <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>}
+                            {(shape === 'headlineAfterEdit' && this.state.descriptionBlurred) && itemErrors('subject')}
                         </Accordion>
                     </section>
                     <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>

@@ -1,19 +1,16 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-dom';
-import Row                            from '../util/row';
-import Column                         from '../util/column';
-import DateInput                      from '../util/date-input';
+import Input                          from '../util/input'
 
 
 class Birthdate extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  saveBirthdate () {
+  saveBirthdate (v) {
             
-    let birthdate = ReactDOM.findDOMNode(this.refs.birthdate).value;
+    let birthdate = v.value;
     
     if ( birthdate ) {
       let dob = new Date(birthdate);
@@ -55,7 +52,7 @@ class Birthdate extends React.Component {
     }
 
     return (
-              <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } placeholder="MM/DD/YYYY" />
+              <Input type='date' block onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } placeholder="MM/DD/YYYY" />
     );
   }
 

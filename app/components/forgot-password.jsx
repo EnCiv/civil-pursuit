@@ -1,14 +1,13 @@
 'use strict';
 
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import Component      from '../lib/app/component';
 import Modal          from './util/modal';
 import Form           from './util/form';
 import Submit         from './util/submit';
 import Row            from './util/row';
 import Column         from './util/column';
-import EmailInput     from './util/email-input';
+import Input          from './util/input';
 import Loading        from './util/loading';
 
 class ForgotPassword extends React.Component {
@@ -32,7 +31,7 @@ class ForgotPassword extends React.Component {
 
     this.setState({ validationError : null, info : 'One moment...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value;
+    let email = this.refs.email.value;
 
     window.socket.emit('send password', email, null, response => {
       if ( response.error ) {
@@ -83,7 +82,7 @@ class ForgotPassword extends React.Component {
       <div onClick={this.stopPropagation.bind(this)}>
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput
+          <Input type='email'
             block
             autoFocus
             required

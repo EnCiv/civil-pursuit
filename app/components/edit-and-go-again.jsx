@@ -1,27 +1,20 @@
 'use strict';
 
 import React              from 'react';
-import Creator            from './creator';
-import Youtube            from './youtube';
-import itemType           from '../lib/proptypes/item';
+import Item            from './item';
+
+// untested - but converted from ItemCreator to Item
 
 class EditAndGoAgain extends React.Component {
   render () {
     const { item } = this.props;
 
-    let video;
-
-    if ( Youtube.isYouTube(item) ) {
-      video = item.references[0].url;
-    }
-
     return (
       <section className="edit-and-go-again">
-        <Creator
+        <Item
           item      =   { item }
-          image     =   { item.image }
-          video     =   { video }
-          type      =   { item.type }
+          visualMethod={edit}
+          rasp={Object.assign({},this.props.rasp,{shape: 'edit'})}
           />
       </section>
     );

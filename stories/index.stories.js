@@ -324,7 +324,7 @@ storiesOf('Item', module)
 
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
-			let textInput=Wrapper.find('TextInput[name="subject"]')
+			let textInput=Wrapper.find('Input[name="subject"]')
 			textInput.instance().select();
 			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: 'A'}}))
 			var inputNode=Wrapper.find('input[name="subject"]').getDOMNode()
@@ -337,8 +337,8 @@ storiesOf('Item', module)
 				it('Item should have an A in the input', function () {
 					expect(Wrapper.find('input[name="subject"]').instance().value).toBe('A');
 				});
-				it('Item should have an A in the TextInput', function () {
-					expect(Wrapper.find("ItemSubject").find('TextInput').instance().value).toBe('A')
+				it('Item should have an A in the Input', function () {
+					expect(Wrapper.find("ItemSubject").find('Input').instance().value).toBe('A')
 				});
 				it('Item should have an A in the ItemSubject', function () {
 					expect(Wrapper.find("ItemSubject").instance().state.subject).toBe('A')
@@ -484,10 +484,10 @@ storiesOf('Item', module)
 
 		setTimeout(()=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: document.getElementById('story')});
-			let textInput=Wrapper.find('TextInput[name="reference"]')
+			let textInput=Wrapper.find('Input[name="reference"]')
 			textInput.instance().select();
 			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
-			var inputNode=Wrapper.find('TextInput[name="reference"]').getDOMNode()
+			var inputNode=Wrapper.find('Input[name="reference"]').getDOMNode()
 			inputNode.blur();
 			setTimeout(()=>{ // give user a chance to see the original state before we change it
 				specs(()=>describe(`It should say ${testTitle}`, ()=>{
@@ -550,13 +550,54 @@ storiesOf('Item', module)
 			editButton.click();
 			specs(()=>describe(`It should say`, ()=>{
 				it('The text input field should be present',()=>{
-					expect(!!Wrapper.find('TextInput[name="reference"]')).toBe(true)
+					expect(!!Wrapper.find('Input[name="reference"]')).toBe(true)
 				})
 				it('The url input field should not be hidden', ()=>{
 					expect(!!Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|\d]+\s.ItemReference-hide[-|\d]+/)).toBe(false);
 				})
 			}))
 
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})
+
+	.add('headlineAfterEdit', () => {
+		outerSetup();
+
+		const testItem = {
+			type: testType
+		}
+
+		const description="This is a description of an item"
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'headlineAfterEdit'}} />;
+
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			await asyncSleep(600);
+			let textInput=Wrapper.find('textarea[name="description"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: description}}))
+			var inputNode=Wrapper.find('textarea[name="description"]').getDOMNode()
+			const blurE = await asyncEvent(inputNode, 'blur');
+			specs(()=>describe('Item Description should have the input', ()=>{
+				let _id=Wrapper.find('Item').instance().props.item._id;
+				it(`Item should have a unique ObjectId. Found ${_id}`, function () {
+					expect(_id.length).toBe(24);
+				});
+				it(`Item should have "${description}" as the textarea`, ()=>{
+					expect(Wrapper.find('textarea[name="description"]').instance().value).toBe(description);
+				});
+				it(`Item should have "${description}" as Textarea`, ()=>{
+					expect(Wrapper.find("ItemDescription").find('Textarea').instance().value).toBe(description)
+				});
+				it(`Item should have "${description}" as the ItemDescription`, ()=>{
+					expect(Wrapper.find("ItemDescription").instance().state.description).toBe(description)
+				});
+				it(`Item should have "${description}" in the Item`, ()=>{
+					expect(Wrapper.find("Item").instance().props.item.description).toBe(description)
+				});
+			}))
 		}
 		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})

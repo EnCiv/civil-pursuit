@@ -1,42 +1,79 @@
 'use strict';
 
 import React from 'react';
+import Color from 'color'
+//
+// can't not use react-css here because we can't export the select, getter and setter methods.
+//
+const classes=['small','medium','large','block']; // global styles that can be turned on with props
 
-class Input extends React.Component {
-  select(){
-    return this.refs.view.select();
+
+export default class Input extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={value: this.props.defaultValue||''};
+    this.onChangeHandler=this.onChangeHandler.bind(this)
+    this.getInputRef=this.getInputRef.bind(this)
+    if(this.props.value!=='undefined') console.error("Input should not be passed value, use default value");
   }
+
+  onChangeHandler(e){
+    let value=e.target && e.target.value;
+    if(value !== this.state.value){
+      this.state.value=value;
+      this.forceUpdate(); // need to force state change before propagating the info up - because it comes back down to componentWillReceiveProps that won't have the new state
+    }
+    if(this.props.onChange) this.props.onChange({value})
+  }
+
+  select(){
+    console.warn("Input: should use .focus()");
+    return this.inputRef.focus();
+  }
+
+  focus(){
+    return this.inputRef.focus();
+  }
+
+  componentWillReceiveProps(newProps){
+    var defaultValue=newProps.defaultValue||'';
+    if((defaultValue !== (this.props.defaultValue||'')) && (defaultValue !== this.state.value)){ // if the defaultValue has changed since the previous one, and if it is different than the current state
+      this.setState({value: defaultValue, wink: true})
+      setTimeout(()=>this.setState({wink: false}), 1000)
+    }
+  }
+
+  getInputRef(e){
+    if(e){
+      this.inputRef=e;
+      this.winkColor=Color(window.getComputedStyle(e)['background-color']).darken(0.25);
+    }
+  }
+
   render () {
-    let classes = ['bp_input'];
-    var inputProps=Object.assign({},this.props);
+    var classNames = [];
+    const {onChange, value, style, defaultValue, ...inputProps}=this.props;
 
-    if ( this.props.block ) {
-      classes.push('block');
-      delete inputProps.block;
-    }
-
-    if ( this.props.medium ) {
-      classes.push('medium');
-      delete inputProps.medium;
-    }
-
-    if ( this.props.large ) {
-      classes.push('large');
-      delete inputProps.large;
-    }
+    classes.forEach(key=>{
+      if(this.props[key]){
+        classNames.push(classes[key]);
+        delete inputProps[key];
+      }
+    })
+    const restyle=this.state.wink ? Object.assign({},style, {transition: 'background-color 0.5s linear', backgroundColor: this.winkColor}) : Object.assign({},this.props.style, {transition: 'background-color 0.5s linear'});
 
     return (
-      <input type="{ this.props.type || 'text' }" className={ classes.join(' ') } { ...inputProps } ref="view"  />
+      <input type={this.props.type || "text"} className={ classNames.join(' ') } { ...inputProps } onChange={this.onChangeHandler} value={this.state.value} ref={this.getInputRef} style={restyle} />
     );
   }
 }
 
 Object.defineProperty(Input.prototype,'value',{
   get: function () {
-    return this.refs.view.value;
+    return this.state.value;
   },
   set: function (v) {
-    this.refs.view.value=v;
+    if(this.state.value !== v)
+      this.setState({value: v})
   }
 })
-export default Input;

@@ -5,7 +5,7 @@ import Icon from './util/icon';
 import cx from 'classnames';
 import isEqual from 'lodash/isEqual';
 import Row from './util/row';
-import TextInput from './util/text-input';
+import Input from './util/input';
 import isURL from 'is-url';
 import insertSheet from 'react-jss';
 import publicConfig from '../../public.json';
@@ -92,7 +92,7 @@ class ItemReference extends React.Component {
         this.link = React.createRef();
         this.inputElement = React.createRef();
         this.openURL = this.openURL.bind(this);
-        this.onChangeKey = this.onChangeKey.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.editURL = this.editURL.bind(this);
         this.getUrlTitle = this.getUrlTitle.bind(this);
         this.ignoreCR = this.ignoreCR.bind(this);
@@ -154,15 +154,15 @@ class ItemReference extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     editURL() {
-        this.inputElement.current.select();
+        this.inputElement.current.focus();
         var references = this.state.references.slice();
         references[0].title = '';
         this.setState({ references });
     }
 
-    onChangeKey(e) {
+    onChange(v) {
         var references = this.state.references || [];
-        var value = e.target.value;
+        var value = v.value;
         if ((references[0] && references[0].url) !== value) {
             references = references.slice();
             references[0] = { url: value };
@@ -200,11 +200,11 @@ class ItemReference extends React.Component {
                             title={errMsg}
                         />
 
-                        <TextInput
+                        <Input type='text'
                             block
                             placeholder="https://"
                             ref={this.inputElement}
-                            onChange={this.onChangeKey}
+                            onChange={this.onChange}
                             onBlur={this.getUrlTitle}
                             onKeyDown={this.ignoreCR}
                             className={cx(classes['url-editor'], title && classes['hide'])}
@@ -212,7 +212,7 @@ class ItemReference extends React.Component {
                             defaultValue={url}
                             key="reference"
                         />
-                        <TextInput
+                        <Input type='text'
                             disabled
                             name="url-title"
                             defaultValue={title}

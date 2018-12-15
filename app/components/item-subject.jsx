@@ -2,7 +2,7 @@
 
 import React from 'react';
 import cx from 'classnames';
-import TextInput from './util/text-input';
+import Input from './util/input';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
 
@@ -47,8 +47,7 @@ const styles ={
 class ItemSubject extends React.Component {
     constructor(props) {
         super(props);
-        this.inputElement = React.createRef();
-        this.onChangeKey = this.onChangeKey.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.ignoreCR = this.ignoreCR.bind(this);
         this.state = { subject: this.props.item && this.props.item.subject || '' };
@@ -62,9 +61,9 @@ class ItemSubject extends React.Component {
             e.preventDefault();
         }
     }
-    onChangeKey(e) {
+    onChange(v) {
         var subject = this.state.subject;
-        var value = e.target.value; //this.inputElement.current.value;
+        var value = v.value; 
         if (subject !== value) subject = value.slice();
         this.setState({ subject });
         if(this.props.onDirty){
@@ -85,18 +84,18 @@ class ItemSubject extends React.Component {
     render() {
         const { classes, item, truncShape, getEditWidth } = this.props;
         const subject = this.state.subject;
-        if (truncShape !== 'edit')
+        if (!(['headlineAfterEdit','edit'].includes(truncShape)))
             return (<h4 className={cx(classes["subject"], classes[truncShape])}>{subject}</h4>)
         else {
             return (
-                <TextInput block
+                <Input type='text'
+                    block
                     className={cx(classes['subject'],classes['edit'])}
                     placeholder={item.type && item.type.subjectPlaceholder || "Subject"}
-                    ref={this.inputElement}
                     required
                     name="subject"
                     defaultValue={subject}
-                    onChange={this.onChangeKey}
+                    onChange={this.onChange}
                     onBlur={this.onBlur}
                     onKeyDown={this.ignoreCR}
                     key="subject"

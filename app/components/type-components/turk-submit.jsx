@@ -2,17 +2,17 @@
 
 import React from 'react';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
-import PanelHead from '../panel-head';
+import PanelHeading from '../panel-heading';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 class TurkSubmit extends React.Component {
     render(){
         return (
-            <PanelHead {...this.props} cssName={'syn-turk-submit'} >
+            <PanelHeading {...this.props} cssName={'syn-turk-submit'} >
                 <ReactActionStatePath>
                     <RASPTurkSubmit/>
                 </ReactActionStatePath>
-            </PanelHead>
+            </PanelHeading>
         )
     }
 }
