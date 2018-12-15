@@ -28,7 +28,7 @@
     "server": "nodemon --inspect dist/server/start.js",
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && npm run server\" \"sleep 55 && npm run client\"",
     "devprod": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && nodemon dist/server/start.js\" \"sleep 55 && webpack --config webpack-prod.config.js --watch\"",
-    "storybook": "echo \"make sure dev is running\" && start-storybook -s ./assets -p 6006",
+    "storybook": "start-storybook -s ./assets -p 6006",
     "build-storybook": "build-storybook"
   },
   "author": {
