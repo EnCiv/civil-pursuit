@@ -39,6 +39,8 @@ import { Object } from 'es6-shim';
 //
 //
 
+export const editShapes=['edit','headlineAfterEdit'];
+
 class Item extends React.Component {
     render() {
         //logger.trace("Item render");
@@ -165,11 +167,16 @@ const styles = {
     'error-message': {
         color: 'red',
         'text-align': 'center'
+    },
+    saving: {
+        'display':  'block',
+        'float': 'right',
+        'text-align': 'right'
     }
 }
 
 class RASPItem extends ReactActionStatePathClient {
-    state = { hint: false, minHeight: null, descriptionBlurred: false }; //
+    state = { hint: false, minHeight: null, descriptionBlurred: false, touched: false, collecting: false }; //
     constructor(props) {
         super(props, 'button');
         if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
@@ -181,7 +188,6 @@ class RASPItem extends ReactActionStatePathClient {
         this.onChange = this.onChange.bind(this);
         this.onDirty=this.onDirty.bind(this);
         this.readMore = this.readMore.bind(this);
-        //onsole.info("RASPItem.constructor");
 
         if (this.props.visualMethod === 'edit' && this.props.item && this.props.item.type && !this.props.item._id) // if we are creating a new item
             this.props.item._id= (new ObjectID()).toHexString();
@@ -697,25 +703,26 @@ class RASPItem extends ReactActionStatePathClient {
 
     readMore(e) {
         e.preventDefault(); // stop the default event processing of a div which is to stopPropagation
-        if (this.props.rasp.shape === 'edit' || this.props.rasp.shape==='headlineAfterEdit') return;
+        if (editShapes.includes(this.props.rasp.shape)) return;
         if (this.props.rasp.readMore) { // if readMore is on and we are going to turn it off
             this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
         }
         if (this.props.rasp.toParent) this.props.rasp.toParent({ type: "TOGGLE_READMORE" })
-        //setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500);  // it would be better if this were a chained event but for now ...
     }
 
     onChange(obj) {
         if (obj.value) {
             if(Object.keys(obj.value).some(key=>obj.value[key]!==this.props.item[key])) {  // only if something has really changed
                 Object.assign(this.props.item, obj.value);
-                this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: true})); // let the ancestors know that this item is being edited
+                //this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: true})); // let the ancestors know that this item is being edited
             }
         }
+        this.setState({ touched: true, collecting: false });
     }
 
     onDirty(dirty){
         this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty})); // let the ancestors know that this item is being edited
+        this.setState({ touched: true, collecting: true });
     }
 
     getEditWidth(){
@@ -728,7 +735,6 @@ class RASPItem extends ReactActionStatePathClient {
     onBlur(){
         this.setState({descriptionBlurred: true})
     }
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
         const { classes, visualMethod, item, user, rasp, style, parent, className, ...otherProps } = this.props;
@@ -815,10 +821,15 @@ class RASPItem extends ReactActionStatePathClient {
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} onBlur={this.onBlur} />
                             {itemErrors('description')}
-                            {(shape === 'headlineAfterEdit' && this.state.descriptionBlurred) && <ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>}
-                            {(shape === 'headlineAfterEdit' && this.state.descriptionBlurred) && itemErrors('subject')}
+                            {shape === 'headlineAfterEdit' && <ItemSubject {...childProps} autofocus getEditWidth={this.getEditWidth.bind(this)}/>}
+                            {shape === 'headlineAfterEdit' && itemErrors('subject')}
                         </Accordion>
                     </section>
+                    {editShapes.includes(shape) && 
+                        <div className={classes['saving']}>
+                            {this.state.touched ? (this.state.collecting ? 'collecting' : 'collected') : ' '}
+                        </div>
+                    }
                     <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>
                         <Icon icon="ellipsis-h" />
                     </div>

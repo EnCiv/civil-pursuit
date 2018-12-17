@@ -66,11 +66,11 @@ class ItemDescription extends React.Component {
         if (this.state.description != newDescription)
             this.setState({ description: newDescription.slice() })
     }
-    onChangeKey(e) {
+    onChangeKey(v) {
         var description = this.state.description;
-        var value = e.target.value; //this.inputElement.current.value;
+        var value = v.value; //
         if (description !== value) description = value.slice();
-        this.setState({ touched: true, collecting: true, description });
+        this.setState({ description });
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(this.delayedUpdate, 10000);
         if(this.props.onDirty){
@@ -83,24 +83,23 @@ class ItemDescription extends React.Component {
     }
 
     onBlur(){
-        if(this.timeout) {
-            var description = this.state.description;
+        if(this.timeout || this.dirty) {
+            var description = this.state.description.slice();
+            this.dirty=false;
             clearTimeout(this.timeout);
             this.timeout=0;
             if (this.props.onChange)
                 this.props.onChange({ value: { description } });
         }
-        this.setState({ collecting: false });
-        this.dirty=false;
         if(this.props.onBlur) this.props.onBlur();
     }
 
     delayedUpdate() {
         var description = this.state.description.slice();
+        this.dirty=false;
+        this.timeout=0;
         if (this.props.onChange)
             this.props.onChange({ value: { description } });
-        this.setState({ collecting: false });
-        this.timeout=0;
     }
 
     render() {

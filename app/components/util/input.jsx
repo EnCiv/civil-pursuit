@@ -14,7 +14,7 @@ export default class Input extends React.Component {
     this.state={value: this.props.defaultValue||''};
     this.onChangeHandler=this.onChangeHandler.bind(this)
     this.getInputRef=this.getInputRef.bind(this)
-    if(this.props.value!=='undefined') console.error("Input should not be passed value, use default value");
+    if(this.props.value!=='undefined') console.error(this.constructor.name, "should not be passed value, use default value");
   }
 
   onChangeHandler(e){
@@ -27,7 +27,7 @@ export default class Input extends React.Component {
   }
 
   select(){
-    console.warn("Input: should use .focus()");
+    console.warn(this.constructor.name, "should use .focus()");
     return this.inputRef.focus();
   }
 
@@ -50,9 +50,13 @@ export default class Input extends React.Component {
     }
   }
 
+  winkStyle(){
+    return this.state.wink ? Object.assign({}, this.props.style, {transition: 'background-color 0.5s linear', backgroundColor: this.winkColor}) : Object.assign({},this.props.style, {transition: 'background-color 0.5s linear'});
+  }
+
   render () {
-    var classNames = [];
-    const {onChange, value, style, defaultValue, ...inputProps}=this.props;
+    let classNames=this.props.className && this.props.className.split(' ') || []
+    const {className, onChange, value, style, defaultValue, ...inputProps}=this.props;
 
     classes.forEach(key=>{
       if(this.props[key]){
@@ -60,10 +64,9 @@ export default class Input extends React.Component {
         delete inputProps[key];
       }
     })
-    const restyle=this.state.wink ? Object.assign({},style, {transition: 'background-color 0.5s linear', backgroundColor: this.winkColor}) : Object.assign({},this.props.style, {transition: 'background-color 0.5s linear'});
 
     return (
-      <input type={this.props.type || "text"} className={ classNames.join(' ') } { ...inputProps } onChange={this.onChangeHandler} value={this.state.value} ref={this.getInputRef} style={restyle} />
+      <input type={this.props.type || "text"}  { ...inputProps } className={ classNames.join(' ') } onChange={this.onChangeHandler} value={this.state.value} ref={this.getInputRef} style={this.winkStyle()} />
     );
   }
 }

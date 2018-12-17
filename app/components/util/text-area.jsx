@@ -1,80 +1,44 @@
 'use strict';
 
 import React from 'react';
+import Input from './input'
 import autosize from 'autosize';
 
-class Textarea extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={value: this.props.defaultValue||''};
-    this.inputRef=React.createRef();
-    if(this.props.value!=='undefined') console.error("Textarea should not be passed value, use default value");
-  }
+const classes = [
+  'block',
+  'primary',
+  'info',
+  'large',
+  'medium',
+  'radius',
+  'cursor-pointer',
+  'shy',
+  'success',
+  'error',
+  'warning'
+];
 
-  onChangeHandler(e){
-    if(e.target && e.target.value !== this.state.value)
-      this.setState({value: e.target.value})
-  }
-
-  select(){
-    console.warn("Textarea: should use .focus()");
-    return this.inputRef.current.focus();
-  }
-
-  focus(){
-    return this.inputRef.current.focus();
-  }
-
-  componentWillReceiveProps(newProps){
-    var defaultValue=newProps.defaultValue;
-    if(defaultValue !== this.props.defaultValue && defaultValue !== this.state.value){
-      this.setState({value: defaultValue})
-    }
-  }
-
+class Textarea extends Input {
+  
   componentDidMount () {
-    autosize(this.inputRef.current);
+    autosize(this.inputRef);
   }
 
   render () {
-    let classes = [];
-    let textAreaProps=Object.assign({},this.props);
+    let classNames=this.props.className && this.props.className.split(' ') || [];
+    const {className, onChange, value, style, defaultValue, ...textAreaProps}=this.props;
 
-    let props = [
-      'block',
-      'primary',
-      'info',
-      'large',
-      'medium',
-      'radius',
-      'cursor-pointer',
-      'shy',
-      'success',
-      'error',
-      'warning'
-    ];
-
-    for ( let prop of props ) {
+    for ( let prop of classes ) {
       if ( this.props[prop] ) {
-        classes.push(prop);
+        classNames.push(prop);
         delete textAreaProps[prop];
       }
     }
 
     return (
-      <textarea className={ classes.join(' ') } { ...textAreaProps } value={this.state.value} ref={this.inputRef}/>
+      <textarea className={ classNames.join(' ') } { ...textAreaProps } onChange={this.onChangeHandler} value={this.state.value} ref={this.getInputRef} style={this.winkStyle()}/>
     );
   }
 }
-
-Object.defineProperty(Textarea.prototype,'value',{
-  get: function () {
-    return this.state.value;
-  },
-  set: function (v) {
-    if(this.state.value !== v)
-      this.setState({value: v})
-  }
-})
 
 export default Textarea;

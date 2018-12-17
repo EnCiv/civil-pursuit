@@ -94,14 +94,14 @@ class ItemReference extends React.Component {
         this.openURL = this.openURL.bind(this);
         this.onChange = this.onChange.bind(this);
         this.editURL = this.editURL.bind(this);
-        this.getUrlTitle = this.getUrlTitle.bind(this);
         this.ignoreCR = this.ignoreCR.bind(this);
+        this.onBlur=this.onBlur.bind(this);
         this.state = { references: this.props.item && this.props.item.references && this.props.item.references.slice() || [] };
     }
     ignoreCR(e) {
         if (e.keyCode === 13) {
             e.preventDefault();
-            this.getUrlTitle();
+            this.onBlur();
         }
     }
     openURL(e) {
@@ -126,30 +126,44 @@ class ItemReference extends React.Component {
         if (!isEqual(this.state.references, newReferences))
             this.setState({ references: newReferences.slice() });
     }
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    getUrlTitle() {
+    
+    onBlur(){
         var references = this.state.references;
         let { url } = references[0] || {};
-
-        if (url && isURL(url)) {
-            this.setState({
-                titleLookingUp: true,
-                titleError: false
-            });
-            window.socket.emit('get url title', url, title => {
-                if (!title || title.error) {
-                    this.setState({ titleLookingUp: false, titleError: true, errMsg: title && title.error || "Title not accessible" });
-                } else {
-                    if (title.length) {
-                        references = references.slice();
-                        references[0].title = title;
-                        this.setState({ titleLookingUp: false, titleError: false, references });
-                    } else
-                        this.setState({ titleLookingUp: false, titleError: true });
-                }
-                if (this.props.onChange) this.props.onChange({ value: { references } })
-            })
+        if(url){
+            if(isURL(url))
+                return this.getUrlTitle(url);
+            let tryUrl='https://'+url;
+            if(isURL(tryUrl))
+                return this.getUrlTitle(tryUrl);
         }
+        this.setState({ titleLookingUp: false, titleError: true, errMsg: "URL not valid" });
+        if(this.props.onBlur)
+            this.props.onBlur();
+    }
+
+    getUrlTitle(url) {
+        this.setState({
+            titleLookingUp: true,
+            titleError: false
+        });
+        window.socket.emit('get url title', url, title => {
+            if (!title || title.error) {
+                this.setState({ titleLookingUp: false, titleError: true, errMsg: title && title.error || "Title not accessible" });
+            } else {
+                if (title.length) {
+                    var references = this.state.references.slice();
+                    references[0].url=url; // might have https:// prepended
+                    references[0].title = title;
+                    this.setState({ titleLookingUp: false, titleError: false, references });
+                } else
+                    this.setState({ titleLookingUp: false, titleError: true });
+            }
+            if (this.props.onChange) this.props.onChange({ value: { references } })
+            this.dirty=false;
+            if(this.props.onBlur)
+                this.props.onBlur();
+        })
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -167,6 +181,13 @@ class ItemReference extends React.Component {
             references = references.slice();
             references[0] = { url: value };
             this.setState({ references });
+        }
+        if(this.props.onDirty){
+            let dirty=(value !== (this.props.item && this.props.item.references && this.props.item.references.length && this.props.item.references[0].url || ''));
+            if(dirty!==this.dirty) { // only send dirty if it changes 
+                this.dirty=dirty;
+                this.props.onDirty(dirty);
+            }
         }
     }
 
@@ -205,7 +226,7 @@ class ItemReference extends React.Component {
                             placeholder="https://"
                             ref={this.inputElement}
                             onChange={this.onChange}
-                            onBlur={this.getUrlTitle}
+                            onBlur={this.onBlur}
                             onKeyDown={this.ignoreCR}
                             className={cx(classes['url-editor'], title && classes['hide'])}
                             name="reference"

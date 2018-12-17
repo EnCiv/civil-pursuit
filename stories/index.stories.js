@@ -36,6 +36,8 @@ expect.extend({printItOut(received,argument){
 }})
 
 import Item from "../app/components/item"
+import KitchenSink from "../app/components/kitchen-sink"
+
 import { Logger } from 'log4js/lib/logger';
 import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants';
 
@@ -518,6 +520,125 @@ storiesOf('Item', module)
 		return outerDiv;
 	})
 
+	.add("Creating an Item Reference without the https://", () => {
+		outerSetup();
+
+		const testItem = {
+			subject: "A Test Subject",
+			description: "A Test Item",
+			type: testType
+		}
+
+		const inputURL="www.civilpursuit.com"
+		const testURL="https://www.civilpursuit.com"
+		const testTitle="URL Title Test Succeeded!"
+		const testMessage="get url title"
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+		var emittedArgs;
+
+		window.socket.emit=(...args)=>{
+			emittedArgs=args;
+			if(args[0]===testMessage && args[1]===testURL  && (typeof args[2] === 'function')) { 
+				args[2](testTitle)
+			}
+		}
+
+		setTimeout(()=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: document.getElementById('story')});
+			let textInput=Wrapper.find('Input[name="reference"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: inputURL}}))
+			var inputNode=Wrapper.find('Input[name="reference"]').getDOMNode()
+			inputNode.blur();
+			setTimeout(()=>{ // give user a chance to see the original state before we change it
+				specs(()=>describe(`It should say ${testTitle}`, ()=>{
+					it('The socket should have received a message',()=>{
+						expect(!!emittedArgs).toBe(true)
+					})
+					it(`the message api should have been: ${testMessage}`,()=>{
+						expect(emittedArgs[0]).toBe(testMessage)
+					})
+					it(`the message parameter should have been: ${testURL}`,()=>{
+						expect(emittedArgs[1]).toBe(testURL)
+					})
+					it(`there should have been a callback function`,()=>{
+						expect(typeof emittedArgs[2]).toBe('function')
+					})
+					it(`The input should say ${testTitle}`, ()=>{
+						expect(Wrapper.find('input[name="url-title"]').instance().value).toBe(testTitle)
+					})
+					it(`The Item should have a references array`,()=>{
+						expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
+					})
+					it(`should show an edit-url icon (Pencil)`,()=>{
+						expect(!!Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|/d]+/)).toBe(true);
+					})
+				}))
+			},1000)
+		})
+		return outerDiv;
+	})
+
+	.add("Creating an Item Reference that fails", () => {
+		outerSetup();
+
+		const testItem = {
+			subject: "A Test Subject",
+			description: "A Test Item",
+			type: testType
+		}
+
+		const testURL="civilpursuit"
+		const testTitle=undefined;
+		const testMessage="get url title"
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+		var emittedArgs;
+
+		window.socket.emit=(...args)=>{
+			emittedArgs=args;
+			if(args[0]===testMessage && (args[1]===testURL)  && (typeof args[2] === 'function')) { 
+				args[2](testTitle)
+			}
+		}
+
+		setTimeout(()=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: document.getElementById('story')});
+			let textInput=Wrapper.find('Input[name="reference"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: testURL}}))
+			var inputNode=Wrapper.find('Input[name="reference"]').getDOMNode()
+			inputNode.blur();
+			setTimeout(()=>{ // give user a chance to see the original state before we change it
+				specs(()=>describe(`It should say ${testTitle}`, ()=>{
+					it('The socket should have received a message',()=>{
+						expect(!!emittedArgs).toBe(true)
+					})
+					it(`the message api should have been: ${testMessage}`,()=>{
+						expect(emittedArgs[0]).toBe(testMessage)
+					})
+					it(`the message parameter should have been: ${testURL}`,()=>{
+						expect(emittedArgs[1]).toBe(testURL)
+					})
+					it(`there should have been a callback function`,()=>{
+						expect(typeof emittedArgs[2]).toBe('function')
+					})
+					it(`The input should say ${testTitle}`, ()=>{
+						expect(Wrapper.find('input[name="url-title"]').instance().value).toBe(testTitle)
+					})
+					it(`The Item should have a references array`,()=>{
+						expect(testItem.references).toEqual([{url: testURL, title: testTitle}])
+					})
+					it(`should show an edit-url icon (Pencil)`,()=>{
+						expect(!!Wrapper.findDOMByAttrRegex('class', /.ItemReference-edit-url[-|/d]+/)).toBe(true);
+					})
+				}))
+			},1000)
+		})
+		return outerDiv;
+	})
+
 	.add("Edit an Item Reference", () => {
 		outerSetup();
 
@@ -561,6 +682,23 @@ storiesOf('Item', module)
 		return <RenderStory testFunc={storyTest}></RenderStory>;
 	})
 
+	.add('headline description first', () => {
+		outerSetup();
+
+		const testItem = {
+			type: testType
+		}
+
+		const description="This is a description of an item"
+
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'headlineAfterEdit'}} />;
+
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})
+
 	.add('headlineAfterEdit', () => {
 		outerSetup();
 
@@ -600,4 +738,16 @@ storiesOf('Item', module)
 			}))
 		}
 		return <RenderStory testFunc={storyTest}></RenderStory>;
+	})
+	.add('Kitchen Sink', () => {
+		outerSetup();
+
+		const testItem = {
+			subject: "Test Item Subject",
+			description: "Test Item Description\r\nTest Item Description\n\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\n",
+			type: testType
+		}
+
+		return <div style={outerStyle}><KitchenSink /></div>
+
 	})

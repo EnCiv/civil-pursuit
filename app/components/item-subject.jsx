@@ -5,6 +5,7 @@ import cx from 'classnames';
 import Input from './util/input';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
+import {editShapes} from './item'
 
 const styles ={
     subject: {
@@ -27,6 +28,11 @@ const styles ={
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap',
             'font-size': '1rem'
+        },
+        '&$placeholder': {
+            'font-family': 'inherit',
+            'font-size': '1rem',
+            'color': '#ddd !important' // can't really override the place holder color - but here it is incase that ever happens
         }
     },
     'collapsed': {},
@@ -41,7 +47,8 @@ const styles ={
             display: 'inline',
             border: 'none',
         }
-    }
+    },
+    'placeholder': {}
 }
 
 class ItemSubject extends React.Component {
@@ -50,11 +57,17 @@ class ItemSubject extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.ignoreCR = this.ignoreCR.bind(this);
-        this.state = { subject: this.props.item && this.props.item.subject || '' };
+        this.delayedUpdate=this.delayedUpdate.bind(this)
+        this.state = { subject: this.qualify(props.item && props.item.subject) };
     }
+
+    qualify(val){
+        return val || '';
+    }
+
     componentWillReceiveProps(newProps) {
-        if (this.state.subject !== (newProps.item && newProps.item.subject))
-            this.setState({ subject: newProps.item && newProps.item.subject })
+        if (this.state.subject !== (this.qualify(newProps.item && newProps.item.subject)))
+            this.setState({ subject: this.qualify(newProps.item && newProps.item.subject) })
     }
     ignoreCR(e) {
         if (e.keyCode === 13) {
@@ -63,35 +76,62 @@ class ItemSubject extends React.Component {
     }
     onChange(v) {
         var subject = this.state.subject;
-        var value = v.value; 
+        var value = this.qualify(v.value); 
         if (subject !== value) subject = value.slice();
         this.setState({ subject });
+        if (this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(this.delayedUpdate, 10000);
         if(this.props.onDirty){
-            let dirty=(subject !== (this.props.item && this.props.item.subject || ''));
+            let dirty=(subject !== (this.qualify(this.props.item && this.props.item.subject)));
             if(dirty!==this.dirty) { // only send dirty if it changes 
-                this.props.onDirty(dirty);
                 this.dirty=dirty;
+                this.props.onDirty(dirty);
             }
         }
     }
-    onBlur() {
-        var subject = this.state.subject;
+    
+    onBlur(){
+        if(this.timeout || this.dirty) {
+            var subject = this.state.subject.slice();
+            this.dirty=false;
+            clearTimeout(this.timeout);
+            this.timeout=0;
+            if (this.props.onChange)
+                this.props.onChange({ value: { subject } });
+        }
+        if(this.props.onBlur) this.props.onBlur();
+    }
+
+    delayedUpdate() {
+        var subject = this.state.subject.slice();
+        this.timeout=0;
         this.dirty=false;
-        if (this.props.onChange) {
-            this.props.onChange({ value: { subject } })
+        if (this.props.onChange)
+            this.props.onChange({ value: { subject } });
+    }
+
+    getEditWidth(){
+        if(this.props.getEditWidth){
+            let width=this.props.getEditWidth();
+            if(width) 
+                return width;
+            else
+                setTimeout(()=>this.forceUpdate()); // when ItemSubject is rendered - in edit mode, it needs this width. But the first time through, buttons and truncable aren't known yet, so wait for the render to complete and force an update. 
         }
     }
+
     render() {
-        const { classes, item, truncShape, getEditWidth } = this.props;
+        const { classes, item, truncShape } = this.props;
         const subject = this.state.subject;
-        if (!(['headlineAfterEdit','edit'].includes(truncShape)))
+        const placeHolder=item.type && item.type.subjectPlaceholder || truncShape==='headlineAfterEdit' && "Headline - a short headline drawing attention to the main point" || "Subject";
+        if (!editShapes.includes(truncShape))
             return (<h4 className={cx(classes["subject"], classes[truncShape])}>{subject}</h4>)
         else {
             return (
                 <Input type='text'
                     block
-                    className={cx(classes['subject'],classes['edit'])}
-                    placeholder={item.type && item.type.subjectPlaceholder || "Subject"}
+                    className={cx(classes['subject'],classes['edit'],(!this.state.subject) && classes['placeholder'] )}
+                    placeholder={placeHolder}
                     required
                     name="subject"
                     defaultValue={subject}
@@ -99,7 +139,7 @@ class ItemSubject extends React.Component {
                     onBlur={this.onBlur}
                     onKeyDown={this.ignoreCR}
                     key="subject"
-                    style={{width: getEditWidth()}}
+                    style={{width: this.getEditWidth()}}
                 />
             )
         }
