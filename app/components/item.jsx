@@ -171,7 +171,10 @@ const styles = {
     saving: {
         'display':  'block',
         'float': 'right',
-        'text-align': 'right'
+        'text-align': 'right',
+        'position': 'absolute',
+        'right': `${publicConfig.itemVisualGap}`,
+        'bottom': 0
     }
 }
 
