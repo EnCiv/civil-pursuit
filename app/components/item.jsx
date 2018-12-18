@@ -739,6 +739,45 @@ class RASPItem extends ReactActionStatePathClient {
         this.setState({descriptionBlurred: true})
     }
 
+    isValid(){
+        let item=this.props.item;
+        var errors={};
+        if(!item.subject) errors.subject=rasp.shape==="headlineAfterEdit" ? "Headline is required" : "Subject is required";
+        if(!item.description) errors.description="Description is required";
+        if(Object.keys(errors).length){
+            this.queueAction({type: "POST_ERROR", errors})
+            return false;
+        } else
+            return true;
+    }
+
+    post(){
+        const rasp=this.props.rasp;
+
+        if(editShapes.includes(rasp.shape) && !rasp.button) { // first time through
+            if(this.isValid()) {
+                createItem.call(this, this.props.item,(item)=>{
+                    if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
+                        logger.error("Post.doThiAsParent after createItem item is not mounted", this);
+                        return;
+                    }
+                    if(item)
+                        this.queueAction({type: "POST_ITEM", item: item});
+                    else {
+                        logger.error("error creating item on server:", this.props.item);
+                        this.queueAction({type: "POST_ITEM", item: this.props.item})
+                    }
+                });
+            }
+        }else if(editShapes.includes(rasp.shape)){
+            if(this.isValid()){
+                updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
+                this.queueAction({type: "POST_ITEM", item: this.props.item});
+            }
+        } else 
+            this.queueAction({type: "EDIT_ITEM"})
+    }
+
     render() {
         const { classes, visualMethod, item, user, rasp, style, parent, className, ...otherProps } = this.props;
         const shape = rasp ? rasp.shape : '';

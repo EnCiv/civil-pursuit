@@ -68,6 +68,7 @@ function outerSetup(){
 		Wrapper.unmount();
 		Wrapper=undefined;
 	}
+	window.Synapp={fontSize: 13}
 }
 
 function asyncSleep(mSec){
@@ -749,5 +750,111 @@ storiesOf('Item', module)
 		}
 
 		return <div style={outerStyle}><KitchenSink /></div>
+
+	})
+
+import CafeIdea from "../app/components/type-components/cafe-idea";
+import AskItemWhy from "../app/components/type-components/ask-item-why"
+
+	storiesOf('Cafe Idea', module)
+	.add('Cafe Idea', () => {
+		outerSetup();
+
+		const parent = {
+			_id: "123456789abcdef123556789",
+			subject: "This is the Questions",
+			description: "There are questions we need to ask, and respectfully discuss.",
+			type: "123456789abcdef123556789"
+		}
+
+		const ideaType = {
+			"_id": "56ce331e7957d17202e996d6",
+			"name": "Intro",
+			"harmony": [],
+			"id": "9okDr",
+			"mediaMethod": "disabled",
+			"ReferenceMethod": 'disabled'
+		}
+
+		return <div style={outerStyle}><CafeIdea parent={parent} type={ideaType} minIdeas={1} className="whole-border" /></div>
+
+	})
+	.add('Ask Item Why', () => {
+		outerSetup();
+
+		var emittedArgs;
+
+		window.socket.emit=(...args)=>{
+			emittedArgs=args;
+			if(args[0]==="get listo type" && args[1].length===2  && (typeof args[2] === 'function')) { 
+				setTimeout(()=>args[2]([whyType,whyNotType]))
+			} else {
+				console.error("Ask Item Why error", args)
+			}
+		}
+
+		const parent = {
+			_id: "56ce331e7957d17202e00003",
+			subject: "This is the Question",
+			description: "There are questions we need to ask, and respectfully discuss.",
+			type: "123456789abcdef123556789"
+		}
+
+		const ideaType = {
+			"_id": "56ce331e7957d17202e00000",
+			"name": "Intro",
+			"harmony": ["56ce331e7957d17202e00001","56ce331e7957d17202e00002"],
+			"id": "idea1",
+			"mediaMethod": "disabled",
+			"ReferenceMethod": 'disabled'
+		}
+
+		const whyType={
+			"_id": "56ce331e7957d17202e00001",
+			"name": "why",
+			"id": "why01",
+			"mediaMethod": "disabled",
+			"ReferenceMethod": 'disabled',
+			evaluateQuestion: "Why is this answer important for the whole community to consider?"
+		}
+		const whyNotType={
+			"_id": "56ce331e7957d17202e00002",
+			"name": "why not",
+			"id": "why02",
+			"mediaMethod": "disabled",
+			"ReferenceMethod": 'disabled',
+			evaluateQuestion: "Why should the community disregard this answer?"
+		}
+
+		const story=<div style={outerStyle}><AskItemWhy parent={parent} type={ideaType} className="whole-border" /></div>
+		
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
+			await asyncSleep(600);
+			let textInput=Wrapper.find('textarea[name="description"]')
+			textInput.instance().select();
+			textInput.simulate('change',Object.assign({},dummyEvent, {target: {value: description}}))
+			var inputNode=Wrapper.find('textarea[name="description"]').getDOMNode()
+			const blurE = await asyncEvent(inputNode, 'blur');
+			specs(()=>describe('Item Description should have the input', ()=>{
+				let _id=Wrapper.find('Item').instance().props.item._id;
+				it(`Item should have a unique ObjectId. Found ${_id}`, function () {
+					expect(_id.length).toBe(24);
+				});
+				it(`Item should have "${description}" as the textarea`, ()=>{
+					expect(Wrapper.find('textarea[name="description"]').instance().value).toBe(description);
+				});
+				it(`Item should have "${description}" as Textarea`, ()=>{
+					expect(Wrapper.find("ItemDescription").find('Textarea').instance().value).toBe(description)
+				});
+				it(`Item should have "${description}" as the ItemDescription`, ()=>{
+					expect(Wrapper.find("ItemDescription").instance().state.description).toBe(description)
+				});
+				it(`Item should have "${description}" in the Item`, ()=>{
+					expect(Wrapper.find("Item").instance().props.item.description).toBe(description)
+				});
+			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
 
 	})
