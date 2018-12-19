@@ -35,43 +35,26 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
         this.createDefaults();
     }
 
-    getIdeaRef(ideaNum, e){
-        if(e){
-            this.ideaState[ideaNum].itemRef=e;
-        }
+    done() {
+        Object.keys(this.ideaState).forEach(ideaNum=>{
+            if(this.toChild[ideaNum]) this.toChild[ideaNum]({type: "POST_ITEM", noToggle: true});
+            if(this.toChild[ideaNum+'-why']) this.toChild[ideaNum+'-why']({type: "POST_ITEM", noToggle: true});
+        })
     }
-
-    getIdeaWhyRef(ideaNum, e){
-        if(e){
-            this.ideaState[ideaNum].itemWhyRef=e;
-        }
-    }
-
-    done(){
-        let i;
-        for( i of Object.keys(this.ideaState)) {
-            let idea=this.ideaState[i]
-            if(idea.itemRef.isValid() && idea.itemWhyRef.isValid()){
-                idea.itemRef.post();
-                idea.itemWhyRef.post();
-            }
-        }
-    }
-    
 
     render() {
-        const { user, parent } = this.props;
+        const { user, parent, className } = this.props;
         var constraints=[];
         return (
             <section id="syn-ask-item-why">
                 <div className="syn-ask-item-why" key='idea'>
-                    <Item min item={parent} user={user} rasp={this.childRASP('truncated','item')}/>
+                    <Item className={className} min item={parent} user={user} rasp={this.childRASP('truncated','parent')}/>
                     <div className="syn-cafe-idea-creator">
                         {Object.keys(this.ideaState).map(ideaNum=>{
                             return (<div>
-                                <Item visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].item} rasp={this.childRASP('headlineAfterEdit',ideaNum)} user={user} key={ideaNum} ref={this.getIdeaRef.bind(this,ideaNum)}/>
+                                <Item min className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].item} rasp={this.childRASP('headlineAfterEdit',ideaNum)} user={user} key={ideaNum} />
                                 <div className="center">{this.props.harmony[0].evaluateQuestion}</div>
-                                <Item visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].why} rasp={this.childRASP('headlineAfterEdit',ideaNum+'-why')} user={user} key={ideaNum+'-why'} ref={this.getIdeaWhyRef.bind(this,ideaNum)}/>
+                                <Item min className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].why} rasp={this.childRASP('headlineAfterEdit',ideaNum+'-why')} user={user} key={ideaNum+'-why'} />
                                 </div>);
                         })}
                     </div>

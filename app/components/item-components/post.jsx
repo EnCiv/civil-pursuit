@@ -3,19 +3,12 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import createItem from '../../api-wrapper/create-item';
-import updateItem from '../../api-wrapper/update-item';
 import {editShapes} from '../item'
 
 class PostButton extends React.Component {
 
-    doThisAsParent(){
-        this.post()
-    }
-
     onClick() {
-        this.props.onClick(this.doThisAsParent)
-
+        this.props.rasp.toParent({type: "POST_ITEM"})
     };
 
     render() {

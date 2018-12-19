@@ -102,7 +102,7 @@ class RASPHarmony extends ReactActionStatePathClient {
         } else if (action.type==="DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===2)) {
             delta.side= null; 
             if (rasp.side && action.side === rasp.side) {
-              this.toChild[rasp.side]({ type: "RESET_STATE" });  // CHANGE_SHAPE ?
+              this.toChild[rasp.side]({ type: "RESET_STATE" }); 
             }
         } else
           return false;

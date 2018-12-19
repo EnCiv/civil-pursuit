@@ -18,6 +18,8 @@ import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
 import ObjectID from 'bson-objectid';
 import { Object } from 'es6-shim';
+import createItem from '../api-wrapper/create-item'
+import updateItem from '../api-wrapper/update-item'
 
 
 //Item 
@@ -533,18 +535,37 @@ class RASPItem extends ReactActionStatePathClient {
         //logger.trace("RASPItem.actionToState", { action }, { rasp }); // rasp is a pointer to the current state, make a copy of it so that the message shows this state and not the state it is later when you look at it
         var nextRASP = {};
         if (action.type === 'POST_ITEM' && action.distance==0) {
-            if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
-                logger.error("Item.actionToState item is not mounted", rasp.id, this );
-            }else{
-                Object.assign(this.props.item,action.item); // this items is posted, but copy it here to avoid propagation delay
-                delta.button='Posted';
-                if(rasp.errors) delta.errors=null;
-                action.duration=1; // the parent of this RASP should know of the post too.
-                this.queueUnfocus(action); 
+            if(!editShapes.includes(rasp.shape) && !action.noToggle){ // were not in edit mode - so start editing
+                delta.button='Editing';
+                this.queueFocus(action);
+            } else {
+                if(this.isValid(delta)){ // put error messages in delta
+                    if(rasp.button) { // been through once already
+                        updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
+                    } else { // first time through
+                        createItem.call(this, this.props.item,(item)=>{
+                            if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
+                                logger.error("Item POST_ITEM action after item is not mounted", this);
+                                return;
+                            }
+                            if(item){
+                                if(!isEqual(this.props.item, item)){
+                                    Object.assign(this.props.item,item)
+                                    this.forceUpdate();
+                                }
+                            } else {
+                                logger.error("error creating item on server:", this.props.item);
+                            }
+                        });
+                    }
+                    delta.button='Posted';
+                    action.duration=1; // the parent of this RASP should know of the post too.
+                    this.queueUnfocus(action); 
+                }
             }
-        } if (action.type === 'POST_ERROR' && action.distance==0) {
-            delta.errors=action.errors;
-        }else if (action.type === 'EDIT_ITEM'){
+        } else if(action.type==="ISVALID"){
+            this.isValid(delta);
+        } else if (action.type === 'EDIT_ITEM'){
             delta.button='Editing';
             this.queueFocus(action);
         } else if (action.type === "SET_BUTTON") {
@@ -582,12 +603,6 @@ class RASPItem extends ReactActionStatePathClient {
             } else { // there wasn't a winner but we finish the promote
                 delta.readMore = 'false';
                 delta.button = null;
-            }
-        } else if (action.type === "CHANGE_SHAPE") {
-            delta.shape = action.shape;
-            if (action.shape === 'open') {
-                delta.readMore = true;
-                if (this.props.item.harmony && this.props.item.harmony.types && this.props.item.harmony.types.length) delta.button = 'Harmony';  // open harmony when opening readMore
             }
         } else if (action.type === "CHILD_UPDATE") {
             if (action.shortId === this.props.item.id && action.item) {
@@ -691,7 +706,7 @@ class RASPItem extends ReactActionStatePathClient {
                     let mediaR = ReactDOM.findDOMNode(this.refs.media).getBoundingClientRect();
                     let bottomLine = Math.max(buttonsR.bottom, mediaR.bottom, innerChildR.bottom);
 
-                    let minHeight = Math.ceil(innerChildR.top - bottomLine);
+                    let minHeight = Math.ceil(bottomLine -innerChildR.top); // child top is visually above bottomLine - but above means a lower number so reverse the order to get a positive min height
 
                     if (this.state.minHeight !== minHeight) nextState.minHeight = minHeight;
                 }
@@ -706,7 +721,11 @@ class RASPItem extends ReactActionStatePathClient {
 
     readMore(e) {
         e.preventDefault(); // stop the default event processing of a div which is to stopPropagation
-        if (editShapes.includes(this.props.rasp.shape)) return;
+        if(this.props.visualMethod && this.props.visualMethod==='edit'){
+            if (editShapes.includes(this.props.rasp.shape)) return;
+            else 
+                return this.props.rasp.toParent({type: "EDIT_ITEM"});
+        }
         if (this.props.rasp.readMore) { // if readMore is on and we are going to turn it off
             this.setState({ hint: false });  // turn off the hint at the beginning of the sequence
         }
@@ -736,46 +755,22 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     onBlur(){
-        this.setState({descriptionBlurred: true})
+        if(this.props.rasp.errors)
+            this.queueAction({type: "ISVALID"});
     }
 
-    isValid(){
+    isValid(delta){
         let item=this.props.item;
         var errors={};
-        if(!item.subject) errors.subject=rasp.shape==="headlineAfterEdit" ? "Headline is required" : "Subject is required";
+        if(!item.subject) errors.subject=this.props.rasp.shape==="headlineAfterEdit" ? "Headline is required" : "Subject is required";
         if(!item.description) errors.description="Description is required";
         if(Object.keys(errors).length){
-            this.queueAction({type: "POST_ERROR", errors})
+            delta.errors=errors;
             return false;
-        } else
+        } else {
+            delta.errors=null;
             return true;
-    }
-
-    post(){
-        const rasp=this.props.rasp;
-
-        if(editShapes.includes(rasp.shape) && !rasp.button) { // first time through
-            if(this.isValid()) {
-                createItem.call(this, this.props.item,(item)=>{
-                    if (ReactActionStatePath.thiss.findIndex(it=>it && it.client===this) <0) {
-                        logger.error("Post.doThiAsParent after createItem item is not mounted", this);
-                        return;
-                    }
-                    if(item)
-                        this.queueAction({type: "POST_ITEM", item: item});
-                    else {
-                        logger.error("error creating item on server:", this.props.item);
-                        this.queueAction({type: "POST_ITEM", item: this.props.item})
-                    }
-                });
-            }
-        }else if(editShapes.includes(rasp.shape)){
-            if(this.isValid()){
-                updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
-                this.queueAction({type: "POST_ITEM", item: this.props.item});
-            }
-        } else 
-            this.queueAction({type: "EDIT_ITEM"})
+        }
     }
 
     render() {
@@ -802,7 +797,7 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp };
+        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp, onBlur: this.onBlur };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {
@@ -861,7 +856,7 @@ class RASPItem extends ReactActionStatePathClient {
                             {(shape !== 'headlineAfterEdit')&&<ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>}
                             {(shape !== 'headlineAfterEdit')&&itemErrors('subject')}
                             <ItemReference {...childProps} />
-                            <ItemDescription {...childProps} onBlur={this.onBlur} />
+                            <ItemDescription {...childProps} />
                             {itemErrors('description')}
                             {shape === 'headlineAfterEdit' && <ItemSubject {...childProps} autofocus getEditWidth={this.getEditWidth.bind(this)}/>}
                             {shape === 'headlineAfterEdit' && itemErrors('subject')}
