@@ -38,10 +38,11 @@ import updateItem from '../api-wrapper/update-item'
 // min - true indicates to show the minimum height
 // position - if set to left or right means the item is being displayed in two or more columns, so don't honor min in order to keep spacing consistent
 // className
+// headlineAfter - the Subject input field is shown after the description - and is called Headline by default
 //
 //
 
-export const editShapes=['edit','headlineAfterEdit'];
+export const editShapes=['edit'];
 
 class Item extends React.Component {
     render() {
@@ -73,7 +74,7 @@ const styles = {
             'border': 'none',
             'padding-top': 0,
             'padding-bottom': 0,
-            '&$whole-border': {
+            '&$whole-border, &$no-border': {
                 border: 'none' // need to override whole-border when title is present
             }
         },
@@ -85,6 +86,9 @@ const styles = {
 
         '&$whole-border': {
             border: '1px solid #666'
+        },
+        '&$no-border':{
+            border: 'none'
         }
     },
     "item-buttons": {
@@ -124,7 +128,7 @@ const styles = {
             'color': '#888',
             'margin-bottom': 0
         },
-        '&$edit, &$headlineAfterEdit': {
+        '&$edit': {
             'max-height': 'none',
             'overflow': 'hidden !important' // need to override accordion when it is expanded
         }
@@ -156,7 +160,6 @@ const styles = {
         'margin-bottom': `${publicConfig.itemVisualGap}`
     },
     'edit': {},
-    'headlineAfterEdit': {},
     'open': {},
     'peek': {},
     'truncated': {},
@@ -166,6 +169,7 @@ const styles = {
     'minified': {},
     'untruncate': {},
     'whole-border': {},
+    'no-border': {},
     'error-message': {
         color: 'red',
         'text-align': 'center'
@@ -174,9 +178,16 @@ const styles = {
         'display':  'block',
         'float': 'right',
         'text-align': 'right',
-        'position': 'absolute',
-        'right': `${publicConfig.itemVisualGap}`,
+        'position': 'relative',
+        'right': 0,
+        'font-size': '1rem',
         'bottom': 0
+    },
+    inputBorder: {
+        'input&, textarea&': {
+            border: '1px solid darkgray',
+            padding: `${publicConfig.itemVisualGap}`
+        }
     }
 }
 
@@ -222,15 +233,16 @@ class RASPItem extends ReactActionStatePathClient {
     visualMethods = {
         default: {
             // whether or not to show this component
-            active: (rasp) => {
-                return (rasp.shape !== 'collapsed');
+            active: () => {
+                return (this.props.rasp.shape !== 'collapsed');
             },
             // whether or not to show a child
-            childActive: (rasp, button) => {
-                return (rasp.button === button)
+            childActive: (button) => {
+                return (this.props.rasp.button === button)
             },
             // the shape to give a child, when it is initially mounted
-            childShape: (rasp, button) => {
+            childShape: (button) => {
+                let rasp=this.props.rasp;
                 switch (rasp.shape) {
                     case 'title':
                         if (rasp.button === button) return 'open';
@@ -281,20 +293,21 @@ class RASPItem extends ReactActionStatePathClient {
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 if (rasp.decendantFocus) parts.push('d');
                 rasp.pathSegment = parts.join(',');
-            }
+            },
+            subjectShown: (beforeOrAfter)=>beforeOrAfter==='before'
         },
         edit: {
             // whether or not to show this component
-            active: (rasp) => {
-                return (rasp.shape !== 'collapsed');
+            active: () => {
+                return (this.props.rasp.shape !== 'collapsed');
             },
             // whether or not to show a child
-            childActive: (rasp, button) => {
+            childActive: (button) => {
                 return false;
             },
             // the shape to give a child, when it is initially mounted
-            childShape: (rasp, button) => {
-                return rasp.shape;
+            childShape: (button) => {
+                return this.props.rasp.shape;
             },
             childVisualMethod: () => 'edit',
             // process actions for this visualMethod
@@ -306,22 +319,24 @@ class RASPItem extends ReactActionStatePathClient {
             deriveRASP: (rasp, initialRASP) => {
                 let parts=[];
                 if (rasp.button==='Posted') rasp.shape=rasp.readMore ? 'open' : 'truncated';
-                else  rasp.shape=initialRASP.shape==='headlineAfterEdit'?'headlineAfterEdit':'edit';  // button is Editing or undefined
+                else  rasp.shape='edit';  // button is Editing or undefined
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 rasp.pathSegment = parts.join(',');
-            }
+            },
+            subjectShown: (beforeOrAfter)=>this.props.headlineAfter ? beforeOrAfter==='after' : beforeOrAfter==='before',
         },
         defaultNoScroll: {
             // whether or not to show this component
-            active: (rasp) => {
-                return (rasp.shape !== 'collapsed');
+            active: () => {
+                return (this.props.rasp.shape !== 'collapsed');
             },
             // whether or not to show a child
-            childActive: (rasp, button) => {
-                return (rasp.button === button)
+            childActive: (button) => {
+                return (this.props.rasp.button === button)
             },
             // the shape to give a child, when it is initially mounted
-            childShape: (rasp, button) => {
+            childShape: (button) => {
+                let rasp=this.props.rasp;
                 switch (rasp.shape) {
                     case 'title':
                         if (rasp.button === button) return 'open';
@@ -371,19 +386,21 @@ class RASPItem extends ReactActionStatePathClient {
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 if (rasp.decendantFocus) parts.push('d');
                 rasp.pathSegment = parts.join(',');
-            }
+            },
+            subjectShown: (beforeOrAfter)=>beforeOrAfter==='before',
         },
         ooview: {
             // whether or not to show this component
-            active: (rasp) => {
-                return (rasp.shape !== 'collapsed');
+            active: () => {
+                return (this.props.rasp.shape !== 'collapsed');
             },
             // whether or not to show a child
-            childActive: (rasp, button) => {
-                return (rasp.button === button)
+            childActive: (button) => {
+                return (this.props.rasp.button === button)
             },
             // the shape to give a child, when it is initially mounted
-            childShape: (rasp, button) => {
+            childShape: (button) => {
+                let rasp=this.props.rasp;
                 switch (rasp.shape) {
                     case 'title':
                         if (rasp.button === button) return 'open';
@@ -438,19 +455,21 @@ class RASPItem extends ReactActionStatePathClient {
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 if (rasp.decendantFocus) parts.push('d');
                 rasp.pathSegment = parts.join(',');
-            }
+            },
+            subjectShown: (beforeOrAfter)=>beforeOrAfter==='before',
         },
         titleize: {  // same as ooView 
             // whether or not to show this component
-            active: (rasp) => {
-                return (rasp.shape !== 'collapsed');
+            active: () => {
+                return (this.props.rasp.shape !== 'collapsed');
             },
             // whether or not to show a child
-            childActive: (rasp, button) => {
-                return (rasp.button === button)
+            childActive: (button) => {
+                return (this.props.rasp.button === button)
             },
             // the shape to give a child, when it is initially mounted
-            childShape: (rasp, button) => {
+            childShape: (button) => {
+                let rasp=this.props.rasp;
                 switch (rasp.shape) {
                     case 'title':
                         if (rasp.button === button) return 'open';
@@ -505,7 +524,8 @@ class RASPItem extends ReactActionStatePathClient {
                 if (rasp.button) parts.push(rasp.button[0]); // must ensure no collision of first character of item-component names
                 if (rasp.decendantFocus) parts.push('d');
                 rasp.pathSegment = parts.join(',');
-            }
+            },
+            subjectShown: (beforeOrAfter)=>beforeOrAfter==='before',
         }
     }
 
@@ -747,13 +767,6 @@ class RASPItem extends ReactActionStatePathClient {
         this.setState({ touched: true, collecting: true });
     }
 
-    getEditWidth(){
-        let buttons = this.refs.buttons;
-        let truncable = this.truncableDOM;
-        if(buttons && truncable)
-            return buttons.getBoundingClientRect().x-truncable.getBoundingClientRect().x + 'px';
-    }
-
     onBlur(){
         if(this.props.rasp.errors)
             this.queueAction({type: "ISVALID"});
@@ -762,7 +775,7 @@ class RASPItem extends ReactActionStatePathClient {
     isValid(delta){
         let item=this.props.item;
         var errors={};
-        if(!item.subject) errors.subject=this.props.rasp.shape==="headlineAfterEdit" ? "Headline is required" : "Subject is required";
+        if(!item.subject) errors.subject=this.props.rasp.headlineAfter ? "Headline is required" : "Subject is required";
         if(!item.description) errors.description="Description is required";
         if(Object.keys(errors).length){
             delta.errors=errors;
@@ -774,17 +787,19 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     render() {
-        const { classes, visualMethod, item, user, rasp, style, parent, className, ...otherProps } = this.props;
+        const { classes, visualMethod, item, user, rasp, style, parent, className, headlineAfter, ...otherProps } = this.props; // props here won't be passed sub components
         const shape = rasp ? rasp.shape : '';
         const readMore = rasp.readMore;
         const buttons=this.props.buttons || visualMethod==='edit' && ['Post'] || null;
-        const truncShape=((this.vM.active(rasp) && readMore) ? 'open' : shape);
+        const truncShape=((this.vM.active() && readMore) ? 'open' : shape);
         let noReference = true;
         var cxs=[];
 
         if(className){
             if(className==='whole-border'){
                 cxs.push(classes['whole-border']);
+            }else if(className==='no-border'){
+                cxs.push(classes['no-border'])
             }else{
                 console.error("Item: ignoring unsupported className:",className);
             }
@@ -797,36 +812,37 @@ class RASPItem extends ReactActionStatePathClient {
         if (item.references && item.references.length)
             noReference = false;
 
-        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp, onBlur: this.onBlur };
+        const childClassName=headlineAfter ? classes['inputBorder'] : undefined;
+        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp, onBlur: this.onBlur, headlineAfter: headlineAfter, className: childClassName };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {
             if (typeof button === 'string')
                 return (<ItemComponent {...otherProps} component={button} part={'panel'} key={item._id + '-panel-' + button}
-                    rasp={this.childRASP(this.vM.childShape(rasp, button), button)}
+                    rasp={this.childRASP(this.vM.childShape(button), button)}
                     visualMethod={this.vM.childVisualMethod()}
-                    item={item} active={this.vM.childActive(rasp, button)} style={style}
+                    item={item} active={this.vM.childActive(button)} style={style}
                     user={user} />);
             else if (typeof button === 'object')
                 return (<ItemComponent {...otherProps} part={'panel'} key={item._id + '-panel-' + (button.buttonName || button.component)}
-                    rasp={this.childRASP(this.vM.childShape(rasp, button.component), button.component)}
+                    rasp={this.childRASP(this.vM.childShape(button.component), button.component)}
                     visualMethod={this.vM.childVisualMethod()}
                     user={user}
-                    item={item} active={this.vM.childActive(rasp, button.component)} style={style} {...button} />);
+                    item={item} active={this.vM.childActive(button.component)} style={style} {...button} />);
         }
 
         // a button could be a string, or it could be an object which must have a property component
         var renderButton = (button) => {
             if (typeof button === 'string')
                 return (<ItemComponent {...otherProps}
-                    component={button} part={'button'} active={this.vM.childActive(rasp, button)}
+                    component={button} part={'button'} active={this.vM.childActive(button)}
                     rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                     user={user}
                     onClick={this.onClick.bind(this, button, item._id, item.id)} key={item._id + '-button-' + button}
                 />);
             else if (typeof button === 'object')
                 return (<ItemComponent {...otherProps} {...button}
-                    part={'button'} active={this.vM.childActive(rasp, button.component)}
+                    part={'button'} active={this.vM.childActive(button.component)}
                     rasp={rasp} visualMethod={this.vM.childVisualMethod()}
                     user={user}
                     onClick={this.onClick.bind(this, button.component, item._id, item.id)} key={item._id + '-panel-' + (button.buttonName || button.component)}
@@ -853,20 +869,20 @@ class RASPItem extends ReactActionStatePathClient {
                             </ItemStore>
                         </section>
                         <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
-                            {(shape !== 'headlineAfterEdit')&&<ItemSubject {...childProps} getEditWidth={this.getEditWidth.bind(this)}/>}
-                            {(shape !== 'headlineAfterEdit')&&itemErrors('subject')}
+                            {this.vM.subjectShown('before') && <ItemSubject {...childProps} />}
+                            {this.vM.subjectShown('before') && itemErrors('subject')}
                             <ItemReference {...childProps} />
                             <ItemDescription {...childProps} />
                             {itemErrors('description')}
-                            {shape === 'headlineAfterEdit' && <ItemSubject {...childProps} autofocus getEditWidth={this.getEditWidth.bind(this)}/>}
-                            {shape === 'headlineAfterEdit' && itemErrors('subject')}
+                            {this.vM.subjectShown('after') && <ItemSubject {...childProps} autofocus />}
+                            {this.vM.subjectShown('after') && itemErrors('subject')}
+                            {editShapes.includes(shape) && 
+                                <div className={classes['saving']}>
+                                    {this.state.touched ? (this.state.collecting ? 'collecting' : 'collected') : ' '}
+                                </div>
+                            }
                         </Accordion>
                     </section>
-                    {editShapes.includes(shape) && 
-                        <div className={classes['saving']}>
-                            {this.state.touched ? (this.state.collecting ? 'collecting' : 'collected') : ' '}
-                        </div>
-                    }
                     <div className={cx(classes['item-trunc-hint'], this.state.hint && classes['untruncate'], classes[shape])}>
                         <Icon icon="ellipsis-h" />
                     </div>

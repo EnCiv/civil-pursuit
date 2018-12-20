@@ -16,8 +16,8 @@ const styles ={
         padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0`,
         overflow: 'visible',
         'white-space': 'normal',
-        'font-size': '1.375rem',
-        'line-height': '1.375rem',
+        'font-size': '1.375em',
+        'line-height': '1.375em',
         '&$collapsed, &$minified':{
             overflow: 'hidden',
             'text-overflow': 'ellipsis',
@@ -31,7 +31,7 @@ const styles ={
         },
         '&$placeholder': {
             'font-family': 'inherit',
-            'font-size': '1rem',
+            'font-size': 'calc(1 / 1.375 * 1em)',
             'color': '#ddd !important' // can't really override the place holder color - but here it is incase that ever happens
         }
     },
@@ -44,7 +44,8 @@ const styles ={
     'edit': {
         'input&':{
             extend: 'subject',
-            display: 'inline',
+            display: 'block',
+            width: '100%',
             border: 'none',
         }
     },
@@ -110,27 +111,17 @@ class ItemSubject extends React.Component {
             this.props.onChange({ value: { subject } });
     }
 
-    getEditWidth(){
-        if(this.props.getEditWidth){
-            let width=this.props.getEditWidth();
-            if(width) 
-                return width;
-            else
-                setTimeout(()=>this.forceUpdate()); // when ItemSubject is rendered - in edit mode, it needs this width. But the first time through, buttons and truncable aren't known yet, so wait for the render to complete and force an update. 
-        }
-    }
-
     render() {
-        const { classes, item, truncShape } = this.props;
+        const { classes, item, truncShape, headlineAfter, className } = this.props;
         const subject = this.state.subject;
-        const placeHolder=item.type && item.type.subjectPlaceholder || truncShape==='headlineAfterEdit' && "Headline - a short headline drawing attention to the main point" || "Subject";
+        const placeHolder=item.type && item.type.subjectPlaceholder || headlineAfter && "Headline - a short headline drawing attention to the main point" || "Subject";
         if (!editShapes.includes(truncShape))
-            return (<h4 className={cx(classes["subject"], classes[truncShape])}>{subject}</h4>)
+            return (<h4 className={cx(classes["subject"], classes[truncShape], className)}>{subject}</h4>)
         else {
             return (
                 <Input type='text'
                     block
-                    className={cx(classes['subject'],classes['edit'],(!this.state.subject) && classes['placeholder'] )}
+                    className={cx(classes['subject'],classes['edit'],(!this.state.subject) && headlineAfter && classes['placeholder'], className )}
                     placeholder={placeHolder}
                     required
                     name="subject"
@@ -139,7 +130,6 @@ class ItemSubject extends React.Component {
                     onBlur={this.onBlur}
                     onKeyDown={this.ignoreCR}
                     key="subject"
-                    style={{width: this.getEditWidth()}}
                 />
             )
         }

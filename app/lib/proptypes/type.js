@@ -32,6 +32,7 @@ type                =   shape({
   mediaMethod		    : 	string,
   referenceMethod   :   string,
   subjectPlaceHolder :  string,
+  descriptionPlaceholder: string,
   buttons           :   any
 });
 

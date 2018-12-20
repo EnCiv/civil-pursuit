@@ -198,7 +198,7 @@ class ItemReference extends React.Component {
         if (truncShape !== 'edit') {
             if (!references.length) return null;
             return (
-                <h5 className={cx(className, classes['reference'], classes[truncShape], noReference && classes['hide'])} >
+                <h5 className={cx( classes['reference'], classes[truncShape], noReference && classes['hide'], className)} >
                     <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
                 </h5>
             );
@@ -228,7 +228,7 @@ class ItemReference extends React.Component {
                             onChange={this.onChange}
                             onBlur={this.onBlur}
                             onKeyDown={this.ignoreCR}
-                            className={cx(classes['url-editor'], title && classes['hide'])}
+                            className={cx(classes['url-editor'], title && classes['hide'],className)}
                             name="reference"
                             defaultValue={url}
                             key="reference"
@@ -237,7 +237,7 @@ class ItemReference extends React.Component {
                             disabled
                             name="url-title"
                             defaultValue={title}
-                            className={cx(classes['url-title'], title && classes['visible'])}
+                            className={cx(classes['url-title'], title && classes['visible'],className)}
                             key="title"
                             onClick={this.editURL}
                         />

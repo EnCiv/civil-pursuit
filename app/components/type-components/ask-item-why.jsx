@@ -5,6 +5,8 @@ import Item from '../item';
 import HarmonyStore from '../store/harmony'
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
 import DoneItem from '../done-item';
+import injectSheet from 'react-jss'
+import publicConfig from '../../../public.json'
 
 /**
  * parent - the parent of the items being created.
@@ -12,7 +14,20 @@ import DoneItem from '../done-item';
  * 
  */
 
-export default class AskItemWhy extends React.Component {
+ const styles={
+    'ask': {
+        'font-size': '1.5em'
+    },
+    'creator': {
+        padding: `${publicConfig.itemVisualGap} 0  ${publicConfig.itemVisualGap} ${publicConfig.itemVisualGap}`
+    },
+    'why': {
+        padding: `0 0 1em 0`,
+        'font-size': '1.375em'
+    }
+ }
+
+class AskItemWhy extends React.Component {
     render(){
         return (
             <ReactActionStatePath {...this.props}>
@@ -43,18 +58,18 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
     }
 
     render() {
-        const { user, parent, className } = this.props;
+        const { user, parent, className, classes } = this.props;
         var constraints=[];
         return (
             <section id="syn-ask-item-why">
-                <div className="syn-ask-item-why" key='idea'>
+                <div className={classes["ask"]} key='idea'>
                     <Item className={className} min item={parent} user={user} rasp={this.childRASP('truncated','parent')}/>
-                    <div className="syn-cafe-idea-creator">
+                    <div className={classes["creator"]}>
                         {Object.keys(this.ideaState).map(ideaNum=>{
                             return (<div>
-                                <Item min className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].item} rasp={this.childRASP('headlineAfterEdit',ideaNum)} user={user} key={ideaNum} />
-                                <div className="center">{this.props.harmony[0].evaluateQuestion}</div>
-                                <Item min className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].why} rasp={this.childRASP('headlineAfterEdit',ideaNum+'-why')} user={user} key={ideaNum+'-why'} />
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={ideaNum} />
+                                <div className={classes['why']}>{this.props.harmony[0].evaluateQuestion}</div>
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={ideaNum+'-why'} />
                                 </div>);
                         })}
                     </div>
@@ -69,6 +84,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
     }
 }
 
+export default injectSheet(styles)(AskItemWhy);
 
 
 

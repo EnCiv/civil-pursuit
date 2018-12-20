@@ -1,10 +1,11 @@
 'use strict';
 
-import React from 'react';
-import cx from 'classnames';
-import Textarea from './util/text-area';
+import React from 'react'
+import cx from 'classnames'
+import Textarea from './util/text-area'
 import injectSheet from 'react-jss'
-import publicConfig from '../../public.json';
+import {editShapes} from './item'
+import publicConfig from '../../public.json'
 
 const styles = {
     'description': {
@@ -46,7 +47,8 @@ const styles = {
         'width': '100%',
     },
     saving: {
-        'text-align': 'right'
+        'text-align': 'right',
+        'font-size': '1rem'
     }
 }
 
@@ -103,15 +105,16 @@ class ItemDescription extends React.Component {
     }
 
     render() {
-        const { classes, truncShape, item, rasp } = this.props;
+        const { classes, truncShape, item, rasp, className } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
         // if description is truncated, not in readMore, and there is no reference - then use truncated4 to show an extra line of description
         const reviseTruncShape= truncShape==='truncated'? (!rasp.readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
             : truncShape;
         const description = item && item.description || '';
-        if (!(['edit','headlineAfterEdit'].includes(truncShape)))
+        const placeholder=item.type && item.type.descriptionPlaceholder || "Description";
+        if (!editShapes.includes(truncShape))
             return (
-                <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape])}>
+                <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape],className)}>
                     {description}
                 </div>
             );
@@ -119,8 +122,8 @@ class ItemDescription extends React.Component {
             return (
                 <section>
                     <Textarea
-                        className={classes['edit']}
-                        placeholder="Description"
+                        className={cx(classes['edit'],className)}
+                        placeholder={placeholder}
                         ref={this.inputElement}
                         name="description"
                         defaultValue={this.state.description}

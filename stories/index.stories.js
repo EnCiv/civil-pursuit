@@ -692,7 +692,7 @@ storiesOf('Item', module)
 
 		const description="This is a description of an item"
 
-		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'headlineAfterEdit'}} />;
+		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
 
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
@@ -709,7 +709,7 @@ storiesOf('Item', module)
 
 		const description="This is a description of an item"
 
-		const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'headlineAfterEdit'}} />;
+		const story=<Item headlineAfter item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
 
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
@@ -773,7 +773,7 @@ import AskItemWhy from "../app/components/type-components/ask-item-why"
 			"harmony": [],
 			"id": "9okDr",
 			"mediaMethod": "disabled",
-			"ReferenceMethod": 'disabled'
+			"referenceMethod": 'disabled'
 		}
 
 		return <div style={outerStyle}><CafeIdea parent={parent} type={ideaType} minIdeas={1} className="whole-border" /></div>
@@ -806,7 +806,8 @@ import AskItemWhy from "../app/components/type-components/ask-item-why"
 			"harmony": ["56ce331e7957d17202e00001","56ce331e7957d17202e00002"],
 			"id": "idea1",
 			"mediaMethod": "disabled",
-			"ReferenceMethod": 'disabled'
+			"referenceMethod": 'disabled',
+			"descriptionPlaceholder": 'answer'
 		}
 
 		const whyType={
@@ -814,19 +815,20 @@ import AskItemWhy from "../app/components/type-components/ask-item-why"
 			"name": "why",
 			"id": "why01",
 			"mediaMethod": "disabled",
-			"ReferenceMethod": 'disabled',
-			evaluateQuestion: "Why is this answer important for the whole community to consider?"
+			"referenceMethod": 'disabled',
+			evaluateQuestion: "Why is this answer important for the whole community to consider?",
+			"descriptionPlaceholder": 'explain'
 		}
 		const whyNotType={
 			"_id": "56ce331e7957d17202e00002",
 			"name": "why not",
 			"id": "why02",
 			"mediaMethod": "disabled",
-			"ReferenceMethod": 'disabled',
+			"referenceMethod": 'disabled',
 			evaluateQuestion: "Why should the community disregard this answer?"
 		}
 
-		const story=<div style={outerStyle}><AskItemWhy parent={parent} type={ideaType} className="whole-border" /></div>
+		const story=<div style={outerStyle}><AskItemWhy parent={parent} type={ideaType} className="no-border" /></div>
 		
 		const storyTest= async (e)=>{ // do this after the story has rendered
 			Wrapper=mount(story,{attachTo: e});
