@@ -20,7 +20,15 @@ export default class DB {
         });
     }
     static close(){
-        this.client && this.client.close((err,result)=>{this.client=undefined; this.db=undefined;});
+        if(!this.client) return Promise.error("client not set");
+        return new Promise((ok,ko)=>{
+            this.client.close((err,result)=>{
+                if(err) ko(err);
+                this.client=undefined; 
+                this.db=undefined;
+                ok(result);
+            });
+        })
     }
 }
 
