@@ -2,7 +2,6 @@
 
 import {ObjectID} from 'mongodb';
 import DB from '../lib/util/db';
-import { debug } from 'util';
 
 /** Happy Case
  * 
@@ -32,13 +31,38 @@ import { debug } from 'util';
  * 
  */
 
-const ids=['userId','itemId','_id'];
 const nullVote=()=>({criteria: null, lastId: ObjectID.createFromTime(1)});
+const COLL="pvote" // Collection Name
 
 export class SubscribeQvoteInfo {
+
+    static sendUpdate(item){
+        if(item){
+            let list=SubscribeQvoteInfo.updateList
+            if(!list)
+                list=SubscribeQvoteInfo.updateList={};
+            list[item]=true;
+            if(SubscribeQvoteInfo.updateTimeout)
+                return;
+        }
+        let items=Object.keys(SubscribeQvoteInfo.updateList);
+        SubscribeQvoteInfo.updateList={};
+        if(items.length){
+            let itm;
+            for(itm of items)
+                io.sockets.in(itm).emit('qvoteInfo',SubscribeQvoteInfo.qvotes[itm]['totals']);
+            SubscribeQvoteInfo.updateTimeout=setTimeout(
+                ()=>SubscribeQvoteInfo.sendUpdate(),
+                Math.log2(items.length)*1000
+            )
+        } else
+            SubscribeQvoteInfo.updateTimeout=0;
+    }
+
     static post(qvote){
         SubscribeQvoteInfo.add(qvote);
-        DB.db.collection("qvote").insertOne(qvote)
+        SubscribeQvoteInfo.sendUpdate(qvote.item)
+        DB.db.collection(COLL).insertOne(qvote)
         .then(result=>{
             if(result.insertedCount!==1)
                 console.info("SubscribeQvoteInfo.post result:",result.result)
@@ -50,7 +74,7 @@ export class SubscribeQvoteInfo {
 
     static getLastVote(itemId,userId){
         return new Promise((ok,ko)=>{
-            DB.db.collection("qvote").aggregate([
+            DB.db.collection(COLL).aggregate([
                 { $match: {item: itemId, user: userId}},
                 { $sort: {_id: 1 } },
                 { $group: { _id: {user: "$user", item: "$item"},
@@ -71,7 +95,7 @@ export class SubscribeQvoteInfo {
 
     static getTotals(itemId, userId){
         return new Promise((ok,ko)=>{
-            DB.db.collection("qvote").aggregate([
+            DB.db.collection(COLL).aggregate([
                 { $match: {item: itemId}},
                 { $sort: { item: 1, user: 1, _id: 1}},
                 { $group: { _id: {user: "$user", item: "$item"},
@@ -165,8 +189,10 @@ export class SubscribeQvoteInfo {
         }
         let itemTotals=it.totals;
         if(!it[userId]) return logger.error("SubscribeQvoteInfo.add - userId does not exist", userId, "for itemId:",itemId);
+        if(it.pending && it.pending.length && it[userId] && it[userId].pending && it[userId].pending.length)
+            return logger.error("SubscribeQvoteInfo.add - userId:", userId, "is pending for itemId:",itemId);
+        
         it=it[userId];
-        if(it.pending) return logger.error("SubscribeQvoteInfo.add - userId:", userId, "is pending for itemId:",itemId);
 
         if (lastId.toString() <= it.lastId.toString()){
             logger.error("SubscribeQvoteInfo.add:", { qvote }, "time:",ObjectID(lastId).getTimestamp(),  "is the same or older than", { it }, "time", ObjectID(it.lastId).getTimestamp(), "not updating")
@@ -219,32 +245,56 @@ export class SubscribeQvoteInfo {
         if(!it)
             it=SubscribeQvoteInfo.qvotes={};
         if(it[itemId]){
+            it=it[itemId];
             if(!userId) userId='unknown';
-            if(it[itemId][userId] && !it[itemId][userId].pending) // if no user, or the user info has been added completely
-                return Promise.resolve(it[itemId]);
-            else { // there is a userId but the user data is not there yet
-                it=it[itemId]
+            if(it.totals && it[userId] && !it[userId].pending) // if no user, or the user info has been added completely
+                return Promise.resolve(it);
+            else if(it.totals && it[userId]) // pending is set
                 return new Promise(async (ok,ko)=>{
-                    if(it[userId]){ // pending
-                        it[userId].pending.push(()=>ok(it)) // we just have to wait our turn
-                        return;
-                    } else { // userId not on item yet- unknown won't get here because itemId existed so unknown is set to {} after the first time itemId is set - or it's set to pending if no user the first time.
-                        it[userId]={pending: [()=>ok(it)]}
+                    it[userId].pending.push(()=>ok(it))
+                })                
+            else if(it.totals){ // userId is not set - the item has been setup - so users can be setup independently
+                it[userId]={pending: []}
+                return new Promise(async (ok,ko)=>{
+                    it[userId].pending.push(()=>ok(it))
+                    var userInfo=await SubscribeQvoteInfo.getLastVote(itemId,userId);
+                    Object.assign(it[userId],userInfo);
+                    SubscribeQvoteInfo.processUserInfoPending(it[userId])
+                })
+            } else { // itemId is set but totals is not set - meaning the item is not setup 
+                if(!it.pending) {
+                    console.info("SubscribeQvoteInfo.prepItem no totals and no pending");
+                    return;
+                }
+                if(it[userId] && !it[user].pending){
+                    console.info("SubscribeQvoteInfo.prepItem totals not set, userId set, but pending not set")
+                    return;
+                }else if(it[userId]){ // the user has tried to setup before
+                    return new Promise(async (ok,ko)=>{
+                        it.pending.push(()=>ok(it))
+                    })
+                }else { // user has not been here before
+                    it[userId]={pending: []}
+                    return new Promise(async (ok,ko)=>{
+                        it.pending.push(()=>ok(it));
                         var userInfo=await SubscribeQvoteInfo.getLastVote(itemId,userId);
                         Object.assign(it[userId],userInfo);
-                        if(!it['totals']) 
-                            debugger;
-                        SubscribeQvoteInfo.processUserInfoPending(it[userId])
-                        return;
-                    }
-                })
+                        if(it[userId].pending && it[userId].pending.length){
+                            //console.error("SubscribeQvoteInfo.prepItem totals not set, user not set, but now stuff in user pending")
+                            SubscribeQvoteInfo.processUserInfoPending(it[userId])
+                            return;
+                        }else
+                            it[userId].pending=undefined;                     
+                    })
+                }
             }
-        } else {
-            it[itemId]={};
-            it[itemId][userId||'unknown']={pending: []};
-            if(userId) it[itemId]['unknown']={pending: []}; // in case any request come along before the info is complete
+        } else { // the item has not been setup yet
+            it[itemId]={pending: []};
+            it=it[itemId];
+            it[userId||'unknown']={pending: []};
+            if(userId) it['unknown']={pending: []}; // in case any request come along before the info is complete
             return new Promise(async (ok,ko)=>{
-                it[itemId][userId||'unknown'].pending.push(()=>ok(it[itemId]))
+                it.pending.push(()=>ok(it))
                 var results= await SubscribeQvoteInfo.getTotals(itemId, userId);
                 var ownVote=results._ownVote;
                 if(userId){
@@ -254,18 +304,34 @@ export class SubscribeQvoteInfo {
                         delete results._ownVote;
                 }
                 if(ownVote)
-                    Object.assign(it[itemId][userId],ownVote);
+                    Object.assign(it[userId],ownVote);
                 SubscribeQvoteInfo.setTotals(itemId,results);
-                SubscribeQvoteInfo.processUserInfoPending(
-                    it[itemId][userId||'unknown'],
-                    ()=>io.sockets.in(itemId).emit('qvoteInfo',it[itemId]['totals'])
-                )
                 if(userId){
-                    SubscribeQvoteInfo.processUserInfoPending(
-                        it[itemId]['unknown'],
-                        ()=>io.sockets.in(itemId).emit('qvoteInfo',it[itemId]['totals'])
-                    )
+                    if(it[userId] && it[userId].pending.length){
+                        console.error("SubscribeQvoteInfo.prepItem after item and user setup, user has pending call backs")
+                        it.pending.push(()=>{
+                            SubscribeQvoteInfo.processUserInfoPending(
+                                it[userId],
+                                ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                            )
+                        })
+                    }else
+                        it[userId].pending=undefined;
                 }
+                if(it['unknown'].pending && it['unknown'].pending.length){
+                    console.error("SubscribeQvoteInfo.prepItem after item and user setup, unknown has pending call backs")
+                    it.pending.push(()=>{
+                        SubscribeQvoteInfo.processUserInfoPending(
+                            it['unknown'],
+                            ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                        )
+                    })
+                }else
+                    it['unknown'].pending=undefined;
+                SubscribeQvoteInfo.processUserInfoPending(
+                    it,
+                    ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                )
             })
         }
     }
@@ -288,9 +354,12 @@ export class SubscribeQvoteInfo {
         if(!qvote._id) qvote._id=ObjectID();
         async function asyncInsert(){
             var it=await SubscribeQvoteInfo.prepItem(qvote.item,qvote.user)
-            if(it[userId].pending ) {// if pending exists but is empty, a previous call to prepItem is awaiting totals - so start pushing 
+            if(it.pending){ // the items is being step
+                it.pending.push(()=>SubscribeQvoteInfo.post(qvote))
+                console.info("SubscribeQvoteInfo.insert on item pending:", it.pending.length);
+            }else if(it[userId].pending ) {// item has been createdon, but the user is new under that item
                 it[userId].pending.push(()=>SubscribeQvoteInfo.post(qvote))
-                console.info("SubscribeQvoteInfo.insert pending:", it[userId].pending.length);
+                //console.info("SubscribeQvoteInfo.insert on user pending:", it[userId].pending.length);
             }else
                 SubscribeQvoteInfo.post(qvote);
         }
@@ -337,9 +406,12 @@ export class SubscribeQvoteInfo {
             var poll=()=>{
                 let pending=0;
                 Object.keys(SubscribeQvoteInfo.qvotes).forEach(itemId=>{
+                    if(SubscribeQvoteInfo.qvotes[itemId].pending)
+                        pending+=SubscribeQvoteInfo.qvotes[itemId].pending.length;
                     Object.keys(SubscribeQvoteInfo.qvotes[itemId]).forEach(userId=>{
                         if(userId==='pending' || userId=='totals') return;
-                        if(SubscribeQvoteInfo.qvotes[itemId][userId].pending) pending++;
+                        if(SubscribeQvoteInfo.qvotes[itemId][userId].pending)
+                            pending+=SubscribeQvoteInfo.qvotes[itemId][userId].pending.length;
                     })
                 })
                 if(pending) {
