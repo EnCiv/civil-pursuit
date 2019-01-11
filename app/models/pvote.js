@@ -33,42 +33,43 @@ import DB from '../lib/util/db';
 
 const nullVote=()=>({criteria: null, lastId: ObjectID.createFromTime(1)});
 const COLL="pvote" // Collection Name
+const EVENT="PvoteInfo" // socket event name
 
-export class SubscribeQvoteInfo {
+export default class PVote {
 
-    static sendUpdate(item){
+    static sendUpdate(item){ // send updates to socket subscribers
         if(item){
-            let list=SubscribeQvoteInfo.updateList
+            let list=PVote.updateList
             if(!list)
-                list=SubscribeQvoteInfo.updateList={};
+                list=PVote.updateList={};
             list[item]=true;
-            if(SubscribeQvoteInfo.updateTimeout)
+            if(PVote.updateTimeout)
                 return;
         }
-        let items=Object.keys(SubscribeQvoteInfo.updateList);
-        SubscribeQvoteInfo.updateList={};
+        let items=Object.keys(PVote.updateList);
+        PVote.updateList={};
         if(items.length){
             let itm;
             for(itm of items)
-                io.sockets.in(itm).emit('qvoteInfo',SubscribeQvoteInfo.qvotes[itm]['totals']);
-            SubscribeQvoteInfo.updateTimeout=setTimeout(
-                ()=>SubscribeQvoteInfo.sendUpdate(),
+                io.sockets.in(itm).emit(EVENT,PVote.pvotes[itm]['totals']);
+            PVote.updateTimeout=setTimeout(
+                ()=>PVote.sendUpdate(),
                 Math.log2(items.length)*1000
             )
         } else
-            SubscribeQvoteInfo.updateTimeout=0;
+            PVote.updateTimeout=0;
     }
 
-    static post(qvote){
-        SubscribeQvoteInfo.add(qvote);
-        SubscribeQvoteInfo.sendUpdate(qvote.item)
-        DB.db.collection(COLL).insertOne(qvote)
+    static post(pvote){ // post to database
+        PVote.add(pvote);
+        PVote.sendUpdate(pvote.item)
+        DB.db.collection(COLL).insertOne(pvote)
         .then(result=>{
             if(result.insertedCount!==1)
-                console.info("SubscribeQvoteInfo.post result:",result.result)
+                console.info("PVote.post result:",result.result)
         })
         .catch(err=>{
-            logger.error("SubscribeQvoteInfo.post error:", qvote, err)
+            logger.error("PVote.post error:", pvote, err)
         })
     }
 
@@ -84,7 +85,7 @@ export class SubscribeQvoteInfo {
                 },
             ]).toArray((err,arr)=>{
                 if(err){
-                    console.error("SubscribeQvoteInto.getLastVote error", itemId,userId,err);
+                    logger.error("PVote.getLastVote error", itemId,userId,err);
                     return ok({})
                 }
                 var result=arr[0] ? {criteria: arr[0].criteria, lastId: arr[0].lastId} : nullVote();
@@ -121,24 +122,24 @@ export class SubscribeQvoteInfo {
                 }
             ]).toArray((err,arr)=>{
                 if(err){
-                    console.error("SubscribeQvoteInfo.getTotals error", err);
+                    console.error("PVote.getTotals error", err);
                     setTimeout(()=>ok({}),100); // if there is an error, wait some time and then end the promise with an empty result.
                     return;
                 }
                 var result={};
-                for(let qv of arr){
-                    if(qv._ownVote) {
-                        result._ownVote={criteria: qv.criteria, lastId: qv.lastId}
-                        if(result[qv.criteria]){
-                            result.qv.criteria.count+=1;
+                for(let pv of arr){
+                    if(pv._ownVote) {
+                        result._ownVote={criteria: pv.criteria, lastId: pv.lastId}
+                        if(result[pv.criteria]){
+                            result.pv.criteria.count+=1;
                         }else{
-                            result[qv.criteria]={count: 1}
+                            result[pv.criteria]={count: 1}
                         }
                     } else {
-                        if(result[qv.criteria])
-                            result[qv.criteria]+=qv.count;
+                        if(result[pv.criteria])
+                            result[pv.criteria]+=pv.count;
                         else
-                            result[qv.criteria]={count: qv.count};
+                            result[pv.criteria]={count: pv.count};
                     }
                 }
                 ok(result)
@@ -148,9 +149,9 @@ export class SubscribeQvoteInfo {
 
     // set the totals for the item, based on the totals obtained from the DB and if a user's ownVote is included add the users votes
     static setTotals(itemId,totals){
-        let it=SubscribeQvoteInfo.qvotes;
-        if(!it) return logger.error("SubscribeQvoteInfo.setTotals qvotes does not exist");
-        if(!it[itemId]) logger.error("SubscribeQvoteInfo.setTotals itemId does not exist:",itemId);
+        let it=PVote.pvotes;
+        if(!it) return logger.error("PVote.setTotals pvotes does not exist");
+        if(!it[itemId]) logger.error("PVote.setTotals itemId does not exist:",itemId);
         it=it[itemId];
         if(!it.totals){
             it.totals=totals;
@@ -160,7 +161,7 @@ export class SubscribeQvoteInfo {
         let c; for(c in totals){
             if(it[c]){
                 if(it[c].count!==totals[c].count){
-                    logger.error("SubscribeQvoteInfo.setTotals difference detected",it,results)
+                    logger.error("PVote.setTotals difference detected",it,results)
                     it[c].count=totals[c].count
                 } // else they are the same so do nothing
             }else{
@@ -170,41 +171,41 @@ export class SubscribeQvoteInfo {
     }
 
     // add a user's votes to the local structure - 
-    static add(qvote) {
-        let lastId=qvote._id;
-        let itemId=qvote.item;
-        let userId=qvote.user;
-        let criteria=qvote.criteria;
+    static add(pvote) {
+        let lastId=pvote._id;
+        let itemId=pvote.item;
+        let userId=pvote.user;
+        let criteria=pvote.criteria;
 
-        let it=SubscribeQvoteInfo.qvotes;
-        if(!it) return logger.error("SubscribeQvoteInfo.add - qvotes does not exist");
+        let it=PVote.pvotes;
+        if(!it) return logger.error("PVote.add - pvotes does not exist");
         if(!it[itemId]) {
-            return logger.error("SubscribeQvoteInfo.add - itemId does not exist", itemId);
+            return logger.error("PVote.add - itemId does not exist", itemId);
         }
         it=it[itemId];
-        if(it.pending) return logger.error("SubscribeQvoteInfo.add - itemId pending", itemId);
+        if(it.pending) return logger.error("PVote.add - itemId pending", itemId);
         if(!it.totals) {
             debugger
-            return logger.error("SubscribeQvoteInfo.add - itemId totals does not exist", itemId);
+            return logger.error("PVote.add - itemId totals does not exist", itemId);
         }
         let itemTotals=it.totals;
-        if(!it[userId]) return logger.error("SubscribeQvoteInfo.add - userId does not exist", userId, "for itemId:",itemId);
+        if(!it[userId]) return logger.error("PVote.add - userId does not exist", userId, "for itemId:",itemId);
         if(it.pending && it.pending.length && it[userId] && it[userId].pending && it[userId].pending.length)
-            return logger.error("SubscribeQvoteInfo.add - userId:", userId, "is pending for itemId:",itemId);
+            return logger.error("PVote.add - userId:", userId, "is pending for itemId:",itemId);
         
         it=it[userId];
 
         if (lastId.toString() <= it.lastId.toString()){
-            logger.error("SubscribeQvoteInfo.add:", { qvote }, "time:",ObjectID(lastId).getTimestamp(),  "is the same or older than", { it }, "time", ObjectID(it.lastId).getTimestamp(), "not updating")
+            logger.error("PVote.add:", { pvote }, "time:",ObjectID(lastId).getTimestamp(),  "is the same or older than", { it }, "time", ObjectID(it.lastId).getTimestamp(), "not updating")
             return;
         }
         if(criteria === it.criteria){ // user is not changing the vote
             it.lastId=lastId;
             return;
         }
-        SubscribeQvoteInfo.decrementTotals(itemTotals,it.criteria);
+        PVote.decrementTotals(itemTotals,it.criteria);
         Object.assign(it,{criteria, lastId});
-        SubscribeQvoteInfo.incrementTotals(itemTotals,criteria);
+        PVote.incrementTotals(itemTotals,criteria);
         return;
     }
 
@@ -239,11 +240,11 @@ export class SubscribeQvoteInfo {
         }
     }
 
-    // initialize the structure, and initialize the item if it isn't already - returns a promise so you can await on it that resolves to an qvote item structure with totals, and user last vote populated
+    // initialize the structure, and initialize the item if it isn't already - returns a promise so you can await on it that resolves to an pvote item structure with totals, and user last vote populated
     static prepItem(itemId,userId){
-        var it=SubscribeQvoteInfo.qvotes;
+        var it=PVote.pvotes;
         if(!it)
-            it=SubscribeQvoteInfo.qvotes={};
+            it=PVote.pvotes={};
         if(it[itemId]){
             it=it[itemId];
             if(!userId) userId='unknown';
@@ -257,17 +258,17 @@ export class SubscribeQvoteInfo {
                 it[userId]={pending: []}
                 return new Promise(async (ok,ko)=>{
                     it[userId].pending.push(()=>ok(it))
-                    var userInfo=await SubscribeQvoteInfo.getLastVote(itemId,userId);
+                    var userInfo=await PVote.getLastVote(itemId,userId);
                     Object.assign(it[userId],userInfo);
-                    SubscribeQvoteInfo.processUserInfoPending(it[userId])
+                    PVote.processUserInfoPending(it[userId])
                 })
             } else { // itemId is set but totals is not set - meaning the item is not setup 
                 if(!it.pending) {
-                    console.info("SubscribeQvoteInfo.prepItem no totals and no pending");
+                    console.info("PVote.prepItem no totals and no pending");
                     return;
                 }
-                if(it[userId] && !it[user].pending){
-                    console.info("SubscribeQvoteInfo.prepItem totals not set, userId set, but pending not set")
+                if(it[userId] && !it[userId].pending){
+                    console.info("PVote.prepItem totals not set, userId set, but pending not set")
                     return;
                 }else if(it[userId]){ // the user has tried to setup before
                     return new Promise(async (ok,ko)=>{
@@ -277,11 +278,11 @@ export class SubscribeQvoteInfo {
                     it[userId]={pending: []}
                     return new Promise(async (ok,ko)=>{
                         it.pending.push(()=>ok(it));
-                        var userInfo=await SubscribeQvoteInfo.getLastVote(itemId,userId);
+                        var userInfo=await PVote.getLastVote(itemId,userId);
                         Object.assign(it[userId],userInfo);
                         if(it[userId].pending && it[userId].pending.length){
-                            //console.error("SubscribeQvoteInfo.prepItem totals not set, user not set, but now stuff in user pending")
-                            SubscribeQvoteInfo.processUserInfoPending(it[userId])
+                            //console.error("PVote.prepItem totals not set, user not set, but now stuff in user pending")
+                            PVote.processUserInfoPending(it[userId])
                             return;
                         }else
                             it[userId].pending=undefined;                     
@@ -295,7 +296,7 @@ export class SubscribeQvoteInfo {
             if(userId) it['unknown']={pending: []}; // in case any request come along before the info is complete
             return new Promise(async (ok,ko)=>{
                 it.pending.push(()=>ok(it))
-                var results= await SubscribeQvoteInfo.getTotals(itemId, userId);
+                var results= await PVote.getTotals(itemId, userId);
                 var ownVote=results._ownVote;
                 if(userId){
                     if(!ownVote)
@@ -305,78 +306,79 @@ export class SubscribeQvoteInfo {
                 }
                 if(ownVote)
                     Object.assign(it[userId],ownVote);
-                SubscribeQvoteInfo.setTotals(itemId,results);
+                PVote.setTotals(itemId,results);
                 if(userId){
                     if(it[userId] && it[userId].pending.length){
-                        console.error("SubscribeQvoteInfo.prepItem after item and user setup, user has pending call backs")
+                        logger.error("PVote.prepItem after item and user setup, user has pending call backs")
                         it.pending.push(()=>{
-                            SubscribeQvoteInfo.processUserInfoPending(
+                            PVote.processUserInfoPending(
                                 it[userId],
-                                ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                                ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
                             )
                         })
                     }else
                         it[userId].pending=undefined;
                 }
                 if(it['unknown'].pending && it['unknown'].pending.length){
-                    console.error("SubscribeQvoteInfo.prepItem after item and user setup, unknown has pending call backs")
+                    logger.error("PVote.prepItem after item and user setup, unknown has pending call backs")
                     it.pending.push(()=>{
-                        SubscribeQvoteInfo.processUserInfoPending(
+                        PVote.processUserInfoPending(
                             it['unknown'],
-                            ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                            ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
                         )
                     })
                 }else
                     it['unknown'].pending=undefined;
-                SubscribeQvoteInfo.processUserInfoPending(
+                PVote.processUserInfoPending(
                     it,
-                    ()=>io.sockets.in(itemId).emit('qvoteInfo',it['totals'])
+                    ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
                 )
             })
         }
     }
 
     // external entry
-    static subscribeInfo(itemId,userId,socket){
-        async function subscribe(){
-            await SubscribeQvoteInfo.prepItem(itemId,userId);
+    static subscribe(itemId,userId,socket){
+        async function subscribeIt(){
+            await PVote.prepItem(itemId,userId);
             socket.join(itemId); // join this user into the socket.io room related to this item
-            setTimeout(()=>socket.emit('qvoteInfo', SubscribeQvoteInfo.qvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive
+            setTimeout(()=>socket.emit(EVENT, PVote.pvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive
         }
-        subscribe()
+        subscribeIt()
     }
 
     
     // external entry
-    static insert(qvote){
-        const userId=qvote.user;
-        if(!userId) throw("SubscribeQvoteInfo.insert user must be defined",qvote);
-        if(!qvote._id) qvote._id=ObjectID();
+    static insert(pvote){
+        const userId=pvote.user;
+        if(!userId) throw("PVote.insert user must be defined",pvote);
+        if(!pvote._id) pvote._id=ObjectID();
         async function asyncInsert(){
-            var it=await SubscribeQvoteInfo.prepItem(qvote.item,qvote.user)
+            var it=await PVote.prepItem(pvote.item,pvote.user)
             if(it.pending){ // the items is being step
-                it.pending.push(()=>SubscribeQvoteInfo.post(qvote))
-                console.info("SubscribeQvoteInfo.insert on item pending:", it.pending.length);
+                it.pending.push(()=>PVote.post(pvote))
+                console.info("PVote.insert on item pending:", it.pending.length);
             }else if(it[userId].pending ) {// item has been createdon, but the user is new under that item
-                it[userId].pending.push(()=>SubscribeQvoteInfo.post(qvote))
-                //console.info("SubscribeQvoteInfo.insert on user pending:", it[userId].pending.length);
+                it[userId].pending.push(()=>PVote.post(pvote))
+                //console.info("PVote.insert on user pending:", it[userId].pending.length);
             }else
-                SubscribeQvoteInfo.post(qvote);
+                PVote.post(pvote);
         }
         asyncInsert()
     }
 
     // wait for all the pending items to be processed and then call the callback
+    // caution this isn't working yet - use pollPending
     static flush(){
-        if(SubscribeQvoteInfo.flushing){
-            logger.error("SubscribeQvoteInfo.flush already flushing");
+        if(PVote.flushing){
+            logger.error("PVote.flush already flushing");
             return;
         }
-        SubscribeQvoteInfo.flushing=true;
+        PVote.flushing=true;
         var promises=[];
-        var it=SubscribeQvoteInfo.qvotes;
+        var it=PVote.pvotes;
         if(!it) return Promise.resolve(null);
-        SubscribeQvoteInfo.pollPending();
+        PVote.pollPending();
         Object.keys(it).forEach(itemId=>{
             Object.keys(it[itemId]).forEach(userId=>{
                 if(userId==='totals') return;
@@ -395,7 +397,7 @@ export class SubscribeQvoteInfo {
         })
         return new Promise((ok,ko)=>{
             Promise.all(promises).then(()=>{
-                SubscribeQvoteInfo.flushing=false;
+                PVote.flushing=false;
                 ok()
             })
         })
@@ -405,17 +407,17 @@ export class SubscribeQvoteInfo {
         return new Promise(ok=>{
             var poll=()=>{
                 let pending=0;
-                Object.keys(SubscribeQvoteInfo.qvotes).forEach(itemId=>{
-                    if(SubscribeQvoteInfo.qvotes[itemId].pending)
-                        pending+=SubscribeQvoteInfo.qvotes[itemId].pending.length;
-                    Object.keys(SubscribeQvoteInfo.qvotes[itemId]).forEach(userId=>{
+                Object.keys(PVote.pvotes).forEach(itemId=>{
+                    if(PVote.pvotes[itemId].pending)
+                        pending+=PVote.pvotes[itemId].pending.length;
+                    Object.keys(PVote.pvotes[itemId]).forEach(userId=>{
                         if(userId==='pending' || userId=='totals') return;
-                        if(SubscribeQvoteInfo.qvotes[itemId][userId].pending)
-                            pending+=SubscribeQvoteInfo.qvotes[itemId][userId].pending.length;
+                        if(PVote.pvotes[itemId][userId].pending)
+                            pending+=PVote.pvotes[itemId][userId].pending.length;
                     })
                 })
                 if(pending) {
-                    console.info("SubscribeQvoteInfo.poll items still pending:",pending)
+                    console.info("PVote.poll items still pending:",pending)
                     setTimeout(()=>poll(),1000)
                 }else
                     return ok();
@@ -425,5 +427,3 @@ export class SubscribeQvoteInfo {
     }
 }
 
-
-export default SubscribeQvoteInfo

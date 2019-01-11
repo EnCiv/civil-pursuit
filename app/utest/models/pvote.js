@@ -1,7 +1,7 @@
 'use strict';
 
-import {SubscribeQvoteInfo} from "../../api/subscribe-qvote-info"
-import {spawn} from 'child_process'
+import PVote from '../../models/pvote';
+import {spawn,exec} from 'child_process'
 import DB from '../../lib/util/db'
 import {ObjectID} from 'mongodb'
 import "@babel/polyfill"
@@ -12,21 +12,61 @@ global.logger={
     error: (...args)=>console.info(...args)
 }
 
+const Ntests=10;
 
 const userId=ObjectID("5704c217feb3d90300bb83dd");
 
-const dbPipe = spawn('mongod', ['--dbpath=./test', '--port', '27017'])
-dbPipe.stdout.on('data', function (data) {
-    console.log(data.toString('utf8'));
-});
+import util from 'util';
+const pexec = util.promisify(exec);
 
-dbPipe.stderr.on('data', (data) => {
-    console.log(data.toString('utf8'));
-});
+export function startUp() {
+    return new Promise(async (ok,ko)=>{
+        try{
+            const { stdout, stderr } = await pexec('mkdir test');
+            console.log('stdout:', stdout);
+            console.log('stderr:', stderr);
+        }
+        catch(err){
+            if(err.code!==1){
+                console.info(err);
+                ko(err);
+            } 
+            //else just fall through and continue
+        }
 
-dbPipe.on('close', (code) => {
-    console.info('Process exited with code: '+ code);
-});
+        const dbPipe = spawn('mongod', ['--dbpath=./test', '--port', '27017'])
+        dbPipe.stdout.on('data', function (data) {
+            console.log(data.toString('utf8'));
+        });
+        
+        dbPipe.stderr.on('data', (data) => {
+            console.log(data.toString('utf8'));
+        });
+        
+        dbPipe.on('close', (code) => {
+            console.info('Process exited with code: '+ code);
+        });
+
+        ok();
+    })
+}
+
+export function shutDown(){
+    return new Promise(async (ok,ko)=>{
+        await DB.close(); // make sure everything gets flushed before killing the db
+        const shutdown=spawn('mongo', ['--eval', "db.getSiblingDB('admin').shutdownServer();quit()"]);
+        shutdown.on('close',code=>{
+            if(!code) return ok();
+            console.error('Shutdown process exited with code', code);
+            ko();
+        })
+    })
+}
+
+// unit test that want to test with PVote will need to startup and shutdown before hand
+//
+const PVoteTest={startUp: startUp, shutDown: shutDown};
+export default PVoteTest;
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -48,8 +88,8 @@ function asyncSleep(t){
 }
 
 async function testIt(){
+    await startUp();
     await DB.connect("mongodb://localhost:27017/test?connectTimeoutMS=3000000");
-
 
     function resetDB(){
         lastEmitted=[];
@@ -75,11 +115,11 @@ async function testIt(){
                 items.push({item: itemId, criteria: ['most','neutral','least'][i%3], user: userId})
             }
             await DB.db.collection(COLL).insertMany(items);
-            var qvotes = await DB.db.collection(COLL).find({}).toArray();
-            console.info("qvotes:", qvotes);
-            var result=await SubscribeQvoteInfo.getTotals(itemId,userId);
+            var pvotes = await DB.db.collection(COLL).find({}).toArray();
+            console.info("pvotes:", pvotes);
+            var result=await PVote.getTotals(itemId,userId);
             console.info("result",result)
-            var lastVote=await SubscribeQvoteInfo.getLastVote(itemId,userId);
+            var lastVote=await PVote.getLastVote(itemId,userId);
             console.info("lastVote:",lastVote)
             if(result._ownVote.criteria==='most' && result._ownVote.lastId.toString()===lastVote.lastId.toString() && result._ownVote.criteria===lastVote.criteria)
                 console.info("Passed!");
@@ -90,7 +130,7 @@ async function testIt(){
     }
     
 
-    //var prepItem=await SubscribeQvoteInfo.prepItem(items[0],users[0]);
+    //var prepItem=await PVote.prepItem(items[0],users[0]);
     //console.info("prepItem", prepItem);
 
     function bulkUserItemTest(){
@@ -98,7 +138,7 @@ async function testIt(){
             var users=[];
             var items=[];
             let n;
-            for(n=0;n<100;n++){
+            for(n=0;n<Ntests;n++){
                 items.push(ObjectID());
                 users.push(ObjectID());
             }
@@ -108,7 +148,7 @@ async function testIt(){
             users.forEach(u=>{
                 items.forEach(async i=>{
                     jobs.push(async ()=>{
-                        SubscribeQvoteInfo.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]})
+                        PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]})
                         if(Math.random()>0.5){
                             jobs.shift()();
                             return;
@@ -119,12 +159,12 @@ async function testIt(){
                 })
             })
             jobs.push(async ()=>{
-                showQvoteInfoEmitted()
-                await SubscribeQvoteInfo.pollPending()
+                showPVoteInfoEmitted()
+                await PVote.pollPending()
                 console.info("lastEmitted after poll:");
-                let total=showQvoteInfoEmitted()
-                if(total===10000) console.info("Passed!",total)
-                else console.error("Failed:", total, "expected", 10000)
+                let total=showPVoteInfoEmitted()
+                if(total===(Ntests*Ntests)) console.info("Passed!",total)
+                else console.error("Failed:", total, "expected", (Ntests*Ntests))
                 await asyncSleep(10000);
                 await asyncSleep(1);
                 ok();
@@ -140,7 +180,7 @@ async function testIt(){
             var users=[];
             var items=[];
             let n;
-            for(n=0;n<100;n++){
+            for(n=0;n<Ntests;n++){
                 items.push(ObjectID());
                 users.push(ObjectID());
             }
@@ -149,50 +189,45 @@ async function testIt(){
 
             users.forEach(u=>{
                 items.forEach(i=>{
-                    setTimeout(()=>SubscribeQvoteInfo.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
+                    setTimeout(()=>PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
                 })
             })
         
             await asyncSleep(1000);
-            showQvoteInfoEmitted()
-            await SubscribeQvoteInfo.pollPending()
+            showPVoteInfoEmitted()
+            await PVote.pollPending()
             console.info("lastEmitted after poll:");
-            showQvoteInfoEmitted()
+            showPVoteInfoEmitted()
             await asyncSleep(10000);
         
             console.info("now do it again")
             users.forEach(u=>{
                 items.forEach(i=>{
-                    setTimeout(()=>SubscribeQvoteInfo.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
+                    setTimeout(()=>PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
                 })
             })
-            await SubscribeQvoteInfo.pollPending()
+            await PVote.pollPending()
             await asyncSleep(10000);
             console.info("lastEmitted after poll:");
-            let total=showQvoteInfoEmitted();
-            if(total===10000) console.info("Passed!",total)
-            else console.error("Failed:", total, "expected", 10000)
+            let total=showPVoteInfoEmitted();
+            if(total===(Ntests*Ntests)) console.info("Passed!",total)
+            else console.error("Failed:", total, "expected", (Ntests*Ntests))
             await asyncSleep(10000);
             ok();
         })
     }
 
-    async function finished(){
-        await DB.close(); // make sure everything gets flushed before killing the db
-        dbPipe.kill('SIGINT'); // kills the mongod process as well
-    }
-
     await simpleTest();
     await bulkUserItemTest();
     await randomizedTest();
-    await finished();
+    await shutDown();
 }
 
 
 
-function showQvoteInfoEmitted(){
+function showPVoteInfoEmitted(){
     let totalVotes=0;
-    console.info("showQvoteInfoEmitted:", Object.keys(lastEmitted).length);
+    console.info("showPVoteInfoEmitted:", Object.keys(lastEmitted).length);
     Object.keys(lastEmitted).forEach(itemId=>{
         var info=lastEmitted[itemId][1];
         var string='['+itemId+']:';
