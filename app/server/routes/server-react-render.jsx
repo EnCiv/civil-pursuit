@@ -106,7 +106,7 @@ function serverReactRender(req, res, next) {
                         || ( props.browserConfig.browser.name=="firefox" && props.browserConfig.browser.version[0] >= 50)
                         || ( props.browserConfig.browser.name=="edge" && props.browserConfig.browser.version[0] >= 15)
                         )
-                    ) ? (logger.info("index browser supports ES6"),'')
+                    ) ? (logger.info("index browser supports ES6"),`<script src='/assets/js/polyfill.min.js'></script>`)
                         : (logger.info("index browser does not support ES6"),`<script src='/assets/js/polyfill.min.js'></script>`)
                     }
                     <script src='/socket.io/socket.io.js' ></script>

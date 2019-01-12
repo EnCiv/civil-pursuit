@@ -21,7 +21,9 @@ var  Components={
         'PanelQuestions': require('./panel-questions').default,
         'ProfileCheck': require('./profile-check').default,
         'Totals': require('./totals').default,
-        'TurkSubmit': require('./turk-submit').default
+        'TurkSubmit': require('./turk-submit').default,
+        'AskItemWhy': require('./ask-item-why').default,
+        'AskWebRTC': require('./ask-webrtc').default
     }
 
 export default Components;

@@ -755,6 +755,7 @@ storiesOf('Item', module)
 
 import CafeIdea from "../app/components/type-components/cafe-idea";
 import AskItemWhy from "../app/components/type-components/ask-item-why"
+import AskWebRTC from "../app/components/type-components/ask-webrtc"
 
 	storiesOf('Cafe Idea', module)
 	.add('Cafe Idea', () => {
@@ -856,6 +857,19 @@ import AskItemWhy from "../app/components/type-components/ask-item-why"
 					expect(Wrapper.find("Item").instance().props.item.description).toBe(description)
 				});
 			}))
+		}
+		return <RenderStory testFunc={storyTest}></RenderStory>;
+
+	})
+
+
+	.add('Ask WebRTC', () => {
+		outerSetup();
+
+		const story=<div style={outerStyle}><AskWebRTC /></div>
+		
+		const storyTest= async (e)=>{ // do this after the story has rendered
+			Wrapper=mount(story,{attachTo: e});
 		}
 		return <RenderStory testFunc={storyTest}></RenderStory>;
 
