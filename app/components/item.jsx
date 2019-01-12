@@ -17,7 +17,6 @@ import ItemDescription from './item-description';
 import injectSheet from 'react-jss'
 import publicConfig from '../../public.json'
 import ObjectID from 'bson-objectid';
-import { Object } from 'es6-shim';
 import createItem from '../api-wrapper/create-item'
 import updateItem from '../api-wrapper/update-item'
 

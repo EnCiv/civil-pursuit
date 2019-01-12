@@ -5,7 +5,7 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
 import cx from 'classnames'
-import { Object } from 'es6-shim';
+
 
 /**
  * parent - the parent of the items being created.
