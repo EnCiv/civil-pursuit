@@ -117,6 +117,7 @@ class AskWebRTC extends React.Component {
 
 class RASPAskWebRTC extends ReactActionStatePathClient {
 
+    requestPermissionElements=[];
     constructor(props) {
         super(props, 'speaker', 0);
         this.createDefaults();
@@ -291,6 +292,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 }
                 catch (err) {
                     if (err.name === "NotAllowedError") {
+                        this.requestPermissionElements.push(element);
                         this.setState({ requestPermission: true });
                     } else
                         logger.error("AskWebRTC.startPlayback caught error", err.name)
@@ -301,7 +303,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     async requestPermission(e) {
         try {
-            this.recorded0.current.play()
+            var element;
+            while(element=requestPermissionElements.shift())
+                element.play();
             this.setState({ requestPermission: false });
         }
         catch (err) {
