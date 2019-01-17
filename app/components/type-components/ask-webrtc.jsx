@@ -5,6 +5,7 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
 import cx from 'classnames'
+import { Object } from 'es6-shim';
 
 
 /**
@@ -29,13 +30,17 @@ const styles = {
         '--width': '25vw',
         'width': 'var(--width)',
         'height': 'calc(var(--width) * 0.5625)',
+        'transition': 'all .5s linear',
         '$$speaking': {
         },
         '&$nextUp': {
             '--width': '20vw'
         },
-        '&$listening1, &$listening2, &$listening3': {
+        '&$seat2, &$seat3, &$seat4': {
             '--width': '15vw'
+        },
+        '&$finishUp' :{
+            '--width': '1vw'
         }
     },
     'box': {
@@ -50,60 +55,102 @@ const styles = {
         height: 'calc((25vw + 15vw) * 0.5625 + 15vh)'
     },
     'speaking': {
-        left: 'calc(20vw + 7.5vw + 5vw)',
+        left: 'calc(20vw + 7.5vw + 2.5vw)',
         top: '5vh'
     },
     'nextUp': {
         left: '7.5vw',
         top: 'calc( 5vw * 0.5625 + 5vh)',
     },
-    'listening1': {
+    'seat2': {
         left: '5vw',
         top: 'calc(25vw * 0.5625 + 10vh)',
     },
-    'listening2': {
+    'seat3': {
         left: '25vw',
         top: 'calc(25vw * 0.5625 + 10vh)',
     },
-    'listening3': {
+    'seat4': {
         left: '45vw',
         top: 'calc(25vw * 0.5625 + 10vh)',
+    },
+    'finishUp': {
+        left: 'calc(75vw / 2)',
+        top: 'calc(((25vw + 15vw) * 0.5625 + 15vh) / 2)',
     },
     'finishButton': {
         float: 'right'
     },
     'talkative': {
         background: 'yellow'
+    },
+    'videoFoot': {
+        'text-align': 'center',
+        'color': '#404',
+        'font-weight': '600'
+    },
+    'agenda': {
+        position: 'absolute',
+        top: '5vh',
+        left: 'calc(7.5vw + 20vw + 2.5vw + 25vw + 2.5vw)',
+        height: 'calc(25vw * 0.5625)',
+        'font-weight': '600',
+        'font-size': '125%',
+        width: '15vw',
+        display: 'table',
+        'transition': 'all .5s linear',
+        '&$finishUp': {
+            left: 'calc(75vw / 2)',
+            top: 'calc(((25vw + 15vw) * 0.5625 + 15vh) / 2)',
+            height: '1vh',
+            'font-size': '1%'
+        }
+
+    },
+    'innerAgenda': {
+        'vertical-align': 'middle',
+        'display': 'table-cell'
+    },
+    'agendaItem': {
+        'font-weight': '200'
+    },
+    'thanks': {
+        'font-size': "200%",
+        'font-weight': '600',
     }
+
 }
 
-const listeners = [
-    'https://res.cloudinary.com/hu74r07kq/video/upload/v1547185486/listening1.webm',
-    'https://res.cloudinary.com/hu74r07kq/video/upload/v1547240803/listening2.webm',
-    'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm',
-    'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241434/listening4.webm'
-]
 
 const participants = {
     moderator: {
-        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547245936/intro.webm'],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547185486/listening1.webm'
+        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547245936/intro.webm','https://res.cloudinary.com/hu74r07kq/video/upload/v1547491227/moderator-polarization.webm'],
+        speakingObjectURLs:[],
+        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547185486/listening1.webm',
+        listeningObjectURL: null,
+        agenda: [['Who you are','Where you are','Your political party or belief'],['Should we do something about political polarization','Why or Why Not']]
     },
     audience1: {
-        speaking: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547240803/listening2.webm'
+        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547439786/qian-intro.webm','https://res.cloudinary.com/hu74r07kq/video/upload/v1547439195/qian-polarization.webm'],
+        speakingObjectURLs:[],
+        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547439660/qian-silence.webm',
+        listeningObjectURL: null
     },
     audience2: {
-        speaking: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm'
+        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm','https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm'],
+        speakingObjectURLs:[],
+        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm',
+        listeningObjectURL: null
     },
     human: {},
     audience3: {
-        speaking: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm'
+        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm','https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm'],
+        speakingObjectURLs:[],
+        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm',
+        listeningObjectURL: null
     }
 }
-const seating = ['speaking', 'nextUp', 'listening1', 'listening2', 'listening3']
+const seating = ['speaking', 'nextUp', 'seat2', 'seat3', 'seat4']
 
 class AskWebRTC extends React.Component {
     render() {
@@ -138,29 +185,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.mediaSource = new MediaSource();
         this.mediaSource.addEventListener('sourceopen', this.handleSourceOpen.bind(this), false);
         this.initMedia();
-        this.playParts();
-    }
-
-    playParts() {
-        Object.keys(participants).forEach((part, i) => {
-            const seatOffset = this.state.seatOffset;
-            const seat = seating[(seatOffset + i) % seating.length]
-            let speaking = seat === 'speaking';
-
-            if (part === 'human' && speaking) {
-                this.startRecording();
-                setTimeout(() => { this.setState({ talkative: true }) }, 60000);
-                return;
-            } else if (part === 'human') {
-                return;
-            }
-            var url = speaking ? (url = participants[part].speaking[this.state.round] || participants[part].listening)
-                : (url = participants[part].listening);
-            if (participants[part].nowPlaying && participants[part].nowPlaying === url)
-                return;
-            participants[part].nowPlaying = url;
-            this.startPlayback(this[part].current, url, speaking)
-        })
+        Object.keys(participants).forEach(part => this.nextMediaState(part))
     }
 
     componentWillUnmount() {
@@ -169,8 +194,8 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     releaseCamera(){
-        if(window.stream && window.stream.getTracks){
-            var tracks=window.stream.getTracks();
+        if(this.stream && this.stream.getTracks){
+            var tracks=this.stream.getTracks();
             tracks.forEach(track=>track.stop())
         }
     }
@@ -202,7 +227,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     handleSuccess(stream) {
         console.log('getUserMedia() got stream:', stream);
-        window.stream = stream;
+        this.stream = stream;
         this.human.current.srcObject = stream;
     }
 
@@ -227,7 +252,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             }
 
             try {
-                this.mediaRecorder = new MediaRecorder(window.stream, options);
+                this.mediaRecorder = new MediaRecorder(this.stream, options);
             } catch (e) {
                 console.error('Exception while creating MediaRecorder:', e);
                 this.setState({ errorMsg: `Exception while creating MediaRecorder: ${JSON.stringify(e)}` });
@@ -272,39 +297,69 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
         }, 100);
-    };
+    }
 
-    startPlayback(element, url, speaking) {
+    // for the given seatOffset and round, fetch the object, or start the media
+    nextMediaState(part) {
+        if(part==='human') return;
+        // humans won't get here
+        var {round}=this.state;
+
+        let speaking= (this.seat(Object.keys(participants).indexOf(part)) === 'speaking')
+
+        var objectURL,url;
+        if(speaking){
+            if(!(objectURL=participants[part].speakingObjectURLs[round]))
+                url=participants[part].speaking[round] || participants[part].listening;
+        } else {
+            if(!(objectURL=participants[part].listeningObjectURL))
+                url=participants[part].listening;
+        }
+        if(objectURL){
+            this.playObjectURL(part,objectURL,speaking);
+        } else
+            return this.fetchObjectURLThenPlay(part,url,speaking)  
+    }
+
+    // fetchObjectURLThenPlay
+    fetchObjectURLThenPlay(part, url, speaking) {
+        console.info("fetchObjectURL", part, url, speaking)
+        let {round}=this.state;
         fetch(url)
             .then(res => res.blob()) // Gets the response and returns it as a blob
             .then(async blob => {
-                let objectURL = URL.createObjectURL(blob);
-                element.src = null;
-                element.srcObject = null;
-                element.src = objectURL;
-                element.controls = false;
-                element.loop = !speaking;
-                element.muted = !speaking;
-                if (speaking)
-                    element.addEventListener('ended', this.rotateOrder.bind(this));
-                try {
-                    await element.play()
-                }
-                catch (err) {
-                    if (err.name === "NotAllowedError") {
-                        this.requestPermissionElements.push(element);
-                        this.setState({ requestPermission: true });
-                    } else
-                        logger.error("AskWebRTC.startPlayback caught error", err.name)
-                }
+                var objectURL = URL.createObjectURL(blob);
+                if(speaking)
+                    participants[part].speakingObjectURLs[round]=objectURL;
+                else
+                    participants[part].listeningObjectURL=objectURL;
+                this.playObjectURL(part,objectURL,speaking);
             })
             .catch(err=>logger.error("AskWebRTC.startPlayback fetch caught error", url,err))
+    }
+
+
+    async playObjectURL(part,objectURL,speaking){
+        let element=this[part].current;
+        element.src = null;
+        element.srcObject = null;
+        element.src = objectURL;
+        try {
+            await element.play()
+        }
+        catch (err) {
+            if (err.name === "NotAllowedError") {
+                this.requestPermissionElements.push(element);
+                this.setState({ requestPermission: true });
+            } else
+                logger.error("AskWebRTC.startPlayback caught error", err.name);
+        }
     }
 
     async requestPermission(e) {
         try {
             var element;
-            while(element=requestPermissionElements.shift())
+            while(element=this.requestPermissionElements.shift())
                 element.play();
             this.setState({ requestPermission: false });
         }
@@ -316,36 +371,114 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         }
     }
 
-    rotateOrder() {
-        this.stopRecording();
-        var seatOffset = (this.state.seatOffset - 1)
-        if (seatOffset < 0) seatOffset = seating.length - 1;
-        this.setState({ seatOffset, talkative: false }, () => this.playParts())
+    seat(i,seatOffset) {
+        if(this.state.finishUp) return 'finishUp';
+        if(typeof seatOffset ==='undefined') seatOffset=this.state.seatOffset;
+        return seating[(seatOffset + i) % seating.length]
     }
+
+    rotateOrder() {
+        var {seatOffset, round}=this.state;
+        if(this.recordTimeout) {
+            clearTimeout(this.recordTimeout);
+            this.recordTimeout=0;
+        }
+        if(this.talkativeTimeout){
+            clearTimeout(this.talkativeTimeout);
+            this.talkativeTimeout=0;
+        }
+        seatOffset-=1;
+        var followup=[];
+        if(seatOffset===0) round+=1; // back to the moderator, switch to the next round
+        if (seatOffset < 0) {
+            if(participants.moderator.speaking[round+1])
+                seatOffset = seating.length - 1; // moderator just finished, he moves to the back of the order
+            else {
+                setTimeout(()=>{
+                    this.releaseCamera();
+                    this.setState({done: true});
+                },1000);
+                return this.setState({finishUp: true});
+            }
+        }
+        Object.keys(participants).forEach((participant,i)=>{
+            let oldChair=this.seat(i);
+            let newChair=this.seat(i,seatOffset);
+            var element=this[participant].current
+            console.info("rotateOrder",participant,seatOffset,element.muted, element.loop)
+            if(participant==='human'){
+                if(newChair==='speaking') {
+                    this.talkativeTimeout=setTimeout(()=>this.setState({talkative: true}),3*60*1000)
+                    this.recordTimeout=setTimeout(()=>this.rotateOrder(),5*60*1000)
+                    return this.startRecording();
+                } else if(oldChair==='speaking')
+                    return this.stopRecording();
+            } else if(oldChair==='speaking' || newChair==='speaking'){ // will be speaking 
+                followup.push(()=>this.nextMediaState(participant));
+            } else {
+                console.info("participant continue looping", participant, element.loop)
+            }
+        })
+        this.setState({ seatOffset, round , talkative: false },()=>{let func; while(func=followup.shift()) func();})
+    }
+
 
     render() {
         const { user, parent, className, classes } = this.props;
-        const seatOffset = this.state.seatOffset;
-        function seat(i) {
-            return seating[(seatOffset + i) % seating.length]
+        const {finishUp, done} = this.state;
+
+        if(done){
+            return (
+                <section id="syn-ask-webrtc">
+                    <div className={classes['outerBox']}>
+                        <div style={{width: '100%', height: '100%', display: 'table'}} >
+                            <div style={{display: 'table-cell', verticalAlign: 'middle', textAlign: 'center'}} >
+                                <span className={classes['thanks']}>Thank You</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
         }
+
         let humanSpeaking = false;
 
         var videoBox = (participant, i) => {
-            if (participant === 'human' && seat(i) === 'speaking')
+            let chair=this.seat(i);
+            if (participant === 'human' && this.seat(i) === 'speaking')
                 humanSpeaking = true;
             return (
-                <div className={cx(className, classes['box'], classes[seat(i)])} key={participant}>
-                    <video className={cx(className, classes['participant'], classes[seat(i)])} ref={this[participant]} playsInline autoPlay muted></video>
-                    <div>{'participant: ' + participant + ' seat: ' + seat(i)}</div>
+                <div className={cx(className, classes['box'], classes[this.seat(i)])} key={participant}>
+                    <video className={cx(className, classes['participant'], classes[this.seat(i)])} 
+                        ref={this[participant]} 
+                        playsInline 
+                        autoPlay 
+                        controls={false}
+                        muted={participant==='human' || chair !== 'speaking'}
+                        loop={participant!=='human' && chair!=='speaking' }
+                        onEnded={this.rotateOrder.bind(this)}
+                        key={participant+'-video'}></video>
+                    <div className={classes['videoFoot']}><span>{!finishUp && this.seat(i)}</span></div>
                 </div>
             )
         }
+
+        var agenda = ()=>{return(
+            <div className={cx(classes['agenda'], finishUp && classes['finishUp'])} key={'agenda'+this.state.round}>
+                <div className={classes['innerAgenda']}>
+                    <span>Questions</span>
+                    <ol className={classes['agendaItem']}>
+                        {participants.moderator.agenda[this.state.round] && participants.moderator.agenda[this.state.round].map((item,i)=><li key={item+i}>{item}</li>)}
+                    </ol>
+                </div>
+            </div>
+        )};
 
         return (
             <section id="syn-ask-webrtc">
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
+                    {agenda()}
                 </div>
                 {this.state.requestPermission &&
                     <div>
@@ -357,6 +490,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 </div>
                 <button onClick={this.rotateOrder.bind(this)}>Rotate</button>
                 {humanSpeaking && <button className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)}>FinishedSpeaking</button>}
+                <button onClick={()=>{location.href="/"}}>Hang Up</button>
             </section>
         );
     }
