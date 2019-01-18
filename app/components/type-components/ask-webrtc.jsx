@@ -5,7 +5,6 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
 import cx from 'classnames'
-import { Object } from 'es6-shim';
 
 /**
  * parent - the parent of the items being created.
@@ -14,14 +13,17 @@ import { Object } from 'es6-shim';
  */
 
  const TransitionTime=500;
+ const TopMargin='0vh'
 
 const styles = {
     'participant': {
         'display': 'inline',
-        '--width': '25vw',
+        '--width': '50vw',
         'width': 'var(--width)',
         'height': 'calc(var(--width) * 0.5625)',
         'transition': `all ${TransitionTime}ms linear`,
+        'background': 'white',
+
         '$$speaking': {
         },
         '&$nextUp': {
@@ -32,6 +34,9 @@ const styles = {
         },
         '&$finishUp': {
             '--width': '1vw'
+        },
+        '&$begin': {
+            'background': '#62229f',
         }
     },
     'box': {
@@ -42,35 +47,71 @@ const styles = {
     },
     outerBox: {
         'display': 'block',
-        width: '75vw',
-        height: 'calc((25vw + 15vw) * 0.5625 + 15vh)'
+        width: '100vw',
+        height: `calc((50vw + 15vw) * 0.5625 + 5vh + 1.5vh + ${TopMargin})`
+    },
+    beginBox: {
+        backgroundColor: '#f0f0f0e0',
+        position: 'absolute',
+        top: 0
+    },
+    beginButton: {
+        color: 'white',
+        background: 'linear-gradient(to bottom, #ff8f00 0%,#ff7002 51%,#ff7002 100%)',
+        'border-radius': '7px',
+        'border-width': '2px',
+        'border-color': 'white',
+        'font-size': '1.5rem',
+    },
+    hangUpButton: {
+        width: '10em',
+        position: 'absolute',
+        left: '25vw',
+        color: 'white',
+        background: 'linear-gradient(to bottom, #ff6745 0%,#ff5745 51%,#ff4745 100%)',
+        'border-radius': '7px',
+        'border-width': '2px',
+        'border-color': 'white',
+        'font-size': '1.5rem',
     },
     'speaking': {
-        left: 'calc(20vw + 7.5vw + 2.5vw)',
-        top: '5vh'
+        left: 'calc(2.5vw + 20vw + 2.5vw)',
+        top: `${TopMargin}`
     },
     'nextUp': {
-        left: '7.5vw',
-        top: 'calc( 5vw * 0.5625 + 5vh)',
+        left: '2.5vw',
+        top: `calc( (50vw - 20vw) * 0.5625 + ${TopMargin})`,
     },
     'seat2': {
-        left: '5vw',
-        top: 'calc(25vw * 0.5625 + 10vh)',
+        left: 'calc(1.25vw)',
+        top: `calc(50vw * 0.5625 + 5vh + ${TopMargin})`,
     },
     'seat3': {
-        left: '25vw',
-        top: 'calc(25vw * 0.5625 + 10vh)',
+        left: 'calc(1.25vw + 15vw + 1.25vw)',
+        top: `calc(50vw * 0.5625 + 5vh + ${TopMargin})`,
     },
     'seat4': {
-        left: '45vw',
-        top: 'calc(25vw * 0.5625 + 10vh)',
+        left: 'calc(1.25vw + 15vw + 1.25vw + 15vw + 1.25vw)',
+        top: `calc(50vw * 0.5625 + 5vh + ${TopMargin})`,
     },
     'finishUp': {
-        left: 'calc(75vw / 2)',
-        top: 'calc(((25vw + 15vw) * 0.5625 + 15vh) / 2)',
+        left: 'calc(100vw / 2)',
+        top: `calc(((50vw + 15vw) * 0.5625 + 5vh + 1.5vw + ${TopMargin}) / 2)`,
     },
     'finishButton': {
-        float: 'right'
+        width: '10em',
+        position: 'absolute',
+        right: '25vw',
+        color: 'white',
+        background: 'linear-gradient(to bottom, #ff8f00 0%,#ff7002 51%,#ff7002 100%)',
+        'border-radius': '7px',
+        'border-width': '2px',
+        'border-color': 'white',
+        'font-size': '1.5rem',
+        '&:disabled': {
+            'text-decoration': 'none',
+            'background': 'lightgray'
+        }
     },
     'talkative': {
         background: 'yellow'
@@ -82,8 +123,8 @@ const styles = {
     },
     'agenda': {
         position: 'absolute',
-        top: '5vh',
-        left: 'calc(7.5vw + 20vw + 2.5vw + 25vw + 2.5vw)',
+        top: `${TopMargin}`,
+        left: 'calc(2.5vw + 20vw + 2.5vw + 50vw + 2.5vw)',
         height: 'calc(25vw * 0.5625)',
         'font-weight': '600',
         'font-size': '125%',
@@ -91,8 +132,8 @@ const styles = {
         display: 'table',
         'transition': 'all .5s linear',
         '&$finishUp': {
-            left: 'calc(75vw / 2)',
-            top: 'calc(((25vw + 15vw) * 0.5625 + 15vh) / 2)',
+            left: 'calc(100vw / 2)',
+            top: `calc(((25vw + 15vw) * 0.5625 + 5vh + 1.5vw + ${TopMargin}) / 2)`,
             height: '1vh',
             'font-size': '1%'
         }
@@ -108,7 +149,8 @@ const styles = {
     'thanks': {
         'font-size': "200%",
         'font-weight': '600',
-    }
+    },
+    'begin': {}
 
 }
 
@@ -445,8 +487,8 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     hangup() {
         setTimeout(() => {
             this.releaseCamera();
-            this.setState({ done: true });
-        }, 2* TransitionTime);
+            this.setState({ done: true });``
+        }, 1.5* TransitionTime);
         return this.setState({ finishUp: true });
     }
 
@@ -467,21 +509,18 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         const { user, parent, className, classes } = this.props;
         const { finishUp, done, begin } = this.state;
 
-        /*
-        if (!begin) {
-            return(
-                <section id="syn-ask-webrtc" key='begin'>
-                    <div className={classes['outerBox']}>
-                        <div style={{ width: '100%', height: '100%', display: 'table' }} >
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
-                                <div><span className={classes['thanks']}>You are about to experience a new kind of web conference - for productive online deliberation.</span></div>
-                                <div><button className={classes['thanks']} onClick={()=>this.setState({begin: true})}>Begin</button></div>
-                            </div>
+        
+        const beginOverlay=()=>(
+            !begin &&
+                <div className={cx(classes['outerBox'],classes['beginBox'])}>
+                    <div style={{ width: '100%', height: '100%', display: 'table' }} >
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
+                            <div><span className={classes['thanks']}>You are about to experience a new kind of web conference - for productive online deliberation.</span></div>
+                            <div><button className={classes['beginButton']} onClick={()=>this.setState({begin: true},()=>this.initMedia())}>Begin</button></div>
                         </div>
                     </div>
-                </section>
-            )
-        }*/
+                </div>
+        )
 
         if (done) {
             return (
@@ -505,7 +544,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 humanSpeaking = true;
             return (
                 <div className={cx(className, classes['box'], classes[this.seat(i)])} key={participant}>
-                    <video className={cx(className, classes['participant'], classes[this.seat(i)])}
+                    <video className={cx(className, classes['participant'], classes[this.seat(i)], !begin && classes['begin'])}
                         ref={this[participant]}
                         playsInline
                         autoPlay
@@ -533,11 +572,12 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         };
 
         return (
-            <section id="syn-ask-webrtc" key='began' style={{left: this.state.left}} ref={this.fixupLeft}>
+            <section id="syn-ask-webrtc" key='began' style={{left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
                     {agenda()}
                 </div>
+                {beginOverlay()}
                 {this.state.requestPermission &&
                     <div>
                         <button onClick={this.requestPermission.bind(this)}>Begin</button>
@@ -546,12 +586,11 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 <div>
                     <span>{this.state.errorMsg}</span>
                 </div>
-                <button onClick={this.rotateOrder.bind(this)}>Rotate</button>
-                {humanSpeaking && <button className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)}>FinishedSpeaking</button>}
-                <button onClick={this.hangup.bind(this)}>Hang Up</button>
-                {!this.state.begin && <div>
-                    <button onClick={()=>{this.setState({begin: true},()=>this.initMedia())}}>Begin</button>
-                </div>}
+                <div style={{height: '4.5rem'}}>
+                    <button onClick={this.rotateOrder.bind(this)}>Rotate</button>
+                    <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)}>Finished Speaking</button>
+                    <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)}>Hang Up</button>
+                </div>
             </section>
         );
     }
