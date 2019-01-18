@@ -572,7 +572,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         };
 
         return (
-            <section id="syn-ask-webrtc" key='began' style={{left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
+            <section id="syn-ask-webrtc" key='began' style={{position: 'relative', left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
                     {agenda()}
@@ -586,7 +586,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 <div>
                     <span>{this.state.errorMsg}</span>
                 </div>
-                <div style={{height: '4.5rem'}}>
+                <div style={{height: '5.5rem'}}>
                     <button onClick={this.rotateOrder.bind(this)}>Rotate</button>
                     <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)}>Finished Speaking</button>
                     <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)}>Hang Up</button>
