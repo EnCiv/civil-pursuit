@@ -13,23 +13,15 @@ import { Object } from 'es6-shim';
  * 
  */
 
+ const TransitionTime=500;
+
 const styles = {
-    'ask': {
-        'font-size': '1.5em'
-    },
-    'creator': {
-        padding: `${publicConfig.itemVisualGap} 0  ${publicConfig.itemVisualGap} ${publicConfig.itemVisualGap}`
-    },
-    'why': {
-        padding: `0 0 1em 0`,
-        'font-size': '1.375em'
-    },
     'participant': {
         'display': 'inline',
         '--width': '25vw',
         'width': 'var(--width)',
         'height': 'calc(var(--width) * 0.5625)',
-        'transition': 'all .5s linear',
+        'transition': `all ${TransitionTime}ms linear`,
         '$$speaking': {
         },
         '&$nextUp': {
@@ -150,6 +142,13 @@ const participants = {
     }
 }
 const seating = ['speaking', 'nextUp', 'seat2', 'seat3', 'seat4']
+const seatToName={
+    speaking: "Speaking",
+    nextUp: "Next Up",
+    seat2: "Seat #2",
+    seat3: "Seat #3",
+    seat4: "Seat #4"
+}
 
 class AskWebRTC extends React.Component {
     render() {
@@ -172,6 +171,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.audience1 = React.createRef();
         this.audience2 = React.createRef();
         this.audience3 = React.createRef();
+        this.fixupLeft=this.fixupLeft.bind(this);
+        if(typeof window !== 'undefined')
+            window.onresize=this.onResize.bind(this);
     }
 
     state = {
@@ -189,6 +191,25 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     componentWillUnmount() {
         this.stopRecording();
         this.releaseCamera();
+    }
+
+    onResize(){
+        this.forceUpdate(()=>{setTimeout(()=>{ // We have to wait out the transition all time 
+            let left=this.topRef.getBoundingClientRect().x;
+            if(!left) return;
+            left=parseFloat(this.state.left)-left;
+            this.setState({left: left+'px'})
+            },TransitionTime);
+        });
+    }
+
+    // force it all the way to the left
+    fixupLeft(e){
+        if(e){
+            this.topRef=e;
+            let left=e.getBoundingClientRect().x;
+            this.setState({left: -left + 'px'})
+        }
     }
 
     releaseCamera() {
@@ -425,32 +446,21 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         setTimeout(() => {
             this.releaseCamera();
             this.setState({ done: true });
-        }, 1000);
+        }, 2* TransitionTime);
         return this.setState({ finishUp: true });
     }
 
     upload(blob) {
         var stream = ss.createStream();
-
+        stream.on('error',(err)=>logger.error("AskWebRTC.upload socket stream error:",err))
 
         let oldSeatOffset = this.state.seatOffset + 1 % Object.keys(participants).length;
+        var name = this.props.user.id + '-' + this.state.round + '-' + this.seat(Object.keys(participants).indexOf('human'), oldSeatOffset) + '.webm';
 
-        var name = this.props.user.id + '-' + this.seat(Object.keys(participants).indexOf('human'), oldSeatOffset) + '.webm';
-        console.info("upload name", name);
+        ss(window.socket).emit('upload video', stream, { name, size: blob.size });
 
-        ss(window.socket)
-            .emit('upload video', stream, { name, size: blob.size });
-
-        var bstream=ss.createBlobReadStream(blob, {highWaterMark: 1024 * 200}).pipe(stream);
-
-        bstream.on('end',()=>{
-            console.info("bstream ended");
-            //stream.end();
-        })
-
-        stream.on('end', () => {
-            console.info("uploaded", name, blob.size)
-        });
+        var bstream=ss.createBlobReadStream(blob, {highWaterMark: 1024 * 200}).pipe(stream); // high hiwWaterMark to increase upload speed
+        bstream.on('error',(err)=>logger.error("AskWebRTC.upload blob stream error:",err))
     }
 
     render() {
@@ -475,7 +485,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
         if (done) {
             return (
-                <section id="syn-ask-webrtc" key='began'>
+                <section id="syn-ask-webrtc" key='began' style={{left: this.state.left}} ref={this.fixupLeft} >
                     <div className={classes['outerBox']}>
                         <div style={{ width: '100%', height: '100%', display: 'table' }} >
                             <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
@@ -504,7 +514,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         loop={participant !== 'human' && chair !== 'speaking'}
                         onEnded={this.rotateOrder.bind(this)}
                         key={participant + '-video'}></video>
-                    <div className={classes['videoFoot']}><span>{!finishUp && this.seat(i)}</span></div>
+                    <div className={classes['videoFoot']}><span>{!finishUp && seatToName[this.seat(i)]}</span></div>
                 </div>
             )
         }
@@ -523,7 +533,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         };
 
         return (
-            <section id="syn-ask-webrtc" key='began'>
+            <section id="syn-ask-webrtc" key='began' style={{left: this.state.left}} ref={this.fixupLeft}>
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
                     {agenda()}
