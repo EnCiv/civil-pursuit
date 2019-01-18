@@ -522,9 +522,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 </div>
         )
 
+
         if (done) {
             return (
-                <section id="syn-ask-webrtc" key='began' style={{left: this.state.left}} ref={this.fixupLeft} >
+                <section id="syn-ask-webrtc" key='began' style={{position: 'relative', left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
                     <div className={classes['outerBox']}>
                         <div style={{ width: '100%', height: '100%', display: 'table' }} >
                             <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
