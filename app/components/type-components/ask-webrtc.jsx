@@ -207,6 +207,13 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     requestPermissionElements = [];
     constructor(props) {
         super(props, 'speaker', 0);
+        if(typeof window !== 'undefined'){
+            if(window.env==='development')
+                this.rotateButton=true;
+        } else {
+            if(process.env.NODE_ENV==='development')
+                this.rotateButton=true;
+        }
         this.createDefaults();
         this.human = React.createRef();
         this.moderator = React.createRef();
@@ -590,7 +597,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 <div style={{height: '5.5rem'}}>
                     <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)} key='finish'>Finished Speaking</button>
                     <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)} key='hangup'>Hang Up</button>
-                    {(((typeof window !== 'undefined') && (window.env === 'development')) || (process.env.NODE_ENV==='development')) ? <button onClick={this.rotateOrder.bind(this)} key='rotate'>Rotate</button> : null}
+                    {this.rotateButton && <button onClick={this.rotateOrder.bind(this)} key='rotate'>Rotate</button>}
                 </div>
             </section>
         );
