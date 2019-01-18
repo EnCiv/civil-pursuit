@@ -588,9 +588,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                     <span>{this.state.errorMsg}</span>
                 </div>
                 <div style={{height: '5.5rem'}}>
-                    <button onClick={this.rotateOrder.bind(this)}>Rotate</button>
-                    <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)}>Finished Speaking</button>
-                    <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)}>Hang Up</button>
+                    <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)} key='finish'>Finished Speaking</button>
+                    <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)} key='hangup'>Hang Up</button>
+                    {(((typeof window !== 'undefined') && (window.env === 'development')) || (process.env.NODE_ENV==='development')) ? <button onClick={this.rotateOrder.bind(this)} key='rotate'>Rotate</button> : null}
                 </div>
             </section>
         );
