@@ -17,28 +17,29 @@ import Icon from '../util/icon'
  */
 
 
- class MiniJoinForm extends JoinForm {
+ class InlineJoinForm extends JoinForm {
      constructor(props){
          super(props);
      }
 
     render() {
+        const className=this.props.className;
+        const {info, successMessage, validationError}=this.state;
         return (
-          <span onClick={this.stopPropagation.bind(this)}>
-
-              <Input type="email" block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)} />
-              <Input type="password" required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
-              <Input type="password" required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
-    
-                <a href="#" onClick={this.agree.bind(this)}>
-                  <Icon icon="square-o" size="2" ref="agree" name="agree" />
+            <React.Fragment>
+                <Input className={className} type="email" block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)} />
+                <Input className={className} type="password" required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
+                <Input className={className} type="password" required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
+                <a className={className} href="#" onClick={this.agree.bind(this)}>
+                    <Icon className={className} icon="square-o" size="2" ref="agree" name="agree" />
                 </a>
-                <span>I agree to the </span><a href="/page/terms-of-service">Terms of Service</a>
-              <Button info onClick={this.signup.bind(this)} medium inactive={!this.state.joinActive} className="syn-form-group syn-form-submit join-button">Join</Button>
-              {this.state.info && <span>{this.state.info}</span>}
-              {this.state.successMessage && <span>{this.state.successMessage}</span>}
-              {this.state.validationError && <span style={{color: 'red'}}>{this.state.validationError}</span>}
-          </span>
+                <span className={className}>I agree to the </span>
+                <a className={className} href="/page/terms-of-service" target="_blank">Terms of Service</a>
+                <button className={className} onClick={this.signup.bind(this)} disabled={!this.state.joinActive}>Join</button>
+                {info && <span className={className}>{info}</span>}
+                {successMessage && <span className={className}>{successMessage}</span>}
+                {validationError && <span className={className} style={{color: 'red'}}>{validationError}</span>}
+            </React.Fragment>
         )
     }
  }
@@ -181,8 +182,25 @@ const styles = {
         'font-size': "200%",
         'font-weight': '600',
     },
-    'begin': {}
-
+    'begin': {},
+    'join': {
+        'margin-right': '1em',
+        'button&': {
+            'margin-left': '1em',
+            'padding-top': '0.5em',
+            'padding-bottom': '0.5em',
+            '&:disabled': {
+                'text-decoration': 'none',
+                'background': 'lightgray'
+            }
+        },
+        'a&': {
+            'margin-right': '0.25em'
+        },
+        'i&': {
+            'margin-right': 0
+        }
+    }
 }
 
 
@@ -609,10 +627,12 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                             </div>
                         </div>
                     </div>
-                    <div><span>Join and your recorded videos will be uploaded and shared</span></div>
-                    <MiniJoinForm onChange={this.onUserLogin.bind(this)}/>
-                    {this.state.progress && <span>{'uploading: '+this.state.progress}</span>}
-                    {this.state.uploadComplete && <span>Upload Complete</span>}
+                    <div style={{textAlign: 'center'}}><span>Join and your recorded videos will be uploaded and shared</span></div>
+                    <div style={{textAlign: 'center'}}>
+                        <InlineJoinForm className={classes['join']} onChange={this.onUserLogin.bind(this)}/>
+                        {this.state.progress && <span>{'uploading: '+this.state.progress}</span>}
+                        {this.state.uploadComplete && <span>Upload Complete</span>}
+                    </div>
                 </section>
             )
         }
