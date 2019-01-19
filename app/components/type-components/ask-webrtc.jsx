@@ -5,6 +5,10 @@ import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-s
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
 import cx from 'classnames'
+import {JoinForm} from '../join'
+import Input from '../util/input'
+import Button from '../util/button'
+import Icon from '../util/icon'
 
 /**
  * parent - the parent of the items being created.
@@ -12,8 +16,35 @@ import cx from 'classnames'
  * 
  */
 
- const TransitionTime=500;
- const TopMargin='0vh'
+
+ class MiniJoinForm extends JoinForm {
+     constructor(props){
+         super(props);
+     }
+
+    render() {
+        return (
+          <span onClick={this.stopPropagation.bind(this)}>
+
+              <Input type="email" block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)} />
+              <Input type="password" required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
+              <Input type="password" required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
+    
+                <a href="#" onClick={this.agree.bind(this)}>
+                  <Icon icon="square-o" size="2" ref="agree" name="agree" />
+                </a>
+                <span>I agree to the </span><a href="/page/terms-of-service">Terms of Service</a>
+              <Button info onClick={this.signup.bind(this)} medium inactive={!this.state.joinActive} className="syn-form-group syn-form-submit join-button">Join</Button>
+              {this.state.info && <span>{this.state.info}</span>}
+              {this.state.successMessage && <span>{this.state.successMessage}</span>}
+              {this.state.validationError && <span style={{color: 'red'}}>{this.state.validationError}</span>}
+          </span>
+        )
+    }
+ }
+
+const TransitionTime=500;
+const TopMargin='0vh'
 
 const styles = {
     'participant': {
@@ -157,11 +188,11 @@ const styles = {
 
 const participants = {
     moderator: {
-        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547245936/intro.webm', 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547491227/moderator-polarization.webm'],
+        speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547852517/polarization-0-moderator.webm', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547852517/polarization-1-moderator.webm', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547854678/polarization-2-moderator.webm'],
         speakingObjectURLs: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547185486/listening1.webm',
+        listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547853938/polarization-listening-moderator.webm',
         listeningObjectURL: null,
-        agenda: [['Who you are', 'Where you are', 'Your political party or belief'], ['Should we do something about political polarization', 'Why or Why Not']]
+        agenda: [['Who you are', 'Where you are', 'Your political party or belief'], ['Should we do something about political polarization', 'Why or Why Not'],['What did you think?']]
     },
     audience1: {
         speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547439786/qian-intro.webm', 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547439195/qian-polarization.webm'],
@@ -170,16 +201,16 @@ const participants = {
         listeningObjectURL: null
     },
     audience2: {
-        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm', 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm'],
+        speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547855641/polarization-0-audience2a.webm', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547855641/polarization-1-audience2a.webm'],
         speakingObjectURLs: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening3.webm',
+        listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547858141/polarization-listening-audience2a.webm',
         listeningObjectURL: null
     },
     human: {},
     audience3: {
-        speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm', 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm'],
+        speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547856641/polarization-0-audience3.webm', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547856641/polarization-1-audience3.webm'],
         speakingObjectURLs: [],
-        listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547241219/listening4.webm',
+        listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547856945/polarization-listening-audience3.webm',
         listeningObjectURL: null
     }
 }
@@ -205,6 +236,7 @@ class AskWebRTC extends React.Component {
 class RASPAskWebRTC extends ReactActionStatePathClient {
 
     requestPermissionElements = [];
+    uploadQueue=[];
     constructor(props) {
         super(props, 'speaker', 0);
         if(typeof window !== 'undefined'){
@@ -356,10 +388,17 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     downloadRecording() {
         const blob = new Blob(this.recordedBlobs, { type: 'video/webm' });
+        const {seatOffset, round}=this.state;
+        let oldSeatOffset = seatOffset + 1 % Object.keys(participants).length;
+        let seat=this.seat(Object.keys(participants).indexOf('human'), oldSeatOffset);
+
         if (this.props.user) {
-            return this.upload(blob)
+            return this.upload(blob,seat,round,this.user.id)
+        } else {
+            this.uploadQueue.push([blob,seat,round])
         }
 
+        /* save the blob to a file
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -371,6 +410,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
         }, 100);
+        */
     }
 
     // for the given seatOffset and round, fetch the object, or start the media
@@ -476,7 +516,11 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             var element = this[participant].current
             console.info("rotateOrder", participant, seatOffset, element.muted, element.loop)
             if (participant === 'human') {
-                if (newChair === 'speaking') {
+                if (newChair === 'seat2') {
+                    return this.startRecording();
+                } else if (oldChair === 'seat2') {
+                    return this.stopRecording();
+                } else if (newChair === 'speaking') {
                     this.talkativeTimeout = setTimeout(() => this.setState({ talkative: true }), 3 * 60 * 1000)
                     this.recordTimeout = setTimeout(() => this.rotateOrder(), 5 * 60 * 1000)
                     return this.startRecording();
@@ -499,17 +543,37 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         return this.setState({ finishUp: true });
     }
 
-    upload(blob) {
+    upload(blob,seat,round,userId) {
         var stream = ss.createStream();
         stream.on('error',(err)=>logger.error("AskWebRTC.upload socket stream error:",err))
 
-        let oldSeatOffset = this.state.seatOffset + 1 % Object.keys(participants).length;
-        var name = this.props.user.id + '-' + this.state.round + '-' + this.seat(Object.keys(participants).indexOf('human'), oldSeatOffset) + '.webm';
+        var name = userId + '-' + round + '-' + seat + '.webm';
 
         ss(window.socket).emit('upload video', stream, { name, size: blob.size });
 
         var bstream=ss.createBlobReadStream(blob, {highWaterMark: 1024 * 200}).pipe(stream); // high hiwWaterMark to increase upload speed
         bstream.on('error',(err)=>logger.error("AskWebRTC.upload blob stream error:",err))
+        stream.on('end',()=>{
+            var uploadArgs;
+            if(uploadArgs=this.uploadQueue.shift())
+                return this.upload(...uploadArgs)
+            else {
+                this.setState({uploadComplete: true})
+                console.info("upload after login complete");
+            }
+        })
+    }
+
+    onUserLogin(info){
+        console.info("onUserLogin",info);
+        const {userId}=info;
+        this.uploadQueue.forEach(args=>{
+            args.push(userId);
+        })
+        var uploadArgs;
+        if(uploadArgs=this.uploadQueue.shift()){
+            this.upload(...uploadArgs)
+        }
     }
 
     render() {
@@ -540,6 +604,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                             </div>
                         </div>
                     </div>
+                    <div><span>Join and your recorded videos will be uploaded and shared</span></div>
+                    <MiniJoinForm onChange={this.onUserLogin.bind(this)}/>
+                    {this.state.uploadComplete && <div>Upload Complete</div>}
                 </section>
             )
         }
