@@ -517,9 +517,11 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             console.info("rotateOrder", participant, seatOffset, element.muted, element.loop)
             if (participant === 'human') {
                 if (newChair === 'seat2') {
-                    return this.startRecording();
+                    if(round===0)
+                        return this.startRecording();
                 } else if (oldChair === 'seat2') {
-                    return this.stopRecording();
+                    if(round===0)
+                        return this.stopRecording();
                 } else if (newChair === 'speaking') {
                     this.talkativeTimeout = setTimeout(() => this.setState({ talkative: true }), 3 * 60 * 1000)
                     this.recordTimeout = setTimeout(() => this.rotateOrder(), 5 * 60 * 1000)
@@ -555,13 +557,15 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         bstream.on('error',(err)=>logger.error("AskWebRTC.upload blob stream error:",err))
         stream.on('end',()=>{
             var uploadArgs;
-            if(uploadArgs=this.uploadQueue.shift())
+            if(uploadArgs=this.uploadQueue.shift()){
+                this.setState({progress: `uploading. ${this.uploadQueue.length} segments to go`})
                 return this.upload(...uploadArgs)
-            else {
-                this.setState({uploadComplete: true})
+            } else {
+                this.setState({progress: 'uploading. complete.', uploadComplete: true})
                 console.info("upload after login complete");
             }
         })
+        setTimeout(()=>console.info("stream:", stream, "bstream:", bstream), 1000)
     }
 
     onUserLogin(info){
@@ -574,6 +578,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         if(uploadArgs=this.uploadQueue.shift()){
             this.upload(...uploadArgs)
         }
+        this.setState({progress: `uploading. ${this.uploadQueue.length} segments to go`})
     }
 
     render() {
@@ -606,7 +611,8 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                     </div>
                     <div><span>Join and your recorded videos will be uploaded and shared</span></div>
                     <MiniJoinForm onChange={this.onUserLogin.bind(this)}/>
-                    {this.state.uploadComplete && <div>Upload Complete</div>}
+                    {this.state.progress && <span>{'uploading: '+this.state.progress}</span>}
+                    {this.state.uploadComplete && <span>Upload Complete</span>}
                 </section>
             )
         }
