@@ -79,7 +79,14 @@ function getRandomInt(min, max) {
 var lastEmitted=[];
 global.io={
     sockets: {in: (itemId)=>{ 
-        return {emit: (...args)=>{console.info("itemId:",itemId,"emitted:",args);lastEmitted[itemId]=args}}
+        return {emit: (...args)=>{
+            let event=args[0].split('-');
+            if(event[1]!==itemId){
+                console.error("emit PvoteInfo Id did not match", itemId,args[0])
+            }
+            console.info("itemId:",itemId,"emitted:",args);
+            lastEmitted[itemId]=args
+        }}
     }}
 }
 

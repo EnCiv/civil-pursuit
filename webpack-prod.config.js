@@ -14,6 +14,7 @@ module.exports = {
     main:    "./client/main.js",
     item:    "./vtest/item.jsx"
     },
+    devtool: 'source-map',
     output: {
         path: path.join(__dirname, "assets/webpack"),
         filename: "[name].js"

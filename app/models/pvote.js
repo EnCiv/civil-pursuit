@@ -33,7 +33,7 @@ import DB from '../lib/util/db';
 
 const nullVote=()=>({criteria: null, lastId: ObjectID.createFromTime(1)});
 const COLL="pvote" // Collection Name
-const EVENT="PvoteInfo" // socket event name
+const EVENT="PvoteInfo-" // socket event name
 
 export default class PVote {
 
@@ -51,7 +51,7 @@ export default class PVote {
         if(items.length){
             let itm;
             for(itm of items)
-                io.sockets.in(itm).emit(EVENT,PVote.pvotes[itm]['totals']);
+                io.sockets.in(itm).emit(EVENT+itm,PVote.pvotes[itm]['totals']);
             PVote.updateTimeout=setTimeout(
                 ()=>PVote.sendUpdate(),
                 Math.log2(items.length)*1000
@@ -313,7 +313,7 @@ export default class PVote {
                         it.pending.push(()=>{
                             PVote.processUserInfoPending(
                                 it[userId],
-                                ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
+                                ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
                             )
                         })
                     }else
@@ -324,14 +324,14 @@ export default class PVote {
                     it.pending.push(()=>{
                         PVote.processUserInfoPending(
                             it['unknown'],
-                            ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
+                            ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
                         )
                     })
                 }else
                     it['unknown'].pending=undefined;
                 PVote.processUserInfoPending(
                     it,
-                    ()=>io.sockets.in(itemId).emit(EVENT,it['totals'])
+                    ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
                 )
             })
         }
@@ -342,7 +342,7 @@ export default class PVote {
         async function subscribeIt(){
             await PVote.prepItem(itemId,userId);
             socket.join(itemId); // join this user into the socket.io room related to this item
-            setTimeout(()=>socket.emit(EVENT, PVote.pvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive
+            setTimeout(()=>socket.emit(EVENT+itemId, PVote.pvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive
         }
         subscribeIt()
     }
