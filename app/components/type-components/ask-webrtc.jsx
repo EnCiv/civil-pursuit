@@ -505,7 +505,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                     participants[part].listeningObjectURL = objectURL;
                 this.playObjectURL(part, objectURL, speaking);
             })
-            .catch(err => logger.error("AskWebRTC.startPlayback fetch caught error", url, err))
+            .catch(err => {
+                this.setState({errorMsg: JSON.stringify(err)})
+                logger.error("AskWebRTC.startPlayback fetch caught error", url, err)
+            })
     }
 
 
@@ -521,8 +524,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             if (err.name === "NotAllowedError") {
                 this.requestPermissionElements.push(element);
                 this.setState({ requestPermission: true });
-            } else
+            } else {
+                this.setState({errorMsg: JSON.stringify(err)})
                 logger.error("AskWebRTC.startPlayback caught error", err.name);
+            }
         }
     }
 
@@ -537,7 +542,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             if (err.name === "NotAllowedError") {
                 this.setState({ requestPermission: true });
             }
-            else console.error("AskWebRTC.startPlayback caught error", err.name)
+            else {
+                this.setState({errorMsg: JSON.stringify(err)})
+                logger.error("AskWebRTC.startPlayback caught error", err.name)
+            }
         }
     }
 
