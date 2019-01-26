@@ -377,7 +377,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             this.handleSuccess(stream);
         } catch (e) {
             console.error('navigator.getUserMedia error:', e);
-            this.setState({ errorMsg: `navigator.getUserMedia error:${e.toString()}` });
+            this.setState({ errorMsg: `${this.state.errorMsg}navigator.getUserMedia error:${e.toString()}\n` });
         }
     }
 
@@ -394,15 +394,15 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             let options = { mimeType: 'video/webm;codecs=vp9' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                 console.error(`${options.mimeType} is not Supported`);
-                this.setState({ errorMsg: `${options.mimeType} is not Supported` });
+                this.setState({ errorMsg: `${this.state.errorMsg}${options.mimeType} is not Supported\n` });
                 options = { mimeType: 'video/webm;codecs=vp8' };
                 if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                     console.error(`${options.mimeType} is not Supported`);
-                    this.setState({ errorMsg: `${options.mimeType} is not Supported` });
+                    this.setState({ errorMsg: `${this.state.errorMsg}${options.mimeType} is not Supported\n` });
                     options = { mimeType: 'video/webm' };
                     if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                         console.error(`${options.mimeType} is not Supported`);
-                        this.setState({ errorMsg: `${options.mimeType} is not Supported` });;
+                        this.setState({ errorMsg: `${this.state.errorMsg}${options.mimeType} is not Supported\n` });;
                         options = { mimeType: '' };
                     }
                 }
@@ -412,7 +412,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.mediaRecorder = new MediaRecorder(this.stream, options);
             } catch (e) {
                 console.error('Exception while creating MediaRecorder:', e);
-                this.setState({ errorMsg: `Exception while creating MediaRecorder: ${JSON.stringify(e)}` });
+                this.setState({ errorMsg: `${this.state.errorMsg}Exception while creating MediaRecorder: ${JSON.stringify(e)}\n` });
                 return;
             }
 
@@ -506,7 +506,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.playObjectURL(part, objectURL, speaking);
             })
             .catch(err => {
-                this.setState({errorMsg: `fetch caught error: ${err.toString()}`})
+                this.setState({errorMsg: `${this.state.errorMsg}fetch caught error: ${err.toString()}\n`})
                 logger.error("AskWebRTC.startPlayback fetch caught error", url, err)
             })
     }
@@ -525,7 +525,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.requestPermissionElements.push(element);
                 this.setState({ requestPermission: true });
             } else {
-                this.setState({errorMsg: `play caught error: ${err.toString()}`})
+                this.setState({errorMsg: `play caught error: ${err.toString()}\n`})
                 logger.error("AskWebRTC.startPlayback caught error", err.name);
             }
         }
@@ -543,7 +543,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.setState({ requestPermission: true });
             }
             else {
-                this.setState({errorMsg: `requestPermission caught error: ${err.toString()}}`})
+                this.setState({errorMsg: `${this.state.errorMsg}requestPermission caught error: ${err.toString()}}\n`})
                 logger.error("AskWebRTC.startPlayback caught error", err.name)
             }
         }
