@@ -558,6 +558,11 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         return seating[(seatOffset + i) % seating.length]
     }
 
+    timeUpdate(chairNum,e){  // timeUpdate is a workaround for safari (or at least iOS) not generating ended
+        if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
+            this.rotateOrder()
+    }
+
     rotateOrder() {
         var { seatOffset, round } = this.state;
         if (this.recordTimeout) {
@@ -702,6 +707,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         muted={participant === 'human' || chair !== 'speaking'}
                         loop={participant !== 'human' && chair !== 'speaking'}
                         onEnded={this.rotateOrder.bind(this)}
+                        onTimeUpdate={this.timeUpdate.bind(this,i)}
                         key={participant + '-video'}></video>
                     <div className={classes['videoFoot']}><span>{!finishUp && seatToName[this.seat(i)]}</span></div>
                 </div>
