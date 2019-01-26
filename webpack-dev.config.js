@@ -53,6 +53,7 @@ module.exports = {
         publicPath: '/assets/webpack/',  // in main.js also ass if(typeof ___webpack_public_path__ !== 'undefined' __webpack_public_path__ = "http://localhost:3011/assets/webpack/";  // this is where the hot loader sends requests to
         hot: true,
         hotOnly: true,
+        host: '0.0.0.0',
         port: 3011,
         index: '', // specify to enable root proxying
         proxy: { // the dev server will proxy all traffic other than publicPath to target below.

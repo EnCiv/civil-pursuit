@@ -24,7 +24,7 @@
     "clean": "node dist/bin/drop-sandbox-dbs.js",
     "packbuild": "webpack --config webpack-prod.config.js",
     "packstart": "npm run packbuild && node dist/server/start.js",
-    "client": "webpack-dev-server --config webpack-dev.config.js --devtool source-map",
+    "client": "webpack-dev-server --config webpack-dev.config.js --devtool source-map --host 0.0.0.0",
     "server": "nodemon --inspect dist/server/start.js",
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && npm run server\" \"sleep 55 && npm run client\"",
     "devprod": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && nodemon dist/server/start.js\" \"sleep 55 && webpack --config webpack-prod.config.js --watch\"",
@@ -129,7 +129,8 @@
     "webdriverio": "^3.4.0",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "webrtc-adapter": "^7.2.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^4.0.8",

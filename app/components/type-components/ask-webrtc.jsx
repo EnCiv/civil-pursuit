@@ -10,6 +10,40 @@ import Input from '../util/input'
 import Button from '../util/button'
 import Icon from '../util/icon'
 
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false, error: '', info: '' };
+    }
+  
+    componentDidCatch(error, info) {
+      // Display fallback UI
+      this.setState({ hasError: true, error: error, info: info });
+      // You can also log the error to an error reporting service
+      //logger.error(error, info);
+    }
+  
+    render() {
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return (
+            <div>
+                <h1>Something went wrong.</h1>
+                <div style={{whiteSpace: 'pre-wrap'}}>
+                <label>Info</label>
+                {JSON.stringify(this.state.info)}
+                </div>
+                <div style={{whiteSpace: 'pre-wrap'}}>
+                <label>Error</label>
+                {JSON.stringify(this.state.error)}
+                </div>
+            </div>
+        );
+      }
+      return this.props.children;
+    }
+  }
+
 /**
  * parent - the parent of the items being created.
  * type - the type of the item being create
@@ -244,9 +278,11 @@ const seatToName={
 class AskWebRTC extends React.Component {
     render() {
         return (
-            <ReactActionStatePath {...this.props}>
-                <RASPAskWebRTC />
-            </ReactActionStatePath>
+            <ErrorBoundary>
+                <ReactActionStatePath {...this.props}>
+                    <RASPAskWebRTC />
+                </ReactActionStatePath>
+            </ErrorBoundary>
         )
     }
 }
@@ -282,8 +318,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     componentDidMount() {
-        this.mediaSource = new MediaSource();
-        this.mediaSource.addEventListener('sourceopen', this.handleSourceOpen.bind(this), false);
+        if(window.MediaSource){
+            this.mediaSource = new MediaSource();
+            this.mediaSource.addEventListener('sourceopen', this.handleSourceOpen.bind(this), false);
+        }
         //this.initMedia();
     }
 
