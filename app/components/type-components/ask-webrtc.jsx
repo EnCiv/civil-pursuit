@@ -471,6 +471,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     // for the given seatOffset and round, fetch the object, or start the media
     nextMediaState(part) {
+        this.setState({errorMsg: `nextMediaState part:${part}\n${this.state.errorMsg}`})
         if (part === 'human') return;
         // humans won't get here
         var { round } = this.state;
