@@ -577,7 +577,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     rotateOrder() {
         var { seatOffset, round } = this.state;
-        this.setState({errorMsg: `rotateOrder: ${seatOffset}\n${this.state.errorMsg}`})
         if (this.recordTimeout) {
             clearTimeout(this.recordTimeout);
             this.recordTimeout = 0;
@@ -600,7 +599,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             let newChair = this.seat(i, seatOffset);
             var element = this[participant].current
             console.info("rotateOrder", participant, seatOffset, element.muted, element.loop)
-            this.setState({errorMsg: `rotateOrder: participant: ${participant} seatOffset: ${seatOffset} muted: ${element.muted} loop: ${element.loop}\n${this.state.errorMsg}`})
             if (participant === 'human') {
                 if (newChair === 'seat2') {
                     if(round===0)
@@ -620,13 +618,13 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 console.info("participant continue looping", participant, element.loop)
             }
         })
-        this.setState({ seatOffset, round, talkative: false }, () => { let func; while (func = followup.shift()) func(); })
+        this.setState({ seatOffset, round, talkative: false, errorMsg: `rotateOrder: ${seatOffset}\n${this.state.errorMsg}` }, () => { let func; while (func = followup.shift()) func(); })
     }
 
     hangup() {
         setTimeout(() => {
             this.releaseCamera();
-            this.setState({ done: true });``
+            this.setState({ done: true });
         }, 1.5* TransitionTime);
         return this.setState({ finishUp: true });
     }
@@ -754,13 +752,13 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         <button onClick={this.requestPermission.bind(this)}>Begin</button>
                     </div>
                 }
-                <div style={{whiteSpace: 'pre-wrap'}}>
-                    <span>{this.state.errorMsg}</span>
-                </div>
                 <div style={{height: '5.5rem'}}>
                     <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)} key='finish'>Finished Speaking</button>
                     <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)} key='hangup'>Hang Up</button>
                     {this.rotateButton && <button onClick={this.rotateOrder.bind(this)} key='rotate'>Rotate</button>}
+                </div>
+                <div style={{whiteSpace: 'pre-wrap'}}>
+                    <span>{this.state.errorMsg}</span>
                 </div>
             </section>
         );
