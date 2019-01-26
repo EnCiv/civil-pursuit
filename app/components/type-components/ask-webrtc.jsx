@@ -524,6 +524,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             if (err.name === "NotAllowedError") {
                 this.requestPermissionElements.push(element);
                 this.setState({ requestPermission: true });
+            } else if (err.name === "AbortError") {
+                this.requestPermissionElements.push(element);
+                this.setState({ requestPermission: true });
             } else {
                 this.setState({errorMsg: `play caught error: ${err.toString()}\n`})
                 logger.error("AskWebRTC.startPlayback caught error", err.name);
