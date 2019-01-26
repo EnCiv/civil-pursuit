@@ -600,6 +600,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             let newChair = this.seat(i, seatOffset);
             var element = this[participant].current
             console.info("rotateOrder", participant, seatOffset, element.muted, element.loop)
+            this.setState({errorMsg: `rotateOrder: participant: ${participant} seatOffset: ${seatOffset} muted: ${element.muted} loop: ${element.loop}\n${this.state.errorMsg}`})
             if (participant === 'human') {
                 if (newChair === 'seat2') {
                     if(round===0)
