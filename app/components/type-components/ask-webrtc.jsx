@@ -559,13 +559,13 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     timeUpdate(chairNum,e){  // timeUpdate is a workaround for safari (or at least iOS) not generating ended
-        this.setState({errorMsg: `${this.state.errorMsg}timeUdate: ${chairNum}\n`})
+        //this.setState({errorMsg: `${this.state.errorMsg}timeUdate: ${chairNum}\n`})
         if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
             this.rotateOrder()
     }
 
     emptied(chairNum,e){  // emptied is a workaround for safari (or at least iOS) not generating ended
-        this.setState({errorMsg: `${this.state.errorMsg}emptied: ${chairNum}\n`})
+        this.setState({errorMsg: `${this.state.errorMsg}emptied: ${chairNum} currentTime: ${e.target.currentTime} duration: ${e.target.duration}\n`})
         if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
             this.rotateOrder()
     }
@@ -574,6 +574,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         var { seatOffset, round } = this.state;
         if (this.recordTimeout) {
             clearTimeout(this.recordTimeout);
+            this.setState({errorMsg: `${this.state.errorMsg}rotateOrder: ${seatOffset}\n`})
             this.recordTimeout = 0;
         }
         if (this.talkativeTimeout) {
