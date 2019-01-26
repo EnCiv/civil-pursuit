@@ -389,6 +389,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     startRecording() {
+        this.setState({ errorMsg: `startRecording\n${this.state.errorMsg}` });
         this.recordedBlobs = [];
         if (!this.mediaRecorder) {
             let options = { mimeType: 'video/webm;codecs=vp9' };
