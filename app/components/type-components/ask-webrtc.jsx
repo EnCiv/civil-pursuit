@@ -506,7 +506,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.playObjectURL(part, objectURL, speaking);
             })
             .catch(err => {
-                this.setState({errorMsg: JSON.stringify(err)})
+                this.setState({errorMsg: `fetch caught error: ${JSON.stringify(err)}`})
                 logger.error("AskWebRTC.startPlayback fetch caught error", url, err)
             })
     }
@@ -525,7 +525,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.requestPermissionElements.push(element);
                 this.setState({ requestPermission: true });
             } else {
-                this.setState({errorMsg: JSON.stringify(err)})
+                this.setState({errorMsg: `play caught error: ${JSON.stringify(err)}`})
                 logger.error("AskWebRTC.startPlayback caught error", err.name);
             }
         }
@@ -543,7 +543,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.setState({ requestPermission: true });
             }
             else {
-                this.setState({errorMsg: JSON.stringify(err)})
+                this.setState({errorMsg: `requestPermission caught error: ${JSON.stringify(err)}`})
                 logger.error("AskWebRTC.startPlayback caught error", err.name)
             }
         }
@@ -730,7 +730,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         <button onClick={this.requestPermission.bind(this)}>Begin</button>
                     </div>
                 }
-                <div>
+                <div style={{whiteSpace: 'pre-wrap'}}>
                     <span>{this.state.errorMsg}</span>
                 </div>
                 <div style={{height: '5.5rem'}}>
