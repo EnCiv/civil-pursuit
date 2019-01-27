@@ -392,6 +392,10 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.setState({ errorMsg: `startRecording\n${this.state.errorMsg}` });
         this.recordedBlobs = [];
         if (!this.mediaRecorder) {
+            if(typeof MediaRecorder === 'undefined'){
+                this.setState({ errorMsg: `MediaRecorder not supported\n${this.state.errorMsg}` });
+                return;
+            }
             let options = { mimeType: 'video/webm;codecs=vp9' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                 console.error(`${options.mimeType} is not Supported`);
