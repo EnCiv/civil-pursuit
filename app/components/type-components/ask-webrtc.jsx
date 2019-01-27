@@ -411,6 +411,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
             try {
                 this.mediaRecorder = new MediaRecorder(this.stream, options);
+                this.setState({ errorMsg: `startRecording succeeded\n${this.state.errorMsg}` });
             } catch (e) {
                 console.error('Exception while creating MediaRecorder:', e);
                 this.setState({ errorMsg: `Exception while creating MediaRecorder: ${JSON.stringify(e)}\n${this.state.errorMsg}` });
@@ -427,6 +428,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.mediaRecorder.ondataavailable = this.handleDataAvailable.bind(this);
         this.mediaRecorder.start(10); // collect 10ms of data
         console.log('MediaRecorder started', this.mediaRecorder);
+        this.setState({ errorMsg: `startRecording started\n${this.state.errorMsg}` });
     }
 
     handleDataAvailable(event) {
