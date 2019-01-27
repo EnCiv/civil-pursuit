@@ -414,7 +414,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.setState({ errorMsg: `startRecording succeeded\n${this.state.errorMsg}` });
             } catch (e) {
                 console.error('Exception while creating MediaRecorder:', e);
-                this.setState({ errorMsg: `Exception while creating MediaRecorder: ${JSON.stringify(e)}\n${this.state.errorMsg}` });
+                this.setState({ errorMsg: `Exception while creating MediaRecorder: ${e.toString()}\n${this.state.errorMsg}` });
                 return;
             }
 
