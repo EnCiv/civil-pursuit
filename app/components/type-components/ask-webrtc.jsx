@@ -408,7 +408,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                     }
                 }
             }
-
+            this.setState({ errorMsg: `startRecording before try options.mimeType: ${otpions.mimeType}\n${this.state.errorMsg}` });
             try {
                 this.mediaRecorder = new MediaRecorder(this.stream, options);
                 this.setState({ errorMsg: `startRecording succeeded\n${this.state.errorMsg}` });
