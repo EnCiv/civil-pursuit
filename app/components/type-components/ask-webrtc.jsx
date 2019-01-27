@@ -569,9 +569,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     timeUpdate(chairNum,e){  // timeUpdate is a workaround for safari (or at least iOS) not generating ended
-        if(this.seat(chairNum)==='speaking'){
-            this.setState({errorMsg: `timeUpdate seat:${chairNum} remaining:${e.target.duration - e.target.currentTime}\n${this.state.errorMsg}`})
-        }
         if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
             this.rotateOrder()
     }
