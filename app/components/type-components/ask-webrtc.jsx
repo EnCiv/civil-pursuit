@@ -3,23 +3,26 @@
 import React from 'react';
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 import injectSheet from 'react-jss'
-import publicConfig from '../../../public.json'
 import cx from 'classnames'
 import {JoinForm} from '../join'
 import Input from '../util/input'
-import Button from '../util/button'
 import Icon from '../util/icon'
 
 class DebugOverlay extends React.Component {
     constructor(props){
         super(props);
         this.debug=React.createRef();
+        this.state={enable: !!this.props.enable}
+    }
+    enable(enable){
+        this.setState({enable})
     }
     info(str){
         if(this.debug.current) this.debug.current.innerText=str+'\n'+this.debug.current.innerText;
     }
     render(){
-        return(<div style={{position: 'fixed', top: 0, left: 0, whiteSpace: 'pre-wrap', width: '100vw', height: '100vh', padding: '2em', background: '#ffffff00', pointerEvents: 'none', zIndex: 100}} ref={this.debug}></div>)
+        const {enable}=this.state;
+        return(<div className='debug-overlay' style={{display: enable ? 'block' : 'none', position: 'fixed', top: 0, left: 0, whiteSpace: 'pre-wrap', width: '100vw', height: '100vh', padding: '2em', background: '#ffffff00', pointerEvents: 'none', zIndex: 100}} ref={this.debug}></div>)
     }
 }
 
@@ -321,6 +324,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.audience3 = React.createRef();
         this.debugOverlayRef=React.createRef();
         this.fixupLeft=this.fixupLeft.bind(this);
+        this.requestPermission=this.requestPermission.bind(this);
         if(typeof window !== 'undefined')
             window.onresize=this.onResize.bind(this);
 
@@ -412,6 +416,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         if (!this.mediaRecorder) {
             if(typeof MediaRecorder === 'undefined'){
                 this.debugOverlay(`MediaRecorder not supported`);
+                this.setState({noMediaRecorder: true})
                 return;
             }else{
                 this.debugOverlay(`MediaRecorder exists`);
@@ -592,17 +597,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         return seating[(seatOffset + i) % seating.length]
     }
 
-    timeUpdate(chairNum,e){  // timeUpdate is a workaround for safari (or at least iOS) not generating ended
-        if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
-            this.rotateOrder()
-    }
-
-    emptied(chairNum,e){  // emptied is a workaround for safari (or at least iOS) not generating ended
-        this.debugOverlay(`emptied: ${chairNum} currentTime: ${e.target.currentTime} duration: ${e.target.duration}`);
-        if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
-            this.rotateOrder()
-    }
-
     rotateOrder() {
         var { seatOffset, round } = this.state;
         if (this.recordTimeout) {
@@ -696,7 +690,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     render() {
         const { user, parent, className, classes } = this.props;
-        const { finishUp, done, begin } = this.state;
+        const { finishUp, done, begin, requestPermission } = this.state;
 
         
         const beginOverlay=()=>(
@@ -711,6 +705,17 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 </div>
         )
 
+        const permissionOverlay=()=>(
+            requestPermission &&
+                <div className={cx(classes['outerBox'],classes['beginBox'])}>
+                    <div style={{ width: '100%', height: '100%', display: 'table' }} >
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
+                            <div><span className={classes['thanks']}>The browser wants your permission to continue</span></div>
+                            <div><button className={classes['beginButton']} onClick={this.requestPermission}>Continue</button></div>
+                        </div>
+                    </div>
+                </div>
+        )
 
         if (done) {
             return (
@@ -753,10 +758,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 </div>
             )
         }
-/*
-        onTimeUpdate={null this.timeUpdate.bind(this,i)}
-        onEmptied={this.emptied.bind(this,i)}
-*/
 
         var agenda = () => {
             return (
@@ -779,11 +780,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                     {agenda()}
                 </div>
                 {beginOverlay()}
-                {this.state.requestPermission &&
-                    <div>
-                        <button onClick={this.requestPermission.bind(this)}>Begin</button>
-                    </div>
-                }
+                {permissionOverlay()}
                 <div style={{height: '5.5rem'}}>
                     <button disabled={!humanSpeaking} className={cx(classes['finishButton'], this.state.talkative && classes['talkative'])} onClick={this.rotateOrder.bind(this)} key='finish'>Finished Speaking</button>
                     <button className={classes['hangUpButton']} onClick={this.hangup.bind(this)} key='hangup'>Hang Up</button>
