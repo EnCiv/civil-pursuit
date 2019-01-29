@@ -10,6 +10,19 @@ import Input from '../util/input'
 import Button from '../util/button'
 import Icon from '../util/icon'
 
+class DebugOverlay extends React.Component {
+    constructor(props){
+        super(props);
+        this.debug=React.createRef();
+    }
+    info(str){
+        this.debug.current.innerText=str+'\n'+this.debug.innerText;
+    }
+    render(){
+        return(<div style={{position: 'fixed', top: 0, left: 0, whiteSpace: 'pre-wrap', width: '100vw', height: '100vh', padding: '2em', background: '#ffffff00', pointerEvents: 'none'}} ref={debug}></div>)
+    }
+}
+
 class ErrorBoundary extends React.Component {
     constructor(props) {
       super(props);
@@ -309,6 +322,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.fixupLeft=this.fixupLeft.bind(this);
         if(typeof window !== 'undefined')
             window.onresize=this.onResize.bind(this);
+        this.debugOverlay=React.createRef();
     }
 
     state = {
@@ -377,7 +391,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             this.handleSuccess(stream);
         } catch (e) {
             console.error('navigator.getUserMedia error:', e);
-            this.setState({ errorMsg: `navigator.getUserMedia error:${e.toString()}\n${this.state.errorMsg}` });
+            this.debugOverlay.current.info(`navigator.getUserMedia error:${e.toString()}`)
         }
     }
 
@@ -508,7 +522,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     // fetchObjectURLThenPlay
     fetchObjectURLThenPlay(part, url, speaking) {
         console.info("fetchObjectURL", part, url, speaking)
-        this.setState({errorMsg: `fetchObjectURL part:${part} url:${url} speaking:${speaking}\n${this.state.errorMsg}`})
+        this.debugOverlay.current.info(`fetchObjectURL part:${part} url:${url} speaking:${speaking}\n${this.state.errorMsg}`)
         let { round } = this.state;
         fetch(url)
             .then(res => res.blob()) // Gets the response and returns it as a blob
@@ -754,6 +768,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
         return (
             <section id="syn-ask-webrtc" key='began' style={{position: 'relative', left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
+                <DebugOverlay ref={this.debugOverlay} />
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
                     {agenda()}
