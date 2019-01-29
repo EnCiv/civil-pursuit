@@ -16,10 +16,10 @@ class DebugOverlay extends React.Component {
         this.debug=React.createRef();
     }
     info(str){
-        this.debug.current.innerText=str+'\n'+this.debug.innerText;
+        if(this.debug.current) this.debug.current.innerText=str+'\n'+this.debug.current.innerText;
     }
     render(){
-        return(<div style={{position: 'fixed', top: 0, left: 0, whiteSpace: 'pre-wrap', width: '100vw', height: '100vh', padding: '2em', background: '#ffffff00', pointerEvents: 'none'}} ref={debug}></div>)
+        return(<div style={{position: 'fixed', top: 0, left: 0, whiteSpace: 'pre-wrap', width: '100vw', height: '100vh', padding: '2em', background: '#ffffff00', pointerEvents: 'none', zIndex: 100}} ref={this.debug}></div>)
     }
 }
 
@@ -319,10 +319,15 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.audience1 = React.createRef();
         this.audience2 = React.createRef();
         this.audience3 = React.createRef();
+        this.debugOverlayRef=React.createRef();
         this.fixupLeft=this.fixupLeft.bind(this);
         if(typeof window !== 'undefined')
             window.onresize=this.onResize.bind(this);
-        this.debugOverlay=React.createRef();
+
+    }
+
+    debugOverlay(str){
+        if(this.debugOverlayRef.current) this.debugOverlayRef.current.info(str);
     }
 
     state = {
@@ -391,7 +396,6 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             this.handleSuccess(stream);
         } catch (e) {
             console.error('navigator.getUserMedia error:', e);
-            this.debugOverlay.current.info(`navigator.getUserMedia error:${e.toString()}`)
         }
     }
 
@@ -403,42 +407,42 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     startRecording() {
-        this.setState({ errorMsg: `startRecording\n${this.state.errorMsg}` });
+        this.debugOverlay(`startRecording`);
         this.recordedBlobs = [];
         if (!this.mediaRecorder) {
             if(typeof MediaRecorder === 'undefined'){
-                this.setState({ errorMsg: `MediaRecorder not supported\n${this.state.errorMsg}` });
+                this.debugOverlay(`MediaRecorder not supported`);
                 return;
             }else{
-                this.setState({ errorMsg: `MediaRecorder exists\n${this.state.errorMsg}` });
+                this.debugOverlay(`MediaRecorder exists`);
             }
             let options = { mimeType: 'video/webm;codecs=vp9' };
             try{
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                 console.error(`${options.mimeType} is not Supported`);
-                this.setState({ errorMsg: `${options.mimeType} is not Supported\n${this.state.errorMsg}` });
+                this.debugOverlay(`${options.mimeType} is not Supported`);
                 options = { mimeType: 'video/webm;codecs=vp8' };
                 if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                     console.error(`${options.mimeType} is not Supported`);
-                    this.setState({ errorMsg: `${options.mimeType} is not Supported\n${this.state.errorMsg}` });
+                    this.debugOverlay(`${options.mimeType} is not Supported`);
                     options = { mimeType: 'video/webm' };
                     if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                         console.error(`${options.mimeType} is not Supported`);
-                        this.setState({ errorMsg: `${options.mimeType} is not Supported\n${this.state.errorMsg}` });;
+                        this.debugOverlay(`${options.mimeType} is not Supported`);
                         options = { mimeType: '' };
                     }
                 }
             }}
             catch(err){
-                this.setState({ errorMsg: `MediaRecorder.isTypeSupported ${options.mimeType} caught error\n${this.state.errorMsg}` });
+                this.debugOverlay(`MediaRecorder.isTypeSupported ${options.mimeType} caught error`);
             }
-            this.setState({ errorMsg: `startRecording before try options.mimeType: ${options.mimeType}\n${this.state.errorMsg}` });
+            this.debugOverlay(`startRecording before try options.mimeType: ${options.mimeType}`);
             try {
                 this.mediaRecorder = new MediaRecorder(this.stream, options);
-                this.setState({ errorMsg: `startRecording succeeded\n${this.state.errorMsg}` });
+                this.debugOverlay(`startRecording succeeded`);
             } catch (e) {
                 console.error('Exception while creating MediaRecorder:', e);
-                this.setState({ errorMsg: `Exception while creating MediaRecorder: ${e.toString()}\n${this.state.errorMsg}` });
+                this.debugOverlay(`Exception while creating MediaRecorder: ${e.toString()}`);
                 return;
             }
 
@@ -452,7 +456,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         this.mediaRecorder.ondataavailable = this.handleDataAvailable.bind(this);
         this.mediaRecorder.start(10); // collect 10ms of data
         console.log('MediaRecorder started', this.mediaRecorder);
-        this.setState({ errorMsg: `startRecording started\n${this.state.errorMsg}` });
+        this.debugOverlay(`startRecording started`);
     }
 
     handleDataAvailable(event) {
@@ -498,7 +502,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     // for the given seatOffset and round, fetch the object, or start the media
     nextMediaState(part) {
-        this.setState({errorMsg: `nextMediaState part:${part}\n${this.state.errorMsg}`})
+        this.debugOverlay(`nextMediaState part:${part}`);
         if (part === 'human') return;
         // humans won't get here
         var { round } = this.state;
@@ -522,7 +526,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     // fetchObjectURLThenPlay
     fetchObjectURLThenPlay(part, url, speaking) {
         console.info("fetchObjectURL", part, url, speaking)
-        this.debugOverlay.current.info(`fetchObjectURL part:${part} url:${url} speaking:${speaking}\n${this.state.errorMsg}`)
+        this.debugOverlay(`fetchObjectURL part:${part} url:${url} speaking:${speaking}`);
         let { round } = this.state;
         fetch(url)
             .then(res => res.blob()) // Gets the response and returns it as a blob
@@ -535,14 +539,14 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.playObjectURL(part, objectURL, speaking);
             })
             .catch(err => {
-                this.setState({errorMsg: `fetch caught error: ${err.toString()}\n${this.state.errorMsg}`})
+                this.debugOverlay(`fetch caught error: ${err.toString()}`);
                 logger.error("AskWebRTC.startPlayback fetch caught error", url, err)
             })
     }
 
 
     async playObjectURL(part, objectURL, speaking) {
-        this.setState({errorMsg: `playObjectURL part:${part} objectURL:${objectURL}\n${this.state.errorMsg}`})
+        this.debugOverlay(`playObjectURL part:${part} objectURL:${objectURL}`);
         let element = this[part].current;
         element.src = null;
         element.srcObject = null;
@@ -558,7 +562,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.requestPermissionElements.push(element);
                 this.setState({ requestPermission: true });
             } else {
-                this.setState({errorMsg: `play caught error: ${err.toString()}\n`})
+                this.debugOverlay(`play caught error: ${err.toString()}`);
                 logger.error("AskWebRTC.startPlayback caught error", err.name);
             }
         }
@@ -576,7 +580,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 this.setState({ requestPermission: true });
             }
             else {
-                this.setState({errorMsg: `requestPermission caught error: ${err.toString()}}\n${this.state.errorMsg}`})
+                this.debugOverlay(`requestPermission caught error: ${err.toString()}}`);
                 logger.error("AskWebRTC.startPlayback caught error", err.name)
             }
         }
@@ -594,7 +598,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
     }
 
     emptied(chairNum,e){  // emptied is a workaround for safari (or at least iOS) not generating ended
-        this.setState({errorMsg: `emptied: ${chairNum} currentTime: ${e.target.currentTime} duration: ${e.target.duration}\n${this.state.errorMsg}`})
+        this.debugOverlay(`emptied: ${chairNum} currentTime: ${e.target.currentTime} duration: ${e.target.duration}`);
         if(this.seat(chairNum)==='speaking' && e.target.currentTime>=e.target.duration)
             this.rotateOrder()
     }
@@ -642,7 +646,8 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                 console.info("participant continue looping", participant, element.loop)
             }
         })
-        this.setState({ seatOffset, round, talkative: false, errorMsg: `rotateOrder: ${seatOffset}\n${this.state.errorMsg}` }, () => { let func; while (func = followup.shift()) func(); })
+        this.debugOverlay(`rotateOrder: ${seatOffset}\n`);
+        this.setState({ seatOffset, round, talkative: false}, () => { let func; while (func = followup.shift()) func(); })
     }
 
     hangup() {
@@ -768,7 +773,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
         return (
             <section id="syn-ask-webrtc" key='began' style={{position: 'relative', left: this.state.left, width: '100vw'}} ref={this.fixupLeft}>
-                <DebugOverlay ref={this.debugOverlay} />
+                <DebugOverlay ref={this.debugOverlayRef} />
                 <div className={classes['outerBox']}>
                     {Object.keys(participants).map(videoBox)}
                     {agenda()}
