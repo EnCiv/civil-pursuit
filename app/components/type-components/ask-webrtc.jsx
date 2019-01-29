@@ -723,13 +723,15 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         muted={participant === 'human' || chair !== 'speaking'}
                         loop={participant !== 'human' && chair !== 'speaking'}
                         onEnded={this.rotateOrder.bind(this)}
-                        onTimeUpdate={this.timeUpdate.bind(this,i)}
-                        onEmptied={this.emptied.bind(this,i)}
                         key={participant + '-video'}></video>
                     <div className={classes['videoFoot']}><span>{!finishUp && seatToName[this.seat(i)]}</span></div>
                 </div>
             )
         }
+/*
+        onTimeUpdate={null this.timeUpdate.bind(this,i)}
+        onEmptied={this.emptied.bind(this,i)}
+*/
 
         var agenda = () => {
             return (
