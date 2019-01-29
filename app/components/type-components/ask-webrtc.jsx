@@ -395,8 +395,11 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             if(typeof MediaRecorder === 'undefined'){
                 this.setState({ errorMsg: `MediaRecorder not supported\n${this.state.errorMsg}` });
                 return;
+            }else{
+                this.setState({ errorMsg: `MediaRecorder exists\n${this.state.errorMsg}` });
             }
             let options = { mimeType: 'video/webm;codecs=vp9' };
+            try{
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                 console.error(`${options.mimeType} is not Supported`);
                 this.setState({ errorMsg: `${options.mimeType} is not Supported\n${this.state.errorMsg}` });
@@ -411,6 +414,9 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
                         options = { mimeType: '' };
                     }
                 }
+            }}
+            catch(err){
+                this.setState({ errorMsg: `MediaRecorder.isTypeSupported ${options.mimeType} caught error\n${this.state.errorMsg}` });
             }
             this.setState({ errorMsg: `startRecording before try options.mimeType: ${options.mimeType}\n${this.state.errorMsg}` });
             try {
