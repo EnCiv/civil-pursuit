@@ -500,7 +500,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         let seat=this.seat(Object.keys(participants).indexOf('human'), oldSeatOffset);
 
         if (this.props.user) {
-            return this.upload(blob,seat,round,this.user.id)
+            return this.upload(blob,seat,round,this.props.user.id)
         } else {
             this.uploadQueue.push([blob,seat,round])
         }
