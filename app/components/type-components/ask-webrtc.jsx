@@ -7,6 +7,7 @@ import cx from 'classnames'
 import {JoinForm} from '../join'
 import Input from '../util/input'
 import Icon from '../util/icon'
+import { Object } from 'es6-shim';
 
 class DebugOverlay extends React.Component {
     constructor(props){
@@ -273,30 +274,39 @@ const participants = {
     moderator: {
         speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547852517/polarization-0-moderator.mp4', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547852517/polarization-1-moderator.mp4', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547854678/polarization-2-moderator.mp4'],
         speakingObjectURLs: [],
+        speakingImmediate: [],
         listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547853938/polarization-listening-moderator.mp4',
         listeningObjectURL: null,
+        listeningImmediate: false,
         agenda: [['Who you are', 'Where you are', 'Your political party or belief'], ['Should we do something about political polarization', 'Why or Why Not'],['What did you think?']]
     },
     audience1: {
         speaking: ['https://res.cloudinary.com/hu74r07kq/video/upload/v1547439786/qian-intro.mp4', 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547439195/qian-polarization.mp4'],
         speakingObjectURLs: [],
+        speakingImmediate: [],
         listening: 'https://res.cloudinary.com/hu74r07kq/video/upload/v1547439660/qian-silence.mp4',
-        listeningObjectURL: null
+        listeningObjectURL: null,
+        listeningImmediate: false
     },
     audience2: {
         speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547855641/polarization-0-audience2a.mp4', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547855641/polarization-1-audience2a.mp4'],
         speakingObjectURLs: [],
+        speakingImmediate: [],
         listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547858141/polarization-listening-audience2a.mp4',
-        listeningObjectURL: null
+        listeningObjectURL: null,
+        listeningImmediate: false
     },
     human: {},
     audience3: {
         speaking: ['https://res.cloudinary.com/hscbexf6a/video/upload/v1547856641/polarization-0-audience3.mp4', 'https://res.cloudinary.com/hscbexf6a/video/upload/v1547856641/polarization-1-audience3.mp4'],
         speakingObjectURLs: [],
+        speakingImmediate: [],
         listening: 'https://res.cloudinary.com/hscbexf6a/video/upload/ac_none/v1547856945/polarization-listening-audience3.mp4',
-        listeningObjectURL: null
+        listeningObjectURL: null,
+        listeningImmediate: false
     }
 }
+
 const seating = ['speaking', 'nextUp', 'seat2', 'seat3', 'seat4']
 const seatToName={
     speaking: "Speaking",
@@ -322,6 +332,7 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
     requestPermissionElements = [];
     uploadQueue=[];
+    preFetchList=[];
     constructor(props) {
         super(props, 'speaker', 0);
         if(typeof window !== 'undefined'){
@@ -360,6 +371,19 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
             this.mediaSource = new MediaSource();
             this.mediaSource.addEventListener('sourceopen', this.handleSourceOpen.bind(this), false);
         }
+        this.preFetchObjectURL('moderator',true,0);
+        this.preFetchObjectURL('audience1',false,0);
+        this.preFetchObjectURL('audience2',false,0);
+        this.preFetchObjectURL('audience3',false,0);
+        this.preFetchObjectURL('moderator',false,0);
+        this.preFetchObjectURL('audience1',true,0);
+        this.preFetchObjectURL('audience2',true,0);
+        this.preFetchObjectURL('audience3',true,0);        
+        this.preFetchObjectURL('moderator',true,1);
+        this.preFetchObjectURL('audience1',true,1);
+        this.preFetchObjectURL('audience2',true,1);
+        this.preFetchObjectURL('audience3',true,1);        
+        this.preFetchObjectURL('moderator',true,2);
         //this.initMedia();
     }
 
@@ -529,41 +553,56 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
 
         let speaking = (this.seat(Object.keys(participants).indexOf(part)) === 'speaking')
 
-        var objectURL, url;
+        var objectURL;
         if (speaking) {
             if (!(objectURL = participants[part].speakingObjectURLs[round]))
-                url = participants[part].speaking[round] || participants[part].listening;
+                participants[part].speakingImmediate[round]=true;
         } else {
             if (!(objectURL = participants[part].listeningObjectURL))
-                url = participants[part].listening;
+                participants[part].listeningImmediate=true;
         }
-        if (objectURL) {
+        if (objectURL)
             this.playObjectURL(part, objectURL, speaking);
-        } else
-            return this.fetchObjectURLThenPlay(part, url, speaking)
     }
 
-    // fetchObjectURLThenPlay
-    fetchObjectURLThenPlay(part, url, speaking) {
-        console.info("fetchObjectURL", part, url, speaking)
-        this.debugOverlay(`fetchObjectURL part:${part} url:${url} speaking:${speaking}`);
-        let { round } = this.state;
+    preFetchObjectURL(part,speaking,round){
+        if(this.preFetchList.length){
+            return this.preFetchList.push([part,speaking,round]);
+        }
+        const url=speaking ? (participants[part].speaking[round] || participants[part].listening) : participants[part].listening;
+        console.info("preFetchObjectURL", part, url, speaking, round)
+        this.debugOverlay(`preFetchObjectURL part:${part} url:${url} speaking:${speaking} round:${round}`);
         fetch(url)
             .then(res => res.blob()) // Gets the response and returns it as a blob
             .then(async blob => {
                 var objectURL = URL.createObjectURL(blob);
-                if (speaking)
+                if (speaking) {
                     participants[part].speakingObjectURLs[round] = objectURL;
-                else
+                    if(participants[part].speakingImmediate[round]){
+                        this.playObjectURL(part, objectURL, speaking);
+                        participants[part].speakingImmediate[round]=false;
+                    }
+                } else {
                     participants[part].listeningObjectURL = objectURL;
-                this.playObjectURL(part, objectURL, speaking);
+                    if(participants[part].listeningImmediate){
+                        this.playObjectURL(part, objectURL, speaking);
+                        participants[part].listeningImmediate=false;
+                    }
+                } 
+                var args;
+                if(args=this.preFetchList.shift()){
+                    return this.preFetchObjectURL(...args)
+                }
             })
             .catch(err => {
-                this.debugOverlay(`fetch caught error: ${err.toString()}`);
-                logger.error("AskWebRTC.startPlayback fetch caught error", url, err)
+                this.debugOverlay(`pre fetch caught error: ${err.toString()}`);
+                logger.error("AskWebRTC.preFecthObjectURL fetch caught error", url, err)
+                var args;
+                if(args=this.preFetchList.shift()){
+                    return this.preFetchObjectURL(...args)
+                }
             })
     }
-
 
     async playObjectURL(part, objectURL, speaking) {
         this.debugOverlay(`playObjectURL part:${part} objectURL:${objectURL}`);
