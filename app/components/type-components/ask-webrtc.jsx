@@ -96,6 +96,7 @@ class ErrorBoundary extends React.Component {
 
 const TransitionTime=500;
 const TopMargin='0vh'
+const Font='0.6vw'
 
 const styles = {
     'participant': {
@@ -143,10 +144,11 @@ const styles = {
         'border-radius': '7px',
         'border-width': '2px',
         'border-color': 'white',
-        'font-size': '1.5rem',
+        'font-size': `calc(2 * ${Font})`,
+        'padding': `calc(1 * ${Font})`
     },
     hangUpButton: {
-        width: '10em',
+        width: '12vw',
         position: 'absolute',
         left: '25vw',
         color: 'white',
@@ -154,7 +156,8 @@ const styles = {
         'border-radius': '7px',
         'border-width': '2px',
         'border-color': 'white',
-        'font-size': '1.5rem',
+        'font-size': `calc(2 * ${Font})`,
+        'padding': `calc(${Font})`
     },
     'speaking': {
         left: 'calc(2.5vw + 20vw + 2.5vw)',
@@ -181,7 +184,7 @@ const styles = {
         top: `calc(((50vw + 15vw) * 0.5625 + 5vh + 1.5vw + ${TopMargin}) / 2)`,
     },
     'finishButton': {
-        width: '10em',
+        width: '12vw',
         position: 'absolute',
         right: '25vw',
         color: 'white',
@@ -189,7 +192,8 @@ const styles = {
         'border-radius': '7px',
         'border-width': '2px',
         'border-color': 'white',
-        'font-size': '1.5rem',
+        'font-size': `calc(2 * ${Font})`,
+        'padding': `calc(${Font})`,
         '&:disabled': {
             'text-decoration': 'none',
             'background': 'lightgray'
@@ -250,7 +254,18 @@ const styles = {
         'i&': {
             'margin-right': 0
         }
-    }
+    },
+    'subOpening': {
+        'font-size': "0.56vw",
+        'font-weight': '100',
+        'lineHeight': "200%",
+        'margin-bottom': '2em'
+    },
+    'opening': {
+        'font-size': "1vw",
+        'font-weight': '600',
+        'lineHeight': "2vw"
+    },
 }
 
 
@@ -692,15 +707,27 @@ class RASPAskWebRTC extends ReactActionStatePathClient {
         const { user, parent, className, classes } = this.props;
         const { finishUp, done, begin, requestPermission } = this.state;
 
-        
         const beginOverlay=()=>(
             !begin &&
                 <div className={cx(classes['outerBox'],classes['beginBox'])}>
-                    <div style={{ width: '100%', height: '100%', display: 'table' }} >
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
-                            <div><span className={classes['thanks']}>You are about to experience a new kind of web conference - for productive online deliberation.</span></div>
-                            <div><button className={classes['beginButton']} onClick={()=>this.setState({begin: true},()=>this.initMedia())}>Begin</button></div>
+                    <div className={cx(className, classes['box'], classes['speaking'])} key='begin-banner'>
+                        <div className={cx(className, classes['participant'], classes['speaking'])}>
+                            <div style={{width: "50vw", height: "calc(50vw * 0.5625)"}}>
+                                <div style={{ width: '100%', height: '100%', display: 'table' }} >
+                                    <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }} >
+                                        <div><span className={classes['opening']}>
+                                        <p>You are about to experience a new kind of web conference</p>
+                                        <p style={{color: 'darkviolet', fontSize: '90%'}}>For productive, large scale, dialog and deliberation</p>
+                                        <p>This test experience will connect you with several people by video, in a new way.</p>
+                                        <p style={{color: 'darkviolet', fontSize: '90%'}}>The topic of the discussion is:</p>
+                                        <p style={{fontSize: '110%'}}>Can We Bridge the Political Divide?</p></span></div>
+                                        <div><span className={classes['subOpening']}>You will be placed in Seat #3. Your video will be stored locally, but not actually shared with anyone unless you agree, at the end. This discussion takes about 7 minutes</span></div>
+                                        <div><button className={classes['beginButton']} onClick={()=>this.setState({begin: true},()=>this.initMedia())}>Begin</button></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <div className={classes['videoFoot']}><span>{'Seat 3'}</span></div>
                     </div>
                 </div>
         )
