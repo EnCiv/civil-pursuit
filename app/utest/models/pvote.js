@@ -1,10 +1,11 @@
 'use strict';
 
+import "@babel/polyfill"
 import PVote from '../../models/pvote';
 import {spawn,exec} from 'child_process'
 import DB from '../../lib/util/db'
 import {ObjectID} from 'mongodb'
-import "@babel/polyfill"
+
 
 const COLL="pvote";
 global.logger={
@@ -17,6 +18,7 @@ const Ntests=10;
 const userId=ObjectID("5704c217feb3d90300bb83dd");
 
 import util from 'util';
+//import { join } from "path";
 const pexec = util.promisify(exec);
 
 export function startUp() {
@@ -77,17 +79,26 @@ function getRandomInt(min, max) {
 
 // dummy for socket.io
 var lastEmitted=[];
-global.io={
-    sockets: {in: (itemId)=>{ 
-        return {emit: (...args)=>{
-            let event=args[0].split('-');
-            if(event[1]!==itemId){
-                console.error("emit PvoteInfo Id did not match", itemId,args[0])
-            }
-            console.info("itemId:",itemId,"emitted:",args);
-            lastEmitted[itemId]=args
-        }}
-    }}
+
+function processMessage(message,...args){
+    let itemId=message.split('-')[1];
+    if(!itemId){
+        console.error("emit PvoteInfo Id did not match", itemId,message)
+    }
+    lastEmitted[itemId]=args[0];
+}
+
+var socket={
+    emit: processMessage,
+    join: (room)=>{console.info("socket join room",room)},
+    broadcast: {to: (room)=>({emit: (message,...args)=>{
+        let itemId=message.split('-')[1];
+        if(typeof room ==='object') room=room.toString();
+        if(room!==itemId){
+            console.error("broadcast emit PvoteInfo Id did not match", itemId,room)
+        }
+        lastEmitted[itemId]=args[0]
+        }})}
 }
 
 function asyncSleep(t){
@@ -155,7 +166,7 @@ async function testIt(){
             users.forEach(u=>{
                 items.forEach(async i=>{
                     jobs.push(async ()=>{
-                        PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]})
+                        PVote.insert(socket, {user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]})
                         if(Math.random()>0.5){
                             jobs.shift()();
                             return;
@@ -196,7 +207,7 @@ async function testIt(){
 
             users.forEach(u=>{
                 items.forEach(i=>{
-                    setTimeout(()=>PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
+                    setTimeout(()=>PVote.insert(socket,{user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
                 })
             })
         
@@ -210,7 +221,7 @@ async function testIt(){
             console.info("now do it again")
             users.forEach(u=>{
                 items.forEach(i=>{
-                    setTimeout(()=>PVote.insert({user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
+                    setTimeout(()=>PVote.insert(socket,{user: u, item: i, criteria: ['most','neutral','least'][getRandomInt(0,2)]}),Math.random()*500)
                 })
             })
             await PVote.pollPending()
@@ -236,12 +247,12 @@ function showPVoteInfoEmitted(){
     let totalVotes=0;
     console.info("showPVoteInfoEmitted:", Object.keys(lastEmitted).length);
     Object.keys(lastEmitted).forEach(itemId=>{
-        var info=lastEmitted[itemId][1];
+        var info=lastEmitted[itemId];
         var string='['+itemId+']:';
         var votes=0;
         Object.keys(info).forEach(criteria=>{
-            string=string+criteria+'='+lastEmitted[itemId][1][criteria].count+' ';
-            votes+=lastEmitted[itemId][1][criteria].count
+            string=string+criteria+'='+info[criteria].count+' ';
+            votes+=info[criteria].count
         })
         string+='votes: '+votes;
         console.info(string);

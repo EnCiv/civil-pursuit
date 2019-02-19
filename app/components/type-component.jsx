@@ -3,9 +3,23 @@
 
 import React                       from 'react';
 import Components                  from "./type-components/";
-import ReactActionStatePath        from "react-action-state-path";
 
 class TypeComponent extends React.Component{
+    static attributes(component){
+        let Component;
+        if(typeof component === 'object'){
+            Component=Components[component.component];
+            if(typeof Component === 'object')
+                return Component.attributes;
+            else 
+                return {};
+        } else {
+            Component=Components[component];
+            if(typeof Component === 'object')
+                return Component.attributes;
+            else return {};
+        }
+    }
     render(){
         const component=this.props.component || (this.props.panel && this.props.panel.type && this.props.panel.type.component) || 'Subtype';
         var Component;
@@ -14,9 +28,13 @@ class TypeComponent extends React.Component{
         if(typeof component === 'object'){
             Object.assign(newProps,this.props,component);
             Component=Components[component.component];
+            if(typeof Component === 'object')
+                Component=Component.default;
         } else {
             Object.assign(newProps,this.props);
             Component=Components[component];
+            if(typeof Component === 'object')
+                Component=Component.default;
         }
         if(newProps.component) delete newProps.component;
 

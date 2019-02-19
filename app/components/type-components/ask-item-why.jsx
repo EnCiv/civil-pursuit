@@ -7,6 +7,8 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 import DoneItem from '../done-item';
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
+import {clientGetQueryItems} from '../../api/get-query-items'
+import Store from '../store/store'
 
 /**
  * parent - the parent of the items being created.
@@ -27,12 +29,47 @@ import publicConfig from '../../../public.json'
     }
  }
 
+const OWN=true; // in query only my own items
+class Ideas {
+    static initial(props){
+        var item={type: props.type};
+        if(props.parent) item.parent=props.parent;
+        const ideas={['idea'+0]: {item: item, why: {parent: item, type: props.harmony[0]}}}
+        return {ideas}; // this is the initial state
+    }
+    static componentDidMount(props){
+        if(props.discussionGroup && props.discussionGroup.id){
+            var query={};
+            if(props.parent) query.parent=props.parent._id || this.props.parent;
+            query.type=props.type._id || props.type;
+            query._id={$gt: props.discussionGroup.id}
+    
+            clientGetQueryItems(query,OWN, (items,count)=>{
+                if(count){
+                    clientGetQueryItems({parent: items[0]._id, type: this.props.harmony[0]._id}, OWN, (whyItems,whyCount)=>{
+                        if(whyCount){
+                            var ideas={['idea'+0]: {item: items[0], why: whyItems[0]}};
+                            this.setState({ideas})
+                            setTimeout(()=>props.rasp.toParent({type: "NEXT_PANEL", status: 'done'}),250) // if there's already date then move on
+                        }
+                    })
+                }
+            })
+        }
+    }
+    static componentWillReceiveProps(props){
+        Ideas.componentDidMount.call(this,props)
+    }
+}
+
 class AskItemWhy extends React.Component {
     render(){
         return (
             <ReactActionStatePath {...this.props}>
                 <HarmonyStore>
-                    <RASPAskItemWhy />
+                    <Store fetch={Ideas} >
+                        <RASPAskItemWhy />
+                    </Store>
                 </HarmonyStore>
             </ReactActionStatePath>
         )
@@ -40,21 +77,15 @@ class AskItemWhy extends React.Component {
 }
 
 class RASPAskItemWhy extends ReactActionStatePathClient {
-    ideaState={}; // tracking the state of children
-
     constructor(props) {
         super(props, 'ideaNum',0);
-        var item={type: this.props.type};
-        if(this.props.parent) item.parent=this.props.parent;
-        this.ideaState['idea'+0]={posted: false, dirty: false, item: item, why: {parent: item, type: this.props.harmony[0]}};
-        this.createDefaults();
     }
-
     done() {
-        Object.keys(this.ideaState).forEach(ideaNum=>{
+        Object.keys(this.props.ideas).forEach(ideaNum=>{
             if(this.toChild[ideaNum]) this.toChild[ideaNum]({type: "POST_ITEM", noToggle: true});
             if(this.toChild[ideaNum+'-why']) this.toChild[ideaNum+'-why']({type: "POST_ITEM", noToggle: true});
         })
+        this.props.rasp.toParent({type: "NEXT_PANEL", status: 'done'})
     }
 
     render() {
@@ -65,11 +96,11 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
                 <div className={classes["ask"]} key='idea'>
                     <Item className={className} min item={parent} user={user} rasp={this.childRASP('truncated','parent')}/>
                     <div className={classes["creator"]}>
-                        {Object.keys(this.ideaState).map(ideaNum=>{
-                            return (<div>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={ideaNum} />
+                        {Object.keys(this.props.ideas).map(ideaNum=>{
+                            return (<div key={'idea-'+ideaNum}>
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.props.ideas[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={'answer-'+ideaNum} />
                                 <div className={classes['why']}>{this.props.harmony[0].evaluateQuestion}</div>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.ideaState[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={ideaNum+'-why'} />
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.props.ideas[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={'why-'+ideaNum} />
                                 </div>);
                         })}
                     </div>

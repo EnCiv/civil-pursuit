@@ -6,42 +6,31 @@ import config from 'syn/../../public.json';
 import TypeComponent from '../type-component';
 import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path'
 import PanelHeading from '../panel-heading'
+import HarmonyStore from '../store/harmony'
 
 class LoginPanel extends React.Component {
     render() {
         return (
             <ReactActionStatePath {...this.props}>
                 <PanelHeading items={[]} type={this.props.panel && this.props.panel.type || this.props.type} cssName={'syn-login-profile'} panelButtons={['Instruction']} >
-                    <RASPLoginPanel />
+                    <HarmonyStore>
+                        <RASPLoginPanel />
+                    </HarmonyStore>
                 </PanelHeading>
             </ReactActionStatePath>
         );
     }
 }
 
+function calcNewLocation(props){
+    return props.newLocation || (props.panel && props.panel.parent && props.panel.parent.new_location) || (props.parent && props.parent.new_location) || null;
+}
+
 class RASPLoginPanel extends ReactActionStatePathClient {
-    state = {
-        typeList: []
-    }
     constructor(props){
         super(props);
-        this.processProps(props);
-    }
-
-    componentWillReceiveProps(newProps){
-        this.processProps(newProps);
-    }
-
-    componentDidMount() {
-        const {panel}=this.props;
-        const type = panel && panel.type || this.props.type;
-        if (typeof window !== 'undefined' && type.harmony) {
-            window.socket.emit('get listo type', type.harmony, this.okGetListoType.bind(this))
-        }
-    }
-
-    okGetListoType(typeList) {
-        this.setState({ typeList: typeList });
+        this.state={}; // required if using getDerivedStateFromProps
+        this.componentWillMount(); // defined in RASPClient but won't be called because of getDerivedDerivedState from props - need to set the action filters before getDerived... is called
     }
 
     actionFilters={
@@ -55,38 +44,37 @@ class RASPLoginPanel extends ReactActionStatePathClient {
         if(nextRASP.redirect) nextRASP.shape='redirect';
     }
 
-    processProps(props){
-        const { panel, user, rasp } = props;
-        const parent = panel ? panel.parent : props.parent;
-        this.newLocation=props.newLocation || null;
-        if(!this.newLocation && parent && parent.new_location) this.newLocation=parent.new_location;  // get new Location out of the parent item if there is one
-        if(user && this.newLocation){
+    static getDerivedStateFromProps(props,state){
+        const { user, rasp, harmony } = props;
+        const newLocation=calcNewLocation(props);
+        if(user && newLocation){
                 window.onbeforeunload=null; // don't warn on redirect
-                location.href=this.newLocation;
+                location.href=newLocation;
         } else if (user) {
-            if(this.state.typeList.length) 
-                return rasp.toParent({type: 'REDIRECT'});
+            if(harmony.length) 
+                rasp.toParent({type: 'REDIRECT'});
         }
+        return null; // no change in state
     }
-
 
     render() {
         const { panel, userInfo, rasp } = this.props;
+        const newLocation=calcNewLocation(this.props);
 
         if (rasp.redirect) {
             const newPanel = {
                 parent: panel.parent,
-                type: this.state.typeList[0],
+                type: this.props.harmony[0],
                 skip: panel.skip || 0,
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.state.typeList[0].component} panel={newPanel} key='type-component' />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} key='type-component' />
             )
         } else {
             return (
                 <div className='item-login-panel' key='join-form'>
-                    <JoinForm userInfo={userInfo} newLocation={this.newLocation} />
+                    <JoinForm userInfo={userInfo} newLocation={newLocation} />
                 </div>
             )
         }

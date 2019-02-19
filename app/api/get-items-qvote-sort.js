@@ -71,7 +71,7 @@ export default function getItemsQvoteSort(parentStr, typeStr, sort, skip, limit,
             { $project: { total: 1, results: { $slice: ["$results", skip, limit] } } }
         ]).then(results=>{
             const result=results && results[0] || null;
-            if(!result || !result.total) cb([],0);
+            if(!result || !result.total) return cb([],0);
             const total=result.total;
             Promise.all(result.results.map(rawItem => {
                 const qvotes=rawItem.qvotes;

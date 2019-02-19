@@ -1,6 +1,9 @@
 // @create-index
 // imagine one day a program that automatically generates this (in ES5 compatible format).
 // until that day, this is manual
+//
+// TypeComponent will accept a function (.default) or a module (exports), so you don't need to add .default to new entries.  
+// Also, TypeComponent.attributes() will return module.attributes if it is defined.
 'use strict';
 
 var  Components={
@@ -23,7 +26,10 @@ var  Components={
         'Totals': require('./totals').default,
         'TurkSubmit': require('./turk-submit').default,
         'AskItemWhy': require('./ask-item-why').default,
-        'AskWebRTC': require('./ask-webrtc').default
+        'AskWebRTC': require('./ask-webrtc').default,
+        'DiscussionGroupSync': require('./discussion-group-sync'),
+        'QSortItemsSummary': require('./qsort-items-summary').default,
+        'SupportAcceptOppose': require('./support-accept-oppose').default
     }
 
 export default Components;

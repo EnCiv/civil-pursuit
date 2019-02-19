@@ -559,6 +559,7 @@ class RASPItem extends ReactActionStatePathClient {
                 this.queueFocus(action);
             } else {
                 if(this.isValid(delta)){ // put error messages in delta
+                    action.item=this.props.item;  // components above this may want to know about the item
                     if(rasp.button) { // been through once already
                         updateItem.call(this, this.props.item,(item)=>item || logger.error("error updating item on server:", this.props.item))
                     } else { // first time through
@@ -579,7 +580,7 @@ class RASPItem extends ReactActionStatePathClient {
                     }
                     delta.button='Posted';
                     action.duration=1; // the parent of this RASP should know of the post too.
-                    this.queueUnfocus(action); 
+                    if(!action.noToggle) this.queueUnfocus(action); 
                 }
             }
         } else if(action.type==="ISVALID"){

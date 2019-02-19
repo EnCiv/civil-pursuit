@@ -69,7 +69,7 @@ const styles = {
     }
 }
 
-class RASPQSortItemsSummary extends ReactActionStatePathClient {
+export class RASPQSortItemsSummary extends ReactActionStatePathClient {
     state={loadMore: false};
 
     constructor(props) {
@@ -152,7 +152,7 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { user, rasp, items, total, type, classes } = this.props;
+        const { user, rasp, items, total, type, classes, className } = this.props;
         const { createMethod = "visible", promoteMethod = "visible", feedbackMethod = 'visible' } = type;
         const QSortButtonList=this.props.qbuttons || QSortButtonList;
 
@@ -191,7 +191,8 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
                         active: active,
                         createMethod: createMethod,
                         promoteMethod: promoteMethod,
-                        hideFeedback: feedbackMethod === 'hidden'
+                        hideFeedback: feedbackMethod === 'hidden',
+                        className: className
                     }
                 );
             });
@@ -203,6 +204,8 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
                 <div className={cx(classes['synLoadMore'])}>
                     {"loading ..."}
                 </div>)
+        } else if(this.props.fixed){
+            loadMore=null;
         } else if(items.length && items.length< total){
             loadMore=(
                 <div className={cx(classes["synLoadMore"])}>

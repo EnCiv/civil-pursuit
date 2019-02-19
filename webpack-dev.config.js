@@ -64,6 +64,7 @@ module.exports = {
     plugins:[
         new webpack.IgnorePlugin(/categoryFilter|clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|logLevelFilter|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/,/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app
         new webpack.IgnorePlugin(/nodemailer/), // not used in the client side - those should be move outside of the app directory
+        new webpack.NormalModuleReplacementPlugin(/.+models\/.+/,'../models/client-side-model'), // do not include models on the client side - the app/api files contain server side and client side code
         new webpack.HotModuleReplacementPlugin()  // DO NOT use --hot in the command line - it will cause a stack overflow on the client
     ]
 };

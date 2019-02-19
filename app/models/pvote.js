@@ -3,6 +3,8 @@
 import {ObjectID} from 'mongodb';
 import DB from '../lib/util/db';
 
+// Note for future optimization - getFirstVote could be in memory if getLastVote became getFirstAndLast Vote for each criteria.  If the user was populated, and the firstVoteCriteria wasn't there - then there is no need to search the dB to see if it's there. 
+
 /** Happy Case
  * 
  * User casts a vote, and subscribes to the status of votes for this item.  When any user votes, or changes their vote, all interested users receive an updated vote tally.
@@ -37,7 +39,7 @@ const EVENT="PvoteInfo-" // socket event name
 
 export default class PVote {
 
-    static sendUpdate(item){ // send updates to socket subscribers
+    static sendUpdate(socket,item){ // send updates to socket subscribers
         if(item){
             let list=PVote.updateList
             if(!list)
@@ -51,18 +53,18 @@ export default class PVote {
         if(items.length){
             let itm;
             for(itm of items)
-                io.sockets.in(itm).emit(EVENT+itm,PVote.pvotes[itm]['totals']);
+                PVote.socketTo(socket,itm,PVote.pvotes[itm]['totals'])
             PVote.updateTimeout=setTimeout(
-                ()=>PVote.sendUpdate(),
+                ()=>PVote.sendUpdate(socket),
                 Math.log2(items.length)*1000
             )
         } else
             PVote.updateTimeout=0;
     }
 
-    static post(pvote){ // post to database
+    static post(socket, pvote){ // post to database
         PVote.add(pvote);
-        PVote.sendUpdate(pvote.item)
+        PVote.sendUpdate(socket,pvote.item)
         DB.db.collection(COLL).insertOne(pvote)
         .then(result=>{
             if(result.insertedCount!==1)
@@ -131,7 +133,7 @@ export default class PVote {
                     if(pv._ownVote) {
                         result._ownVote={criteria: pv.criteria, lastId: pv.lastId}
                         if(result[pv.criteria]){
-                            result.pv.criteria.count+=1;
+                            result[pv.criteria].count+=1;
                         }else{
                             result[pv.criteria]={count: 1}
                         }
@@ -241,7 +243,7 @@ export default class PVote {
     }
 
     // initialize the structure, and initialize the item if it isn't already - returns a promise so you can await on it that resolves to an pvote item structure with totals, and user last vote populated
-    static prepItem(itemId,userId){
+    static prepItem(socket,itemId,userId){
         var it=PVote.pvotes;
         if(!it)
             it=PVote.pvotes={};
@@ -313,7 +315,7 @@ export default class PVote {
                         it.pending.push(()=>{
                             PVote.processUserInfoPending(
                                 it[userId],
-                                ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
+                                ()=>PVote.socketTo(socket,itemId,it['totals'])
                             )
                         })
                     }else
@@ -324,49 +326,60 @@ export default class PVote {
                     it.pending.push(()=>{
                         PVote.processUserInfoPending(
                             it['unknown'],
-                            ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
+                            ()=>PVote.socketTo(socket,itemId,it['totals'])
                         )
                     })
                 }else
                     it['unknown'].pending=undefined;
                 PVote.processUserInfoPending(
                     it,
-                    ()=>io.sockets.in(itemId).emit(EVENT+itemId,it['totals'])
+                    ()=>PVote.socketTo(socket,itemId,it['totals'])
                 )
             })
         }
     }
 
+    static socketTo(socket,itemId,totals){
+        socket.broadcast.to(itemId).emit(EVENT+itemId,totals);
+        socket.emit(EVENT+itemId,totals)
+    }
+
     // external entry
-    static subscribe(itemId,userId,socket){
+    static subscribe(socket,itemId,userId,cb){
         async function subscribeIt(){
-            await PVote.prepItem(itemId,userId);
+            await PVote.prepItem(socket,itemId,userId);
             socket.join(itemId); // join this user into the socket.io room related to this item
-            setTimeout(()=>socket.emit(EVENT+itemId, PVote.pvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive
+            cb({userInfo: PVote.pvotes[itemId][userId]});
+            setTimeout(()=>socket.emit(EVENT+itemId, PVote.pvotes[itemId].totals )) // we only need to update this user, after this op returns so the user is ready to receive, userInfo is only sent on the initial subscribe
         }
         subscribeIt()
     }
 
     
     // external entry
-    static insert(pvote){
+    static insert(socket,pvote){
         const userId=pvote.user;
         if(!userId) throw("PVote.insert user must be defined",pvote);
         if(!pvote._id) pvote._id=ObjectID();
+        else if(typeof pvote._id === 'string') pvote._id=ObjectID(pvote._id);
         async function asyncInsert(){
-            var it=await PVote.prepItem(pvote.item,pvote.user)
+            var it=await PVote.prepItem(socket,pvote.item,pvote.user)
             if(it.pending){ // the items is being step
-                it.pending.push(()=>PVote.post(pvote))
+                it.pending.push(()=>PVote.post(socket,pvote))
                 console.info("PVote.insert on item pending:", it.pending.length);
             }else if(it[userId].pending ) {// item has been createdon, but the user is new under that item
-                it[userId].pending.push(()=>PVote.post(pvote))
+                it[userId].pending.push(()=>PVote.post(socket,pvote))
                 //console.info("PVote.insert on user pending:", it[userId].pending.length);
             }else
-                PVote.post(pvote);
+                PVote.post(socket,pvote);
         }
         asyncInsert()
     }
 
+    static async getFirstVote(query,cb){
+        var result=await DB.db.collection(COLL).find(query).sort({_id: 1}).limit(1).toArray().catch(err=>Logger.err("getFirstVote of", query, "caught error:", err));
+        cb(result);
+    }
     // wait for all the pending items to be processed and then call the callback
     // caution this isn't working yet - use pollPending
     static flush(){

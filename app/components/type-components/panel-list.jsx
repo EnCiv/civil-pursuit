@@ -148,9 +148,10 @@ class RASPPanelList extends ReactActionStatePathMulti {
 				|| (this.props.panel && (harmony = this.props.panel.type.harmony)))
 				window.socket.emit('get listo type', harmony, this.okGetListoType.bind(this));
 
-			if (this.props.discussionDuration) {
-				enterDiscussion(this.props.item._id, this.props.discussionDuration, id => {
-					this.setState({ panelListDiscussionId: id });
+			if (this.props.discussionGroup) {
+				enterDiscussion(this.props.item._id, this.props.discussionGroup.duration, id => {
+					this.props.discussionGroup.id=id;  // id will never change again
+					this.forceUpdate();
 				})
 			}
 		}
@@ -261,13 +262,19 @@ class RASPPanelList extends ReactActionStatePathMulti {
 
 
 		var renderCrumbs = () => {
+			let index=0;
 			return (
 				typeList.map((type, i) => {
+					let attributes=TypeComponent.attributes(type.component);
+					if(attributes.PanelList && attributes.PanelList.notInCrumbs){
+						return null;
+					}
 					if ((typeof type.component === 'string' && type.component === "NextStep") || (typeof type.component === 'object' && type.component.component === "NextStep")) return null; // hack for now 11/13/2017-2/9/2018, need a more generic way to do this.  Don't show NextStep in crumbs
 					let visible = ((panelStatus[i] === 'done')
 						|| ((i > 0) && panelStatus[i - 1] === 'done'));
 					let active = (currentPanel === i);
 					let buttonActive = active || visible;
+					index+=1;
 					return (
 						<button onClick={buttonActive ? () => rasp.toParent({ type: "PANEL_BUTTON", nextPanel: i }) : null}
 							className={!(active || visible) ? 'inactive' : ''}
@@ -281,7 +288,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 								color: active ? "#fff" : visible ? "#000" : null
 							}}
 							key={type.name + '-' + i}>
-							{(i + 1) + ': ' + type.name}
+							{index + ': ' + type.name}
 						</button>
 					)
 				})
@@ -311,7 +318,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 					limit={panel.limit}
 					qbuttons={this.props.qbuttons}
 					rasp={{ shape: 'truncated', depth: rasp.depth, toParent: this.toMeFromChild.bind(this, currentPanel) }}
-					panelListDiscussionId={this.state.panelListDiscussionId}
+					discussionGroup={this.props.discussionGroup}
 				/>
 		}
 
