@@ -15,8 +15,8 @@ import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
 import DoneItem from '../done-item';
 import insertQVote from '../../api-wrapper/insert-qvote';
+import publicConfig from '../../../public.json'
 
-  // 20 is hard coded, but where should this be? type or item?
 export class QSortItems extends React.Component {
     
     render(){
@@ -24,7 +24,7 @@ export class QSortItems extends React.Component {
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
-                    limit={20} >
+                    limit={publicConfig.timeouts.bigLimit} >
             <QVoteStore {...this.props}>
                 <ReactActionStatePath>
                         <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
@@ -39,7 +39,7 @@ export class QSortItems extends React.Component {
 
 export class RASPQSortItems extends ReactActionStatePathClient {
 
-    motionDuration = 500; //500mSec
+    motionDuration = publicConfig.timeouts.animation; //500mSec
 
     currentTop = 0; //default scroll position
     scrollBackToTop = false;
@@ -52,10 +52,10 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         this.createDefaults();
     }
 
-    // if initially done, notify panel list, otherwise notify list of issues
+    // if initially done, notify panel list to move on, otherwise notify list of issues
     componentDidMount(){
         if(this.state.done){
-            this.queueAction({type: "RESULTS", results: this.results()});
+            this.queueAction({type: "NEXT_PANEL", status: "done", results: this.results(this.props)});
         } else {
             this.queueAction({type: "ISSUES"});
         }
@@ -64,7 +64,10 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     //  notify panel list of done status of this panel
     componentWillReceiveProps(newProps){
         if (this.isDone(newProps)) {
-            this.queueAction({type: "RESULTS", results: this.results()});
+            if((newProps.items && newProps.items.length) && !(this.props.items && this.props.items.length)) // first time we have populated data
+                setTimeout(()=>this.queueAction({type: "NEXT_PANEL", status: "done", results: this.results(newProps)}),publicConfig.timeouts.glimpse);
+            else
+                this.queueAction({type: "RESULTS", results: this.results(newProps)});
             if(!this.state.done) // [there are no issues now] and there were issues previously
                 this.setState({done: true});
         } else { // there are issues
@@ -75,22 +78,25 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     }
 
     // the results to be passed forward to other pannels in the list
-    results(reset){
-        if(reset) return {index: {}, sections: {}, items: [] };
-        else return {index: this.props.index, sections: this.props.sections, items: this.props.items };
+    results(props){
+        if(!props) return {index: {}, sections: {}, items: [] };
+        else return {index: props.index, sections: props.sections, items: props.items };
     }
 
     // if the panel is done, say so
     isDone(props){
+        let count=0;
         return (
             !props.sections['unsorted'].length // if there are no unsorted items
             && !Object.keys(this.QSortButtonList).some(criteria=>{ // there is no some section[criteria] where
-                let max=this.QSortButtonList[criteria].max; 
+                let max=this.QSortButtonList[criteria].max;
+                count=count+(props.sections[criteria] && props.sections[criteria].length || 0); 
                 if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
                     return true; 
                 else 
                     return false;
             })
+            && count>0 // there are some items in the list
         )
     }
 
@@ -111,7 +117,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
             let results={index: {}, sections: {}, items: [] }
-            Object.assign(this.props.shared, this.results(true)); // reset the results
+            Object.assign(this.props.shared, this.results()); // reset the results
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
@@ -129,7 +135,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
             if(!this.isDone(this.props)) {
-                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+                setTimeout(() => { smoothScroll(this.currentTop, publicConfig.timeouts.slowAnimation) }, publicConfig.timeouts.quick);
             }
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
@@ -208,10 +214,11 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem 
+                    populated={items && items.length}
                     constraints={constraints}
                     active={this.state.done}
                     message={this.QSortButtonList['unsorted'].direction}
-                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}
+                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results(this.props)})}
                 />
             </section>
         );

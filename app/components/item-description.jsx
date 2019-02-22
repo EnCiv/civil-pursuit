@@ -60,13 +60,21 @@ class ItemDescription extends React.Component {
         this.onChangeKey = this.onChangeKey.bind(this);
         this.delayedUpdate = this.delayedUpdate.bind(this);
         this.onBlur=this.onBlur.bind(this);
-        this.state = { description: this.props.item && this.props.item.description || '' };
+        var description=this.props.item && this.props.item.description && this.props.item.description.slice() || ''
+
+        this.state = { description };
+        this.valid=this.isValid(description)
     }
+    componentDidMount(){
+        this.props.onBlur && this.props.onBlur({description: this.valid});
+    }
+
     componentWillReceiveProps(newProps) {
         if(this.dirty) return;  // race - delayedUpdate and onChangeKey when user is typing. If user is typing, it's dirty and that should have presicence
-        let newDescription = newProps.item && newProps.item.description || '';
+        var newDescription = newProps.item && newProps.item.description && newProps.item.description.slice() || '';
         if (this.state.description != newDescription)
-            this.setState({ description: newDescription.slice() })
+            this.setState({ description: newDescription })
+        this.valid=this.isValid(newDescription)
     }
     onChangeKey(v) {
         var description = this.state.description;
@@ -77,31 +85,39 @@ class ItemDescription extends React.Component {
         this.timeout = setTimeout(this.delayedUpdate, 10000);
         if(this.props.onDirty){
             let dirty=(description !== (this.props.item && this.props.item.description || ''));
-            if(dirty!==this.dirty) { // only send dirty if it changes 
-                this.props.onDirty(dirty);
+            let valid=this.isValid(description)
+            if(dirty!==this.dirty || valid !== this.valid) { // only send dirty if it changes 
                 this.dirty=dirty;
+                this.valid=valid;
+                this.props.onDirty(dirty, {description: valid});
             }
         }
+    }
+
+    isValid(description){
+        return !!(typeof description === 'string' && description.length);
     }
 
     onBlur(){
         if(this.timeout || this.dirty) {
             var description = this.state.description.slice();
             this.dirty=false;
+            this.valid=this.isValid(description)
             clearTimeout(this.timeout);
             this.timeout=0;
             if (this.props.onChange)
-                this.props.onChange({ value: { description } });
+                this.props.onChange({ value: { description } }, {description: this.valid});
         }
-        if(this.props.onBlur) this.props.onBlur();
+        if(this.props.onBlur) this.props.onBlur({description: this.valid});
     }
 
     delayedUpdate() {
         var description = this.state.description.slice();
         this.dirty=false;
+        this.valid=this.isValid(description)
         this.timeout=0;
         if (this.props.onChange)
-            this.props.onChange({ value: { description } });
+            this.props.onChange({ value: { description } }, {description: this.valid});
     }
 
     render() {

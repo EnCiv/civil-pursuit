@@ -19,6 +19,7 @@ import publicConfig from '../../public.json'
 import ObjectID from 'bson-objectid';
 import createItem from '../api-wrapper/create-item'
 import updateItem from '../api-wrapper/update-item'
+import { Object } from 'es6-shim';
 
 
 //Item 
@@ -192,6 +193,7 @@ const styles = {
 
 class RASPItem extends ReactActionStatePathClient {
     state = { hint: false, minHeight: null, descriptionBlurred: false, touched: false, collecting: false }; //
+    valid={};
     constructor(props) {
         super(props, 'button');
         if (props.item && props.item.subject) { this.title = props.item.subject; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); }
@@ -752,22 +754,30 @@ class RASPItem extends ReactActionStatePathClient {
         if (this.props.rasp.toParent) this.props.rasp.toParent({ type: "TOGGLE_READMORE" })
     }
 
-    onChange(obj) {
+    onChange(obj, valid) {
         if (obj.value) {
             if(Object.keys(obj.value).some(key=>obj.value[key]!==this.props.item[key])) {  // only if something has really changed
                 Object.assign(this.props.item, obj.value);
+                Object.assign(this.valid,valid)
                 //this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: true})); // let the ancestors know that this item is being edited
             }
         }
         this.setState({ touched: true, collecting: false });
     }
 
-    onDirty(dirty){
-        this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty})); // let the ancestors know that this item is being edited
+    onDirty(dirty, valid){
+        Object.assign(this.valid,valid);
+        const v=Object.keys(this.valid).every(key=>this.valid[key])
+        this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty, valid: v})); // let the ancestors know that this item is being edited
         this.setState({ touched: true, collecting: true });
     }
 
-    onBlur(){
+
+    onBlur(valid){
+        const oldV=Object.keys(this.valid).every(key=>this.valid[key])
+        Object.assign(this.valid,valid)
+        const newV=Object.keys(this.valid).every(key=>this.valid[key]);
+        if(oldV!==newV) this.qaction(()=>this.props.rasp.toParent({type: "ITEM_CREATOR_DIRTY", dirty: false, valid: newV})); // let the ancestors know that this item is being edited
         if(this.props.rasp.errors)
             this.queueAction({type: "ISVALID"});
     }

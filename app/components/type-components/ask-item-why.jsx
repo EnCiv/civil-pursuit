@@ -9,6 +9,7 @@ import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
 import {clientGetQueryItems} from '../../api/get-query-items'
 import Store from '../store/store'
+import isEqual from 'lodash/isEqual';
 
 /**
  * parent - the parent of the items being created.
@@ -49,8 +50,7 @@ class Ideas {
                     clientGetQueryItems({parent: items[0]._id, type: this.props.harmony[0]._id}, OWN, (whyItems,whyCount)=>{
                         if(whyCount){
                             var ideas={['idea'+0]: {item: items[0], why: whyItems[0]}};
-                            this.setState({ideas})
-                            setTimeout(()=>props.rasp.toParent({type: "NEXT_PANEL", status: 'done'}),250) // if there's already date then move on
+                            this.setState({ideas, populated: true})
                         }
                     })
                 }
@@ -77,38 +77,65 @@ class AskItemWhy extends React.Component {
 }
 
 class RASPAskItemWhy extends ReactActionStatePathClient {
+    state={constraints: []}
+    valid={}
     constructor(props) {
         super(props, 'ideaNum',0);
     }
+
+    actionFilters={
+        "ITEM_CREATOR_DIRTY": (action,delta)=>{ Object.assign(this.valid,{[action.ideaNum]: action.valid}); this.isDone(this.props); return true}
+    }
+
+    isDone(props){
+        const {ideas}=props;
+        var constraints=[];
+        let ideaNum;
+        for(ideaNum in ideas){
+            if(!(this.valid[ideaNum])) constraints.push("Waiting for an answer to the question");
+            if(!(this.valid[ideaNum+'-why'])) constraints.push("Waiting for an explanation of why this answer is important to consider");
+        }
+        if(!isEqual(constraints,this.state.constraints))
+            this.setState({constraints: constraints});
+        return !constraints.length
+    }
+
     done() {
         Object.keys(this.props.ideas).forEach(ideaNum=>{
             if(this.toChild[ideaNum]) this.toChild[ideaNum]({type: "POST_ITEM", noToggle: true});
             if(this.toChild[ideaNum+'-why']) this.toChild[ideaNum+'-why']({type: "POST_ITEM", noToggle: true});
         })
-        this.props.rasp.toParent({type: "NEXT_PANEL", status: 'done'})
+        this.advance();
+    }
+
+    advance(){
+        this.queueAction({type: "NEXT_PANEL", status: 'done'})
     }
 
     render() {
-        const { user, parent, className, classes } = this.props;
-        var constraints=[];
+        const { user, parent, className, classes, ideas } = this.props;
+
         return (
             <section id="syn-ask-item-why">
                 <div className={classes["ask"]} key='idea'>
-                    <Item className={className} min item={parent} user={user} rasp={this.childRASP('truncated','parent')}/>
+                    <Item className={className} min item={parent} user={user} visualMethod="defaultNoScroll" rasp={this.childRASP('truncated','parent')}/>
                     <div className={classes["creator"]}>
-                        {Object.keys(this.props.ideas).map(ideaNum=>{
+                        {Object.keys(ideas).map(ideaNum=>{
                             return (<div key={'idea-'+ideaNum}>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.props.ideas[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={'answer-'+ideaNum} />
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={'answer-'+ideaNum} />
                                 <div className={classes['why']}>{this.props.harmony[0].evaluateQuestion}</div>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={this.props.ideas[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={'why-'+ideaNum} />
+                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={'why-'+ideaNum} />
                                 </div>);
                         })}
                     </div>
                 </div>
-                <DoneItem active={!constraints.length} 
-                    constraints={constraints}
+                <DoneItem
+                    populated={this.props.populated}
+                    active={!this.state.constraints.length} 
+                    constraints={this.state.constraints}
                     message={"Continue"} 
-                    onClick={this.done.bind(this)} 
+                    onClick={this.done.bind(this)}
+                    autoAdvance={this.advance.bind(this)}
                 />
             </section>
         );

@@ -59,17 +59,27 @@ class ItemSubject extends React.Component {
         this.onBlur = this.onBlur.bind(this);
         this.ignoreCR = this.ignoreCR.bind(this);
         this.delayedUpdate=this.delayedUpdate.bind(this)
-        this.state = { subject: this.qualify(props.item && props.item.subject) };
+        var subject=this.qualify(props.item && props.item.subject)
+        this.state = { subject };
+        this.valid=this.isValid(subject);
     }
 
     qualify(val){
         return val || '';
     }
 
-    componentWillReceiveProps(newProps) {
-        if (this.state.subject !== (this.qualify(newProps.item && newProps.item.subject)))
-            this.setState({ subject: this.qualify(newProps.item && newProps.item.subject) })
+    componentDidMount(){
+        this.props.onBlur && this.props.onBlur({subject: this.valid});
     }
+
+    componentWillReceiveProps(newProps) {
+        if(this.dirty) return;  // race - delayedUpdate and onChangeKey when user is typing. If user is typing, it's dirty and that should have presicence
+        var subject=this.qualify(newProps.item && newProps.item.subject);
+        if (this.state.subject !== subject)
+            this.setState({ subject })
+        this.valid=this.isValid(subject);
+    }
+    
     ignoreCR(e) {
         if (e.keyCode === 13) {
             e.preventDefault();
@@ -84,31 +94,39 @@ class ItemSubject extends React.Component {
         this.timeout = setTimeout(this.delayedUpdate, 10000);
         if(this.props.onDirty){
             let dirty=(subject !== (this.qualify(this.props.item && this.props.item.subject)));
-            if(dirty!==this.dirty) { // only send dirty if it changes 
+            let valid=this.isValid(subject)
+            if(dirty!==this.dirty || valid !== this.valid) { // only send dirty if it changes 
                 this.dirty=dirty;
-                this.props.onDirty(dirty);
+                this.valid=valid;
+                this.props.onDirty(dirty,{subject: valid});
             }
         }
+    }
+
+    isValid(subject){
+        return !!(typeof subject === 'string' && subject.length);
     }
     
     onBlur(){
         if(this.timeout || this.dirty) {
             var subject = this.state.subject.slice();
             this.dirty=false;
+            this.valid=this.isValid(subject)
             clearTimeout(this.timeout);
             this.timeout=0;
             if (this.props.onChange)
-                this.props.onChange({ value: { subject } });
+                this.props.onChange({ value: { subject } },{subject: this.valid});
         }
-        if(this.props.onBlur) this.props.onBlur();
+        if(this.props.onBlur) this.props.onBlur({subject: this.valid});
     }
 
     delayedUpdate() {
         var subject = this.state.subject.slice();
         this.timeout=0;
         this.dirty=false;
+        this.valid=this.isValid(subject)
         if (this.props.onChange)
-            this.props.onChange({ value: { subject } });
+            this.props.onChange({ value: { subject } },{subject: this.valid});
     }
 
     render() {

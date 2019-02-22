@@ -1,6 +1,7 @@
 {
   "dbDefaults":{
-    "limit": 10
+    "limit": 10,
+    "bigLimit": 20
   },
 
   "noIdUserProps": [
@@ -91,5 +92,11 @@
       "app id"        :   "1026000160811367"
     }
   },
-  "itemVisualGap": "0.5em"
+  "itemVisualGap": "0.5em",
+  "timeouts": {
+    "slowAnimation": 750,
+    "animation": 500,
+    "glimpse": 250,
+    "quick": 100
+  }
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import Button from './util/button';
 import cx from 'classnames';
 import injectSheet from 'react-jss'
+import publicConfig from '../../public.json'
 
 const styles = {
     'doneText': {
@@ -13,7 +14,7 @@ const styles = {
         'text-align':       'left',
         color: 'black',
         'font-size': '1.2em',
-        'transition': '0.5s all linear',
+        'transition': `${publicConfig.timeouts.animation}ms all linear`,
         border: '1px solid #fff',
         'box-shadow':  '0 0 0.0 0.0 rgba(255, 255, 255, 0)',
         display: 'table'
@@ -40,9 +41,17 @@ const styles = {
 
 
 class DoneItem extends React.PureComponent {
+    componentDidMount(){
+        const advance=this.props.autoAdvance || this.props.onClick;
+        if(this.props.active && !(this.props.constraints && this.props.constraints.length) && this.props.populated && advance)
+            setTimeout(()=>advance(null),publicConfig.timeouts.glimpse); // null is needed here so setState doesn't complain about the mouse event that's the next parameter
+    }
     componentWillReceiveProps(newProps){
-        if(!this.props.active && newProps.active){
-            setTimeout(()=>Synapp.ScrollFocus(this.refs.item,500),500)
+        const advance=this.props.autoAdvance || this.props.onClick;
+        if(newProps.active && !(newProps.constraints && newProps.constraints.length) && !this.props.populated && newProps.populated && advance)
+            setTimeout(()=>advance(null),publicConfig.timeouts.glimpse); // null is needed here so setState doesn't complain about the mouse event that's the next parameter
+        else if(!this.props.active && newProps.active){
+            setTimeout(()=>Synapp.ScrollFocus(this.refs.item,publicConfig.timeouts.animation),publicConfig.timeouts.animation)
         }
     }
     render() {

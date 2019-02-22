@@ -12,6 +12,7 @@ import {QSortToggle} from './qsort-items';
 import PanelHeading from '../panel-heading';
 import clone from 'clone';
 import DoneItem from '../done-item'
+import publicConfig from '../../../public.json'
 
 class QSortWhy extends React.Component {
     render() {
@@ -28,7 +29,7 @@ class QSortWhy extends React.Component {
 class RASPQSortWhy extends ReactActionStatePathClient {
     ButtonList={};
     buttons=[];
-    motionDuration = 500; //500mSec
+    motionDuration = publicConfig.timeouts.animation; //500mSec
     state = {};
     results = {};
     currentTop = 0; //default scroll position
@@ -138,7 +139,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
             if(!this.isDone(this.state))
-                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+                setTimeout(() => { smoothScroll(this.currentTop, publicConfig.timeouts.slowAnimation) }, publicConfig.timeouts.quick);
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
     }
@@ -155,7 +156,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
             // if we don't have any data to work with 
             direction.push(<div key="instruction" className='instruction-text' style={{backgroundColor: this.ButtonList['unsorted'].color, color: Color(this.ButtonList['unsorted'].color).negate}} key='instruction'>
-                    No values were tagged {this.whyName} Imortant. You could go back to Public Values and change that or you can contine.
+                    No values were tagged {this.whyName} Important. You could go back to Public Values and change that or you can continue.
             </div>)
         } else {
             if (this.state.sections['unsorted'].length) 
@@ -212,6 +213,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem 
+                    populated={this.state.sections && Object.keys(this.state.sections).some(name=>this.state.sections[name].length >0)}
                     constraints={constraints}
                     active={!constraints.length}
                     message={this.ButtonList['unsorted'].direction}
