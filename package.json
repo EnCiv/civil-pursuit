@@ -9,7 +9,7 @@
     "start": "node dist/server/start.js",
     "magic-start": "npm install && npm start",
     "postinstall": "bash post-install.sh",
-    "build": "bash bin/bundle.sh",
+    "browserify": "bash bin/bundle.sh",
     "watchify": "bash bin/watchify.sh",
     "transpile": "babel app --ignore app/test --out-dir dist --source-maps",
     "hot-transpile": "babel --watch app --ignore app/test --out-dir dist/ --source-maps",

@@ -65,14 +65,81 @@ class ScrollWrapper extends React.Component {
 		this.overlay = React.createRef();
 	}
 
+	/*********************
+	 * 
+	 * -------------------- scrollArea  
+	 * |
+	 * | top                this is the number of lines above the window, that can't be seen. When setting style.top it should be the negative of this
+	 * |
+	 * -------------------- top of window
+	 * |
+	 * | topBarHeight       this is withing the window, but obscured by the banner/topBar
+	 * |
+	 * -------------------- top of wrapper (viewable window area)
+	 * |
+	 * |
+	 * | scrollWrapperHeight this can be seen
+	 * |
+	 * |
+	 * -------------------- bottom of wrapper/bottom of window
+	 * |
+	 * |                    this part is below the window and can't be seen
+	 * |
+	 * -------------------- bottom of scrollArea as shown here the scroll area is large than the window. But it could be smaller
+	 * 
+	 * 
+	 */
+
+	moveTargetWithinScrollWrapper(s,target){
+		let t = target.getBoundingClientRect(); // target Rect
+		let newTop;
+		
+		if(t.y < s.top){ // it's above the top of the window
+			// scroll so the top is at the top of the wrapper (below the banner)
+			newTop= t.y-s.topBarHeight;
+		} else if (t.y < s.top+s.topBarHeight){ // it's in the banner area of the window
+			// scroll so the top is at the top of the wrapper (below the banner)
+			newTop=t.y-s.topBarHeight;
+		} else if (t.y < s.top+s.topBarHeight+s.scrollWrapperHeight){ // top of target is in the wrapper
+			if(t.bottom < s.top+s.topBarHeight+s.scrollWrapperHeight){ // bottom of target is in the wrapper
+				// set the top, so that the top of target is at top of banner
+				newTop=t.y-s.topBarHeight;
+			}else { // the bottom of target is below the bottom of the wrapper
+				// align the bottoms
+				newTop=t.bottom-s.top-s.scrollWrapperHeight;
+			}
+		} else { // it's below the wrapper
+			if(t.height>s.scrollWrapperHeight){ // target is bigger than the wrapper
+				// let the top be just below the banner, and the excess will flow below the screen
+				newTop=t.y-s.topBarHeight;
+			} else { // it will fit in the wrapper
+				// align the bottoms
+				newTop=t.bottom-s.top-s.scrollWrapperHeight;
+			}
+		}
+		if(s.scrollAreaHeight - newTop < s.scrollWrapperHeight+s.topBarHeight){ // this would pull the bottom of the scroll area above the bottom of the window
+			if(t.bottom < s.top+s.topBarHeight+s.scrollWrapperHeight) { // as it was the bottom was visible
+				// don't move it
+				newTop=s.top;
+			} else if(s.scrollAreaHeight < s.scrollWrapperHeight) {// the scrollArea is smaller than viewable
+				// align the top of the scroll area with the top of the wrapper
+				newTop=-s.topBarHeight;
+			} else { // scroll area is bigger than viewable
+				// align the bottoms
+				newTop=s.scrollAreaHeight-s.scrollWrapperHeight-s.topBarHeight;
+			}
+		}
+		return newTop;
+	}
+
 	ScrollFocus(target, duration = 500) {
 		if (!target) return;
 		var html = this.htmlElement;
-		var bannerHeight = this.state.topBarHeight;
 		var start = null;
 		var last = null;
 		var that = this;
 		var extent = this.props.extent || 0;
+		html.style.transition=null;
 
 		function stepper(now) {
 			if (!start) {
@@ -82,29 +149,17 @@ class ScrollWrapper extends React.Component {
 				return;
 			}
 
-			let top = parseFloat(html.style.top);
-			let tRect = target.getBoundingClientRect(); // target Rect
-			let newTop = -(-top + tRect.top /*-bannerHeight*/);
-			let lowerEnd = that.state.scrollAreaHeight - (that.state.scrollWrapperHeight - extent); /*- this.state.scrollWrapperHeight*/;
+			let es=that.getSize();
 
+			let top= -parseFloat(html.style.top);
+			es.top=top; // in state but not in getSize
+			let newTop=that.moveTargetWithinScrollWrapper(es,target)
 
-
-			// if bottom of target is above the top of the wrapper, then hyperjump (old)top to the position just before it is visible.
-			//if(tRect.bottom< bannerHeight){
-			//  top= -(-top + -tRect.top)
-			//}
-			if (lowerEnd < 0)
-				newTop = 0;
-			else
-				newTop = -trim(lowerEnd, -extent, -newTop);
-
-			if (now - start > duration) {
+			if (now - start >= duration) {
 				html.style.transition = null;
-				//html.style.top=newTop+'px';
-				//that.setState({top: -newTop});
-				that.calculateSize(() => {
-					that.normalizeVertical(-newTop);
-				});
+				that.calculateSize(()=>{
+					that.normalizeVertical(newTop);
+				})
 				return;
 			}
 
@@ -116,11 +171,10 @@ class ScrollWrapper extends React.Component {
 				return window.requestAnimationFrame(stepper);
 			}
 			let nextTop = top + nextStepDistance; // top of the next step
-			nextTop = -trim(lowerEnd, -extent, -nextTop);
 			html.style.transition = null;
-			html.style.top = nextTop + that.state.topBarHeight + 'px'; // set the new top
+			that.normalizeVertical(nextTop);
 			last = now;
-			window.requestAnimationFrame(stepper);
+				window.requestAnimationFrame(stepper);
 		}
 
 		window.requestAnimationFrame(stepper);
