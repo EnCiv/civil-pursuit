@@ -7,7 +7,6 @@ import cx from 'classnames'
 import {JoinForm} from '../join'
 import Input from '../util/input'
 import Icon from '../util/icon'
-import { Object } from 'es6-shim';
 
 class DebugOverlay extends React.Component {
     constructor(props){

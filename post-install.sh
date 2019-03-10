@@ -48,7 +48,6 @@ echo "transpile ok"
 echo '*************************************************************************'
 echo WEBPACK
 echo '*************************************************************************'
-ls -als dist/models
 
 npm run packbuild  || {
   echo Could not webpack;

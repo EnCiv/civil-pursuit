@@ -19,7 +19,6 @@ import publicConfig from '../../public.json'
 import ObjectID from 'bson-objectid';
 import createItem from '../api-wrapper/create-item'
 import updateItem from '../api-wrapper/update-item'
-import { Object } from 'es6-shim';
 
 
 //Item 
