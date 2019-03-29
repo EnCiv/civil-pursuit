@@ -11,6 +11,7 @@ import sequencer from 'promise-sequencer';
 import emitter from '../lib/app/emitter';
 import Item from '../models/item';
 import cloudinary from './util/cloudinary';
+import User from '../models/user'
 
 class API extends EventEmitter {
 
@@ -159,17 +160,24 @@ class API extends EventEmitter {
 		}
 	}
 
-	/** Find user by id in [User]
-	 *  @arg      {String} id
-	*/
-
-	findUserById(id) {
-		return this.users.reduce((found, user) => {
-			if (user.id === id) {
+	async validateUserCookie(cookie,ok,ko) {
+		var usr=this.users.reduce((found, user) => {
+			if (user.id === cookie.id) {
 				found = user;
 			}
 			return found;
 		}, null);
+		if(usr) return ok();
+		else {
+			usr=await User.findOne({_id: cookie.id});
+			if(!usr){
+				logger.error(`API:validateUserCookie id ${cookie.id} not found in this server/db`);
+				if(ko) ko();
+			} else {
+				this.users.push(cookie);
+				return ok();
+			}
+		}
 	}
 
 	/** Identify client
@@ -190,31 +198,25 @@ class API extends EventEmitter {
 			let cookie = req.cookies.synuser;
 
 			if (cookie) {
-
 				if (typeof cookie === 'string') {
 					cookie = JSON.parse(cookie);
 				}
-
-				if (!this.findUserById(cookie.id)) {
-					this.pushUser(cookie);
-				}
-
-				socket.synuser = cookie;
-			}
-
-			next();
+				this.validateUserCookie(
+					cookie,
+					()=>{
+						socket.synuser = cookie;
+						next();
+					},
+					()=>{
+						next(new Error(`API: User id ${cookie.id} not found in this server/db`));
+					}
+				)
+			} else
+				next();
 		}
 		catch (error) {
 			this.emit('error', error);
 		}
-	}
-
-	/** New user
-	 *  @arg      {User} user
-	*/
-
-	pushUser(user) {
-		this.users.push(user);
 	}
 
 	/** On every client's connection

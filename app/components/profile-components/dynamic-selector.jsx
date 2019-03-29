@@ -21,9 +21,9 @@ class DynamicSelector extends React.Component {
 
     constructor(props) {
         super(props);
-        const collection = props.collection || props.property;
+        const collection = props.collection || props.property; 
         if (DynamicSelector.initCollection(collection, ()=>{
-            DynamicSelector.collections[collection].options.unshift(<option value=''>{this.props.property}</option>) // stick the default option in front
+            DynamicSelector.collections[collection].options.unshift(<option value='' key="empty">{this.props.property}</option>) // stick the default option in front
             this.setState({ loaded: true },()=>{
                 let element=ReactDOM.findDOMNode(this.refs.choice);  // after getting choices, and rerendering options, set the value again because it may be one of the new options
                 element.value=this.props.info[this.props.property] || '';
@@ -36,7 +36,7 @@ class DynamicSelector extends React.Component {
     static initCollection(collection, onComplete) {
         if (typeof DynamicSelector.collections === 'undefined') DynamicSelector.collections = []; // this is the first call to DynamicSelector
         if (typeof DynamicSelector.collections[collection] === 'undefined') { // this collection has never been used before
-            DynamicSelector.collections[collection] = { options: [<option value=''>Loading Options</option>], choices: [], names: [], completionStack: [] };
+            DynamicSelector.collections[collection] = { options: [<option value='' key="empty">Loading Options</option>], choices: [], names: [], completionStack: [] };
             if(onComplete) DynamicSelector.collections[collection].completionStack.push(onComplete);
             window.socket.emit('get dynamic ' + collection, DynamicSelector.okGotChoices.bind(this, collection)); // null to fill the spot for onComplete
             return false;

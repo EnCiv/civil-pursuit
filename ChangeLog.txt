@@ -1,0 +1,7 @@
+3/29/2019
+storybook - separated into multiple story files. created story for react-scrollbar
+react-scrollbar - fixed bug that caused jumping - it wasn't really scrolling as intended.
+next-step - shows instructions, shows buttons, removed unused actions
+dynamic-selector - eliminated React child key complaint
+smooth-scroll - calls react-scrollbar.SmoothScroll instead of doing it separately.
+api.js/server.js/set-user-cookie.js -  if id in cookie doesn't exist in db (different DB?) error out

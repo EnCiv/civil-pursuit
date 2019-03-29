@@ -66,14 +66,15 @@ class ScrollWrapper extends React.Component {
 	}
 
 	/*********************
+	 * ScrollArea and ScrollWrapper
 	 * 
 	 * -------------------- scrollArea  
 	 * |
-	 * | top                this is the number of lines above the window, that can't be seen. When setting style.top it should be the negative of this
+	 * | top                this is the number of lines above the window, that can't be seen. When setting html.style.top it should be the negative of this
 	 * |
 	 * -------------------- top of window
 	 * |
-	 * | topBarHeight       this is withing the window, but obscured by the banner/topBar
+	 * | topBarHeight       this is withing the window, but transparently obscured by the banner/topBar
 	 * |
 	 * -------------------- top of wrapper (viewable window area)
 	 * |
@@ -87,6 +88,24 @@ class ScrollWrapper extends React.Component {
 	 * |
 	 * -------------------- bottom of scrollArea as shown here the scroll area is large than the window. But it could be smaller
 	 * 
+	 * Target
+	 * 
+	 * --------------------- top of window
+	 * | 
+	 * | topBarHeight
+	 * |
+	 * ---------------------
+	 * |
+	 * --------------------- target.getBoundingClientRect.y
+	 * |
+	 * | target.getBoundingClientRect.height  this is the target element
+	 * |
+	 * --------------------- target.getBoundingClientRect.bottom
+	 * |
+	 * |
+	 * |
+	 * --------------------- bottom of window
+	 * 
 	 * 
 	 */
 
@@ -94,39 +113,39 @@ class ScrollWrapper extends React.Component {
 		let t = target.getBoundingClientRect(); // target Rect
 		let newTop;
 		
-		if(t.y < s.top){ // it's above the top of the window
+		if(t.y < 0){ // it's above the top of the window
 			// scroll so the top is at the top of the wrapper (below the banner)
-			newTop= t.y-s.topBarHeight;
-		} else if (t.y < s.top+s.topBarHeight){ // it's in the banner area of the window
+			newTop= (s.top+t.y)-s.topBarHeight;
+		} else if (t.y < s.topBarHeight){ // it's in the banner area of the window
 			// scroll so the top is at the top of the wrapper (below the banner)
-			newTop=t.y-s.topBarHeight;
-		} else if (t.y < s.top+s.topBarHeight+s.scrollWrapperHeight){ // top of target is in the wrapper
-			if(t.bottom < s.top+s.topBarHeight+s.scrollWrapperHeight){ // bottom of target is in the wrapper
+			newTop=(s.top+t.y)-s.topBarHeight;
+		} else if (t.y < s.topBarHeight+s.scrollWrapperHeight){ // top of target is in the wrapper
+			if(t.bottom < s.topBarHeight+s.scrollWrapperHeight){ // bottom of target is in the wrapper
 				// set the top, so that the top of target is at top of banner
-				newTop=t.y-s.topBarHeight;
+				newTop=(s.top+t.y)-s.topBarHeight;
 			}else { // the bottom of target is below the bottom of the wrapper
 				// align the bottoms
-				newTop=t.bottom-s.top-s.scrollWrapperHeight;
+				if(t.height>s.scrollWrapperHeight){ // target is bigger than the wrapper
+					// let the top be just below the banner, and the excess will flow below the screen
+					newTop=(s.top+t.y)-s.topBarHeight;
+				} else { // it will fit in the wrapper
+					// align the bottoms
+					newTop=(s.top+t.bottom)-s.topBarHeight-t.height;
+				}
 			}
 		} else { // it's below the wrapper
 			if(t.height>s.scrollWrapperHeight){ // target is bigger than the wrapper
 				// let the top be just below the banner, and the excess will flow below the screen
-				newTop=t.y-s.topBarHeight;
+				newTop=(s.top+t.y)-s.topBarHeight;
 			} else { // it will fit in the wrapper
 				// align the bottoms
-				newTop=t.bottom-s.top-s.scrollWrapperHeight;
+				newTop=(s.top+t.bottom)-s.topBarHeight-t.height;
 			}
 		}
 		if(s.scrollAreaHeight - newTop < s.scrollWrapperHeight+s.topBarHeight){ // this would pull the bottom of the scroll area above the bottom of the window
-			if(t.bottom < s.top+s.topBarHeight+s.scrollWrapperHeight) { // as it was the bottom was visible
-				// don't move it
-				newTop=s.top;
-			} else if(s.scrollAreaHeight < s.scrollWrapperHeight) {// the scrollArea is smaller than viewable
-				// align the top of the scroll area with the top of the wrapper
-				newTop=-s.topBarHeight;
-			} else { // scroll area is bigger than viewable
-				// align the bottoms
-				newTop=s.scrollAreaHeight-s.scrollWrapperHeight-s.topBarHeight;
+			newTop=(s.top+t.bottom)-s.scrollWrapperHeight-s.topBarHeight; // align the bottom of the target with the bottom of the window
+			if(newTop < -s.topBarHeight){ // this would pull the top below the banner
+				newTop = -s.topBarHeight; // align the top with the banner
 			}
 		}
 		return newTop;
@@ -509,7 +528,7 @@ class ScrollWrapper extends React.Component {
 	}
 
 	scroll(e) {
-		e.preventDefault();
+		//e.preventDefault();
 
 		function animate(scrollX, scrollY, shifted, now) {
 			// Make sure the content height is not changed

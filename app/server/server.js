@@ -45,6 +45,8 @@ class HttpServer extends EventEmitter {
 
     this.props = props;
 
+    this.setUserCookie=setUserCookie.bind(this); // user cookie needs this context so it doesn't have to lookup users in the DB every time
+
     this
 
       .on('message', (...messages) => {
@@ -143,7 +145,7 @@ class HttpServer extends EventEmitter {
   signers () {
     this.app.post('/sign/in',
       signInRoute,
-      setUserCookie,
+      this.setUserCookie,
       function (req, res) {
         res.send({
           in: true,
@@ -153,7 +155,7 @@ class HttpServer extends EventEmitter {
 
     this.app.all('/sign/up',
       signUpRoute,
-      setUserCookie,
+      this.setUserCookie,
       function (req, res) {
         res.json({
           up: true,
@@ -163,7 +165,7 @@ class HttpServer extends EventEmitter {
 
       this.app.all('/tempid',
       tempIdRoute,
-      setUserCookie,
+      this.setUserCookie,
       function (req, res) {
         res.json({
           up: true,
@@ -278,7 +280,7 @@ class HttpServer extends EventEmitter {
   getLandingPage () {
     try {
       this.app.get('/',
-        setUserCookie,
+        this.setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -293,7 +295,7 @@ class HttpServer extends EventEmitter {
           logger.info("server.getUIMPath", req.path)
           next();
         },
-        setUserCookie,
+        this.setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -396,13 +398,14 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    }, setUserCookie,
+    }, this.setUserCookie,
     serverReactRender.bind(this));
   }
 
   getIPage () {
     this.app.get('/i/*',
     turkUser.bind(this),
+    this.setUserCookie,
     (req, res, next) => {
       let segments=req.params[0].toString().split('/');  // after using req.query in turkUser params in now an object rather than an array
       if(!segments || !segments.length || !segments[0].length) next();
@@ -454,7 +457,7 @@ class HttpServer extends EventEmitter {
         logger.error("getIpage saw error:", error);
         next(error);
       }
-    }, setUserCookie,
+    }, 
     serverReactRender.bind(this));
   }
  
@@ -510,7 +513,7 @@ class HttpServer extends EventEmitter {
             next(error);
           }
         },
-        setUserCookie,
+        this.setUserCookie,
         serverReactRender.bind(this));
     }
     catch ( error ) {
@@ -567,7 +570,7 @@ class HttpServer extends EventEmitter {
       catch ( error ) {
         next(error);
       }
-    },setUserCookie,
+    },this.setUserCookie,
     serverReactRender.bind(this));
   }
 
@@ -580,7 +583,7 @@ class HttpServer extends EventEmitter {
                 req.user=user.toJSON();
                 req.cookies.synuser={id: req.user._id, email: req.user.email} // passing the activation key also
                 req.activation_key=user.activation_key;
-                setUserCookie(req,res,next);
+                this.setUserCookie(req,res,next);
               }else
                 next();
             },
