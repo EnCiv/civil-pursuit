@@ -48,7 +48,7 @@ class DoneItem extends React.PureComponent {
     }
     componentWillReceiveProps(newProps){
         const advance=this.props.autoAdvance || this.props.onClick;
-        if(newProps.active && !(newProps.constraints && newProps.constraints.length) && !this.props.populated && newProps.populated && advance)
+        if(newProps.active && !(newProps.constraints && newProps.constraints.length) && (this.props.populated !== newProps.populated) && advance)
             setTimeout(()=>advance(null),publicConfig.timeouts.glimpse); // null is needed here so setState doesn't complain about the mouse event that's the next parameter
         else if(!this.props.active && newProps.active){
             setTimeout(()=>{Synapp.ScrollFocus(this.refs.item,publicConfig.timeouts.animation),publicConfig.timeouts.animation})

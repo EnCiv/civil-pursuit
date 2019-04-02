@@ -77,7 +77,10 @@ class ItemSubject extends React.Component {
         var subject=this.qualify(newProps.item && newProps.item.subject);
         if (this.state.subject !== subject)
             this.setState({ subject })
+        const oldV=this.valid;
         this.valid=this.isValid(subject);
+        if(oldV !== this.valid && this.props.onBlur) 
+            this.props.onBlur({subject: this.valid});
     }
     
     ignoreCR(e) {

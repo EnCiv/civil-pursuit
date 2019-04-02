@@ -123,16 +123,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     // if the panel is done, say so
     isDone(props){
-        return (
-            !props.sections['unsorted'].length // if there are no unsorted items
-            && !Object.keys(this.ButtonList).some(criteria=>{ // there is no some section[criteria] where
-                let max=this.ButtonList[criteria].max; 
-                if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
-                    return true; 
-                else 
-                    return false;
-            })
-        )
+        return this.state.sections['unsorted'].length;
     }
 
     onFlipMoveFinishAll() {
@@ -146,6 +137,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
     render() {
 
+        
         const { user, rasp, shared, next, panelNum } = this.props;
         const items=shared.items;
 
@@ -162,25 +154,12 @@ class RASPQSortWhy extends ReactActionStatePathClient {
             if (this.state.sections['unsorted'].length) 
                 constraints.push(this.state.sections['unsorted'].length+" to go.");
             this.buttons.forEach((name) => {
-                let qb = this.ButtonList[name];
-                if (qb.max) {
-                    //onsole.info("QSortWhy qb")
-                    if (this.state.sections[name].length > qb.max) {
-                        direction.push(
-                            <div key={'direction'+name} className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }}>
-                                {qb.direction}
-                            </div>
-                        )
-                        constraints.push((this.state.sections[name].length - qb.max)+' too many');
-                    }
-                }
                 this.state.sections[name].forEach(itemId => {
                     let item= items.find(itm=>itm._id===itemId);
                     if(!item){
                         console.error("qsortWhy itemId:",itemId, "not found in items", items);
                         return;
                     }
-                    //let item = items[shared.index[itemId]];
                     content.push(
                         {
                             sectionName: name,

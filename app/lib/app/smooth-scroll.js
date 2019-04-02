@@ -1,7 +1,7 @@
 'use strict';
 
   function smoothScroll(target, time) {
-    window.Synapp.scrollFocus(target,time)
+    window.Synapp.ScrollFocus(target,time)
     /* time when scroll starts
     const start = new Date().getTime();
         const interval=25; //25 mSec

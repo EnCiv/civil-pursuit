@@ -1,3 +1,11 @@
+4/2/2019
+AskItemWhy - if you reload, it refetches entered data, and updates the constraints - but it doesn't automatically advance (should it? that will be harder)
+QsortItems - implemented min requirement, constraints are listed in the DoneItems box at the bottom
+smoothScroll - typo
+qsortWhy - does not use min/max constraints - just makes sure there is an answer for each why
+4/1/2019
+ask-item-why would not proceed if there was previous data in the db - item-subject & item-description will generate CREATOR_DIRTY actions when component receives new props
+smoothScroll - call "S"crollFocus
 3/29/2019
 storybook - separated into multiple story files. created story for react-scrollbar
 react-scrollbar - fixed bug that caused jumping - it wasn't really scrolling as intended.

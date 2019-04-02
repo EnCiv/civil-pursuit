@@ -73,9 +73,13 @@ class ItemDescription extends React.Component {
         if(this.dirty) return;  // race - delayedUpdate and onChangeKey when user is typing. If user is typing, it's dirty and that should have presicence
         var newDescription = newProps.item && newProps.item.description && newProps.item.description.slice() || '';
         if (this.state.description != newDescription)
-            this.setState({ description: newDescription })
-        this.valid=this.isValid(newDescription)
+            this.setState({ description: newDescription });
+        const oldV=this.valid;
+        this.valid=this.isValid(newDescription);
+        if(oldV !== this.valid && this.props.onBlur) 
+            this.props.onBlur({description: this.valid});
     }
+
     onChangeKey(v) {
         var description = this.state.description;
         var value = v.value; //

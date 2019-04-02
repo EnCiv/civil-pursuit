@@ -77,10 +77,11 @@ class AskItemWhy extends React.Component {
 }
 
 class RASPAskItemWhy extends ReactActionStatePathClient {
-    state={constraints: []}
+    state={constraints: [], populated: ''}
     valid={}
     constructor(props) {
         super(props, 'ideaNum',0);
+        if(this.props.populated) this.state.populated='initially';
     }
 
     actionFilters={
@@ -96,7 +97,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
             if(!(this.valid[ideaNum+'-why'])) constraints.push("Waiting for an explanation of why this answer is important to consider");
         }
         if(!isEqual(constraints,this.state.constraints))
-            this.setState({constraints: constraints});
+            this.setState({constraints});
         return !constraints.length
     }
 
@@ -110,6 +111,10 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
 
     advance(){
         this.queueAction({type: "NEXT_PANEL", status: 'done'})
+    }
+
+    componentWillReceiveProps(newProps){
+        if(!this.props.populated && newProps.populated) this.setState({populated: 'fetched'}) // render after validity checks
     }
 
     render() {
@@ -130,7 +135,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem
-                    populated={this.props.populated}
+                    populated={this.state.populated}
                     active={!this.state.constraints.length} 
                     constraints={this.state.constraints}
                     message={"Continue"} 
