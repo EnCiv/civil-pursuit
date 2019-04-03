@@ -69,7 +69,7 @@ class RASPLoginPanel extends ReactActionStatePathClient {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} key='type-component' />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
             )
         } else {
             return (

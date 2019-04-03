@@ -11,9 +11,9 @@ import enterDiscussion from '../../api-wrapper/enter-discussion';
 class PanelList extends React.Component {
 	initialRASP = { currentPanel: 0 };
 	render() {
-		//onsole.info("PanelList.render", this.props);
+		const type=this.props.componentType || this.props.type || this.props.panel.type;
 		return (
-			<ReactActionStatePath {...this.props} type={this.props.componentType || this.props.type || this.props.panel.type} initialRASP={this.initialRASP}>
+			<ReactActionStatePath {...this.props} type={type} initialRASP={this.initialRASP}>
 				<RASPFocusHere filterTypes={['COMPONENT_DID_MOUNT', { type: "DECENDANT_UNFOCUS", distance: 1 }]}>
 					<PanelHeading cssName={'syn-panel-list'} panelButtons={['Instruction']} items={[]} >
 						<RASPPanelList />
@@ -156,7 +156,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 			}
 		}
 		this.setState({
-			containerWidth: this.refs.panel.clientWidth
+			containerWidth: this.refs.panel.getBoundingClientRect().width
 		});
 		this.observer = new MutationObserver(this.mutations.bind(this));
 	}
@@ -186,13 +186,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	componentDidUpdate() {
-		let target = this.refs.panel;
-		if (this.state.containerWidth != target.clientWidth) {  // could be changed by resizing the window
-			this.setState({
-				containerWidth: target.clientWidth
-			});
+		let containerWidth=this.refs.panel.getBoundingClientRect().width;
+		if (this.state.containerWidth !== containerWidth) {  // could be changed by resizing the window
+			this.setState({containerWidth});
 		}
-		this.observer.observe(target, { attributes: true, childList: true, subtree: true });
+		this.observer.observe(this.refs.panel, { attributes: true, childList: true, subtree: true });
 	}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -323,15 +321,14 @@ class RASPPanelList extends ReactActionStatePathMulti {
 		}
 
 		return (
-			<section ref="panel">
+			<section ref="panel" style={{boxSizing: "border-box"}}>
 				{crumbs}
 				<div ref='outer'>
-					{<div id='panel-list-wide'
+					<div id='panel-list-wide'
+						className="syn-panel-list-rotatory"
 						style={{
-							width: (containerWidth + spaceBetween) * (this.panelList.length || 1) + 'px',
-							left: -currentPanel * (containerWidth + spaceBetween) + 'px',
-							transition: "all 0.5s linear",
-							position: "relative"
+							width: (containerWidth + spaceBetween + 1) * (this.panelList.length || 1) + 'px', // +1 because of the border on the right
+							left: -currentPanel * (containerWidth + spaceBetween +1) + 'px', //+1 because of the border on the right
 						}}
 					>
 						{this.panelList.map((panelListItem, i) => {
@@ -344,7 +341,8 @@ class RASPPanelList extends ReactActionStatePathMulti {
 											display: rasp.shape === 'open' ? "inline-block" : 'none',
 											verticalAlign: 'top',
 											marginRight: spaceBetween + 'px',
-											width: containerWidth + 'px'
+											width: containerWidth + 'px',
+											borderRight: '1px solid #666' // this continues the border that has been chopped up 
 										}}
 									>
 										{panelListItem.content}
@@ -354,7 +352,6 @@ class RASPPanelList extends ReactActionStatePathMulti {
 								return null;
 						})}
 					</div>
-					}
 				</div>
 			</section>
 		);

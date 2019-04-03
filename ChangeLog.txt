@@ -1,3 +1,8 @@
+4/3/2019
+panel-list: smooth transitions working again, right-border added
+ask-item-why - margins and padding beautiful
+login-panel: type, and other panel props, are changed to that of the new type (not the login panel type)
+support-accept-reject: prop type checking fixed
 4/2/2019
 AskItemWhy - if you reload, it refetches entered data, and updates the constraints - but it doesn't automatically advance (should it? that will be harder)
 QsortItems - implemented min requirement, constraints are listed in the DoneItems box at the bottom

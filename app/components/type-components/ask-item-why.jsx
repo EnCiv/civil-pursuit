@@ -18,6 +18,11 @@ import isEqual from 'lodash/isEqual';
  */
 
  const styles={
+     'outer': {
+        margin: "0.5rem",
+        padding: "0.5rem",
+        border: "1px solid #666"
+     },
     'ask': {
         'font-size': '1.5em'
     },
@@ -25,8 +30,11 @@ import isEqual from 'lodash/isEqual';
         padding: `${publicConfig.itemVisualGap} 0  ${publicConfig.itemVisualGap} ${publicConfig.itemVisualGap}`
     },
     'why': {
-        padding: `0 0 1em 0`,
-        'font-size': '1.375em'
+        padding: `1em 0 .75em 0`,
+        'font-size': '1.25em'
+    },
+    'question': {
+        paddingLeft: '0.5rem'
     }
  }
 
@@ -121,16 +129,20 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
         const { user, parent, className, classes, ideas } = this.props;
 
         return (
-            <section id="syn-ask-item-why">
+            <section id="syn-ask-item-why" className={classes['outer']}>
                 <div className={classes["ask"]} key='idea'>
-                    <Item className={className} min item={parent} user={user} visualMethod="defaultNoScroll" rasp={this.childRASP('truncated','parent')}/>
+                    <Item className={'no-border'} min item={parent} user={user} visualMethod="defaultNoScroll" rasp={this.childRASP('truncated','parent')}/>
                     <div className={classes["creator"]}>
                         {Object.keys(ideas).map(ideaNum=>{
-                            return (<div key={'idea-'+ideaNum}>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={'answer-'+ideaNum} />
-                                <div className={classes['why']}>{this.props.harmony[0].evaluateQuestion}</div>
-                                <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={'why-'+ideaNum} />
-                                </div>);
+                            return (
+                                <div key={'idea-'+ideaNum}>
+                                    <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].item} rasp={this.childRASP('edit',ideaNum)} user={user} key={'answer-'+ideaNum} />
+                                    <div className={classes['question']} >
+                                        <div className={classes['why']}>{this.props.harmony[0].evaluateQuestion}</div>
+                                        <Item min headlineAfter className={className} visualMethod='edit' buttons={[]} item={ideas[ideaNum].why} rasp={this.childRASP('edit',ideaNum+'-why')} user={user} key={'why-'+ideaNum} />
+                                    </div>
+                                </div>
+                            );
                         })}
                     </div>
                 </div>

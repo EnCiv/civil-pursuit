@@ -10,11 +10,10 @@ import PropTypes from 'prop-types'
 
 export default class SupportAcceptOppose extends React.Component {
     static propTypes={
-        choices: PropTypes.object.isRequired,
+        choices: PropTypes.array.isRequired,
         description: PropTypes.string.isRequired,
         evaluateQuestion: PropTypes.string.isRequired,
         qbuttons: PropTypes.object,
-        parent: PropTypes.object.isRequierd,
         type: PropTypes.object.isRequired
     }
     render(){
