@@ -28,7 +28,7 @@ function calcNewLocation(props){
 
 class RASPLoginPanel extends ReactActionStatePathClient {
     constructor(props){
-        super(props);
+        super(props,'redirect');
         this.state={}; // required if using getDerivedStateFromProps
         this.componentWillMount(); // defined in RASPClient but won't be called because of getDerivedDerivedState from props - need to set the action filters before getDerived... is called
     }
@@ -36,12 +36,24 @@ class RASPLoginPanel extends ReactActionStatePathClient {
     actionFilters={
         REDIRECT: (action, delta)=>{
             delta.redirect=true;
+            action.distance-=1; // make this invisible
             return true; // to propagate
         }
     }
 
+    segmentToState(action, initialRASP) {
+        var nextRASP = {}, delta={};
+        if(action.segment==='r') delta.redirect=true;
+        else console.error("LoginPanel received unexpected segment:",action.segment);
+        Object.assign(nextRASP,initialRASP,delta);
+        this.deriveRASP(nextRASP, initialRASP);
+        if (nextRASP.pathSegment !== action.segment) console.error("profile-panel.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
+        return { nextRASP, setBeforeWait: true }  // set nextRASP as state before waiting for child
+    }
+
     deriveRASP(nextRASP, initialRASP){
         if(nextRASP.redirect) nextRASP.shape='redirect';
+        if(nextRASP.redirect) nextRASP.pathSegment='r';
     }
 
     static getDerivedStateFromProps(props,state){
@@ -69,7 +81,7 @@ class RASPLoginPanel extends ReactActionStatePathClient {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open',true)} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
             )
         } else {
             return (

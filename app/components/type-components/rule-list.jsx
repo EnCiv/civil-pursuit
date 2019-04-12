@@ -79,7 +79,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // 
-    actionToState(action,rasp,source,defaultRASP,delta) {
+    actionToState(action,rasp,source,initialRASP,delta) {
         //find the section that the itemId is in, take it out, and put it in the new section
         if(rasp.itemId==='redirect') {
             action.distance-=1; // if redirect, don't add to distance
@@ -102,7 +102,6 @@ export class RASPRuleList extends ReactActionStatePathClient {
             if(delta.creator) this.queueFocus(action); 
             else this.queueUnfocus(action);
         } else if (action.type==="REDIRECT"){
-            delta.shape='redirect';
             delta.itemId='redirect';
             this.queueFocus(action);
         } else if (action.type==='RESET_SHAPE'){
@@ -118,18 +117,23 @@ export class RASPRuleList extends ReactActionStatePathClient {
         } else 
             return null;
         Object.assign(nextRASP, rasp, delta);
-        if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';
+        this.deriveRASP(nextRASP,initialRASP)
         return(nextRASP);
     }
 
-    segmentToState(action,initialRASP){
-        var nextRASP={}, delta={};
-        if(action.segment==='r') delta.itemId="redirect"
+    segmentToState(action, initialRASP) {
+        var nextRASP = {}, delta={};
+        if(action.segment==='r') delta.itemId="redirect";
+        else console.error("RuleList SegmentToState received unexpected segment:",action.segment);
         Object.assign(nextRASP,initialRASP,delta);
-        if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';  // derive pathSegment
-        if(nextRASP.itemId==='redirect') nextRASP.shape='redirect'; // derive shape
-        else nextRASP.shape='truncated';
-        return {nextRASP, setBeforeWait: true}
+        this.deriveRASP(nextRASP, initialRASP);
+        if (nextRASP.pathSegment !== action.segment) console.error("profile-panel.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
+        return { nextRASP, setBeforeWait: true }  // set nextRASP as state before waiting for child
+    }
+
+    deriveRASP(nextRASP, initialRASP){
+        if(nextRASP.itemId==='redirect') nextRASP.shape='redirect';
+        if(nextRASP.itemId==='redirect') nextRASP.pathSegment='r';
     }
 
     onFlipMoveFinishAll() {

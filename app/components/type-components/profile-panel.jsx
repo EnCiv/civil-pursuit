@@ -35,7 +35,7 @@ class RASPProfilePanel extends ReactActionStatePathClient {
     }
 
     constructor(props) {
-        super(props);
+        super(props,'redirect');
 
         if (typeof window !== 'undefined' && this.props.user) {
             window.socket.emit('get user info', this.okGetUserInfo.bind(this));
@@ -133,12 +133,26 @@ class RASPProfilePanel extends ReactActionStatePathClient {
         },
         REDIRECT: (action, delta)=>{
             delta.redirect=true;
+            action.distance-=1; // make this invisible
             return true; // to propagate
         }
     }
 
+    segmentToState(action, initialRASP) {
+        var nextRASP = {};
+        var parts = action.segment.split(',');
+        parts.forEach(part => {
+          if (part === 'r') nextRASP.redirect = true;
+          else console.error("PanelItems.segmentToState unexpected part:", part);
+        })
+        this.deriveRASP(nextRASP, initialRASP);
+        if (nextRASP.pathSegment !== action.segment) console.error("profile-panel.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
+        return { nextRASP, setBeforeWait: true }  // set nextRASP as state before waiting for child
+    }
+
     deriveRASP(nextRASP, initialRASP){
         if(nextRASP.redirect) nextRASP.shape='redirect';
+        if(nextRASP.redirect) nextRASP.pathSegment='r';
     }
 
     render() {
@@ -146,14 +160,18 @@ class RASPProfilePanel extends ReactActionStatePathClient {
         const { userId, userInfo, userInfoReady } = this.state;
 
         if(rasp.redirect){
-            const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
-            const newPanel = {
-                parent: panel.parent,
-                type: this.state.typeList[index],
-                skip: panel.skip || 0,
-                limit: panel.limit || config['navigator batch size'],
-            };
-            return  <TypeComponent  {...this.props} rasp={this.childRASP('open','redirect')} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
+            if(!Object.keys(userInfo).length || !this.state.typeList.length) { // if coming here from a direct path and redirect is already set, we will have to wait for this stuff
+                return null; // don't render anything
+            } else {
+                const index = userId ? 1 : 0;  // if user defined skip the first entry which is usually LoginPanel
+                const newPanel = {
+                    parent: panel.parent,
+                    type: this.state.typeList[index],
+                    skip: panel.skip || 0,
+                    limit: panel.limit || config['navigator batch size'],
+                };
+                return  <TypeComponent  {...this.props} rasp={this.childRASP('open',true)} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
+            }
         }
 
         if(!this.neededInputAtStart)

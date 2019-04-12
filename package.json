@@ -106,7 +106,7 @@
     "prop-types": "^15.6.2",
     "randomstring": "^1.1.5",
     "react": "^16.6.3",
-    "react-action-state-path": "github:ddfridley/react-action-state-path#react16",
+    "react-action-state-path": "github:ddfridley/react-action-state-path#default-child",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.3",
     "react-flip-move": "^3.0.3",

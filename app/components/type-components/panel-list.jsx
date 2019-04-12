@@ -56,7 +56,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 			const { currentPanel, results } = action;
 			if (panelStatus[currentPanel] !== "done") { panelStatus[currentPanel] = "done"; }
 			if (results) Object.assign(this.shared, results);
-			if (this.waitingOnResults && this.waitingOnResults.nextFunc) {
+			if (this.waitingOnResults && this.waitingOnResults.currentPanel===currentPanel && this.waitingOnResults.nextFunc) {
 				var nextFunc = this.waitingOnResults.nextFunc;
 				this.waitingOnResults = null;
 				setTimeout(() => nextFunc(), 0);

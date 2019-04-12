@@ -206,7 +206,7 @@ export default QSortItems;
 // if section is not in sections, it will be added and itemId will be the first element in it
 // a new copy is returned - sections is not mutated;
 // If itemId is in the unsorted list and the target section is unsorted, then it will be moved to the top of the list, or if 'set' it will be left as is.
-//
+// If itemId if falsy - sections is returned unmodified
 
 export function QSortToggle(sections,itemId,section, set) {
     let done=false, i;
@@ -251,6 +251,6 @@ export function QSortToggle(sections,itemId,section, set) {
             else clone[section]=[itemId];
         }
         return clone;
-    } return null;
+    } return sections;
 }
 
