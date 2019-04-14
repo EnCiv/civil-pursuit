@@ -96,7 +96,7 @@ class ScrollWrapper extends React.Component {
 	 * |
 	 * ---------------------
 	 * |
-	 * --------------------- target.getBoundingClientRect.y
+	 * --------------------- target.getBoundingClientRect.top
 	 * |
 	 * | target.getBoundingClientRect.height  this is the target element
 	 * |
@@ -113,21 +113,21 @@ class ScrollWrapper extends React.Component {
 		let t = target.getBoundingClientRect(); // target Rect
 		let newTop;
 		
-		if(t.y < 0){ // it's above the top of the window
+		if(t.top < 0){ // it's above the top of the window
 			// scroll so the top is at the top of the wrapper (below the banner)
-			newTop= (s.top+t.y)-s.topBarHeight;
-		} else if (t.y < s.topBarHeight){ // it's in the banner area of the window
+			newTop= (s.top+t.top)-s.topBarHeight;
+		} else if (t.top < s.topBarHeight){ // it's in the banner area of the window
 			// scroll so the top is at the top of the wrapper (below the banner)
-			newTop=(s.top+t.y)-s.topBarHeight;
-		} else if (t.y < s.topBarHeight+s.scrollWrapperHeight){ // top of target is in the wrapper
+			newTop=(s.top+t.top)-s.topBarHeight;
+		} else if (t.top < s.topBarHeight+s.scrollWrapperHeight){ // top of target is in the wrapper
 			if(t.bottom < s.topBarHeight+s.scrollWrapperHeight){ // bottom of target is in the wrapper
 				// set the top, so that the top of target is at top of banner
-				newTop=(s.top+t.y)-s.topBarHeight;
+				newTop=(s.top+t.top)-s.topBarHeight;
 			}else { // the bottom of target is below the bottom of the wrapper
 				// align the bottoms
 				if(t.height>s.scrollWrapperHeight){ // target is bigger than the wrapper
 					// let the top be just below the banner, and the excess will flow below the screen
-					newTop=(s.top+t.y)-s.topBarHeight;
+					newTop=(s.top+t.top)-s.topBarHeight;
 				} else { // it will fit in the wrapper
 					// align the bottoms
 					newTop=(s.top+t.bottom)-s.topBarHeight-t.height;
@@ -136,7 +136,7 @@ class ScrollWrapper extends React.Component {
 		} else { // it's below the wrapper
 			if(t.height>s.scrollWrapperHeight){ // target is bigger than the wrapper
 				// let the top be just below the banner, and the excess will flow below the screen
-				newTop=(s.top+t.y)-s.topBarHeight;
+				newTop=(s.top+t.top)-s.topBarHeight;
 			} else { // it will fit in the wrapper
 				// align the bottoms
 				newTop=(s.top+t.bottom)-s.topBarHeight-t.height;
@@ -417,6 +417,7 @@ class ScrollWrapper extends React.Component {
 		let next = this.clampTop(nextPos, this.state, extent);
 		// Update the Vertical Value
 		this.htmlElement.style.top = (-next) + 'px';
+		
 		this.setState({
 			top: next,
 			vMovement: (next / this.state.scrollAreaHeight) * 100,
@@ -527,39 +528,39 @@ class ScrollWrapper extends React.Component {
 		});
 	}
 
+	animateScroll(scrollX, scrollY, shifted, now) {
+		// Make sure the content height is not changed
+		this.calculateSize(() => {
+
+			// Next Value
+			const nextY = this.state.top + scrollY;
+			const nextX = this.state.left + scrollX;
+
+			// Is it Scrollable?
+			const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
+			const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
+
+			// changes: Set scrolling state before changing position
+			this.setState({ scrolling: true }, () => {
+				// Vertical Scrolling
+				this.htmlElement.style.transition = null;
+				if (canScrollY && !shifted) {
+					this.normalizeVertical(nextY, { scrolling: false, reset: true });
+				}
+
+				// Horizontal Scrolling
+				if (shifted && canScrollX) {
+					this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
+				}
+
+				this.scrollAnimationFrame = 0;
+				this.lastScrollTimeStamp = (new Event('look')).timeStamp;
+			});
+		});
+	}
+
 	scroll(e) {
 		//e.preventDefault();
-
-		function animate(scrollX, scrollY, shifted, now) {
-			// Make sure the content height is not changed
-			this.calculateSize(() => {
-
-				// Next Value
-				const nextY = this.state.top + scrollY;
-				const nextX = this.state.left + scrollX;
-
-				// Is it Scrollable?
-				const canScrollY = true; //(this.state.scrollAreaHeight > this.state.scrollWrapperHeight) || (this.state.top !== 0);
-				const canScrollX = this.state.scrollAreaWidth > this.state.scrollWrapperWidth;
-
-				// changes: Set scrolling state before changing position
-				this.setState({ scrolling: true }, () => {
-					// Vertical Scrolling
-					this.htmlElement.style.transition = null;
-					if (canScrollY && !shifted) {
-						this.normalizeVertical(nextY, { scrolling: false, reset: true });
-					}
-
-					// Horizontal Scrolling
-					if (shifted && canScrollX) {
-						this.normalizeHorizontal(nextX, { scrolling: false, reset: true });
-					}
-
-					this.scrollAnimationFrame = 0;
-					this.lastScrollTimeStamp = (new Event('look')).timeStamp;
-				});
-			});
-		}
 
 
 
@@ -589,7 +590,7 @@ class ScrollWrapper extends React.Component {
 				this.lateScroll = setTimeout(() => {
 					this.accumulateScrollX = 0;
 					this.accumulateScrollY = 0;
-					this.scrollAnimationFrame = window.requestAnimationFrame((now) => { animate.call(this, this.accumulateScrollX, this.accumulateScrollY, shifted, now); this.lateScroll = 0 });
+					this.scrollAnimationFrame = window.requestAnimationFrame((now) => { this.animateScroll(this.accumulateScrollX, this.accumulateScrollY, shifted, now); this.lateScroll = 0 });
 				}, 50)
 			}
 			return;
@@ -604,7 +605,7 @@ class ScrollWrapper extends React.Component {
 		scrollY += this.accumulateScrollY;
 		this.accumulateScrollX = 0;
 		this.accumulateScrollY = 0;
-		this.scrollAnimationFrame = window.requestAnimationFrame(animate.bind(this, scrollX, scrollY, shifted));
+		this.scrollAnimationFrame = window.requestAnimationFrame(this.animateScroll.bind(this, scrollX, scrollY, shifted));
 	}
 
 	render() {
