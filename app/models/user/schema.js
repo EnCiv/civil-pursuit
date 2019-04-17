@@ -104,9 +104,15 @@ class Schema extends Mungo.Model {
 
       "starting_bloc_race":     Mungo.Mixed,
 
-      "turks":                  Mungo.Mixed,
+      "turks":                  [{
+        "hitId":  String,
+        "assignmentId": String,
+        "turkSubmitTo": String,
+        "comment": String
+      }],
 
-      "workerId":               String
+      "workerId":               String,
+
     };
   }
 }

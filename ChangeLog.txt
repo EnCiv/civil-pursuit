@@ -1,3 +1,5 @@
+4/17/2019
+fixed mechanical turk worker logins. user schema for turks, detailed. turk_user doesn't add assignmentID to db, raspPanelItems does not mount and never rerender the panels, (the user prop wasn't coming in on the first render)
 4/12/2019
 rasp - supports 'default' child, client includes default actionToState so you can use actionFilters, deriveRASP instead. Fixed a bug in RASPClientMult and PanelList that when using SET_PATH would set the new child too early.
 4/3/2019

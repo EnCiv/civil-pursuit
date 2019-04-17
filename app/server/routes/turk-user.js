@@ -2,6 +2,7 @@
 import User from '../../models/user';
 import State from '../../models/state';
 import MechanicalTurk from '../mechanical-turk';
+import clone from 'clone';
 
 var States;
 
@@ -79,18 +80,29 @@ function doTurkUser(req,res,next){
                 err=>next(err)
                 )
             } else {
-                user = user.toJSON(); // convert to a regular object from a Mungo object
-                req.user = user; // user wasn't already logged in so we need this for setting the cookie
-                req.user.assignmentId=assignmentId;  // user is working on this assignment
-                if (user.turks.some(t => t.assignmentId === assignmentId)) return next(); // this assignment is already in progress
-                user.turks=user.turks.concat([{ hitId, assignmentId, turkSubmitTo }]); // make a clean copy so not to upset mungo
-                User.update({ _id: user._id }, {$set: {turks: user.turks}}) // don't write the whole doc, just the table so make it easier on mungo
-                    .then(next, (error) => next('turkUser update Error:' + error))
+                req.user = user.toJSON(); // convert to a regular object from a Mungo object
+                if (req.user.turks.some(t => t.assignmentId === assignmentId)) {
+                    req.user.assignmentId=assignmentId;  // user is working on this assignment - but don't put it in the database
+                    return next(); // this assignment is already in progress
+                }
+                req.user.turks=req.user.turks.concat([{ hitId, assignmentId, turkSubmitTo }]);
+                var userD = clone(req.user);// make a copy because the database will didle the document
+                req.user.assignmentId=assignmentId;  // user is working on this assignment - but don't put it in the db
+                User.update({ _id: userD._id }, userD)
+                    .then(()=>{}, // no need to wait for the db update
+                        (error) => {
+                        logger.error("turk-user error in update", error, user)
+                    })
+                next();
             }
-        }, (error) => next('turkUser FindOne Error: ' + error));
+        }, (error) => {
+                logger.error("turk-user error in do:", error.message)
+                next(error)
+            }
+        );
     }
     catch(error){
-        console.error("do_turk_user error:", error);
+        logger.error("do_turk_user error:", error);
         throw(error);
     }
 }

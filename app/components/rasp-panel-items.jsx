@@ -307,7 +307,6 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
     }
   }
 
-  mounted = [];  // we render items and store them in this array.  No need to rerender them every time
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
@@ -320,41 +319,22 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 
     var buttons = type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
 
-    content = items.map(item => {
-      if (!this.mounted[item.id]) { // only render this once
-        this.mounted[item.id] = (
-          <ItemStore item={item} key={`item-${item._id}`}>
-            <Item
-              {...otherProps}
-              parent={parent}
-              rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
-              buttons={buttons}
-              style={{ backgroundColor: bgc }}
-              visualMethod={this.vM.childVisualMethod()}
-            />
-          </ItemStore>
-        );
-      }
-      return (
-        <Accordion active={this.vM.childActive(rasp, item)} name='item' key={item._id + '-panel-item'}>
-          {this.mounted[item.id]}
-        </Accordion>
-      );
-    });
-
-    const end = skip + limit;
-
-    //       if ( count > limit ) {
-    //         loadMore = (
-    //           <h5 className="gutter text-center">
-    //             <a href="#" onClick={ this.loadMore.bind(this) }>Show more</a>
-    //           </h5>
-    //         );
-    //       }
-
     return (
       <section ref="top">
-        {content}
+        { items.map(item=> (
+          <Accordion active={this.vM.childActive(rasp, item)} name='item' key={item._id + '-panel-item'}>
+            <ItemStore item={item} key={`item-${item._id}`}>
+              <Item
+                {...otherProps}
+                parent={parent}
+                rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
+                buttons={buttons}
+                style={{ backgroundColor: bgc }}
+                visualMethod={this.vM.childVisualMethod()}
+              />
+            </ItemStore>
+          </Accordion>
+        ))}
         {loadMore}
       </section>
     );
