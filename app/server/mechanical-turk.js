@@ -2,7 +2,7 @@
 var AWS = require('aws-sdk');
 AWS.config = {
     "accessKeyId": process.env.AWSAccessKeyId,
-    "secretAccessKey": process.env.AWSSecretKey,
+    "secretAccessKey": process.env.AWSSecretAccessKey,
     "region": 'us-east-1',
     "sslEnabled": 'true'
 };

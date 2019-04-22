@@ -57,7 +57,11 @@ function doTurkUser(req,res,next){
         User.findOne({ workerId }).then(user => {
             if (!user) {
                 getUserProfile(hitId).then(profile=>{
-                    if(profile==={}) return next("turkUser workedId but no profile / Hit valid?: "+hitId);
+                    if(profile==={}) {
+                        console.error("turkUser workerId but no profile / Hit valid?: "+hitId)
+                        return next(new Error("turkUser workerId but no profile / Hit valid?: "+hitId));
+                    }
+                    ;
                     let password = ''; // generate a random password
                     let length = Math.floor(Math.random() * 9) + 16; // the length will be between 16 and 24 characters
                     for (; length > 0; length--) {
@@ -74,7 +78,7 @@ function doTurkUser(req,res,next){
                                 } else 
                                     return next(new Error("Error: turkUser Empty"));
                             }, 
-                            error => next('turkUser insertOne error:' + error)
+                            error => next(error)
                         )
                 },
                 err=>next(err)
@@ -91,18 +95,18 @@ function doTurkUser(req,res,next){
                 User.update({ _id: userD._id }, userD)
                     .then(()=>{}, // no need to wait for the db update
                         (error) => {
-                        logger.error("turk-user error in update", error, user)
+                        console.error("turk-user error in update", error, user)
                     })
                 next();
             }
         }, (error) => {
-                logger.error("turk-user error in do:", error.message)
+                console.error("turk-user error in do:", error.message)
                 next(error)
             }
         );
     }
     catch(error){
-        logger.error("do_turk_user error:", error);
+        console.error("do_turk_user error:", error);
         throw(error);
     }
 }

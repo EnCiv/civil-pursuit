@@ -1,3 +1,5 @@
+4/22/2019
+changed ENV name to AWSSecretAccessKey, added console.error messages, fixed error handling.
 4/17/2019
 fixed mechanical turk worker logins. user schema for turks, detailed. turk_user doesn't add assignmentID to db, raspPanelItems does not mount and never rerender the panels, (the user prop wasn't coming in on the first render)
 4/12/2019
