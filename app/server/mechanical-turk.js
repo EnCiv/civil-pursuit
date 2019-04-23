@@ -24,7 +24,7 @@ class MechanicalTurk {
             if(MechanicalTurk.HITTime && ((MechanicalTurk.HITTime.getTime()+1000) > (new Date()).getTime())) ok(); // don't exceed rate;
             MechanicalTurk.mturk.listHITs({},(err,data)=>{
                 if(err) {
-                    console.error(err.message);
+                    console.error("Mechanical Turk:", err.message);
                     ko(err.message);
                 } else {
                     MechanicalTurk.HITTime=new Date();
