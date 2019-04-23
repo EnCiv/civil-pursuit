@@ -38,9 +38,13 @@ class App extends React.Component {
 		}
 		MechanicalTurkTask.setFromProps(props);
 		this.flushed = false;
-		apiWrapper.Flush.call(this, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+		apiWrapper.Flush(this.props.user, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
 	}
 	
+	componentWillReceiveProps(newProps){
+		apiWrapper.Flush(newProps.user, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+	}
+
 	componentDidMount() {
 	  // Attach The Event for Responsive View~
 	  window.addEventListener('resize', ()=>this.htmlE.style.width=window.innerWidth+'px', {passive: false});

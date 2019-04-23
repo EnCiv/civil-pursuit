@@ -59,9 +59,9 @@ function apiWrapperUpdate1OrPush(message,cb){
     }
 }
 
-function apiWrapperFlush(forceUpdate) {
-    if(typeof window!== 'undefined' && this && this.props && this.props.user) {
-        USER=this.props.user; // this is how the other methods know whether to queue or emit the api's.
+function apiWrapperFlush(user, forceUpdate) {
+    if(typeof window!== 'undefined' && user) {
+        USER=user; // this is how the other methods know whether to queue or emit the api's.
         let message;
         let storage=window.localStorage;
         let json=storage.getItem("queue");
