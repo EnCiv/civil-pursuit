@@ -39,16 +39,23 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
         NEXT_PANEL: (action, delta)=>{
             delta.done=true;
             return true; // let this action propagate further
+        },
+        FOCUS: (action, delta)=>{
+            if(this.props.rasp.done)
+                this.queueAction({type: "NEXT_PANEL", status: "done", duration: 1}) // duration must extend to the parent of this component (the PANEL_LIST)
         }
     }
 
     nextPanel() {
+        if(this.updateTimeout) {clearTimeout(this.updateTimeout); this.updateTimeout=0}; // make sure the times is stopped - to prevent double nextPanels
+        if(this._unsubscribe) this._unsubscribe();  // after we are done with this panel, there is no need to process more updates from discussionGroupSync subscription
+        this.setState({membersToGo:0, timeToGo: 0});
         this.queueAction({type: "NEXT_PANEL", status: "done", duration: 1}) // duration must extend to the parent of this component (the PANEL_LIST)
-        if(this._unsubscribe) this._unsubscribe();  // after we are done with this panel, there is no need to process more updates
     }
 
     componentWillUnmount(){
-        if(this._unsubscribe) this._unsubscribe();  // to prevent setState errors on updates after this panel is unmounted
+        if(this.updateTimeout) clearTimeout(this.updateTimeout);
+        if(this._unsubscribe) this._unsubscribe();  // after we are done with this panel, there is no need to process more updates from discussionGroupSync subscription
     }
 
     async componentDidMount(){
@@ -70,7 +77,6 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
                     }
                     if(membersToGo<=0){
                         if(this.state.membersToGo>0){ // prevent a race/overload by making sure we haven't already been through here
-                            this.setState({membersToGo: 0});
                             this.nextPanel()
                             insertPvote({ _id: ObjectID().toString(), item: discussionGroup.id, criteria: 'discussionGroupStage-'+this.stage+'-done' }); // finished this stage
                         }
@@ -89,7 +95,6 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
                     this.setState({startTime: firstId.getTimestamp()})
                 } else if((vote.length==2 && vote[1]>this.stage) || (vote.length==3 && vote[1]>=this.stage)){  // user has passed by here before.  careful vote[1] is a string and stage is a number
                     this.nextPanel()
-                    this.setState({membersToGo: 0, timeToGo: 0})
                 }else if(vote.length==2 && vote[1]==this.stage){ // user has been here before, but not passed, careful vote[1] is a string and stage is a number
                     this.setState({startTime: ObjectID(info.userInfo.lastId).getTimestamp()})
                 } else
@@ -106,16 +111,21 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
         const {discussionGroupStageTime}=this.props;
         const timeToGo=Math.max(discussionGroupStageTime - (Date.now() - this.state.startTime),0);
         if(timeToGo<=0){
-            this.setState({timeToGo: 0});
             this.nextPanel()
             insertPvote({ _id: ObjectID().toString(), item: this.props.discussionGroup.id, criteria: 'discussionGroupStage-'+this.stage+'-done' }); // finished this stage
         }else{
             this.setState({timeToGo})
-            setTimeout(()=>this.updateTimeToGo(),1000)
+            this.updateTimeout=setTimeout(()=>this.updateTimeToGo(),1000);
         }
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    componentWillReceiveProps(newProps){
+        if(newProps.rasp.done) {
+            this.queueAction({type: "RESULTS", status: 'done'});
+        } else {
+            this.queueAction({type: "ISSUES"});
+        }
+    }
 
     render() {
         return (
@@ -126,7 +136,7 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
                         <div style={{display: 'table-cell', textAlign: 'center'}} >
                             <div><label>Members until Go: </label>{this.state.membersToGo}</div>
                             <div style={{fontSize: "50%", lineHeight: "100%"}}>or</div>
-                            <div><label>Time until Go: </label>{TimeFormat.fromS(Math.round(this.state.timeToGo/1000),"mm:ss")}</div>
+                            <div><label>Max Time until Go: </label>{TimeFormat.fromS(Math.round(this.state.timeToGo/1000),"mm:ss")}</div>
                         </div>
                     </div>
                     <div style={{display: 'table-row'}}> </div>

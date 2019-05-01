@@ -45,7 +45,6 @@ class RASPRefinePanel extends ReactActionStatePathClient {
             return null;
         Object.assign(nextRASP,rasp,delta);
         return nextRASP;
-        return this.props.rasp.toParent(action);
     }
 
     segmentToState(action,initialRASP){

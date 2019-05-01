@@ -1,3 +1,14 @@
+5/1/2019
+Harmony - doesn't render until fetch has completed.
+Promote - if an item, but not one to compare to - then promote auto completes
+Refine - cleaned up unreachable completed
+PanelStore - shows loading until fetch has completed, fixed problem with createItem triggering in the wrong panel
+AskItemWhy - sends ISSUES and RESULTS to parent (PanelList), doens't autocomplete - but if restoring from path PanelList will move it forward
+CafeIdea - created noResults prop so that it won't put results into shared - but this is a Kludge and we need a more general method
+DiscussionGroupSync - will move auto advance  by FOCUS event from panel list if sync is complete, better cleanup of timer on unmount, sends RESULTS and ISSUES to PanelList so auto advance while resoring from path will worker
+PanelList - sends FOCUS to the panel being changed to, adjusts height of current panel in a way that keeps the bottom border
+AcceptSupportOppose - has border around buttons
+panel.less - added a comment that syn-panel-list-rotary needs to be in a class and won't work if it's in a style that keeps changing
 4/23/2019
 apiWrapper.Flush fixed for turk - user not defined on initial render
 4/22/2019

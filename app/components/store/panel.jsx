@@ -3,6 +3,7 @@
 import React from 'react';
 import makePanelId from '../../lib/app/make-panel-id';
 import publicConfig from '../../../public.json';
+import Loading from '../util/loading'
 
 class PanelStore extends React.Component {
 
@@ -26,7 +27,6 @@ class PanelStore extends React.Component {
 
 	componentDidMount() {
 		this.okCreateItemBound = this.okCreateItem.bind(this);
-		window.socket.on('OK create item', this.okCreateItemBound);
 
 		if (!this.state.panel) {
 			const panel = { type: this.props.type };
@@ -45,6 +45,7 @@ class PanelStore extends React.Component {
 		} else {
 			this.id = makePanelId({ type: this.props.type, parent: this.props.parent || null });
 		}
+		window.socket.on('OK create item', this.okCreateItemBound);
 	}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,11 +70,13 @@ class PanelStore extends React.Component {
 		const itemTypeId= this.props.type._id || this.props.type; 
 
 		let index;
-		if (item._id && this.state.panel.items && ((index = this.state.panel.items.findIndex(itm => itm._id === item._id)) !== -1)) { // if the item being created is already in there, just update it
+		if(item.type._id !== itemTypeId || itemParentId !== parentId){ // if not creating item for this list
+			return;
+		} else if (item._id && this.state.panel.items && ((index = this.state.panel.items.findIndex(itm => itm._id === item._id)) !== -1)) { // if the item being created is already in there, just update it
 			var items = this.state.panel.items.slice();
 			Object.assign(items[index], item);
 			this.setState({ panel: { items: items, type: this.state.panel.type, parent: this.props.parent } })
-		} else if (item.type._id === itemTypeId && itemParentId === parentId) {
+		} else {
 			let oldItems = this.state.panel.items || [];
 			var items = [item].concat(oldItems);
 			this.setState({ panel: {...this.state.panel, items}});
@@ -92,7 +95,7 @@ class PanelStore extends React.Component {
 				</section>
 			);
 		else
-			return null;
+			return <Loading />;
 	}
 }
 

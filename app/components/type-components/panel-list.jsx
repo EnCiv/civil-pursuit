@@ -50,6 +50,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 			// advance to next panel if this was called by the current panel and it is done - other panels might call this with done
 			if (status === 'done' && currentPanel === rasp.currentPanel && rasp.currentPanel < (this.state.typeList.length - 1)) {
 				delta.currentPanel = rasp.currentPanel + 1;
+				if(this.toChild[delta.currentPanel]) setTimeout(()=>this.toChild[delta.currentPanel]({type: 'FOCUS'})); // if child has already been rendered it may need to know that it's panel has come in focus again
 				this.smoothHeight();  // adjust height
 			}
 		} else if (action.type === "RESULTS") {
@@ -73,6 +74,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 				delta.currentPanel = nextPanel;
 				delta.shape = 'open';
 			}
+			if(this.toChild[delta.currentPanel]) setTimeout(()=>this.toChild[delta.currentPanel]({type: 'FOCUS'})); // if child has already been rendered it may need to know that it's panel has come in focus again
 			this.queueFocus(action);
 		} else if (action.type === "RESET_TO_BUTTON") {
 			const { nextPanel } = action;
@@ -175,10 +177,10 @@ class RASPPanelList extends ReactActionStatePathMulti {
 		if (!this.refs['panel-list-' + this.props.rasp.currentPanel]) return;
 		let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.props.rasp.currentPanel]);
 		if (!(inner)) return;
-		let outerHeight = outer.clientHeight;
-		let innerHeight = inner.clientHeight;
-		let outerMaxHeight = parseInt(outer.style.maxHeight, 10) || 0;
-		if (outerHeight != innerHeight || outerMaxHeight != innerHeight) {
+		let outerHeight = outer.getBoundingClientRect().height;
+		let innerHeight = inner.getBoundingClientRect().height;
+		let outerMaxHeight = Number.parseFloat(outer.style.maxHeight) || 0;
+		if (outerHeight != innerHeight || outerMaxHeight != (Math.ceil(innerHeight))) {
 			this.smoothHeight();
 		}
 	}
@@ -214,11 +216,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
 				return;
 			}
 			let inner = ReactDOM.findDOMNode(this.refs['panel-list-' + this.props.rasp.currentPanel]);
-			let outerHeight = outer.clientHeight;
-			let innerHeight = inner.clientHeight;
-			let outerMaxHeight = parseInt(outer.style.maxHeight, 10) || 0;
-			if (outerHeight != innerHeight || outerMaxHeight != innerHeight) {
-				outer.style.maxHeight = innerHeight + 'px';
+			let outerHeight = outer.getBoundingClientRect().height;
+			let innerHeight = inner.getBoundingClientRect().height;
+			let outerMaxHeight = Number.parseFloat(outer.style.maxHeight) || 0;
+			if (outerHeight != innerHeight || outerMaxHeight != (Math.ceil(innerHeight))) {
+				outer.style.maxHeight = Math.ceil(innerHeight) + 'px';
 			}
 		}, this.stepRate);
 	}
@@ -323,35 +325,33 @@ class RASPPanelList extends ReactActionStatePathMulti {
 		return (
 			<section ref="panel" style={{boxSizing: "border-box"}}>
 				{crumbs}
-				<div ref='outer'>
-					<div id='panel-list-wide'
-						className="syn-panel-list-rotatory"
-						style={{
-							width: (containerWidth + spaceBetween + 1) * (this.panelList.length || 1) + 'px', // +1 because of the border on the right
-							left: -currentPanel * (containerWidth + spaceBetween +1) + 'px', //+1 because of the border on the right
-						}}
-					>
-						{this.panelList.map((panelListItem, i) => {
-							if (panelListItem.content) {
-								return (
-									<div id={`panel-list-${i}`}
-										ref={`panel-list-${i}`}
-										key={typeList[i]._id + '-' + (panel.parent._id || 'none') + '-' + i}
-										style={{
-											display: rasp.shape === 'open' ? "inline-block" : 'none',
-											verticalAlign: 'top',
-											marginRight: spaceBetween + 'px',
-											width: containerWidth + 'px',
-											borderRight: '1px solid #666' // this continues the border that has been chopped up 
-										}}
-									>
-										{panelListItem.content}
-									</div>
-								);
-							} else
-								return null;
-						})}
-					</div>
+				<div id='panel-list-wide' ref='outer'
+					className="syn-panel-list-rotatory"
+					style={{
+						width: Math.ceil((containerWidth + spaceBetween + 1) * (this.panelList.length || 1)) + 'px', // +1 because of the border on the right, ceil() to ensure Fire Fox doesn't wrap the last panel (eg 14 panels 958.5 wide, )
+						left: -currentPanel * (containerWidth + spaceBetween +1) + 'px', //+1 because of the border on the right
+					}}
+				>
+					{this.panelList.map((panelListItem, i) => {
+						if (panelListItem.content) {
+							return (
+								<div id={`panel-list-${i}`}
+									ref={`panel-list-${i}`}
+									key={typeList[i]._id + '-' + (panel.parent._id || 'none') + '-' + i}
+									style={{
+										display: rasp.shape === 'open' ? "inline-block" : 'none',
+										verticalAlign: 'top',
+										marginRight: spaceBetween + 'px',
+										width: containerWidth + 'px',
+										borderRight: '1px solid #666' // this continues the border that has been chopped up 
+									}}
+								>
+									{panelListItem.content}
+								</div>
+							);
+						} else
+							return null;
+					})}
 				</div>
 			</section>
 		);

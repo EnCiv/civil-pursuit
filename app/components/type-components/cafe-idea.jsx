@@ -8,6 +8,13 @@ import PanelHeading from '../panel-heading';
 import DoneItem from '../done-item';
 import insertQVote from '../../api-wrapper/insert-qvote';
 
+/********************
+ * KLUDGE ALERT
+ * 
+ * the prop noResults tells this component not to return results in NEXT_PANEL.  But there should be a more general way of mapping what a component produces into the shared prop, so that components can be reused within a panel list
+ * 
+ */
+
 /**
  * minIdea - the number of ideas required to get the done button. if negative then an answer is required unless parent.answerCount is greater than one
  * maxIdeas - the number of idea input boxes to show
@@ -55,10 +62,10 @@ class RASPCafeIdea extends ReactActionStatePathClient {
         var nextRASP = {};
         if (action.type === "POST_ITEM") {
             let item = action.item;
-            let shared = this.props.shared;
+            let {noResults, shared} = this.props;
             var results = { idea: item, parent: this.props.parent, type: this.props.type };
             this.ideaState[action.ideaNum]={posted: true, dirty: false, item};
-            if (shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
+            if (!noResults && shared.items && shared.sections && shared.index && item._id) {  // if the previous step had resulted in a qsorted list.
                 shared.items.push(item);
                 results.items = shared.items;
                 let mostSection=Object.keys(this.QSortButtonList).find(b=>this.QSortButtonList[b].harmonySide==='left');  // stuff that the user writes automatically goes into the mostSection - most Important
@@ -71,8 +78,11 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             }
             delta.ideaCount=ideaCount();
             delta.dirtyCount=dirtyCount();
-            if(this.props.minIdeas===0)
-                setTimeout(() => this.props.rasp.toParent({ type: "NEXT_PANEL", results }));
+            if(this.props.minIdeas===0) {
+                var action={type: "NEXT_PANEL"};
+                if(!this.props.noResults) action.results=results;
+                setTimeout(() => this.props.rasp.toParent(action));
+            }
             // no state change, the action will be consumed here
         } else if ((action.type === "DESCENDANT_FOCUS") && (action.distance > 1) && this.props.item && this.props.item.type && this.props.item.type.visualMethod && (this.props.item.type.visualMethod === 'ooview')) {
                     delta.decendantFocus = true;
@@ -126,7 +136,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
 
     render() {
 
-        const { user, type, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1, showParent=true } = this.props;
+        const { user, type, rasp, panelNum, parent, minIdeas=0, numIdeas=1, maxIdeas=1, showParent=true, noResults } = this.props;
         let ideaCount=rasp.ideaCount || 0;
         let constraints=[];
         let needed = -(ideaCount - (minIdeas >= 0 ? minIdeas : parent.answerCount>0 ? 0 : 1));
@@ -150,7 +160,13 @@ class RASPCafeIdea extends ReactActionStatePathClient {
                 <DoneItem active={!constraints.length} 
                     constraints={constraints}
                     message={ideaCount>0 ? "Continue" : "Continue without contributing an idea."} 
-                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: {items: Object.keys(this.ideaState).map(k=>this.ideaState[k].item)}})} 
+                    onClick={()=>{
+                        var action={type: 'NEXT_PANEL', status: "done"};
+                        if(!noResults)
+                            action.results={items: Object.keys(this.ideaState).map(k=>this.ideaState[k].item)};
+                        this.props.rasp.toParent(action)
+                        }
+                    } 
                 />
             </section>
         );

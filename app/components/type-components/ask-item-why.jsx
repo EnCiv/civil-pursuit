@@ -86,23 +86,27 @@ class AskItemWhy extends React.Component {
 
 class RASPAskItemWhy extends ReactActionStatePathClient {
     state={constraints: [], populated: ''}
-    valid={}
     constructor(props) {
         super(props, 'ideaNum',0);
         if(this.props.populated) this.state.populated='initially';
     }
 
     actionFilters={
-        "ITEM_CREATOR_DIRTY": (action,delta)=>{ Object.assign(this.valid,{[action.ideaNum]: action.valid}); this.isDone(this.props); return true}
+        "ITEM_CREATOR_DIRTY": (action,delta)=>{ 
+            let valid=this.props.rasp.valid || {};
+            if(valid[action.ideaNum] !== action.valid) delta.valid=Object.assign({},valid,{[action.ideaNum]: action.valid});
+            return true; // propagate further
+        }
     }
 
     isDone(props){
         const {ideas}=props;
         var constraints=[];
         let ideaNum;
+        let valid=props.rasp.valid||{};
         for(ideaNum in ideas){
-            if(!(this.valid[ideaNum])) constraints.push("Waiting for an answer to the question");
-            if(!(this.valid[ideaNum+'-why'])) constraints.push("Waiting for an explanation of why this answer is important to consider");
+            if(!(valid[ideaNum])) constraints.push("Waiting for an answer to the question");
+            if(!(valid[ideaNum+'-why'])) constraints.push("Waiting for an explanation of why this answer is important to consider");
         }
         if(!isEqual(constraints,this.state.constraints))
             this.setState({constraints});
@@ -121,8 +125,21 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
         this.queueAction({type: "NEXT_PANEL", status: 'done'})
     }
 
+    componentDidMount(){
+        this.sendResultsToPanel(this.props);
+    }
+
     componentWillReceiveProps(newProps){
         if(!this.props.populated && newProps.populated) this.setState({populated: 'fetched'}) // render after validity checks
+        this.sendResultsToPanel(newProps)
+    }
+
+    sendResultsToPanel(props){
+        if(this.isDone(props)){
+            this.queueAction({type: "RESULTS", status: 'done'});
+        } else {
+            this.queueAction({type: "ISSUES"});
+        }
     }
 
     render() {
@@ -147,12 +164,10 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
                     </div>
                 </div>
                 <DoneItem
-                    populated={this.state.populated}
                     active={!this.state.constraints.length} 
                     constraints={this.state.constraints}
                     message={"Continue"} 
                     onClick={this.done.bind(this)}
-                    autoAdvance={this.advance.bind(this)}
                 />
             </section>
         );

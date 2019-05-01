@@ -42,9 +42,11 @@ function RASPSupportAcceptOppose (props) {  // This is not a RASPClient - becaus
 
     function choice(button){
         return (
-            <Button small shy onClick={onClick.bind({},button.criteria)} title={button.title} className="harmony-button" key={button.criteria}>
-                <span className="civil-button-text">{button.name}</span>
-            </Button>
+            <span style={{padding: '0.5em', marginRight: '0.5em'}} key={button.criteria}>
+                <Button small shy onClick={onClick.bind({},button.criteria)} title={button.title} style={{border: '1px solid darkslategray'}} key={button.criteria}>
+                    <span className="civil-button-text">{button.name}</span>
+                </Button>
+            </span>
         );
     }
 
@@ -56,7 +58,7 @@ function RASPSupportAcceptOppose (props) {  // This is not a RASPClient - becaus
             </div>
             <h1>{evaluateQuestion}</h1>
             <div style={{textAlign: 'center'}}>
-                <span >
+                <span>
                     { choices.map((button) => choice(button)) }
                 </span>
             </div>

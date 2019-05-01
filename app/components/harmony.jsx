@@ -179,8 +179,8 @@ class RASPHarmony extends ReactActionStatePathClient {
 
     render() {
       const { active, item, rasp, ...otherProps } = this.props;
-      //onsole.info("Harmony.render", this.props);
 
+      if(!(item && item.harmony && item.harmony.types && item.harmony.types.length>=2)) return null; // if the item doesn't have what it needs - don't render
 
       let contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side === 'L'} key={item._id + '-left'}>
