@@ -106,6 +106,7 @@ function start (emitter = false) {
               .on('message', (message)=>{emitter.emit(message); ok()});
           }
           catch ( error ) {
+            console.error('HTTP server caught error on start',error);
             ko(error);
           }
         })
@@ -134,7 +135,7 @@ if ( file === __filename || file === __filename.replace(/\.js$/, '') ) {
     .on('error', error => {
       logger.error({error});
       console.log('Start: Error'.bgRed);
-      if ( error.stack ) {
+      if ( error && error.stack ) {
         console.log("start:", error.stack.red);
       }
       else {

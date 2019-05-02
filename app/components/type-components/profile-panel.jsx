@@ -170,7 +170,7 @@ class RASPProfilePanel extends ReactActionStatePathClient {
                     skip: panel.skip || 0,
                     limit: panel.limit || config['navigator batch size'],
                 };
-                return  <TypeComponent  {...this.props} rasp={this.childRASP('open',true)} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} />
+                return  <TypeComponent  {...this.props} rasp={this.childRASP('open',true)} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} {...newPanel} />
             }
         }
 

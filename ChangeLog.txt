@@ -1,3 +1,7 @@
+5/2/2019
+ask-item-why - passes items in RESULTS action so they can be added to the random items
+profile-panel - passes ...panel to the typecomponent as well so the type will changed
+start.js - more error messages, but still not catching the error that the server can't start because the port is in use
 5/1/2019
 Harmony - doesn't render until fetch has completed.
 Promote - if an item, but not one to compare to - then promote auto completes

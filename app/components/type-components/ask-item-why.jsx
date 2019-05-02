@@ -122,7 +122,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
     }
 
     advance(){
-        this.queueAction({type: "NEXT_PANEL", status: 'done'})
+        this.queueAction({type: "NEXT_PANEL", status: 'done', results: {items: Object.keys(this.props.ideas).map(ideaNum=>this.props.ideas[ideaNum].item)}})
     }
 
     componentDidMount(){
@@ -136,7 +136,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
 
     sendResultsToPanel(props){
         if(this.isDone(props)){
-            this.queueAction({type: "RESULTS", status: 'done'});
+            this.queueAction({type: "RESULTS", status: 'done', results: {items: Object.keys(this.props.ideas).map(ideaNum=>this.props.ideas[ideaNum].item)}});
         } else {
             this.queueAction({type: "ISSUES"});
         }
