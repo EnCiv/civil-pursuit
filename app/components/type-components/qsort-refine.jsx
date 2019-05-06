@@ -222,15 +222,17 @@ class QSortRefineItem extends React.Component {
         const {qbuttons, sectionName, item,  whyItemId, user, type, winner, rasp } = this.props;
 
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}}  key={ `item-${item._id}` }>
+                <div key={ `item-${item._id}` }>
                     <ItemStore item={ item }>
-                        <Item
-                            user    =   { user }
-                            rasp    =   { rasp }
-                            buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
-                            hideFeedback = {this.props.hideFeedback}
-                            visualMethod = "defaultNoScroll"
-                        />
+                        <div style={{backgroundColor: qbuttons[sectionName].color}} >
+                            <Item
+                                user    =   { user }
+                                rasp    =   { rasp }
+                                buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
+                                hideFeedback = {this.props.hideFeedback}
+                                visualMethod = "defaultNoScroll"
+                            />
+                        </div>
                     </ItemStore>
                 </div>
         );

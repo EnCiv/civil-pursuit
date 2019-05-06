@@ -210,15 +210,17 @@ class QSortWhyItem extends React.Component {
     render(){
         const {qbuttons, sectionName, item, user, whyName, rasp, key } = this.props;
         return(
-                <div style={{backgroundColor: qbuttons[sectionName].color}} key={ key }>
+                <div key={ key }>
                     <ItemStore item={ item } key={ key+'-why' }>
-                        <Item
-                            {...this.props}
-                            buttons =   { ['CreateHarmony']}
-                            side    =   { qbuttons[whyName].harmonySide}
-                            style   = {{backgroundColor: qbuttons[sectionName].color}} 
-                            min={true}
-                        />
+                        <div style={{backgroundColor: qbuttons[sectionName].color}}>>
+                            <Item
+                                {...this.props}
+                                buttons =   { ['CreateHarmony']}
+                                side    =   { qbuttons[whyName].harmonySide}
+                                style   = {{backgroundColor: qbuttons[sectionName].color}} 
+                                min={true}
+                            />
+                        </div>
                     </ItemStore>
                 </div>
         );
