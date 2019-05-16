@@ -816,7 +816,7 @@ class RASPItem extends ReactActionStatePathClient {
 
         //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
-        if (!item) { return (<div style={{ textAlign: "center" }}>Nothing available at this time.</div>); }
+        if (!item) { return (<div style={Object.assign({},this.props.style,{ textAlign: "center" })}>Nothing available at this time.</div>); }
 
         if (item.references && item.references.length)
             noReference = false;
@@ -866,7 +866,7 @@ class RASPItem extends ReactActionStatePathClient {
         }
 
         return (
-            <article className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
+            <div style={this.props.style} className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
                 <Accordion active={this.vM.active(rasp)} text={true} >
                     <ItemMedia {...childProps} shape={shape} onClick={this.readMore}
                         ref="media"
@@ -901,7 +901,7 @@ class RASPItem extends ReactActionStatePathClient {
                 <section className={cx(classes["item-footer"], classes[shape])} ref="footer">
                     {buttons ? buttons.map(button => renderPanel(button)) : null}
                 </section>
-            </article>
+            </div>
         );
     }
 }

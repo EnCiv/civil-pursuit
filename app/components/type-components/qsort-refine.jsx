@@ -72,7 +72,7 @@ class RASPQSortRefine extends ReactActionStatePathClient {
         var nextRASP={};
         if((action.type ==="ITEM_REFINE") || (action.type ==="SHOW_ITEM")) {  // ** ITEM_REFINE is if the user chose the item he created, show_item if the item the user didn't just create
             this.results.refine[this.whyName][action.itemId]=action.item;
-            this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName) });
+            this.setState({ 'sections': QSortToggle(this.state.sections, action.itemId, this.whyName, 'set') });  // sometime there might be two actions on the same item - but don' toggle
             var doc = document.documentElement;
             this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
@@ -222,19 +222,18 @@ class QSortRefineItem extends React.Component {
         const {qbuttons, sectionName, item,  whyItemId, user, type, winner, rasp } = this.props;
 
         return(
-                <div key={ `item-${item._id}` }>
-                    <ItemStore item={ item }>
-                        <div style={{backgroundColor: qbuttons[sectionName].color}} >
-                            <Item
-                                user    =   { user }
-                                rasp    =   { rasp }
-                                buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
-                                hideFeedback = {this.props.hideFeedback}
-                                visualMethod = "defaultNoScroll"
-                            />
-                        </div>
-                    </ItemStore>
-                </div>
+            <div key={ `item-${item._id}` }>
+                <ItemStore item={ item }>
+                    <Item
+                        style={{backgroundColor: qbuttons[sectionName].color}}
+                        user    =   { user }
+                        rasp    =   { rasp }
+                        buttons =    {[{component: 'Refine', winner, whyItemId, type, unsortedColor: qbuttons['unsorted'].color}]}
+                        hideFeedback = {this.props.hideFeedback}
+                        visualMethod = "defaultNoScroll"
+                    />
+                </ItemStore>
+            </div>
         );
     }
 }

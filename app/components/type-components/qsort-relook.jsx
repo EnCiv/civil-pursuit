@@ -184,23 +184,22 @@ class RASPQSortReLook extends ReactActionStatePathClient {
                             {   content: 
                                 <div ref={(ref)=>{ref && (this.mounted[item._id].ref=ref)}}>
                                     <ItemStore item={item} key={`item-${item._id}`}>
-                                        <div style={{ backgroundColor: qbuttons[criteria].color }} >
-                                            <Item
-                                                user={user}
-                                                buttons={['QSortButtons', { component: 'Harmony', 
-                                                                            visualMethod: 'titleize', 
-                                                                            shape: 'title', 
-                                                                            limit: 5, 
-                                                                            hideFeedback: 
-                                                                            feedbackMethod==='hidden', 
-                                                                            createMethod: 'visible', 
-                                                                            promoteMethod: 'visible', 
-                                                                            active: (criteria === 'unsorted' || active)
-                                                                            }]}
-                                                qbuttons={qbuttons}
-                                                rasp={ this.childRASP('truncated', item._id) }
-                                            />
-                                        </div>
+                                        <Item
+                                            style={{ backgroundColor: qbuttons[criteria].color }}
+                                            user={user}
+                                            buttons={['QSortButtons', { component: 'Harmony', 
+                                                                        visualMethod: 'titleize', 
+                                                                        shape: 'title', 
+                                                                        limit: 5, 
+                                                                        hideFeedback: 
+                                                                        feedbackMethod==='hidden', 
+                                                                        createMethod: 'visible', 
+                                                                        promoteMethod: 'visible', 
+                                                                        active: (criteria === 'unsorted' || active)
+                                                                        }]}
+                                            qbuttons={qbuttons}
+                                            rasp={ this.childRASP('truncated', item._id) }
+                                        />
                                     </ItemStore>
                                 </div>,
                                 criteria: criteria,

@@ -65,7 +65,6 @@ class RASPRefinePanel extends ReactActionStatePathClient {
                         (this.mounted[winner]=
                          (<ItemStore item={winner} key={`item-${winner && winner._id || 'none'}`}>
                             <Item
-                                item={winner}
                                 user={user}
                                 rasp={this.childRASP(rasp.shape, 'winner')}
                             />

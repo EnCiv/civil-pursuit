@@ -35,7 +35,7 @@ class RASPLoginPanel extends ReactActionStatePathClient {
 
     actionFilters={
         REDIRECT: (action, delta)=>{
-            delta.redirect=true;
+            delta.redirect='redirect';
             action.distance-=1; // make this invisible
             return true; // to propagate
         }
@@ -43,7 +43,7 @@ class RASPLoginPanel extends ReactActionStatePathClient {
 
     segmentToState(action, initialRASP) {
         var nextRASP = {}, delta={};
-        if(action.segment==='r') delta.redirect=true;
+        if(action.segment==='r') delta.redirect='redirect';
         else console.error("LoginPanel received unexpected segment:",action.segment);
         Object.assign(nextRASP,initialRASP,delta);
         this.deriveRASP(nextRASP, initialRASP);
@@ -81,7 +81,7 @@ class RASPLoginPanel extends ReactActionStatePathClient {
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } rasp={this.childRASP('open',true)} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
             )
         } else {
             return (

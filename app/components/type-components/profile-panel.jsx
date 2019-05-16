@@ -132,7 +132,7 @@ class RASPProfilePanel extends ReactActionStatePathClient {
             return true; //  to propagate
         },
         REDIRECT: (action, delta)=>{
-            delta.redirect=true;
+            delta.redirect='redirect';
             action.distance-=1; // make this invisible
             return true; // to propagate
         }
@@ -142,7 +142,7 @@ class RASPProfilePanel extends ReactActionStatePathClient {
         var nextRASP = {};
         var parts = action.segment.split(',');
         parts.forEach(part => {
-          if (part === 'r') nextRASP.redirect = true;
+          if (part === 'r') nextRASP.redirect = 'redirect';
           else console.error("PanelItems.segmentToState unexpected part:", part);
         })
         this.deriveRASP(nextRASP, initialRASP);
@@ -170,7 +170,7 @@ class RASPProfilePanel extends ReactActionStatePathClient {
                     skip: panel.skip || 0,
                     limit: panel.limit || config['navigator batch size'],
                 };
-                return  <TypeComponent  {...this.props} rasp={this.childRASP('open',true)} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} {...newPanel} />
+                return  <TypeComponent  {...this.props} rasp={this.childRASP('open','redirect')} userInfo={userInfo} component={this.state.typeList[index].component} panel={newPanel} {...newPanel} />
             }
         }
 

@@ -1,3 +1,9 @@
+5/16/2019
+ItemStore - made sure the child Item not include item as a prop. (qsort-flip-item, rasp-panel-items, refine, panel-questions, qsort-finale, qsort-relook, qsort-flip-item, qsort-why )
+Item - chrome flipmove inherited background color problem fixed - style is passed to item; qsort-refine,
+Path not restored past redirect - fixed - only use strings as RASP client names - login-panel, profile-panel
+QSortRefine - don't double qsort items when restoring state from path
+ReactActionStatePath - upgraded to React 16.8.6 and fix for back button not storing state because of confusion over leading /
 5/2/2019
 ask-item-why - passes items in RESULTS action so they can be added to the random items
 profile-panel - passes ...panel to the typecomponent as well so the type will changed
