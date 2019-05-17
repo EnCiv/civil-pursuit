@@ -1,3 +1,5 @@
+5/16/2019b
+discussionGroupSync renders instructions, removed ID and added group size.
 5/16/2019
 ItemStore - made sure the child Item not include item as a prop. (qsort-flip-item, rasp-panel-items, refine, panel-questions, qsort-finale, qsort-relook, qsort-flip-item, qsort-why )
 Item - chrome flipmove inherited background color problem fixed - style is passed to item; qsort-refine,

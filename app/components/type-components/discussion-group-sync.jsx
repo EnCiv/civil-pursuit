@@ -12,7 +12,7 @@ export default class DiscussionGroupSync extends React.Component {
     render(){
         return ( // items needs to be 'true' in PanelHeading or it will wait
             <ReactActionStatePath {...this.props} cssName={'syn-group-sync'} >
-                <PanelHeading  items={[]}  >
+                <PanelHeading  items={[]} panelButtons={['Instruction']} >
                     <RASPDiscussionGroupSync/>
                 </PanelHeading>
             </ReactActionStatePath>
@@ -131,12 +131,12 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
         return (
             <div className="syn-discussion-group-sync">
                 <div style={{display: 'table', verticalAlign: 'middle', minHeight: '10vh', width: "100%", fontSize: '2rem', lineHeight: '200%'}}>
-                    <div style={{display: 'table-row', textAlign: 'center'}}>{`ID: ${this.props.discussionGroup.id}`}</div>
+                    <div style={{display: 'table-row', textAlign: 'center'}}>{`Discussion Group Sync Point: ${this.props.discussionGroup.size} members`}</div>
                     <div style={{display: 'table-row'}}>
                         <div style={{display: 'table-cell', textAlign: 'center'}} >
-                            <div><label>Members until Go: </label>{this.state.membersToGo}</div>
+                            <div><label>Members Awaiting to Proceed: </label>{`${this.state.membersToGo}`}</div>
                             <div style={{fontSize: "50%", lineHeight: "100%"}}>or</div>
-                            <div><label>Max Time until Go: </label>{TimeFormat.fromS(Math.round(this.state.timeToGo/1000),"mm:ss")}</div>
+                            <div><label>Max Wait to Proceed: </label>{TimeFormat.fromS(Math.round(this.state.timeToGo/1000),"mm:ss")}</div>
                         </div>
                     </div>
                     <div style={{display: 'table-row'}}> </div>
