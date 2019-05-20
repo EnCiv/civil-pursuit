@@ -156,7 +156,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     render() {
         //onsole.info("RASPRuleList.render");
 
-        const { count, user, rasp, items, type, parent, panel, ...otherProps } = this.props;
+        const { count, user, rasp, items, type, parent, panel, buttons=['QSortButtons'], ...otherProps } = this.props;
 
         const onServer = typeof window === 'undefined';
 
@@ -201,6 +201,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
                     articles.push(
                         {
                             sectionName: criteria,
+                            buttons: buttons,
                             qbuttons: this.QSortButtonList,
                             user: user,
                             item: item,

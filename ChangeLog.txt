@@ -1,3 +1,5 @@
+5/20/2019
+Allow QSortRandomItems to include the Harmony button in the type db and pass the color down to the sub components.
 5/16/2019b
 discussionGroupSync renders instructions, removed ID and added group size.
 5/16/2019

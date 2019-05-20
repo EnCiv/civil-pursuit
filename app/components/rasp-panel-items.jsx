@@ -311,11 +311,11 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 
   render() {
 
-    const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel, item, ...otherProps } = this.props; // item must be removed from otherProps
+    const { style, limit, skip, type, parent, items, count, rasp, createMethod, cssName, panel, item, ...otherProps } = this.props; // item must be removed from otherProps
 
     let title = 'Loading items', name, content, loadMore;
 
-    let bgc = 'white';
+    var bgStyle = Object.assign({},{backgroundColor: 'white'}, style);
 
     var buttons = type.buttons || ['Promote', 'Details', 'Harmony', 'Subtype'];
 
@@ -329,7 +329,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
                 parent={parent}
                 rasp={this.childRASP(this.vM.childShape(rasp, item), item.id)}
                 buttons={buttons}
-                style={{ backgroundColor: bgc }}
+                style={bgStyle}
                 visualMethod={this.vM.childVisualMethod()}
               />
             </ItemStore>

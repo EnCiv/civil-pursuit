@@ -147,7 +147,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     render() {
         //onsole.info("RASPQSortItems.render");
 
-        const { count, user, rasp, items, type, parent, sections } = this.props;
+        const { count, user, rasp, items, type, parent, sections, buttons=['QSortButtons'] } = this.props;
 
         const onServer = typeof window === 'undefined';
         const constraints=this.getConstraints(this.props);
@@ -162,6 +162,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
                         <QSortFlipItem 
                             sectionName={criteria}
                             qbuttons={this.QSortButtonList}
+                            buttons={buttons}
                             user={user}
                             item={item}
                             key={item._id}

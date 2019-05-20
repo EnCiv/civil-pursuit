@@ -6,14 +6,14 @@ import Item               from '../components/item';
 
 class QSortFlipItem extends React.Component {
     render(){
-        const {qbuttons, sectionName, item, user, rasp } = this.props;
+        const {qbuttons, sectionName, item, user, buttons=['QSortButtons'], rasp } = this.props;
         return(
             <div key={ `item-${item._id}` }>
                 <ItemStore item={ item } key={ `item-${item._id}` }>
                     <Item
                         style={{backgroundColor: qbuttons[sectionName].color}}
                         user    =   { user }
-                        buttons =   { ['QSortButtons'] }
+                        buttons =   { buttons }
                         qbuttons =  {qbuttons}
                         rasp    =   { rasp }
                     />
