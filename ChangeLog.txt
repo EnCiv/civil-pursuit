@@ -1,3 +1,6 @@
+5/22/2019
+Item - fix the font size using rem instead of em
+QSortItems - allow user to proceed when there are fewer items to sort than the total minimum to pick
 5/20/2019
 Allow QSortRandomItems to include the Harmony button in the type db and pass the color down to the sub components.
 5/16/2019b

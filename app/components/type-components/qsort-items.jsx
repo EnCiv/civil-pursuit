@@ -80,23 +80,35 @@ export class RASPQSortItems extends ReactActionStatePathClient {
 
     // if the panel is done, say so
     getConstraints(props){
-        let count=0;
         var constraints=[];
         if(props.sections['unsorted'].length){
             constraints.push(props.sections['unsorted'].length+' left to sort');
         }
-        Object.keys(this.QSortButtonList).forEach(criteria=>{ // there is no some section[criteria] where
-            let max=this.QSortButtonList[criteria].max;
-            let min=this.QSortButtonList[criteria].min;
-            let length=props.sections[criteria] && props.sections[criteria].length || 0;
-            count=count+length;
-            if(max && length > max) // there are more items than max 
-                constraints.push(this.QSortButtonList[criteria].name+' has '+(length - max)+' too many');
-            if(min && length < min)
-                    constraints.push(this.QSortButtonList[criteria].name+' has '+(min - length)+' too few');
+        let total=0; // total items
+        let minTotal=0; // total of minimums
+        Object.keys(this.QSortButtonList).forEach(criteria=>{
+            minTotal+=this.QSortButtonList[criteria].min || 0;
+            total+=props.sections && props.sections[criteria] && props.sections[criteria].length || 0;
         })
-        if(!count)
+        if(!total){
             constraints.push('waiting for items to sort');
+        } else {
+            let minSum=0; // running total of minimums
+            Object.keys(this.QSortButtonList).forEach(criteria=>{
+                let max=this.QSortButtonList[criteria].max;
+                let min=this.QSortButtonList[criteria].min;
+                if(min){
+                    if(minTotal>total) min=Math.round(min/minTotal); // the minimum can't be more than all the items there are.
+                    if(minSum+min>minTotal) min=minTotal-minSum; // if proportioning and rounding still leads to the minimum being more than the total - then clamp it;
+                    minSum+=min;
+                }
+                let length=props.sections[criteria] && props.sections[criteria].length || 0;
+                if(max && length > max) // there are more items than max 
+                    constraints.push(this.QSortButtonList[criteria].name+' has '+(length - max)+' too many');
+                if(min && length < min)
+                        constraints.push(this.QSortButtonList[criteria].name+' has '+(min - length)+' too few');
+            })
+        }
         return constraints;
     }
 

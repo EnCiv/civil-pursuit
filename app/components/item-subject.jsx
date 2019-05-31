@@ -16,8 +16,8 @@ const styles ={
         padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0`,
         overflow: 'visible',
         'white-space': 'normal',
-        'font-size': '1.375em',
-        'line-height': '1.375em',
+        'font-size': '1.375rem',
+        'line-height': '1.375rem',
         '&$collapsed, &$minified':{
             overflow: 'hidden',
             'text-overflow': 'ellipsis',
@@ -31,7 +31,7 @@ const styles ={
         },
         '&$placeholder': {
             'font-family': 'inherit',
-            'font-size': 'calc(1 / 1.375 * 1em)',
+            'font-size': 'calc(1 / 1.375 * 1rem)',
             'color': '#ddd !important' // can't really override the place holder color - but here it is incase that ever happens
         }
     },

@@ -64,6 +64,7 @@ const styles = {
         "margin-bottom": 0, /* -2px; border on top of border */
         "background-color": "inherit",
         "position": "relative", /* otherwise things that are relative will obscure this when they move around */
+        "font-size": "1rem", /* setting this for all the sub compnents */
 
         "&div, &section, &article": {
             "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
@@ -611,8 +612,8 @@ class RASPItem extends ReactActionStatePathClient {
                 else if (!delta.readMore && rasp.button === 'Harmony') delta.button = null;  // turn harmony off when closing readMore
                 else delta.button = rasp.button; // othewise keep button the same
             }
-            //if(delta.readMore) this.queueFocus(action); 
-            //else this.queueUnfocus(action)
+            if(delta.readMore) this.queueFocus(action); 
+            else this.queueUnfocus(action);
         } else if (action.type === "FINISH_PROMOTE") {
             if (action.winner && action.winner._id === this.props.item._id) { // if we have a winner, and it's this item
                 delta.readMore = true;

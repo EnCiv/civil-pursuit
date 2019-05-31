@@ -3,7 +3,7 @@
 import React from 'react';
 import Item from '../item';
 import HarmonyStore from '../store/harmony'
-import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path';
+import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathMulti} from 'react-action-state-path';
 import DoneItem from '../done-item';
 import injectSheet from 'react-jss'
 import publicConfig from '../../../public.json'
@@ -96,7 +96,29 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
             let valid=this.props.rasp.valid || {};
             if(valid[action.ideaNum] !== action.valid) delta.valid=Object.assign({},valid,{[action.ideaNum]: action.valid});
             return true; // propagate further
+        },
+        "DESCENDANT_FOCUS": (action,delta)=>{
+            delta.ideaNum=action.ideaNum;
+            return true; // propagate further
+        },
+        "DESCENDANT_UNFOCUS": (action,delta)=>{
+            delta.ideaNum=null;
+            return true; // propagate further
         }
+    }
+
+    segmentToState(action, initialRASP) {
+        var nextRASP = {}, delta={};
+        if(action.segment) delta.ideaNum=action.segment;
+        else console.error("AskItemWhy received unexpected segment:",action.segment);
+        Object.assign(nextRASP,initialRASP,delta);
+        this.deriveRASP(nextRASP, initialRASP);
+        if (nextRASP.pathSegment !== action.segment) console.error("profile-panel.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
+        return { nextRASP, setBeforeWait: true }  // set nextRASP as state before waiting for child
+    }
+
+    deriveRASP(nextRASP, initialRASP){
+        if(nextRASP.ideaNum) nextRASP.pathSegment=nextRASP.ideaNum;
     }
 
     isDone(props){

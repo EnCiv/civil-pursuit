@@ -11,8 +11,8 @@ const styles = {
     'description': {
         overflow: 'visible',
         display: 'inline',
-        'line-height': '1.375em',        /* fallback */
-        'max-height': 'none',       /* fallback */
+        'line-height': '1.375rem',
+        'max-height': 'none',
         'position': 'relative',
         'margin-bottom': `${publicConfig.itemVisualGap}`,
         'transition': 'height 0.5s linear',
@@ -42,7 +42,7 @@ const styles = {
     'pre-text': {},
     edit: {
         'border': 'none',
-        'line-height': '1.375em',
+        'line-height': '1.375rem',
         'padding': '0',
         'width': '100%',
     },
