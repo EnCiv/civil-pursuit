@@ -36,6 +36,7 @@ function sendEmail (options = {}) {
           pass();
         }
         else {
+          console.error("sendEmail failed with:", results.response)
           fail(new Error(results.response));
         }
       })
