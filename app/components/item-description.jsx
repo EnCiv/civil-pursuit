@@ -125,7 +125,7 @@ class ItemDescription extends React.Component {
     }
 
     render() {
-        const { classes, truncShape, item, rasp, className } = this.props;
+        const { classes, truncShape, item, rasp, className, style } = this.props;
         const noReference = !(item && item.reference && item.reference.length);
         // if description is truncated, not in readMore, and there is no reference - then use truncated4 to show an extra line of description
         const reviseTruncShape= truncShape==='truncated'? (!rasp.readMore ? (noReference ? 'truncated4' : 'truncated') : 'truncated' )
@@ -134,13 +134,13 @@ class ItemDescription extends React.Component {
         const placeholder=item.type && item.type.descriptionPlaceholder || "Description";
         if (!editShapes.includes(truncShape))
             return (
-                <div className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape],className)}>
+                <div style={style} className={cx(classes['description'], classes['pre-text'], classes[reviseTruncShape],className)}>
                     {description}
                 </div>
             );
         else
             return (
-                <section>
+                <section style={style}>
                     <Textarea
                         className={cx(classes['edit'],className)}
                         placeholder={placeholder}

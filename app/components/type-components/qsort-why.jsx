@@ -109,7 +109,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         } else if(action.type==="DESCENDANT_FOCUS"){
             if(itemId) // if toggleing instructions, for example, there is no itemId
                 this.setState({ 'sections': QSortToggle(this.state.sections,itemId,'unsorted','set')}); // - set incase of double events to unsorted
-        } else if(action.type==="RESET"){
+        } else if(action.type==="RESET" || action.type==="CLEAR_PATH"){
             Object.assign(this.props.shared,clone(this._defaults.that.results));
             return null;
         }  else if (action.type === "TOGGLE_FOCUS") {
@@ -144,7 +144,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 
         const onServer = typeof window === 'undefined';
 
-        let content = [], direction = [], constraints=[];
+        let direction = [], constraints=[];
 
         if ( ! (shared && shared.sections && shared.sections[this.whyName] && Object.keys(shared.sections[this.whyName].length))) {
             // if we don't have any data to work with 
@@ -154,26 +154,6 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         } else {
             if (this.state.sections['unsorted'].length) 
                 constraints.push(this.state.sections['unsorted'].length+" to go.");
-            this.buttons.forEach((name) => {
-                this.state.sections[name].forEach(itemId => {
-                    let item= items.find(itm=>itm._id===itemId);
-                    if(!item){
-                        console.error("qsortWhy itemId:",itemId, "not found in items", items);
-                        return;
-                    }
-                    content.push(
-                        {
-                            sectionName: name,
-                            user: user,
-                            item: item,
-                            qbuttons: this.ButtonList,
-                            whyName: this.whyName,
-                            rasp: {shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)},
-                            id: item._id  //FlipMove uses this Id to sort
-                        }
-                    );
-                });
-            });
         }
         if (!constraints.length) {
             setTimeout(()=>this.props.rasp.toParent({ type: "RESULTS", results: this.results}),0);
@@ -188,7 +168,29 @@ class RASPQSortWhy extends ReactActionStatePathClient {
                 }}>
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {content.map(article => <QSortWhyItem {...article} key={article.id+'-article'} />)}
+                            {this.buttons.reduce((acc,name) => {
+                                this.state.sections[name].forEach(itemId => {
+                                    let item= items.find(itm=>itm._id===itemId);
+                                    if(!item){
+                                        console.error("qsortWhy itemId:",itemId, "not found in items", items);
+                                        return;
+                                    }
+                                    acc.push(
+                                        <Item
+                                            user={user}
+                                            item = {item}
+                                            buttons =   { ['CreateHarmony']}
+                                            side    =   { this.ButtonList[this.whyName].harmonySide}
+                                            style   = {{backgroundColor: this.ButtonList[name].color}} 
+                                            min={true}
+                                            qbuttons =  {this.ButtonList}
+                                            rasp={{shape: 'truncated', depth: rasp.depth, button: name, toParent: this.toMeFromChild.bind(this,item._id)}}
+                                            key={ item._id }
+                                        />
+                                    )
+                                });
+                                return acc;
+                            },[])}
                         </FlipMove>
                     </div>
                 </div>
@@ -205,25 +207,5 @@ class RASPQSortWhy extends ReactActionStatePathClient {
 }
 
 export default QSortWhy;
-
-class QSortWhyItem extends React.Component {
-    render(){
-        const {qbuttons, sectionName, item, whyName, key, ...otherProps } = this.props;
-        return(
-                <div key={ key }>
-                    <ItemStore item={ item } key={ key+'-why' }>
-                        <Item
-                            {...otherProps}
-                            buttons =   { ['CreateHarmony']}
-                            side    =   { qbuttons[whyName].harmonySide}
-                            style   = {{backgroundColor: qbuttons[sectionName].color}} 
-                            min={true}
-                            qbuttons =  {qbuttons}
-                        />
-                    </ItemStore>
-                </div>
-        );
-    }
-}
 
 

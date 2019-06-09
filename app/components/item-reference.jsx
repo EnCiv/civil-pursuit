@@ -192,13 +192,13 @@ class ItemReference extends React.Component {
     }
 
     render() {
-        const { item, classes, className, truncShape, noReference } = this.props;
+        const { style, item, classes, className, truncShape, noReference } = this.props;
         const { references, lookingUp, titleError, errMsg } = this.state;
         const { title, url } = references[0] || {};
         if (truncShape !== 'edit') {
             if (!references.length) return null;
             return (
-                <h5 className={cx( classes['reference'], classes[truncShape], noReference && classes['hide'], className)} >
+                <h5 style={style} className={cx( classes['reference'], classes[truncShape], noReference && classes['hide'], className)} >
                     <a href={url} onClick={this.openURL} ref={this.link} target="_blank" rel="nofollow"><span>{title}</span></a>
                 </h5>
             );
@@ -207,7 +207,7 @@ class ItemReference extends React.Component {
                 return null;
             else 
                 return (
-                    <Row center-items>
+                    <Row style={style} center-items>
                         <Icon
                             icon="globe"
                             spin={true}

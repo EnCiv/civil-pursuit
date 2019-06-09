@@ -120,8 +120,9 @@ class RASPDiscussionGroupSync extends ReactActionStatePathClient {
     }
 
     componentWillReceiveProps(newProps){
-        if(newProps.rasp.done) {
-            this.queueAction({type: "RESULTS", status: 'done'});
+        if(newProps.rasp.done){
+            if(!this.props.rasp.done)
+                this.queueAction({type: "RESULTS", status: 'done'});
         } else {
             this.queueAction({type: "ISSUES"});
         }

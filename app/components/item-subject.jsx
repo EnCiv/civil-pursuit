@@ -133,15 +133,16 @@ class ItemSubject extends React.Component {
     }
 
     render() {
-        const { classes, item, truncShape, headlineAfter, className } = this.props;
+        const { classes, item, truncShape, headlineAfter, className, style } = this.props;
         const subject = this.state.subject;
         const placeHolder=item.type && item.type.subjectPlaceholder || headlineAfter && "Headline - a short headline drawing attention to the main point" || "Subject";
         if (!editShapes.includes(truncShape))
-            return (<h4 className={cx(classes["subject"], classes[truncShape], className)}>{subject}</h4>)
+            return (<h4 style={style} className={cx(classes["subject"], classes[truncShape], className)}>{subject}</h4>)
         else {
             return (
                 <Input type='text'
                     block
+                    style={style}
                     className={cx(classes['subject'],classes['edit'],(!this.state.subject) && headlineAfter && classes['placeholder'], className )}
                     placeholder={placeHolder}
                     required

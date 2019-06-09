@@ -29,14 +29,11 @@ class RASPPanelList extends ReactActionStatePathMulti {
 	constructor(props) {
 		console.log("RASPPanelList.constructor", props);
 		super(props, 'currentPanel', 0);
-		if (this.props.rasp.toParent) {
-			this.props.rasp.toParent({ type: "SET_TO_CHILD", function: this.toMeFromParent.bind(this), name: this.constructor.name, actionToState: this.actionToState.bind(this), clientThis: this })
-		} else console.error("RASPPanelList no rasp.toParent", this.props);
 		this.panelStatus = [];
 		this.createDefaults();
 	}
 
-	actionToState(action, rasp, source, defaultRASP, delta) {
+	actionToState(action, rasp, source, initialRASP, delta) {
 		//find the section that the itemId is in, take it out, and put it in the new section
 		var nextRASP = {};
 		var panelStatus = this.panelStatus;
@@ -112,19 +109,25 @@ class RASPPanelList extends ReactActionStatePathMulti {
 		} else if (Object.keys(delta).length) {
 			;
 		} else return null;
-		Object.assign(nextRASP, rasp, delta);
-		var parts = [];
-		if (nextRASP.shape === 'open') { parts.push('o'); parts.push(nextRASP.currentPanel); }
-		nextRASP.pathSegment = parts.join(',');
+		Object.assign(nextRASP, initialRASP, rasp, delta);
+		this.deriveRASP(nextRASP);
 		return nextRASP;
 	}
 
-	segmentToState(action) {
+	segmentToState(action, initialRASP) {
 		var parts = action.segment.split(',');
 		var shape = parts[0] === 'o' ? 'open' : 'truncated';
 		var currentPanel = parseInt(parts[1], 10) || 0;
-		var nextRASP = Object.assign({}, { shape, currentPanel, pathSegment: action.segment }); // note, initialRASP is not being applied. PanelStatus and results are derived
+		var nextRASP = Object.assign({},initialRASP, { shape, currentPanel, pathSegment: action.segment }); // note, initialRASP is not being applied. PanelStatus and results are derived
+		this.deriveRASP(nextRASP);
+		if(nextRASP.pathSegment !== action.segment) console.error("RASPPanelList.segmentToState derivedRASP didn't math action segment", nextRASP, action)
 		return { nextRASP, setBeforeWait: true };  //setBeforeWait means set the new state and then wait for the key child to appear, otherwise wait for the key child to appear and then set the new state.
+	}
+
+	deriveRASP(nextRASP) {
+		var parts = [];
+		if (nextRASP.shape === 'open') { parts.push('o'); parts.push(nextRASP.currentPanel); }
+		nextRASP.pathSegment = parts.join(',');
 	}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

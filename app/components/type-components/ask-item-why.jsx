@@ -170,7 +170,7 @@ class RASPAskItemWhy extends ReactActionStatePathClient {
         return (
             <section id="syn-ask-item-why" className={classes['outer']}>
                 <div className={classes["ask"]} key='idea'>
-                    <Item className={'no-border'} min item={parent} user={user} visualMethod="defaultNoScroll" rasp={this.childRASP('truncated','parent')}/>
+                    <Item className={'no-border'} min item={parent} user={user} visualMethod="defaultNoScroll" rasp={this.childRASP('truncated','p')}/>
                     <div className={classes["creator"]}>
                         {Object.keys(ideas).map(ideaNum=>{
                             return (

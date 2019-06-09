@@ -531,7 +531,7 @@ class RASPItem extends ReactActionStatePathClient {
     }
 
     segmentToState(action, initialRASP) {  //RASP is setting the initial path. Take your pathSegment and calculate the RASPState for it.  Also say if you should set the state before waiting the child or after waiting
-        var nextRASP = {};
+        var nextRASP = Object.assign({},initialRASP);
         let parts = action.segment.split(',');
         let button = null;
         let matched = 0;
@@ -638,7 +638,7 @@ class RASPItem extends ReactActionStatePathClient {
         } else
             return null;  // if you don't handle the type, let the default handlers prevail
         //calculate the shape based on button and readMore
-        Object.assign(nextRASP, rasp, delta);
+        Object.assign(nextRASP, initialRASP, rasp, delta);
         this.vM.deriveRASP(nextRASP, initialRASP);
         return nextRASP;
     }
@@ -679,6 +679,7 @@ class RASPItem extends ReactActionStatePathClient {
             if (this.props.item.subject !== newProps.item.subject) return true;
             if (this.props.item.description !== newProps.item.description) return true;
         }
+        if(this.props.style != newProps.style) return true;
         //logger.trace("Item.shouldComponentUpdate", this.props.rasp.depth, this.title, "no", this.props, newProps, this.state, newState);
         return false;
     }
@@ -817,13 +818,13 @@ class RASPItem extends ReactActionStatePathClient {
 
         //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
-        if (!item) { return (<div style={Object.assign({},this.props.style,{ textAlign: "center" })}>Nothing available at this time.</div>); }
+        if (!item) { return (<div style={Object.assign({},style,{ textAlign: "center" })}>Nothing available at this time.</div>); }
 
         if (item.references && item.references.length)
             noReference = false;
 
         const childClassName=headlineAfter ? classes['inputBorder'] : undefined;
-        const childProps = { item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp, onBlur: this.onBlur, headlineAfter: headlineAfter, className: childClassName };
+        const childProps = { style, item, truncShape, noReference, onChange: this.onChange, onDirty: this.onDirty, rasp, onBlur: this.onBlur, headlineAfter: headlineAfter, className: childClassName };
 
         // a button could be a string, or it could be an object which must have a property component
         var renderPanel = (button) => {
@@ -867,8 +868,8 @@ class RASPItem extends ReactActionStatePathClient {
         }
 
         return (
-            <div style={this.props.style} className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
-                <Accordion active={this.vM.active(rasp)} text={true} >
+            <div style={style} className={cx(classes["item"], cxs, classes[shape])} ref="item" id={'item-' + item._id} >
+                <Accordion style={style} active={this.vM.active(rasp)} text={true} >
                     <ItemMedia {...childProps} shape={shape} onClick={this.readMore}
                         ref="media"
                     />
@@ -878,7 +879,7 @@ class RASPItem extends ReactActionStatePathClient {
                                 {buttons ? buttons.map(button => renderButton(button)) : null}
                             </ItemStore>
                         </section>
-                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: this.props.rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
+                        <Accordion className={cx(classes["item-truncatable"], classes[truncShape])} onClick={this.readMore} active={readMore || visualMethod==='edit'} text={true} onComplete={this.textHint.bind(this)} ref={this.getTruncableDOM} style={{ minHeight: rasp.readMore || !this.state.minHeight ? null : this.state.minHeight + 'px' }}>
                             {this.vM.subjectShown('before') && <ItemSubject {...childProps} />}
                             {this.vM.subjectShown('before') && itemErrors('subject')}
                             <ItemReference {...childProps} />
