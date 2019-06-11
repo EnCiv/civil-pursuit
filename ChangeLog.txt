@@ -1,3 +1,6 @@
+6/11/2019
+Item-subject - doesn't obscure media when open
+PanelItems - puts the shortId in the path if there is only one
 6/9/2019 
 updated nodemailer to 6 from 1!!! because it stopped working
 insalled clone, which was being used and somehow found though not specified in this package

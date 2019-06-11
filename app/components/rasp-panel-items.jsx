@@ -150,6 +150,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         let parts = [];
         if (rasp.decendantFocus) parts.push('d');
         if (rasp.shortId) parts.push(rasp.shortId);
+        else if(this.props.items && this.props.items.length===1) parts.push(this.props.items[0].id);
         if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethod[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
         if (parts.length) rasp.pathSegment = parts.join(',');
         else rasp.pathSegment = null;
@@ -228,6 +229,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         let parts = [];
         if (rasp.decendantFocus) parts.push('d');
         if (rasp.shortId) parts.push(rasp.shortId);
+        else if(this.props.items && this.props.items.length===1) parts.push(this.props.items[0].id);
         if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
         if (parts.length) rasp.pathSegment = parts.join(',');
         else rasp.pathSegment = null;
@@ -300,12 +302,15 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
         let parts = [];
         if (rasp.decendantFocus) parts.push('d');
         if (rasp.shortId) parts.push(rasp.shortId);
+        else if(this.props.items && this.props.items.length===1) parts.push(this.props.items[0].id);
         if (rasp.shortId && rasp.shortId.length !== 5) console.error("PanelItems.visualMethods[default].deriveRASP shortId length should be 5, was", rasp.shortId.length);
         if (parts.length) rasp.pathSegment = parts.join(',');
         else rasp.pathSegment = null;
       }
     }
   }
+
+  
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

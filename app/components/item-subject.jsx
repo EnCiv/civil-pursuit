@@ -14,7 +14,7 @@ const styles ={
         'margin-top': '0',
         'text-align': 'left',
         padding: `0 0 calc( ${publicConfig.itemVisualGap} * 0.5 ) 0`,
-        overflow: 'visible',
+        overflow: 'hidden',
         'white-space': 'normal',
         'font-size': '1.375rem',
         'line-height': '1.375rem',
