@@ -33,6 +33,11 @@ function getItems (panel, cb) {
       }
     }
 
+    if(panel.items){
+      var nin=panel.items.map(i=>i._id);
+      query._id={$nin: nin};
+    }
+
     Item
       .getPanelItems(query, userId)
       .then(

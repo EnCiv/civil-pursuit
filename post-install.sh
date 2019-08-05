@@ -15,6 +15,7 @@ mkdir -p node_modules/syn
 mkdir -p /tmp
 
 cp node_modules/babel-polyfill/dist/polyfill.min.js assets/js
+cp node_modules/react-perfect-scrollbar/dist/css/styles.css assets/css
 
 
 echo '*************************************************************************'
