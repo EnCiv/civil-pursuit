@@ -96,7 +96,7 @@
     "log4js-node-mongodb": "^2.2.1",
     "marked": "^0.3.19",
     "moment": "^2.22.2",
-    "mongodb": "^3.1.9",
+    "mongodb": "^3.6.3",
     "mungo": "git+https://github.com/Synaccord/mungo.git#mongo3",
     "nodemailer": "^6.2.1",
     "passport": "^0.3.2",
