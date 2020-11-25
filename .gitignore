@@ -11,6 +11,7 @@
 /assets/css/assets.min.css
 /assets/css/training.*
 /assets/css/bundle.css
+/assets/css/styles.css
 /assets/webpack/*
 /assets/bower_components/*
 /bconsole/node_modules/*
@@ -19,3 +20,4 @@
 /.bashrc
 /.cache/*
 /testdb/*
+/backups/*
