@@ -114,7 +114,7 @@
     "react-hot-loader": "^4.8.4",
     "react-jss": "^8.6.1",
     "react-perfect-scrollbar": "git+https://github.com/ddfridley/react-perfect-scrollbar.git#dev-only",
-    "react-proactive-accordion": "github:ddfridley/react-proactive-accordion#react16",
+    "react-proactive-accordion": "github:ddfridley/react-proactive-accordion",
     "redtea": "^3.4.1",
     "shallowequal": "^0.2.2",
     "should": "^7.1.0",
