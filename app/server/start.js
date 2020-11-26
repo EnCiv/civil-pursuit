@@ -2,7 +2,7 @@
 
 'use strict';
 
-import "babel-polyfill";
+import "@babel/polyfill";
 import { EventEmitter }         from    'events';
 import Mungo                    from    'mungo';
 import sequencer                from    'promise-sequencer';
