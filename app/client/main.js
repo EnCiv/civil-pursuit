@@ -24,23 +24,40 @@ window.socket.on('welcome', user => {
 });
 
 // process has to be defined before log4js is imported on the browser side.
-if(typeof window !== 'undefined') {
-  if(typeof __webpack_public_path__ !== 'undefined') { // if using web pack, this will be set on the browser. Dont' set it on the server
-    __webpack_public_path__ = "http://localhost:3011/assets/webpack/";
-    process.env.LOG4JS_CONFIG={appenders:[]};  // webpack doesn't initialize the socket logger right - so just prevent log4js from initializing loggers
-    var log4js = require('log4js');
-    log4js.loadAppender("bconsole",bconsole);
-    log4js.loadAppender("socketlogger",socketlogger);
-    log4js.configure({browser: [{type: 'bconsole'},{type: 'socketlogger'}]});
-  }else {
-    process.env.LOG4JS_CONFIG= {appenders: [{ type: 'bconsole' }, {type: 'socketlogger'}]};
-    var log4js = require('log4js');
-  }
-
-  window.logger = log4js.getLogger('browser');
-  window.logger.setLevel("INFO");
-  logger.info("client main running on browser");
+process.env.LOG4JS_CONFIG = { appenders: [] } // webpack doesn't initialize the socket logger right - so just prevent log4js from initializing loggers
+var log4js = require('log4js')
+if (window.socket.NoSocket) {
+  log4js.configure({
+    appenders: { bconsole: { type: bconsole } },
+    categories: {
+      default: { appenders: ['bconsole'], level: 'error' },
+    },
+    disableClustering: true,
+  })
+} else if (typeof __webpack_public_path__ !== 'undefined') {
+  // if using web pack, this will be set on the browser. Dont' set it on the server
+  __webpack_public_path__ = 'http://localhost:3011/assets/webpack/'
+  log4js.configure({
+    appenders: { bconsole: { type: bconsole }, socketlogger: { type: socketlogger } },
+    categories: {
+      default: { appenders: ['bconsole', 'socketlogger'], level: window.env === 'production' ? 'info' : 'trace' },
+    },
+    disableClustering: true,
+  })
+} else {
+  // haven't seen this case in a while. mostly, __webpack_public_path is ''
+  log4js.configure({
+    appenders: { bconsole: { type: bconsole }, socketlogger: { type: socketlogger } },
+    categories: {
+      default: { appenders: ['bconsole', 'socketlogger'], level: window.env === 'production' ? 'info' : 'trace' },
+    },
+    disableClustering: true,
+  })
 }
+
+window.logger = log4js.getLogger('browser')
+logger.info('client main running on browser', window.location.pathname, reactProps.browserConfig)
+
 
 
 function render (props) {

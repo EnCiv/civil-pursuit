@@ -72,7 +72,7 @@ module.exports = {
         }
     },
     plugins:[
-        new webpack.IgnorePlugin(/categoryFilter|clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|logLevelFilter|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/,/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app
+        new webpack.IgnorePlugin(/clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/,/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app
         new webpack.IgnorePlugin(/nodemailer/), // not used in the client side - those should be move outside of the app directory
         new webpack.HotModuleReplacementPlugin()
     ]

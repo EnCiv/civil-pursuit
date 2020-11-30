@@ -10,36 +10,30 @@ import Server                   from    './server';
 import AppError                 from    '../models/app-error';
 
 import log4js                   from 'log4js';
-import log4js_extend            from 'log4js-extend';
-import mongoAppender            from 'log4js-node-mongodb';
+import mongologger from './util/mongo-logger'
 import DB                       from '../lib/util/db';
 
-log4js.addAppender(
-    mongoAppender.appender({connectionString: process.env.MONGOHQ_URL}),
-    'node'
-);
+log4js.configure({
+  appenders: {
+    browserMongoAppender: { type: mongologger, source: 'browser' },
+    err: { type: 'stderr' },
+    nodeMongoAppender: { type: mongologger, source: 'node' },
+  },
+  categories: {
+    browser: { appenders: ['err', 'browserMongoAppender'], level: 'debug' },
+    node: { appenders: ['err', 'nodeMongoAppender'], level: 'debug' },
+    default: { appenders: ['err'], level: 'debug' },
+  },
+})
 
-log4js.addAppender(
-    mongoAppender.appender({connectionString: process.env.MONGOHQ_URL}),
-    'browser'
-);
-
-if(!global.bslogger){  // used by socketlogger - doesn't include extend because that would always be the same
-  global.bslogger=log4js.getLogger('browser');
-  global.bslogger.setLevel("INFO");
+if (!global.bslogger) {
+  // bslogger stands for browser socket logger - not BS logger.
+  global.bslogger = log4js.getLogger('browser')
 }
 
-log4js_extend(log4js, {
-  path: __dirname,
-  format: "{at:{n:@name,f:@file,l:@line.@column}}"
-});
-
-if(!global.logger) {
-  global.logger = log4js.getLogger('node');
-  global.logger.setLevel("INFO");
+if (!global.logger) {
+  global.logger = log4js.getLogger('node')
 }
-
-
 
 Mungo.verbosity = 1;
 
@@ -89,7 +83,7 @@ function start (emitter = false) {
 
         () => new Promise((ok, ko) => {
           Mungo.connect(process.env.MONGOHQ_URL)
-            .on('error', error => { logger.error("Mungo connection error", {error}); return( ko );})
+            .on('error', error => { console.error("Mungo connection error", {error}); return( ko );}) // don't use logger here because it won't work if db not working
             .on('connected', ok);
         }),
 
