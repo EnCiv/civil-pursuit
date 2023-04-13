@@ -14,6 +14,7 @@
 /assets/css/styles.css
 /assets/webpack/*
 /assets/bower_components/*
+/assets/js/assets.min.js
 /bconsole/node_modules/*
 /_netrc
 /.netrc

@@ -139,9 +139,11 @@
     "@storybook/addon-links": "^4.0.8",
     "@storybook/addons": "^4.0.8",
     "@storybook/react": "^4.0.8",
+    "concurrently": "3.6.1",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "expect": "^23.6.0",
+    "nodemon": "1.18.9",
     "storybook-addon-specifications": "^2.1.2"
   }
 }
