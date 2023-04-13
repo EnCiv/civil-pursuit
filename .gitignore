@@ -22,3 +22,4 @@
 /.cache/*
 /testdb/*
 /backups/*
+*.map
