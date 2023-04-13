@@ -26,6 +26,7 @@ class PanelStore extends React.Component {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	componentDidMount() {
+		if(!this.props.type) return // the panel is not defined/empty
 		this.okCreateItemBound = this.okCreateItem.bind(this);
 
 		if (!this.state.panel) {
@@ -97,7 +98,8 @@ class PanelStore extends React.Component {
 
 	render() {
 		//onsole.info("PanelStore.render, this.props, this.state")
-		if (this.state.panel && this.state.panel.items)  // render children when there are items to render
+		if(!this.props.type) return null
+		else if (this.state.panel && this.state.panel.items)  // render children when there are items to render
 			return (
 				<section>
 					{React.Children.map(this.props.children, child => React.cloneElement(child, Object.assign({}, this.state, { PanelLoadMore: this.loadMore.bind(this), PanelCreateItem: this.okCreateItem.bind(this) }), child.props.children))}
