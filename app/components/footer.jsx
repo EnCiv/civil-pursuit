@@ -11,7 +11,7 @@ class Footer extends React.Component {
           <div style={{display: "table-cell", width: "33%"}} ></div>
           <div style={{display: "table-cell", width: "33%"}} >
             <p>
-              Copyright © 2014 - { new Date().getFullYear() } by <a href="http://www.synaccord.com" target="_blank">Synaccord, LLC.</a>
+              Copyright © 2014 - { new Date().getFullYear() } by <a href="http://www.enciv.org" target="_blank">EnCiv, Inc a 501(c)(3) nonprofit.</a>
             </p>
           </div>
           <div style={{display: "table-cell", width: "33%", textAlign: "right"}}>
@@ -19,7 +19,7 @@ class Footer extends React.Component {
           </div>
         </div>
         <p>
-          <a href="/page/terms-of-service">Terms of Service</a> and <a href="/page/privacy-policy">Privacy Policy</a>
+          <a href="https://enciv.org/terms/">Terms</a>
         </p>
       </footer>
     );
