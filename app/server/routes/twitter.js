@@ -4,7 +4,6 @@ import { format }         from 'util';
 import passport           from 'passport';
 import Passport           from '../../lib/app/Passport';
 import PassportTwitter    from 'passport-twitter';
-import config             from '../../../secret.json';
 
 class Twitter extends Passport {
 
@@ -20,20 +19,20 @@ class Twitter extends Passport {
 
       if ( req.hostname === 'localhost' ) {
         callback = format("http://%s:%d%s",
-          req.hostname, this.app.get('port'), config.twitter[process.env.SYNAPP_ENV]['callback url']);
+          req.hostname, this.app.get('port'), '/sign/twitter/oauth');
       }
 
       else {
         callback = format("http://%s%s",
-          req.hostname, config.twitter[process.env.SYNAPP_ENV]['callback url'])
+          req.hostname, '/sign/twitter/oauth')
       }
 
       let _strategy = this.app.locals.TwitterStrategy;
 
       passport.use(
         new _strategy({
-          consumerKey     :   config.twitter[process.env.SYNAPP_ENV]['key'],
-          consumerSecret  :   config.twitter[process.env.SYNAPP_ENV]['secret'],
+          consumerKey     :   process.env.TWITTER_KEY,
+          consumerSecret  :   process.env.TWITTER_SECRET,
           callbackURL     :   callback
         },
 

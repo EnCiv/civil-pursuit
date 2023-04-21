@@ -5,7 +5,7 @@ import { IncomingMessage }  from 'http';
 import should               from 'should';
 import superagent           from 'superagent';
 import describe             from 'redtea';
-import config               from 'syn/../../secret.json';
+import Config               from 'syn/../../public.json';
 import Agent                from '../../../../lib/app/agent';
 
 function test () {
@@ -38,7 +38,7 @@ function test () {
           locals.request.should.have.property('header')
             .which.is.an.Object()
             .and.have.property('user-agent')
-            .which.is.exactly(config['user agent']);
+            .which.is.exactly(Config.userAgent);
         }
       );
 

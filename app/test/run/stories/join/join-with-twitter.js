@@ -6,7 +6,6 @@ import User                   from 'syn/../../dist/models/user';
 import testWrapper            from 'syn/../../dist/lib/app/test-wrapper';
 import selectors              from 'syn/../../selectors.json';
 import isJoinForm             from 'syn/../../dist/test/is/join-form';
-import secret                 from 'syn/../../secret.json';
 
 function test(props) {
   const locals = {
@@ -46,11 +45,11 @@ function test(props) {
       );
 
       it('should fill username', () => wrappers.driver.client.setValue(
-        '#username_or_email', secret.test.twitter.email
+        '#username_or_email', process.env.TEST_TWITTER_EMAIL
       ));
 
       it('should fill username', () => wrappers.driver.client.setValue(
-        '[name="session[password]"]', secret.test.twitter.password + "\n"
+        '[name="session[password]"]', process.env.TEST_TWITTER_PASSWORD + "\n"
       ));
 
       describe.pause(3500)(it);

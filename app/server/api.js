@@ -10,7 +10,7 @@ import ss from 'socket.io-stream';
 import sequencer from 'promise-sequencer';
 import emitter from '../lib/app/emitter';
 import Item from '../models/item';
-import cloudinary from './util/cloudinary';
+import cloudinary from 'cloudinary';
 import User from '../models/user'
 
 class API extends EventEmitter {

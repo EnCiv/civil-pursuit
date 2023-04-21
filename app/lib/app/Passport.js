@@ -7,14 +7,12 @@
 */
 
 import {Domain}         from 'domain';
-import util             from 'util';
 
 import passport         from 'passport';
 
-import config           from '../../../public.json';
-import secret           from '../../../secret.json';
 import UserModel        from '../../models/user';
 import DiscussionModel  from '../../models/discussion';
+import Config from '../../../public.json'
 
 class Passport {
 
@@ -26,7 +24,7 @@ class Passport {
 
       let env = process.env.SYNAPP_ENV;
 
-      this.CALLBACK_URL   =   secret[service][env]['callback url'];
+      this.CALLBACK_URL   =   `/sign/${service}/oauth`
       this.SIGNIN_ROUTE   =   `/sign/in/${service}`;
       this.OK_ROUTE       =   `/sign/in/${service}/ok`;
 
@@ -187,7 +185,7 @@ class Passport {
     res.cookie('synuser', {
         email   : this.user.email,
         id      : this.user._id
-      }, secret.cookie);
+      }, Config.cookie);
 
     res.redirect('/page/profile');
   }

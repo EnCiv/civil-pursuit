@@ -4,7 +4,6 @@ import util                   from 'util';
 import passport               from 'passport';
 import PassportFacebook       from 'passport-facebook';
 import Passport               from '../../lib/app/Passport';
-import config                 from '../../../secret.json';
 
 class Facebook extends Passport {
 
@@ -35,8 +34,8 @@ class Facebook extends Passport {
 
       passport.use(
         new _strategy({
-          clientID        :   config.facebook[process.env.SYNAPP_ENV]['app id'],
-          clientSecret    :   config.facebook[process.env.SYNAPP_ENV]['app secret'],
+          clientID        :   process.env.FACEBOOK_ID,
+          clientSecret    :   process.env.FACEBOOK_SECRET,
           callbackURL     :   callbackURL
         },
 

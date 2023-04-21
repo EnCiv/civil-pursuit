@@ -1,13 +1,12 @@
 'use strict';
 
 import nodemailer from 'nodemailer';
-import secret from 'syn/../../secret.json';
 
 const transporter = nodemailer.createTransport({
 	service: 'Zoho',
 	auth: {
-		user: secret.email.user,
-		pass: secret.email.password
+		user: process.env.ZOHO_USERS,
+		pass: process.env.ZOHO_PASSWORD
 	}
 });
 

@@ -2,7 +2,7 @@
 
 import fs             from 'fs';
 import superagent     from 'superagent';
-import config         from '../../../secret.json';
+import Config         from '../../../public.json';
 
 class Agent {
   static request (url, options = {}) {
@@ -12,7 +12,7 @@ class Agent {
 
     request.timeout(options.timeout || 1000 * 8);
 
-    request.set('User-Agent', options.userAgent || config['user agent']);
+    request.set('User-Agent', options.userAgent || Config.userAgent);
 
     return request;
   }

@@ -2,13 +2,13 @@
 
 import S from 'string';
 import superagent from 'superagent';
-import config from '../../../secret.json';
+import Config from '../../../public.json'
 
 function getUrlTitle(url) {
   return new Promise((ok, ko) => {
     try {
       superagent.get(url)
-        .set('User-Agent', config['user agent'])
+        .set('User-Agent', Config.userAgent)
         .timeout(8000)
         .end((err, res) => {
           if (err) {

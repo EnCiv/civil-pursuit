@@ -1,8 +1,8 @@
 'use strict';
 
 import path         from 'path';
-import cloudinary   from '../../../server/util/cloudinary';
-import config       from '../../../../secret.json';
+import cloudinary   from 'cloudinary';
+import Config       from '../../../../public.json';
 
 function saveImage (item) {
   return new Promise((ok, ko) => {
@@ -13,7 +13,7 @@ function saveImage (item) {
 
       cloudinary.uploader.upload(
 
-        path.join(config.tmp, item.image),
+        path.join(Config.tmp, item.image),
 
         result => {
           item

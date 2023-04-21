@@ -1,23 +1,31 @@
-'use strict';
+'use strict'
 
-import sendEmail          from '../server/util/send-email';
-import secret             from '../../secret.json';
+import sendEmail from '../server/util/send-email'
+import Config from '../../public.json'
 
-function sendContactUs (email, fname, lname, subject, message, cb) {
-    let request={
-      from      :   secret.email.user,
-      to        :   "david@synaccord.com",
-      subject   :   subject ,
-      text      :   message
+function sendContactUs(email, fname, lname, subject, message, cb) {
+  try {
+    let request = {
+      from: Config.sendEmailFrom,
+      to: Config.sendFeedbackTo,
+      subject: subject,
+      text: message,
     }
 
-    if(email)
-      request.replyTo=fname + " " + lname + " <" + email + ">";
-  
-    let results = sendEmail(request);
+    if (email) request.replyTo = fname + ' ' + lname + ' <' + email + '>'
 
-    results.then(cb)
-      .catch(error => cb({ error : error.message }));
+    logger.info('sendContactUs', request)
+
+    if (process.env.NODEMAILER_SERVICE) {
+      let results = sendEmail(request)
+      results.then(cb).catch(error => cb({ error: error.message }))
+    } else {
+      cb()
+    }
+  } catch (error) {
+    logger.info('caught error trying to send-contact-us')
+    return
+  }
 }
 
-export default sendContactUs;
+export default sendContactUs
