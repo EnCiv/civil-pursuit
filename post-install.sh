@@ -13,10 +13,11 @@ echo '*************************************************************************'
 mkdir -p node_modules/syn
 # on windows environment make sure /tmp exisits so that stream uploads of pictures will work
 mkdir -p /tmp
-
+# always start with a fresh dist directory. If going back a repo, or changing branches in development there may be files there that shouldn't be. Espeically in the app/api
+rm -rf dist
+# after make install make sure to get the latest polyfill 
 cp node_modules/@babel/polyfill/dist/polyfill.min.js assets/js
 cp node_modules/react-perfect-scrollbar/dist/css/styles.css assets/css
-
 
 echo '*************************************************************************'
 echo BOWER
