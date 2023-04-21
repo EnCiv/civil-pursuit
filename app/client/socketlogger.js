@@ -16,5 +16,5 @@ function configure(config) {
   return socketloggerAppender(layout, config.timezoneOffset);
 }
 
-exports.appender = socketloggerAppender;
-exports.configure = configure;
+export {socketloggerAppender as appender, configure as configure}
+export default {appender: socketloggerAppender, configure: configure}

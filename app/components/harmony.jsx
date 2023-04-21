@@ -102,7 +102,7 @@ class RASPHarmony extends ReactActionStatePathClient {
         } else if (action.type==="DESCENDANT_UNFOCUS" && (action.distance===1 || action.distance===2)) {
             delta.side= null; 
             if (rasp.side && action.side === rasp.side) {
-              this.toChild[rasp.side]({ type: "RESET_STATE" });  // CHANGE_SHAPE ?
+              this.toChild[rasp.side]({ type: "RESET_STATE" }); 
             }
         } else
           return false;
@@ -179,8 +179,8 @@ class RASPHarmony extends ReactActionStatePathClient {
 
     render() {
       const { active, item, rasp, ...otherProps } = this.props;
-      //onsole.info("Harmony.render", this.props);
 
+      if(!(item && item.harmony && item.harmony.types && item.harmony.types.length>=2)) return null; // if the item doesn't have what it needs - don't render
 
       let contentLeft = (
         <DoubleWide className="harmony-pro" left expanded={rasp.side === 'L'} key={item._id + '-left'}>

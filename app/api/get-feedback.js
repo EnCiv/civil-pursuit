@@ -13,7 +13,7 @@ function getFeedback (itemId, cb) {
     Feedback
       .findOne(query)
       .then(
-        feedback => cb(feedback.toJSON()),
+        feedback => cb(feedback && feedback.toJSON()),
         cb(null)
         );
 }

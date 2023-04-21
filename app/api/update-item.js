@@ -3,8 +3,12 @@
 import Item from '../models/item';
 import Mungo from 'mungo';
 
-function updateItem (item) {
+function updateItem (item, cb) {
   try {
+    // mungo complains about extra properties that may be in the object, so we just delete them
+		const schemaKeys = Object.keys(Item.schema).concat(['_id']);
+		Object.keys(item).forEach(inputKey => schemaKeys.includes(inputKey) || delete item[inputKey]);
+
     item.user = Mungo.mongodb.ObjectID(this.synuser.id);
     let id=Mungo.mongodb.ObjectID(item._id)
 
@@ -15,20 +19,21 @@ function updateItem (item) {
             .toPanelItem()
             .then(
               item => {
+                if(typeof cb === 'function') cb(item);
                 this.emit('item changed', item);
               },
-              error => this.error(error)
+              (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
             )
         }
-        catch ( error ) {
-          this.error(error);
+        catch ( err ) {
+          if(typeof cb === 'function') cb(); this.error(err)
         }
       },
-      this.error.bind(this)
+      (err)=>{if(typeof cb === 'function') cb(); this.error(err)}
     );
   }
-  catch ( error ) {
-    this.error(error);
+  catch ( err ) {
+    if(typeof cb === 'function') cb(); this.error(err)
   }
 }
 

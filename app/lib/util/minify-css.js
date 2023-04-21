@@ -3,7 +3,7 @@
 import fs               from 'fs';
 import path             from 'path';
 import CleanCSS         from 'clean-css';
-import "babel-polyfill";
+import "@babel/polyfill";
 
 function minifyCSS (source, destination) {
   console.log('minify css', source, destination);

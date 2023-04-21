@@ -1,0 +1,100 @@
+8/5/2019
+Test this with http://localhost:3011/i/d,pvsum/S,d
+infinite-scroll: This branch is about putting an infinite scroll inside the RASPPanelList so that in QSortRelook the user can see the item, and it's pros and cons.  The titleizded list of 5 items to be shown, and if the users goes into that area, and scrolls, more items will be added.
+- This is using 'react-perfect-scrollbar' with modifications for development, to linking the highly modified version of 'perfect-scrollbar'. (both forked by ddfridley)
+---- PerfectScroll what's different about perfect scroll - it' has been modified to use top and left (see this.ST for all the things that had to be modified) - that seems to be working - but not tested with right-to-left text
+--- it uses the idea that there is an outer-container div, and an inner content div. (followed by the X and Y rail divs).
+--- when the content is bigger than the container all works as usual with perfect-scrollbar
+--- but for this application, up to 5 items will be renders, and the content and the container will be the same size, and if there are more items to be scrolled in then postScroll: {length: <current length or items>, count: <total count of items> } needs to be passed in options.
+--- it needs to be passed as a object that itself will never be change, but the contents will.  
+--- if postScroll is passed, the Y rail will appear, and if the users scrolls up, a 'ps-y-reach-end; event will be generated to cause the parent to load more. 
+--- when the user scrolls up - PerfectScroll will first set maxHeight for the container.  This was tricky, because we don't know when the container data has been fetched and rendered, but we know (assume) that it's all done by the time the users interacts with it.
+--- the challenge here, that's not quite working right, is that  <perfect-scroll>.update needs to be called when the postScroll values are changed - to update the scrollbar size.  Is there a betterway than postScroll?
+--- PerfectScroll assume that all items are of equal size when calculating the size of the rails (scrollbars). If that's not a valid assumption - than the parent will need to report lines and total lines, or vertical pixels and total vertical pixels.  But it won't break anything if items are irregular.
+--- there may need to be a mechanism to cause PerfectScroll to recalculate maxHeight - when, for example, the shape changes from titleized to truncated so that the maxHeight is recalculated
+--- another issue to address is that after you scroll through the content, scrolling immediately jumps to the outer page (which seems to scroll much faster).  There needs to be some stickyness to the scroll jesture so it doesn't leave the area for a reasonable responce time (250 to 750mSec)
+--- One thing that's missing from the UX is that after it's stable, when you scroll up - there's no indication that it's loading. 
+--- Touch scrolling doesn't cause 'ps-y-reach-end' events yet - also there is lots of conflict between scrolling and selecting of the inner item 
+--- clicking on taping on the rail doesn't cause 'ps-y-reach-end' yet
+- Currently we are showing a titlized list (just the title of each item) - but we need a new VisualMethod that shows the top 3 description lines, rather than the title - and has a ... to se more. 
+- It may be better if the most and least boxes are shown in their colors - rather than the background color.  The color will have to be passed down through props.
+- One 'idea' is that currently the "length of Count" is shown at the bottom of the list.  That could be shown only when you hover (or tap and hold) on the scroll bar since the information is in postScroll.   This is good because it give on more line for information, and because scrolling through the items is not a major focus of the UX
+---RASPPanelItems - should change so that renders the same way wither on server or browser
+--- maxChildren should be props.limit???
+--- InfiniteScroll to be pulled out as a separate component
+--- currently RASPPanelItems does not scroll - every other change to PerfectScroll seems to make this work or not. Its irratice still needs to be tracked down.  Perhaps because the list is itself a list (of one) within another list
+- initially the scrollbar thumb size is too small, even though the scrollBar shows there is data missing. After you load once, this updates and looks better, but then after you scroll a couple of times the thumbsize and position change again????
+
+ItemStore, PanelStore - offers a PanelLoadMore method to children
+get-items (api) - excludes current items ($nin) from the query for more items.
+post-install, server-react-render - a css from react-perfect-scrollbar needs to be in the server rendered html file.  It seems that many of the finles in assets/css are auto generates and should be 'cleaned' before building.  But that's not there now.
+
+6/11/2019
+Item-subject - doesn't obscure media when open
+PanelItems - puts the shortId in the path if there is only one
+6/9/2019 
+updated nodemailer to 6 from 1!!! because it stopped working
+insalled clone, which was being used and somehow found though not specified in this package
+6/8/2019
+react-action-state-path deep version with deep push/pop state, and deep path state.  Also, shouldComponentUpdate in clients ignores children to speed things up!
+item - style is passed to item-subject, description, media, reference in order to solve background color rendering ISSUES
+qsort-why - the flipmoveitem has been removed, and the items are rendered directly under flip-move. 
+askItemWhy - child name shortent from parent to p to make pathSegment shorter
+discussionGroupSync- only sends results if done changes - to prevent auto advancing on browser back
+panelList - clean up error messages, redundant code with new RASP
+5/22/2019
+Item - fix the font size using rem instead of em
+QSortItems - allow user to proceed when there are fewer items to sort than the total minimum to pick
+5/20/2019
+Allow QSortRandomItems to include the Harmony button in the type db and pass the color down to the sub components.
+5/16/2019b
+discussionGroupSync renders instructions, removed ID and added group size.
+5/16/2019
+ItemStore - made sure the child Item not include item as a prop. (qsort-flip-item, rasp-panel-items, refine, panel-questions, qsort-finale, qsort-relook, qsort-flip-item, qsort-why )
+Item - chrome flipmove inherited background color problem fixed - style is passed to item; qsort-refine,
+Path not restored past redirect - fixed - only use strings as RASP client names - login-panel, profile-panel
+QSortRefine - don't double qsort items when restoring state from path
+ReactActionStatePath - upgraded to React 16.8.6 and fix for back button not storing state because of confusion over leading /
+5/2/2019
+ask-item-why - passes items in RESULTS action so they can be added to the random items
+profile-panel - passes ...panel to the typecomponent as well so the type will changed
+start.js - more error messages, but still not catching the error that the server can't start because the port is in use
+5/1/2019
+Harmony - doesn't render until fetch has completed.
+Promote - if an item, but not one to compare to - then promote auto completes
+Refine - cleaned up unreachable completed
+PanelStore - shows loading until fetch has completed, fixed problem with createItem triggering in the wrong panel
+AskItemWhy - sends ISSUES and RESULTS to parent (PanelList), doens't autocomplete - but if restoring from path PanelList will move it forward
+CafeIdea - created noResults prop so that it won't put results into shared - but this is a Kludge and we need a more general method
+DiscussionGroupSync - will move auto advance  by FOCUS event from panel list if sync is complete, better cleanup of timer on unmount, sends RESULTS and ISSUES to PanelList so auto advance while resoring from path will worker
+PanelList - sends FOCUS to the panel being changed to, adjusts height of current panel in a way that keeps the bottom border
+AcceptSupportOppose - has border around buttons
+panel.less - added a comment that syn-panel-list-rotary needs to be in a class and won't work if it's in a style that keeps changing
+4/23/2019
+apiWrapper.Flush fixed for turk - user not defined on initial render
+4/22/2019
+changed ENV name to AWSSecretAccessKey, added console.error messages, fixed error handling.
+4/17/2019
+fixed mechanical turk worker logins. user schema for turks, detailed. turk_user doesn't add assignmentID to db, raspPanelItems does not mount and never rerender the panels, (the user prop wasn't coming in on the first render)
+4/12/2019
+rasp - supports 'default' child, client includes default actionToState so you can use actionFilters, deriveRASP instead. Fixed a bug in RASPClientMult and PanelList that when using SET_PATH would set the new child too early.
+4/3/2019
+panel-list: smooth transitions working again, right-border added
+ask-item-why - margins and padding beautiful
+login-panel: type, and other panel props, are changed to that of the new type (not the login panel type)
+support-accept-reject: prop type checking fixed
+4/2/2019
+AskItemWhy - if you reload, it refetches entered data, and updates the constraints - but it doesn't automatically advance (should it? that will be harder)
+QsortItems - implemented min requirement, constraints are listed in the DoneItems box at the bottom
+smoothScroll - typo
+qsortWhy - does not use min/max constraints - just makes sure there is an answer for each why
+4/1/2019
+ask-item-why would not proceed if there was previous data in the db - item-subject & item-description will generate CREATOR_DIRTY actions when component receives new props
+smoothScroll - call "S"crollFocus
+3/29/2019
+storybook - separated into multiple story files. created story for react-scrollbar
+react-scrollbar - fixed bug that caused jumping - it wasn't really scrolling as intended.
+next-step - shows instructions, shows buttons, removed unused actions
+dynamic-selector - eliminated React child key complaint
+smooth-scroll - calls react-scrollbar.SmoothScroll instead of doing it separately.
+api.js/server.js/set-user-cookie.js -  if id in cookie doesn't exist in db (different DB?) error out

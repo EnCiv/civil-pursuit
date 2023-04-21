@@ -2,11 +2,12 @@
 
 import Country from '../models/country';
 import superagent from 'superagent';
+/**
 function getCivicInfo (address, cb) {
   Country.find().limit(false)
     .then(cb)
     .catch(this.error.bind(this));
-}
+}**/
 
 const apiKey=process.env.GoogleCivicApiKey;
 

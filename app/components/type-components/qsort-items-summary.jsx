@@ -1,10 +1,6 @@
 'use strict';
 
 import React from 'react';
-import ItemStore from '../store/item';
-import smoothScroll from '../../lib/app/smooth-scroll';
-import QSortButtonList from '../qsort-button-list';
-import QVoteTotals from '../store/qvote-totals';
 import Accordion from 'react-proactive-accordion';
 import Item from '../item';
 import PanelHeading from '../panel-heading';
@@ -13,8 +9,10 @@ import union from 'lodash/union';
 import RASPFocusHere from '../rasp-focus-here';
 import ItemsQVoteSortStore from '../store/items-qvote-sort';
 import publicConfig from '../../../public.json';
+import cx from 'classnames';
+import injectSheet from 'react-jss'
 
-const styles = cssInJS({
+const styles = {
     "synLoadMore": {
         'text-align': 'center',
         'font-weight': 'bold'
@@ -27,9 +25,9 @@ const styles = cssInJS({
     "synLoadMoreButton:hover": {
         'background-color': '#e0eff'
     }
-});
+};
 
-export default class QSortItemsSummary extends React.Component {
+ class QSortItemsSummary extends React.Component {
     state = { type: null, limit: publicConfig.dbDefaults.limit };
 
     constructor(props) {
@@ -71,7 +69,7 @@ export default class QSortItemsSummary extends React.Component {
     }
 }
 
-class RASPQSortItemsSummary extends ReactActionStatePathClient {
+export class RASPQSortItemsSummary extends ReactActionStatePathClient {
     state={loadMore: false};
 
     constructor(props) {
@@ -154,7 +152,7 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        const { user, rasp, items, total, type } = this.props;
+        const { user, rasp, items, total, type, classes, className } = this.props;
         const { createMethod = "visible", promoteMethod = "visible", feedbackMethod = 'visible' } = type;
         const QSortButtonList=this.props.qbuttons || QSortButtonList;
 
@@ -179,7 +177,6 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
                             { component: 'QSortButtons', qbuttons: qbuttonTotals },
                             {   component: 'Harmony', 
                                 visualMethod: 'titleize', 
-                                shape: 'title', 
                                 limit: 5, 
                                 hideFeedback: feedbackMethod==='hidden', 
                                 createMethod: 'visible', 
@@ -194,7 +191,8 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
                         active: active,
                         createMethod: createMethod,
                         promoteMethod: promoteMethod,
-                        hideFeedback: feedbackMethod === 'hidden'
+                        hideFeedback: feedbackMethod === 'hidden',
+                        className: className
                     }
                 );
             });
@@ -203,18 +201,20 @@ class RASPQSortItemsSummary extends ReactActionStatePathClient {
             loadMore=null;
         } else if(this.state.loadMore){
             loadMore=(                
-                <div className={styles["synLoadMore"]}>
+                <div className={cx(classes['synLoadMore'])}>
                     {"loading ..."}
                 </div>)
+        } else if(this.props.fixed){
+            loadMore=null;
         } else if(items.length && items.length< total){
             loadMore=(
-                <div className={styles["synLoadMore"]}>
-                    <button className={styles["synLoadMoreButton"]} onClick={this.loadMore.bind(this)}>{items.length+' of '+total+' ...load 10 more'}</button>
+                <div className={cx(classes["synLoadMore"])}>
+                    <button className={cx(classes["synLoadMoreButton"])} onClick={this.loadMore.bind(this)}>{items.length+' of '+total+' ...load 10 more'}</button>
                 </div>
             )
         } else {
             loadMore=(
-                <div className={styles["synLoadMore"]}>
+                <div className={cx(classes["synLoadMore"])}>
                    {'Total '+items.length}
                 </div>
             )
@@ -246,3 +246,5 @@ class QSortFlipItemHarmony extends React.Component {
         );
     }
 }
+
+export default injectSheet(styles)(QSortItemsSummary);

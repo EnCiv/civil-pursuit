@@ -5,7 +5,6 @@ import Panel from '../panel';
 import config from 'syn/../../public.json';
 import TypeComponent from '../type-component';
 import Instruction from '../instruction';
-import Button from '../util/button';
 
 class ProfileCheck extends React.Component {
 

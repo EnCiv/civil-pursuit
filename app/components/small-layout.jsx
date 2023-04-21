@@ -15,7 +15,7 @@ class SmallLayout extends React.Component {
   render() {
       const {children, ...lessProps}=this.props;
       return (
-          <ReactActionStatePath {...lessProps} initialRASP={{key: "1"}} >
+          <ReactActionStatePath {...lessProps} >
                <RASPSmallLayout children={children}/>
           </ReactActionStatePath>
       )
@@ -29,20 +29,6 @@ class RASPSmallLayout extends ReactActionStatePathClient {
     super(props, 'key');  // itemId is the key for indexing to child RASP functions
     this.createDefaults();
   }
-
-  actionToState(action, rasp, source, defaultRASP, delta) {
-    //find the section that the itemId is in, take it out, and put it in the new section
-    var nextRASP={};
-    if(Object.keys(delta).length){
-      ; // do nothing but generate the nextRASP 
-    } else
-      return null;
-    Object.assign(nextRASP, rasp, delta);
-    nextRASP.pathSegment=null;
-    return(nextRASP);
-  }
-
-  segmentToState=undefined; // explicitly there is no segmentToState function here. 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -59,7 +45,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
               <div className="should-have-a-chidren scroll-me">
                   <section role="main">
                   { React.Children.map(React.Children.only(children), child=>{
-                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated', "1")});
+                      var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated','default')});
                       Object.keys(child.props).forEach(prop=>delete newProps[prop]);
                       return React.cloneElement(child, newProps, child.props.children)
                   })}

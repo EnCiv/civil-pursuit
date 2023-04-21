@@ -1,7 +1,6 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-dom';
 import superagent                     from 'superagent';
 import Component                      from '../lib/app/component';
 import Modal                          from './util/modal';
@@ -10,11 +9,9 @@ import Button                         from './util/button';
 import Submit                         from './util/submit';
 import ButtonGroup                    from './util/button-group';
 import Icon                           from './util/icon';
-import Link                           from './util/link';
 import Row                            from './util/row';
 import Column                         from './util/column';
-import EmailInput                     from './util/email-input';
-import Password                       from './util/password';
+import Input                          from './util/input';
 import Loading                        from './util/loading';
 import Facebook                       from '../lib/app/fb-sdk';
 
@@ -25,6 +22,7 @@ class Login extends React.Component {
     super(props);
 
     this.state = { validationError : null, successMessage : null, info : null };
+    this.forgotPassword=this.forgotPassword.bind(this);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,8 +70,8 @@ class Login extends React.Component {
 
     this.setState({ validationError : null, info : 'Logging you in...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value,
-      password = ReactDOM.findDOMNode(this.refs.password).value;
+    let email = this.refs.email.value,
+      password = this.refs.password.value;
 
     Login
       .signIn(email, password)
@@ -152,12 +150,12 @@ class Login extends React.Component {
 
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
+          <Input type='email' block autoFocus required medium placeholder="Email" ref="email" name="email" />
         </div>
 
         <div className="syn-form-group">
           <label>Password</label>
-          <Password block required placeholder="Password" ref="password" medium name="password" />
+          <Input type='password' block required placeholder="Password" ref="password" medium name="password" />
         </div>
 
         <div className="syn-form-group syn-form-submit">
@@ -174,7 +172,7 @@ class Login extends React.Component {
             <a
               href              =   "#"
               className         =   "forgot-password-link"
-              onClick           = { ::this.forgotPassword }
+              onClick           = { this.forgotPassword }
             >
             Click here
             </a>

@@ -16,8 +16,8 @@ mkdir -p /tmp
 # always start with a fresh dist directory. If going back a repo, or changing branches in development there may be files there that shouldn't be. Espeically in the app/api
 rm -rf dist
 # after make install make sure to get the latest polyfill 
-cp node_modules/babel-polyfill/dist/polyfill.min.js assets/js
-
+cp node_modules/@babel/polyfill/dist/polyfill.min.js assets/js
+cp node_modules/react-perfect-scrollbar/dist/css/styles.css assets/css
 
 echo '*************************************************************************'
 echo BOWER
@@ -48,14 +48,14 @@ npm run transpile  || {
 echo "transpile ok"
 
 echo '*************************************************************************'
-echo BROWSERIFY
+echo WEBPACK
 echo '*************************************************************************'
 
-npm run build  || {
-  echo Could not browserify;
+npm run packbuild  || {
+  echo Could not webpack;
   exit 1
 }
-echo "browserify ok"
+echo "webpack ok"
 
 echo '*************************************************************************'
 echo LESS TO CSS
@@ -78,16 +78,6 @@ npm run min-css  || {
 echo "min-css ok"
 
 echo '*************************************************************************'
-echo UGLIFY JS
-echo '*************************************************************************'
-
-npm run uglify  || {
-  echo Could not ulify js;
-  exit 1
-}
-echo "uglify ok"
-
-echo '*************************************************************************'
 echo UGLIFY ASSETS
 echo '*************************************************************************'
 
@@ -97,23 +87,3 @@ npm run uglify-assets  || {
 }
 echo "uglify-assets ok"
 
-echo '*************************************************************************'
-echo MIGRATE DB
-echo '*************************************************************************'
-
-# node dist/bin/migrate  || {
-#  echo Could not migrate;
-#  exit 1
-#}
-#echo "migrate ok"
-
-echo '*************************************************************************'
-echo CLEAR ERRORS IN DB
-echo '*************************************************************************'
-
-#node dist/bin/clear-errors  || {
-#  echo Could not clear errors;
-#  exit 1
-#}
-#
-#echo "clear errors in db ok"

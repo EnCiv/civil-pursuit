@@ -72,7 +72,7 @@ class Home extends React.Component {
 
     if( ! this.props.user) {
       content.push(
-        <Welcome />
+        <Welcome key="welcome"/>
       );
     }
 
@@ -81,7 +81,7 @@ class Home extends React.Component {
       const now = Date.now();
 
       if ( now < deadline ) {
-        content.push( <Countdown discussion={ discussion } { ...this.props } /> );
+        content.push( <Countdown discussion={ discussion } { ...this.props } key="count-down"/> );
       }
     }
 

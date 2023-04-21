@@ -10,7 +10,7 @@ function getTopLevelType (cb) {
 
     type => Type.findById(type)
   )
-  .then(type => cb(type.toJSON()))
+  .then(type => cb(type && type.toJSON()))
   .catch(this.error.bind(this));
 }
 

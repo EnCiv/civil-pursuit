@@ -3,11 +3,10 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
 
 
-exports.button = class DetailButton extends React.Component {
+class DetailButton extends React.Component {
   render() {
     const { active, item, onClick, user } = this.props;
     var success=false;
@@ -32,7 +31,7 @@ exports.button = class DetailButton extends React.Component {
   }
 }
 
-exports.panel = class DetailPanel extends React.Component {
+class DetailPanel extends React.Component {
     mounted=false;
     render(){
       if(!this.mounted && !this.props.active) return null; // don't render this unless it's active, or been rendered before
@@ -53,3 +52,5 @@ exports.panel = class DetailPanel extends React.Component {
       }
     }
 }
+
+export {DetailButton as button, DetailPanel as panel}

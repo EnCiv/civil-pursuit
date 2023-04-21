@@ -11,6 +11,7 @@ import DoubleWide from './util/double-wide';
 import TransitionOC from './util/transitionoc';
 import Button from './util/button';
 import Column from './util/column';
+import publicConfig from '../../public.json';
 
 import { ReactActionStatePath, ReactActionStatePathClient } from 'react-action-state-path';
 
@@ -34,6 +35,21 @@ class RASPPromote extends ReactActionStatePathClient {
         //onsole.info("RASPPromote.constructor", this.props)
         this.transitionedOC = [];
         if(!(props.rasp)) logger.error("RASPPromote rasp missing");
+    }
+
+    componentDidMount(){
+        this.checkForSingle();
+    }
+
+    componentDidUpdate(){
+        this.checkForSingle();
+    }
+
+    checkForSingle(){
+        const {items, rasp}=this.props;
+        if(items && items.length===1 && !rasp.single){
+            setTimeout(()=>rasp.toParent({type: "PROMOTE", position: 'left'}), publicConfig.timeouts.animation);
+        }
     }
 
     static opposite={left: 'right', right: 'left'}
@@ -71,27 +87,31 @@ class RASPPromote extends ReactActionStatePathClient {
             this.queueUnfocus(action);
           }
         } else if (action.type==="PROMOTE"){
-          const cursor = rasp.cursor + 1;
-          if ( cursor <= this.props.limit ) {
-            delta.cursor=cursor;
-            delta[RASPPromote.opposite[action.position]]=cursor;
-            this.queueFocus(action);
-          } else {
-            const winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
-            this.insertUpvotes(winner._id);
-            //delta.cursor=cursor; do not increment cursor past limit
-            this.queueUnfocus(action);
-            if(winner._id === this.props.itemId){ // voted up the one we started with
-                this.queueAction({type: "ITEM_DELVE", item: winner, distance: -1});
-            } else { // voted up a different one
-                this.qaction(()=>{
-                    this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinued: true})
-                    this.queueAction({type: "ITEM_DELVE", item: winner, distance: -2});
-                },0);
-                //setTimeout(()=>this.props.rasp.toParent({type: "FINISH_PROMOTE", winner: winner, distance: -1}),0);  // after the evaluation is done, the panel should go away
+            const cursor = rasp.cursor + 1;
+            if ( cursor <= this.props.limit ) {
+                delta.cursor=cursor;
+                delta[RASPPromote.opposite[action.position]]=cursor;
+                this.queueFocus(action);
+            } else {
+                var winner;
+                if(this.props.limit>1){
+                    winner=this.props.items[rasp[action.position]]; // fetch the item indexed to by the winning position
+                    this.insertUpvotes(winner._id);
+                }else{
+                    delta.single=true; // only PROMOTE the single once
+                    winner=this.props.items[0]; // fetch the item indexed to by the winning position
+                }
+                this.queueUnfocus(action);  // the user is done here
+                if(winner._id === this.props.itemId){ // voted up the one we started with
+                    this.queueAction({type: "ITEM_DELVE", item: winner, distance: -1});
+                } else { // voted up a different one
+                    this.qaction(()=>{
+                        this.props.rasp.toParent({type: "SHOW_ITEM", item: winner, distance: -2, toBeContinued: true})
+                        this.queueAction({type: "ITEM_DELVE", item: winner, distance: -2});
+                    },0);
+                }
             }
-          }
-        } else if(Object.keys(delta).length) {
+        }  else if(Object.keys(delta).length) {
             ; // no need to do anything, but do continue to calculate nextRASP
         } else 
             return null; // don't know the action type so let the default handler have it

@@ -31,7 +31,7 @@ class ItemsStore extends React.Component {
         panel.parent = this.props.parent; //._id;
       }
 
-      if(this.props.limit){panel.limit=this.props.limit}
+      panel.limit=this.props.limit || publicConfig['navigator batch size'];
 
       if(this.props.own){panel.own=this.props.own}
 
@@ -53,6 +53,7 @@ class ItemsStore extends React.Component {
 
   okGetItems (panel, count) {
     if ( makePanelId(panel) === this.id ) {
+      if(this.state.items) count+=this.state.items.length; // the count returned is the number of items that match the parent and type - excluding the items already in the panel passed
       this.setState({ items: panel.items, count });
     }
   }
@@ -71,6 +72,23 @@ class ItemsStore extends React.Component {
     }
   }
 
+  loadMore(page){
+		if(page){  // if page 0 don't do anything - this is loading on component mount
+			console.info("ItemStore.loadmore",page);
+      const panel = { type : this.props.type };
+
+      if ( this.props.parent ) {
+        panel.parent = this.props.parent; //._id;
+      }
+
+      panel.limit=this.props.limit || publicConfig['navigator batch size'];
+      panel.items=this.state.items;
+      if(this.props.own){panel.own=this.props.own}
+
+      window.socket.emit('get items', panel, this.okGetItems.bind(this));
+      //this.setState({limit})
+		}
+	}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
@@ -79,7 +97,7 @@ class ItemsStore extends React.Component {
     return (  
       <section>
         {   React.Children.map(React.Children.only(children), child => {
-                var newProps = Object.assign({}, lessProps, this.state);
+                var newProps = Object.assign({}, lessProps, this.state, {PanelLoadMore: this.loadMore.bind(this)});
                 Object.keys(child.props).forEach(prop => delete newProps[prop]);
                 return React.cloneElement(child, newProps, child.props.children)
             })

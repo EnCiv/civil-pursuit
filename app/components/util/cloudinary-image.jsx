@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Image from './image';
+import PropTypes from 'prop-types';
 
 class CloudinaryImage extends React.Component {
   static propTypes    =   {
-    transparent       :   React.PropTypes.bool,
-    version           :   React.PropTypes.string,
-    id                :   React.PropTypes.string
+    transparent       :   PropTypes.bool,
+    version           :   PropTypes.string,
+    id                :   PropTypes.string
   };
 
   render () {

@@ -78,3 +78,68 @@
     padding: 0;
   }
 }
+
+.vs-edit {
+  .looking-up:not(.visible),
+  .error:not(.visible),
+  .url-title:not(.visible),
+  .syn-edit-url:not(.visible),
+  .url-editor.hide
+  {
+    display: none
+  }
+
+  .looking-up {
+    display:none
+
+    .visible {
+      display: block;
+    }
+  }
+
+  textarea{
+    background-color: inherit;
+
+    :hover{
+      background-color: #eee;
+    }
+  }
+
+  input{
+    background-color: inherit;
+  }
+
+
+/***  [name="subject"] {
+    font-family: "Oswald";
+    border: none;
+    line-height: ~"calc( 1em + 1px)"; //+1px is needed to prevent clipping at the top when the font size isn't exact number of pixels
+    font-size: 1.375rem;
+    padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
+  }
+***/
+
+  [name="reference"] {
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 300;
+    font-family: "Oswald";
+    background-color: white;
+    padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
+  }
+
+  [name="url-title"] {
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 300;
+    font-family: "Oswald";
+    background-color: white;
+    padding: 0 0 calc( @item-visual-gap * 0.5 ) 0;
+  }
+
+  [name="description"] {
+    border: none;
+    line-height: 1.375em;
+    padding: 0;
+  }
+}

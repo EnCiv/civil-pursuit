@@ -1,17 +1,21 @@
 'use strict';
 
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import Component      from '../lib/app/component';
 import Modal          from './util/modal';
 import Form           from './util/form';
 import Submit         from './util/submit';
 import Row            from './util/row';
 import Column         from './util/column';
-import EmailInput     from './util/email-input';
+import Input          from './util/input';
 import Loading        from './util/loading';
 
 class ForgotPassword extends React.Component {
+  constructor(props){
+    super(props)
+    this.signUp=this.signUp.bind(this)
+    this.signIn=this.signIn.bind(this)
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -27,7 +31,7 @@ class ForgotPassword extends React.Component {
 
     this.setState({ validationError : null, info : 'One moment...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value;
+    let email = this.refs.email.value;
 
     window.socket.emit('send password', email, null, response => {
       if ( response.error ) {
@@ -78,7 +82,7 @@ class ForgotPassword extends React.Component {
       <div onClick={this.stopPropagation.bind(this)}>
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput
+          <Input type='email'
             block
             autoFocus
             required
@@ -104,7 +108,7 @@ class ForgotPassword extends React.Component {
           <Column span="50" gutter>
             <a
               href            =   ""
-              onClick         =   { ::this.signUp }
+              onClick         =   { this.signUp }
               className       =   "forgot-password-sign-up"
             >
               Sign up
@@ -114,7 +118,7 @@ class ForgotPassword extends React.Component {
           <Column span="50" text-right gutter>
             <a
               href            =   ""
-              onClick         =   { ::this.signIn }
+              onClick         =   { this.signIn }
               className       =   "forgot-password-sign-in"
             >
               Sign in

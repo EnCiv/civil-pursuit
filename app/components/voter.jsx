@@ -5,13 +5,10 @@ import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import Image                          from './util/image';
-import Icon                           from './util/icon';
-import Button                         from './util/button';
-import InputGroup                     from './util/input-group';
-import TextInput                      from './util/text-input';
 import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import DynamicSelector                from './dynamic-selector';
+import DynamicSelector                from './profile-components/dynamic-selector';
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Voter extends React.Component {
 
@@ -27,14 +24,14 @@ class Voter extends React.Component {
     const registered_voter = ReactDOM.findDOMNode(this.refs.registered).value;
 
     if ( registered_voter ) {
-      window.socket.emit('set user info', { registered_voter });
+      setUserInfo( { registered_voter });
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setUserInfo (obj) {
-      window.socket.emit('set user info', obj );
+      setUserInfo( obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -5,7 +5,7 @@ import Button           from './util/button';
 import ButtonGroup      from './util/button-group';
 import InputGroup       from './util/input-group';
 import Modal            from './util/modal';
-import TextInput        from './util/text-input';
+import Input        from './util/input';
 import Select           from './util/select';
 
 class KitchenSink extends React.Component {
@@ -91,25 +91,25 @@ class KitchenSink extends React.Component {
           <h1>Inputs</h1>
           <hr />
 
-          <TextInput placeholder='This is a text input' />
-          <TextInput placeholder='This is a block text input' block />
-          <TextInput placeholder='This is a small text input' block small />
-          <TextInput placeholder='This is a medium text input' block medium />
-          <TextInput placeholder='This is a large text input' block large />
+          <Input placeholder='This is a text input' />
+          <Input placeholder='This is a block text input' block />
+          <Input placeholder='This is a small text input' block small />
+          <Input placeholder='This is a medium text input' block medium />
+          <Input placeholder='This is a large text input' block large />
 
           <p>
             <InputGroup>
-              <TextInput placeholder='This is a text input' />
-              <TextInput placeholder='This is a text input' />
-              <TextInput placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
             </InputGroup>
           </p>
 
           <p>
             <InputGroup block>
-              <TextInput placeholder='This is a text input' />
-              <TextInput placeholder='This is a text input' />
-              <TextInput placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
+              <Input placeholder='This is a text input' />
             </InputGroup>
           </p>
 

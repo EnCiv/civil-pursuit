@@ -7,7 +7,7 @@ import QSortButtonList from '../qsort-button-list';
 
 // button is 'active' even if it has been pushed. By pushing it again, you can change it back to unsosrted
 
-exports.button = class QSortButtons extends React.Component {
+class QSortButtons extends React.Component {
   render () {
     const { item, rasp} = this.props;
     const qbuttons= this.props.qbuttons || QSortButtonList;
@@ -45,3 +45,4 @@ exports.button = class QSortButtons extends React.Component {
     return (<section>{ buttons }</section>);
   }
 }
+export {QSortButtons as button}

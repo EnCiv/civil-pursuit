@@ -1,8 +1,6 @@
 'use strict';
 
-import React from 'react';
-
-const { PropTypes } =   React;
+import PropTypes from 'prop-types';
 
 const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool } = PropTypes;
 
@@ -34,6 +32,7 @@ type                =   shape({
   mediaMethod		    : 	string,
   referenceMethod   :   string,
   subjectPlaceHolder :  string,
+  descriptionPlaceholder: string,
   buttons           :   any
 });
 

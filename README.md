@@ -121,7 +121,7 @@ app/lib/proptypes/political-party.js defines a React PropType for politicalParty
 when using politicalParties as a type in a class of a larger structure, use:
 - import politicalPartyType             from '../lib/proptypes/political-party' 
 to get the proptype, and then 
-- politicalParties : React.PropTypes.arrayOf(politicalPartyType)  
+- politicalParties : PropTypes.arrayOf(politicalPartyType)  
 to define the variable in the class you are using it in
 
 app\models\political-party\index.js defines the class PoliticalParty which extends Mungo.Model and includes

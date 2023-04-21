@@ -1,8 +1,6 @@
 'use strict';
 
-import React from 'react';
-
-const { PropTypes } =   React;
+import PropTypes from 'prop-types';
 
 const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool } = PropTypes;
 
@@ -45,7 +43,9 @@ const user          =   shape({
   year_of_birth     :   number,
   street_address    :   any,
   gender_identity   :   any,
-  starting_block_race:  any
+  starting_bloc_race:  any,
+  turks             :   arrayOf(any),
+  workerId          :   string
 });
 
 export default user;

@@ -91,7 +91,7 @@ class RASPPanelQuestions extends RASPPanelItems {
 
     render() {
 
-        const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, sortedItems, panel, answeredAll, ...otherProps } = this.props;
+        const { limit, skip, type, parent, items, count, rasp, createMethod, cssName, sortedItems, panel, answeredAll, item,  ...otherProps } = this.props; // item is removed from otherProps
 
         let title = 'Loading items', name, content, loadMore;
 

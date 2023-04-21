@@ -1,6 +1,16 @@
 {
+  "tmp"             :   "/tmp",
+  "forgotPasswordEmail":  "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36",
+  "cookie":{
+    "path":"/",
+    "signed": false,
+    "maxAge": 1209600000,
+    "httpOnly": true
+  },
   "dbDefaults":{
-    "limit": 10
+    "limit": 10,
+    "bigLimit": 20
   },
 
   "noIdUserProps": [
@@ -52,10 +62,6 @@
 
   "navigator batch size": 10,
 
-  "google analytics": {
-    "key": "UA-55807209-1"
-  },
-
   "default item image": "https://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
   "old default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
 
@@ -65,30 +71,11 @@
 
   "evaluation context item position": "last",
 
-  "facebook": {
-
-    "test" : {
-      "app id" : "473111569540341"
-    },
-
-    "alpha-heroku": {
-      "app id"        :   "295589523959214"
-    },
-
-    "alpha": {
-      "app id"        :   "295589523959214"
-    },
-
-    "beta": {
-      "app id"        :   "295589523959214"
-    },
-    
-    "production": {
-      "app id"        :   "295589523959214"
-    },
-
-    "civilpursuit": {
-      "app id"        :   "1026000160811367"
-    }
+  "itemVisualGap": "0.5em",
+  "timeouts": {
+    "slowAnimation": 750,
+    "animation": 500,
+    "glimpse": 250,
+    "quick": 100
   }
 }

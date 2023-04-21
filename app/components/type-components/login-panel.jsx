@@ -2,81 +2,94 @@
 
 import React from 'react';
 import { JoinForm } from '../join';
-import Panel from '../panel';
 import config from 'syn/../../public.json';
 import TypeComponent from '../type-component';
-import Instruction from '../instruction';
+import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-state-path'
+import PanelHeading from '../panel-heading'
+import HarmonyStore from '../store/harmony'
 
 class LoginPanel extends React.Component {
+    render() {
+        return (
+            <ReactActionStatePath {...this.props}>
+                <PanelHeading items={[]} type={this.props.panel && this.props.panel.type || this.props.type} cssName={'syn-login-profile'} panelButtons={['Instruction']} >
+                    <HarmonyStore>
+                        <RASPLoginPanel />
+                    </HarmonyStore>
+                </PanelHeading>
+            </ReactActionStatePath>
+        );
+    }
+}
 
-    state = {
-        typeList: []
+function calcNewLocation(props){
+    return props.newLocation || (props.panel && props.panel.parent && props.panel.parent.new_location) || (props.parent && props.parent.new_location) || null;
+}
+
+class RASPLoginPanel extends ReactActionStatePathClient {
+    constructor(props){
+        super(props,'redirect');
+        this.state={}; // required if using getDerivedStateFromProps
+        this.componentWillMount(); // defined in RASPClient but won't be called because of getDerivedDerivedState from props - need to set the action filters before getDerived... is called
     }
 
-    componentDidMount() {
-    //    console.info("LoginPanel.cDM", this.props)
-        if (typeof window !== 'undefined' && this.props.panel.type.harmony) {
-            window.socket.emit('get listo type', this.props.panel.type.harmony, this.okGetListoType.bind(this))
+    actionFilters={
+        REDIRECT: (action, delta)=>{
+            delta.redirect='redirect';
+            action.distance-=1; // make this invisible
+            return true; // to propagate
         }
     }
-    okGetListoType(typeList) {
-        this.setState({ typeList: typeList });
+
+    segmentToState(action, initialRASP) {
+        var nextRASP = {}, delta={};
+        if(action.segment==='r') delta.redirect='redirect';
+        else console.error("LoginPanel received unexpected segment:",action.segment);
+        Object.assign(nextRASP,initialRASP,delta);
+        this.deriveRASP(nextRASP, initialRASP);
+        if (nextRASP.pathSegment !== action.segment) console.error("profile-panel.segmentToAction calculated path did not match", action.pathSegment, nextRASP.pathSegment)
+        return { nextRASP, setBeforeWait: true }  // set nextRASP as state before waiting for child
     }
 
-    vsChange(obj){
-        if(this.props.vs & this.props.vs.toParent) this.props.vs.toParent(obj);  // let parent know the user has logged in
+    deriveRASP(nextRASP, initialRASP){
+        if(nextRASP.redirect) nextRASP.shape='redirect';
+        if(nextRASP.redirect) nextRASP.pathSegment='r';
     }
 
-    render() {
-        const { panel, user, userInfo, active } = this.props;
-        //onsole.info("LoginPanel:",this.props, this.state);
-        var newLocation=this.props.newLocation || null;
-        if(!newLocation && panel.parent && panel.parent.new_location) newLocation=panel.parent.new_location;  // get new Location out of the parent item if there is one
+    static getDerivedStateFromProps(props,state){
+        const { user, rasp, harmony } = props;
+        const newLocation=calcNewLocation(props);
         if(user && newLocation){
                 window.onbeforeunload=null; // don't warn on redirect
                 location.href=newLocation;
-                return null;
+        } else if (user) {
+            if(harmony.length) 
+                rasp.toParent({type: 'REDIRECT'});
         }
+        return null; // no change in state
+    }
 
-        //if(!newLocation && this.state.typeList.length) newLocation="/items/"+this.state.typeList[0].id+"/"+panel.parent.id;  //new location calculated from next type
-        //console.info("Login-Panel newlocation", newLocation);
+    render() {
+        const { panel, userInfo, rasp } = this.props;
+        const newLocation=calcNewLocation(this.props);
 
-        if (user) {
-
-            if(!this.state.typeList.length) return(null);
+        if (rasp.redirect) {
             const newPanel = {
                 parent: panel.parent,
-                type: this.state.typeList[0],
+                type: this.props.harmony[0],
                 skip: panel.skip || 0,
                 limit: panel.limit || config['navigator batch size'],
             };
             return (
-                <TypeComponent  { ...this.props } component={this.state.typeList[0].component} panel={newPanel} />
+                <TypeComponent  { ...this.props } rasp={this.childRASP('open','redirect')} component={this.props.harmony[0].component} panel={newPanel} {...newPanel} key='type-component' />
             )
-        }
-
-        let title = panel.type.name || "User Registration Required";
-        let instruction = (<div className="instruction-text">This discussion requsts that all users be registered.</div>);
-
-        if (panel.type && panel.type.instruction) {
-        instruction = (
-                <Instruction >
-                    {panel.type.instruction}
-                </Instruction>
-            );
-        }   
-
-        return (
-            <Panel
-                ref="panel"
-                heading={[<h4>{title}</h4>]}
-                >
-                {instruction}
-                <div className='item-login-panel'>
+        } else {
+            return (
+                <div className='item-login-panel' key='join-form'>
                     <JoinForm userInfo={userInfo} newLocation={newLocation} />
                 </div>
-            </Panel>
-        );
+            )
+        }
     }
 }
 

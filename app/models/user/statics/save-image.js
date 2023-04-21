@@ -1,8 +1,8 @@
 'use strict';
 
 import path                   from 'path';
-import cloudinary             from '../../../lib/app/cloudinary';
-import config                 from '../../../../secret.json';
+import cloudinary             from 'cloudinary';
+import Config                 from '../../../../public.json';
 import Mungo                  from 'mungo';
 
 function saveImage (query, image) {
@@ -13,7 +13,7 @@ function saveImage (query, image) {
         query = { _id : query };
       }
 
-      const pathToImage = path.join(config.tmp, image);
+      const pathToImage = path.join(Config.tmp, image);
 
       cloudinary.uploader.upload(pathToImage, result => {
         try {

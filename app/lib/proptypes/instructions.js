@@ -1,8 +1,8 @@
 'use strict';
 
-import React from 'react';
+import PropTypes from 'prop-types';
 import instruction from './instruction';
 
-const instructions = React.PropTypes.arrayOf(instruction);
+const instructions = PropTypes.arrayOf(instruction);
 
 export default instructions;

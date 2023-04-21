@@ -1,17 +1,15 @@
 'use strict';
 
 import React                            from 'react';
-import Row                              from './util/row';
-import Column                           from './util/column';
 import Component                        from '../lib/app/component';
-import Range                            from './util/range';
 import Slider                           from './slider';
 import criteriaType                     from '../lib/proptypes/criteria';
 import cloneDeep from 'lodash/cloneDeep';
+import PropTypes from 'prop-types';
 
 class Sliders extends React.Component {
   static propTypes = {
-    criterias : React.PropTypes.arrayOf(criteriaType)
+    criterias : PropTypes.arrayOf(criteriaType)
   };
 
   votes= [];

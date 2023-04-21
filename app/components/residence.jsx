@@ -1,18 +1,15 @@
 'use strict';
 
 import React                          from 'react';
-import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import Image                          from './util/image';
 import Icon                           from './util/icon';
 import Button                         from './util/button';
 import InputGroup                     from './util/input-group';
-import TextInput                      from './util/text-input';
-import Select                         from './util/select';
 import userType                       from '../lib/proptypes/user';
-import DynamicSelector                from './dynamic-selector';
-import ProfileComponent from './profile-component';
+import ProfileComponent               from './profile-components/component';
+import setUserInfo                    from '../api-wrapper/set-user-info';
 
 class Residence extends React.Component {
 
@@ -35,8 +32,7 @@ class Residence extends React.Component {
       navigator.geolocation.getCurrentPosition(
         position => {
           let { longitude, latitude } = position.coords;
-          window.socket.emit('set user info', { gps : [longitude, latitude] })
-          .on('OK set user info', user => this.setState({ user }));
+          setUserInfo( { gps : [longitude, latitude] }, user => this.setState({ user }));
           this.gpsAvailable=true;
           }, 
         error=>{
@@ -54,15 +50,14 @@ class Residence extends React.Component {
     navigator.geolocation.watchPosition(position => {
       let { longitude, latitude } = position.coords;
 
-      window.socket.emit('set user info', { gps : [longitude, latitude] })
-        .on('OK set user info', user => this.setState({ user }));
+      setUserInfo( { gps : [longitude, latitude] }, user => this.setState({ user }));
     });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setUserInfo (obj) {
-      window.socket.emit('set user info', obj );
+      setUserInfo( obj );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

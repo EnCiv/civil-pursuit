@@ -1,8 +1,6 @@
 'use strict';
 
 import React from 'react';
-import sendEmail          from '../lib/app/send-email';
-import secret             from '../../secret.json';
 
 class ODGCongrat extends React.Component {
 

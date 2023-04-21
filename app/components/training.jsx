@@ -6,13 +6,14 @@ import Button                       from './util/button';
 import Icon                         from './util/icon';
 import instructionType              from '../lib/proptypes/instruction';
 import userType                     from '../lib/proptypes/user';
+import PropTypes from 'prop-types';
 
 class Training extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes    =   {
-    instructions      :  React.PropTypes.arrayOf(instructionType),
+    instructions      :  PropTypes.arrayOf(instructionType),
     user              :   userType
   };
 

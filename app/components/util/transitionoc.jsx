@@ -1,6 +1,7 @@
 'use strict';
 
 import React                    from 'react';
+import PropTypes from 'prop-types';
 import ClassNames          from 'classnames';
 //
 // use <TransitionOC ref={comp => { this.TransitionOCComponent = comp; }}}
@@ -11,9 +12,9 @@ import ClassNames          from 'classnames';
 export default class TransitionOC extends React.Component {
 
     static propTypes = {
-        onChange: React.PropTypes.func,
-        active: React.PropTypes.bool,
-        className: React.PropTypes.string.isRequired
+        onChange: PropTypes.func,
+        active: PropTypes.bool,
+        className: PropTypes.string.isRequired
     }
 
     constructor(props){

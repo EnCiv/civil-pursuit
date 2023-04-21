@@ -7,243 +7,239 @@ import Home from './home';
 import ResetPassword from './reset-password';
 import Panel from './panel';
 import Icon from './util/icon';
-import UserStore from './store/user';
-import About from './about'; import PanelList from './type-components/panel-list';
+import About from './about'; 
 import TypeComponent from './type-component';
 import OnlineDeliberationGame from './odg';
 import ODGCongrat from './odg-congrat';
-import fixedScroll from '../lib/util/fixed-scroll';
 import RenderMarkDown from './render-mark-down';
 import SmallLayout from './small-layout';
 import StaticLayout from './static-layout';
+import MechanicalTurkTask from '../lib/mechanical-turk-task';
+import apiWrapper from '../lib/util/api-wrapper';
+import { hot } from 'react-hot-loader'
 
 class App extends React.Component {
 
-  state = { path: null }
+	constructor(props) {
+		super(props);
+		if (typeof window !== 'undefined') {
+			this.htmlE=document.getElementsByTagName('html')[0]
+			this.htmlE.style.width=window.innerWidth+'px'; // auto margin wont work on html unless width is set
+			this.htmlE.style.margin='auto'; // auto center the window with html.  Doing this in html so the react-scroll can scroll the html top - so that elements that move and scroll of the bottom wont change the scroll position - which is what chrome does
+			if (navigator.userAgent.match(/SM-N950U/)) { // to account for the wrapped sides of the display
+				let b = document.getElementsByTagName('body')[0];
+				if(b){
+					b.style.paddingRight = '9px';
+					b.style.paddingLeft = '9px'
+				}else{
+					logger.error("App: couldn't get body on N950U");
+				}
+			}
+		}
+		MechanicalTurkTask.setFromProps(props);
+		this.flushed = false;
+		apiWrapper.Flush(this.props.user, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+	}
+	
+	componentWillReceiveProps(newProps){
+		apiWrapper.Flush(newProps.user, this.updateAfterFlush.bind(this)); // if any api data was saved previously, flush it to the server
+	}
 
-  constructor(props) {
-    super(props);
+	componentDidMount() {
+	  // Attach The Event for Responsive View~
+	  window.addEventListener('resize', ()=>this.htmlE.style.width=window.innerWidth+'px', {passive: false});
+	}
 
-    if (typeof window !== 'undefined') {
-      //window.onbeforeunload = this.confirmOnPageExit.bind(this);
-      fixedScroll();
-      if (navigator.userAgent.match(/SM-N950U/)) {
-        let b = document.getElementsByTagName('body')[0];
-        b.style.paddingRight = '9px';
-        b.style.paddingLeft = '9px'
-      }
-    }
+	componentDidCatch(error, info) {
+		logger.error("App.componentDidCatch:", error, info)
+	}
 
-    this.state.path = props.path;
-  }
+	updateAfterFlush(){
+		this.flushed=true;
+		if(this.rendered) 
+			this.forceUpdate()
+	}
 
-  confirmOnPageExit(e) {
-    // If we haven't been passed the event get the window.event
-    e = e || window.event;
+	setPath(p) {
+		if (typeof window !== 'undefined') reactSetPath(p);
+	}
 
-    var message = "If you are ready to end this discussion click Leave, your input has been saved and you can return at any time.\n\nIf you didn't mean to leave this discussion, click cancel Stay";
+	render() {
 
-    // For IE6-8 and Firefox prior to version 4
-    if (e) {
-      e.returnValue = message;
-    }
+		const {
+			panels,
+			user,
+			path
+		} = this.props;
 
-    // For Safari, IE8+ and Opera 12+
-    return message;
+		const {notFound, error, browserConfig, MechanicalTurkTask, ...lessProps}=this.props;
+		this.rendered=true; // if we've rendered at least once, then apiWrapper.flush will have to force an update when it completes
 
-    //Chrome is not showing the message
-  }
+		let page = (
+			<Panel heading={(<h4>Not found</h4>)} id="not-found">
+				<section style={{ padding: 10 }}>
+					<h4>Page not found</h4>
+					<p>Sorry, this page was not found.</p>
+				</section>
+			</Panel>
+		);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		if(notFound || error) {
+			;// just render page at the end
+		} else if (error && Object.keys(error).length) { // falsy an empty obect is not an error
+			page = (
+				<Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
+					<section style={{ padding: 10 }}>
+						<h4 style={{ color: 'red', textAlign: 'center' }}>The system glitched :(</h4>
+						<p style={{ textAlign: 'center' }}>We have encountered an error. We apologize for any inconvenience.</p>
+					</section>
+				</Panel>
+			);
+		//} else if (!this.flushed) {
+			//page = (<div style={{ textAlign: "center" }}>Updating...</div>);
+		} else {
+			if (path === '/') {
+				page = <Home user={user}/>;
+			}
 
-  setPath(p) {
-    //this.setState({ path: p});
-    if (typeof window !== 'undefined') reactSetPath(p);
-  }
+			const paths = path.split(/\//);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			paths.shift();
 
+			switch (paths[0]) {
+				case 'page':
+					switch (paths[1]) {
+						case 'profile':
+							page = (<Profile />);
+							break;
 
+						case 'terms-of-service':
+						case 'privacy-policy':
+							page = (<RenderMarkDown name={paths[1]} />)
+							break;
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+						case 'about':
+							page = (<About />);
+							break;
 
-  render() {
+						case 'reset-password':
+							let return_to = '';
+							for (let i = 3; i < paths.length; i++)
+								return_to += '/' + paths[i];
+							return (
+								<StaticLayout {...lessProps}>
+									<ResetPassword activation_token={paths[2]} return_to={return_to} />
+								</StaticLayout>
+							);
+							break;
 
-    const {
-      item,
-      panels,
-      //path,
-      user,
-      notFound,
-      error
-    } = this.props;
+					}
+					break;
 
-    let path = this.state.path;
+				case 'h':
+					page = <Home user={user} RASPRoot={'/h/'} />;
+					break;
 
-    let page = (
-      <Panel heading={(<h4>Not found</h4>)} id="not-found">
-        <section style={{ padding: 10 }}>
-          <h4>Page not found</h4>
-          <p>Sorry, this page was not found.</p>
-        </section>
-      </Panel>
-    );
+				case 'about':
+					page = (<About />);
+					break;
 
+				case 'odg':
+					if (user) {
+						page = (
+							<ODGCongrat {...lessProps} />
+						);
+						break;
+					}
 
-    if (error && Object.keys(error).length) { // falsy an empty obect is not an error
-      page = (
-        <Panel heading={(<h4><Icon icon="bug" /> Error</h4>)}>
-          <section style={{ padding: 10 }}>
-            <h4 style={{ color: 'red', textAlign: 'center' }}>The system glitched :(</h4>
-            <p style={{ textAlign: 'center' }}>We have encountered an error. We apologize for any inconvenience.</p>
-          </section>
-        </Panel>
-      );
-    }
+					if (!panels) return (
+						<OnlineDeliberationGame />
+					);
+					const keylist3 = Object.keys(panels);
 
-    else {
-      if (path === '/') {
-        page = <Home user={user} path={path} />;
-      }
+					const panelId3 = keylist3[keylist3.length - 1];
 
-      const paths = path.split(/\//);
+					const panel3 = Object.assign({}, panels[panelId3].panel);
 
-      paths.shift();
+					const component3 = panel3.type.component || 'Subtype';
 
-      switch (paths[0]) {
-        case 'page':
-          switch (paths[1]) {
-            case 'profile':
-              page = (<Profile />);
-              break;
+					return (<OnlineDeliberationGame component={component3} {...lessProps} count={1} panel={panel3} />
+					);
 
-            case 'terms-of-service':
-            case 'privacy-policy':
-              page = (<RenderMarkDown name={paths[1]} />)
-              break;
+				case 'item':
 
-            case 'about':
-              page = (<About />);
-              break;
+					if (!panels) { break; }
 
-            case 'reset-password':
-              let return_to= '';
-              for(let i=3; i<paths.length; i++)
-                return_to+='/'+paths[i];
-              return (
-                <StaticLayout {...this.props}>
-                  <ResetPassword activation_token={paths[2]} return_to={return_to}/>
-                </StaticLayout>
-              );
-              break;
+					const keylist = Object.keys(panels);
 
-          }
-          break;
+					const panelId1 = keylist[keylist.length - 1];
 
-        case 'h':
-          page = <Home user={user} path={path} RASPRoot={'/h/'} />;
-          break;
+					const panel = Object.assign({}, panels[panelId1].panel);
 
-        case 'about':
-          page = (<About />);
-          break;
+					//panel.items = panel.items.filter(item => item.id === paths[1]);
 
-        case 'odg':
-          if (user) {
-            page = (
-              <ODGCongrat {...this.props} />
-            );
-            break;
-          }
+					//console.info("app item panel filtered", panel );
 
-          if (!this.props.panels) return (
-            <OnlineDeliberationGame />
-          );
-          const keylist3 = Object.keys(this.props.panels);
+					const component = panel.type.component || 'Subtype';
 
-          const panelId3 = keylist3[keylist3.length - 1];
+					return (
+						<Layout {...lessProps} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
+							<TypeComponent component={component} count={1} panel={panel} />
+						</Layout>
+					);
 
-          const panel3 = Object.assign({}, this.props.panels[panelId3].panel);
+				case 'i':
 
-          const component3 = panel3.type.component || 'Subtype';
+					if (!panels) break;
+					else {
+						function getLastPanel(panels) {
+							let keylist = Object.keys(panels);
+							let lastPanelId = keylist[keylist.length - 1];
+							const panel = Object.assign({}, panels[lastPanelId].panel);
+							return panel;
+						}
 
-          return (<OnlineDeliberationGame component={component3} {...this.props} count={1} panel={panel3} />
-          );
+						let last = getLastPanel(panels);
+						let component = last.type.component || 'Subtype';
+						if (typeof document !== 'undefined' && last.items && last.items[0] && last.items[0].subject)
+							document.title = last.items[0].subject;
+						return (
+							<SmallLayout {...lessProps} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
+								<TypeComponent component={component} count={1} panel={last} />
+							</SmallLayout>
+						);
+					}
 
-        case 'item':
+				case 'items':
+					if (!panels) { break; }
 
-          if (!this.props.panels) { break; }
+					const panelId2 = Object.keys(panels)[0];
 
-          const keylist = Object.keys(this.props.panels);
+					//onsole.info("App.render items", { panelId2 });
 
-          const panelId1 = keylist[keylist.length - 1];
+					const panel2 = Object.assign({}, panels[panelId2].panel);
 
-          const panel = Object.assign({}, this.props.panels[panelId1].panel);
+					//panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          //panel.items = panel.items.filter(item => item.id === paths[1]);
+					//console.info("app item panel filtered", panel );
 
-          //console.info("app item panel filtered", panel );
+					const component2 = panel2.type.component || 'Subtype';
+					//onsole.info("App.render panel2", { panel2 });
 
-          const component = panel.type.component || 'Subtype';
+					return (
+						<Layout {...lessProps} setPath={this.setPath.bind(this)} >
+							<TypeComponent component={component2} count={1} panel={panel2} />
+						</Layout>
+					);
+			}
+		}
 
-          return (
-            <Layout {...this.props} RASPRoot={'/item/'} setPath={this.setPath.bind(this)} >
-              <TypeComponent component={component} count={1} panel={panel} />
-            </Layout>
-          );
-
-        case 'i':
-
-          if (!this.props.panels) break;
-          else {
-            function getLastPanel(panels) {
-              let keylist = Object.keys(panels);
-              let lastPanelId = keylist[keylist.length - 1];
-              const panel = Object.assign({}, panels[lastPanelId].panel);
-              return panel;
-            }
-
-            let last = getLastPanel(this.props.panels);
-            let component = last.type.component || 'Subtype';
-            if(typeof document !== 'undefined' && last.items && last.items[0] && last.items[0].subject )
-              document.title=last.items[0].subject;
-            return (
-              <SmallLayout {...this.props} RASPRoot={'/i/'} setPath={this.setPath.bind(this)}>
-                <TypeComponent component={component} count={1} panel={last} />
-              </SmallLayout>
-            );
-          }
-
-        case 'items':
-          if (!this.props.panels) { break; }
-
-          const panelId2 = Object.keys(this.props.panels)[0];
-
-          //onsole.info("App.render items", { panelId2 });
-
-          const panel2 = Object.assign({}, this.props.panels[panelId2].panel);
-
-          //panel.items = panel.items.filter(item => item.id === paths[1]);
-
-          //console.info("app item panel filtered", panel );
-
-          const component2 = panel2.type.component || 'Subtype';
-          //onsole.info("App.render panel2", { panel2 });
-
-          return (
-            <Layout {...this.props} setPath={this.setPath.bind(this)} >
-              <TypeComponent component={component2} count={1} panel={panel2} />
-            </Layout>
-          );
-      }
-    }
-
-    return (
-      <Layout {...this.props} setPath={this.setPath.bind(this)} >
-        {page}
-      </Layout>
-    );
-  }
+		return (
+			<Layout {...lessProps} setPath={this.setPath.bind(this)} >
+				{page}
+			</Layout>
+		);
+	}
 }
 
-export default App;
+export default hot(module)(App)

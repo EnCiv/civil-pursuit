@@ -9,7 +9,7 @@ env.NODE_ENV = 'production';
 
 console.log('env', env)
 
-let ps = spawn('node', ['dist/bin/start'], { env: env });
+let ps = spawn('node', ['dist/server/start'], { env: env });
 
 ps.stdout.on('data', data => console.log(data.toString()));
 ps.stderr.on('data', data => console.log(data.toString()));

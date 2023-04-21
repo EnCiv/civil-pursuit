@@ -22,5 +22,5 @@ function configure(config) {
   return bconsoleAppender(layout, config.timezoneOffset);
 }
 
-exports.appender = bconsoleAppender;
-exports.configure = configure;
+export {bconsoleAppender as appender, configure as configure}
+export default {appender: bconsoleAppender, configure: configure}

@@ -4,8 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import superagent from 'superagent';
 import Accordion from 'react-proactive-accordion';
+import cx from 'classnames';
+import injectSheet from 'react-jss'
 
-const styles=cssInJS({
+const styles={
     "login":{
         display: 'inline-block',
         padding: 0,
@@ -86,9 +88,9 @@ const styles=cssInJS({
         'border-style': 'solid',
         'background-color': 'white'
     }
-})
+}
 
-export default class LoginSpan extends React.Component {
+class LoginSpan extends React.Component {
     constructor(props) {
         super(props);
 
@@ -208,10 +210,11 @@ export default class LoginSpan extends React.Component {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
+        const {classes, user}=this.props
 
-        if(this.props.user)
+        if(user)
             return(        
-                <div className={styles['logout']}>
+                <div className={cx(classes['logout'])}>
                     <a href="/sign/out">Logout</a>
                 </div>
             )
@@ -220,28 +223,28 @@ export default class LoginSpan extends React.Component {
                 <div>
                     <div style={{display: "table", width: "100%"}}>
                         <div style={{display: "table-cell", width: "25%"}}>
-                            <button className={styles['login']} onClick={this.loginButton}>{this.state.login ? "Hide" : "Login"}</button>
+                            <button className={cx(classes['login'])} onClick={this.loginButton}>{this.state.login ? "Hide" : "Login"}</button>
                         </div>
                         <div style={{display: "table-cell", width: "75%"}}>
                             <span>{this.state.login ? "If you are new" : " if you have been here before"}</span>
                         </div>
                     </div>
                     <Accordion active={this.state.login} >
-                        <div className={styles["box"]}>
-                            <div className={styles["email"]}>
-                                <input className={styles["input"]} placeholder="email" ref="email" name="email" type="email" />
+                        <div className={cx(classes["box"])}>
+                            <div className={cx(classes["email"])}>
+                                <input className={cx(classes["input"])} placeholder="email" ref="email" name="email" type="email" />
                             </div>
-                            <div className={styles["password"]}>
-                                <input className={styles["input"]} placeholder="Password" ref="password" type="password" name="password" onKeyDown={this.detectCR}/>
+                            <div className={cx(classes["password"])}>
+                                <input className={cx(classes["input"])} placeholder="Password" ref="password" type="password" name="password" onKeyDown={this.detectCR}/>
                             </div>
-                            <div className={styles["submit"]}>
-                                <button className={styles["input"]} className={styles["submitButton"]} onClick={this.login}>Login</button>
+                            <div className={cx(classes["submit"])}>
+                                <button className={cx(classes["input"])} className={cx(classes["submitButton"])} onClick={this.login}>Login</button>
                             </div>
                             <div>
-                                <button className={styles['forgot']} onClick={this.forgotPassword}>Send login/forgot password link</button>
+                                <button className={cx(classes['forgot'])} onClick={this.forgotPassword}>Send login/forgot password link</button>
                             </div>
-                            <div className={styles["info"]}>{this.state.info}</div>
-                            <div className={styles["error"]}>{this.state.error}</div>
+                            <div className={cx(classes["info"])}>{this.state.info}</div>
+                            <div className={cx(classes["error"])}>{this.state.error}</div>
                         </div>
                     </Accordion>
                 </div>
@@ -249,3 +252,4 @@ export default class LoginSpan extends React.Component {
     }
 }
 
+export default injectSheet(styles)(LoginSpan);

@@ -7,7 +7,7 @@ import socketClient         from 'socket.io-client';
 import migrate              from '../../bin/migrate';
 import Type                 from '../../models/type';
 import Item                 from '../../models/item';
-import Server               from '../../server';
+import Server               from '../../server/server';
 import User                 from '../../models/user';
 import Socket               from '../../lib/app/socket-mockup';
 import WebDriver            from '../../lib/app/webdriver';

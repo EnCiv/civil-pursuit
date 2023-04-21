@@ -11,8 +11,15 @@
 /assets/css/assets.min.css
 /assets/css/training.*
 /assets/css/bundle.css
+/assets/css/styles.css
+/assets/webpack/*
 /assets/bower_components/*
+/assets/js/assets.min.js
 /bconsole/node_modules/*
 /_netrc
 /.netrc
 /.bashrc
+/.cache/*
+/testdb/*
+/backups/*
+*.map

@@ -83,13 +83,18 @@
 .syn-panel-heading.no-heading{
   display: none;
 }
+.vs-redirect{ // if a component/div is redirected 
+  border: none;
+  padding: 0;
+  margin: 0;
+}
 
 .syn-panel-heading.vs-redirect{ // if redirected don't show it.
   display: none;
 }
 
 .syn-panel-heading.vs-title{  // if titleized don't show the heading
-  background: white;
+  background: inherit;
   h4 {
     font-size: 1em;
     color: darkslategray;
@@ -157,6 +162,11 @@ section.syn-panel-body.vs-title{
   padding-left: 10px;
   font-size: 80%;
   font-style: italic;
+}
+
+.syn-panel-list-rotatory { // the transition has to be in a class- if it's in the style then when you change the style, the transition doesn't happen
+  transition: 0.5s left linear;
+  position: relative;
 }
 
 /**-------------------------------------------------------------// panel       */

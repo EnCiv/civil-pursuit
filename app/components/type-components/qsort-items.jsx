@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import FlipMove from 'react-flip-move';
 import QSortFlipItem from '../qsort-flip-item'
 import smoothScroll from '../../lib/app/smooth-scroll';
@@ -14,8 +15,9 @@ import {ReactActionStatePath, ReactActionStatePathClient, ReactActionStatePathFi
 import update from 'immutability-helper';
 import PanelHeading from '../panel-heading';
 import DoneItem from '../done-item';
+import insertQVote from '../../api-wrapper/insert-qvote';
+import publicConfig from '../../../public.json'
 
-  // 20 is hard coded, but where should this be? type or item?
 export class QSortItems extends React.Component {
     
     render(){
@@ -23,7 +25,7 @@ export class QSortItems extends React.Component {
         return(
         <PanelStore parent={this.props.parent}
                     type={this.props.type}
-                    limit={20} >
+                    limit={publicConfig.timeouts.bigLimit} >
             <QVoteStore {...this.props}>
                 <ReactActionStatePath>
                         <PanelHeading  cssName={'syn-qsort-item'} panelButtons={['Creator','Instruction']}>
@@ -38,23 +40,21 @@ export class QSortItems extends React.Component {
 
 export class RASPQSortItems extends ReactActionStatePathClient {
 
-    motionDuration = 500; //500mSec
+    motionDuration = publicConfig.timeouts.animation; //500mSec
 
-    currentTop = 0; //default scroll position
     scrollBackToTop = false;
 
     constructor(props){
         super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
         //onsole.info("RASPQSortItems.constructor");
-        this.state={done: this.isDone(props)}
         this.createDefaults();
     }
 
-    // if initially done, notify panel list, otherwise notify list of issues
+    // if initially done, notify panel list to move on, otherwise notify list of issues
     componentDidMount(){
-        if(this.state.done){
-            this.queueAction({type: "RESULTS", results: this.results()});
+        if(!this.getConstraints(this.props)){
+            this.queueAction({type: "NEXT_PANEL", status: "done", results: this.results(this.props)});
         } else {
             this.queueAction({type: "ISSUES"});
         }
@@ -62,35 +62,54 @@ export class RASPQSortItems extends ReactActionStatePathClient {
 
     //  notify panel list of done status of this panel
     componentWillReceiveProps(newProps){
-        if (this.isDone(newProps)) {
-            this.queueAction({type: "RESULTS", results: this.results()});
-            if(!this.state.done) // [there are no issues now] and there were issues previously
-                this.setState({done: true});
+        if (!this.getConstraints(newProps).length) {
+            if((newProps.items && newProps.items.length) && !(this.props.items && this.props.items.length)) // first time we have populated data
+                setTimeout(()=>this.queueAction({type: "NEXT_PANEL", status: "done", results: this.results(newProps)}),publicConfig.timeouts.glimpse);
+            else
+                this.queueAction({type: "RESULTS", results: this.results(newProps)});
         } else { // there are issues
             this.queueAction({type: "ISSUES"});
-            if(this.state.done) 
-                this.setState({done: false});
         }
     }
 
     // the results to be passed forward to other pannels in the list
-    results(reset){
-        if(reset) return {index: {}, sections: {}, items: [] };
-        else return {index: this.props.index, sections: this.props.sections, items: this.props.items };
+    results(props){
+        if(!props) return {index: {}, sections: {}, items: [] };
+        else return {index: props.index, sections: props.sections, items: props.items };
     }
 
     // if the panel is done, say so
-    isDone(props){
-        return (
-            !props.sections['unsorted'].length // if there are no unsorted items
-            && !Object.keys(this.QSortButtonList).some(criteria=>{ // there is no some section[criteria] where
-                let max=this.QSortButtonList[criteria].max; 
-                if(max && props.sections[criteria] && (props.sections[criteria].length > max)) // there are more items than max 
-                    return true; 
-                else 
-                    return false;
+    getConstraints(props){
+        var constraints=[];
+        if(props.sections['unsorted'].length){
+            constraints.push(props.sections['unsorted'].length+' left to sort');
+        }
+        let total=0; // total items
+        let minTotal=0; // total of minimums
+        Object.keys(this.QSortButtonList).forEach(criteria=>{
+            minTotal+=this.QSortButtonList[criteria].min || 0;
+            total+=props.sections && props.sections[criteria] && props.sections[criteria].length || 0;
+        })
+        if(!total){
+            constraints.push('waiting for items to sort');
+        } else {
+            let minSum=0; // running total of minimums
+            Object.keys(this.QSortButtonList).forEach(criteria=>{
+                let max=this.QSortButtonList[criteria].max;
+                let min=this.QSortButtonList[criteria].min;
+                if(min){
+                    if(minTotal>total) min=Math.round(min/minTotal); // the minimum can't be more than all the items there are.
+                    if(minSum+min>minTotal) min=minTotal-minSum; // if proportioning and rounding still leads to the minimum being more than the total - then clamp it;
+                    minSum+=min;
+                }
+                let length=props.sections[criteria] && props.sections[criteria].length || 0;
+                if(max && length > max) // there are more items than max 
+                    constraints.push(this.QSortButtonList[criteria].name+' has '+(length - max)+' too many');
+                if(min && length < min)
+                        constraints.push(this.QSortButtonList[criteria].name+' has '+(min - length)+' too few');
             })
-        )
+        }
+        return constraints;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,16 +120,13 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
             //this doesn't happen when moveing and object up, above the fold. 
-            var doc = document.documentElement;
-            this.currentTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
             this.scrollBackToTop = true;
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
-            window.socket.emit('insert qvote', { item: action.itemId, criteria: action.button });
+            insertQVote({ item: action.itemId, criteria: action.button });
             delta.creator=false;
         } else if (action.type==="RESET"){
             console.info("RASPQSortItems RESET");
-            let results={index: {}, sections: {}, items: [] }
-            Object.assign(this.props.shared, this.results(true)); // reset the results
+            Object.assign(this.props.shared, this.results()); // reset the results
             if(this.props.randomItemStoreRefresh) this.props.randomItemStoreRefresh();
             if(this.props.resetStore) this.props.resetStore();
             return; // no need to return a state, it's being reset
@@ -125,10 +141,14 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     }
 
     onFlipMoveFinishAll() {
-        if (this.scrollBackToTop) {
+        let constraints=this.getConstraints(this.props)
+        if(constraints.length && this.props.sections['unsorted'].length==0) {
+            setTimeout(() => { smoothScroll(ReactDOM.findDOMNode(this.refs.doneItem), publicConfig.timeouts.slowAnimation) }, publicConfig.timeouts.quick);
+            this.scrollBackToTop=false;
+        }else if (this.scrollBackToTop) {
             this.scrollBackToTop = false;
-            if(!this.isDone(this.props)) {
-                setTimeout(() => { smoothScroll(this.currentTop, this.motionDuration * 1.5) }, 100);
+            if(constraints.length) {
+                setTimeout(() => { smoothScroll(this.refs.top, publicConfig.timeouts.slowAnimation) }, publicConfig.timeouts.quick);
             }
         }
         if(this.props.onFinishAll){return this.props.onFinishAll()}
@@ -139,78 +159,48 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     render() {
         //onsole.info("RASPQSortItems.render");
 
-        const { count, user, rasp, items, type, parent, sections } = this.props;
+        const { count, user, rasp, items, type, parent, sections, buttons=['QSortButtons'] } = this.props;
 
         const onServer = typeof window === 'undefined';
-        var constraints=[];
+        const constraints=this.getConstraints(this.props);
 
-        let articles = [],
-            direction = [], instruction = [], done=[];
-
-        if(sections['unsorted'].length)
-            constraints.push(sections['unsorted'].length+' left to sort');
+        let articles = [];
 
         if (Object.keys(this.props.index).length) {
             Object.keys(this.QSortButtonList).forEach((criteria) => {  // the order of the buttons matters, this as the reference. props.sections may have a different order because what's first in db.
-                if(!sections[criteria]){ return; }
-                let qb = this.QSortButtonList[criteria];
-                if (qb.max) {
-                    if (sections[criteria].length > qb.max) {
-                        constraints.push(qb.direction);
-                        direction.push(
-                            <div className='instruction-text' style={{ backgroundColor: Color(qb.color).darken(0.1) }} key="instruction">
-                                {qb.direction}
-                            </div>
-                        )
-                    }
-                }
-                sections[criteria].forEach(itemId => {
-                    let item = items[this.props.index[itemId]];
+                sections[criteria] && sections[criteria].forEach(itemId => {
+                    var item = items[this.props.index[itemId]];
                     articles.push(
-                        {
-                            sectionName: criteria,
-                            qbuttons: this.QSortButtonList,
-                            user: user,
-                            item: item,
-                            id: item._id,
-                            rasp: {shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}
-                        }
+                        <QSortFlipItem 
+                            sectionName={criteria}
+                            qbuttons={this.QSortButtonList}
+                            buttons={buttons}
+                            user={user}
+                            item={item}
+                            key={item._id}
+                            rasp={{shape: 'truncated', depth: rasp.depth, button: criteria, toParent: this.toMeFromChild.bind(this,item._id)}}
+                            />
                     );
                 });
             });
-            done=(
-                <Accordion key="done" active={this.state.done}>
-                    <div  className='instruction-text'>
-                        
-                        <Button small shy
-                            
-                            className="qsort-done"
-                            style={{ backgroundColor: Color(this.QSortButtonList['unsorted'].color).negate(), color: this.QSortButtonList['unsorted'].color, float: "right" }}
-                            >
-                            <span className="civil-button-text">{"next"}</span>
-                        </Button>
-                    </div>
-                </Accordion>
-            )
         }
 
         return (
             <section id="syn-panel-qsort">
-                {direction}
-                <div style={{ position: 'relative', display: 'block' }} 
-                    key="fliplist"
-                >
+                <div style={{ position: 'relative', display: 'block' }} ref="top" key="fliplist">
                     <div className="qsort-flip-move-articles">
                         <FlipMove duration={this.motionDuration} onFinishAll={this.onFlipMoveFinishAll.bind(this)} disableAllAnimations={onServer}>
-                            {articles.map(article => <QSortFlipItem {...article} key={article.id} />)}
+                            {articles}
                         </FlipMove>
                     </div>
                 </div>
                 <DoneItem 
+                    ref="doneItem"
+                    populated={items && items.length}
                     constraints={constraints}
-                    active={this.state.done}
-                    message={this.QSortButtonList['unsorted'].direction}
-                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results()})}
+                    active={!constraints.length}
+                    message={this.QSortButtonList['unsorted'].direction || "Complete"}
+                    onClick={()=>this.props.rasp.toParent({type: "NEXT_PANEL", status: "done", results: this.results(this.props)})}
                 />
             </section>
         );
@@ -229,7 +219,7 @@ export default QSortItems;
 // if section is not in sections, it will be added and itemId will be the first element in it
 // a new copy is returned - sections is not mutated;
 // If itemId is in the unsorted list and the target section is unsorted, then it will be moved to the top of the list, or if 'set' it will be left as is.
-//
+// If itemId if falsy - sections is returned unmodified
 
 export function QSortToggle(sections,itemId,section, set) {
     let done=false, i;
@@ -274,6 +264,6 @@ export function QSortToggle(sections,itemId,section, set) {
             else clone[section]=[itemId];
         }
         return clone;
-    } return null;
+    } return sections;
 }
 

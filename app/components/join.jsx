@@ -3,22 +3,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import superagent from 'superagent';
-import config from 'syn/../../public.json';
 import Component from '../lib/app/component';
 import Modal from './util/modal';
 import Form from './util/form';
 import Button from './util/button';
-import Submit from './util/submit';
 import ButtonGroup from './util/button-group';
 import Icon from './util/icon';
-import Link from './util/link';
 import Row from './util/row';
 import Column from './util/column';
-import EmailInput from './util/email-input';
-import Password from './util/password';
 import InputGroup from './util/input-group';
 import Loading from './util/loading';
 import Facebook from '../lib/app/fb-sdk';
+import Input from './util/input'
 
 class Join extends React.Component {
   static click() {
@@ -50,9 +46,9 @@ class JoinForm extends React.Component {
 
   signup() {
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value,
-      password = ReactDOM.findDOMNode(this.refs.password).value,
-      confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
+    let email = this.refs.email.value,
+      password = this.refs.password.value,
+      confirm = this.refs.confirm.value,
       agree = ReactDOM.findDOMNode(this.refs.agree);
 
     this.setState({ validationError: null, info: 'Logging you in...' });
@@ -149,8 +145,8 @@ class JoinForm extends React.Component {
 
     this.setState({ validationError: null, info: 'Logging you in...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value,
-      password = ReactDOM.findDOMNode(this.refs.password).value;
+    let email = this.refs.email.value,
+      password = this.refs.password.value;
 
     window.onbeforeunload = null; // stop the popup about navigating away
 
@@ -216,9 +212,9 @@ class JoinForm extends React.Component {
   }
 
   onChangeActive() {
-    let email = ReactDOM.findDOMNode(this.refs.email).value,
-      password = ReactDOM.findDOMNode(this.refs.password).value,
-      confirm = ReactDOM.findDOMNode(this.refs.confirm).value,
+    let email = this.refs.email.value,
+      password = this.refs.password.value,
+      confirm = this.refs.confirm.value,
       agree = ReactDOM.findDOMNode(this.refs.agree).classList.contains('fa-check-square-o'); // true if the box is checked
 
     if (!this.state.loginActive && email && password && !confirm) this.setState({ loginActive: true });
@@ -231,7 +227,7 @@ class JoinForm extends React.Component {
 
     this.setState({ validationError : null, info : 'One moment...' });
 
-    let email = ReactDOM.findDOMNode(this.refs.email).value;
+    let email = this.refs.email.value;
 
     window.socket.emit('send password', email, window.location.pathname, response => {
       if ( response.error ) {
@@ -268,7 +264,7 @@ class JoinForm extends React.Component {
 
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)} />
+          <Input type="email" block autoFocus medium required placeholder="Email" ref="email" name="email" onChange={this.onChangeActive.bind(this)} />
         </div>
 
         <Row>
@@ -289,8 +285,8 @@ class JoinForm extends React.Component {
         </Row>
 
         <InputGroup block>
-          <Password required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
-          <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
+          <Input type="password" required placeholder="Password" ref="password" medium name="password" onChange={this.onChangeActive.bind(this)} />
+          <Input type="password" required placeholder="Confirm password" ref="confirm" medium name="confirm" onChange={this.onChangeActive.bind(this)} />
         </InputGroup>
 
         <Row>

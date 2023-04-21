@@ -1,4 +1,10 @@
 {
-  "presets":["react","es2015","stage-0"],
-  "plugins": [["css-in-js", { "bundleFile": "assets/css/bundle.css" }]]
+  "presets": [
+    "@babel/preset-react",
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-regenerator"
+  ]
 }

@@ -1,41 +1,42 @@
 'use strict';
 
 import React from 'react';
+import Input from './input'
 import autosize from 'autosize';
 
-class Textarea extends React.Component {
+const classes = [
+  'block',
+  'primary',
+  'info',
+  'large',
+  'medium',
+  'radius',
+  'cursor-pointer',
+  'shy',
+  'success',
+  'error',
+  'warning'
+];
+
+class Textarea extends Input {
+  
   componentDidMount () {
-    const view = this.refs.view;
-    autosize(view);
+    autosize(this.inputRef);
   }
 
   render () {
-    let classes = [];
-    let textAreaProps=Object.assign({},this.props);
+    let classNames=this.props.className && this.props.className.split(' ') || [];
+    const {className, onChange, value, style, defaultValue, ...textAreaProps}=this.props;
 
-    let props = [
-      'block',
-      'primary',
-      'info',
-      'large',
-      'medium',
-      'radius',
-      'cursor-pointer',
-      'shy',
-      'success',
-      'error',
-      'warning'
-    ];
-
-    for ( let prop of props ) {
+    for ( let prop of classes ) {
       if ( this.props[prop] ) {
-        classes.push(prop);
+        classNames.push(prop);
         delete textAreaProps[prop];
       }
     }
 
     return (
-      <textarea className={ classes.join(' ') } { ...textAreaProps } ref="view">{ this.props.children }</textarea>
+      <textarea className={ classNames.join(' ') } { ...textAreaProps } onChange={this.onChangeHandler} value={this.state.value} ref={this.getInputRef} style={this.winkStyle()}/>
     );
   }
 }

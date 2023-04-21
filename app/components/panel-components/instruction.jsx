@@ -96,7 +96,7 @@ const visualMethods={
 visualMethods.ooview=visualMethods.default;
 
 
-exports.button = class PanelInstructionButton extends React.Component {
+class PanelInstructionButton extends React.Component {
   constructor(props){
     super(props);
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
@@ -119,7 +119,7 @@ exports.button = class PanelInstructionButton extends React.Component {
   }
 }
 
-exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
+class PanelInstructionPanel extends ReactActionStatePathFilter {
   constructor(props){
     super(props,'shortId', 0);  // need to set the keyField
     let visMeth=this.props.visualMethod || this.props.type && this.props.type.visualMethod || 'default';
@@ -189,3 +189,5 @@ exports.panel = class PanelInstruction extends ReactActionStatePathFilter {
     );
   }
 }
+
+export {PanelInstructionPanel as panel, PanelInstructionButton as button}

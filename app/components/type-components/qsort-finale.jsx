@@ -201,9 +201,9 @@ class QSortFlipItemHarmony extends React.Component {
     render() {
         const { active, item, qbuttons, ...otherProps } = this.props;
         return (
-            <Accordion active={active} name='item' key={item._id + '-qsort-finale'} style={{ backgroundColor: qbuttons['unsorted'].color }}>
+            <Accordion active={active} name='item' key={item._id + '-qsort-finale'} >
                 <ItemStore item={item} key={`item-${item._id}`}>
-                    <Item {...otherProps} />
+                        <Item {...otherProps} style={{ backgroundColor: qbuttons['unsorted'].color }}  />
                 </ItemStore>
             </Accordion>
         );

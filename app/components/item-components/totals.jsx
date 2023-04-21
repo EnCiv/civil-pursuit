@@ -7,7 +7,7 @@ import Accordion          from 'react-proactive-accordion';
 import QSortButtonList from '../qsort-button-list';
 import QSortItemsSummary from '../type-components/qsort-items-summary'
 
-exports.button = class TotalsButton extends React.Component {
+class TotalsButton extends React.Component {
     donothing() {
         return false;
       }
@@ -56,7 +56,7 @@ exports.button = class TotalsButton extends React.Component {
     }
 }
 
-exports.panel = class TotalsPanel extends React.Component {
+class TotalsPanel extends React.Component {
     mounted = false;
     render() {
         const { active, style, item, rasp, ...otherProps } = this.props;
@@ -80,4 +80,6 @@ exports.panel = class TotalsPanel extends React.Component {
         }
     }
 }
+
+export {TotalsPanel as panel, TotalsButton as button}
 

@@ -3,12 +3,11 @@
 import React from 'react';
 import ButtonGroup from '../util/button-group';
 import Button from '../util/button';
-import Icon from '../util/icon';
 import Accordion          from 'react-proactive-accordion';
 import EvaluationStore    from '../store/evaluation';
 import Promote from '../promote';
 
-exports.button=class PromoteButton extends React.Component {
+class PromoteButton extends React.Component {
 
   render() {
     const { active, panel, item, onClick, user, promoteMethod } = this.props;
@@ -64,7 +63,7 @@ exports.button=class PromoteButton extends React.Component {
   }
 }
 
-exports.panel = class PromotePanel extends React.Component {
+class PromotePanel extends React.Component {
   mounted = false;
   render() {
     const { active, panel, item, onClick, user, style, rasp } = this.props;
@@ -98,3 +97,5 @@ exports.panel = class PromotePanel extends React.Component {
     }
   }
 }
+
+export {PromotePanel as panel, PromoteButton as button}

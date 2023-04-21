@@ -1,21 +1,33 @@
 'use strict';
 
 import React from 'react';
-import Component            from '../../lib/app/component';
+import cx from 'classnames';
+import injectSheet from 'react-jss'
+
+const styles={
+  'syn-img-responsive': {
+    display: 'block',
+    'max-width': '13em',
+    'max-height': '7em',
+    height: 'auto'
+  }
+}
+
 
 class Image extends React.Component {
   render () {
+    const {className, classes, src, onLoad}=this.props;
 
-    let classes = [];
+    let classNames = [];
 
     if ( this.props.responsive ) {
-      classes.push('syn-img-responsive');
+      classNames.push(classes['syn-img-responsive']);
     }
 
     return (
-      <img alt="Synappp" src={ this.props.src } className={ Component.classList(this, ...classes) } onLoad={this.props.onLoad} />
+      <img alt="Synappp" src={ src } className={ cx(className, ...classNames) } onLoad={onLoad} />
     );
   }
 }
 
-export default Image;
+export default injectSheet(styles)(Image);

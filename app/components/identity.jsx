@@ -5,13 +5,14 @@ import ReactDOM                       from 'react-dom';
 import Row                            from './util/row';
 import Column                         from './util/column';
 import InputGroup                     from './util/input-group';
-import TextInput                      from './util/text-input';
+import Input                          from './util/input';
 import Select                         from './util/select';
 import Uploader                       from './uploader';
 import selectors                      from '../../selectors.json';
-import Gender                         from './gender';
-import Birthdate                      from './birthdate';
-import GenderIdentity                 from './gender-identity'
+import Gender                         from './profile-components/gender';
+import Birthdate                      from './profile-components/birthdate';
+import GenderIdentity                 from './profile-components/gender-identity'
+import setUserInfo                  from '../api-wrapper/set-user-info';
 
 class Identity extends React.Component {
 
@@ -33,31 +34,31 @@ class Identity extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  saveFirstName () {
-    let firstName = ReactDOM.findDOMNode(this.refs.firstName).value;
+  saveFirstName (v) {
+    let first_name = v.value;
 
-    if ( firstName ) {
-      window.socket.emit('set user info', { first_name : firstName });
+    if ( first_name ) {
+      setUserInfo( { first_name });
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  saveMiddleName () {
-    let middleName = ReactDOM.findDOMNode(this.refs.middleName).value;
+  saveMiddleName (v) {
+    let middle_name = v.value;
 
-    if ( middleName ) {
-      window.socket.emit('set user info', { middle_name : middleName });
+    if ( middle_name ) {
+      setUserInfo( { middle_name  });
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   saveLastName () {
-    let lastName = ReactDOM.findDOMNode(this.refs.lastName).value;
+    let last_name = v.value;
 
-    if ( lastName ) {
-      window.socket.emit('set user info', { last_name : lastName });
+    if ( last_name ) {
+      setUserInfo( { last_name  });
     }
   }
 
@@ -68,8 +69,7 @@ class Identity extends React.Component {
 
     this.setState({citizenship: citizenship});
 
-      window.socket.emit('set user info', { "citizenship" : citizenship})
-        .on('OK set user info', user => { this.setState({ user })});
+      setUserInfo( { "citizenship" : citizenship}, user => { this.setState({ user })});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,14 +77,13 @@ class Identity extends React.Component {
   saveDualCitizenship (e) {
     let dualCitizenship = ReactDOM.findDOMNode(this.refs.dualCitizenship).value;
 
-      window.socket.emit('set user info', { "dualcitizenship" : dualCitizenship})
-        .on('OK set user info', user => { this.setState({ user })});
+      setUserInfo( { "dualcitizenship" : dualCitizenship}, user => { this.setState({ user })});
 
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     setUserInfo(info){
-        window.socket.emit('set user info', info);
+        setUserInfo( info);
     }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -128,26 +127,23 @@ class Identity extends React.Component {
 
         <section className="gutter">
           <InputGroup block>
-            <TextInput
+            <Input type='text'
               placeholder     =   "First name"
               onChange        =   { this.saveFirstName.bind(this) }
-              ref             =   "firstName"
               name            =   "first-name"
               defaultValue    =   { user.first_name}
               />
 
-            <TextInput
+            <Input type='text'
               placeholder     =   "Middle name"
               onChange        =   { this.saveMiddleName.bind(this) }
-              ref             =   "middleName"
               defaultValue    =   { user.middle_name}
               name            =   "middle-name"
               />
 
-            <TextInput
+            <Input type='text'
               placeholder     =   "Last name"
               onChange        =   { this.saveLastName.bind(this) }
-              ref             =   "lastName"
               defaultValue    =   { user.last_name}
               name            =   "last-name"
               />

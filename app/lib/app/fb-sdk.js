@@ -3,7 +3,6 @@
 import { EventEmitter } from 'events';
 import sequencer from 'promise-sequencer';
 import superagent from 'superagent';
-import config from '../../../public.json';
 
 class Facebook extends EventEmitter {
 
@@ -126,7 +125,7 @@ class Facebook extends EventEmitter {
     });
   }
 
-  appId       =   config.facebook[synappEnv]['app id'];
+  appId       =   process.env.FACEBOOK_APP_ID;
   cookie      =   true;
   xfbml       =   true;
   version     =   'v2.5';

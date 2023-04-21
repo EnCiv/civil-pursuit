@@ -1,8 +1,6 @@
 'use strict';
 
-import React from 'react';
-
-const { PropTypes } = React;
+import PropTypes from 'prop-types';
 
 const instruction   =   PropTypes.shape({
   element           :   PropTypes.string.isRequired,

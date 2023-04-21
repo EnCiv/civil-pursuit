@@ -14,7 +14,7 @@ import {ReactActionStatePath, ReactActionStatePathClient} from 'react-action-sta
 
 
 
-exports.panel = class RefinePanel extends React.Component {
+class RefinePanel extends React.Component {
     initialRASP={chosen: 'promote'};
     render(){
         return (
@@ -45,7 +45,6 @@ class RASPRefinePanel extends ReactActionStatePathClient {
             return null;
         Object.assign(nextRASP,rasp,delta);
         return nextRASP;
-        return this.props.rasp.toParent(action);
     }
 
     segmentToState(action,initialRASP){
@@ -66,7 +65,6 @@ class RASPRefinePanel extends ReactActionStatePathClient {
                         (this.mounted[winner]=
                          (<ItemStore item={winner} key={`item-${winner && winner._id || 'none'}`}>
                             <Item
-                                item={winner}
                                 user={user}
                                 rasp={this.childRASP(rasp.shape, 'winner')}
                             />
@@ -93,3 +91,5 @@ class RASPRefinePanel extends ReactActionStatePathClient {
         )
     }
 }
+
+export {RefinePanel as panel}
