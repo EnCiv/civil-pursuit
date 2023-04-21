@@ -1,13 +1,12 @@
 'use strict'
 
 import sendEmail from '../server/util/send-email'
-import Config from '../../public.json'
 
 function sendContactUs(email, fname, lname, subject, message, cb) {
   try {
     let request = {
-      from: Config.sendEmailFrom,
-      to: Config.sendFeedbackTo,
+      from: process.env.NODEMAILER_USER,
+      to: process.env.NOTIFY_EMAIL,
       subject: subject,
       text: message,
     }

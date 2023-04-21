@@ -27,7 +27,7 @@ function sendPassword(email, return_to, cb) {
               () => user.reactivate(),
               user =>
                 sendEmail({
-                  from: Config.sendEmailFrom,
+                  from: process.env.NODEMAILER_USER,
                   to: email,
                   subject: 'Reset password',
                   text: emailBody(user.activation_key, user.activation_token),

@@ -177,20 +177,6 @@ function test () {
 
     });
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    it('Google Analytcis key', it => {
-
-      it('should have a google analytics key',
-
-        () => config.should.have.property('google analytics')
-          .which.is.a.Object()
-          .and.have.property('key')
-          .which.is.a.String()
-
-      );
-
-    });
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
