@@ -1,7 +1,7 @@
 {
-  "name": "synapp",
-  "version": "1.0.0",
-  "description": "Synapp",
+  "name": "civil-pursuit",
+  "version": "1.0.1",
+  "description": "Civil Pursuit - so millions of people can deliberate productively online",
   "main": "index.js",
   "scripts": {
     "test": "babel app --out-dir dist && redtea dist/test/migrate dist/test/run --fork",
@@ -32,10 +32,10 @@
     "build-storybook": "build-storybook"
   },
   "author": {
-    "email": "david@synaccord.com",
+    "email": "davidfridley@enciv.org",
     "name": "David Fridley"
   },
-  "license": "BSD-2-Clause",
+  "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
     "node": "10.16.2",
     "npm": "6.13.4"
