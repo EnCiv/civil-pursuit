@@ -37,6 +37,31 @@ For the first stages of this project, we will be focusing on storybook
 ```
 npm run storybook
 ```
+### MongoDB
+
+This app uses MONGODB and you will need a mongodb uri to get started. Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
+
+you should end up with a line like this in your .bashrc file
+
+```
+export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
+```
+
+Note that it's confusing but user-name and db-name can be anything. You pick them when you create the database, and you use them in this URI string. That's all.
+
+After you get Mongo setup, you also need these ENV variable in your .bashrc file
+```
+export NODE_ENV="development"
+export SYNAPP_ENV="alpha"
+```
+Then you should be able to run the development server. You may also need to `source .bashrc` first.
+```
+npm run dev
+```
+It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database. 
+So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
+
+Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
 # The rest of this is from the old README file and may be dated
 
