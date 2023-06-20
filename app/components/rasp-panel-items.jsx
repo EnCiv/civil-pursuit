@@ -20,6 +20,7 @@ class InfiniteScroll extends React.PureComponent {
 		for(var i=0;i<maxChildren;i++){
 			this.childRef[i]=this.childRefs.bind(this,i);
 		}
+		this.lastItemsLength=-1
 		this.loadMore=this.loadMore.bind(this)
 		this.postScroll={
 			length: this.props.items && this.props.items.length || 0,
@@ -28,8 +29,11 @@ class InfiniteScroll extends React.PureComponent {
 	}
 
 	loadMore(){
-		if(!this.state.loading && this.props.loadMore) // loadmore may get called multiple times for the same 'event' due to rerenders
+		if(!this.state.loading && this.props.loadMore && this.lastItemsLength<(this.props.items && this.props.items.length || 0)) // loadmore may get called multiple times for the same 'event' due to rerenders
+		{
+			this.lastItemsLength=this.props.items.length
 			this.props.loadMore(1);
+		}
 	}
 
 	childRefs(i,e){
