@@ -26,9 +26,7 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
     }
 
     componentDidMount(){
-        if(!this.props.user.assignmentId)
-            return this.setState({validationError: "no assignmentId"});
-        else
+        if(this.props.user.assignmentId)
             window.socket.emit("set turk complete", this.props.user.assignmentId, (comment)=>{
                 if(comment.error) return this.setState({validationError: comment.error});
                 else return this.setState({successMessage: comment.comment});
@@ -36,11 +34,11 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    // we are using buttonName as the URL to go to when all done.
     render() {
-
         return (
-            <section id="syn-turk-step">
+            this.props.user && this.props.user.assignmentId ?
+            (<section id="syn-turk-step">
                 {this.state.successMessage ? <div style={{padding: "0 1em 1em 1em"}}>
                     <span>Mechanical Turk Survey Code:</span>
                     <span>{this.state.successMessage}</span>
@@ -56,8 +54,15 @@ class RASPTurkSubmit extends ReactActionStatePathClient {
                     <p>There was an problem, here is the message from the server. If you believe you have not been duly credited for this task, go back to the Mechanical Turk page and click on Hit Details and then Contact the This Requester</p>
                     {this.state.validationError}
                 </div>: null}
-            </section>
-        );
+            </section>) : (<section>
+                <div style={{padding: "0 1em 1em 1em"}}>
+                    <span>Awesome! All done.</span>
+                    {this.props.buttonName && <span>What did you think? Is this the beginning of productive online democratic discourse?  Let us know so we can learn and make this even better!
+                        <a href={this.props.buttonName} target='_blank' style={{fontSize: '200%'}}>Form</a>
+                    </span>}
+                </div>
+            </section>)
+        )
     }
 }
 
