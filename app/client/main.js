@@ -6,9 +6,21 @@ import App                from '../components/app';
 //import Facebook           from '../lib/app/fb-sdk';
 import bconsole  from './bconsole';
 import socketlogger from './socketlogger'
-
+import IdleTracker from 'idle-tracker'
 
 window.socket = io();
+const idleTracker = new IdleTracker({timeout: 5*60*1000, onIdleCallback: payload=>{
+  if(payload.idle) {
+    console.info("closing socket")
+    socket.close()
+  }
+  else {
+    socket.open()
+    console.info("opening socket")
+  }
+}})
+idleTracker.start()
+
 window.reactSetPath = (path)=>{
   ReactDOM.unmountComponentAtNode(window.reactContainer);
   reactProps.path=path;
