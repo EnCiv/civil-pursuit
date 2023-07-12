@@ -87,6 +87,7 @@
     "file-loader": "^2.0.0",
     "firefox-profile": "^0.3.11",
     "hh-mm-ss": "^1.2.0",
+    "idle-tracker": "^0.1.3",
     "immutability-helper": "^2.8.1",
     "is-url": "^1.2.4",
     "less": "^2.7.3",
