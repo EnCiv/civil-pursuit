@@ -6,7 +6,7 @@
 // Also, TypeComponent.attributes() will return module.attributes if it is defined.
 'use strict';
 
-var  Components={
+const  Components={
         'PanelList': require('./panel-list').default,
         'Subtype': require('./subtype').default,
         'QSortItems': require('./qsort-items').default,
@@ -15,14 +15,14 @@ var  Components={
         'QSortReLook': require('./qsort-relook').default,
         'QSortFinale': require('./qsort-finale').default,
         'LoginPanel': require('./login-panel').default,
-        'ProfilePanel': require('./profile-panel').default,
+        'ProfilePanel': require('./prof-panel').default,
         'CafeIdea': require('./cafe-idea').default,
         'NextStep': require('./next-step').default,
         'QSortRandomItems': require('./qsort-random-items').default,
         'QSortTotals': require('./qsort-totals').default,
         'RuleList': require('./rule-list').default,
         'PanelQuestions': require('./panel-questions').default,
-        'ProfileCheck': require('./profile-check').default,
+        'ProfileCheck': require('./prof-check').default,
         'Totals': require('./totals').default,
         'TurkSubmit': require('./turk-submit').default,
         'AskItemWhy': require('./ask-item-why').default,
