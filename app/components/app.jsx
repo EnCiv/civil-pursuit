@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Layout from './layout'
-import Profile from './profile'
+import Profile from './prof'
 import Home from './home'
 import ResetPassword from './reset-password'
 import Panel from './panel'
