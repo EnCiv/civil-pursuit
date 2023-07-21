@@ -12,7 +12,6 @@ if(env!=='development') console.error("NODE_ENV is",env, "but needs to be 'devel
 module.exports = {
     context: path.resolve(__dirname, "app"),
     mode: 'development',
-    watch: true,
     devtool: 'source-map',
     entry: {
     'only-dev-server':    'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
@@ -44,26 +43,30 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['*','.js','.jsx'],
+        extensions: ['.*','.js','.jsx'],
+        fallback: {
+            fs: false,
+            "path": require.resolve("path-browserify")
+        }
     },
-    node: {
-        fs: 'empty' // logger wants to require fs though it's not needed on the browser
-    },
+    node: false,
     devServer: {
-        publicPath: '/assets/webpack/',  // in main.js also ass if(typeof ___webpack_public_path__ !== 'undefined' __webpack_public_path__ = "http://localhost:3011/assets/webpack/";  // this is where the hot loader sends requests to
-        hot: true,
-        hotOnly: true,
+        static: {
+            publicPath: '/assets/webpack/',  // in main.js also ass if(typeof ___webpack_public_path__ !== 'undefined' __webpack_public_path__ = "http://localhost:3011/assets/webpack/";  // this is where the hot loader sends requests to
+        },
         host: '0.0.0.0',
         port: 3011,
-        index: '', // specify to enable root proxying
+        devMiddleware: {
+            index: false, // specify to enable root proxying
+        },
         proxy: { // the dev server will proxy all traffic other than publicPath to target below.
             context: () => true,
-            '/': 'http://localhost:3012'  // this is where the node server of the application is really running
+            target: 'http://localhost:3012'  // this is where the node server of the application is really running
         }
     },
     plugins:[
-        new webpack.IgnorePlugin(/clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/,/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app
-        new webpack.IgnorePlugin(/nodemailer/), // not used in the client side - those should be move outside of the app directory
+      new webpack.IgnorePlugin({resourceRegExp: /clustered|dateFile|file|fileSync|gelf|hipchat|logFacesAppender|loggly|logstashUDP|mailgun|multiprocess|slack|smtp/},/(.*log4js.*)/),  // these appenders are require()ed by log4js but not used by this app
+      new webpack.IgnorePlugin({resourceRegExp: /nodemailer/}), // not used in the client side - those should be move outside of the app directory
 
       // using a function because when this ran on heroku using just "../modules/client-side-model" failed
         new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, resource => {

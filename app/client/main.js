@@ -36,6 +36,8 @@ window.socket.on('welcome', user => {
 });
 
 // process has to be defined before log4js is imported on the browser side.
+if(!window.process) window.process={}
+if(!window.process.env) window.process.env={}
 process.env.LOG4JS_CONFIG = { appenders: [] } // webpack doesn't initialize the socket logger right - so just prevent log4js from initializing loggers
 var log4js = require('log4js')
 if (window.socket.NoSocket) {
