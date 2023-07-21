@@ -24,7 +24,7 @@
     "clean": "node dist/bin/drop-sandbox-dbs.js",
     "packbuild": "webpack --config webpack-prod.config.js",
     "packstart": "npm run packbuild && node dist/server/start.js",
-    "client": "webpack-dev-server --config webpack-dev.config.js --devtool source-map --host 0.0.0.0",
+    "client": "webpack serve --config webpack-dev.config.js",
     "server": "nodemon --inspect dist/server/start.js",
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && npm run server\" \"sleep 55 && npm run client\"",
     "devprod": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && nodemon dist/server/start.js\" \"sleep 55 && webpack --config webpack-prod.config.js --watch\"",
@@ -37,8 +37,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
-    "node": "10.16.2",
-    "npm": "6.13.4"
+    "node": "16.20.1"
   },
   "dependencies": {
     "@babel/cli": "^7.12.8",
@@ -80,11 +79,10 @@
     "colors": "~1.0.3",
     "cookie-parser": "~1.3.3",
     "create-react-ref": "^0.1.0",
-    "css-loader": "^1.0.1",
+    "css-loader": "^5.2.7",
     "device": "^0.3.9",
     "express": "^4.16.4",
     "express-session": "~1.10.1",
-    "file-loader": "^2.0.0",
     "firefox-profile": "^0.3.11",
     "hh-mm-ss": "^1.2.0",
     "idle-tracker": "^0.1.3",
@@ -126,13 +124,12 @@
     "style-loader": "^0.23.1",
     "superagent": "^1.3.0",
     "uglify-js": "^2.8.29",
-    "url-loader": "^1.1.2",
     "us-abbreviations": "0.0.3",
     "usa-states": "0.0.5",
     "webdriverio": "^3.4.0",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
     "webrtc-adapter": "^7.2.0"
   },
   "devDependencies": {
