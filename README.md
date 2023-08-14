@@ -53,6 +53,7 @@ After you get Mongo setup, you also need these ENV variable in your .bashrc file
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
+export MONGOHQ_URL=$MONGODB_URI
 ```
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
 ```
@@ -62,6 +63,21 @@ It should startup. You will be able to browse to [localhost:3011/](localhost:301
 So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
+
+### Dev Environment for Easy Project Switching
+This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+
+These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it.  If neither exist, create both just to be sure.
+
+```
+if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+    echo running `pwd`/.bashrc
+    source ./.bashrc
+fi
+```
+This works great when you open a terminal in a project directory, for example when you are using visual studio code.
 
 # The rest of this is from the old README file and may be dated
 
