@@ -11,7 +11,7 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ## Getting Started
 
-We are reserecting this project from the past. At this point it needs Node version 10.16.2, but we will be moving toward a more current version as we work on this.
+We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
 
 I have been using [Node Version Switcher](https://github.com/jasongin/nvs) to make easially switch between versions of node.
 And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
@@ -28,12 +28,14 @@ Then, after you get the right version of node (and npm) do this
 ```bash
 git clone https://github.com/EnCiv/civil-pursuit.git
 cd civil-pursuit
-npm install
+npm install 
 
 ```
+**use npm install --force** if it refuese in install because it could not resolve Storybook dependencies. We are working on upgrading to the latest version of Storybook.
+
+**skip storybook and go to MongoDB** until we have the new version working.
 
 For the first stages of this project, we will be focusing on storybook
-
 ```
 npm run storybook
 ```
