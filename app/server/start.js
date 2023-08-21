@@ -66,8 +66,8 @@ function start (emitter = false) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if ( ! process.env.MONGOHQ_URL ) {
-      throw new Error('Missing MONGOHQ_URL');
+    if ( ! process.env.MONGODB_URI ) {
+      throw new Error('Missing MONGODB_URI');
     }
 
     if ( ! process.env.SYNAPP_ENV ) {
@@ -82,13 +82,13 @@ function start (emitter = false) {
         // Connect to MongoDB
 
         () => new Promise((ok, ko) => {
-          Mungo.connect(process.env.MONGOHQ_URL)
+          Mungo.connect(process.env.MONGODB_URI)
             .on('error', error => { console.error("Mungo connection error", {error}); return( ko );}) // don't use logger here because it won't work if db not working
             .on('connected', ok);
         }),
 
-        ()=>DB.connect(process.env.MONGOHQ_URL),
-        
+        ()=>DB.connect(process.env.MONGODB_URI),
+
         () => new Promise((ok, ko) => {
           try {
             new Server(verbose)

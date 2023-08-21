@@ -18,7 +18,7 @@ function migrate (...models) {
 
       if ( ! Mungo.connections.length ) {
         stack.push(() => new Promise((ok, ko) => {
-          Mungo.connect(process.env.MONGOHQ_URL)
+          Mungo.connect(process.env.MONGODB_URI)
             .on('error', ko)
             .on('connected', ok);
         }));
@@ -46,7 +46,7 @@ function migrate (...models) {
                       path.resolve(__dirname, `../models/${file}`)
                     ).default;
                     // console.log({ model });
-                    console.info("migrate model", file);                    
+                    console.info("migrate model", file);
                     model.migrate().then(ok, ko);
                   }
                   catch ( error ) {

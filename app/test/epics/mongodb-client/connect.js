@@ -10,7 +10,7 @@ export default props => describe => describe(label, it => {
 
   const locals = {};
 
-  const parsed = url.parse(process.env.MONGOHQ_URL);
+  const parsed = url.parse(process.env.MONGODB_URI);
 
   parsed.pathname = '/syn_replaytest';
 

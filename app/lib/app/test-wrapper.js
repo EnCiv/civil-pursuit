@@ -29,7 +29,7 @@ function testWrapper (name, options = {}, test) {
 
     if ( 'mongodb' in options ) {
       before.push(it => {
-        const dbURL = process.env.MONGOHQ_URL;
+        const dbURL = process.env.MONGODB_URI;
 
         const parsed = url.parse(dbURL);
 

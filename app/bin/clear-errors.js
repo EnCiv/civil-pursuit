@@ -3,7 +3,7 @@
 import Mungo from 'mungo';
 import AppError from '../models/app-error';
 
-const mongodbUrl = process.env.MONGOHQ_URL;
+const mongodbUrl = process.env.MONGODB_URI;
 
 
 Mungo.connect(mongodbUrl)

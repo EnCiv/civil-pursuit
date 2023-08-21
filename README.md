@@ -28,7 +28,7 @@ Then, after you get the right version of node (and npm) do this
 ```bash
 git clone https://github.com/EnCiv/civil-pursuit.git
 cd civil-pursuit
-npm install 
+npm install
 
 ```
 **use npm install --force** if it refuese in install because it could not resolve Storybook dependencies. We are working on upgrading to the latest version of Storybook.
@@ -55,13 +55,13 @@ After you get Mongo setup, you also need these ENV variable in your .bashrc file
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
-export MONGOHQ_URL=$MONGODB_URI
+export MONGODB_URI=$MONGODB_URI
 ```
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
 ```
 npm run dev
 ```
-It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database. 
+It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
 So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
@@ -179,7 +179,7 @@ when using politicalParties as a type in a class of a larger structure, use:
 
 - import politicalPartyType from '../lib/proptypes/political-party'
   to get the proptype, and then
-- politicalParties : PropTypes.arrayOf(politicalPartyType)  
+- politicalParties : PropTypes.arrayOf(politicalPartyType)
   to define the variable in the class you are using it in
 
 app\models\political-party\index.js defines the class PoliticalParty which extends Mungo.Model and includes
