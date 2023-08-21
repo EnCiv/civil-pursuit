@@ -6,8 +6,6 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 
-import { specs, describe, it } from 'storybook-addon-specifications'
-
 import {ReactWrapper, mount} from "enzyme";
 import expect from "expect";
 
