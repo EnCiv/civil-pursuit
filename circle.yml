@@ -5,7 +5,7 @@ general:
 machine:
   environment:
     SELENIUM_TEST_HOST: http://localhost:3000
-    MONGOHQ_URL: mongodb://@localhost/bp_db
+    MONGODB_URI: mongodb://@localhost/bp_db
     SYNAPP_ENV: alpha-heroku
   node:
     version: 5.1.1

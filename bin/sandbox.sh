@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export MONGOHQ_URL=mongodb://localhost:4567/syndb_sandbox_$RANDOM$$;
+export MONGODB_URI=mongodb://localhost:4567/syndb_sandbox_$RANDOM$$;
 export PORT=4012
 export SYNAPP_ENV=alpha-heroku
 
