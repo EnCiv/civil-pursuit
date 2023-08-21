@@ -56,7 +56,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['*','.js','.jsx'],
+        extensions: ['.*','.js','.jsx'],
     },
     node: {
         fs: 'empty' // logger wants to require fs though it's not needed on the browser
