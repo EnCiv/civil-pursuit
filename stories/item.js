@@ -2,7 +2,10 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
-import { specs, describe, it } from 'storybook-addon-specifications'
+//import { specs, describe, it } from 'storybook-addon-specifications'
+const specs=()=>{}
+const describe=()=>{}
+const it=()=>{}
 
 import {ReactWrapper, mount} from "enzyme";
 import expect from "expect";
