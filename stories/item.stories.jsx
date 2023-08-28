@@ -1,40 +1,50 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
-import { specs, describe, it } from 'storybook-addon-specifications'
-
-import {ReactWrapper, mount} from "enzyme";
-import expect from "expect";
-
-import Common from "./common"
-
-import Item from "../app/components/item"
-
-import { Logger } from 'log4js/lib/logger';
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants';
-
+import React from 'react'
+import Item from '../app/components/item'
+import common from './common'
 
 const testType = {
-	"_id": "56ce331e7957d17202e996d6",
-	"name": "Intro",
-	"harmony": [],
-	"id": "9okDr"
+  _id: '56ce331e7957d17202e996d6',
+  name: 'Intro',
+  harmony: [],
+  id: '9okDr',
 }
 
-storiesOf('Item', module)
-	.add('without image or reference', () => {
-		Common.outerSetup();
+export default {
+  component: Item,
+  decorators: [
+    Story => {
+      common.outerSetup()
+      return <Story />
+    },
+  ],
+}
 
-		const testItem = {
-			subject: "Test Item Subject",
-			description: "Test Item Description\r\nTest Item Description\n\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\n",
-			type: testType
-		}
+export const WithoutImageOrReference = {
+  args: {
+    item: {
+      subject: 'Test Item Subject',
+      description:
+        'Test Item Description\r\nTest Item Description\n\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\n',
+      type: testType,
+    },
+    className: 'whole-border',
+  },
+}
 
-		return <div style={Common.outerStyle}><Item item={testItem} className="whole-border" /></div>
+export const WithImageNoReference = {
+  args: {
+    item: {
+      subject: 'Test Item Subject',
+      description:
+        'Test Item Description\r\nTest Item Description\n\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\nTest Item Description\n',
+      image: 'https://res.cloudinary.com/hscbexf6a/image/upload/v1541640886/bscrv39ejmopxcur6xzu.jpg',
+      type: testType,
+    },
+    className: 'whole-border',
+  },
+}
 
-	})
+/*
 	.add('with Image no reference', () => {
 		Common.outerSetup();
 
@@ -655,4 +665,4 @@ storiesOf('Item', module)
 		}
 		return <Common.RenderStory testFunc={storyTest}></Common.RenderStory>;
 	})
-
+*/
