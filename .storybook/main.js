@@ -1,6 +1,5 @@
 /** @type { import('@storybook/react-webpack5').StorybookConfig } */
 
-//import custom from './webpack.config.js';
 import {merge} from 'webpack-merge'
 const webpack=require("webpack");
 const path = require("path");
