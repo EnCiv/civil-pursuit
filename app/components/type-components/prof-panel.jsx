@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Panel from '../panel'
-import config from 'syn/../../public.json'
+import config from '../../../public.json'
 import TypeComponent from '../type-component'
 import Instruction from '../instruction'
 import ProfileComponent from '../prof-components/component'
