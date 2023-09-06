@@ -31,10 +31,6 @@ cd civil-pursuit
 npm install 
 
 ```
-**use npm install --force** if it refuese in install because it could not resolve Storybook dependencies. We are working on upgrading to the latest version of Storybook.
-
-**skip storybook and go to MongoDB** until we have the new version working.
-
 For the first stages of this project, we will be focusing on storybook
 ```
 npm run storybook
