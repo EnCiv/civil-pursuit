@@ -8,8 +8,8 @@
 #copy databases over - path is for windows
 "C:\Program Files\MongoDB\Server\3.4\bin\mongorestore.exe" -h localhost -d synapp ../dump-dir/image-name
 
-# Mongo DB URL
-export MONGOHQ_URL="mongodb://localhost:27017/synapp"
+# Mongo MONGODB_URI
+export MONGODB_URI="mongodb://localhost:27017/synapp"
 
 # HTTP Port (OPTIONAL) default 3000
 export PORT="80";
@@ -25,5 +25,3 @@ export NODE_ENV=production
 
 # CDN service
 export CLOUDINARY_URL="cloudinary://642125633197983:Y_ml8LZ8WhvDTCCMtW2roxCRBlg@hcv1vvrxn"
-
-
