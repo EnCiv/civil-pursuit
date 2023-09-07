@@ -9,7 +9,7 @@ function test (props = {}) {
   const locals = {};
 
   if ( ! props.mongoUrl ) {
-    const dbURL = process.env.MONGOHQ_URL;
+    const dbURL = process.env.MONGODB_URI;
 
     const parsed = url.parse(dbURL);
 

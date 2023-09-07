@@ -27,7 +27,7 @@ pkill synappdev
 
 Some environment variables must be set in order to run the app.
 
-- **MONGOHQ_URL** The mongodb url
+- **MONGODB_URI** The mongodb url
 - **SYNAPP_ENV** An extra-name, more descriptive than Production/Development. Used for examples to store different credentials for the Facebook / Twitter app.
 
 # Init sequence

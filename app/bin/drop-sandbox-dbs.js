@@ -2,7 +2,7 @@
 
 import Mungo from 'mungo';
 
-const mongodbUrl = process.env.MONGOHQ_URL;
+const mongodbUrl = process.env.MONGODB_URI;
 
 Mungo.connect(mongodbUrl)
   .on('connected', conn => {
