@@ -11,7 +11,7 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ## Getting Started
 
-We are reserecting this project from the past. At this point it needs Node version 10.16.2, but we will be moving toward a more current version as we work on this.
+We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
 
 I have been using [Node Version Switcher](https://github.com/jasongin/nvs) to make easially switch between versions of node.
 And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
@@ -31,9 +31,7 @@ cd civil-pursuit
 npm install
 
 ```
-
 For the first stages of this project, we will be focusing on storybook
-
 ```
 npm run storybook
 ```
@@ -53,15 +51,31 @@ After you get Mongo setup, you also need these ENV variable in your .bashrc file
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
+export MONGODB_URI=$MONGODB_URI
 ```
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
 ```
 npm run dev
 ```
-It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database. 
+It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
 So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
+
+### Dev Environment for Easy Project Switching
+This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+
+These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it.  If neither exist, create both just to be sure.
+
+```
+if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+    echo running `pwd`/.bashrc
+    source ./.bashrc
+fi
+```
+This works great when you open a terminal in a project directory, for example when you are using visual studio code.
 
 # The rest of this is from the old README file and may be dated
 
@@ -161,7 +175,7 @@ when using politicalParties as a type in a class of a larger structure, use:
 
 - import politicalPartyType from '../lib/proptypes/political-party'
   to get the proptype, and then
-- politicalParties : PropTypes.arrayOf(politicalPartyType)  
+- politicalParties : PropTypes.arrayOf(politicalPartyType)
   to define the variable in the class you are using it in
 
 app\models\political-party\index.js defines the class PoliticalParty which extends Mungo.Model and includes
