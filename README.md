@@ -3,7 +3,7 @@
 This is a tool to enable large scale deliberation online. It leads people through a discussion process, not chat, that engages them in finding what they agree on. The process stages are derived from in-person dialog and deliberation but here they can be automated and made to scale to support very large numbers of participants.
 
 [<img width="638" alt="image" src="https://user-images.githubusercontent.com/3317487/233766186-d63eb3d3-4015-4551-bb00-7ff4403c64b5.png">](https://civilpursuit.herokuapp.com/item/pvote)
-
+[Clink here to try it](https://civilpursuit.herokuapp.com/item/pvote)
 
 ## License
 
