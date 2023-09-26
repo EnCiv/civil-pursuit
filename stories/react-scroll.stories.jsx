@@ -57,13 +57,14 @@ const testFunction = async (canvasElement, step, focalPoint = '') => {
 
   await step('Item should be found', async () => {
     let item = canvas.getByText(`${focalPoint}`)
-    console.log(item)
+    // let item=document.getElementById("line-78");
     await step('Item DOM Node should be found', async () => {
       expect(item).not.toBeNull()
     })
     await step('Item should be focusable', async () => {
       // window.Synapp.ScrollFocus(item)
       // fireEvent.focus(item)
+      //   item.focus()
       // expect(document.activeElement).toBe(item);
     })
   })
