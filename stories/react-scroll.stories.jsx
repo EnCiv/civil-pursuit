@@ -1,12 +1,7 @@
-import React from 'react'
-
-import expect from 'expect'
-
 import Common from './common'
-
+import expect from 'expect'
+import React from 'react'
 import ReactScrollBar from '../app/components/util/react-scrollbar'
-
-import { fireEvent, within } from '@storybook/testing-library'
 
 class Layout extends React.Component {
     render(){
@@ -51,21 +46,14 @@ const generateDivs = maxLines => {
   )
 }
 
-const testFunction = async (canvasElement, step, focalPoint = '') => {
+const testFunction = async (step, focalPoint = '') => {
   await Common.asyncSleep(600)
-  const canvas = within(canvasElement)
 
   await step('Item should be found', async () => {
-    let item = canvas.getByText(`${focalPoint}`)
-    // let item=document.getElementById("line-78");
+    let item = document.getElementById(`line-${focalPoint}`)
+    window.Synapp.ScrollFocus(item)
     await step('Item DOM Node should be found', async () => {
-      expect(item).not.toBeNull()
-    })
-    await step('Item should be focusable', async () => {
-      // window.Synapp.ScrollFocus(item)
-      // fireEvent.focus(item)
-      //   item.focus()
-      // expect(document.activeElement).toBe(item);
+      expect(item).toBeTruthy()
     })
   })
 }
@@ -78,8 +66,8 @@ export const ScrollFocusAt1 = {
   render: () => {
     return generateDivs(80)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '1')
+  play: ({ step }) => {
+    testFunction(step, '1')
   },
 }
 
@@ -87,8 +75,8 @@ export const ScrollFocusAt20 = {
   render: () => {
     return generateDivs(80)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '20')
+  play: ({ step }) => {
+    testFunction(step, '20')
   },
 }
 
@@ -96,8 +84,8 @@ export const ScrollFocusAt78 = {
   render: () => {
     return generateDivs(80)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '78')
+  play: ({ step }) => {
+    testFunction(step, '78')
   },
 }
 
@@ -105,8 +93,8 @@ export const ScrollFocusAt80 = {
   render: () => {
     return generateDivs(80)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '80')
+  play: ({ step }) => {
+    testFunction(step, '80')
   },
 }
 
@@ -114,8 +102,8 @@ export const ScrollFocusSmallArea1 = {
   render: () => {
     return generateDivs(20)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '1')
+  play: ({ step }) => {
+    testFunction(step, '1')
   },
 }
 
@@ -123,8 +111,8 @@ export const ScrollFocusSmallArea20 = {
   render: () => {
     return generateDivs(20)
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '20')
+  play: ({ step }) => {
+    testFunction(step, '20')
   },
 }
 
@@ -145,7 +133,7 @@ export const ScrollFocus40DivTooLarge = {
       </Layout>
     )
   },
-  play: ({ canvasElement, step }) => {
-    testFunction(canvasElement, step, '40')
+  play: ({ step }) => {
+    testFunction(step, '40')
   },
 }
