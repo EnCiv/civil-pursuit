@@ -108,15 +108,12 @@ export const Titleized = {
     const computedStyle = window.getComputedStyle(canvasElement);
     const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
     const height = parseFloat(computedStyle.getPropertyValue('height'));
-    // console.log("height", height);
-    // console.log("fontSize:", fontSize);
     expect(height).toBeLessThan(2*fontSize);
 
   }
 }
 
 
-// skip Ooview part since we don't know what's it used for
 export const WithVisualMethodOoview = {
   args: {
     ...WithImageNoReference.args,
@@ -129,9 +126,24 @@ export const WithVisualMethodOoview = {
     const computedStyle = window.getComputedStyle(canvasElement);
     const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
     const height = parseFloat(computedStyle.getPropertyValue('height'));
-    // console.log("height", height);
-    // console.log("fontSize:", fontSize);
     expect(height).toBeGreaterThan(4*fontSize);
+  }
+}
+
+export const OoviewAfterImeediateDescendantTakesFocus  = {
+  args: {
+    ...WithImageNoReference.args,
+  },
+  render: (args) =>{
+    return <div><Item {...args} visualMethod="ooview"  rasp={{shape: 'open'}}/></div>;
+  },
+  play: async({canvasElement}) =>{
+    await Common.asyncSleep(1000);
+    const computedStyle = window.getComputedStyle(canvasElement);
+    const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
+    const height = parseFloat(computedStyle.getPropertyValue('height'));
+    expect(height).toBeGreaterThan(4*fontSize);
+
   }
 }
 
@@ -226,56 +238,33 @@ export const CreateAnItemSubject = {
     return <Item {...args} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
   },
   play: async ({canvasElement, step}) =>{
-    await Common.asyncSleep(600)
+    await Common.asyncSleep(600);
     const canvas = within(canvasElement);
-    console.log("canvasElement:", canvasElement);
-
-    await userEvent.type(canvas.getByPlaceholderText(/subject/i), 'Test Input Subject');
-//TODO unfinished
+    const subject = canvas.getByPlaceholderText(/subject/i);
+    await userEvent.clear(subject);
+    await userEvent.type(subject, 'Test Input Subject');
+    expect(subject.value).toBe('Test Input Subject');
   }
 }
 
-
-// .add('Create an Item Description', () => {
-//     Common.outerSetup();
-//
-//     const testItem = {
-//         type: testType
-//     }
-//
-//     const description="This is a description of an item"
-//
-//     const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
-//
-//     const storyTest= async (e)=>{ // do this after the story has rendered
-//         Common.Wrapper=mount(story,{attachTo: e});
-//         await Common.asyncSleep(600);
-//         let textInput=Common.Wrapper.find('textarea[name="description"]')
-//         textInput.instance().select();
-//         textInput.simulate('change',Object.assign({},Common.dummyEvent, {target: {value: description}}))
-//         var inputNode=Common.Wrapper.find('textarea[name="description"]').getDOMNode()
-//         const blurE = await Common.asyncEvent(inputNode, 'blur');
-//         specs(()=>describe('Item Description should have the input', ()=>{
-//             let _id=Common.Wrapper.find('Item').instance().props.item._id;
-//             it(`Item should have a unique ObjectId. Found ${_id}`, function () {
-//                 expect(_id.length).toBe(24);
-//             });
-//             it(`Item should have "${description}" as the textarea`, ()=>{
-//                 expect(Common.Wrapper.find('textarea[name="description"]').instance().value).toBe(description);
-//             });
-//             it(`Item should have "${description}" as Textarea`, ()=>{
-//                 expect(Common.Wrapper.find("ItemDescription").find('Textarea').instance().value).toBe(description)
-//             });
-//             it(`Item should have "${description}" as the ItemDescription`, ()=>{
-//                 expect(Common.Wrapper.find("ItemDescription").instance().state.description).toBe(description)
-//             });
-//             it(`Item should have "${description}" in the Item`, ()=>{
-//                 expect(Common.Wrapper.find("Item").instance().props.item.description).toBe(description)
-//             });
-//         }))
-//     }
-//     return <Common.RenderStory testFunc={storyTest}></Common.RenderStory>;
-// })
+export const CreateAnItemDescription = {
+  args:{
+    item:{
+      type: testType
+    }
+  },
+  render: (args) =>{
+    return <Item {...args} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+  },
+  play: async ({canvasElement, step}) =>{
+    await Common.asyncSleep(600);
+    const canvas = within(canvasElement);
+    const descriptionBox = canvas.getByPlaceholderText(/description/i);
+    await userEvent.clear(descriptionBox);
+    await userEvent.type(descriptionBox, 'Test Input Description');
+    expect(descriptionBox.value).toBe('Test Input Description');
+  }
+}
 
 export const CreateAnItemWithoutDescription = {
   args:{
@@ -334,19 +323,22 @@ export const createItemReference = {
     item:{
       subject: "A Test Subject",
       description: "A Test Item",
-      type: testType
+      type: testType,
+
     }
   },
   render: (args) =>{
     return <Item {...args} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
   },
   play: async ({canvasElement, step}) =>{
+    const testURL="https://www.civilpursuit.com";
+    await Common.asyncSleep(600);
+    const canvas = within(canvasElement);
 
-    console.log("canvasElement:", canvasElement);
-    //TODO get the reference element
-    let textInput = canvas.findByText('reference');
-    console.log(textInput);
-
+    const ref = canvas.getByPlaceholderText(/https:/i);
+    await userEvent.clear(ref);
+    await userEvent.type(ref, testURL);
+    expect(ref.value).toBe(testURL);
 
   }
 
