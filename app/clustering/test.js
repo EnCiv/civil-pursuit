@@ -6,13 +6,14 @@ const {
     putGroupings,
     report,
     rankMostImportant,
-    Uitems,
+    getUserRecord,
     Statements,
 } = require('./clustering')
+const { useImperativeHandle } = require('react')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 2400 // the number of simulated people in the discussion
-//const NUMBER_OF_PARTICIPANTS = 17000
+//const NUMBER_OF_PARTICIPANTS = 2400 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
 function sortLowestDescriptionFirst(a, b) {
     return Number(a.description) - Number(b.description)
@@ -53,8 +54,11 @@ function groupStatementsWithTheSameFloor(statements) {
     return [groups, ungrouped]
 }
 
+const UserIds = []
+
 async function proxyUser() {
     const userId = ObjectID().toString()
+    UserIds.push(userId)
     const statement = { subject: 'proxy random number', description: Math.random() * MAX_ANSWER + 1, userId }
     let round = 0
     while (1) {
@@ -81,12 +85,18 @@ async function main() {
         await proxyUser()
     }
     let i = 0
-    for (const userId in Uitems[DISCUSSION_ID]) {
+    for (const userId of UserIds) {
         process.stdout.write('returning user ' + i++ + '\r')
-        let round = Uitems[DISCUSSION_ID][userId].length - 1
+        let userRecord = getUserRecord(DISCUSSION_ID, userId) || []
+        let round = userRecord.length - 1
         let statementsForGrouping = []
-        if (!Uitems[DISCUSSION_ID][userId][round].groupings?.length) {
-            statementsForGrouping = Uitems[DISCUSSION_ID][userId][round].shownStatementIds.map(id => Statements[id])
+        if (round < 0) {
+            // no user record
+            console.info("user didn't exist", userId)
+            round = 0
+            statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
+        } else if (!userRecord[round].groupings?.length) {
+            statementsForGrouping = userRecord[round].shownStatementIds.map(id => Statements[id])
         } else {
             round++
             statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
