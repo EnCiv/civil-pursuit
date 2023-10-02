@@ -20,10 +20,12 @@ const MIN_RANK = 2 // when filterning statements for the next round, they must a
 
 const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, Uitems}
 const Statements = {} // [statementId: ObjectId]{_id: ObjectId, discussionId: ObjectId, round: Number, subject: String, description: String, userId: ObjectId}
-//const ShownStatements = [] // [round: Number][{_id: ObjectId, discussionId: ObjectId, round: Number, statementId: ObjectId, shownCount: Number, rank: Number}, ...]
+//const ShownStatements = [] // [round: Number][{discussionId: ObjectId, round: Number, statementId: ObjectId, shownCount: Number, rank: Number}, ...]
 //const ShownGroups = [] // [round: Number][{ statementIds: [ObjectId], shownCount: Number},...]
 //const Gitems = [] // [round: Number]{discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
 //const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: [statementIds], groupings: [[statementIds],...]}...]
+//const Gitems = [] // [round: Number]{byLowerId: [{lowerStatementId: gitem }], byUpper: [{upperStatmentId: gitem}]}
+//const gitem={discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
 
 module.exports.Statements = Statements
 
@@ -43,7 +45,6 @@ function insertStatement(discussionId, round, userId, statement) {
     const _id = ObjectID().toString()
     Statements[_id] = { _id, discussionId, ...statement }
     const shownItem = {
-        _id: ObjectID().toString(),
         discussionId,
         round,
         statementId: _id,
@@ -143,7 +144,6 @@ async function getStatements(discussionId, round, userId) {
             for (sItem of Discussions[discussionId].ShownStatements[round - 1]) {
                 if (sItem.rank < minRank) break // no need to go further
                 highestRankedItems.push({
-                    _id: ObjectID().toString(),
                     discussionId: sItem.discussionId,
                     round,
                     statementId: sItem.statementId,
@@ -212,15 +212,18 @@ function gatherChildIds(discussionId, round, id, childIds = [], depth = 5) {
     if (depth < 0) return childIds
     const bottom = Math.max(0, round - MAX_ROUNDS)
     for (let r = round - 1; r > bottom; r--) {
-        for (const gitem of Discussions[discussionId].Gitems[r]) {
-            let otherStatementId = ''
+        for (const gitem of Discussions[discussionId].Gitems[r].byLowerId?.[id] || []) {
             if (gitem.shownCount > MIN_SHOWN_COUNT && gitem.groupedCount > gitem.shownCount * GMAJORITY) {
-                if (gitem.lowerStatementId === id) otherStatementId = gitem.upperStatementId
-                else if (gitem.upperStatementId === id) otherStatementId = gitem.lowerStatementId
-                else continue
-                if (childIds.includes(otherStatementId)) continue
-                childIds.push(otherStatementId)
-                gatherChildIds(discussionId, round, otherStatementId, childIds)
+                if (childIds.includes(gitem.upperStatementId)) continue
+                childIds.push(gitem.upperStatementId)
+                gatherChildIds(discussionId, round, gitem.upperStatementId, childIds)
+            }
+        }
+        for (const gitem of Discussions[discussionId].Gitems[r].byUpperId?.[id] || []) {
+            if (gitem.shownCount > MIN_SHOWN_COUNT && gitem.groupedCount > gitem.shownCount * GMAJORITY) {
+                if (childIds.includes(gitem.lowerStatementId)) continue
+                childIds.push(gitem.lowerStatementId)
+                gatherChildIds(discussionId, round, gitem.lowerStatementId, childIds)
             }
         }
     }
@@ -262,7 +265,6 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
                     /* this statment is not already in that list */
                     // list is sorted by rank, so put this at the end
                     Discussions[discussionId].ShownStatements[round + 1].push({
-                        _id: ObjectID().toString(),
                         discussionId: discussionId,
                         round: round + 1,
                         statementId: sitem.statementId,
@@ -291,14 +293,14 @@ function iteratePairs(discussionId, round, statementIds, func) {
     if (!statementIds || statementIds.length == 0) return
     const sortedStatementIds = statementIds.slice().sort(sortLowestIdFirst)
     let last = sortedStatementIds.length - 1
-    if (!Discussions[discussionId].Gitems[round]) Discussions[discussionId].Gitems[round] = []
+    if (!Discussions[discussionId].Gitems[round])
+        Discussions[discussionId].Gitems[round] = { byLowerId: {}, byUpperId: {} }
+    const g = Discussions[discussionId].Gitems[round] // shorten to speed it up
     for (let i = 0; i <= last - 1; i++) {
         const lowerStatementId = sortedStatementIds[i]
         for (let j = i + 1; j <= last; j++) {
             const upperStatementId = sortedStatementIds[j]
-            let gitem = Discussions[discussionId].Gitems[round].find(
-                gitem => gitem.lowerStatementId === lowerStatementId && gitem.upperStatementId == upperStatementId
-            )
+            let gitem = g.byLowerId[lowerStatementId]?.find(gitem => gitem.upperStatementId == upperStatementId)
             if (!gitem) {
                 gitem = {
                     discussionId,
@@ -308,7 +310,11 @@ function iteratePairs(discussionId, round, statementIds, func) {
                     shownCount: 0,
                     groupedCount: 0,
                 }
-                Discussions[discussionId].Gitems[round].push(gitem)
+                // Yes we are pushing the same object into to different lists - this is a speed optimization
+                if (!g.byLowerId[lowerStatementId]) g.byLowerId[lowerStatementId] = []
+                g.byLowerId[lowerStatementId].push(gitem)
+                if (!g.byUpperId[upperStatementId]) g.byUpperId[upperStatementId] = []
+                g.byUpperId[upperStatementId].push(gitem)
             }
             func(gitem)
         }
@@ -382,11 +388,13 @@ function report(discussionId) {
                 if (!shownItem) console.info("it wansn't found in round", round)
                 else {
                     console.info('round:', round, shownItem)
-                    const gitems = Discussions[discussionId].Gitems[round].filter(
-                        gitem =>
-                            gitem.lowerStatementId === shownItem.statementId ||
-                            gitem.upperStatementId === shownItem.statementId
-                    )
+                    const gitems = (Discussions[discussionId].Gitems[round].byLowerId[shownItem.statementId] || [])
+                        .filter(gitem => gitem.upperStatementId === shownItem.statementId)
+                        .concat(
+                            (Discussions[discussionId].Gitems[round].byUpperId[shownItem.statementId] || []).filter(
+                                gitem => gitem.lowerStatementId === shownItem.statementId
+                            )
+                        )
                     console.info('groupings:', gitems)
                 }
             }
@@ -394,7 +402,7 @@ function report(discussionId) {
     }
     console.info(
         'Gitems',
-        Discussions[discussionId].Gitems.map(a => a.length)
+        Discussions[discussionId].Gitems.map(a => [Object.keys(a.byLowerId).length, Object.keys(a.byUpperId).length])
     )
 }
 module.exports.report = report
