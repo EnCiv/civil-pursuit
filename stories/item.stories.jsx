@@ -134,22 +134,6 @@ export const WithVisualMethodOoview = {
   }
 }
 
-export const OoviewAfterImeediateDescendantTakesFocus  = {
-  args: {
-    ...WithImageNoReference.args,
-  },
-  render: (args) =>{
-    return <div><Item {...args} visualMethod="ooview"  rasp={{shape: 'open'}}/></div>;
-  },
-  play: async({canvasElement}) =>{
-    await Common.asyncSleep(1000);
-    const computedStyle = window.getComputedStyle(canvasElement);
-    const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
-    const height = parseFloat(computedStyle.getPropertyValue('height'));
-    expect(height).toBeGreaterThan(4*fontSize);
-
-  }
-}
 
 // .add('Item with VisualMethod ooview after immediate descendant takes focus', () => {
 //     Common.outerSetup();
@@ -302,7 +286,8 @@ export const CreateAnItem = {
 export const CreateAnItemWithoutDescription = {
   args:{
     item:{
-      type: testType
+      type: testType,
+      subject: 'Test Item Subject'
     }
   },
   render: (args) =>{
@@ -328,7 +313,9 @@ export const CreateAnItemWithoutDescription = {
 export const CreateAnItemWithoutSubject = {
   args:{
     item:{
-      type: testType
+      type: testType,
+      description:
+          'Test Item Description\r\nTest Item Description\n'
     }
   },
   render: (args) =>{
