@@ -1,12 +1,16 @@
+/*
+This file is converted from storybook4 to storybook7.
+Storybook7 typically interacts with the component as a user would,
+so I Left some cases which directly interact with component's method unconverted in comment.
+ */
 import React from 'react';
 import Item from '../app/components/item';
 import Common from './common';
 import expect from "expect";
 import {userEvent, within} from "@storybook/testing-library";
-
 import { logger } from 'log4js/lib/logger';
 
-// import  { specs, describe, it } from 'storybook-addon-specifications'
+
 
 
 
@@ -266,6 +270,35 @@ export const CreateAnItemDescription = {
   }
 }
 
+export const CreateAnItem = {
+  args:{
+    item:{
+      type: testType
+    }
+  },
+  render: (args) =>{
+    return <Item {...args} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
+  },
+  play: async ({canvasElement, step}) =>{
+    await Common.asyncSleep(600);
+    const canvas = within(canvasElement);
+    const subject = canvas.getByPlaceholderText(/subject/i);
+    await userEvent.clear(subject);
+    await userEvent.type(subject, 'Test Input Subject');
+    expect(subject.value).toBe('Test Input Subject');
+    const descriptionBox = canvas.getByPlaceholderText(/description/i);
+    await userEvent.clear(descriptionBox);
+    await userEvent.type(descriptionBox, 'Test Input Description');
+    expect(descriptionBox.value).toBe('Test Input Description');
+    await Common.asyncSleep(600);
+    await userEvent.click(canvas.getByRole('button', {name: /post/i}));
+    console.log();
+
+    expect(canvas.getByRole('heading').textContent).toBe('Test Input Subject');
+    expect(canvas.queryByText('Test Input Description')).not.toBeNull();
+
+  }
+}
 export const CreateAnItemWithoutDescription = {
   args:{
     item:{
@@ -341,8 +374,9 @@ export const createItemReference = {
     expect(ref.value).toBe(testURL);
 
   }
-
 }
+
+
 
 // .add("Creating an Item Reference without the https://", () => {
 //     Common.outerSetup();
@@ -506,61 +540,6 @@ export const createItemReference = {
 //     return <Common.RenderStory testFunc={storyTest}></Common.RenderStory>;
 // })
 //
-// .add('headline description first', () => {
-//     Common.outerSetup();
-//
-//     const testItem = {
-//         type: testType
-//     }
-//
-//     const description="This is a description of an item"
-//
-//     const story=<Item item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
-//
-//     const storyTest= async (e)=>{ // do this after the story has rendered
-//         Common.Wrapper=mount(story,{attachTo: e});
-//     }
-//     return <Common.RenderStory testFunc={storyTest}></Common.RenderStory>;
-// })
-//
-// .add('headlineAfterEdit', () => {
-//     Common.outerSetup();
-//
-//     const testItem = {
-//         type: testType
-//     }
-//
-//     const description="This is a description of an item"
-//
-//     const story=<Item headlineAfter item={testItem} className="whole-border" visualMethod="edit" rasp={{shape: 'edit'}} />;
-//
-//     const storyTest= async (e)=>{ // do this after the story has rendered
-//         Common.Wrapper=mount(story,{attachTo: e});
-//         await Common.asyncSleep(600);
-//         let textInput=Common.Wrapper.find('textarea[name="description"]')
-//         textInput.instance().select();
-//         textInput.simulate('change',Object.assign({},Common.dummyEvent, {target: {value: description}}))
-//         var inputNode=Common.Wrapper.find('textarea[name="description"]').getDOMNode()
-//         const blurE = await Common.asyncEvent(inputNode, 'blur');
-//         specs(()=>describe('Item Description should have the input', ()=>{
-//             let _id=Common.Wrapper.find('Item').instance().props.item._id;
-//             it(`Item should have a unique ObjectId. Found ${_id}`, function () {
-//                 expect(_id.length).toBe(24);
-//             });
-//             it(`Item should have "${description}" as the textarea`, ()=>{
-//                 expect(Common.Wrapper.find('textarea[name="description"]').instance().value).toBe(description);
-//             });
-//             it(`Item should have "${description}" as Textarea`, ()=>{
-//                 expect(Common.Wrapper.find("ItemDescription").find('Textarea').instance().value).toBe(description)
-//             });
-//             it(`Item should have "${description}" as the ItemDescription`, ()=>{
-//                 expect(Common.Wrapper.find("ItemDescription").instance().state.description).toBe(description)
-//             });
-//             it(`Item should have "${description}" in the Item`, ()=>{
-//                 expect(Common.Wrapper.find("Item").instance().props.item.description).toBe(description)
-//             });
-//         }))
-//     }
-//     return <Common.RenderStory testFunc={storyTest}></Common.RenderStory>;
-// })
+
+
 
