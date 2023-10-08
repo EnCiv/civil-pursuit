@@ -81,10 +81,23 @@ function getRandomUniqueList(max, count) {
         count = max
     }
     const list = []
-    while (list.length < count) {
-        let index = Math.floor(Math.random() * max)
-        while (list.includes(index)) index = Math.floor(Math.random() * max)
-        list.push(index)
+    if (count === max) {
+        // create a scrambled list of indexes
+        const indexList = [...Array(count).keys()]
+        while (indexList.length > 1) {
+            let index = Math.floor(Math.random() * indexList.length)
+            list.push(indexList[index])
+            indexList.splice(index, 1)
+        }
+        list.push(indexList.shift())
+    } else {
+        const indexList = []
+        while (list.length < count) {
+            let index = Math.floor(Math.random() * max)
+            while (indexList[index]) index = Math.floor(Math.random() * max)
+            indexList[index] = true
+            list.push(index)
+        }
     }
     return list
 }
