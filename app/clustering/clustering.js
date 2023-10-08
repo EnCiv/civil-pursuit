@@ -29,8 +29,18 @@ const Statements = {} // [statementId: ObjectId]{_id: ObjectId, discussionId: Ob
 
 module.exports.Statements = Statements
 
-function initDiscussion(discussionId) {
-    Discussions[discussionId] = { ShownStatements: [], ShownGroups: [], Gitems: [], Uitems: {} }
+function initDiscussion(discussionId, options = {}) {
+    Discussions[discussionId] = {
+        ShownStatements: [],
+        ShownGroups: [],
+        Gitems: [],
+        Uitems: {},
+        group_size: options.group_size || GROUP_SIZE,
+        gmajority: options.gmajority || GMAJORITY,
+        max_rounds: options.max_rounds || MAX_ROUNDS,
+        min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
+        min_rank: options.min_rank || MIN_RANK,
+    }
 }
 
 function initUitems(discussionId, userId, round = 0) {
@@ -116,28 +126,29 @@ async function getStatements(discussionId, round, userId) {
             return undefined
         }
     }
-    if (Discussions[discussionId].ShownStatements?.[0].length < GROUP_SIZE * 2 - 1) return undefined
+    if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1)
+        return undefined
     const statements = []
     if (!Discussions[discussionId].ShownGroups[round]) Discussions[discussionId].ShownGroups[round] = []
-    if (Discussions[discussionId].ShownGroups[round].at(-1)?.shownCount < GROUP_SIZE) {
+    if (Discussions[discussionId].ShownGroups[round].at(-1)?.shownCount < Discussions[discussionId].group_size) {
         for (const sId of Discussions[discussionId].ShownGroups[round].at(-1).statementIds)
             statements.push(Statements[sId])
         Discussions[discussionId].ShownGroups[round].at(-1).shownCount++
     } else if (round === 0) {
         // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
         const needToBeSeen = Discussions[discussionId].ShownStatements[round].filter(
-            sItem => sItem.shownCount < GROUP_SIZE
+            sItem => sItem.shownCount < Discussions[discussionId].group_size
         ) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
         const shownGroup = { statementIds: [], shownCount: 1 }
         if (needToBeSeen.length === 0) console.error('need to be seen got 0')
-        if (needToBeSeen.length < GROUP_SIZE - 1) {
-            console.info('needToBeSeen', needToBeSeen.length, 'is less than  ', GROUP_SIZE)
+        if (needToBeSeen.length < Discussions[discussionId].group_size - 1) {
+            console.info('needToBeSeen', needToBeSeen.length, 'is less than  ', Discussions[discussionId].group_size)
             for (const sItem of needToBeSeen) {
                 statements.push(Statements[sItem.statementId])
                 shownGroup.statementIds.push(sItem.statementId)
             }
         } else {
-            getRandomUniqueList(needToBeSeen.length, GROUP_SIZE - 1).forEach(index => {
+            getRandomUniqueList(needToBeSeen.length, Discussions[discussionId].group_size - 1).forEach(index => {
                 statements.push(Statements[needToBeSeen[index].statementId])
                 shownGroup.statementIds.push(needToBeSeen[index].statementId)
             })
@@ -147,11 +158,14 @@ async function getStatements(discussionId, round, userId) {
         if (!Discussions[discussionId].ShownStatements[round]) {
             // first time for this round, need to setup
             // make sure there are enough ranked items in the previous round to start
-            if (Discussions[discussionId].ShownStatements[round - 1].length < GROUP_SIZE * 2) return
-            const cutoff = Math.ceil(Discussions[discussionId].ShownStatements[round - 1].length / GROUP_SIZE)
+            if (Discussions[discussionId].ShownStatements[round - 1].length < Discussions[discussionId].group_size * 2)
+                return
+            const cutoff = Math.ceil(
+                Discussions[discussionId].ShownStatements[round - 1].length / Discussions[discussionId].group_size
+            )
             console.info('cutoff round', round, cutoff)
             let minRank = Discussions[discussionId].ShownStatements[round - 1][cutoff].rank
-            if (minRank < MIN_RANK) minRank = MIN_RANK
+            if (minRank < Discussions[discussionId].min_rank) minRank = Discussions[discussionId].min_rank
             console.info('starting round', round, 'minRank is', minRank)
             let highestRankedItems = []
             for (sItem of Discussions[discussionId].ShownStatements[round - 1]) {
@@ -174,10 +188,10 @@ async function getStatements(discussionId, round, userId) {
                 Discussions[discussionId].ShownStatements[round - 1].length
             )
         }
-        if (Discussions[discussionId].ShownStatements[round].length < GROUP_SIZE) return
+        if (Discussions[discussionId].ShownStatements[round].length < Discussions[discussionId].group_size) return
         const shownGroup = { statementIds: [], shownCount: 1 }
         const needToBeSeen = Discussions[discussionId].ShownStatements[round].filter(
-            sItem => sItem.shownCount < GROUP_SIZE
+            sItem => sItem.shownCount < Discussions[discussionId].group_size
         ) //??? Should TEN increase in situations where there are lots of similar ideas that get grouped - but not in round 0
         let needToBeRemoved = []
         let shownItemsToRemove = []
@@ -202,8 +216,8 @@ async function getStatements(discussionId, round, userId) {
         if (shownItemsToRemove.length)
             console.info('shownItems to be removed - count', shownItemsToRemove.length, 'round', round)
         shownItemsToRemove.forEach(index => Discussions[discussionId].ShownStatements[round].splice(index, 1))
-        if (needToBeSeen.length < GROUP_SIZE) return
-        getRandomUniqueList(needToBeSeen.length, GROUP_SIZE).forEach(index => {
+        if (needToBeSeen.length < Discussions[discussionId].group_size) return
+        getRandomUniqueList(needToBeSeen.length, Discussions[discussionId].group_size).forEach(index => {
             statements.push(Statements[needToBeSeen[index].statementId])
             shownGroup.statementIds.push(needToBeSeen[index].statementId)
         })
@@ -223,17 +237,23 @@ module.exports.getUserRecord = getUserRecord
 
 function gatherChildIds(discussionId, round, id, childIds = [], depth = 5) {
     if (depth < 0) return childIds
-    const bottom = Math.max(0, round - MAX_ROUNDS)
+    const bottom = Math.max(0, round - Discussions[discussionId].max_rounds)
     for (let r = round - 1; r > bottom; r--) {
         for (const gitem of Discussions[discussionId].Gitems[r].byLowerId?.[id] || []) {
-            if (gitem.shownCount > MIN_SHOWN_COUNT && gitem.groupedCount > gitem.shownCount * GMAJORITY) {
+            if (
+                gitem.shownCount > Discussions[discussionId].min_shown_count &&
+                gitem.groupedCount > gitem.shownCount * Discussions[discussionId].gmajority
+            ) {
                 if (childIds.includes(gitem.upperStatementId)) continue
                 childIds.push(gitem.upperStatementId)
                 gatherChildIds(discussionId, round, gitem.upperStatementId, childIds)
             }
         }
         for (const gitem of Discussions[discussionId].Gitems[r].byUpperId?.[id] || []) {
-            if (gitem.shownCount > MIN_SHOWN_COUNT && gitem.groupedCount > gitem.shownCount * GMAJORITY) {
+            if (
+                gitem.shownCount > Discussions[discussionId].min_shown_count &&
+                gitem.groupedCount > gitem.shownCount * Discussions[discussionId].gmajority
+            ) {
                 if (childIds.includes(gitem.lowerStatementId)) continue
                 childIds.push(gitem.lowerStatementId)
                 gatherChildIds(discussionId, round, gitem.lowerStatementId, childIds)
@@ -265,11 +285,13 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
     Discussions[discussionId].ShownStatements[round].sort(sortShownItemsByRank)
     if (Discussions[discussionId].ShownStatements[round + 1]) {
         // a round has started above this one, had this ranked high enough to move into the next round
-        const cutoff = Math.ceil(Discussions[discussionId].ShownStatements[round].length / GROUP_SIZE)
+        const cutoff = Math.ceil(
+            Discussions[discussionId].ShownStatements[round].length / Discussions[discussionId].group_size
+        )
         const minRank =
-            Discussions[discussionId].ShownStatements[round][cutoff].rank > MIN_RANK
+            Discussions[discussionId].ShownStatements[round][cutoff].rank > Discussions[discussionId].min_rank
                 ? Discussions[discussionId].ShownStatements[round][cutoff].rank
-                : MIN_RANK
+                : Discussions[discussionId].min_rank
         if (delta > 0) {
             if (sitem.rank >= minRank) {
                 if (
