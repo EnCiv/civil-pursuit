@@ -25,3 +25,4 @@
 *.map
 .zshrc
 .idea/*
+.lesshst
