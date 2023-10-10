@@ -1,0 +1,1 @@
+// point component, take 3
