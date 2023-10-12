@@ -1,9 +1,7 @@
-import React from 'react';
 import Point from '../app/components/point'
 
-
 export default {
-    component: Point
+  component: Point,
 }
 
-export const Primary = { args: {}}
+export const Primary = { args: {} }
