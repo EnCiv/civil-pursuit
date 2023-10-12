@@ -4,6 +4,7 @@
 import React from 'react'
 import cx from 'classnames'
 import insertSheet from 'react-jss'
+import PointButton from './point-button'
 
 function Point(props) {
   const { subject, description, vState, children, styles, className, classes, ...otherProps } = props
@@ -22,6 +23,7 @@ function Point(props) {
                 {vState !== 'disabled' && 'DemInfo component goes here'}
                 {/* <DemInfo {...otherProps} /> */}
               </div>
+                {vState !== 'disabled' && <PointButton vState={vState} />}
             </div>
           </div>
         </div>
@@ -127,10 +129,10 @@ const pointStyles = {
 export default insertSheet(pointStyles)(Point)
 
 // DEV NOTES:
-/* 
+/*
 - The css styling object is called pointStyles. This is 'injected' into the Point component through insertSheet(), from React jss.
 - It is accessed through the 'classes' prop.
-- React jss is the tool we are using to write css in react components. 
+- React jss is the tool we are using to write css in react components.
 - To use the style, we use cx function from the 'classnames' library
     Example:   <div className={cx(classes[`${vState}Border`])}>
   Let's break this down:
