@@ -1,4 +1,6 @@
 import Point from '../app/components/point'
+import PointButton from '../app/components/point-button'
+import React from 'react'
 
 export default {
   component: Point,
@@ -12,6 +14,19 @@ export default {
 export const Primary = { args: { vState: 'default' } }
 export const PrimaryMouseDown = { args: { vState: 'mouseDown' } }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
+
+export const Lead = {
+  args: {
+    vState: 'default',
+    children: <PointButton vState="default" />,
+  },
+}
+export const LeadMouseDown = {
+    args: {
+      vState: 'mouseDown',
+      children: <PointButton vState="mouseDown" />,
+    },
+  }
 
 // to do: implement test for clicking (mousedown)
 // group stories
