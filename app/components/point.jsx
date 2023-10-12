@@ -4,7 +4,6 @@
 import React from 'react'
 import cx from 'classnames'
 import insertSheet from 'react-jss'
-import PointButton from './point-button'
 
 function Point(props) {
   const { subject, description, vState, children, styles, className, classes, ...otherProps } = props
@@ -23,7 +22,7 @@ function Point(props) {
                 {vState !== 'disabled' && 'DemInfo component goes here'}
                 {/* <DemInfo {...otherProps} /> */}
               </div>
-                {vState !== 'disabled' && <PointButton vState={vState} />}
+              {children}
             </div>
           </div>
         </div>
@@ -153,3 +152,7 @@ export default insertSheet(pointStyles)(Point)
 // disabled/inactive component is less wide than the other ones in the figma. Is this intentional? Also doesn't have the DomInfo
 // Card Shadow - Desktop - what does this mean
 // am i using vState properly? I'm assuming it will be passed down as a prop from a higher component. Unless its the name of pointStyles object?
+
+// future issues:
+// create DemInfo componenent ... specify what it takes in, etc...
+// finish the lead button component... what does it take in? what does it do?

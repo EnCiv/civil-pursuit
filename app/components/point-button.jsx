@@ -1,12 +1,13 @@
 'use strict'
 import React from 'react'
+import insertSheet from 'react-jss'
+import cx from 'classnames'
 
 function PointButton(props) {
-    const { vState } = props
+    const { vState, classes } = props
 
     return (
-
-        <button style={pointButtonStyles[`${vState}Button`]}>Select as Lead</button>
+        <button className={cx(classes[`${vState}Button`])}>Select as Lead</button>
     )
 }
 
@@ -41,4 +42,4 @@ const pointButtonStyles = {
     }
 }
 
-export default PointButton;
+export default insertSheet(pointButtonStyles)(PointButton)
