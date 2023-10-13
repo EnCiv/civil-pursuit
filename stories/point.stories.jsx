@@ -1,5 +1,5 @@
 import Point from '../app/components/point'
-import PointButton from '../app/components/point-button'
+import PointLeadButton from '../app/components/point-lead-button'
 import React from 'react'
 
 export default {
@@ -18,13 +18,13 @@ export const PrimaryDisabled = { args: { vState: 'disabled' } }
 export const Lead = {
   args: {
     vState: 'default',
-    children: <PointButton vState="default" />,
+    children: <PointLeadButton vState="default" />,
   },
 }
 export const LeadMouseDown = {
     args: {
       vState: 'mouseDown',
-      children: <PointButton vState="mouseDown" />,
+      children: <PointLeadButton vState="mouseDown" />,
     },
   }
 

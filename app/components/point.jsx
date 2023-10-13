@@ -73,21 +73,28 @@ const pointStyles = {
   },
 
   // border states
-  mouseDownBorder: {
-    outline: '0.1875rem solid #005621',
-    background: '#E6F3EB',
-    ...sharedBorderStyles,
-  },
   defaultBorder: {
     outline: '1px solid #EBEBEB',
     background: '#FFF',
     ...sharedBorderStyles,
     '&:hover': {
       outline: '0.1875rem solid #005621',
-      '& + .subject': {
-        color: '#005621', // this isn't currently working
-      },
     },
+    '&:hover $defaultSubject': {
+      color: '#005621 !important',
+    },
+    '&:hover $defaultDescription': {
+      color: '#005621 !important',
+    },
+    '&:hover $defaultButton': {
+      color: 'red',
+      textDecorationLine: 'underline',
+    },
+  },
+  mouseDownBorder: {
+    outline: '0.1875rem solid #005621',
+    background: '#E6F3EB',
+    ...sharedBorderStyles,
   },
   disabledBorder: {
     opacity: 0.5,
@@ -139,6 +146,8 @@ export default insertSheet(pointStyles)(Point)
   2. classes - the prop injected into the component. it contains the styling (see bullet one and two)
   3. [`${vState}Border`] - this accesses the desired styling from the pointStyles object. For example, if vState = 'default', then the styling applied will be defaultBorder
 - the different states are seen in the story through the vState argument. I assume this is how it will work in production... open to other ideas!!
+REACT.JSS CHEAT SHEET:
+https://pantaley.com/blog/Start-your-JSS-journey-with-the-selectors-cheat-sheet/
 */
 
 // julian's notes:
@@ -150,8 +159,11 @@ export default insertSheet(pointStyles)(Point)
 // note: i used the outline property instead of the border property to prevent the size and positioning from changing upon a hover. do we want it to move?
 // hover state for the subject isn't working (and probably description too). we should look into the proper way to do it with react jss, otherwise we might have to think of other solutions
 // disabled/inactive component is less wide than the other ones in the figma. Is this intentional? Also doesn't have the DomInfo
-// Card Shadow - Desktop - what does this mean
+// Card Shadow - Desktop - what does this mean? Select a LEad, Desktop
 // am i using vState properly? I'm assuming it will be passed down as a prop from a higher component. Unless its the name of pointStyles object?
+// hover state on the button
+// slight top padding on point lead button - add
+// different width for choosing lead response?
 
 // future issues:
 // create DemInfo componenent ... specify what it takes in, etc...
