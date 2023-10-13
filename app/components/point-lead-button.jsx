@@ -3,7 +3,7 @@ import React from 'react'
 import insertSheet from 'react-jss'
 import cx from 'classnames'
 
-function PointButton(props) {
+function PointLeadButton(props) {
     const { vState, classes } = props
 
     return (
@@ -11,7 +11,7 @@ function PointButton(props) {
     )
 }
 
-const sharedButtonStyles = {
+const sharedLeadButtonStyles = {
     display: 'flex',
     width: '100%',
     height: 'auto',
@@ -21,25 +21,32 @@ const sharedButtonStyles = {
     alignItems: 'center',
     gap: '8px',
     borderRadius: '8px',
+    border: '2px solid #FFC315',
+
+    fontFamily: 'Inter',
+    fontSize: '1rem',
+    fontStyle: 'normal',
+    fontWeight: '600',
+    lineHeight: '1.5rem',
+    textAlign: 'center',
+    color: '#1A1A1A',
 }
 
-const pointButtonStyles = {
+const pointLeadButtonStyles = {
     defaultButton: {
-        border: '2px solid #FFC315',
         background: '#FFF',
-        ...sharedButtonStyles
+        ...sharedLeadButtonStyles
     },
 
     hoverButton: {
-        border: '2px solid #FFC315',
         background: '#FFF',
-        ...sharedButtonStyles
+        ...sharedLeadButtonStyles
     },
 
     mouseDownButton: {
         background: '#FFC315',
-        ...sharedButtonStyles
+        ...sharedLeadButtonStyles
     }
 }
 
-export default insertSheet(pointButtonStyles)(PointButton)
+export default insertSheet(pointLeadButtonStyles)(PointLeadButton)
