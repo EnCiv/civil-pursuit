@@ -4,23 +4,25 @@ import React from 'react'
 import ReactScrollBar from '../app/components/util/react-scrollbar'
 
 class Layout extends React.Component {
-    render(){
-        return (
-            <div style={Common.outerStyle}>
-                <div ref={e=>{if(!this.topBar && e) {this.topBar=e;this.forceUpdate()}}} style={{height: "100px", position: "fixed", top: 0, left: 0, right: 0,zIndex: 2, backgroundColor: "rgba(255,255,255,.9)", margin: 0,textAlign: "center", verticalAlign: "middle"}}>Banner</div>
-                <ReactScrollBar style={{}} topBar={this.topBar} extent={0}>
-                    <div id="scroll-bar">
-                        {this.props.children}
-                    </div>
-                </ReactScrollBar>
-            </div>
-        )
-    }
+  render(){
+      return (
+          <div style={Common.outerStyle}>
+              <div ref={e=>{if(!this.topBar && e) {this.topBar=e;this.forceUpdate()}}} style={{height: "100px", position: "fixed", top: 0, left: 0, right: 0,zIndex: 2, backgroundColor: "rgba(255,255,255,.9)", margin: 0,textAlign: "center", verticalAlign: "middle"}}>Banner</div>
+              <ReactScrollBar style={{}} topBar={this.topBar} extent={0}>
+                  <div id="scroll-bar">
+                      {this.props.children}
+                  </div>
+              </ReactScrollBar>
+          </div>
+      )
+  }
 }
 
 export default {
   title: 'react-scroll-bar',
-  component: Layout,
+  parameters: {
+    layout: 'fullscreen',
+  },
   decorators: [
     Story => {
       Common.outerSetup()
