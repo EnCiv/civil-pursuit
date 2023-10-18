@@ -7,7 +7,9 @@ function PointLeadButton(props) {
     const { vState, classes } = props
 
     return (
-        <button className={cx(classes[`${vState}Button`])}>Select as Lead</button>
+        <div className={cx(classes['buttonDiv'])}>
+            <button className={cx(classes[`${vState}Button`])}>Select as Lead</button>
+        </div>
     )
 }
 
@@ -46,7 +48,12 @@ const pointLeadButtonStyles = {
     mouseDownButton: {
         background: '#FFC315',
         ...sharedLeadButtonStyles
-    }
+    },
+
+    buttonDiv: {
+        paddingTop: '0.5rem',
+        width: '100%',
+      },
 }
 
 export default insertSheet(pointLeadButtonStyles)(PointLeadButton)
