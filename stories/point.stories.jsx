@@ -2,6 +2,10 @@ import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
 import React from 'react'
 
+function DemInfo() {
+  return <div>DemInfo Component</div>
+}
+
 export default {
   component: Point,
   args: {
@@ -11,8 +15,8 @@ export default {
   },
 }
 
-export const Primary = { args: { vState: 'default' } }
-export const PrimaryMouseDown = { args: { vState: 'mouseDown' } }
+export const Primary = { args: { vState: 'default', children: <DemInfo /> } }
+export const PrimaryMouseDown = { args: { vState: 'mouseDown', children: <DemInfo /> } }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
 
 export const Lead = {
@@ -22,11 +26,23 @@ export const Lead = {
   },
 }
 export const LeadMouseDown = {
-    args: {
-      vState: 'mouseDown',
-      children: <PointLeadButton vState="mouseDown" />,
-    },
-  }
+  args: {
+    vState: 'mouseDown',
+    children: <PointLeadButton vState="mouseDown" />,
+  },
+}
+
+export const MultipleChildren = {
+  args: {
+    vState: 'default',
+    children: (
+      <>
+        <DemInfo />
+        <PointLeadButton vState="mouseDown" />
+      </>
+    ),
+  },
+}
 
 // to do: implement test for clicking (mousedown)
 // group stories

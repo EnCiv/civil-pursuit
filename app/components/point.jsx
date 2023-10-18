@@ -18,11 +18,7 @@ function Point(props) {
             <div className={cx(classes.informationGrid)}>
               <div className={cx(classes[`${vState}Subject`])}>{subject}</div>
               <div className={cx(classes[`${vState}Description`])}>{description}</div>
-              <div>
-                {vState !== 'disabled' && 'DemInfo component goes here'}
-                {/* <DemInfo {...otherProps} /> */}
-              </div>
-              {children}
+              <div className={cx(classes.informationGrid)}>{children}</div>
             </div>
           </div>
         </div>
@@ -86,14 +82,16 @@ const pointStyles = {
     '&:hover $defaultDescription': {
       color: '#005621 !important',
     },
-    '&:hover $defaultButton': {
-      color: 'red',
-      textDecorationLine: 'underline',
+    '&:hover $informationGrid': {
+      color: '#005621 !important',
     },
   },
   mouseDownBorder: {
     outline: '0.1875rem solid #005621',
     background: '#E6F3EB',
+    '& $informationGrid': {
+      color: '#005621 !important',
+    },
     ...sharedBorderStyles,
   },
   disabledBorder: {
