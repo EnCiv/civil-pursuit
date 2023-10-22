@@ -3,7 +3,20 @@ import PointLeadButton from '../app/components/point-lead-button'
 import React from 'react'
 
 function DemInfo() {
-  return <div>DemInfo Component</div>
+  return (
+    <div
+      style={{
+        color: '#5D5D5C',
+        fontFamily: 'Inter',
+        fontSize: '1rem',
+        fontStyle: 'normal',
+        fontWeight: '400',
+        lineHeight: '1.5rem',
+      }}
+    >
+      DemInfo | Component
+    </div>
+  )
 }
 
 export default {
@@ -43,7 +56,3 @@ export const MultipleChildren = {
     ),
   },
 }
-
-// to do: implement test for clicking (mousedown)
-// group stories
-// better/more convetional names
