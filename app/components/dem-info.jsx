@@ -36,6 +36,7 @@ function calculateAge(birthday) {
 }
 
 const demInfoStyles = {
+    
 }
 
 
