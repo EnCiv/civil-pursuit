@@ -10,8 +10,6 @@ function Point(props) {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
-
       <div className={cx(className)} style={styles}>
         <div className={cx(classes[`${vState}Border`])}>
           <div className={cx(classes.contentContainer)}>
