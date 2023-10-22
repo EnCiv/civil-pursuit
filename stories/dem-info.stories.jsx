@@ -9,7 +9,7 @@ export default {
 export const Primary = { args: {
     user: {
         dob: new Date('1990-10-20'),
-        state: 'New York',
+        state: 'NY',
         party: 'Independent'
       }
 }}

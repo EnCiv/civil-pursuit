@@ -1,9 +1,11 @@
 'use strict'
 import React from 'react';
+import cx from 'classnames';
 import insertSheet from 'react-jss';
 
+
 function DemInfo(props) {
-    const { user, className, styles, ...otherProps } = props;
+    const { user, classes, styles, ...otherProps } = props;
 
     const userState = user.state || 'N/A';
     const userAge = user.dob ? calculateAge(user.dob) : 'N/A';
@@ -11,7 +13,7 @@ function DemInfo(props) {
 
 
     return (
-        <span>
+        <span className={cx(classes.infoText)}>
             {`${userPoliticalParty} | ${userAge}, ${userState}`}
         </span>
     )
@@ -36,7 +38,15 @@ function calculateAge(birthday) {
 }
 
 const demInfoStyles = {
-    
+    infoText: {
+        fontFamily: 'Inter',
+        fontSize: '1rem',
+        fontWeight: '400',
+        lineHeight: '24px',
+        letterSpacing: '0rem',
+        textAlign: 'left',
+        color: '#5D5D5C'
+    }
 }
 
 
