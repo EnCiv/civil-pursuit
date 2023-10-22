@@ -4,6 +4,9 @@ import common from './common'
 
 export default {
     component: KitchenSink,
+    parameters: {
+        layout: 'centered',
+      },
     decorators: [
         Story => (
             <div style={common.outerStyle}>
