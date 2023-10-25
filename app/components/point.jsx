@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 
 'use strict'
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import insertSheet from 'react-jss'
 
@@ -16,7 +16,7 @@ function Point(props) {
             <div className={cx(classes.informationGrid)}>
               <div className={cx(classes[`${vState}Subject`])}>{subject}</div>
               <div className={cx(classes[`${vState}Description`])}>{description}</div>
-              <div className={cx(classes.informationGrid)}>{children}</div>
+              {children}
             </div>
           </div>
         </div>
@@ -78,9 +78,6 @@ const pointStyles = {
     },
     '&:hover $defaultDescription': {
       color: '#005621 !important',
-    },
-    '&:hover $informationGrid': {
-      color: '#005621 !important',  //not working atm
     },
   },
   mouseDownBorder: {
