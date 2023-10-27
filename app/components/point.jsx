@@ -12,7 +12,7 @@ function Point(props) {
 
   const [isHovered, setIsHovered] = useState(false)
 
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
     return React.cloneElement(child, {
       isHovered: isHovered,
       vState: vState,
@@ -152,4 +152,25 @@ export default withTheme(Point)
 /*
 NOTES:
 - vState comes in as 'default', 'mouseDown', or 'disabled'
+
+- if multiple children are passed into this comopnent, then they must be siblings:
+  Good Example: 
+      children: (
+      <>
+        <DemInfo />
+        <PointLeadButton vState="default" />
+      </>
+    )
+
+  Wrong Example:
+    children: (
+      <>
+        <div>
+          <DemInfo />
+        </div>
+        <div>
+          <PointLeadB utton vState="default" />
+        </div>
+      </>
+    )
 */
