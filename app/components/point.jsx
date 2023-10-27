@@ -1,25 +1,45 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 
 'use strict'
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
-import { createUseStyles, useTheme } from 'react-jss'
+import { createUseStyles } from 'react-jss'
+import { withTheme } from 'theming'
 
 function Point(props) {
   const { subject, description, vState, children, styles, className, ...otherProps } = props
-  const theme = useTheme()
-  const classes = useStylesFromThemeFunction(theme)
-  console.log(theme)
+  const classes = useStylesFromThemeFunction()
+
+  const [isHovered, setIsHovered] = useState(false)
+
+  const childrenWithProps = React.Children.map(children, child => {
+    return React.cloneElement(child, {
+      isHovered: isHovered,
+      vState: vState,
+    })
+  })
+
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+  }
+
+  const borderClass = cx(classes[`${vState}Border`], {})
+  const subjectClass = cx(classes[`${vState}Subject`])
+  const descriptionClass = cx(classes[`${vState}Description`])
 
   return (
     <>
-      <div className={cx(className)} style={styles}>
-        <div className={cx(classes[`${vState}Border`])}>
-          <div className={cx(classes.contentContainer)}>
-            <div className={cx(classes.informationGrid)}>
-              <div className={cx(classes[`${vState}Subject`])}>{subject}</div>
-              <div className={cx(classes[`${vState}Description`])}>{description}</div>
-              {children}
+      <div className={className} style={styles}>
+        <div className={borderClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <div className={classes.contentContainer}>
+            <div className={classes.informationGrid}>
+              <div className={subjectClass}>{subject}</div>
+              <div className={descriptionClass}>{description}</div>
+              {childrenWithProps}
             </div>
           </div>
         </div>
@@ -77,8 +97,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // subject states
   defaultSubject: {
-    // color: '#1A1A1A',
-    // color: theme.styles.primary.color,
+    color: '#1A1A1A',
     ...sharedSubjectSyles,
   },
   mouseDownSubject: {
@@ -128,10 +147,9 @@ const sharedDescriptionStyles = {
   lineHeight: '1.5rem',
 }
 
-export default Point
+export default withTheme(Point)
 
 /*
 NOTES:
 - vState comes in as 'default', 'mouseDown', or 'disabled'
-- 'classes' prop is the pointStyles styling object
 */

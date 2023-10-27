@@ -1,59 +1,79 @@
 'use strict'
 import React from 'react'
-import insertSheet from 'react-jss'
+import { createUseStyles, withTheme } from 'react-jss'
 import cx from 'classnames'
 
 function PointLeadButton(props) {
-    const { vState, classes } = props
+  const { vState, isHovered } = props
+  const classes = useStylesFromThemeFunction()
 
-    return (
-        <div className={cx(classes['buttonDiv'])}>
-            <button className={cx(classes[`${vState}Button`])}>Select as Lead</button>
-        </div>
-    )
+  const buttonClass = cx(classes[`${vState}Button`], {
+    [classes.hovered]: isHovered && vState === 'default',
+  })
+
+  return (
+    <div className={classes['buttonDiv']}>
+      <button className={buttonClass}>Select as Lead</button>
+    </div>
+  )
 }
+
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+  defaultButton: {
+    background: '#FFF',
+    color: '#403105',
+    ...sharedLeadButtonStyles,
+    '&:hover': {
+      backgroundColor: 'initial',
+      color: '#403105',
+      borderColor: '#FFC315',
+    },
+  },
+
+  mouseDownButton: {
+    background: '#FFC315',
+    color: '#1A1A1A',
+    ...sharedLeadButtonStyles,
+    '&:hover': {
+      backgroundColor: '#FFC315',
+      color: '#1A1A1A',
+      borderColor: '#FFC315',
+    },
+  },
+
+  buttonDiv: {
+    paddingTop: '0.5rem',
+    width: '100%',
+  },
+
+  hovered: {
+    backgroundColor: 'initial',
+    color: '#403105',
+    borderColor: '#FFC315',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '0.25rem',
+    ...sharedLeadButtonStyles,
+  },
+}))
 
 const sharedLeadButtonStyles = {
-    display: 'flex',
-    width: '100%',
-    height: 'auto',
-    minHeight: '3.125rem',
-    padding: '0.5rem 1.25rem',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '0.5rem',
-    borderRadius: '0.5rem',
-    border: '2px solid #FFC315',
+  display: 'flex',
+  width: '100%',
+  height: 'auto',
+  minHeight: '3.125rem',
+  padding: '0.5rem 1.25rem',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '0.5rem',
+  borderRadius: '0.5rem',
+  border: '2px solid #FFC315',
 
-    fontFamily: 'Inter',
-    fontSize: '1rem',
-    fontStyle: 'normal',
-    fontWeight: '600',
-    lineHeight: '1.5rem',
-    textAlign: 'center',
-    color: '#1A1A1A',
+  fontFamily: 'Inter',
+  fontSize: '1rem',
+  fontStyle: 'normal',
+  fontWeight: '600',
+  lineHeight: '1.5rem',
+  textAlign: 'center',
 }
 
-const pointLeadButtonStyles = {
-    defaultButton: {
-        background: '#FFF',
-        ...sharedLeadButtonStyles
-    },
-
-    hoverButton: {
-        background: '#FFF',
-        ...sharedLeadButtonStyles
-    },
-
-    mouseDownButton: {
-        background: '#FFC315',
-        ...sharedLeadButtonStyles
-    },
-
-    buttonDiv: {
-        paddingTop: '0.5rem',
-        width: '100%',
-      },
-}
-
-export default insertSheet(pointLeadButtonStyles)(PointLeadButton)
+export default withTheme(PointLeadButton)
