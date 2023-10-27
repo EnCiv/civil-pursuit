@@ -51,7 +51,7 @@ export const MultipleChildren = {
     children: (
       <>
         <DemInfo />
-        <PointLeadButton vState="mouseDown" />
+        <PointLeadButton vState="default" />
       </>
     ),
   },
