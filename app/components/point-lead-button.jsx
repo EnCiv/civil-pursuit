@@ -7,7 +7,7 @@ function PointLeadButton(props) {
   const { vState, isHovered } = props
   const classes = useStylesFromThemeFunction()
 
-  const buttonClass = cx(classes[`${vState}Button`], {
+  const buttonClass = cx(classes[vState + 'Button'], {
     [classes.hovered]: isHovered && vState === 'default',
   })
 
@@ -20,18 +20,18 @@ function PointLeadButton(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   defaultButton: {
-    background: '#FFF',
+    backgroundColor: '#FFF',
     color: '#403105',
     ...sharedLeadButtonStyles,
     '&:hover': {
-      backgroundColor: 'initial',
+      backgroundColor: '#FFF',
       color: '#403105',
       borderColor: '#FFC315',
     },
   },
 
   mouseDownButton: {
-    background: '#FFC315',
+    backgroundColor: '#FFC315',
     color: '#1A1A1A',
     ...sharedLeadButtonStyles,
     '&:hover': {
@@ -47,7 +47,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   hovered: {
-    backgroundColor: 'initial',
+    backgroundColor: '#FFF',
     color: '#403105',
     borderColor: '#FFC315',
     textDecorationLine: 'underline',
