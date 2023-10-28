@@ -56,3 +56,15 @@ export const MultipleChildren = {
     ),
   },
 }
+
+export const MultipleChildrenMouseDown = {
+  args: {
+    vState: 'mouseDown',
+    children: (
+      <>
+        <DemInfo />
+        <PointLeadButton vState="mouseDown" />
+      </>
+    ),
+  },
+}

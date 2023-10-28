@@ -4,20 +4,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { withTheme } from 'theming'
 
 function Point(props) {
   const { subject, description, vState, children, styles, className, ...otherProps } = props
-  const classes = useStylesFromThemeFunction()
 
   const [isHovered, setIsHovered] = useState(false)
 
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      isHovered: isHovered,
-      vState: vState,
-    })
-  })
+  const classes = useStylesFromThemeFunction()
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -27,7 +20,14 @@ function Point(props) {
     setIsHovered(false)
   }
 
-  const borderClass = cx(classes[`${vState}Border`], {})
+  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
+    return React.cloneElement(child, {
+      isHovered: isHovered,
+      vState: vState,
+    })
+  })
+
+  const borderClass = cx(classes[`${vState}Border`])
   const subjectClass = cx(classes[`${vState}Subject`])
   const descriptionClass = cx(classes[`${vState}Description`])
 
@@ -147,7 +147,7 @@ const sharedDescriptionStyles = {
   lineHeight: '1.5rem',
 }
 
-export default withTheme(Point)
+export default Point
 
 /*
 NOTES:
