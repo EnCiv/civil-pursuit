@@ -21,10 +21,11 @@ function DemInfo(props) {
 
 /**
  * Calculate user age based on birthdate from User Schema
- * @param {Date} birthday
+ * @param {String} birthdayStr
  * @return {Number} age (in years)
  */
-function calculateAge(birthday) {
+function calculateAge(birthdayStr) {
+    const birthday = new Date(birthdayStr)
     const today = new Date()
     const age = today.getFullYear() - birthday.getFullYear();
     const month = today.getMonth() - birthday.getMonth();
