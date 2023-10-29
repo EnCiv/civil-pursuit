@@ -8,7 +8,7 @@ export default {
 
 export const Primary = { args: {
     user: {
-        dob: new Date('1990-10-20'),
+        dob: new Date('1990-10-20').toString(),
         state: 'NY',
         party: 'Independent'
       }
