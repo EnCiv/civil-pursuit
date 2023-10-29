@@ -43,7 +43,7 @@ const demInfoStyles = {
         fontFamily: 'Inter',
         fontSize: '1rem',
         fontWeight: '400',
-        lineHeight: '24px',
+        lineHeight: '1.5rem',
         letterSpacing: '0rem',
         textAlign: 'left',
         color: '#5D5D5C'
