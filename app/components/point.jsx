@@ -67,59 +67,59 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // border states
   defaultBorder: {
-    outline: '1px solid #EBEBEB',
-    background: '#FFF',
+    outline: `1px solid ${theme.colors.borderGray}`,
+    background: theme.colors.white,
     ...sharedBorderStyles,
     '&:hover': {
-      outline: '0.1875rem solid #005621',
+      outline: `0.1875rem solid ${theme.colors.success}`,
     },
     '&:hover $defaultSubject': {
-      color: '#005621 !important',
+      color: theme.colors.success,
     },
     '&:hover $defaultDescription': {
-      color: '#005621 !important',
+      color: theme.colors.success,
     },
   },
   mouseDownBorder: {
-    outline: '0.1875rem solid #005621',
-    background: '#E6F3EB',
+    outline: `0.1875rem solid ${theme.colors.success}`,
+    background: theme.colors.lightSuccess,
     '& $informationGrid': {
-      color: '#005621 !important',
+      color: theme.colors.success,
     },
     ...sharedBorderStyles,
   },
   disabledBorder: {
     opacity: 0.5,
-    outline: '1px solid #EBEBEB',
-    background: '#FFF',
+    outline: `1px solid ${theme.colors.borderGray}`,
+    background: theme.colors.white,
     ...sharedBorderStyles,
   },
 
   // subject states
   defaultSubject: {
-    color: '#1A1A1A',
+    color: theme.colors.textGray,
     ...sharedSubjectSyles,
   },
   mouseDownSubject: {
-    color: '#005621',
+    color: theme.colors.success,
     ...sharedSubjectSyles,
   },
   disabledSubject: {
-    color: '#1A1A1A',
+    color: theme.colors.textGray,
     ...sharedSubjectSyles,
   },
 
   // description states
   defaultDescription: {
-    color: '#1A1A1A',
+    color: theme.colors.textGray,
     ...sharedDescriptionStyles,
   },
   mouseDownDescription: {
-    color: '#005621',
+    color: theme.colors.success,
     ...sharedDescriptionStyles,
   },
   disabledDescription: {
-    color: '#1A1A1A',
+    color: theme.colors.textGray,
     ...sharedDescriptionStyles,
   },
 }))
@@ -132,17 +132,17 @@ const sharedBorderStyles = {
 
 const sharedSubjectSyles = {
   fontFamily: 'Inter',
-  fontSize: '1.25rem',
   fontStyle: 'normal',
+  fontSize: '1.25rem',
   fontWeight: '400',
   lineHeight: '1.875rem',
 }
 
 const sharedDescriptionStyles = {
-  alignSelf: 'stretch',
   fontFamily: 'Inter',
-  fontSize: '1rem',
   fontStyle: 'normal',
+  alignSelf: 'stretch',
+  fontSize: '1rem',
   fontWeight: '400',
   lineHeight: '1.5rem',
 }
@@ -153,7 +153,12 @@ export default Point
 NOTES:
 - vState comes in as 'default', 'mouseDown', or 'disabled'
 
-- if multiple children are passed into this comopnent, then they must be siblings:
+- We chose to implement a hover state passed individually to each child (refer to lines 23-28). 
+  This decision was made because hovering over the point component also affects the styling of its children. 
+  For instance, when you hover over the point component, it underlines the text within the point-lead-button. 
+  This approach aligns with React JSS styling, which confines styling to the component where it's defined.
+  Note that if multiple children are passed into this comopnent, then they must be siblings:
+  
   Good Example: 
       children: (
       <>
