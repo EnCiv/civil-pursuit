@@ -1,15 +1,17 @@
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
 import React from 'react'
+import Theme from '../app/components/theme'
 
-function DemInfo() {
+function DemInfoTestComponent(props) {
+  const { isHovered, vState } = props
+  const theme = Theme
   return (
     <div
       style={{
-        color: '#5D5D5C',
-        fontFamily: 'Inter',
+        color: isHovered || vState === 'mouseDown' ? theme.colors.success : '#5D5D5C',
+        ...theme.font,
         fontSize: '1rem',
-        fontStyle: 'normal',
         fontWeight: '400',
         lineHeight: '1.5rem',
       }}
@@ -28,8 +30,8 @@ export default {
   },
 }
 
-export const Primary = { args: { vState: 'default', children: <DemInfo /> } }
-export const PrimaryMouseDown = { args: { vState: 'mouseDown', children: <DemInfo /> } }
+export const Primary = { args: { vState: 'default', children: <DemInfoTestComponent /> } }
+export const PrimaryMouseDown = { args: { vState: 'mouseDown', children: <DemInfoTestComponent /> } }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
 
 export const Lead = {
@@ -50,7 +52,7 @@ export const MultipleChildren = {
     vState: 'default',
     children: (
       <>
-        <DemInfo />
+        <DemInfoTestComponent />
         <PointLeadButton vState="default" />
       </>
     ),
@@ -62,7 +64,7 @@ export const MultipleChildrenMouseDown = {
     vState: 'mouseDown',
     children: (
       <>
-        <DemInfo />
+        <DemInfoTestComponent />
         <PointLeadButton vState="mouseDown" />
       </>
     ),

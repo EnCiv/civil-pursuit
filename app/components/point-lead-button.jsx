@@ -20,24 +20,24 @@ function PointLeadButton(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   defaultButton: {
-    backgroundColor: '#FFF',
-    color: '#403105',
+    backgroundColor: theme.colors.white,
+    color: theme.colors.textBrown,
     ...sharedLeadButtonStyles,
     '&:hover': {
-      backgroundColor: '#FFF',
-      color: '#403105',
-      borderColor: '#FFC315',
+      backgroundColor: theme.colors.white,
+      color: theme.colors.textBrown,
+      borderColor: theme.colors.warning,
     },
   },
 
   mouseDownButton: {
-    backgroundColor: '#FFC315',
-    color: '#1A1A1A',
+    backgroundColor: theme.colors.warning,
+    color: theme.colors.textGray,
     ...sharedLeadButtonStyles,
     '&:hover': {
-      backgroundColor: '#FFC315',
-      color: '#1A1A1A',
-      borderColor: '#FFC315',
+      backgroundColor: theme.colors.warning,
+      color: theme.colors.textGray,
+      borderColor: theme.colors.warning,
     },
   },
 
@@ -47,9 +47,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   hovered: {
-    backgroundColor: '#FFF',
-    color: '#403105',
-    borderColor: '#FFC315',
+    backgroundColor: theme.colors.white,
+    color: theme.colors.textBrown,
+    borderColor: theme.colors.warning,
     textDecorationLine: 'underline',
     textUnderlineOffset: '0.25rem',
     ...sharedLeadButtonStyles,
@@ -66,11 +66,11 @@ const sharedLeadButtonStyles = {
   alignItems: 'center',
   gap: '0.5rem',
   borderRadius: '0.5rem',
-  border: '2px solid #FFC315',
+  border: `0.125rem solid #FFC315`,
 
   fontFamily: 'Inter',
-  fontSize: '1rem',
   fontStyle: 'normal',
+  fontSize: '1rem',
   fontWeight: '600',
   lineHeight: '1.5rem',
   textAlign: 'center',
