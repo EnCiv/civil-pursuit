@@ -9,7 +9,7 @@ const Theme = {
     borderGray: '#EBEBEB',
     textGray: '#1A1A1A',
     textBrown: '#403105',
-    warning: '#FFC315',
+    encivYellow: '#FFC315',
   },
   font: {
     fontFamily: 'Inter',
