@@ -7,7 +7,7 @@ const Theme = {
     lightSuccess: '#E6F3EB',
     white: '#FFF',
     borderGray: '#EBEBEB',
-    textGray: '#1A1A1A',
+    title: '#1A1A1A',
     textBrown: '#403105',
     encivYellow: '#FFC315',
   },

@@ -97,7 +97,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // subject states
   defaultSubject: {
-    color: theme.colors.textGray,
+    color: theme.colors.title,
     ...sharedSubjectSyles,
   },
   mouseDownSubject: {
@@ -105,13 +105,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...sharedSubjectSyles,
   },
   disabledSubject: {
-    color: theme.colors.textGray,
+    color: theme.colors.title,
     ...sharedSubjectSyles,
   },
 
   // description states
   defaultDescription: {
-    color: theme.colors.textGray,
+    color: theme.colors.title,
     ...sharedDescriptionStyles,
   },
   mouseDownDescription: {
@@ -119,7 +119,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...sharedDescriptionStyles,
   },
   disabledDescription: {
-    color: theme.colors.textGray,
+    color: theme.colors.title,
     ...sharedDescriptionStyles,
   },
 }))
