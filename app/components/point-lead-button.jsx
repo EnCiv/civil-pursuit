@@ -26,18 +26,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover': {
       backgroundColor: theme.colors.white,
       color: theme.colors.textBrown,
-      borderColor: theme.colors.warning,
+      borderColor: theme.colors.encivYellow,
     },
   },
 
   mouseDownButton: {
-    backgroundColor: theme.colors.warning,
-    color: theme.colors.textGray,
+    backgroundColor: theme.colors.encivYellow,
+    color: theme.colors.title,
     ...sharedLeadButtonStyles,
     '&:hover': {
-      backgroundColor: theme.colors.warning,
-      color: theme.colors.textGray,
-      borderColor: theme.colors.warning,
+      backgroundColor: theme.colors.encivYellow,
+      color: theme.colors.title,
+      borderColor: theme.colors.encivYellow,
     },
   },
 
@@ -49,7 +49,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   hovered: {
     backgroundColor: theme.colors.white,
     color: theme.colors.textBrown,
-    borderColor: theme.colors.warning,
+    borderColor: theme.colors.encivYellow,
     textDecorationLine: 'underline',
     textUnderlineOffset: '0.25rem',
     ...sharedLeadButtonStyles,
