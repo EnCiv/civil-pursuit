@@ -9,7 +9,7 @@ function DemInfoTestComponent(props) {
   return (
     <div
       style={{
-        color: isHovered || vState === 'mouseDown' ? theme.colors.success : '#5D5D5C',
+        color: isHovered || vState === 'selected' ? theme.colors.success : '#5D5D5C',
         ...theme.font,
         fontSize: '1rem',
         fontWeight: '400',
@@ -30,8 +30,12 @@ export default {
   },
 }
 
-export const Primary = { args: { vState: 'default', children: <DemInfoTestComponent /> } }
-export const PrimaryMouseDown = { args: { vState: 'mouseDown', children: <DemInfoTestComponent /> } }
+// Empty, in the case that the component data is loading:
+export const Empty = () => {
+  return <Point />
+}
+export const PrimaryDefault = { args: { vState: 'default', children: <DemInfoTestComponent /> } }
+export const PrimarySelected = { args: { vState: 'selected', children: <DemInfoTestComponent /> } }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
 
 export const Lead = {
@@ -40,10 +44,10 @@ export const Lead = {
     children: <PointLeadButton vState="default" />,
   },
 }
-export const LeadMouseDown = {
+export const LeadSelected = {
   args: {
-    vState: 'mouseDown',
-    children: <PointLeadButton vState="mouseDown" />,
+    vState: 'selected',
+    children: <PointLeadButton vState="selected" />,
   },
 }
 
@@ -59,14 +63,26 @@ export const MultipleChildren = {
   },
 }
 
-export const MultipleChildrenMouseDown = {
+export const MultipleChildrenSelected = {
   args: {
-    vState: 'mouseDown',
+    vState: 'selected',
     children: (
       <>
         <DemInfoTestComponent />
-        <PointLeadButton vState="mouseDown" />
+        <PointLeadButton vState="selected" />
       </>
     ),
   },
 }
+
+// export const ParentsWidth = {
+//   args: {
+//     vState: 'default',
+//     children: (
+//       <div style={{ width: '33.5625rem' }}>
+//         <DemInfoTestComponent />
+//         <PointLeadButton vState="default" />
+//       </div>
+//     ),
+//   },
+// }

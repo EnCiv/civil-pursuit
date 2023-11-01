@@ -7,7 +7,7 @@ function PointLeadButton(props) {
   const { vState, isHovered } = props
   const classes = useStylesFromThemeFunction()
 
-  const buttonClass = cx(classes[vState + 'Button'], {
+  const buttonClass = cx(classes.sharedButtonStyle, classes[vState + 'Button'], {
     [classes.hovered]: isHovered && vState === 'default',
   })
 
@@ -22,7 +22,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   defaultButton: {
     backgroundColor: theme.colors.white,
     color: theme.colors.textBrown,
-    ...sharedLeadButtonStyles,
     '&:hover': {
       backgroundColor: theme.colors.white,
       color: theme.colors.textBrown,
@@ -30,10 +29,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  mouseDownButton: {
+  selectedButton: {
     backgroundColor: theme.colors.encivYellow,
     color: theme.colors.title,
-    ...sharedLeadButtonStyles,
     '&:hover': {
       backgroundColor: theme.colors.encivYellow,
       color: theme.colors.title,
@@ -52,28 +50,26 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     borderColor: theme.colors.encivYellow,
     textDecorationLine: 'underline',
     textUnderlineOffset: '0.25rem',
-    ...sharedLeadButtonStyles,
+  },
+
+  sharedButtonStyle: {
+    display: 'flex',
+    width: '100%',
+    height: 'auto',
+    minHeight: '3.125rem',
+    padding: '0.5rem 1.25rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '0.5rem',
+    borderRadius: '0.5rem',
+    border: `0.125rem solid #FFC315`,
+
+    ...theme.font,
+    fontSize: '1rem',
+    fontWeight: '600',
+    lineHeight: '1.5rem',
+    textAlign: 'center',
   },
 }))
-
-const sharedLeadButtonStyles = {
-  display: 'flex',
-  width: '100%',
-  height: 'auto',
-  minHeight: '3.125rem',
-  padding: '0.5rem 1.25rem',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: '0.5rem',
-  borderRadius: '0.5rem',
-  border: `0.125rem solid #FFC315`,
-
-  fontFamily: 'Inter',
-  fontStyle: 'normal',
-  fontSize: '1rem',
-  fontWeight: '600',
-  lineHeight: '1.5rem',
-  textAlign: 'center',
-}
 
 export default withTheme(PointLeadButton)

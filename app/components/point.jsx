@@ -6,9 +6,9 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 function Point(props) {
-  const { subject, description, vState, children, styles, className, ...otherProps } = props
+  const { subject, description, vState, children, className, ...otherProps } = props
 
-  const [isHovered, setIsHovered] = useState(false)
+  // const [isHovered, setIsHovered] = useState(false)
 
   const classes = useStylesFromThemeFunction()
 
@@ -27,20 +27,23 @@ function Point(props) {
     })
   })
 
-  const borderClass = cx(classes[`${vState}Border`])
-  const subjectClass = cx(classes[`${vState}Subject`])
-  const descriptionClass = cx(classes[`${vState}Description`])
+  const borderClass = classes[`${vState}Border`]
+  const subjectClass = classes[`${vState}Subject`]
+  const descriptionClass = classes[`${vState}Description`]
 
   return (
     <>
-      <div className={className} style={styles}>
-        <div className={borderClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-          <div className={classes.contentContainer}>
-            <div className={classes.informationGrid}>
-              <div className={subjectClass}>{subject}</div>
-              <div className={descriptionClass}>{description}</div>
-              {childrenWithProps}
-            </div>
+      <div
+        className={cx(classes.sharedBorderStyle, borderClass, className)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...otherProps}
+      >
+        <div className={classes.contentContainer}>
+          <div className={classes.informationGrid}>
+            {subject && <div className={cx(classes.sharedSubjectStyle, subjectClass)}>{subject}</div>}
+            {description && <div className={cx(classes.sharedDescriptionStyle, descriptionClass)}>{description}</div>}
+            {childrenWithProps}
           </div>
         </div>
       </div>
@@ -69,7 +72,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   defaultBorder: {
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
-    ...sharedBorderStyles,
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
     },
@@ -80,78 +82,66 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       color: theme.colors.success,
     },
   },
-  mouseDownBorder: {
+  selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
     background: theme.colors.lightSuccess,
     '& $informationGrid': {
       color: theme.colors.success,
     },
-    ...sharedBorderStyles,
   },
   disabledBorder: {
     opacity: 0.5,
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
-    ...sharedBorderStyles,
   },
 
   // subject states
   defaultSubject: {
     color: theme.colors.title,
-    ...sharedSubjectSyles,
   },
-  mouseDownSubject: {
+  selectedSubject: {
     color: theme.colors.success,
-    ...sharedSubjectSyles,
   },
   disabledSubject: {
     color: theme.colors.title,
-    ...sharedSubjectSyles,
   },
 
   // description states
   defaultDescription: {
     color: theme.colors.title,
-    ...sharedDescriptionStyles,
   },
-  mouseDownDescription: {
+  selectedDescription: {
     color: theme.colors.success,
-    ...sharedDescriptionStyles,
   },
   disabledDescription: {
     color: theme.colors.title,
-    ...sharedDescriptionStyles,
+  },
+
+  // shared styling
+  sharedBorderStyle: {
+    borderRadius: '0.9375rem',
+    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+  },
+  sharedSubjectStyle: {
+    ...theme.font,
+    fontSize: '1.25rem',
+    fontWeight: '400',
+    lineHeight: '1.875rem',
+  },
+  sharedDescriptionStyle: {
+    ...theme.font,
+    alignSelf: 'stretch',
+    fontSize: '1rem',
+    fontWeight: '400',
+    lineHeight: '1.5rem',
   },
 }))
-
-const sharedBorderStyles = {
-  borderRadius: '0.9375rem',
-  maxWidth: '33.5625rem',
-  boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
-}
-
-const sharedSubjectSyles = {
-  fontFamily: 'Inter',
-  fontStyle: 'normal',
-  fontSize: '1.25rem',
-  fontWeight: '400',
-  lineHeight: '1.875rem',
-}
-
-const sharedDescriptionStyles = {
-  fontFamily: 'Inter',
-  fontStyle: 'normal',
-  alignSelf: 'stretch',
-  fontSize: '1rem',
-  fontWeight: '400',
-  lineHeight: '1.5rem',
-}
 
 export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'mouseDown', or 'disabled'
+- vState comes in as 'default', 'selected', or 'disabled'
 
 - We chose to implement a hover state passed individually to each child (refer to lines 23-28). 
   This decision was made because hovering over the point component also affects the styling of its children. 
