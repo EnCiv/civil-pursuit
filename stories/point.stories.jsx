@@ -75,6 +75,13 @@ export const MultipleChildrenSelected = {
   },
 }
 
+export const ParentsWidth = () => {
+  return (
+    <div style={{ width: '33.5625rem' }}>
+      <Point />
+    </div>
+  )
+}
 // export const ParentsWidth = {
 //   args: {
 //     vState: 'default',
