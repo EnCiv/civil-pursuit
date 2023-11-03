@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 function Point(props) {
   const { subject, description, vState, children, className, ...otherProps } = props
 
-  // const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const classes = useStylesFromThemeFunction()
 
