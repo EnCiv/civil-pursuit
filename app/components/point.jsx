@@ -66,7 +66,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover $defaultDescription': {
       color: theme.colors.success,
     },
-    // here is the styling for the childrens' hover states:
+    // here is the styling for the children's hover states:
     '&:hover .leadButton': {
       backgroundColor: theme.colors.white,
       color: theme.colors.textBrown,
