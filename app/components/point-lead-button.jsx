@@ -1,18 +1,17 @@
 'use strict'
 import React from 'react'
-import { createUseStyles, withTheme } from 'react-jss'
+import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
 function PointLeadButton(props) {
-  const { vState, isHovered } = props
+  const { vState, className } = props
   const classes = useStylesFromThemeFunction()
 
-  const buttonClass = cx(classes.sharedButtonStyle, classes[vState + 'Button'], {
-    [classes.hovered]: isHovered && vState === 'default',
-  })
+  const containerClass = cx(classes['buttonDiv'], className)
+  const buttonClass = cx(classes.sharedButtonStyle, classes[vState + 'Button'], 'leadButton')
 
   return (
-    <div className={classes['buttonDiv']}>
+    <div className={containerClass}>
       <button className={buttonClass}>Select as Lead</button>
     </div>
   )
@@ -44,14 +43,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '100%',
   },
 
-  hovered: {
-    backgroundColor: theme.colors.white,
-    color: theme.colors.textBrown,
-    borderColor: theme.colors.encivYellow,
-    textDecorationLine: 'underline',
-    textUnderlineOffset: '0.25rem',
-  },
-
   sharedButtonStyle: {
     display: 'flex',
     width: '100%',
@@ -72,4 +63,4 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 }))
 
-export default withTheme(PointLeadButton)
+export default PointLeadButton

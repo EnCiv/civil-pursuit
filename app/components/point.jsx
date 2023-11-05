@@ -1,44 +1,29 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 
 'use strict'
-import React, { useState } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 function Point(props) {
   const { subject, description, vState, children, className, ...otherProps } = props
 
-  const [isHovered, setIsHovered] = useState(false)
-
   const classes = useStylesFromThemeFunction()
-
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
-
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      isHovered: isHovered,
-      vState: vState,
-    })
-  })
 
   const borderClass = classes[`${vState}Border`]
   const subjectClass = classes[`${vState}Subject`]
   const descriptionClass = classes[`${vState}Description`]
 
+  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
+    return React.cloneElement(child, {
+      className: className,
+      vState: vState,
+    })
+  })
+
   return (
     <>
-      <div
-        className={cx(classes.sharedBorderStyle, borderClass, className)}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        {...otherProps}
-      >
+      <div className={cx(classes.sharedBorderStyle, borderClass, className)} {...otherProps}>
         <div className={classes.contentContainer}>
           <div className={classes.informationGrid}>
             {subject && <div className={cx(classes.sharedSubjectStyle, subjectClass)}>{subject}</div>}
@@ -81,6 +66,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover $defaultDescription': {
       color: theme.colors.success,
     },
+    // here is the styling for the childrens' hover states:
+    '&:hover .leadButton': {
+      backgroundColor: theme.colors.white,
+      color: theme.colors.textBrown,
+      borderColor: theme.colors.encivYellow,
+      textDecorationLine: 'underline',
+      textUnderlineOffset: '0.25rem',
+    },
   },
   selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
@@ -94,6 +87,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
   },
+  collapsedBorder: {
+    borderRadius: '0 !important',
+    boxShadow: 'none !important',
+    backgroundColor: 'rgba(235, 235, 235, 0.30)',
+    '& $contentContainer': {
+      padding: '1.25rem',
+    },
+  },
 
   // subject states
   defaultSubject: {
@@ -104,6 +105,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   disabledSubject: {
     color: theme.colors.title,
+  },
+  collapsedSubject: {
+    color: theme.colors.title,
+    ...theme.font,
+    fontSize: '1rem !important',
+    fontWeight: '400',
+    lineHeight: '1.5rem !important',
   },
 
   // description states
@@ -141,13 +149,9 @@ export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'selected', or 'disabled'
+- vState comes in as 'default', 'selected', 'disabled', or 'collapsed'
 
-- We chose to implement a hover state passed individually to each child (refer to lines 23-28). 
-  This decision was made because hovering over the point component also affects the styling of its children. 
-  For instance, when you hover over the point component, it underlines the text within the point-lead-button. 
-  This approach aligns with React JSS styling, which confines styling to the component where it's defined.
-  Note that if multiple children are passed into this comopnent, then they must be siblings:
+- Note that if multiple children are passed into this comopnent, then they must be siblings:
   
   Good Example: 
       children: (
