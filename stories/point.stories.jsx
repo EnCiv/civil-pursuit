@@ -4,12 +4,12 @@ import React from 'react'
 import Theme from '../app/components/theme'
 
 function DemInfoTestComponent(props) {
-  const { isHovered, vState } = props
+  const { vState } = props
   const theme = Theme
   return (
     <div
       style={{
-        color: isHovered || vState === 'selected' ? theme.colors.success : '#5D5D5C',
+        color: vState === 'selected' ? theme.colors.success : '#5D5D5C',
         ...theme.font,
         fontSize: '1rem',
         fontWeight: '400',
@@ -75,21 +75,23 @@ export const MultipleChildrenSelected = {
   },
 }
 
-export const ParentsWidth = () => {
+export const ParentsWidth = args => {
   return (
     <div style={{ width: '33.5625rem' }}>
-      <Point />
+      <Point
+        {...args}
+        vState={'default'}
+        children={
+          <>
+            <DemInfoTestComponent />
+            <PointLeadButton vState="default" />
+          </>
+        }
+      ></Point>
     </div>
   )
 }
-// export const ParentsWidth = {
-//   args: {
-//     vState: 'default',
-//     children: (
-//       <div style={{ width: '33.5625rem' }}>
-//         <DemInfoTestComponent />
-//         <PointLeadButton vState="default" />
-//       </div>
-//     ),
-//   },
-// }
+
+export const Collapsed = args => {
+  return <Point vState={'collapsed'} subject={args.subject}></Point>
+}
