@@ -1,15 +1,23 @@
 import React, {useState, useRef} from 'react';
 import { createUseStyles }  from 'react-jss';
 
+/**
+ * Button component that is styled using react-jss.
+ * It supports various states like hover, active, and disabled, 
+ * and can be configured with custom styles, titles, and callbacks.
+ *
+ * @param {Object} props - The props for the Button component.
+ */
+
 function Button(props) {
 
     const {
-        className = "",
-        style = {},
-        onDone = () => {},
-        title = "",
-        disabled = false,
-        disableOnClick = false,
+        className = "", // may or may not be passed. Should be applied to the outer most tag, after local classNames
+        style = {}, // may or may not be passed, Should be applied to the outer most tag
+        onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
+        title = "", // text to display on hover
+        disabled = false, 
+        disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
         children
     } = props;
 
@@ -97,6 +105,7 @@ function TextButton(props) {
     return <Button {...props} className="textButton" />;
 }
 
+
 const commonButtonStyles = {
     width: 'auto',
     height: 'auto',
@@ -107,11 +116,6 @@ const commonButtonStyles = {
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    transition: 'all 100ms ease-out',
-
-    '&:hover, &.hover': {
-        textDecoration: 'underline',
-    }
 }
 
 const buttonStyles = createUseStyles(theme => ({
@@ -137,6 +141,12 @@ const buttonStyles = createUseStyles(theme => ({
             border: '0.125rem solid #5D5D5C',
             textDecoration: 'none',
             transition: 'none',
+        },
+
+        '&:hover, &.hover': {
+            textDecoration: 'underline',
+            backgroundColor: '#FFFFFF',
+            borderColor: '#06335C'
         }
     },
 
@@ -155,6 +165,12 @@ const buttonStyles = createUseStyles(theme => ({
 
         '&:focus': {
         },
+
+        '&:hover, &.hover': {
+            textDecoration: 'underline',
+            backgroundColor: '#FFFFFF',
+            borderColor: '#FFC315'
+        }
     },
 
     primaryButton: {
@@ -178,6 +194,12 @@ const buttonStyles = createUseStyles(theme => ({
             border: '0.0625rem solid #EBEBEB',
             textDecoration: 'none',
             transition: 'none',
+        },
+
+        '&:hover, &.hover': {
+            textDecoration: 'underline',
+            backgroundColor: '#06335C',
+            borderColor: '#06335C'
         }
     },
 
@@ -192,6 +214,12 @@ const buttonStyles = createUseStyles(theme => ({
         '&:active': {
             color: '#1A1A1A', 
             textDecoration: 'none',
+        },
+
+        '&:hover, &.hover': {
+            textDecoration: 'underline',
+            backgroundColor: 'transparent',
+            borderColor: 'none'
         }
     }
 }))
