@@ -151,6 +151,7 @@
     "@storybook/react-webpack5": "^7.3.2",
     "@storybook/test-runner": "^0.13.0",
     "@storybook/testing-library": "^0.2.0",
+    "@types/expect": "^24.3.0",
     "axe-playwright": "^1.2.3",
     "concurrently": "3.6.1",
     "enzyme": "^3.11.0",
