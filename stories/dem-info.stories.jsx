@@ -15,3 +15,5 @@ export const Primary = { args: {
 }}
 
 export const UserNotFound = { args: {}}
+
+export const NoUserFields = { args: { user: {}}}
