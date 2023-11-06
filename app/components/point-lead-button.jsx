@@ -7,8 +7,8 @@ function PointLeadButton(props) {
   const { vState, className } = props
   const classes = useStylesFromThemeFunction()
 
-  const containerClass = cx(classes['buttonDiv'], className)
-  const buttonClass = cx(classes.sharedButtonStyle, classes[vState + 'Button'], 'leadButton')
+  const containerClass = cx(classes.buttonDiv, className)
+  const buttonClass = cx(classes.sharedButtonStyle, classes[vState + 'Button'])
 
   return (
     <div className={containerClass}>
@@ -41,6 +41,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   buttonDiv: {
     paddingTop: '0.5rem',
     width: '100%',
+    '&.isHovered $defaultButton': {
+      backgroundColor: theme.colors.white,
+      color: theme.colors.textBrown,
+      borderColor: theme.colors.encivYellow,
+      textDecorationLine: 'underline',
+      textUnderlineOffset: '0.25rem',
+    },
   },
 
   sharedButtonStyle: {

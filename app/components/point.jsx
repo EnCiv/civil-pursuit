@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 
 'use strict'
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
@@ -10,29 +10,40 @@ function Point(props) {
 
   const classes = useStylesFromThemeFunction()
 
-  const borderClass = classes[`${vState}Border`]
-  const subjectClass = classes[`${vState}Subject`]
-  const descriptionClass = classes[`${vState}Description`]
+  const [isHovered, setIsHovered] = useState(false)
+
+  const onMouseIn = () => {
+    setIsHovered(true)
+  }
+
+  const onMouseOut = () => {
+    setIsHovered(false)
+  }
 
   const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
     return React.cloneElement(child, {
-      className: className,
+      className: cx(className, { isHovered: isHovered }),
       vState: vState,
     })
   })
 
   return (
-    <>
-      <div className={cx(classes.sharedBorderStyle, borderClass, className)} {...otherProps}>
-        <div className={classes.contentContainer}>
-          <div className={classes.informationGrid}>
-            {subject && <div className={cx(classes.sharedSubjectStyle, subjectClass)}>{subject}</div>}
-            {description && <div className={cx(classes.sharedDescriptionStyle, descriptionClass)}>{description}</div>}
-            {childrenWithProps}
-          </div>
+    <div
+      className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)}
+      {...otherProps}
+      onMouseEnter={onMouseIn}
+      onMouseLeave={onMouseOut}
+    >
+      <div className={classes.contentContainer}>
+        <div className={classes.informationGrid}>
+          {subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
+          {description && (
+            <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>{description}</div>
+          )}
+          {childrenWithProps}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -65,14 +76,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:hover $defaultDescription': {
       color: theme.colors.success,
-    },
-    // here is the styling for the children's hover states:
-    '&:hover .leadButton': {
-      backgroundColor: theme.colors.white,
-      color: theme.colors.textBrown,
-      borderColor: theme.colors.encivYellow,
-      textDecorationLine: 'underline',
-      textUnderlineOffset: '0.25rem',
     },
   },
   selectedBorder: {
