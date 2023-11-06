@@ -5,17 +5,18 @@ import insertSheet from 'react-jss';
 
 
 function DemInfo(props) {
-    const { user, classes, styles, className, ...otherProps } = props;
+    const { user, classes, className, ...otherProps } = props;
 
-    const userState = user?.state || 'N/A';
-    const userAge = user?.dob ? calculateAge(user.dob) : 'N/A';
-    const userPoliticalParty = user?.party || 'N/A';
+    const userState = user?.state || '';
+    const userAge = user?.dob ? calculateAge(user.dob) : '';
+    const userPoliticalParty = user?.party || '';
 
 
     return (
-        <span className={cx(classes.infoText, className)} {...otherProps}>
-            {`${userPoliticalParty} | ${userAge}, ${userState}`}
-        </span>
+        user && Object.keys(user).length ?
+            <span className={cx(classes.infoText, className)} {...otherProps}>
+                {`${userPoliticalParty} | ${userAge}, ${userState}`}</span>
+            : <span className={cx(classes.infoText, className)} {...otherProps}></span>
     )
 }
 
