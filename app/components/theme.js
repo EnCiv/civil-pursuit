@@ -15,6 +15,11 @@ const Theme = {
     fontFamily: 'Inter',
     fontStyle: 'normal',
   },
+  condensedWidthBreakPoint: '50rem',
+  enCivUnderline: {
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '0.26rem',
+  },
 }
 
 export default Theme
@@ -32,6 +37,6 @@ Theme.styles = {
     primary: { color: Theme.colors.primary },
 };
 
-Note that Theme.styles if outside of the Theme object. This works since we are exporting as default: the entire object and any changes 
+Note that Theme.styles is outside of the Theme object. This works since we are exporting as default: the entire object and any changes 
 to it are exported as well.
 */
