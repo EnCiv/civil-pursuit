@@ -12,19 +12,17 @@ function DemInfo(props) {
     const userPoliticalParty = user?.party || '';
 
 
-    let contentText = null;
-    if (userState && userAge && userPoliticalParty) {
-        contentText = `${userPoliticalParty} | ${userAge}, ${userState}`;
-    } else if (userState && userAge) {
-        contentText = `${userAge}, ${userState}`;
-    } else if (userState && userPoliticalParty) {
-        contentText = `${userPoliticalParty} | ${userState}`;
-    } else if (userAge && userPoliticalParty) {
-        contentText = `${userPoliticalParty} | ${userAge}`;
-    } else if (userAge || userPoliticalParty || userState) {
-        contentText = userAge || userPoliticalParty || userState;
-    } else {
-        contentText = '';
+    let contentText = '';
+    if (userPoliticalParty && (userAge || userState)) {
+        contentText += `${userPoliticalParty} | `;
+    } else if (userPoliticalParty) {
+        contentText += `${userPoliticalParty}`;
+    }
+
+    if (userAge && userState) {
+        contentText += `${userAge}, ${userState}`;
+    } else if (userAge || userState) {
+        contentText += userAge || userState;
     }
 
 
