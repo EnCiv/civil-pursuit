@@ -23,29 +23,31 @@ function Button(props) {
 
     const [isDisabled, setIsDisabled] = useState(disabled);
     const [parentIsHovered, setParentIsHovered] = useState(false);
-    const [longPress, setLongPress] = useState(false);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const longPressTimer = useRef(null);
+    // Stretch Goal 
+    // const [longPress, setLongPress] = useState(false);
+    // const [position, setPosition] = useState({ x: 0, y: 0 });
+    // const longPressTimer = useRef(null);
 
     const classes = buttonStyles();
     const combinedClassName = `${classes[className]} ${className}`;
 
-    const startLongPress = () => {
-        const x = event.clientX || (event.touches && event.touches[0].clientX);
-        const y = event.clientY || (event.touches && event.touches[0].clientY);
+    // Stretch Goal 
+    // const startLongPress = () => {
+    //     const x = event.clientX || (event.touches && event.touches[0].clientX);
+    //     const y = event.clientY || (event.touches && event.touches[0].clientY);
         
-        setPosition({ x, y });
-        longPressTimer.current = setTimeout(() => {
-            setLongPress(true);
-        }, 1000);
-    }
+    //     setPosition({ x, y });
+    //     longPressTimer.current = setTimeout(() => {
+    //         setLongPress(true);
+    //     }, 1000);
+    // }
 
-    const stopLongPress = (event) => {
-        clearTimeout(longPressTimer.current);
-        if (longPress) {
-            setLongPress(false);
-        }
-    }
+    // const stopLongPress = (event) => {
+    //     clearTimeout(longPressTimer.current);
+    //     if (longPress) {
+    //         setLongPress(false);
+    //     }
+    // }
 
     return (
         <div 
