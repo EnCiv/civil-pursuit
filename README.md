@@ -31,10 +31,13 @@ cd civil-pursuit
 npm install
 
 ```
+
 For the first stages of this project, we will be focusing on storybook
+
 ```
 npm run storybook
 ```
+
 ### MongoDB
 
 This app uses MONGODB and you will need a mongodb uri to get started. Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
@@ -48,26 +51,31 @@ export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongo
 Note that it's confusing but user-name and db-name can be anything. You pick them when you create the database, and you use them in this URI string. That's all.
 
 After you get Mongo setup, you also need these ENV variable in your .bashrc file
+
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
 export MONGODB_URI=$MONGODB_URI
 ```
+
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
+
 ```
 npm run dev
 ```
+
 It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
 So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
 ### Dev Environment for Easy Project Switching
+
 This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
 
-In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it.  If neither exist, create both just to be sure.
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
 if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
@@ -75,7 +83,44 @@ if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     source ./.bashrc
 fi
 ```
+
 This works great when you open a terminal in a project directory, for example when you are using visual studio code.
+
+# Icons, Figma and SVG
+
+<details>
+    <summary>You can export svg from figma and paste it into a .svg file in assets/svg to create icons.</summary>
+
+For example assets/svg/trash-can.svg
+
+```
+<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 6.58661H5H21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6.58661V4.58661C8 4.05618 8.21071 3.54747 8.58579 3.1724C8.96086 2.79732 9.46957 2.58661 10 2.58661H14C14.5304 2.58661 15.0391 2.79732 15.4142 3.1724C15.7893 3.54747 16 4.05618 16 4.58661V6.58661M19 6.58661V20.5866C19 21.117 18.7893 21.6257 18.4142 22.0008C18.0391 22.3759 17.5304 22.5866 17 22.5866H7C6.46957 22.5866 5.96086 22.3759 5.58579 22.0008C5.21071 21.6257 5 21.117 5 20.5866V6.58661H19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+
+This project will automatically convert the files in assets/svg into react.js files in app/svgr on install. After you add a new file you can manually trigger the conversion with:
+
+```
+npm run svgr
+```
+
+Then you can use these svg files as React components in your code like this:
+
+```
+import TrashCan from '../svgr'
+
+function renderSomething(){
+    return <SvgTrashCan />
+}
+```
+
+</details>
+
+#
 
 # The rest of this is from the old README file and may be dated
 
