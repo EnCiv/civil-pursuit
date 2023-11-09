@@ -39,6 +39,17 @@ function StepBar(props) {
           })}
         </div>
       </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="71" viewBox="0 0 25 71" fill="none">
+        <g opacity="0.3">
+          <path
+            d="M7.7089 27.2681L16.6375 34.7148L7.7089 42.1615"
+            stroke="#5D5D5C"
+            stroke-width="3"
+            stroke-linecap="square"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
     </div>
   )
 }
@@ -48,19 +59,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'inline-flex',
     background: '#FFF',
     alignItems: 'center',
-    overflow: 'hidden',
   },
-
+  
   stepsContainer: {
     display: 'inline-flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     gap: '0.625rem',
+    overflow: 'hidden',
+    // maxWidth: '45rem',
   },
 
   stepsDisplayed: {
     display: 'flex',
     padding: '0rem 0.625rem',
+    height: '3.5rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
