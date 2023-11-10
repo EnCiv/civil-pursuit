@@ -163,8 +163,5 @@
     "nodemon": "1.18.9",
     "storybook": "^7.5.3"
   },
-  "optionalDependencies": {
-    "chromatic": "^8.0.0"
-  },
   "_id": "civil-pursuit@1.0.1"
 }
