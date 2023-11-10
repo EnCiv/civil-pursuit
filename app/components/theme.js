@@ -10,6 +10,7 @@ const Theme = {
     title: '#1A1A1A',
     textBrown: '#403105',
     encivYellow: '#FFC315',
+    hoverGray: '#B3B3B3',
   },
   font: {
     fontFamily: 'Inter',

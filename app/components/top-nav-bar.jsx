@@ -16,7 +16,7 @@ const UserOrSignupPlaceholder = () => {
 const TopNavBar = (props) => {
     const { className, menu, style } = props;
     const [isExpanded, setIsExpanded] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(menu[0].name);
+    const [selectedItem, setSelectedItem] = useState(null);
     const classes = useStylesFromThemeFunction();
 
     const toggleMenu = () => {
@@ -33,7 +33,7 @@ const TopNavBar = (props) => {
             <SvgEncivBlack className={classes.logo} />
 
             <div className={classes.menuContainer}>
-                {menu.map((item, index) => Array.isArray(item) ? (
+                {menu && menu.map((item, index) => Array.isArray(item) ? (
                     <div key={index} className={classes.menuGroup}>
                         {item.map(subItem => (
                             <button
@@ -86,7 +86,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     menuContainer: {
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        position: 'absolute',
+        bottom: '10%',
+        left: '50%',
+        transform: 'translateX(-50%)',
     },
     menuItem: {
         cursor: 'pointer',
@@ -96,11 +99,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         margin: '0 0.25em',
         color: theme.colors.textPrimary,
         '&:hover': {
-            textDecoration: 'underline',
+            background: theme.colors.hoverGray,
+
         },
     },
     selectedItem: {
-        textDecoration: 'underline',
+        borderBottom: '2px solid'
     },
     userOrSignupContainer: {
         position: 'absolute',
@@ -111,7 +115,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     menuToggle: {
         display: 'none',
     },
-    // Add responsive styles if needed
 }));
 
 export default TopNavBar
