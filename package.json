@@ -31,11 +31,12 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
-    "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr"
+    "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
+    "chromatic": "npx chromatic"
   },
   "author": {
-    "email": "davidfridley@enciv.org",
-    "name": "David Fridley"
+    "name": "David Fridley",
+    "email": "davidfridley@enciv.org"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
@@ -138,7 +139,8 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0",
-    "webrtc-adapter": "^7.2.0"
+    "webrtc-adapter": "^7.2.0",
+    "chromatic": "^8.0.0"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^7.5.3",
@@ -160,5 +162,9 @@
     "expect": "^23.6.0",
     "nodemon": "1.18.9",
     "storybook": "^7.5.3"
-  }
+  },
+  "optionalDependencies": {
+    "chromatic": "^8.0.0"
+  },
+  "_id": "civil-pursuit@1.0.1"
 }
