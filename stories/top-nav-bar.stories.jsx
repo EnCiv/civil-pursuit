@@ -8,7 +8,10 @@ const menu = [{ name: "Home", func: () => { } },
 { name: "Blog", func: () => { } },
 [{ name: "About", func: () => { } },
 { name: "Contact", func: () => { } },
-{ name: "FAQ", func: () => { } }]]
+{ name: "FAQ", func: () => { } }],
+[{ name: "Our Work", func: () => { } },
+{ name: "Work 1", func: () => { } },
+{ name: "Work 2", func: () => { } }]]
 
 
 export default {

@@ -16,6 +16,7 @@ const Theme = {
     fontFamily: 'Inter',
     fontStyle: 'normal',
   },
+  condensedWidthBreakPoint: '768px',
 }
 
 export default Theme

@@ -18,6 +18,9 @@ const TopNavBar = (props) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const classes = useStylesFromThemeFunction();
+    const [openDropdown, setOpenDropdown] = useState(null);
+    const handleMouseEnter = (index) => { setOpenDropdown(index) };
+    const handleMouseLeave = () => { setOpenDropdown(null) };
 
     const toggleMenu = () => {
         setIsExpanded(!isExpanded);
@@ -33,26 +36,31 @@ const TopNavBar = (props) => {
             <SvgEncivBlack className={classes.logo} />
 
             <div className={classes.menuContainer}>
+
                 {menu && menu.map((item, index) => Array.isArray(item) ? (
-                    <div key={index} className={classes.menuGroup}>
-                        {item.map(subItem => (
-                            <button
-                                key={subItem.name}
-                                className={`${classes.menuItem} ${selectedItem === subItem.name ? classes.selectedItem : ''}`}
-                                onClick={() => handleMenuItemClick(subItem.name)}
-                            >
-                                {subItem.name}
-                            </button>
-                        ))}
+
+                    <div className={`${classes.menuGroup}`}
+                        key={index}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={() => handleMouseLeave()}>
+                        {item[0].name} {'\u25BE'}
+                        {openDropdown === index && (
+                            <div className={classes.dropdownMenu}>
+                                {item.slice(1).map((subItem, subIndex) => (
+                                    <div key={subIndex} className={classes.menuItem}>
+                                        {subItem.name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 ) : (
-                    <button
+                    <div
                         key={item.name}
                         className={`${classes.menuItem} ${selectedItem === item.name ? classes.selectedItem : ''}`}
-                        onClick={() => handleMenuItemClick(item.name)}
-                    >
+                        onClick={() => handleMenuItemClick(item.name)}>
                         {item.name}
-                    </button>
+                    </div>
                 ))}
             </div>
 
@@ -91,6 +99,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         left: '50%',
         transform: 'translateX(-50%)',
     },
+    menuGroup: {
+        background: 'none',
+        border: 'none',
+        padding: '0.5em 1em',
+        margin: '0 0.25em',
+        color: theme.colors.textPrimary,
+    },
+    dropdownMenu: {
+        position: 'absolute',
+    },
     menuItem: {
         cursor: 'pointer',
         background: 'none',
@@ -100,7 +118,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         color: theme.colors.textPrimary,
         '&:hover': {
             background: theme.colors.hoverGray,
-
         },
     },
     selectedItem: {
