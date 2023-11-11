@@ -65,11 +65,11 @@ function Button(props) {
                     if (disableOnClick) setIsDisabled(true);
                 }}
 
-                onMouseDown={startLongPress}
-                onMouseUp={stopLongPress}
-                onMouseLeave={stopLongPress}
-                onTouchStart={startLongPress}
-                onTouchEnd={stopLongPress}
+                // onMouseDown={startLongPress}
+                // onMouseUp={stopLongPress}
+                // onMouseLeave={stopLongPress}
+                // onTouchStart={startLongPress}
+                // onTouchEnd={stopLongPress}
             >
                 {children}
             </button>
@@ -123,14 +123,14 @@ const commonButtonStyles = {
 const buttonStyles = createUseStyles(theme => ({
     secondaryButton: {
         ...commonButtonStyles,
-        backgroundColor: '#FFFFFF',
-        color: '#06335C', 
-        border: '0.125rem solid #06335C',
+        backgroundColor: theme.colors.white,
+        color: theme.colors.primaryButtonBlue, 
+        border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
 
         '&:active': {
-            backgroundColor: '#06335C',
-            color: '#FFFFFF', 
-            border: '0.125rem solid #06335C',
+            backgroundColor: theme.colors.primaryButtonBlue,
+            color: theme.colors.white, 
+            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
             textDecoration: 'none',
         },
 
@@ -138,30 +138,30 @@ const buttonStyles = createUseStyles(theme => ({
         },
 
         '&:disabled': {
-            backgroundColor: '#FFFFFF',
-            color: '#5D5D5C', 
-            border: '0.125rem solid #5D5D5C',
+            backgroundColor: theme.colors.white,
+            color: theme.colors.disableGray, 
+            border: `0.125rem solid ${theme.colors.disableSecBorderGray}`,
             textDecoration: 'none',
             transition: 'none',
         },
 
         '&:hover, &.hover': {
             textDecoration: 'underline',
-            backgroundColor: '#FFFFFF',
-            borderColor: '#06335C'
+            backgroundColor: theme.colors.white,
+            borderColor: theme.colors.primaryButtonBlue
         }
     },
 
     modifierButton: {
         ...commonButtonStyles,
-        backgroundColor: '#FFFFFF',
-        color: '#403105',
-        border: '0.125rem solid #FFC315',
+        backgroundColor: theme.colors.white,
+        color: theme.colors.textBrown,
+        border: `0.125rem solid ${theme.colors.encivYellow}`,
 
         '&:active': {
-            backgroundColor: '#FFC315',
-            color: '#403105',
-            border: '0.125rem solid #FFC315',
+            backgroundColor: theme.colors.encivYellow,
+            color: theme.colors.textBrown,
+            border: `0.125rem solid ${theme.colors.encivYellow}`,
             textDecoration: 'none',
         },
 
@@ -170,20 +170,20 @@ const buttonStyles = createUseStyles(theme => ({
 
         '&:hover, &.hover': {
             textDecoration: 'underline',
-            backgroundColor: '#FFFFFF',
-            borderColor: '#FFC315'
+            backgroundColor: theme.colors.white,
+            borderColor: theme.colors.encivYellow
         }
     },
 
     primaryButton: {
         ...commonButtonStyles,
-        backgroundColor: '#06335C',
-        color: '#FFFFFF',
-        border: '0.125rem solid #06335C',
+        backgroundColor: theme.colors.primaryButtonBlue,
+        color: theme.colors.white,
+        border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
 
         '&:active': {
-            backgroundColor: '#01172C',
-            border: '0.125rem solid #06335C',
+            backgroundColor: theme.colors.mouseDownPrimeBlue,
+            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
             textDecoration: 'none',
         },
 
@@ -191,30 +191,30 @@ const buttonStyles = createUseStyles(theme => ({
         },
 
         '&:disabled': {
-            backgroundColor: '#EBEBEB', 
-            color: '#343433',
-            border: '0.0625rem solid #EBEBEB',
+            backgroundColor: theme.colors.borderGray, 
+            color: theme.colors.disableTextBlack,
+            border: `0.0625rem solid ${theme.colors.borderGray}`,
             textDecoration: 'none',
             transition: 'none',
         },
 
         '&:hover, &.hover': {
             textDecoration: 'underline',
-            backgroundColor: '#06335C',
-            borderColor: '#06335C'
+            backgroundColor: theme.colors.primaryButtonBlue,
+            borderColor: theme.colors.primaryButtonBlue
         }
     },
 
     textButton: {
         ...commonButtonStyles,
         backgroundColor: 'transparent',
-        color: '#1A1A1A',
+        color: theme.colors.title,
         border: 'none',
         textAlign: 'left', 
         textDecoration: 'underline',
 
         '&:active': {
-            color: '#1A1A1A', 
+            color: theme.colors.title, 
             textDecoration: 'none',
         },
 
