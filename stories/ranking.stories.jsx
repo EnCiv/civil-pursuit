@@ -17,7 +17,7 @@ export default {
   ],
 }
 
-const testEnabledFunctionality = async (step, numericalIdentifier = '') => {
+const testEnabledNoDefault = async (step, numericalIdentifier = '', defaultValue = '') => {
   let item
   await common.asyncSleep(600)
 
@@ -26,8 +26,8 @@ const testEnabledFunctionality = async (step, numericalIdentifier = '') => {
     await step('Item DOM Node should be found', async () => {
       expect(item).toBeTruthy()
     })
-    await step('Initial value should be undefined', async () => {
-      expect(item.dataset.value).toBe('')
+    await step('Initial value should be blank', async () => {
+      expect(item.dataset.value).toBe(defaultValue)
     })
   })
 
@@ -49,7 +49,7 @@ const testEnabledFunctionality = async (step, numericalIdentifier = '') => {
   })
 }
 
-const testDisabledComponent = async (step, numericalIdentifier = '') => {
+const testDisabledNoDefault = async (step, numericalIdentifier = '', defaultValue = '') => {
   let item
   await common.asyncSleep(600)
 
@@ -59,32 +59,97 @@ const testDisabledComponent = async (step, numericalIdentifier = '') => {
       expect(item).toBeTruthy()
     })
     await step('Initial value should be undefined', async () => {
-      expect(item.dataset.value).toBe('')
+      expect(item.dataset.value).toBe(defaultValue)
     })
   })
 
   await step('When disabled, states should not be selectable and item value should not change', async () => {
     await userEvent.click(item.querySelector('#rankingMost'))
     await step('"Most" option not selectable; does not set item value', async () => {
-      expect(item.dataset.value).toBe('')
+      expect(item.dataset.value).toBe(defaultValue)
     })
 
     await userEvent.click(item.querySelector('#rankingNeutral'))
     await step('"Neutral" option not selectable; does not set item value', async () => {
-      expect(item.dataset.value).toBe('')
+      expect(item.dataset.value).toBe(defaultValue)
     })
 
     await userEvent.click(item.querySelector('#rankingLeast'))
     await step('"Least" option not selectable; does not set item value', async () => {
-      expect(item.dataset.value).toBe('')
+      expect(item.dataset.value).toBe(defaultValue)
     })
   })
 }
 
-const generateComponent = (numericalIdentifier, disabled = false) => {
+const testEnabledWithDefaultNeutral = async (step, numericalIdentifier = '', defaultValue = 'Neutral') => {
+  let item
+  await common.asyncSleep(600)
+
+  await step('Item should be found', async () => {
+    item = document.querySelector(`#testRanking-${numericalIdentifier}`)
+    await step('Item DOM Node should be found', async () => {
+      expect(item).toBeTruthy()
+    })
+    await step(`Initial value should be ${defaultValue}`, async () => {
+      expect(item.dataset.value).toBe(defaultValue)
+    })
+  })
+
+  await step('When not disabled, states should be properly selectable and represented in item value', async () => {
+    await userEvent.click(item.querySelector('#rankingMost'))
+    await step('"Most" option selectable and sets item value', async () => {
+      expect(item.dataset.value).toBe('Most')
+    })
+
+    await userEvent.click(item.querySelector('#rankingNeutral'))
+    await step('"Neutral" option selectable and sets item value', async () => {
+      expect(item.dataset.value).toBe('Neutral')
+    })
+
+    await userEvent.click(item.querySelector('#rankingLeast'))
+    await step('"Least" option selectable and sets item value', async () => {
+      expect(item.dataset.value).toBe('Least')
+    })
+  })
+}
+
+const testDisabledWithDefaultNeutral = async (step, numericalIdentifier = '', defaultValue = 'Neutral') => {
+  let item
+  await common.asyncSleep(600)
+
+  await step('Item should be found', async () => {
+    item = document.querySelector(`#testRanking-${numericalIdentifier}`)
+    await step('Item DOM Node should be found', async () => {
+      expect(item).toBeTruthy()
+    })
+    await step(`Initial value should be ${defaultValue}`, async () => {
+      expect(item.dataset.value).toBe(defaultValue)
+    })
+  })
+
+  await step('When disabled, states should not be selectable and item value should not change', async () => {
+    await userEvent.click(item.querySelector('#rankingMost'))
+    await step('"Most" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe(defaultValue)
+    })
+
+    await userEvent.click(item.querySelector('#rankingNeutral'))
+    await step('"Neutral" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe(defaultValue)
+    })
+
+    await userEvent.click(item.querySelector('#rankingLeast'))
+    await step('"Least" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe(defaultValue)
+    })
+  })
+}
+
+const generateComponent = (numericalIdentifier, disabled = false, defaultValue = '') => {
   return (
     <Ranking
       disabled={disabled}
+      defaultValue={defaultValue}
       id={`testRanking-${numericalIdentifier}`}
       block="true"
       large="true"
@@ -95,16 +160,30 @@ const generateComponent = (numericalIdentifier, disabled = false) => {
     ></Ranking>
   )
 }
-export const Primary = {
-  render: () => generateComponent(1, false),
+export const Functionality_Enabled_and_No_Default = {
+  render: () => generateComponent(1, false, ''),
   play: ({ step }) => {
-    testEnabledFunctionality(step, '1')
+    testEnabledNoDefault(step, '1')
   },
 }
 
-export const ButtonsDisabled = {
-  render: () => generateComponent(2, true),
+export const Functionality_Disabled_and_No_Default = {
+  render: () => generateComponent(2, true, ''),
   play: ({ step }) => {
-    testDisabledComponent(step, '2')
+    testDisabledNoDefault(step, '2')
+  },
+}
+
+export const Functionality_Enabled_and_Neutral_Default = {
+  render: () => generateComponent(3, false, 'Neutral'),
+  play: ({ step }) => {
+    testEnabledWithDefaultNeutral(step, '3', 'Neutral')
+  },
+}
+
+export const Functionality_Disabled_and_Neutral_Default = {
+  render: () => generateComponent(4, true, 'Neutral'),
+  play: ({ step }) => {
+    testDisabledWithDefaultNeutral(step, '4', 'Neutral')
   },
 }

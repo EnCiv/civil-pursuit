@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 
 export default function Ranking(rankingProps) {
-  let [response, setResponse] = useState('')
   const responseOptions = ['Most', 'Neutral', 'Least']
-
   const displayPropOptions = ['block', 'small', 'medium', 'large']
-  const { disabled, className, onSelect, ...otherProps } = rankingProps
 
   //Define new and inherited classes
   let classes = ['radial_ranking', ...(className ? className : [])]
+
+  //Isolate props and set initial state
+  const { disabled, defaultValue, className, onSelect, ...otherProps } = rankingProps
+  let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   displayPropOptions.forEach(prop => {
     if (otherProps[prop]) {
@@ -36,6 +37,7 @@ export default function Ranking(rankingProps) {
           <div>
             <input
               disabled={disabled || false}
+              checked={response === option}
               type="radio"
               id={`ranking${option}`}
               value={option}
