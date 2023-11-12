@@ -19,14 +19,16 @@ export default function Ranking(rankingProps) {
   })
 
   const onSelectionChange = e => {
-    if (!e.target.disabled) {
-      setResponse(e.target.value)
+    if (e.target.disabled) {
+      return
     }
+    setResponse(e.target.value)
     if (!onSelected) {
       return console.warn(
         `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onSelected prop.`
       )
     }
+
     onSelected(e)
   }
 
