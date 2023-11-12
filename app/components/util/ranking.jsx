@@ -8,7 +8,7 @@ export default function Ranking(rankingProps) {
   let classes = ['radial_ranking', ...(className ? className : [])]
 
   //Isolate props and set initial state
-  const { disabled, defaultValue, className, onSelect, ...otherProps } = rankingProps
+  const { disabled, defaultValue, className, onSelected, ...otherProps } = rankingProps
   let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   displayPropOptions.forEach(prop => {
@@ -22,12 +22,12 @@ export default function Ranking(rankingProps) {
     if (!e.target.disabled) {
       setResponse(e.target.value)
     }
-    if (!onSelect) {
+    if (!onSelected) {
       return console.warn(
-        `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onSelect prop.`
+        `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onSelected prop.`
       )
     }
-    onSelect(e)
+    onSelected(e)
   }
 
   return (
