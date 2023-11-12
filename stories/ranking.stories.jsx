@@ -17,7 +17,7 @@ export default {
   ],
 }
 
-const testFunction = async (step, numericalIdentifier = '') => {
+const testEnabledFunctionality = async (step, numericalIdentifier = '') => {
   let item
   await common.asyncSleep(600)
 
@@ -31,7 +31,7 @@ const testFunction = async (step, numericalIdentifier = '') => {
     })
   })
 
-  await step('States should be properly selectable and represented in item value', async () => {
+  await step('When not disabled, states should be properly selectable and represented in item value', async () => {
     await userEvent.click(item.querySelector('#rankingMost'))
     await step('"Most" option selectable and sets item value', async () => {
       expect(item.dataset.value).toBe('Most')
@@ -49,9 +49,42 @@ const testFunction = async (step, numericalIdentifier = '') => {
   })
 }
 
-const generateComponent = numericalIdentifier => {
+const testDisabledComponent = async (step, numericalIdentifier = '') => {
+  let item
+  await common.asyncSleep(600)
+
+  await step('Item should be found', async () => {
+    item = document.querySelector(`#testRanking-${numericalIdentifier}`)
+    await step('Item DOM Node should be found', async () => {
+      expect(item).toBeTruthy()
+    })
+    await step('Initial value should be undefined', async () => {
+      expect(item.dataset.value).toBe('')
+    })
+  })
+
+  await step('When disabled, states should not be selectable and item value should not change', async () => {
+    await userEvent.click(item.querySelector('#rankingMost'))
+    await step('"Most" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe('')
+    })
+
+    await userEvent.click(item.querySelector('#rankingNeutral'))
+    await step('"Neutral" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe('')
+    })
+
+    await userEvent.click(item.querySelector('#rankingLeast'))
+    await step('"Least" option not selectable; does not set item value', async () => {
+      expect(item.dataset.value).toBe('')
+    })
+  })
+}
+
+const generateComponent = (numericalIdentifier, disabled = false) => {
   return (
     <Ranking
+      disabled={disabled}
       id={`testRanking-${numericalIdentifier}`}
       block="true"
       large="true"
@@ -63,8 +96,15 @@ const generateComponent = numericalIdentifier => {
   )
 }
 export const Primary = {
-  render: () => generateComponent(1),
+  render: () => generateComponent(1, false),
   play: ({ step }) => {
-    testFunction(step, '1')
+    testEnabledFunctionality(step, '1')
+  },
+}
+
+export const ButtonsDisabled = {
+  render: () => generateComponent(2, true),
+  play: ({ step }) => {
+    testDisabledComponent(step, '2')
   },
 }
