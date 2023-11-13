@@ -39,7 +39,7 @@ const TopNavBar = (props) => {
 
                 {menu && menu.map((item, index) => Array.isArray(item) ? (
 
-                    <div className={`${classes.menuGroup}`}
+                    <div className={`${classes.menuGroup} ${selectedItem === item[0].name ? classes.selectedItem : ''}`}
                         key={index}
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={() => handleMouseLeave()}>
@@ -47,7 +47,8 @@ const TopNavBar = (props) => {
                         {openDropdown === index && (
                             <div className={classes.dropdownMenu}>
                                 {item.slice(1).map((subItem, subIndex) => (
-                                    <div key={subIndex} className={classes.menuItem}>
+                                    <div key={subIndex} className={classes.menuItem}
+                                        onClick={() => handleMenuItemClick(item[0].name)}>
                                         {subItem.name}
                                     </div>
                                 ))}
@@ -100,6 +101,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         transform: 'translateX(-50%)',
     },
     menuGroup: {
+        cursor: 'pointer',
         background: 'none',
         border: 'none',
         padding: '0.5em 1em',
@@ -108,6 +110,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     dropdownMenu: {
         position: 'absolute',
+        background: theme.colors.encivYellow,
     },
     menuItem: {
         cursor: 'pointer',
