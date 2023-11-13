@@ -32,28 +32,23 @@ function Step(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   containerActive: {
-    display: 'inline-flex',
     padding: '0.625rem 0.9375rem',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '0.625rem',
     borderRadius: '0.625rem',
     background: 'rgba(6, 51, 92, 0.10)',
+    // overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
 
   containerInactiveComplete: {
-    display: 'inline-flex',
     padding: '0.625rem 0.9375rem',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '0.625rem',
     borderRadius: '0.625rem',
     background: '#FFF',
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
     },
+    // overflow: 'hidden',
+    // width: '100%',
+    whiteSpace: 'nowrap',
   },
 
   stepTextActive: {
@@ -64,7 +59,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: '1.4375rem',
-    whiteSpace: 'nowrap',
+    // overflow: 'hidden',
+    // textOverflow: 'ellipsis',
   },
 
   stepTextInactiveIncomplete: {
@@ -75,7 +71,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: '1.4375rem',
-    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 }))
 
