@@ -26,10 +26,16 @@ const TopNavBar = (props) => {
         setIsExpanded(!isExpanded);
     };
 
-    const handleMenuItemClick = (itemName) => {
-        setSelectedItem(itemName);
-        // add the function that should be executed when a menu item is clicked
+    const handleMenuItemClick = (item) => {
+        item.func();
+        setSelectedItem(item.name);
     };
+
+    const handleMenuDropdownClick = (item, index) => {
+        setSelectedItem(item[0].name);
+        item[index].func();
+    };
+
 
     return (
         <div className={`${classes.navBarContainer} ${className}`} style={style}>
@@ -38,7 +44,6 @@ const TopNavBar = (props) => {
             <div className={classes.menuContainer}>
 
                 {menu && menu.map((item, index) => Array.isArray(item) ? (
-
                     <div className={`${classes.menuGroup} ${selectedItem === item[0].name ? classes.selectedItem : ''}`}
                         key={index}
                         onMouseEnter={() => handleMouseEnter(index)}
@@ -48,7 +53,7 @@ const TopNavBar = (props) => {
                             <div className={classes.dropdownMenu}>
                                 {item.slice(1).map((subItem, subIndex) => (
                                     <div key={subIndex} className={classes.menuItem}
-                                        onClick={() => handleMenuItemClick(item[0].name)}>
+                                        onClick={() => handleMenuDropdownClick(item, subIndex + 1)}>
                                         {subItem.name}
                                     </div>
                                 ))}
@@ -59,7 +64,7 @@ const TopNavBar = (props) => {
                     <div
                         key={item.name}
                         className={`${classes.menuItem} ${selectedItem === item.name ? classes.selectedItem : ''}`}
-                        onClick={() => handleMenuItemClick(item.name)}>
+                        onClick={() => handleMenuItemClick(item)}>
                         {item.name}
                     </div>
                 ))}
@@ -83,9 +88,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0.5em',
+        padding: '0.5rem',
         position: 'relative',
-        background: theme.colors.primary,
         color: theme.colors.textPrimary,
     },
     logo: {
@@ -101,11 +105,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         transform: 'translateX(-50%)',
     },
     menuGroup: {
-        cursor: 'pointer',
+        cursor: 'default',
         background: 'none',
         border: 'none',
-        padding: '0.5em 1em',
-        margin: '0 0.25em',
+        padding: '0.5rem 1rem',
+        margin: '0 0.25rem',
+        borderBottom: '2px solid ${theme.colors.white}',
         color: theme.colors.textPrimary,
     },
     dropdownMenu: {
@@ -116,21 +121,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         cursor: 'pointer',
         background: 'none',
         border: 'none',
-        padding: '0.5em 1em',
-        margin: '0 0.25em',
+        padding: '0.5rem 1rem',
+        margin: '0 0.25rem',
         color: theme.colors.textPrimary,
         '&:hover': {
             background: theme.colors.hoverGray,
         },
     },
     selectedItem: {
-        borderBottom: '2px solid'
+        borderBottom: '2px solid',
     },
     userOrSignupContainer: {
         position: 'absolute',
         top: 0,
         right: 0,
-        padding: '0.5em',
+        padding: '0.5rem',
     },
     menuToggle: {
         display: 'none',

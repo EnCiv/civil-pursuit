@@ -1,16 +1,21 @@
 import React from 'react'
-import Theme from '../app/components/theme'
 import TopNavBar from '../app/components/top-nav-bar'
 
-const menuArray = [{ name: "Home", func: () => { } },
-{ name: "Discussion Portal", func: () => { } },
-{ name: "Blog", func: () => { } },
-[{ name: "About", func: () => { } },
-{ name: "Contact", func: () => { } },
-{ name: "FAQ", func: () => { } }],
-[{ name: "Our Work", func: () => { } },
-{ name: "Work 1", func: () => { } },
-{ name: "Work 2", func: () => { } }]]
+const menuFunc = (name) => {
+    console.log(`Menu item ${name} clicked`)
+}
+
+const createMenuItem = (name) => {
+    return { name: name, func: () => { menuFunc(name) } }
+}
+
+
+const menuArray = [createMenuItem("Home"),
+createMenuItem("Discussion Portal"),
+createMenuItem("Blog"),
+[createMenuItem("About"), createMenuItem("Contact"), createMenuItem("FAQ")],
+[createMenuItem("Our Work"), createMenuItem("Work 1"), createMenuItem("Work 2")]]
+
 
 
 export default {
