@@ -8,6 +8,7 @@ const Theme = {
     white: '#FFF',
     borderGray: '#EBEBEB',
     title: '#1A1A1A',
+    textPrimary: '#000000',
     textBrown: '#403105',
     encivYellow: '#FFC315',
     hoverGray: '#B3B3B3',
@@ -16,7 +17,7 @@ const Theme = {
     fontFamily: 'Inter',
     fontStyle: 'normal',
   },
-  condensedWidthBreakPoint: '768px',
+  condensedWidthBreakPoint: '600px',
 }
 
 export default Theme

@@ -41,8 +41,8 @@ const TopNavBar = (props) => {
         <div className={`${classes.navBarContainer} ${className}`} style={style}>
             <SvgEncivBlack className={classes.logo} />
 
+            {/* This is the computer menu */}
             <div className={classes.menuContainer}>
-
                 {menu && menu.map((item, index) => Array.isArray(item) ? (
                     <div className={`${classes.menuGroup} ${selectedItem === item[0].name ? classes.selectedItem : ''}`}
                         key={index}
@@ -75,7 +75,7 @@ const TopNavBar = (props) => {
             </div>
 
             <button className={classes.menuToggle} onClick={toggleMenu}>
-                Menu
+                &#8801;
             </button>
         </div>
     );
@@ -83,6 +83,7 @@ const TopNavBar = (props) => {
 
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+
     navBarContainer: {
         width: '100%',
         display: 'flex',
@@ -90,7 +91,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         alignItems: 'center',
         padding: '0.5rem',
         position: 'relative',
-        color: theme.colors.textPrimary,
     },
     logo: {
         width: '15%',
@@ -103,6 +103,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         bottom: '10%',
         left: '50%',
         transform: 'translateX(-50%)',
+        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+            display: 'none',
+        },
     },
     menuGroup: {
         cursor: 'default',
@@ -136,9 +139,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         top: 0,
         right: 0,
         padding: '0.5rem',
+        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+            display: 'none',
+        },
     },
     menuToggle: {
-        display: 'none',
+        width: '15%',
+        height: 'auto',
+        fontSize: '2rem',
+        background: theme.colors.white,
+        border: 'none',
+        color: theme.colors.textPrimary,
+        [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+            display: 'none'
+        },
+        '&:hover': {
+            background: theme.colors.hoverGray,
+        },
     },
 }));
 

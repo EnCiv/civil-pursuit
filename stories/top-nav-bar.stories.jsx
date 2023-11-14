@@ -9,7 +9,6 @@ const createMenuItem = (name) => {
     return { name: name, func: () => { menuFunc(name) } }
 }
 
-
 const menuArray = [createMenuItem("Home"),
 createMenuItem("Discussion Portal"),
 createMenuItem("Blog"),
@@ -32,9 +31,5 @@ export const SmallParentDiv = () => {
 
 export const LargeParentDiv = () => {
     return <div style={{ width: '1200px' }}><TopNavBar menu={menuArray} /></div>
-}
-
-export const phoneMode = () => {
-    return <div style={{ width: '400px' }}><TopNavBar menu={menuArray} /></div>
 }
 
