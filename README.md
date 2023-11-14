@@ -86,6 +86,60 @@ fi
 
 This works great when you open a terminal in a project directory, for example when you are using visual studio code.
 
+# React Component guidelines and notes:
+<details>
+    <summary>General notes on react component boilerplate stuff. Also, we want to state the 'why' for each guideline.</summary>
+
+These notes are pretty general and always open to reevaluation.
+
+**my-component.js**
+```js
+// https://github.com/EnCiv/civil-pursuit/issue/NUMBER
+import React from 'react'
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
+
+export default function MyComponent(props) {
+    const { className, ...otherProps } = props
+    const classes = useStylesFromThemeFunction(props)
+    // otherProps is gathered from props and expanded into to the outer tag so that
+    // the parent of this component can pass in things like style or onHover or whatever
+    // allowing this component to be as extensible as possible without recoding
+    return (
+        <div className={cx(classes.wrapper, className)} {...otherProps}>
+            Hello World
+        </div>
+    )
+}
+
+// we want to see the code first, so we put the classes at the bottom
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+    wrapper: {
+        background: theme.colorPrimary,
+        padding: '1rem',
+    },
+}))
+````
+
+1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme so that absolute values like colors can be given names and shared across components. 
+
+2. The theme is in [**app/theme.js**](https://github.com/EnCiv/civil-pursuit/blob/master/app/theme.js). We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components. To see examples of how to use the theme and what colors, sizes and other styling information are currently part of the theme, we can also check out the 'Theme Examples' Storybook stories and its code at [**stories/theme.stories.js**](https://github.com/EnCiv/undebate-ssp/blob/main/stories/theme.stories.js).
+
+3. As in the above example, generally components should accept all props, extract out the ones that are specific to the component, and expand all the other props into the outer tag of what's being rendered. For props that are used by this component, like className (or style), but would also be passed down from a parent, this component should combine it's values with the values being passed down - as in using cx(className, classes.wrapper). 
+
+4. To make components responsive, do not use 'px'. We need to convert this to 'rem', 'em', 'vw', or 'vh' as appropriate to make the components responsive. Figma now has a developers mode where you can get the output in rem rather than pixels.  See [Figma now supports REM](https://uxdesign.cc/figma-now-supports-rem-units-understanding-the-use-and-benefits-5957fc1ecb78)
+
+5. Most components should take their width from the parent - not set the width. They should have no margin (whitespace around the component), and expect their their parent will apply padding as necessary. - This makes it easier for parent component to line up their children.  If different child components have different built in white space, it's hard for the parent to line them up. 
+
+7. File names should be all lowercase, use '-' between words, and end in .js (.jsx should be reserved for react class based components). Some OS's are case sensitive others are not.
+
+8. We are using storybook to build stories for each component.  This makes it quicker and easier to build and iterate the component. Then, after it's done we have a great test cases and a great visual library of all the components. Within the stories/my-component.stories.js file for a component, create multiple stories that exercise the functionality of the component. - Future contributors are going to come back to the story to see how the component works - or to test it for some new situation.  See the stories director for examples.
+
+9. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
+
+10. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
+ </details>
+
 # Icons, Figma and SVG
 
 <details>
