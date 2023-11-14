@@ -24,5 +24,5 @@ export default {
 
 export const Primary = {}
 export const ParentsWidth = args => {
-  return <StepBar style={{ maxWidth: '57.375rem' }} {...args} />
+  return <StepBar style={{ maxWidth: '42.375rem' }} {...args} />
 }

@@ -11,3 +11,10 @@ export default {
 export const Primary = { args: { active: true, complete: false } }
 export const Secondary = { args: { active: false, complete: true } }
 export const Tertiary = { args: { active: false, complete: false } }
+export const ParentsWidth = args => {
+  return (
+    <div style={{ maxWidth: '8.5rem' }}>
+      <Step active={true} complete={false} {...args} />
+    </div>
+  )
+}

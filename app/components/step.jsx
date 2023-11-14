@@ -35,8 +35,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.625rem 0.9375rem',
     borderRadius: '0.625rem',
     background: 'rgba(6, 51, 92, 0.10)',
-    // overflow: 'hidden',
     whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
 
   containerInactiveComplete: {
@@ -46,27 +46,26 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
     },
-    // overflow: 'hidden',
-    // width: '100%',
     whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    // overflow: 'hidden',
+    // textOverflow: 'ellipsis',
   },
 
   stepTextActive: {
     color: '#06335C',
     textAlign: 'center',
-    fontFamily: 'Inter',
     fontSize: '1.125rem',
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: '1.4375rem',
-    // overflow: 'hidden',
-    // textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 
   stepTextInactiveIncomplete: {
     color: '#D9D9D9',
     textAlign: 'center',
-    fontFamily: 'Inter',
     fontSize: '1.125rem',
     fontStyle: 'normal',
     fontWeight: '600',
