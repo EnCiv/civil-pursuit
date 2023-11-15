@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
 import SvgStepBarArrowPale from '../svgr/step-bar-arrow-pale'
+import SvgStepBarSelectArrow from '../svgr/step-bar-select-arrow'
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
@@ -48,6 +49,23 @@ function StepBar(props) {
     }
   }, [stepRefs])
 
+  const stepComponents = steps.map((step, index) => {
+    return (
+      <div ref={stepRefs[index]} className={classes.stepDiv}>
+        <Step
+          ref={stepRefs[index]}
+          key={index}
+          name={step.name}
+          title={step.title}
+          complete={step.complete}
+          active={current === index ? true : false}
+          className={className}
+          {...otherProps}
+        />
+      </div>
+    )
+  })
+
   return !isMobile ? (
     <div className={classes.container} style={style}>
       <SvgStepBarArrowPale
@@ -57,30 +75,25 @@ function StepBar(props) {
         style={{ transform: 'rotate(180deg)', flexShrink: '0' }}
       />
       <div className={classes.stepsContainer} ref={stepContainerRef}>
-        {steps.map((step, index) => {
-          return (
-            <div ref={stepRefs[index]} className={classes.stepDiv}>
-              <Step
-                ref={stepRefs[index]}
-                key={index}
-                name={step.name}
-                title={step.title}
-                complete={step.complete}
-                active={current === index ? true : false}
-                className={className}
-                {...otherProps}
-              />
-            </div>
-          )
-        })}
+        {stepComponents}
       </div>
       <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
     </div>
   ) : (
-    <div>this is the mobile view</div>
+    <div className={classes.mobileContainer}>
+      <div className={classes.mobileHeader}>Go to</div>
+
+      <div className={classes.selectInput}>
+        <div className={classes.selectItemsContainer}>
+          <div className={classes.selectText}>Select a Step</div>
+          <SvgStepBarSelectArrow width="20" height="20" />
+        </div>
+      </div>
+
+      <div className={classes.breakStyle} />
+    </div>
   )
 }
-
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'inline-flex',
@@ -106,6 +119,50 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     // minWidth: 'fit-content',
     // whiteSpace: 'nowrap',
     // textOverflow: 'ellipsis',
+  },
+
+  //mobile styles
+  mobileContainer: {
+    height: '23.0625rem',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  mobileHeader: {
+    fontFamily: 'Inter',
+    fontSize: '1rem',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: '1.5rem',
+    color: '#343433',
+    paddingTop: '1.06rem',
+    paddingLeft: '1.69rem',
+  },
+  selectInput: {
+    margin: '0.44rem 1.56rem 0.94rem',
+    display: 'flex',
+    height: '2.5rem',
+    borderRadius: '0.25rem',
+    border: '0.125rem solid #EBEBEB',
+    background: '#FFF',
+  },
+  selectItemsContainer: {
+    display: 'inline-flex',
+    width: '100%',
+    padding: '0.3125rem 0.625rem 0.3125rem 0.9375rem',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectText: {
+    color: '#D9D9D9',
+    fontFamily: 'Inter',
+    fontSize: '1rem',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: '1.5rem',
+  },
+  breakStyle: {
+    background: '#D9D9D9',
+    height: '0.0625rem',
   },
 }))
 
