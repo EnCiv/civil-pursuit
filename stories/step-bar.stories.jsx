@@ -19,6 +19,9 @@ export default {
   args: {
     steps: primarySteps,
     current: 0,
+    onDone: i => {
+      console.log(i)
+    },
   },
   decorators: [
     Story => {
@@ -34,7 +37,7 @@ export default {
 export const PrimaryDesktop = {}
 
 export const SecondaryDesktop = args => {
-  return <StepBar current={1} steps={secondarySteps} />
+  return <StepBar {...args} current={1} steps={secondarySteps} />
 }
 
 export const ParentsWidth = args => {
@@ -55,13 +58,17 @@ MobileViewTwo.parameters = {
   },
 }
 
-export const SecondaryMobileView = {}
-SecondaryMobileView.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const SecondaryMobileView = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
-}
-SecondaryMobileView.args = {
-  steps: secondarySteps,
-  current: 1,
+  args: {
+    steps: secondarySteps,
+    current: 1,
+    onDone: i => {
+      console.log(i)
+    },
+  },
 }

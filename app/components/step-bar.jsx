@@ -82,6 +82,11 @@ function StepBar(props) {
                 active={current === index ? true : false}
                 className={className}
                 {...otherProps}
+                onMouseDown={() => {
+                  if (step.complete) {
+                    onDone(index)
+                  }
+                }}
               />
             </div>
           )
@@ -121,6 +126,11 @@ function StepBar(props) {
                     active={current === index ? true : false}
                     className={className}
                     {...otherProps}
+                    onMouseDown={() => {
+                      if (step.complete) {
+                        onDone(index)
+                      }
+                    }}
                   />
                 )
               })}
