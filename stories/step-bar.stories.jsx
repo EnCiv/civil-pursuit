@@ -28,9 +28,16 @@ export const ParentsWidth = args => {
   return <StepBar style={{ maxWidth: '56.375rem' }} {...args} />
 }
 
-export const MobileView = {}
-MobileView.parameters = {
+export const MobileViewOne = {}
+MobileViewOne.parameters = {
   viewport: {
     defaultViewport: 'mobile1',
+  },
+}
+
+export const MobileViewTwo = {}
+MobileViewTwo.parameters = {
+  viewport: {
+    defaultViewport: 'mobile2',
   },
 }

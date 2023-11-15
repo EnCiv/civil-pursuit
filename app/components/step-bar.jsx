@@ -4,7 +4,9 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
 import SvgStepBarArrowPale from '../svgr/step-bar-arrow-pale'
-import SvgStepBarSelectArrow from '../svgr/step-bar-select-arrow'
+import SvgStepBarSelectArrowOpen from '../svgr/step-bar-select-arrow-open'
+import SvgStepBarSelectArrowClosed from '../svgr/step-bar-select-arrow-closed'
+// import ReactScrollBar from './util/react-scrollbar'
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
@@ -51,30 +53,13 @@ function StepBar(props) {
     // }
 
     window.addEventListener('resize', handleResize)
-    window.addEventListener('click', handleClickOutside)
+    window.addEventListener('mousedown', handleClickOutside)
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      window.addEventListener('click', handleClickOutside)
+      window.addEventListener('mousedown', handleClickOutside)
     }
   }, [stepRefs])
-
-  const stepComponents = steps.map((step, index) => {
-    return (
-      <div ref={stepRefs[index]} className={classes.stepDiv}>
-        <Step
-          ref={stepRefs[index]}
-          key={index}
-          name={step.name}
-          title={step.title}
-          complete={step.complete}
-          active={current === index ? true : false}
-          className={className}
-          {...otherProps}
-        />
-      </div>
-    )
-  })
 
   return !isMobile ? (
     <div className={classes.container} style={style}>
@@ -85,7 +70,22 @@ function StepBar(props) {
         style={{ transform: 'rotate(180deg)', flexShrink: '0' }}
       />
       <div className={classes.stepsContainer} ref={stepContainerRef}>
-        {stepComponents}
+        {steps.map((step, index) => {
+          return (
+            <div ref={stepRefs[index]} className={classes.stepDiv}>
+              <Step
+                ref={stepRefs[index]}
+                key={index}
+                name={step.name}
+                title={step.title}
+                complete={step.complete}
+                active={current === index ? true : false}
+                className={className}
+                {...otherProps}
+              />
+            </div>
+          )
+        })}
       </div>
       <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
     </div>
@@ -96,11 +96,38 @@ function StepBar(props) {
       <div className={classes.selectInput} onClick={handleOpen} ref={selectRef}>
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>Select a Step</div>
-          <SvgStepBarSelectArrow width="20" height="20" />
+          {/* <SvgStepBarSelectArrowClosed width="20" height="20" /> */}
+
+          {isOpen ? (
+            <SvgStepBarSelectArrowOpen width="20" height="20" />
+          ) : (
+            <SvgStepBarSelectArrowClosed width="20" height="20" />
+          )}
         </div>
       </div>
 
-      {isOpen && <div> this is the select menu</div>}
+      {isOpen && (
+        <div className={cx(classes.dropdownContainer, classes.customScrollbar)}>
+          <div className={classes.dropdownContent}>
+            <div className={classes.stepsContainerMobile}>
+              {steps.map((step, index) => {
+                return (
+                  <Step
+                    ref={stepRefs[index]}
+                    key={index}
+                    name={step.name}
+                    title={step.title}
+                    complete={step.complete}
+                    active={current === index ? true : false}
+                    className={className}
+                    {...otherProps}
+                  />
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {!isOpen && <div className={classes.breakStyle} />}
     </div>
@@ -150,7 +177,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingLeft: '1.69rem',
   },
   selectInput: {
-    margin: '0.44rem 1.56rem 0.94rem',
+    margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
     height: '2.5rem',
     borderRadius: '0.25rem',
@@ -175,7 +202,70 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   breakStyle: {
     background: '#D9D9D9',
     height: '0.0625rem',
+    marginTop: '0.94rem',
   },
+  dropdownContainer: {
+    display: 'flex',
+    padding: '0.5rem',
+    alignItems: 'flex-start',
+    borderRadius: '0rem 0rem 0.25rem 0.25rem',
+    border: '0.125rem solid #EBEBEB',
+    background: '#FFF',
+    margin: '0rem 1.56rem',
+    overflowY: 'scroll',
+  },
+  dropdownContent: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '0.3125rem',
+    flexShrink: '0',
+    width: '100%',
+  },
+  stepsContainerMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.3125rem',
+    flexShrink: '0',
+    width: '100%',
+  },
+
+  //scrollbar
+  // customScrollbar: {
+  //   /* Track */
+  //   '&::-webkit-scrollbar': {
+  //     width: '12px',
+  //     backgroundColor: '#fff', // White background for the scrollbar
+  //     padding: '0.5rem', // Added padding
+  //   },
+  //   /* Handle */
+  //   '&::-webkit-scrollbar-thumb': {
+  //     width: '0.375rem',
+  //     height: '5.6875rem',
+  //     borderRadius: '2.5rem',
+  //     background: '#D5D5DE',
+  //   },
+  //   /* Handle on hover */
+  //   '&::-webkit-scrollbar-thumb:hover': {
+  //     backgroundColor: '#45a049',
+  //   },
+  //   /* Track */
+  //   '&::-webkit-scrollbar-track': {
+  //     backgroundColor: '#f1f1f1',
+  //   },
+  //   /* For Firefox */
+  //   scrollbarColor: '#D5D5DE #f1f1f1', // White background for the scrollbar
+  //   scrollbarWidth: 'thin',
+  //   /* For Edge and IE */
+  //   '&::-ms-scrollbar-thumb': {
+  //     width: '0.375rem',
+  //     height: '5.6875rem',
+  //     borderRadius: '2.5rem',
+  //     backgroundColor: '#D5D5DE',
+  //   },
+  //   '&::-ms-scrollbar-track': {
+  //     backgroundColor: '#f1f1f1',
+  //   },
+  // },
 }))
 
 export default StepBar

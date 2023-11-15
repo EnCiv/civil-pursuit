@@ -50,7 +50,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   sharedTextStyles: {
-    textAlign: 'center',
+    textAlign: 'start',
     fontSize: '1.125rem',
     fontStyle: 'normal',
     fontWeight: '600',
