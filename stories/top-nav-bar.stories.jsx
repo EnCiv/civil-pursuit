@@ -1,5 +1,6 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 const menuFunc = (name) => {
     console.log(`Menu item ${name} clicked`)
@@ -18,12 +19,28 @@ createMenuItem("Blog"),
 
 
 export default {
-    component: TopNavBar
+    component: TopNavBar,
+    parameters: {
+        viewport: {
+            viewports: INITIAL_VIEWPORTS,
+        },
+    },
 }
 
 export const Empty = () => { return <TopNavBar /> }
 
-export const PrimaryDefault = { args: { menu: menuArray } }
+export const StandardMenu = { args: { menu: menuArray } }
+
+export const MobileMode = {
+    args: {
+        menu: menuArray,
+    },
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        },
+    },
+}
 
 export const SmallParentDiv = () => {
     return <div style={{ width: '700px' }}><TopNavBar menu={menuArray} /></div>
