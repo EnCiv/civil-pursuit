@@ -1,5 +1,5 @@
 'use strict'
-import React, { useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
@@ -13,28 +13,42 @@ function StepBar(props) {
   const stepRefs = steps.map(() => useRef(null))
   const stepContainerRef = useRef(null)
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
+  console.log(window.innerWidth)
+
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 50 * 16)
+  }
+
   // console.log(steps, stepRefs)
 
   useEffect(() => {
-    let containerWidth = stepContainerRef.current.offsetWidth
-    let totalWidth = 0
-    for (let i = 0; i < stepRefs.length; i++) {
-      totalWidth += stepRefs[i].current.offsetWidth
-      if (totalWidth >= containerWidth) {
-        stepRefs[i].current.children[0].style.overflow = 'hidden'
-        // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
-        stepRefs[i].current.style.minWidth = 'auto'
-        console.log(stepRefs[i].current)
-        console.log(totalWidth, containerWidth, 'if case')
-      } else {
-        // stepRefs[i].current.style.minWidth = 'fit-content'
-        console.log(stepRefs[i].current)
-        console.log(totalWidth, containerWidth)
-      }
+    // let containerWidth = stepContainerRef.current.offsetWidth
+    // let totalWidth = 0
+    // for (let i = 0; i < stepRefs.length; i++) {
+    //   totalWidth += stepRefs[i].current.offsetWidth
+    //   if (totalWidth >= containerWidth) {
+    //     // stepRefs[i].current.children[0].style.overflow = 'hidden'
+    //     // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
+    //     // stepRefs[i].current.style.minWidth = 'auto'
+    //     console.log(stepRefs[i].current)
+    //     console.log(totalWidth, containerWidth, 'if case')
+    //   } else {
+    //     // stepRefs[i].current.style.minWidth = 'fit-content'
+    //     console.log(stepRefs[i].current)
+    //     console.log(totalWidth, containerWidth)
+    //   }
+    // }
+
+    window.addEventListener('resize', handleResize)
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize)
     }
   }, [stepRefs])
 
-  return (
+  return !isMobile ? (
     <div className={classes.container} style={style}>
       <SvgStepBarArrowPale
         className={classes.svgStyling}
@@ -62,6 +76,8 @@ function StepBar(props) {
       </div>
       <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
     </div>
+  ) : (
+    <div>this is the mobile view</div>
   )
 }
 
@@ -83,9 +99,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   stepDiv: {
-    overflow: 'hidden',
-    display: 'flex',
-    minWidth: 'fit-content',
+    // display: 'inline-block',
+    // overflow: 'hidden',
+    // minWidth: 'fit-content',
+    // display: 'flex',
+    // minWidth: 'fit-content',
+    // whiteSpace: 'nowrap',
+    // textOverflow: 'ellipsis',
   },
 }))
 
