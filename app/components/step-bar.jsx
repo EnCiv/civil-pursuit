@@ -13,15 +13,24 @@ function StepBar(props) {
 
   const stepRefs = steps.map(() => useRef(null))
   const stepContainerRef = useRef(null)
+  const selectRef = useRef(null)
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
-  console.log(window.innerWidth)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const handleClickOutside = event => {
+    if (selectRef.current && !selectRef.current.contains(event.target)) {
+      setIsOpen(false)
+    }
+  }
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 50 * 16)
   }
-
-  // console.log(steps, stepRefs)
 
   useEffect(() => {
     // let containerWidth = stepContainerRef.current.offsetWidth
@@ -42,10 +51,11 @@ function StepBar(props) {
     // }
 
     window.addEventListener('resize', handleResize)
+    window.addEventListener('click', handleClickOutside)
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize)
+      window.addEventListener('click', handleClickOutside)
     }
   }, [stepRefs])
 
@@ -83,14 +93,16 @@ function StepBar(props) {
     <div className={classes.mobileContainer}>
       <div className={classes.mobileHeader}>Go to</div>
 
-      <div className={classes.selectInput}>
+      <div className={classes.selectInput} onClick={handleOpen} ref={selectRef}>
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>Select a Step</div>
           <SvgStepBarSelectArrow width="20" height="20" />
         </div>
       </div>
 
-      <div className={classes.breakStyle} />
+      {isOpen && <div> this is the select menu</div>}
+
+      {!isOpen && <div className={classes.breakStyle} />}
     </div>
   )
 }
