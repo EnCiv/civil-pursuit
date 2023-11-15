@@ -26,7 +26,7 @@ export const Empty = () => { return <TopNavBar /> }
 export const PrimaryDefault = { args: { menu: menuArray } }
 
 export const SmallParentDiv = () => {
-    return <div style={{ width: '500px' }}><TopNavBar menu={menuArray} /></div>
+    return <div style={{ width: '700px' }}><TopNavBar menu={menuArray} /></div>
 }
 
 export const LargeParentDiv = () => {
