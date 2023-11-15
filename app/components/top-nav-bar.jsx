@@ -14,13 +14,14 @@ const UserOrSignupPlaceholder = () => {
 
 
 const TopNavBar = (props) => {
-    const { className, menu, style } = props;
+    const { className, menu, ...otherProps } = props;
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const classes = useStylesFromThemeFunction();
     const [openDropdown, setOpenDropdown] = useState(null);
     const handleMouseEnter = (index) => { setOpenDropdown(index) };
     const handleMouseLeave = () => { setOpenDropdown(null) };
+
+    const classes = useStylesFromThemeFunction(props);
 
     const toggleMenu = () => {
         setIsExpanded(!isExpanded);
@@ -36,24 +37,73 @@ const TopNavBar = (props) => {
         item[index].func();
     };
 
+    const handleMobileMenuGroupClick = (item, index) => {
+        item[0].func();
+
+        if (openDropdown === index) {
+            setOpenDropdown(null);
+        } else {
+            setOpenDropdown(index);
+        }
+    };
 
     return (
-        <div className={`${classes.navBarContainer} ${className}`} style={style}>
-            <SvgEncivBlack className={classes.logo} />
+        <div className={cx(classes.columnAligner, className)} {...otherProps}>
+            <div className={`${classes.navBarContainer}`}>
+                <SvgEncivBlack className={classes.logo} />
 
-            {/* This is the computer menu */}
-            <div className={classes.menuContainer}>
+                {/* This is the computer menu */}
+                <div className={classes.menuContainer}>
+                    {menu && menu.map((item, index) => Array.isArray(item) ? (
+                        <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })} key={index}
+                            onMouseEnter={() => handleMouseEnter(index)}
+                            onMouseLeave={() => handleMouseLeave()}>
+                            {item[0].name} {'\u25BE'}
+                            {openDropdown === index && (
+                                <div className={classes.dropdownMenu}>
+                                    {item.slice(1).map((subItem, subIndex) => (
+                                        <div key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                            onClick={() => handleMenuItemClick(subItem)}>
+                                            {subItem.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div
+                            key={item.name}
+                            className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                            onClick={() => handleMenuItemClick(item)}>
+                            {item.name}
+                        </div>
+                    ))}
+                </div>
+
+                <div className={classes.userOrSignupContainer}>
+                    <UserOrSignupPlaceholder />
+                </div>
+
+                <button className={classes.menuToggle} onClick={toggleMenu}>
+                    &#8801;
+                </button>
+            </div>
+
+            {/* This is the mobile menu */}
+            {isExpanded ? <div className={cx(classes.mobileMenuContainer)}>
                 {menu && menu.map((item, index) => Array.isArray(item) ? (
-                    <div className={`${classes.menuGroup} ${selectedItem === item[0].name ? classes.selectedItem : ''}`}
+                    <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
                         key={index}
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={() => handleMouseLeave()}>
+                        onClick={() => handleMobileMenuGroupClick(item, index)}>
                         {item[0].name} {'\u25BE'}
                         {openDropdown === index && (
-                            <div className={classes.dropdownMenu}>
+                            <div>
                                 {item.slice(1).map((subItem, subIndex) => (
-                                    <div key={subIndex} className={classes.menuItem}
-                                        onClick={() => handleMenuDropdownClick(item, subIndex + 1)}>
+                                    <div key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleMenuItemClick(subItem);
+                                        }}>
                                         {subItem.name}
                                     </div>
                                 ))}
@@ -63,27 +113,26 @@ const TopNavBar = (props) => {
                 ) : (
                     <div
                         key={item.name}
-                        className={`${classes.menuItem} ${selectedItem === item.name ? classes.selectedItem : ''}`}
+                        className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
                         onClick={() => handleMenuItemClick(item)}>
                         {item.name}
                     </div>
                 ))}
-            </div>
+            </div> : null
+            }
 
-            <div className={classes.userOrSignupContainer}>
-                <UserOrSignupPlaceholder />
-            </div>
-
-            <button className={classes.menuToggle} onClick={toggleMenu}>
-                &#8801;
-            </button>
-        </div>
+        </div >
     );
 };
 
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-
+    columnAligner: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
     navBarContainer: {
         width: '100%',
         display: 'flex',
@@ -95,6 +144,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     logo: {
         width: '15%',
         height: 'auto',
+        padding: '0.5rem',
     },
     menuContainer: {
         display: 'flex',
@@ -107,6 +157,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
             display: 'none',
         },
     },
+    mobileMenuContainer: {
+        display: 'flex',
+        width: '100%',
+        background: theme.colors.encivYellow,
+        flexDirection: 'column',
+        justifyContent: 'center',
+
+        [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+            display: 'none',
+        },
+    },
     menuGroup: {
         cursor: 'default',
         background: 'none',
@@ -115,10 +176,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         margin: '0 0.25rem',
         borderBottom: '2px solid ${theme.colors.white}',
         color: theme.colors.textPrimary,
+        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+            cursor: 'pointer',
+        },
     },
     dropdownMenu: {
         position: 'absolute',
         background: theme.colors.encivYellow,
+        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+            width: '100%',
+        },
     },
     menuItem: {
         cursor: 'pointer',
