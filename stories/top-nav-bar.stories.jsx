@@ -1,6 +1,9 @@
-import React from 'react'
-import TopNavBar from '../app/components/top-nav-bar'
+import React from 'react';
+import TopNavBar from '../app/components/top-nav-bar';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import Common from './common';
+import { expect } from '@storybook/jest';
+import { userEvent, within } from "@storybook/testing-library";
 
 const menuFunc = (name) => {
     console.log(`Menu item ${name} clicked`)
@@ -49,4 +52,37 @@ export const SmallParentDiv = () => {
 export const LargeParentDiv = () => {
     return <div style={{ width: '1200px' }}><TopNavBar menu={menuArray} /></div>
 }
+
+export const ClickMenuItem = {
+    args: {
+        menu: menuArray
+    },
+    play: async ({ canvasElement }) => {
+        await Common.asyncSleep(1000);
+        const canvas = within(canvasElement);
+        const homeButton = canvas.getByText("Home");
+        userEvent.click(homeButton);
+        await Common.asyncSleep(600);
+
+        // expect the home button to be selected and have bottom border
+        expect(homeButton).toHaveClass("selectedItem");
+        expect(homeButton).toHaveStyle("border-bottom: 2px solid black");
+        // expect the other buttons to not have bottom border
+        const discussionPortalButton = canvas.getByText("Discussion Portal");
+        expect(discussionPortalButton).not.toHaveClass("selectedItem");
+        expect(discussionPortalButton).not.toHaveStyle("border-bottom: 2px solid black");
+        const blogButton = canvas.getByText("Blog");
+        expect(blogButton).not.toHaveClass("selectedItem");
+        expect(blogButton).not.toHaveStyle("border-bottom: 2px solid black");
+
+        // click the discussion portal button
+        userEvent.click(discussionPortalButton);
+        await Common.asyncSleep(600);
+        expect(discussionPortalButton).toHaveClass("selectedItem");
+        expect(discussionPortalButton).toHaveStyle("border-bottom: 2px solid black");
+
+
+    },
+}
+
 

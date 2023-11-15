@@ -2,10 +2,10 @@
 
 'use strict'
 
-import React, { useState } from 'react'
-import cx from 'classnames'
-import { createUseStyles } from 'react-jss'
-import SvgEncivBlack from '../svgr/enciv-black'
+import React, { useState } from 'react';
+import cx from 'classnames';
+import { createUseStyles } from 'react-jss';
+import SvgEncivBlack from '../svgr/enciv-black';
 
 // Placeholder for the user-or-signup component
 const UserOrSignupPlaceholder = () => {
