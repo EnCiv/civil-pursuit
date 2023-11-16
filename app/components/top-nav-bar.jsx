@@ -14,7 +14,7 @@ const UserOrSignupPlaceholder = () => {
 
 
 const TopNavBar = (props) => {
-    const { className, menu, defaultSelectedItem, ...otherProps } = props;
+    const { className, menu, mode, defaultSelectedItem, ...otherProps } = props;
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedItem, setSelectedItem] = useState(defaultSelectedItem);
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -141,9 +141,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        [`@media (min-width: ${theme.maxPanelWidth})`]: {
+            width: theme.maxPanelWidth,
+        },
     },
     navBarContainer: {
-        width: '100%',
+        width: '80%',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -153,7 +156,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     logo: {
         width: '15%',
         height: 'auto',
-        padding: '0.5rem',
+        paddingBottom: '1rem',
+
     },
     menuContainer: {
         display: 'flex',
@@ -172,7 +176,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         background: theme.colors.encivYellow,
         flexDirection: 'column',
         justifyContent: 'center',
-
         [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
             display: 'none',
         },
@@ -191,17 +194,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     dropdownMenu: {
         position: 'absolute',
-        background: theme.colors.encivYellow,
+        background: theme.colors.textBrown,
         display: 'flex',
         flexDirection: 'column',
-        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-            width: '100%',
-        },
     },
     mobileDropdownMenu: {
         display: 'flex',
         flexDirection: 'column',
-
+        padding: '0.25rem 0.25rem',
     },
     menuItem: {
         cursor: 'pointer',
