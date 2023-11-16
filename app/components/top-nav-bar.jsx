@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import SvgEncivBlack from '../svgr/enciv-black';
+import SvgEncivWhite from '../svgr/enciv-white';
 
 // Placeholder for the user-or-signup component
 const UserOrSignupPlaceholder = () => {
@@ -50,7 +51,8 @@ const TopNavBar = (props) => {
     return (
         <div className={cx(classes.columnAligner, className)} {...otherProps}>
             <div className={`${classes.navBarContainer}`}>
-                <SvgEncivBlack className={classes.logo} />
+                {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> :
+                    <SvgEncivBlack className={classes.logo} />}
 
                 {/* This is the computer menu */}
                 <menu className={classes.menuContainer}>
@@ -129,22 +131,23 @@ const TopNavBar = (props) => {
                     ))}
                 </menu> : null
             }
-
         </div >
     );
 };
 
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-    columnAligner: {
+    columnAligner: (props) => ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        color: props.mode === 'dark' ? 'white' : 'defaultColor',
+        backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'defaultColor',
         [`@media (min-width: ${theme.maxPanelWidth})`]: {
             width: theme.maxPanelWidth,
         },
-    },
+    }),
     navBarContainer: {
         width: '80%',
         display: 'flex',
@@ -157,7 +160,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         width: '15%',
         height: 'auto',
         paddingBottom: '1rem',
-
     },
     menuContainer: {
         display: 'flex',
@@ -186,18 +188,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         border: 'none',
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
-        color: theme.colors.textPrimary,
         whiteSpace: 'nowrap',
         [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
             cursor: 'pointer',
         },
     },
-    dropdownMenu: {
+    dropdownMenu: (props) => ({
         position: 'absolute',
-        background: theme.colors.textBrown,
+        background: props.mode === 'dark' ? 'grey' : theme.colors.encivYellow,
         display: 'flex',
         flexDirection: 'column',
-    },
+    }),
     mobileDropdownMenu: {
         display: 'flex',
         flexDirection: 'column',
@@ -209,16 +210,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         border: 'none',
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
-        color: theme.colors.textPrimary,
         whiteSpace: 'nowrap',
         textAlign: 'left',
         '&:hover': {
             background: theme.colors.hoverGray,
         },
     },
-    selectedItem: {
-        borderBottom: `0.125rem solid ${theme.colors.black}`,
-    },
+    selectedItem: (props) => ({
+        borderBottom: '0.125rem solid' + (props.mode === 'dark' ? theme.colors.white : theme.colors.black),
+    }),
     userOrSignupContainer: {
         position: 'absolute',
         top: 0,

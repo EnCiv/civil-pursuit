@@ -105,3 +105,9 @@ export const HoverMenuGroup = {
     },
 }
 
+export const DarkMode = {
+    args: {
+        menu: menuArray,
+        mode: "dark"
+    }
+}

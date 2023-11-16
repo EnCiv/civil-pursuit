@@ -13,10 +13,13 @@ const Theme = {
     textBrown: '#403105',
     encivYellow: '#FFC315',
     hoverGray: '#B3B3B3',
+    darkModeGray: '#343433',
+    lightGray: '#F7F7F7',
   },
   font: {
     fontFamily: 'Inter',
     fontStyle: 'normal',
+    darkModeFont: '#FFFFFF',
   },
   condensedWidthBreakPoint: '40rem',
   maxPanelWidth: '90rem',
