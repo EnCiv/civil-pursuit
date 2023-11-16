@@ -172,16 +172,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
             display: 'none',
         },
     },
-    mobileMenuContainer: {
+    mobileMenuContainer: (props) => ({
         display: 'flex',
-        width: '100%',
-        background: theme.colors.encivYellow,
+        width: '80%',
+        background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow,
         flexDirection: 'column',
         justifyContent: 'center',
         [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
             display: 'none',
         },
-    },
+    }),
     menuGroup: {
         cursor: 'default',
         background: 'none',
@@ -228,20 +228,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
             display: 'none',
         },
     },
-    menuToggle: {
+    menuToggle: (props) => ({
         width: '15%',
         height: 'auto',
-        fontSize: '2rem',
-        background: theme.colors.white,
+        fontSize: '1.5rem',
+        background: props.mode === 'dark' ? theme.colors.darkModeGray : 'defaultColor',
         border: 'none',
-        color: theme.colors.textPrimary,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
             display: 'none'
         },
         '&:hover': {
             background: theme.colors.hoverGray,
         },
-    },
+    }),
     menuList: {
         listStyle: 'none',
     },

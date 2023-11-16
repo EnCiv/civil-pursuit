@@ -111,3 +111,15 @@ export const DarkMode = {
         mode: "dark"
     }
 }
+
+export const DarkModeMobile = {
+    args: {
+        menu: menuArray,
+        mode: "dark"
+    },
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        },
+    },
+}
