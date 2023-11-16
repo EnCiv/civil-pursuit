@@ -101,8 +101,6 @@ function StepBar(props) {
       <div className={classes.selectInput} onClick={handleOpen} ref={selectRef}>
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>Select a Step</div>
-          {/* <SvgStepBarSelectArrowClosed width="20" height="20" /> */}
-
           {isOpen ? (
             <SvgStepBarSelectArrowOpen width="20" height="20" />
           ) : (

@@ -11,12 +11,13 @@ function Step(props) {
   const containerStyle = cx(
     classes.sharedContainerStyles,
     {
-      [classes.containerActive]: active && !complete,
-      [classes.containerInactiveComplete]: (!active && complete) || (!active && !complete) || (!active && !complete),
+      [classes.containerActive]: active,
+      [classes.containerInactiveComplete]: !active,
     },
     className
   )
-  const stepTextStyle = cx(
+
+  const textStyle = cx(
     classes.sharedTextStyles,
     {
       [classes.stepTextActive]: (active && !complete) || (!active && complete),
@@ -27,7 +28,7 @@ function Step(props) {
 
   return (
     <div className={containerStyle} {...otherProps}>
-      <div className={stepTextStyle}>{name}</div>
+      <div className={textStyle}>{name}</div>
     </div>
   )
 }
@@ -43,27 +44,27 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   containerInactiveComplete: {
-    background: '#FFF',
+    background: theme.colors.white,
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
     },
   },
 
   sharedTextStyles: {
+    ...theme.font,
     textAlign: 'start',
     fontSize: '1.125rem',
-    fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: '1.4375rem',
     whiteSpace: 'nowrap',
   },
 
   stepTextActive: {
-    color: '#06335C',
+    color: theme.colors.darkBlue,
   },
 
   stepTextInactiveIncomplete: {
-    color: '#D9D9D9',
+    color: theme.colors.lightGray,
   },
 }))
 
