@@ -14,9 +14,9 @@ const UserOrSignupPlaceholder = () => {
 
 
 const TopNavBar = (props) => {
-    const { className, menu, ...otherProps } = props;
+    const { className, menu, defaultSelectedItem, ...otherProps } = props;
     const [isExpanded, setIsExpanded] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(defaultSelectedItem);
     const [openDropdown, setOpenDropdown] = useState(null);
     const handleMouseEnter = (index) => { setOpenDropdown(index) };
     const handleMouseLeave = () => { setOpenDropdown(null) };
@@ -53,32 +53,36 @@ const TopNavBar = (props) => {
                 <SvgEncivBlack className={classes.logo} />
 
                 {/* This is the computer menu */}
-                <div className={classes.menuContainer}>
+                <menu className={classes.menuContainer}>
                     {menu && menu.map((item, index) => Array.isArray(item) ? (
-                        <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })} key={index}
-                            onMouseEnter={() => handleMouseEnter(index)}
-                            onMouseLeave={() => handleMouseLeave()}>
-                            {item[0].name} {'\u25BE'}
-                            {openDropdown === index && (
-                                <div className={classes.dropdownMenu}>
-                                    {item.slice(1).map((subItem, subIndex) => (
-                                        <div key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
-                                            onClick={() => handleMenuItemClick(subItem)}>
-                                            {subItem.name}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                        <li className={classes.menuList}>
+                            <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })} key={index}
+                                onMouseEnter={() => handleMouseEnter(index)}
+                                onMouseLeave={() => handleMouseLeave()}>
+                                {item[0].name} {'\u25BE'}
+                                {openDropdown === index && (
+                                    <div className={classes.dropdownMenu}>
+                                        {item.slice(1).map((subItem, subIndex) => (
+                                            <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                                onClick={() => handleMenuItemClick(subItem)}>
+                                                {subItem.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </li>
                     ) : (
-                        <div
-                            key={item.name}
-                            className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
-                            onClick={() => handleMenuItemClick(item)}>
-                            {item.name}
-                        </div>
+                        <li className={classes.menuList}>
+                            <button
+                                key={item.name}
+                                className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                                onClick={() => handleMenuItemClick(item)}>
+                                {item.name}
+                            </button>
+                        </li>
                     ))}
-                </div>
+                </menu>
 
                 <div className={classes.userOrSignupContainer}>
                     <UserOrSignupPlaceholder />
@@ -90,35 +94,40 @@ const TopNavBar = (props) => {
             </div>
 
             {/* This is the mobile menu */}
-            {isExpanded ? <div className={cx(classes.mobileMenuContainer)}>
-                {menu && menu.map((item, index) => Array.isArray(item) ? (
-                    <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
-                        key={index}
-                        onClick={() => handleMobileMenuGroupClick(item, index)}>
-                        {item[0].name} {'\u25BE'}
-                        {openDropdown === index && (
-                            <div>
-                                {item.slice(1).map((subItem, subIndex) => (
-                                    <div key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
-                                        onClick={(event) => {
-                                            event.stopPropagation();
-                                            handleMenuItemClick(subItem);
-                                        }}>
-                                        {subItem.name}
+            {
+                isExpanded ? <menu className={cx(classes.mobileMenuContainer)}>
+                    {menu && menu.map((item, index) => Array.isArray(item) ? (
+                        <li className={classes.menuList}>
+                            <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
+                                key={index}
+                                onClick={() => handleMobileMenuGroupClick(item, index)}>
+                                {item[0].name} {'\u25BE'}
+                                {openDropdown === index && (
+                                    <div className={classes.mobileDropdownMenu}>
+                                        {item.slice(1).map((subItem, subIndex) => (
+                                            <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    handleMenuItemClick(subItem);
+                                                }}>
+                                                {subItem.name}
+                                            </button>
+                                        ))}
                                     </div>
-                                ))}
+                                )}
                             </div>
-                        )}
-                    </div>
-                ) : (
-                    <div
-                        key={item.name}
-                        className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
-                        onClick={() => handleMenuItemClick(item)}>
-                        {item.name}
-                    </div>
-                ))}
-            </div> : null
+                        </li>
+                    ) : (
+                        <li className={classes.menuList}>
+                            <div
+                                key={item.name}
+                                className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                                onClick={() => handleMenuItemClick(item)}>
+                                {item.name}
+                            </div>
+                        </li>
+                    ))}
+                </menu> : null
             }
 
         </div >
@@ -174,8 +183,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         border: 'none',
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
-        borderBottom: '2px solid ${theme.colors.white}',
         color: theme.colors.textPrimary,
+        whiteSpace: 'nowrap',
         [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
             cursor: 'pointer',
         },
@@ -183,9 +192,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     dropdownMenu: {
         position: 'absolute',
         background: theme.colors.encivYellow,
+        display: 'flex',
+        flexDirection: 'column',
         [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
             width: '100%',
         },
+    },
+    mobileDropdownMenu: {
+        display: 'flex',
+        flexDirection: 'column',
+
     },
     menuItem: {
         cursor: 'pointer',
@@ -194,12 +210,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
         color: theme.colors.textPrimary,
+        whiteSpace: 'nowrap',
+        textAlign: 'left',
         '&:hover': {
             background: theme.colors.hoverGray,
         },
     },
     selectedItem: {
-        borderBottom: '2px solid',
+        borderBottom: `0.125rem solid ${theme.colors.black}`,
     },
     userOrSignupContainer: {
         position: 'absolute',
@@ -223,6 +241,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         '&:hover': {
             background: theme.colors.hoverGray,
         },
+    },
+    menuList: {
+        listStyle: 'none',
     },
 }));
 

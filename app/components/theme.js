@@ -6,6 +6,7 @@ const Theme = {
     success: '#005621',
     lightSuccess: '#E6F3EB',
     white: '#FFF',
+    black: '#000',
     borderGray: '#EBEBEB',
     title: '#1A1A1A',
     textPrimary: '#000000',
@@ -17,7 +18,8 @@ const Theme = {
     fontFamily: 'Inter',
     fontStyle: 'normal',
   },
-  condensedWidthBreakPoint: '600px',
+  condensedWidthBreakPoint: '40rem',
+  maxPanelWidth: '90rem',
 }
 
 export default Theme

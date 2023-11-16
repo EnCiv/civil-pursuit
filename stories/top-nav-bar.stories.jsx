@@ -53,6 +53,18 @@ export const LargeParentDiv = () => {
     return <div style={{ width: '1200px' }}><TopNavBar menu={menuArray} /></div>
 }
 
+export const XLargeParentDiv = () => {
+    return <div style={{ width: '2000px' }}><TopNavBar menu={menuArray} /></div>
+}
+
+export const DefaultSelectedHome = {
+    args: {
+        menu: menuArray,
+        defaultSelectedItem: "Home"
+    }
+}
+
+
 export const ClickMenuItem = {
     args: {
         menu: menuArray
@@ -64,25 +76,32 @@ export const ClickMenuItem = {
         userEvent.click(homeButton);
         await Common.asyncSleep(600);
 
-        // expect the home button to be selected and have bottom border
-        expect(homeButton).toHaveClass("selectedItem");
-        expect(homeButton).toHaveStyle("border-bottom: 2px solid black");
+        // expect the home button to be selected
+        expect(homeButton.className).toContain("selectedItem");
         // expect the other buttons to not have bottom border
         const discussionPortalButton = canvas.getByText("Discussion Portal");
-        expect(discussionPortalButton).not.toHaveClass("selectedItem");
-        expect(discussionPortalButton).not.toHaveStyle("border-bottom: 2px solid black");
+        expect(discussionPortalButton.className).not.toContain("selectedItem");
         const blogButton = canvas.getByText("Blog");
-        expect(blogButton).not.toHaveClass("selectedItem");
-        expect(blogButton).not.toHaveStyle("border-bottom: 2px solid black");
+        expect(blogButton.className).not.toContain("selectedItem");
 
         // click the discussion portal button
         userEvent.click(discussionPortalButton);
         await Common.asyncSleep(600);
-        expect(discussionPortalButton).toHaveClass("selectedItem");
-        expect(discussionPortalButton).toHaveStyle("border-bottom: 2px solid black");
-
-
+        expect(discussionPortalButton.className).toContain("selectedItem");
     },
 }
 
+export const HoverMenuGroup = {
+    args: {
+        menu: menuArray
+    },
+    play: async ({ canvasElement }) => {
+        await Common.asyncSleep(1000);
+        const canvas = within(canvasElement);
+        const aboutButton = canvas.getByText("About \u25BE");
+        userEvent.hover(aboutButton);
+        await Common.asyncSleep(600);
+
+    },
+}
 
