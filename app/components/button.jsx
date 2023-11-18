@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react';
 import { createUseStyles }  from 'react-jss';
-import cx from 'classnames'
+import cx from 'classnames';
 
 /**
  * Button component(without stretch goal version) that is styled using react-jss.
@@ -14,7 +14,6 @@ function Button(props) {
 
     const {
         className = "", // may or may not be passed. Should be applied to the outer most tag, after local classNames
-        style = {}, // may or may not be passed, Should be applied to the outer most tag
         onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
         title = "", // text to display on hover
         disabled = false, 
@@ -27,7 +26,7 @@ function Button(props) {
     const [parentIsHovered, setParentIsHovered] = useState(false);
 
     const classes = buttonStyles();
-    const combinedClassName = cx(classes.buttonBase, classes[className], className, { 'hover': parentIsHovered });
+    const combinedClassName = cx(classes.buttonBase, className, { 'hover': parentIsHovered });
 
     return (
         <button
@@ -52,15 +51,21 @@ function ModifierButton(props) {
 }
 
 function SecondaryButton(props) {
-    return <Button {...props} className="secondaryButton" />;
+    const { className, ...otherProps } = props;
+    const classes = buttonStyles();
+    return <Button {...otherProps} className={cx(classes.secondaryButton, className)} />;
 }
 
 function PrimaryButton(props) {
-    return <Button {...props} className="primaryButton" />;
+    const { className, ...otherProps } = props;
+    const classes = buttonStyles();
+    return <Button {...otherProps} className={cx(classes.primaryButton, className)} />;
 }
 
 function TextButton(props) {
-    return <Button {...props} className="textButton" />;
+    const { className, ...otherProps } = props;
+    const classes = buttonStyles();
+    return <Button {...otherProps} className={cx(classes.textButton, className)} />;
 }
 
 const buttonStyles = createUseStyles(theme => ({
@@ -75,20 +80,13 @@ const buttonStyles = createUseStyles(theme => ({
         lineHeight: '1.5rem',
         textAlign: 'center',
         // Add any other common styles here
-      },
+    },
 
     secondaryButton: {
         extend: 'buttonBase',
         backgroundColor: theme.colors.white,
         color: theme.colors.primaryButtonBlue, 
         border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-        '&:active': {
-            backgroundColor: theme.colors.primaryButtonBlue,
-            color: theme.colors.white, 
-            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-            textDecoration: 'none',
-        },
 
         '&:focus': {
         },
@@ -105,7 +103,15 @@ const buttonStyles = createUseStyles(theme => ({
             textDecoration: 'underline',
             backgroundColor: theme.colors.white,
             borderColor: theme.colors.primaryButtonBlue
-        }
+        },
+
+        '&:active': {
+            backgroundColor: theme.colors.primaryButtonBlue,
+            color: theme.colors.white, 
+            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+            textDecoration: 'none',
+        },
+
     },
 
     modifierButton: {
@@ -114,13 +120,6 @@ const buttonStyles = createUseStyles(theme => ({
         color: theme.colors.textBrown,
         border: `0.125rem solid ${theme.colors.encivYellow}`,
 
-        '&:active': {
-            backgroundColor: theme.colors.encivYellow,
-            color: theme.colors.textBrown,
-            border: `0.125rem solid ${theme.colors.encivYellow}`,
-            textDecoration: 'none',
-        },
-
         '&:focus': {
         },
 
@@ -128,7 +127,14 @@ const buttonStyles = createUseStyles(theme => ({
             textDecoration: 'underline',
             backgroundColor: theme.colors.white,
             borderColor: theme.colors.encivYellow
-        }
+        }, 
+
+        '&:active': {
+            backgroundColor: theme.colors.encivYellow,
+            color: theme.colors.textBrown,
+            border: `0.125rem solid ${theme.colors.encivYellow}`,
+            textDecoration: 'none',
+        },
     },
 
     primaryButton: {
@@ -136,12 +142,6 @@ const buttonStyles = createUseStyles(theme => ({
         backgroundColor: theme.colors.primaryButtonBlue,
         color: theme.colors.white,
         border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-        '&:active': {
-            backgroundColor: theme.colors.mouseDownPrimeBlue,
-            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-            textDecoration: 'none',
-        },
 
         '&:focus': {
         },
@@ -158,7 +158,13 @@ const buttonStyles = createUseStyles(theme => ({
             textDecoration: 'underline',
             backgroundColor: theme.colors.primaryButtonBlue,
             borderColor: theme.colors.primaryButtonBlue
-        }
+        },
+
+        '&:active': {
+            backgroundColor: theme.colors.mouseDownPrimeBlue,
+            border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+            textDecoration: 'none',
+        },
     },
 
     textButton: {
@@ -169,16 +175,16 @@ const buttonStyles = createUseStyles(theme => ({
         textAlign: 'left', 
         textDecoration: 'underline',
 
-        '&:active': {
-            color: theme.colors.title, 
-            textDecoration: 'none',
-        },
-
         '&:hover, &.hover': {
             textDecoration: 'underline',
             backgroundColor: 'transparent',
             borderColor: 'none'
-        }
+        },
+
+        '&:active': {
+            color: theme.colors.title, 
+            textDecoration: 'none',
+        },
     }
 }))
 

@@ -21,7 +21,6 @@ Base.args = {
 
 export const Secondary = Template(SecondaryButton).bind({});
 Secondary.args = {
-    style: {},
     onDone: null,
     title: "Press me",
     disabled: false,
@@ -31,7 +30,6 @@ Secondary.args = {
 
 export const Modifier = Template(ModifierButton).bind({});
 Modifier.args = {
-    style: {},
     onDone: null,
     title: "Press me",
     disabled: false,
@@ -41,7 +39,6 @@ Modifier.args = {
 
 export const Primary = Template(PrimaryButton).bind({});
 Primary.args = {
-    style: {},
     onDone: null,
     title: "Press me",
     disabled: false,
@@ -51,10 +48,19 @@ Primary.args = {
 
 export const Text = Template(TextButton).bind({});
 Text.args = {
-    style: {},
     onDone: null,
     title: "Press me",
     disabled: false,
     disableOnClick: false,
     children: "Text Button"
+};
+
+export const HoverTest = Template(SecondaryButton).bind({});
+HoverTest.args = {
+    classname: "hover",
+    onDone: null,
+    title: "Press me",
+    disabled: false,
+    disableOnClick: false,
+    children: "Hover State Button"
 };
