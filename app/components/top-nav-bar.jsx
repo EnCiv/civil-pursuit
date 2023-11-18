@@ -49,101 +49,111 @@ const TopNavBar = (props) => {
     };
 
     return (
-        <div className={cx(classes.columnAligner, className)} {...otherProps}>
-            <div className={`${classes.navBarContainer}`}>
-                {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> :
-                    <SvgEncivBlack className={classes.logo} />}
+        <div className={cx(classes.componentWrapper, className)} {...otherProps}>
+            <div className={classes.columnAligner}>
+                <div className={`${classes.navBarContainer}`}>
+                    {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> :
+                        <SvgEncivBlack className={classes.logo} />}
 
-                {/* This is the computer menu */}
-                <menu className={classes.menuContainer}>
-                    {menu && menu.map((item, index) => Array.isArray(item) ? (
-                        <li className={classes.menuList}>
-                            <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })} key={index}
-                                onMouseEnter={() => handleMouseEnter(index)}
-                                onMouseLeave={() => handleMouseLeave()}>
-                                {item[0].name} {'\u25BE'}
-                                {openDropdown === index && (
-                                    <div className={classes.dropdownMenu}>
-                                        {item.slice(1).map((subItem, subIndex) => (
-                                            <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
-                                                onClick={() => handleMenuItemClick(subItem)}>
-                                                {subItem.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </li>
-                    ) : (
-                        <li className={classes.menuList}>
-                            <button
-                                key={item.name}
-                                className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
-                                onClick={() => handleMenuItemClick(item)}>
-                                {item.name}
-                            </button>
-                        </li>
-                    ))}
-                </menu>
+                    {/* This is the computer menu */}
+                    <menu className={classes.menuContainer}>
+                        {menu && menu.map((item, index) => Array.isArray(item) ? (
+                            <li className={classes.menuList}>
+                                <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })} key={index}
+                                    onMouseEnter={() => handleMouseEnter(index)}
+                                    onMouseLeave={() => handleMouseLeave()}>
+                                    {item[0].name} {'\u25BE'}
+                                    {openDropdown === index && (
+                                        <div className={classes.dropdownMenu}>
+                                            {item.slice(1).map((subItem, subIndex) => (
+                                                <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                                    onClick={() => handleMenuItemClick(subItem)}>
+                                                    {subItem.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </li>
+                        ) : (
+                            <li className={classes.menuList}>
+                                <button
+                                    key={item.name}
+                                    className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                                    onClick={() => handleMenuItemClick(item)}>
+                                    {item.name}
+                                </button>
+                            </li>
+                        ))}
+                    </menu>
 
-                <div className={classes.userOrSignupContainer}>
-                    <UserOrSignupPlaceholder />
+                    <div className={classes.userOrSignupContainer}>
+                        <UserOrSignupPlaceholder />
+                    </div>
+
+                    <button className={classes.menuToggle} onClick={toggleMenu}>
+                        &#8801;
+                    </button>
                 </div>
 
-                <button className={classes.menuToggle} onClick={toggleMenu}>
-                    &#8801;
-                </button>
-            </div>
-
-            {/* This is the mobile menu */}
-            {
-                isExpanded ? <menu className={cx(classes.mobileMenuContainer)}>
-                    {menu && menu.map((item, index) => Array.isArray(item) ? (
-                        <li className={classes.menuList}>
-                            <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
-                                key={index}
-                                onClick={() => handleMobileMenuGroupClick(item, index)}>
-                                {item[0].name} {'\u25BE'}
-                                {openDropdown === index && (
-                                    <div className={classes.mobileDropdownMenu}>
-                                        {item.slice(1).map((subItem, subIndex) => (
-                                            <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
-                                                onClick={(event) => {
-                                                    event.stopPropagation();
-                                                    handleMenuItemClick(subItem);
-                                                }}>
-                                                {subItem.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </li>
-                    ) : (
-                        <li className={classes.menuList}>
-                            <div
-                                key={item.name}
-                                className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
-                                onClick={() => handleMenuItemClick(item)}>
-                                {item.name}
-                            </div>
-                        </li>
-                    ))}
-                </menu> : null
-            }
-        </div >
+                {/* This is the mobile menu */}
+                {
+                    isExpanded ? <menu className={cx(classes.mobileMenuContainer)}>
+                        {menu && menu.map((item, index) => Array.isArray(item) ? (
+                            <li className={classes.menuList}>
+                                <div className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
+                                    key={index}
+                                    onClick={() => handleMobileMenuGroupClick(item, index)}>
+                                    {item[0].name} {'\u25BE'}
+                                    {openDropdown === index && (
+                                        <div className={classes.mobileDropdownMenu}>
+                                            {item.slice(1).map((subItem, subIndex) => (
+                                                <button key={subIndex} className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === subItem.name })}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        handleMenuItemClick(subItem);
+                                                    }}>
+                                                    {subItem.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </li>
+                        ) : (
+                            <li className={classes.menuList}>
+                                <div
+                                    key={item.name}
+                                    className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                                    onClick={() => handleMenuItemClick(item)}>
+                                    {item.name}
+                                </div>
+                            </li>
+                        ))}
+                    </menu> : null
+                }
+            </div >
+        </div>
     );
 };
 
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+    componentWrapper: (props) => ({
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+        color: props.mode === 'dark' ? 'white' : 'defaultColor',
+    }),
+
     columnAligner: (props) => ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
-        color: props.mode === 'dark' ? 'white' : 'defaultColor',
-        backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'defaultColor',
         [`@media (min-width: ${theme.maxPanelWidth})`]: {
             width: theme.maxPanelWidth,
         },
@@ -210,6 +220,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         border: 'none',
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
+        fontSize: '1rem',
         whiteSpace: 'nowrap',
         textAlign: 'left',
         '&:hover': {
@@ -232,7 +243,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         width: '15%',
         height: 'auto',
         fontSize: '1.5rem',
-        background: props.mode === 'dark' ? theme.colors.darkModeGray : 'defaultColor',
+        background: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
         border: 'none',
         display: 'flex',
         justifyContent: 'center',

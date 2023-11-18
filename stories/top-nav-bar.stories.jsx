@@ -123,3 +123,12 @@ export const DarkModeMobile = {
         },
     },
 }
+
+export const VariableParentDiv = () => {
+    document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full with even through index.css has a media query keeping it at 982
+    return (
+        <div style={{ backgroundColor: 'gray' }}>
+            <TopNavBar menu={menuArray} />
+        </div>
+    )
+}
