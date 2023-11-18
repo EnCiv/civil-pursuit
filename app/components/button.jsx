@@ -28,6 +28,8 @@ function Button(props) {
     const classes = buttonStyles();
     const combinedClassName = cx(classes.buttonBase, className, { 'hover': parentIsHovered });
 
+    console.log(combinedClassName)
+
     return (
         <button
             className={combinedClassName}

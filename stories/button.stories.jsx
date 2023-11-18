@@ -57,7 +57,7 @@ Text.args = {
 
 export const HoverTest = Template(SecondaryButton).bind({});
 HoverTest.args = {
-    classname: "hover",
+    className: "hover",
     onDone: null,
     title: "Press me",
     disabled: false,
