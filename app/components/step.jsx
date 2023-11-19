@@ -1,4 +1,7 @@
 'use strict'
+
+// https://github.com/EnCiv/civil-pursuit/issues/46
+
 import React from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'

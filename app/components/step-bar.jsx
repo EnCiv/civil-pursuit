@@ -1,4 +1,7 @@
 'use strict'
+
+// https://github.com/EnCiv/civil-pursuit/issues/46
+
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
@@ -34,23 +37,26 @@ function StepBar(props) {
     setIsMobile(window.innerWidth < 50 * 16)
   }
 
-  useEffect(() => {
-    // let containerWidth = stepContainerRef.current.offsetWidth
-    // let totalWidth = 0
-    // for (let i = 0; i < stepRefs.length; i++) {
-    //   totalWidth += stepRefs[i].current.offsetWidth
-    //   if (totalWidth >= containerWidth) {
-    //     // stepRefs[i].current.children[0].style.overflow = 'hidden'
-    //     // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
-    //     // stepRefs[i].current.style.minWidth = 'auto'
-    //     console.log(stepRefs[i].current)
-    //     console.log(totalWidth, containerWidth, 'if case')
-    //   } else {
-    //     // stepRefs[i].current.style.minWidth = 'fit-content'
-    //     console.log(stepRefs[i].current)
-    //     console.log(totalWidth, containerWidth)
-    //   }
-    // }
+  useLayoutEffect(() => {
+    if (stepContainerRef.current) {
+      let containerWidth = stepContainerRef.current.offsetWidth
+      let totalWidth = 0
+      for (let i = 0; i < stepRefs.length; i++) {
+        totalWidth += stepRefs[i].current.offsetWidth
+        if (totalWidth >= containerWidth) {
+          // stepRefs[i].current.children[0].style.overflow = 'hidden'
+          // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
+          // stepRefs[i].current.style.minWidth = 'auto'
+          console.log(stepRefs[i].current)
+          console.log(totalWidth, containerWidth, 'if case')
+          break
+        } else {
+          // stepRefs[i].current.style.minWidth = 'fit-content'
+          console.log(stepRefs[i].current)
+          console.log(totalWidth, containerWidth)
+        }
+      }
+    }
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('mousedown', handleClickOutside)
