@@ -26,7 +26,7 @@ function Button(props) {
     const [isDisabled, setIsDisabled] = useState(disabled);
 
     const classes = buttonStyles();
-    const combinedClassName = cx(classes.buttonBase, className, { 'hover': parentIsHovered });
+    const combinedClassName = cx(classes.buttonBase, className);
 
     return (
         <button
