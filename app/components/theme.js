@@ -10,8 +10,10 @@ const Theme = {
     title: '#1A1A1A',
     textBrown: '#403105',
     encivYellow: '#FFC315',
-    darkBlue: '#06335C',
-    lightGray: '#D9D9D9',
+    disableSecBorderGray: '#5D5D5C',
+    disableTextBlack: '#343433',
+    primaryButtonBlue: '#06335C',
+    mouseDownPrimeBlue: '#01172C',
   },
   font: {
     fontFamily: 'Inter',
