@@ -3,9 +3,22 @@ import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 
 function PointInput(props) {
+    const { style, className, maxWordCount=30, defaultValue={subject: "", description: ""} } = props
     const classes = useStyles()
-    const [subject, setSubject] = useState('')
-    const [description, setDescription] = useState('')
+    const [subject, setSubject] = useState(defaultValue.subject)
+    const [description, setDescription] = useState(defaultValue.description)
+    const [wordCount, setWordCount] = useState(getWordCount(description))
+
+    function getWordCount(inputText) {
+        if(!inputText) return 0
+        return inputText.trim().split(/\s+/).length;
+    }
+
+    const isValidWordCount = inputText => {
+        const wordCount = getWordCount(inputText)
+        return wordCount > 0 && wordCount <= maxWordCount
+    }
+
 
     const handleSubjectChange = (value) => {
         setSubject(value)
@@ -13,6 +26,7 @@ function PointInput(props) {
 
     const handleDescriptionChange = (value) => {
         setDescription(value)
+        setWordCount(getWordCount(value))
     }
 
     return (
@@ -31,8 +45,8 @@ function PointInput(props) {
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     className={classes.description}>
-
                 </textarea>
+                <span className={classes.wordCount}>{wordCount} / {maxWordCount}</span>
             </div>
         </>
     )
@@ -77,6 +91,9 @@ const useStyles = createUseStyles(theme => ({
             ...sharedHoverStyle(theme),
         },
     },
+    wordCount: {
+        marginLeft: 'auto',
+    }
 }))
 
 const sharedPlaceholderStyle = theme => ({
