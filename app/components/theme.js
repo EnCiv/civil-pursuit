@@ -14,6 +14,7 @@ const Theme = {
     disableTextBlack: '#343433',
     primaryButtonBlue: '#06335C',
     mouseDownPrimeBlue: '#01172C',
+    lightGray: '#D9D9D9',
   },
   font: {
     fontFamily: 'Inter',

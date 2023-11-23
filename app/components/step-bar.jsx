@@ -38,25 +38,34 @@ function StepBar(props) {
   }
 
   useLayoutEffect(() => {
-    if (stepContainerRef.current) {
-      let containerWidth = stepContainerRef.current.offsetWidth
-      let totalWidth = 0
-      for (let i = 0; i < stepRefs.length; i++) {
-        totalWidth += stepRefs[i].current.offsetWidth
-        if (totalWidth >= containerWidth) {
-          // stepRefs[i].current.children[0].style.overflow = 'hidden'
-          // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
-          // stepRefs[i].current.style.minWidth = 'auto'
-          console.log(stepRefs[i].current)
-          console.log(totalWidth, containerWidth, 'if case')
-          break
-        } else {
-          // stepRefs[i].current.style.minWidth = 'fit-content'
-          console.log(stepRefs[i].current)
-          console.log(totalWidth, containerWidth)
-        }
-      }
-    }
+    // if (stepContainerRef.current) {
+    //   let containerWidth = stepContainerRef.current.offsetWidth
+    //   let totalWidth = 0
+    //   for (let i = 0; i < stepRefs.length; i++) {
+    //     totalWidth += stepRefs[i].current.offsetWidth
+    //     if (totalWidth >= containerWidth) {
+    //       // stepRefs[i].current.children[0].style.overflow = 'hidden'
+    //       // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
+    //       // stepRefs[i].current.style.minWidth = 'auto'
+    //       console.log(stepRefs[i].current)
+    //       console.log(totalWidth, containerWidth, 'if case')
+    //       break
+    //     } else {
+    //       // stepRefs[i].current.style.minWidth = 'fit-content'
+    //       console.log(stepRefs[i].current)
+    //       console.log(totalWidth, containerWidth)
+    //     }
+    //   }
+    // }
+
+    // plan:
+    // overflow prevents the rest of the steps from showing up
+    // the arrows chagne the left and right positioning of the div
+    // i think this is the best way to do it... check the unpoll repo
+    // do this by measuring the width: of the div and dividing it into x sections: depending on the max widith/visiblity width
+    // might need some sort of tracker to keep track of which 'page' you are on
+    // will have to be dynamic: the screen resolution / parent width may change as the screen size changes
+    // event listeners for screen resize
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('mousedown', handleClickOutside)

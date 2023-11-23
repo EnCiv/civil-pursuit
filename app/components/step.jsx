@@ -63,7 +63,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   stepTextActive: {
-    color: theme.colors.darkBlue,
+    color: theme.colors.primaryButtonBlue,
   },
 
   stepTextInactiveIncomplete: {
