@@ -166,11 +166,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         position: 'relative',
     },
     logo: {
-        width: '8rem',
+        width: '8.5rem',
         height: 'auto',
-        paddingBottom: '1rem',
+        paddingBottom: '1.5rem',
         [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-            width: '5rem',
+            width: '4rem',
         },
     },
     menuContainer: {
