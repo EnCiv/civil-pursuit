@@ -25,12 +25,11 @@ function Button(props) {
     } = props;
 
     const [isDisabled, setIsDisabled] = useState(disabled);
-    const [parentIsHovered, setParentIsHovered] = useState(false);
     const [isPortalOpen, setIsPortalOpen] = useState(false);
     const timeRef = useRef(null);
 
     const classes = buttonStyles();
-    const combinedClassName = cx(classes.buttonBase, className, { 'hover': parentIsHovered });
+    const combinedClassName = cx(classes.buttonBase, className);
 
     const handleMouseDown = () => {
         timeRef.current = setTimeout(() => {
@@ -50,7 +49,7 @@ function Button(props) {
             }
         };
     }, []);
-    const combinedClassName = cx(classes.buttonBase, className);
+    
 
     return (
         <div 
