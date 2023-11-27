@@ -144,6 +144,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        fontSize: '1rem',
         backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
         color: props.mode === 'dark' ? 'white' : 'defaultColor',
     }),
@@ -154,9 +155,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        [`@media (min-width: ${theme.maxPanelWidth})`]: {
-            width: theme.maxPanelWidth,
-        },
+        maxWidth: theme.maxPanelWidth,
     }),
     navBarContainer: {
         width: '80%',
@@ -167,9 +166,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         position: 'relative',
     },
     logo: {
-        width: '15%',
+        width: '8rem',
         height: 'auto',
         paddingBottom: '1rem',
+        [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+            width: '5rem',
+        },
     },
     menuContainer: {
         display: 'flex',
@@ -220,7 +222,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         border: 'none',
         padding: '0.5rem 1rem',
         margin: '0 0.25rem',
-        fontSize: '1rem',
         whiteSpace: 'nowrap',
         textAlign: 'left',
         '&:hover': {
