@@ -50,6 +50,7 @@ function Button(props) {
             }
         };
     }, []);
+    const combinedClassName = cx(classes.buttonBase, className);
 
     return (
         <div 
