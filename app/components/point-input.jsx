@@ -6,7 +6,7 @@ import autosize from 'autosize';
 // 100 character limit for subject
 
 function PointInput(props) {
-    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = { subject: "", description: "" }, onDone = (valid, values = { subject: "", description: "" }) => (valid, values) } = props
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = { subject: "", description: "" }, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}) } = props
     const classes = useStyles()
     const [subject, setSubject] = useState(defaultValue.subject)
     const [description, setDescription] = useState(defaultValue.description)
@@ -55,7 +55,7 @@ function PointInput(props) {
 
     const handleDescriptionBlur = () => {
         setIsDescFocused(false)
-        onDone((isSubjValid(subject) && isDescValid(description)), { subject: subject, description: description })
+        console.log(onDone((isSubjValid(subject) && isDescValid(description)), ({ subject: subject, description: description })))
     }
 
     return (
