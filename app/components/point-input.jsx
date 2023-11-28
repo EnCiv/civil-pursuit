@@ -58,7 +58,7 @@ function PointInput(props) {
                     onChange={(e) => handleSubjectChange(e.target.value)}
                     onFocus={() => setIsSubjFocused(true)}
                     onBlur={() => setIsSubjFocused(false)}
-                    className={classes.subject}>
+                    className={subjCharCount > 100 ? classes.subject + ' ' + classes.errorInput: classes.subject}>
 
                 </input>
                 {isSubjFocused && (<span
@@ -73,7 +73,7 @@ function PointInput(props) {
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     onBlur={handleDescriptionBlur}
                     onFocus={() => setIsDescFocused(true)}
-                    className={classes.description}>
+                    className={descWordCount > 30 ? classes.description + ' ' + classes.errorInput: classes.description}>
                 </textarea>
                 {isDescFocused && (<span
                     className={classes.wordCount}
@@ -104,6 +104,9 @@ const useStyles = createUseStyles(theme => ({
         },
         '&[type="text"]': {
             border: `0.0625rem solid ${theme.colors.borderGray}`,
+            color: theme.colors.title,
+            fontSize: '1rem',
+            lineHeight: '1.5rem'
         },
         '&[type="text"]:hover': {
             ...sharedHoverStyle(theme),
@@ -123,7 +126,27 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     wordCount: {
-        marginLeft: 'auto',
+        textAlign: 'right',
+        fontFamily: theme.font.fontFamily,
+        fontSize: '0.875rem',
+        fontStyle: 'normal',
+        fontWeight: '300',
+        lineHeight: '1.125rem'
+    },
+
+    errorInput: {
+        borderRadius: '0.25rem',
+        ...sharedErrorStyle(theme),
+        '&:hover': {
+            ...sharedErrorStyle(theme)
+        },
+        '&[type="text"]': {
+            ...sharedErrorStyle(theme)
+        },
+        '&[type="text"]:hover': {
+            ...sharedErrorStyle(theme)
+        }
+
     }
 }))
 
@@ -143,10 +166,17 @@ const sharedInputStyle = theme => ({
     border: `0.0625rem solid ${theme.colors.borderGray}`,
     backgroundColor: `${theme.colors.cardOutline}`,
     outline: 'none',
+    fontFamily: theme.font.fontFamily
 })
 
 const sharedHoverStyle = theme => ({
     backgroundColor: `${theme.colors.cardOutline}`
+})
+
+const sharedErrorStyle = theme => ({
+    border: `1px solid ${theme.colors.encivStatesError}`,
+    background: theme.colors.encivStatesErrorContainer,
+    color: theme.colors.encivStatesError,
 })
 
 

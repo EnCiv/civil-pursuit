@@ -11,6 +11,8 @@ const Theme = {
     textBrown: '#403105',
     encivYellow: '#FFC315',
     encivGray: '#5D5D5C',
+    encivStatesError: '#BF1300',
+    encivStatesErrorContainer: '#F9E7E5',
     cardOutline: '#FBFBFB'
   },
   font: {
