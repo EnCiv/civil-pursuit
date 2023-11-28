@@ -1,11 +1,12 @@
 'use strict'
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import autosize from 'autosize';
 
 // 100 character limit for subject
 
 function PointInput(props) {
-    const { style, className, maxWordCount = 30, maxCharCount = 100, defaultValue = { subject: "", description: "" }, onDone = (valid, values = { subject: "", description: "" }) => (valid, values) } = props
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = { subject: "", description: "" }, onDone = (valid, values = { subject: "", description: "" }) => (valid, values) } = props
     const classes = useStyles()
     const [subject, setSubject] = useState(defaultValue.subject)
     const [description, setDescription] = useState(defaultValue.description)
@@ -13,6 +14,15 @@ function PointInput(props) {
     const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(subject))
     const [isSubjFocused, setIsSubjFocused] = useState(false)
     const [isDescFocused, setIsDescFocused] = useState(false)
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        autosize(textareaRef.current)
+
+        return () => {
+            autosize.destroy(textareaRef.current)
+        }
+    }, [])
 
     function getDescWordCount(inputText) {
         if (!inputText) return 0
@@ -58,7 +68,7 @@ function PointInput(props) {
                     onChange={(e) => handleSubjectChange(e.target.value)}
                     onFocus={() => setIsSubjFocused(true)}
                     onBlur={() => setIsSubjFocused(false)}
-                    className={subjCharCount > 100 ? classes.subject + ' ' + classes.errorInput: classes.subject}>
+                    className={subjCharCount > maxCharCount ? classes.subject + ' ' + classes.errorInput: classes.subject}>
 
                 </input>
                 {isSubjFocused && (<span
@@ -68,12 +78,13 @@ function PointInput(props) {
                 </span>)}
 
                 <textarea
+                    ref={textareaRef}
                     placeholder="Description"
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     onBlur={handleDescriptionBlur}
                     onFocus={() => setIsDescFocused(true)}
-                    className={descWordCount > 30 ? classes.description + ' ' + classes.errorInput: classes.description}>
+                    className={descWordCount > maxWordCount ? classes.description + ' ' + classes.errorInput: classes.description}>
                 </textarea>
                 {isDescFocused && (<span
                     className={classes.wordCount}
@@ -116,7 +127,6 @@ const useStyles = createUseStyles(theme => ({
         ...sharedInputStyle(theme),
         resize: 'none',
         width: '100%',
-        // height:
         padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
         '&::placeholder': {
             ...sharedPlaceholderStyle(theme),
