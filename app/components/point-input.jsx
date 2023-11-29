@@ -3,13 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import autosize from 'autosize';
 
-// 100 character limit for subject
-
 function PointInput(props) {
-    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = { subject: "", description: "" }, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}) } = props
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}) } = props
     const classes = useStyles()
-    const [subject, setSubject] = useState(defaultValue.subject)
-    const [description, setDescription] = useState(defaultValue.description)
+    const [subject, setSubject] = useState(defaultValue?.subject ?? "")
+    const [description, setDescription] = useState(defaultValue?.description ?? "")
     const [descWordCount, setDescWordCount] = useState(getDescWordCount(description))
     const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(subject))
     const [isSubjFocused, setIsSubjFocused] = useState(false)
@@ -55,7 +53,7 @@ function PointInput(props) {
 
     const handleDescriptionBlur = () => {
         setIsDescFocused(false)
-        console.log(onDone((isSubjValid(subject) && isDescValid(description)), ({ subject: subject, description: description })))
+        onDone((isSubjValid(subject) && isDescValid(description)), ({ subject: subject, description: description }))
     }
 
     return (
@@ -71,7 +69,7 @@ function PointInput(props) {
                     className={subjCharCount > maxCharCount ? classes.subject + ' ' + classes.errorInput: classes.subject}>
 
                 </input>
-                {isSubjFocused && (<span
+                {(isSubjFocused || subjCharCount > maxCharCount) && (<span
                     className={classes.wordCount}
                 >
                     {subjCharCount} / {maxCharCount}
@@ -86,7 +84,7 @@ function PointInput(props) {
                     onFocus={() => setIsDescFocused(true)}
                     className={descWordCount > maxWordCount ? classes.description + ' ' + classes.errorInput: classes.description}>
                 </textarea>
-                {isDescFocused && (<span
+                {(isDescFocused || descWordCount > maxWordCount) && (<span
                     className={classes.wordCount}
                 >{descWordCount} / {maxWordCount}</span>)}
             </div>
