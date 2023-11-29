@@ -65,6 +65,8 @@
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.7",
     "@babel/runtime": "^7.12.5",
+    "@storybook/jest": "^0.2.3",
+    "@codastic/react-positioning-portal": "^0.7.0",
     "@svgr/cli": "^8.1.0",
     "autosize": "^3.0.15",
     "aws-sdk": "^2.353.0",

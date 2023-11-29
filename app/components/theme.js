@@ -6,19 +6,32 @@ const Theme = {
     success: '#005621',
     lightSuccess: '#E6F3EB',
     white: '#FFF',
+    black: '#000',
     borderGray: '#EBEBEB',
     title: '#1A1A1A',
+    textPrimary: '#000000',
     textBrown: '#403105',
     encivYellow: '#FFC315',
     encivGray: '#5D5D5C',
     encivStatesError: '#BF1300',
     encivStatesErrorContainer: '#F9E7E5',
-    cardOutline: '#FBFBFB'
+    cardOutline: '#FBFBFB',
+    disableSecBorderGray: '#5D5D5C',
+    disableTextBlack: '#343433',
+    primaryButtonBlue: '#06335C',
+    mouseDownPrimeBlue: '#01172C',
+    hoverGray: '#B3B3B3',
+    darkModeGray: '#343433',
+    lightGray: '#F7F7F7',
+
   },
   font: {
     fontFamily: 'Inter',
     fontStyle: 'normal',
+    darkModeFont: '#FFFFFF',
   },
+  condensedWidthBreakPoint: '40rem',
+  maxPanelWidth: '90rem',
 }
 
 export default Theme
