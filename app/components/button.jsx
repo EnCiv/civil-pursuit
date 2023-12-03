@@ -43,16 +43,18 @@ function Button(props) {
     }
 
     useEffect(() => {
-        return () => {
-            if (timeRef.current) {
-                clearTimeout(timeRef.current);
-            }
-        };
-    }, []);
+        if (isPortalOpen) {
+            const displayTime = Math.min(8, 0.1 * title.length) * 1000;
+            const timeout = setTimeout(() => {
+                setIsPortalOpen(false);
+            }, displayTime);
+            return () => clearTimeout(timeout);
+        }
+    }, [isPortalOpen, title.length]);
     
 
     return (
-        <div 
+        <span 
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
@@ -60,9 +62,9 @@ function Button(props) {
             <PositioningPortal
                 isOpen={isPortalOpen}
                 portalContent={
-                    <div>
+                    <span>
                         {title}
-                    </div>
+                    </span>
             }>
                 <button
                     className={combinedClassName}
@@ -78,7 +80,7 @@ function Button(props) {
                 </button>
             </PositioningPortal>
             
-        </div>
+        </span>
         
     )
 }
