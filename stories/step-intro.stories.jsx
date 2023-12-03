@@ -1,5 +1,5 @@
 import React from 'react';
-import  { StepIntro } from '../app/components/step-intro';
+import StepIntro from '../app/components/step-intro';
 
 export default {
     title: "StepIntro",
@@ -13,6 +13,15 @@ export const oneParagh = Template(StepIntro).bind({});
 oneParagh.args = {
     style: {},
     className: "",
-    subject: "test1",
-    description: "fhnewoanho fdsiahfoivnd doivn difhnondo dsoinewo vndsoinoew do",
+    subject: "oneParagh",
+    description: "fhnewoanho fdsiahfoivnd doivn difhnondo dsoinewo vndsoinoew do dsjafoimsalkifmoiewjvoindcoinvoiewnaoifmoli fneiudsahnbfindsoinfoie ndsiuanfiuwne  fndislknfoiw",
+};
+
+
+export const twoParagh = Template(StepIntro).bind({});
+twoParagh.args = {
+    style: {},
+    className: "",
+    subject: "twoParagh",
+    description: "fhnewoanho fdsiahfoivnd doivn difhnondo dsoinewo vndsoinoew do dsjafoimsalkifmoiewjvoindcoinvoiewnaoifmoli fneiudsahnbfindsoinfoie ndsiuanfiuwne  fndislknfoiw \\n foiehfoidniosafniouewnnfcndsioanfoiwe",
 };

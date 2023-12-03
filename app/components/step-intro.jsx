@@ -24,7 +24,6 @@ const StepIntro = (props) => {
       <div className={combinedClassName}>
         <h1 className={classes.title}>{subject}</h1>
         <h3 className={classes.paragraph}>{paragraphs}</h3>
-        {/* <hr className={classes.horizontalLine} /> */}
       </div>
     );
   };
@@ -35,6 +34,8 @@ const StepIntro = (props) => {
       // Add your common styles here
       fontFamily: 'Inter',
       fontStyle: 'normal',
+      paddingBottom: '4.375rem',
+      borderBottom: '1px solid #D9D9D9', 
     },
 
     title: {
@@ -49,12 +50,6 @@ const StepIntro = (props) => {
         fontSize: '1.25rem',
         fontWeight: 400,
         lineHeight: '1.875rem',
-    },
-
-    horizontalLine: {
-      // Style for the horizontal line at the bottom
-      borderTop: '1px solid black',
-      width: '100%',
     },
   }));
   
