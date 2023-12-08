@@ -3,7 +3,7 @@
 This is a tool to enable large scale deliberation online. It leads people through a discussion process, not chat, that engages them in finding what they agree on. The process stages are derived from in-person dialog and deliberation but here they can be automated and made to scale to support very large numbers of participants.
 
 [<img width="638" alt="image" src="https://user-images.githubusercontent.com/3317487/233766186-d63eb3d3-4015-4551-bb00-7ff4403c64b5.png">](https://civilpursuit.herokuapp.com/item/pvote)
-
+[Clink here to try it](https://civilpursuit.herokuapp.com/item/pvote)
 
 ## License
 
@@ -31,10 +31,13 @@ cd civil-pursuit
 npm install
 
 ```
+
 For the first stages of this project, we will be focusing on storybook
+
 ```
 npm run storybook
 ```
+
 ### MongoDB
 
 This app uses MONGODB and you will need a mongodb uri to get started. Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
@@ -48,26 +51,31 @@ export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongo
 Note that it's confusing but user-name and db-name can be anything. You pick them when you create the database, and you use them in this URI string. That's all.
 
 After you get Mongo setup, you also need these ENV variable in your .bashrc file
+
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
 export MONGODB_URI=$MONGODB_URI
 ```
+
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
+
 ```
 npm run dev
 ```
+
 It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
 So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
 ### Dev Environment for Easy Project Switching
+
 This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
 
-In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it.  If neither exist, create both just to be sure.
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
 if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
@@ -75,7 +83,98 @@ if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     source ./.bashrc
 fi
 ```
+
 This works great when you open a terminal in a project directory, for example when you are using visual studio code.
+
+# React Component guidelines and notes:
+<details>
+    <summary>General notes on react component boilerplate stuff. Also, we want to state the 'why' for each guideline.</summary>
+
+These notes are pretty general and always open to reevaluation.
+
+**my-component.js**
+```js
+// https://github.com/EnCiv/civil-pursuit/issue/NUMBER
+import React from 'react'
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
+
+export default function MyComponent(props) {
+    const { className, ...otherProps } = props
+    const classes = useStylesFromThemeFunction(props)
+    // otherProps is gathered from props and expanded into to the outer tag so that
+    // the parent of this component can pass in things like style or onHover or whatever
+    // allowing this component to be as extensible as possible without recoding
+    return (
+        <div className={cx(classes.wrapper, className)} {...otherProps}>
+            Hello World
+        </div>
+    )
+}
+
+// we want to see the code first, so we put the classes at the bottom
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+    wrapper: {
+        background: theme.colorPrimary,
+        padding: '1rem',
+    },
+}))
+````
+
+1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme so that absolute values like colors can be given names and shared across components. 
+
+2. The theme is in [**app/theme.js**](https://github.com/EnCiv/civil-pursuit/blob/master/app/theme.js). We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components. To see examples of how to use the theme and what colors, sizes and other styling information are currently part of the theme, we can also check out the 'Theme Examples' Storybook stories and its code at [**stories/theme.stories.js**](https://github.com/EnCiv/undebate-ssp/blob/main/stories/theme.stories.js).
+
+3. As in the above example, generally components should accept all props, extract out the ones that are specific to the component, and expand all the other props into the outer tag of what's being rendered. For props that are used by this component, like className (or style), but would also be passed down from a parent, this component should combine it's values with the values being passed down - as in using cx(className, classes.wrapper). 
+
+4. To make components responsive, do not use 'px'. We need to convert this to 'rem', 'em', 'vw', or 'vh' as appropriate to make the components responsive. Figma now has a developers mode where you can get the output in rem rather than pixels.  See [Figma now supports REM](https://uxdesign.cc/figma-now-supports-rem-units-understanding-the-use-and-benefits-5957fc1ecb78)
+
+5. Most components should take their width from the parent - not set the width. They should have no margin (whitespace around the component), and expect their their parent will apply padding as necessary. - This makes it easier for parent component to line up their children.  If different child components have different built in white space, it's hard for the parent to line them up. 
+
+7. File names should be all lowercase, use '-' between words, and end in .js (.jsx should be reserved for react class based components). Some OS's are case sensitive others are not.
+
+8. We are using storybook to build stories for each component.  This makes it quicker and easier to build and iterate the component. Then, after it's done we have a great test cases and a great visual library of all the components. Within the stories/my-component.stories.js file for a component, create multiple stories that exercise the functionality of the component. - Future contributors are going to come back to the story to see how the component works - or to test it for some new situation.  See the stories director for examples.
+
+9. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
+
+10. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
+ </details>
+
+# Icons, Figma and SVG
+
+<details>
+    <summary>You can export svg from figma and paste it into a .svg file in assets/svg to create icons.</summary>
+
+For example assets/svg/trash-can.svg
+
+```
+<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 6.58661H5H21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6.58661V4.58661C8 4.05618 8.21071 3.54747 8.58579 3.1724C8.96086 2.79732 9.46957 2.58661 10 2.58661H14C14.5304 2.58661 15.0391 2.79732 15.4142 3.1724C15.7893 3.54747 16 4.05618 16 4.58661V6.58661M19 6.58661V20.5866C19 21.117 18.7893 21.6257 18.4142 22.0008C18.0391 22.3759 17.5304 22.5866 17 22.5866H7C6.46957 22.5866 5.96086 22.3759 5.58579 22.0008C5.21071 21.6257 5 21.117 5 20.5866V6.58661H19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+
+This project will automatically convert the files in assets/svg into react.js files in app/svgr on install. After you add a new file you can manually trigger the conversion with:
+
+```
+npm run svgr
+```
+
+Then you can use these svg files as React components in your code like this:
+
+```
+import TrashCan from '../svgr'
+
+function renderSomething(){
+    return <SvgTrashCan />
+}
+```
+
+</details>
+
+#
 
 # The rest of this is from the old README file and may be dated
 

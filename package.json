@@ -29,7 +29,9 @@
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && npm run server\" \"sleep 55 && npm run client\"",
     "devprod": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"npm run watch-less\" \"sleep 45 && nodemon dist/server/start.js\" \"sleep 55 && webpack --config webpack-prod.config.js --watch\"",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr"
   },
   "author": {
     "email": "davidfridley@enciv.org",
@@ -63,6 +65,9 @@
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.7",
     "@babel/runtime": "^7.12.5",
+    "@storybook/jest": "^0.2.3",
+    "@codastic/react-positioning-portal": "^0.7.0",
+    "@svgr/cli": "^8.1.0",
     "autosize": "^3.0.15",
     "aws-sdk": "^2.353.0",
     "babel-loader": "^8.0.4",
@@ -113,7 +118,7 @@
     "react-dom": "^16.8.6",
     "react-flip-move": "^3.0.3",
     "react-hot-loader": "^4.8.4",
-    "react-jss": "^8.6.1",
+    "react-jss": "^10.10.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-proactive-accordion": "github:ddfridley/react-proactive-accordion",
     "redtea": "^3.4.1",
@@ -138,21 +143,24 @@
     "webrtc-adapter": "^7.2.0"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^7.3.2",
-    "@storybook/addon-essentials": "^7.3.2",
-    "@storybook/addon-interactions": "^7.3.2",
-    "@storybook/addon-links": "^7.3.2",
+    "@storybook/addon-a11y": "^7.5.3",
+    "@storybook/addon-actions": "^7.5.3",
+    "@storybook/addon-essentials": "^7.5.3",
+    "@storybook/addon-interactions": "^7.5.3",
+    "@storybook/addon-links": "^7.5.3",
     "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/addons": "^7.3.2",
-    "@storybook/blocks": "^7.3.2",
-    "@storybook/react": "^7.3.2",
-    "@storybook/react-webpack5": "^7.3.2",
-    "@storybook/testing-library": "^0.2.0",
+    "@storybook/addons": "^7.5.3",
+    "@storybook/blocks": "^7.5.3",
+    "@storybook/react": "^7.5.3",
+    "@storybook/react-webpack5": "^7.5.3",
+    "@storybook/test-runner": "^0.14.0",
+    "@storybook/testing-library": "^0.2.2",
+    "axe-playwright": "^1.2.3",
     "concurrently": "3.6.1",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.7",
     "expect": "^23.6.0",
     "nodemon": "1.18.9",
-    "storybook": "^7.3.2"
+    "storybook": "^7.5.3"
   }
 }
