@@ -14,7 +14,7 @@ const Theme = {
     encivYellow: '#FFC315',
     encivGray: '#5D5D5C',
     encivStatesError: '#BF1300',
-    encivStatesErrorContainer: '#F9E7E5',
+    inputErrorContainer: '#F9E7E5',
     cardOutline: '#FBFBFB',
     disableSecBorderGray: '#5D5D5C',
     disableTextBlack: '#343433',

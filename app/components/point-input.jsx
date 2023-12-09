@@ -10,8 +10,6 @@ function PointInput(props) {
     const [description, setDescription] = useState(defaultValue?.description ?? "")
     const [descWordCount, setDescWordCount] = useState(getDescWordCount(description))
     const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(subject))
-    const [isSubjFocused, setIsSubjFocused] = useState(false)
-    const [isDescFocused, setIsDescFocused] = useState(false)
     const textareaRef = useRef(null);
 
     useEffect(() => {
@@ -51,44 +49,41 @@ function PointInput(props) {
         setDescWordCount(getDescWordCount(value))
     }
 
-    const handleDescriptionBlur = () => {
-        setIsDescFocused(false)
+    const handleOnBlur = () => {
         onDone((isSubjValid(subject) && isDescValid(description)), ({ subject: subject, description: description }))
     }
 
     return (
-        <>
             <div className={classes.container}>
                 <input
                     type="text"
                     placeholder='Type some thing here'
                     value={subject}
                     onChange={(e) => handleSubjectChange(e.target.value)}
-                    onFocus={() => setIsSubjFocused(true)}
-                    onBlur={() => setIsSubjFocused(false)}
+                    // onFocus={() => setIsSubjFocused(true)}
+                    onBlur={handleOnBlur}
                     className={subjCharCount > maxCharCount ? classes.subject + ' ' + classes.errorInput: classes.subject}>
 
                 </input>
-                {(isSubjFocused || subjCharCount > maxCharCount) && (<span
+                <span
                     className={classes.wordCount}
                 >
                     {subjCharCount} / {maxCharCount}
-                </span>)}
+                </span>
 
                 <textarea
                     ref={textareaRef}
                     placeholder="Description"
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
-                    onBlur={handleDescriptionBlur}
-                    onFocus={() => setIsDescFocused(true)}
+                    onBlur={handleOnBlur}
+                    // onFocus={() => setIsDescFocused(true)}
                     className={descWordCount > maxWordCount ? classes.description + ' ' + classes.errorInput: classes.description}>
                 </textarea>
-                {(isDescFocused || descWordCount > maxWordCount) && (<span
+                <span
                     className={classes.wordCount}
-                >{descWordCount} / {maxWordCount}</span>)}
+                >{descWordCount} / {maxWordCount}</span>
             </div>
-        </>
     )
 };
 
@@ -183,7 +178,7 @@ const sharedHoverStyle = theme => ({
 
 const sharedErrorStyle = theme => ({
     border: `1px solid ${theme.colors.encivStatesError}`,
-    background: theme.colors.encivStatesErrorContainer,
+    background: theme.colors.inputErrorContainer,
     color: theme.colors.encivStatesError,
 })
 
