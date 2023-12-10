@@ -1,10 +1,11 @@
 'use strict'
 import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import cx from 'classnames';
 import autosize from 'autosize';
 
 function PointInput(props) {
-    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}) } = props
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}), ...otherProps} = props
     const classes = useStyles()
     const [subject, setSubject] = useState(defaultValue?.subject ?? "")
     const [description, setDescription] = useState(defaultValue?.description ?? "")
@@ -54,19 +55,18 @@ function PointInput(props) {
     }
 
     return (
-            <div className={classes.container}>
+            <div className={cx(classes.container, className)} {...otherProps}>
                 <input
                     type="text"
                     placeholder='Type some thing here'
                     value={subject}
                     onChange={(e) => handleSubjectChange(e.target.value)}
-                    // onFocus={() => setIsSubjFocused(true)}
                     onBlur={handleOnBlur}
-                    className={subjCharCount > maxCharCount ? classes.subject + ' ' + classes.errorInput: classes.subject}>
+                    className={subjCharCount > maxCharCount ? cx(classes.subject, classes.sharedInputStyle, classes.errorInput): cx(classes.subject, classes.sharedInputStyle)}>
 
                 </input>
                 <span
-                    className={classes.wordCount}
+                    className={subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount}
                 >
                     {subjCharCount} / {maxCharCount}
                 </span>
@@ -77,11 +77,10 @@ function PointInput(props) {
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     onBlur={handleOnBlur}
-                    // onFocus={() => setIsDescFocused(true)}
-                    className={descWordCount > maxWordCount ? classes.description + ' ' + classes.errorInput: classes.description}>
+                    className={descWordCount > maxWordCount ? cx(classes.description, classes.sharedInputStyle, classes.errorInput): cx(classes.description, classes.sharedInputStyle)}>
                 </textarea>
                 <span
-                    className={classes.wordCount}
+                    className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}
                 >{descWordCount} / {maxWordCount}</span>
             </div>
     )
@@ -93,21 +92,24 @@ const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        top: '4.0625rem',
-        left: '2.75rem',
         gap: '0.625rem',
         width: '100%',
-        height: '13.125rem',
+    },
+    sharedInputStyle: {
+        radius: '0.25rem',
+        border: `0.0625rem solid ${theme.colors.inputBorder}`,
+        backgroundColor: `${theme.colors.cardOutline}`,
+        outline: 'none',
+        fontFamily: theme.font.fontFamily
     },
     subject: {
-        ...sharedInputStyle(theme),
         padding: '0.9375rem',
         height: '2.8125rem',
         '&::placeholder': {
             ...sharedPlaceholderStyle(theme),
         },
         '&[type="text"]': {
-            border: `0.0625rem solid ${theme.colors.borderGray}`,
+            border: `0.0625rem solid ${theme.colors.inputBorder}`,
             color: theme.colors.title,
             fontSize: '1rem',
             lineHeight: '1.5rem'
@@ -117,7 +119,6 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     description: {
-        ...sharedInputStyle(theme),
         resize: 'none',
         width: '100%',
         padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
@@ -129,14 +130,9 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     wordCount: {
-        textAlign: 'right',
-        fontFamily: theme.font.fontFamily,
-        fontSize: '0.875rem',
-        fontStyle: 'normal',
-        fontWeight: '300',
-        lineHeight: '1.125rem'
+        color: theme.colors.inputWordCount,
+        ...sharedWordCountStyle(theme),
     },
-
     errorInput: {
         borderRadius: '0.25rem',
         ...sharedErrorStyle(theme),
@@ -149,12 +145,14 @@ const useStyles = createUseStyles(theme => ({
         '&[type="text"]:hover': {
             ...sharedErrorStyle(theme)
         }
-
+    },
+    errorWordCount: {
+        color: theme.colors.inputErrorWordCount,
+        ...sharedWordCountStyle(theme)
     }
 }))
 
 const sharedPlaceholderStyle = theme => ({
-    width: '31.6875rem',
     height: '1.5rem',
     opacity: '50%',
     font: theme.font.fontFamily,
@@ -164,22 +162,23 @@ const sharedPlaceholderStyle = theme => ({
     color: theme.colors.encivGray,
 })
 
-const sharedInputStyle = theme => ({
-    radius: '0.25rem',
-    border: `0.0625rem solid ${theme.colors.borderGray}`,
-    backgroundColor: `${theme.colors.cardOutline}`,
-    outline: 'none',
-    fontFamily: theme.font.fontFamily
-})
-
 const sharedHoverStyle = theme => ({
     backgroundColor: `${theme.colors.cardOutline}`
 })
 
 const sharedErrorStyle = theme => ({
-    border: `1px solid ${theme.colors.encivStatesError}`,
+    border: `1px solid ${theme.colors.inputErrorBorder}`,
     background: theme.colors.inputErrorContainer,
-    color: theme.colors.encivStatesError,
+    color: theme.colors.inputErrorBorder,
+})
+
+const sharedWordCountStyle = theme => ({
+    textAlign: 'right',
+    fontFamily: theme.font.fontFamily,
+    fontSize: '0.875rem',
+    fontStyle: 'normal',
+    fontWeight: '300',
+    lineHeight: '1.125rem'
 })
 
 
