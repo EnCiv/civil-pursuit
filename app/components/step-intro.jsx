@@ -17,13 +17,13 @@ const StepIntro = (props) => {
     const combinedClassName = cx(classes.stepIntro, className);
 
     const paragraphs = description.split('\\n').map((paragraph, index) => (
-      <p key={index}>{paragraph}</p>
+      <p key={index} className={classes.paragraph}>{paragraph}</p>
     ));
   
     return (
       <div className={combinedClassName}>
         <h1 className={classes.title}>{subject}</h1>
-        <h3 className={classes.paragraph}>{paragraphs}</h3>
+        {paragraphs}
       </div>
     );
   };
@@ -43,6 +43,7 @@ const StepIntro = (props) => {
         fontSize: '2.25rem', 
         fontWeight: 300,
         lineHeight: '2.9375rem',
+        fontFamily: 'Inter',
     },
 
     paragraph: {
@@ -50,6 +51,7 @@ const StepIntro = (props) => {
         fontSize: '1.25rem',
         fontWeight: 400,
         lineHeight: '1.875rem',
+        fontFamily: 'Inter',
     },
   }));
   
