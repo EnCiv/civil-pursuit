@@ -39,12 +39,12 @@ function Button(props) {
 
     const handleMouseUp = () => {
         clearTimeout(timeRef.current);
-        setIsPortalOpen(false);
+        setTimeout(() => setIsPortalOpen(false), displayTime);
     }
 
     useEffect(() => {
         if (isPortalOpen) {
-            const displayTime = Math.min(8, 0.1 * title.length) * 1000;
+            const displayTime = Math.max(8, 0.1 * title.length) * 1000;
             const timeout = setTimeout(() => {
                 setIsPortalOpen(false);
             }, displayTime);
