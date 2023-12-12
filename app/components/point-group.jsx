@@ -6,6 +6,26 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import Point from './point.jsx';
+import PointLeadButton from './point-lead-button.jsx';
+
+
+
+// vState for Point: default, selected, disabled, collapsed
+const CreatePoint = (pointObj, vState, children = null) => {
+  const { subject, description, groupedPoints } = pointObj;
+  return (
+    <Point
+      subject={subject}
+      description={description}
+      vState={vState}
+      children={children}
+      groupedPoints={groupedPoints}
+    />
+  )
+}
+
+
+
 
 const PointGroup = (props) => {
   const { pointObj, vState, className, ...otherProps } = props;
@@ -24,7 +44,7 @@ const PointGroup = (props) => {
 
   return (
     <div>
-      {pointObj}
+      {CreatePoint(pointObj, 'default', <PointLeadButton vState="default" />)}
       <p>This is the content of the App component.</p>
     </div>
   );
