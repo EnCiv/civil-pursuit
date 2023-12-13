@@ -10,6 +10,7 @@ import PointLeadButton from './point-lead-button.jsx';
 
 
 
+
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children = null) => {
   const { subject, description, groupedPoints } = pointObj;
@@ -28,11 +29,17 @@ const CreatePoint = (pointObj, vState, children = null) => {
 
 
 const PointGroup = (props) => {
-  const { pointObj, vState, className, ...otherProps } = props;
+  const { pointObj, defaultVState, className, ...otherProps } = props;
+
+  // vState for pointGroup: ['default', 'edit', 'view', 'selectLead']
+  const [vState, setVState] = useState(defaultVState);
 
   const classes = useStylesFromThemeFunction();
 
   const [isHovered, setIsHovered] = useState(false);
+
+  const { subject, description, groupedPoints } = pointObj;
+
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -43,15 +50,101 @@ const PointGroup = (props) => {
   };
 
   return (
-    <div>
-      {CreatePoint(pointObj, 'default', <PointLeadButton vState="default" />)}
-      <p>This is the content of the App component.</p>
+    <div className={cx(className)}{...otherProps}>
+      {vState == 'SelectLead' ? (
+        <div>
+        </div>
+      ) : (
+        <div className={cx(classes.borderStyle)}>
+          <div className={classes.contentContainer}>
+            <div className={classes.informationGrid}>
+              {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+              {description && (
+                <div className={cx(classes.descriptionStyle)}>{description}</div>
+              )}
+              {vState == 'default' && (
+                <div>
+                  <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>
+                  <button className={classes.ungroupButton}>Ungroup</button>
+                </div>
+              )}
+              {vState == 'edit' && (
+                <div>
+                  <button className={classes.editButton} onClick={() => setVState('default')}>Done</button>
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+  borderStyle: {
+    borderRadius: '0.9375rem',
+    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+  },
 
+  subjectStyle: {
+    ...theme.font,
+    fontSize: '1.25rem',
+    fontWeight: '400',
+    lineHeight: '1.875rem',
+  },
+
+  descriptionStyle: {
+    ...theme.font,
+    alignSelf: 'stretch',
+    fontSize: '1rem',
+    fontWeight: '400',
+    lineHeight: '1.5rem',
+  },
+
+  contentContainer: {
+    padding: '2.1875rem 1.875rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '0.625rem',
+  },
+
+  informationGrid: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '0.9375rem',
+    alignSelf: 'stretch',
+  },
+
+  editButton: {
+    ...theme.font,
+    backgroundColor: theme.colors.white,
+    color: 'black',
+    border: 'solid 0.125rem' + theme.colors.encivYellow,
+    borderRadius: '0.5rem',
+    padding: '0.625rem 2.75rem',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    outline: 'none',
+  },
+
+  ungroupButton: {
+    ...theme.font,
+    backgroundColor: theme.colors.white,
+    color: 'black',
+    border: 'none',
+    borderRadius: '0.5rem',
+    padding: '0.625rem 2.75rem',
+    fontSize: '0.9rem',
+    fontWeight: '500',
+    cursor: 'pointer',
+    outline: 'none',
+    textDecoration: 'underline',
+  }
 }));
 
 export default PointGroup;

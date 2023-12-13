@@ -47,10 +47,10 @@ const point5 = createPointObj("5", "Point 5", "Point 5 Description", [point2, po
 
 export const Empty = () => { return <PointGroup /> };
 
-export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' } };
-export const EditSingPoint = { args: { pointObj: point1, vState: 'edit' } };
-export const ViewSinglePoint = { args: { pointObj: point1, vState: 'view' } };
+export const DefaultSinglePoint = { args: { pointObj: point1, defaultVState: 'default' } };
+export const EditSingPoint = { args: { pointObj: point1, defaultVState: 'edit' } };
+export const ViewSinglePoint = { args: { pointObj: point1, defaultVState: 'view' } };
 
-export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } };
-export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } };
-export const viewMultiplePoints = { args: { pointObj: point5, vState: 'view' } };
+export const defaultMultiplePoints = { args: { pointObj: point5, defaultVState: 'default' } };
+export const editMultiplePoints = { args: { pointObj: point5, defaultVState: 'edit' } };
+export const viewMultiplePoints = { args: { pointObj: point5, defaultVState: 'view' } };
