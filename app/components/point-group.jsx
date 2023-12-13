@@ -26,6 +26,9 @@ const CreatePoint = (pointObj, vState, children = null) => {
 }
 
 
+const RemovePoint = () => {
+  return
+}
 
 
 const PointGroup = (props) => {
@@ -70,7 +73,16 @@ const PointGroup = (props) => {
               )}
               {vState == 'edit' && (
                 <div>
-                  <button className={classes.editButton} onClick={() => setVState('default')}>Done</button>
+                  <div>
+                    <p>Edit the response you'd like to lead with</p>
+                    {groupedPoints.map(point => {
+                      return CreatePoint(point, 'default', <PointLeadButton />)
+                    })}
+                  </div>
+                  <div>
+                    <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>
+                    <button className={classes.ungroupButton}>Ungroup</button>
+                  </div>
                 </div>
               )}
 
@@ -138,13 +150,26 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: 'black',
     border: 'none',
     borderRadius: '0.5rem',
-    padding: '0.625rem 2.75rem',
     fontSize: '0.9rem',
     fontWeight: '500',
     cursor: 'pointer',
     outline: 'none',
     textDecoration: 'underline',
-  }
+    marginLeft: '1rem',
+  },
+
+  doneButton: {
+    ...theme.font,
+    backgroundColor: theme.colors.white,
+    color: 'black',
+    border: 'solid 0.125rem #000f4f',
+    borderRadius: '0.5rem',
+    padding: '0.625rem 4.75rem',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    outline: 'none',
+  },
 }));
 
 export default PointGroup;
