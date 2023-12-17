@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/44
+
 'use strict'
 import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
@@ -5,7 +7,8 @@ import cx from 'classnames';
 import autosize from 'autosize';
 
 function PointInput(props) {
-    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, onDone = (valid=false, values = { subject: "", description: "" }) => ({valid, ...values}), ...otherProps} = props
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, ...otherProps} = props
+    let { onDone } = props;
     const classes = useStyles()
     const [subject, setSubject] = useState(defaultValue?.subject ?? "")
     const [description, setDescription] = useState(defaultValue?.description ?? "")
@@ -30,6 +33,14 @@ function PointInput(props) {
         return inputText.length
     }
 
+
+    onDone = onDone ?? function onDone(valid=false, values={subject: "", description: ""}) {
+        return {
+            valid,
+            ...values
+        }
+    }
+
     const isDescValid = inputText => {
         const wordCount = getDescWordCount(inputText)
         return wordCount > 0 && wordCount <= maxWordCount
@@ -51,7 +62,7 @@ function PointInput(props) {
     }
 
     const handleOnBlur = () => {
-        onDone((isSubjValid(subject) && isDescValid(description)), ({ subject: subject, description: description }))
+        onDone((isSubjValid(subject) && isDescValid(description)), ({ subject, description }))
     }
 
     return (
@@ -62,7 +73,8 @@ function PointInput(props) {
                     value={subject}
                     onChange={(e) => handleSubjectChange(e.target.value)}
                     onBlur={handleOnBlur}
-                    className={subjCharCount > maxCharCount ? cx(classes.subject, classes.sharedInputStyle, classes.errorInput): cx(classes.subject, classes.sharedInputStyle)}>
+                    className={cx(classes.subject, classes.sharedInputStyle, (subjCharCount > maxCharCount && classes.errorInput))}
+                    >
 
                 </input>
                 <span
@@ -77,7 +89,8 @@ function PointInput(props) {
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     onBlur={handleOnBlur}
-                    className={descWordCount > maxWordCount ? cx(classes.description, classes.sharedInputStyle, classes.errorInput): cx(classes.description, classes.sharedInputStyle)}>
+                    className={cx(classes.description, classes.sharedInputStyle, (descWordCount > maxWordCount && classes.errorInput))}
+                    >
                 </textarea>
                 <span
                     className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}
