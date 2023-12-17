@@ -7,8 +7,7 @@ import cx from 'classnames';
 import autosize from 'autosize';
 
 function PointInput(props) {
-    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, ...otherProps} = props
-    let { onDone } = props;
+    const { style={}, className="", maxWordCount = 30, maxCharCount = 100, defaultValue = {description: "", subject: ""}, onDone = ()=>{}, ...otherProps} = props
     const classes = useStyles()
     const [subject, setSubject] = useState(defaultValue?.subject ?? "")
     const [description, setDescription] = useState(defaultValue?.description ?? "")
@@ -33,13 +32,6 @@ function PointInput(props) {
         return inputText.length
     }
 
-
-    onDone = onDone ?? function onDone(valid=false, values={subject: "", description: ""}) {
-        return {
-            valid,
-            ...values
-        }
-    }
 
     const isDescValid = inputText => {
         const wordCount = getDescWordCount(inputText)
