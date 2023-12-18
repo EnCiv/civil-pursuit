@@ -60,6 +60,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '600',
     lineHeight: '1.4375rem',
     whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   },
 
   stepTextActive: {

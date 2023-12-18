@@ -2,7 +2,7 @@
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
@@ -12,7 +12,7 @@ import SvgStepBarSelectArrowClosed from '../svgr/step-bar-select-arrow-closed'
 // import ReactScrollBar from './util/react-scrollbar'
 
 function StepBar(props) {
-  const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
+  const { className, style, steps = [], current = 0, onDone = () => { }, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -22,6 +22,7 @@ function StepBar(props) {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
   const [isOpen, setIsOpen] = useState(false)
+  const [stepGrid, setStepGrid] = useState({})
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -37,45 +38,70 @@ function StepBar(props) {
     setIsMobile(window.innerWidth < 50 * 16)
   }
 
+  // look at this some more... usememo? callback? and maybe change the .slice in the object to a more data-driven set
+  const createStepGrid = useCallback(() => {
+    if (stepContainerRef.current) {
+      let containerWidth = stepContainerRef.current.offsetWidth;
+      let totalWidth = 0;
+      let grid = 1;
+      let sliceStart = 0;
+      let sliceEnd = 0;
+      let dummyStepGrid = {};
+
+      for (let i = 0; i < stepRefs.length; i++) {
+        totalWidth += stepRefs[i].current.offsetWidth;
+        sliceEnd += 1;
+        if (sliceEnd === i + 1) {
+          dummyStepGrid[`Grid${grid}`] = `slice(${sliceStart})`;
+        }
+
+        if (totalWidth >= containerWidth) {
+          dummyStepGrid[`Grid${grid}`] = `slice(${sliceStart}, ${sliceEnd})`;
+          sliceStart = sliceEnd;
+          grid += 1;
+          totalWidth = 0;
+        }
+      }
+
+
+      setStepGrid(prevStepGrid => {
+        // Compare values directly to avoid unnecessary updates
+        if (
+          Object.keys(dummyStepGrid).length === Object.keys(prevStepGrid).length &&
+          Object.keys(dummyStepGrid).every(key => dummyStepGrid[key] === prevStepGrid[key])
+        ) {
+          return prevStepGrid;
+        }
+        return dummyStepGrid;
+      });
+    }
+  }, [stepContainerRef, stepRefs]);
+
+  const memoizedCreateStepGrid = useMemo(() => createStepGrid, [createStepGrid]);
+
   useLayoutEffect(() => {
-    // if (stepContainerRef.current) {
-    //   let containerWidth = stepContainerRef.current.offsetWidth
-    //   let totalWidth = 0
-    //   for (let i = 0; i < stepRefs.length; i++) {
-    //     totalWidth += stepRefs[i].current.offsetWidth
-    //     if (totalWidth >= containerWidth) {
-    //       // stepRefs[i].current.children[0].style.overflow = 'hidden'
-    //       // stepRefs[i].current.children[0].style.textOverflow = 'ellipsis'
-    //       // stepRefs[i].current.style.minWidth = 'auto'
-    //       console.log(stepRefs[i].current)
-    //       console.log(totalWidth, containerWidth, 'if case')
-    //       break
-    //     } else {
-    //       // stepRefs[i].current.style.minWidth = 'fit-content'
-    //       console.log(stepRefs[i].current)
-    //       console.log(totalWidth, containerWidth)
-    //     }
-    //   }
-    // }
+    if (!isMobile) {
+      memoizedCreateStepGrid();
+      console.log(stepGrid)
+    }
 
-    // plan:
-    // overflow prevents the rest of the steps from showing up
-    // the arrows chagne the left and right positioning of the div
-    // i think this is the best way to do it... check the unpoll repo
-    // do this by measuring the width: of the div and dividing it into x sections: depending on the max widith/visiblity width
-    // might need some sort of tracker to keep track of which 'page' you are on
-    // will have to be dynamic: the screen resolution / parent width may change as the screen size changes
-    // event listeners for screen resize
-
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('mousedown', handleClickOutside)
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-      window.addEventListener('mousedown', handleClickOutside)
-    }
-  }, [stepRefs])
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [memoizedCreateStepGrid, isMobile, handleResize, handleClickOutside]);
 
+  // plan:
+  // overflow prevents the rest of the steps from showing up
+  // the arrows chagne the left and right positioning of the div
+  // i think this is the best way to do it... check the unpoll repo
+  // do this by measuring the width: of the div and dividing it into x sections: depending on the max widith/visiblity width
+  // might need some sort of tracker to keep track of which 'page' you are on
+  // will have to be dynamic: the screen resolution / parent width may change as the screen size changes
+  // event listeners for screen resize
   return !isMobile ? (
     <div className={classes.container} style={style}>
       <SvgStepBarArrowPale
@@ -89,7 +115,6 @@ function StepBar(props) {
           return (
             <div ref={stepRefs[index]} className={classes.stepDiv}>
               <Step
-                ref={stepRefs[index]}
                 key={index}
                 name={step.name}
                 title={step.title}
@@ -131,7 +156,6 @@ function StepBar(props) {
               {steps.map((step, index) => {
                 return (
                   <Step
-                    ref={stepRefs[index]}
                     key={index}
                     name={step.name}
                     title={step.title}
@@ -158,14 +182,14 @@ function StepBar(props) {
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
-    display: 'inline-flex',
+    display: 'flex',
     background: '#FFF',
     alignItems: 'center',
     maxHeight: '4.9375rem',
   },
 
   stepsContainer: {
-    display: 'inline-flex',
+    display: 'flex',
     padding: '0rem 0.625rem',
     height: '3.5rem',
     alignItems: 'center',
@@ -174,13 +198,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   stepDiv: {
-    // display: 'inline-block',
-    // overflow: 'hidden',
-    // minWidth: 'fit-content',
-    // display: 'flex',
-    // minWidth: 'fit-content',
-    // whiteSpace: 'nowrap',
-    // textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    flexShrink: 0
+  },
+
+  lastVisibleStep: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 
   //mobile styles
