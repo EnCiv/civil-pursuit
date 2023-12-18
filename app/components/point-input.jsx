@@ -54,7 +54,7 @@ function PointInput(props) {
     }
 
     const handleOnBlur = () => {
-        onDone((isSubjValid(subject) && isDescValid(description)), ({ subject, description }))
+        onDone({valid: isSubjValid(subject) && isDescValid(description), value: {subject, description}})
     }
 
     return (
