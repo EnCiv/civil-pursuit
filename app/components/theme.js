@@ -12,6 +12,13 @@ const Theme = {
     textPrimary: '#000000',
     textBrown: '#403105',
     encivYellow: '#FFC315',
+    encivGray: '#5D5D5C',
+    inputBorder: '#EBEBEB',
+    inputErrorBorder: '#BF1300',
+    inputErrorContainer: '#F9E7E5',
+    inputWordCount: '#5D5D5C',
+    inputErrorWordCount: '#BF1300',
+    cardOutline: '#FBFBFB',
     disableSecBorderGray: '#5D5D5C',
     disableTextBlack: '#343433',
     primaryButtonBlue: '#06335C',
@@ -33,7 +40,7 @@ const Theme = {
 export default Theme
 
 // NOTES:
-/* 
+/*
 If you try to reference the theme object within itself, storybook may complain about circular references. Here is an example of a
 proper format for doing so:
 
@@ -45,6 +52,6 @@ Theme.styles = {
     primary: { color: Theme.colors.primary },
 };
 
-Note that Theme.styles if outside of the Theme object. This works since we are exporting as default: the entire object and any changes 
+Note that Theme.styles if outside of the Theme object. This works since we are exporting as default: the entire object and any changes
 to it are exported as well.
 */
