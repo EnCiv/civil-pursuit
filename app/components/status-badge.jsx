@@ -6,7 +6,7 @@ import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
 
 function StatusBadge(props) {
-    const { style={}, className="", name="", status="error", number=undefined, ...otherProps} = props;
+    const { style = {}, className = "", name = "", status = "", number = undefined, ...otherProps } = props;
     const classes = useStyles();
 
     const statusMapping = {
@@ -19,7 +19,10 @@ function StatusBadge(props) {
     return (
         <span className={cx(classes.container, classes[status.toLowerCase()])}>
             <span className={classes.status}>{statusMapping[status.toLowerCase()]}</span>
-            <span className={classes.number}>{number}</span>
+            {
+                number !== undefined && number !== null && (
+                    <span className={classes.number}>{Number(number)}</span>
+                )}
         </span>
     )
 }
