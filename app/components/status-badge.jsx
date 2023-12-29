@@ -6,7 +6,7 @@ import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
 
 function StatusBadge(props) {
-    const { style={}, className="", name="", status="progress", number=undefined, ...otherProps} = props;
+    const { style={}, className="", name="", status="error", number=undefined, ...otherProps} = props;
     const classes = useStyles();
 
     const statusMapping = {
@@ -18,7 +18,8 @@ function StatusBadge(props) {
 
     return (
         <span className={cx(classes.container, classes[status.toLowerCase()])}>
-            {statusMapping[status.toLowerCase()]}
+            <span className={classes.status}>{statusMapping[status.toLowerCase()]}</span>
+            <span className={classes.number}>{number}</span>
         </span>
     )
 }
@@ -31,6 +32,15 @@ const useStyles = createUseStyles(theme => ({
         borderStyle: 'solid',
         padding: '0.375rem 0.625rem',
         fontFamily: theme.font.fontFamily,
+    },
+    status: {
+        fontWeight: '300',
+        lineHeight: '1.375rem',
+    },
+    number: {
+        fontWeight: '600',
+        lineHeight: '1.125rem',
+        marginLeft: '1rem'
     },
     progress: {
         borderColor: theme.colors.statusBadgeProgressBorder,
