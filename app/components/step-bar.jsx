@@ -182,14 +182,14 @@ function StepBar(props) {
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
-    display: 'flex',
+    display: 'inline-flex',
     background: '#FFF',
     alignItems: 'center',
     maxHeight: '4.9375rem',
   },
 
   stepsContainer: {
-    display: 'flex',
+    display: 'inline-flex',
     padding: '0rem 0.625rem',
     height: '3.5rem',
     alignItems: 'center',
@@ -198,11 +198,37 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   stepDiv: {
+    display: 'inline-block',
     overflow: 'hidden',
+    minWidth: 'fit-content',
+    display: 'flex',
+    minWidth: 'fit-content',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
-    flexShrink: 0
   },
+
+  // container: {
+  //   display: 'flex',
+  //   background: '#FFF',
+  //   alignItems: 'center',
+  //   maxHeight: '4.9375rem',
+  // },
+
+  // stepsContainer: {
+  //   display: 'flex',
+  //   padding: '0rem 0.625rem',
+  //   height: '3.5rem',
+  //   alignItems: 'center',
+  //   overflow: 'hidden',
+  //   justifyContent: 'flex-start',
+  // },
+
+  // stepDiv: {
+  //   overflow: 'hidden',
+  //   whiteSpace: 'nowrap',
+  //   textOverflow: 'ellipsis',
+  //   flexShrink: 0
+  // },
 
   lastVisibleStep: {
     whiteSpace: 'nowrap',
