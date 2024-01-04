@@ -61,23 +61,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.4375rem',
     whiteSpace: 'nowrap',
   },
-  // sharedTextStyles: {
-  //   ...theme.font,
-  //   textAlign: 'start',
-  //   fontSize: '1.125rem',
-  //   fontWeight: '600',
-  //   lineHeight: '1.4375rem',
-  //   whiteSpace: 'nowrap',
-  //   overflow: 'hidden',
-  //   textOverflow: 'ellipsis'
-  // },
 
   stepTextActive: {
     color: theme.colors.primaryButtonBlue,
   },
 
   stepTextInactiveIncomplete: {
-    color: theme.colors.lightGray,
+    color: theme.colors.inactiveGray,
   },
 }))
 

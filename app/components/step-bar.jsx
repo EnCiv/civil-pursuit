@@ -12,7 +12,7 @@ import SvgStepBarSelectArrowClosed from '../svgr/step-bar-select-arrow-closed'
 // import ReactScrollBar from './util/react-scrollbar'
 
 function StepBar(props) {
-  const { className, style, steps = [], current = 0, onDone = () => { }, ...otherProps } = props
+  const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -22,7 +22,10 @@ function StepBar(props) {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
   const [isOpen, setIsOpen] = useState(false)
-  const [stepGrid, setStepGrid] = useState({})
+  const [firstStepIndex, setFirstStepIndex] = useState(0)
+  const [prevFirstStepIndex, setPrevFirstStepIndex] = useState(0)
+  const [lastStepIndex, setLastStepIndex] = useState(0)
+  const [visibleSteps, setVisibleSteps] = useState(steps)
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -36,72 +39,80 @@ function StepBar(props) {
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 50 * 16)
+    handleCarouselSetup()
   }
 
-  // look at this some more... usememo? callback? and maybe change the .slice in the object to a more data-driven set
-  const createStepGrid = useCallback(() => {
-    if (stepContainerRef.current) {
-      let containerWidth = stepContainerRef.current.offsetWidth;
-      let totalWidth = 0;
-      let grid = 1;
-      let sliceStart = 0;
-      let sliceEnd = 0;
-      let dummyStepGrid = {};
+  /**
+   * Debounces a function to be called after a specified delay
+   * @param {Function} func - The function to debounce.
+   * @param {number} delay - The delay (in milliseconds) after which the function should be called.
+   * @returns {Function} - The debounced function.
+   */
+  function debounce(func, delay) {
+    let timeoutId
 
-      for (let i = 0; i < stepRefs.length; i++) {
-        totalWidth += stepRefs[i].current.offsetWidth;
-        sliceEnd += 1;
-        if (sliceEnd === i + 1) {
-          dummyStepGrid[`Grid${grid}`] = `slice(${sliceStart})`;
+    return function (...args) {
+      clearTimeout(timeoutId)
+
+      timeoutId = setTimeout(() => {
+        func.apply(this, args)
+      }, delay)
+    }
+  }
+
+  /* The carousel functionality implemented in this React component dynamically adjusts the number of
+   visible steps based on the container's width. The handleCarouselSetup function, debounced for optimization, 
+   calculates visible steps by accumulating their widths within the container. Arrow clicks shift the visible step 
+   range accordingly. The carousel is responsive to window resizing, and event listeners manage interactions. */
+
+  const handleCarouselSetup = useCallback(
+    debounce(() => {
+      let containerWidth = stepContainerRef?.current?.offsetWidth
+      let currentWidth = 0
+      for (let i = firstStepIndex; i < stepRefs.length; i++) {
+        currentWidth += stepRefs[i]?.current?.offsetWidth
+
+        if (i === stepRefs.length - 1) {
+          setVisibleSteps(steps.slice(firstStepIndex))
+          setLastStepIndex(i)
+          break
         }
 
-        if (totalWidth >= containerWidth) {
-          dummyStepGrid[`Grid${grid}`] = `slice(${sliceStart}, ${sliceEnd})`;
-          sliceStart = sliceEnd;
-          grid += 1;
-          totalWidth = 0;
+        if (currentWidth > containerWidth) {
+          setVisibleSteps(steps.slice(firstStepIndex, i + 1))
+          setLastStepIndex(i)
+          break
         }
       }
+      console.log('here')
+    }, 300), // Adjust the debounce delay as needed
+    []
+  )
 
+  const rightClick = () => {
+    console.log('here')
+    setPrevFirstStepIndex(firstStepIndex)
+    setFirstStepIndex(lastStepIndex)
+  }
 
-      setStepGrid(prevStepGrid => {
-        // Compare values directly to avoid unnecessary updates
-        if (
-          Object.keys(dummyStepGrid).length === Object.keys(prevStepGrid).length &&
-          Object.keys(dummyStepGrid).every(key => dummyStepGrid[key] === prevStepGrid[key])
-        ) {
-          return prevStepGrid;
-        }
-        return dummyStepGrid;
-      });
-    }
-  }, [stepContainerRef, stepRefs]);
-
-  const memoizedCreateStepGrid = useMemo(() => createStepGrid, [createStepGrid]);
+  const leftClick = () => {
+    setFirstStepIndex(prevFirstStepIndex)
+  }
 
   useLayoutEffect(() => {
     if (!isMobile) {
-      memoizedCreateStepGrid();
-      console.log(stepGrid)
+      handleCarouselSetup()
     }
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('mousedown', handleClickOutside)
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [memoizedCreateStepGrid, isMobile, handleResize, handleClickOutside]);
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMobile, firstStepIndex])
 
-  // plan:
-  // overflow prevents the rest of the steps from showing up
-  // the arrows chagne the left and right positioning of the div
-  // i think this is the best way to do it... check the unpoll repo
-  // do this by measuring the width: of the div and dividing it into x sections: depending on the max widith/visiblity width
-  // might need some sort of tracker to keep track of which 'page' you are on
-  // will have to be dynamic: the screen resolution / parent width may change as the screen size changes
-  // event listeners for screen resize
   return !isMobile ? (
     <div className={classes.container} style={style}>
       <SvgStepBarArrowPale
@@ -111,7 +122,7 @@ function StepBar(props) {
         style={{ transform: 'rotate(180deg)', flexShrink: '0' }}
       />
       <div className={classes.stepsContainer} ref={stepContainerRef}>
-        {steps.map((step, index) => {
+        {visibleSteps.map((step, index) => {
           return (
             <div ref={stepRefs[index]} className={classes.stepDiv}>
               <Step
@@ -132,7 +143,9 @@ function StepBar(props) {
           )
         })}
       </div>
-      <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
+      <div onClick={rightClick}>
+        <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
+      </div>
     </div>
   ) : (
     <div className={classes.mobileContainer}>
@@ -203,34 +216,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     minWidth: 'fit-content',
     display: 'flex',
     minWidth: 'fit-content',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-
-  // container: {
-  //   display: 'flex',
-  //   background: '#FFF',
-  //   alignItems: 'center',
-  //   maxHeight: '4.9375rem',
-  // },
-
-  // stepsContainer: {
-  //   display: 'flex',
-  //   padding: '0rem 0.625rem',
-  //   height: '3.5rem',
-  //   alignItems: 'center',
-  //   overflow: 'hidden',
-  //   justifyContent: 'flex-start',
-  // },
-
-  // stepDiv: {
-  //   overflow: 'hidden',
-  //   whiteSpace: 'nowrap',
-  //   textOverflow: 'ellipsis',
-  //   flexShrink: 0
-  // },
-
-  lastVisibleStep: {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   },

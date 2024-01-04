@@ -22,7 +22,6 @@
 
 html {
   margin: 0;
-  font-size: 13px;
 
 }
 
@@ -42,12 +41,13 @@ body {
   @media (max-width: @screen-phone) {
     padding-left: 2px;
     padding-right: 2px;
-    padding-top: calc(@syn-topbar-height-up-to-phone); /** top bar is smaller on phones **/
+    padding-top: calc(@syn-topbar-height-up-to-phone);
+    /** top bar is smaller on phones **/
   }
 }
 
-.syn-small-layout{
-  .logup-bar{
+.syn-small-layout {
+  .logup-bar {
     position: fixed;
     top: 0;
     left: 0;
@@ -58,8 +58,8 @@ body {
   }
 }
 
-.syn-top_bar-wrapper-inner{
-  .logup-bar{
+.syn-top_bar-wrapper-inner {
+  .logup-bar {
     background-color: @syn-gold-overlay;
     max-width: @syn-max-width-center-column;
     margin: auto;
