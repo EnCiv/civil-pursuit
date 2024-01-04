@@ -4,6 +4,7 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import '../../assets/css/white_boxes.css'
 
 function Point(props) {
   const { subject, description, vState, children, className, ...otherProps } = props
@@ -28,6 +29,7 @@ function Point(props) {
   })
 
   return (
+    <div class="sk_bg big">
     <div
       className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)}
       {...otherProps}
@@ -43,6 +45,7 @@ function Point(props) {
           {childrenWithProps}
         </div>
       </div>
+    </div>
     </div>
   )
 }

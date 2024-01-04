@@ -7,6 +7,7 @@ function DemInfoTestComponent(props) {
   const { vState } = props
   const theme = Theme
   return (
+    <div class="sk_bg big">
     <div
       style={{
         color: vState === 'selected' ? theme.colors.success : '#5D5D5C',
@@ -18,6 +19,7 @@ function DemInfoTestComponent(props) {
     >
       DemInfo | Component
     </div>
+   </div>
   )
 }
 
