@@ -171,6 +171,14 @@ function renderSomething(){
     return <SvgTrashCan />
 }
 ```
+When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and now padding around it.  
+
+There is a Show Icons story in Storybook, that shows all the icons in the project.  
+![image](https://github.com/EnCiv/civil-pursuit/assets/3317487/362baacb-23ec-4d77-a43b-288e434d1394)
+
+The green border shows the outline around the figure. Make sure the green box touches the figure on all four sides - or it will be hard to place and scale the component in different uses.
+
+Occasionally, I have had to edited the file in assets/svg to tweak the viewBox dimensions to get it exactly right.  After you do, you will have to re-run `npm run svgr` to update the component.  (but you can do it from another terminal window and leave storybook running)
 
 </details>
 
