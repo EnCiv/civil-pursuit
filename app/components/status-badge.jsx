@@ -30,8 +30,8 @@ function StatusBadge(props) {
 const useStyles = createUseStyles(theme => ({
 
     container: {
-        borderRadius: '15px',
-        borderWidth: '1px',
+        borderRadius: '1rem',
+        borderWidth: theme.border.width.thin,
         borderStyle: 'solid',
         padding: '0.375rem 0.625rem',
         fontFamily: theme.font.fontFamily,

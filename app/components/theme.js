@@ -40,6 +40,11 @@ const Theme = {
     fontStyle: 'normal',
     darkModeFont: '#FFFFFF',
   },
+  border: {
+    width: {
+      thin: '0.0625rem'
+    },
+  },
   condensedWidthBreakPoint: '40rem',
   maxPanelWidth: '90rem',
 }
