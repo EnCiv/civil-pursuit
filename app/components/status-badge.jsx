@@ -9,16 +9,9 @@ function StatusBadge(props) {
     const { style = {}, className = "", name = "", status = "", number = undefined, ...otherProps } = props;
     const classes = useStyles();
 
-    const statusMapping = {
-        progress: "Unread",
-        complete: "Complete",
-        inactive: "Group, Inactive",
-        error: "Most Important"
-    }
-
     return (
-        <span className={cx(classes.container, classes[status.toLowerCase()])}>
-            <span className={classes.status}>{statusMapping[status.toLowerCase()]}</span>
+        <span className={cx(classes.container, classes[status.toLowerCase()], className)} {...otherProps}>
+            <span className={classes.status}>{name}</span>
             {
                 number !== undefined && number !== null && (
                     <span className={classes.number}>{Number(number)}</span>
