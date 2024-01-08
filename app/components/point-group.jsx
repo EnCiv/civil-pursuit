@@ -7,6 +7,7 @@ import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import Point from './point.jsx';
 import PointLeadButton from './point-lead-button.jsx';
+import PointRemoveButton from './point-remove-button.jsx';
 
 
 
@@ -65,26 +66,27 @@ const PointGroup = (props) => {
               {description && (
                 <div className={cx(classes.descriptionStyle)}>{description}</div>
               )}
-              {vState == 'default' && (
-                <div>
-                  <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>
-                  <button className={classes.ungroupButton}>Ungroup</button>
-                </div>
-              )}
+
               {vState == 'edit' && (
                 <div>
                   <div>
-                    <p>Edit the response you'd like to lead with</p>
+                    <p className={classes.editParagraph}>Edit the response you'd like to lead with</p>
                     {groupedPoints.map(point => {
-                      return CreatePoint(point, 'default', <PointLeadButton />)
+                      return (
+                        <div className={classes.editPoints}>
+                          {CreatePoint(point, 'default', [<PointLeadButton />, <PointRemoveButton />])}
+                        </div>);
                     })}
-                  </div>
-                  <div>
-                    <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>
-                    <button className={classes.ungroupButton}>Ungroup</button>
                   </div>
                 </div>
               )}
+              <div className={classes.bottomButtons}>
+                {vState == 'default' && (
+                  <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>)}
+                {vState == 'edit' && (
+                  <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>)}
+                <a className={classes.ungroupButton}>Ungroup</a>
+              </div>
 
             </div>
           </div>
@@ -98,6 +100,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+    width: '32rem',
   },
 
   subjectStyle: {
@@ -148,14 +151,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...theme.font,
     backgroundColor: theme.colors.white,
     color: 'black',
-    border: 'none',
-    borderRadius: '0.5rem',
     fontSize: '0.9rem',
     fontWeight: '500',
     cursor: 'pointer',
     outline: 'none',
     textDecoration: 'underline',
-    marginLeft: '1rem',
+    marginLeft: '2rem',
   },
 
   doneButton: {
@@ -170,6 +171,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'pointer',
     outline: 'none',
   },
+
+  editParagraph: {
+    ...theme.font,
+    fontSize: '1rem',
+    color: '#5d5d5d',
+    fontWeight: '600',
+    lineHeight: '1.5rem',
+  },
+
+  editPoints: {
+    margin: '2rem 0 0 0',
+    width: '28rem',
+  },
+
+  bottomButtons: {
+    padding: '1.5rem 1rem 0 1rem',
+  }
 }));
 
 export default PointGroup;

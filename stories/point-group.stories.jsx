@@ -1,12 +1,17 @@
 import React from 'react';
-import Common from './common';
 import { expect } from '@storybook/jest';
 import PointGroup from '../app/components/point-group';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 
 
 export default {
     component: PointGroup,
+    parameters: {
+        viewport: {
+            viewports: INITIAL_VIEWPORTS,
+        },
+    }
 };
 
 const createPointObj = (_id, subject, description = "Point Description", groupedPoints = []) => {
@@ -54,3 +59,12 @@ export const ViewSinglePoint = { args: { pointObj: point1, defaultVState: 'view'
 export const defaultMultiplePoints = { args: { pointObj: point5, defaultVState: 'default' } };
 export const editMultiplePoints = { args: { pointObj: point5, defaultVState: 'edit' } };
 export const viewMultiplePoints = { args: { pointObj: point5, defaultVState: 'view' } };
+
+export const mobileDefaultPoints = {
+    args: { pointObj: point5, defaultVState: 'default', isMobile: true },
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        },
+    },
+};
