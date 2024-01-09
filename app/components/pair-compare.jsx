@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
+import { relative } from 'path-browserify';
 
 function PairCompare(props) {
     const { pointList=[], onDone=()=>{}, mainPoint={subject: "", description: ""}, ...otherProps} = props
@@ -24,19 +25,23 @@ function PairCompare(props) {
 const useStyles = createUseStyles(theme => ({
 
     container: {
-
+        fontFamily: theme.font.fontFamily,
+        position: 'relative',
     },
     statusBadge: {
 
     },
     mainPointContainer: {
-
+        textAlign: 'center',
+        
     },
     mainPointSubject: {
-
+        fontWeight: '600',
+        fontSize: '1.5rem',
+        lineHeight: '2rem',
     },
     mainPointDescription: {
-
+        fontWeight: '400',
     }
 
 }))
