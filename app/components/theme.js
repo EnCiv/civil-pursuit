@@ -42,7 +42,8 @@ const Theme = {
   },
   border: {
     width: {
-      thin: '0.0625rem'
+      thin: '0.0625rem',
+      thick: '0.125rem'
     },
   },
   condensedWidthBreakPoint: '40rem',
