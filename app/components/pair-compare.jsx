@@ -2,6 +2,7 @@
 
 'use strict'
 import React, { useState } from 'react';
+import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
 
@@ -23,11 +24,19 @@ function PairCompare(props) {
             <span className={classes.statusBadge}>{`${pointsIdxCounter} out of ${pointList.length}`}</span>
 
             <div className={classes.lowerContainer}>
-                <div className={classes.pointsContainer}>
+
+                <div className={classes.hiddenPointContainer}>
+                    {pointsIdxCounter < pointList.length &&
+                        <div className={classes.hiddenPoint}><Point className={classes.emptyPoint} /></div>}
+                    {pointsIdxCounter < pointList.length &&
+                        <div className={classes.hiddenPoint}><Point className={classes.emptyPoint} /></div>}
+                </div>
+
+                <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div>{pointList[idxLeft]}</div>}
+                        <div className={classes.visiblePoint}>{pointList[idxLeft]}</div>}
                     {idxRight < pointList.length &&
-                        <div>{pointList[idxRight]}</div>}
+                        <div className={classes.visiblePoint}>{pointList[idxRight]}</div>}
                 </div>
                 <div className={classes.neitherButton}>Neither</div>
             </div>
@@ -59,10 +68,29 @@ const useStyles = createUseStyles(theme => ({
     mainPointDescription: {
         fontWeight: '400',
     },
-    pointsContainer: {
+    hiddenPointContainer: {
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        overflow: 'hidden',
+        paddingTop: '5rem',
+    },
+    hiddenPoint: {
+        width: '30vw',
+    },
+    emptyPoint: {
+        border: '1px solid red',
+        position: 'absolute',
+        width: '30vw',
+        top: '-2rem',
+    },
+    visiblePointsContainer: {
         display: 'flex',
         justifyContent: 'space-evenly',
         marginTop: '1rem',
+    },
+    visiblePoint: {
+        width: '30vw',
     },
     lowerContainer: {
         marginTop: '1rem',
