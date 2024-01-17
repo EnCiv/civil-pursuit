@@ -1,23 +1,23 @@
 // clustering test
 const ObjectID = require('bson-objectid')
 const {
-    insertStatement,
-    getStatements,
+    insertStatementId,
+    getStatementIds,
     putGroupings,
     report,
     rankMostImportant,
     getUserRecord,
-    Statements,
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 2400 // the number of simulated people in the discussion
-//const NUMBER_OF_PARTICIPANTS = 17000
+//const NUMBER_OF_PARTICIPANTS = 2400 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = 17000
 //const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
 function sortLowestDescriptionFirst(a, b) {
     return Number(a.description) - Number(b.description)
 }
+const Statements = {} // [statementId: ObjectId]{_id: ObjectId, discussionId: ObjectId, round: Number, subject: String, description: String, userId: ObjectId}
 
 // proxy user does this for grouping
 // because we are sorting to begine with, the values in the groups will be sorted too
@@ -62,8 +62,13 @@ async function proxyUser() {
     const statement = { subject: 'proxy random number', description: Math.random() * MAX_ANSWER + 1, userId }
     let round = 0
     while (1) {
-        const statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
-        if (round === 0) statementsForGrouping.push(insertStatement(DISCUSSION_ID, round, userId, statement)) // insert the statement after getting the statement list to avoid getting it back
+        const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
+        const statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
+        if (round === 0) {
+            const _id = ObjectID().toString()
+            statementsForGrouping.push(insertStatementId(DISCUSSION_ID, round, userId, _id)) // insert the statement after getting the statement list to avoid getting it back
+            Statements[_id] = { _id, DISCUSSION_ID, ...statement }
+        }
         if (statementsForGrouping.length <= 1) return
         const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
         putGroupings(
@@ -74,9 +79,8 @@ async function proxyUser() {
         )
         const forRanking = groupings.map(group => group[0]).concat(ungrouped)
         const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
-        rankMostImportant(DISCUSSION_ID, userId, round, rankMostId)
+        rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
         round++
-        //break
     }
 }
 async function main() {
@@ -94,12 +98,14 @@ async function main() {
             // no user record
             console.info("user didn't exist", userId)
             round = 0
-            statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
+            const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
+            statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
         } else if (!userRecord[round].groupings?.length) {
             statementsForGrouping = userRecord[round].shownStatementIds.map(id => Statements[id])
         } else {
             round++
-            statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
+            const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
+            statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
         }
         while (statementsForGrouping.length) {
             const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
@@ -110,12 +116,13 @@ async function main() {
                 groupings.map(group => group.map(statement => statement._id))
             )
             const rankMostId = statementsForGrouping.sort(sortLowestDescriptionFirst)[0]._id
-            rankMostImportant(DISCUSSION_ID, userId, round, rankMostId)
+            rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
             round++
-            statementsForGrouping = (await getStatements(DISCUSSION_ID, round, userId)) || []
+            const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
+            statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
         }
     }
-    report(DISCUSSION_ID)
+    report(DISCUSSION_ID, Statements)
 }
 
 main()

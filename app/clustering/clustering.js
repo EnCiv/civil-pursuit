@@ -1,10 +1,20 @@
 // clustering
-const ObjectID = require('bson-objectid')
 const GROUP_SIZE = 7 // this is the group size
 const GMAJORITY = 0.5 //Group Majority - minimum percentage of group that votes for it to be part of the group
 const MAX_ROUNDS = 10 // maximum number of rounds to search down when clustering children
 const MIN_SHOWN_COUNT = Math.floor(GROUP_SIZE / 2) + 1 // the minimum number of times a item pair is shown in order to decide if a majority have grouped it
 const MIN_RANK = 2 // when filterning statements for the next round, they must at least have this number of users voting for it
+/**
+ *  initDiscussion(discussionId,options) nothing returned
+ *  insertStatementId(discussionId,round,userId,statementId) returns statementId
+    getStatementIds(discussionId,round,userId) returns an array of statementIds or undefined if there's a problem
+    putGroupings(discussionId,round,userId,statementIds) nothing returned
+    rankMostImportant(discussionId,round,userId,statementId) returns nothing
+    getUserRecord(discussionId,userId) returns [round: Number]{shownStatementIds: [statementIds], groupings: [[statementIds],...]} or undefined
+
+
+    report,
+ */
 
 /**
  * Systemic observations
@@ -19,15 +29,12 @@ const MIN_RANK = 2 // when filterning statements for the next round, they must a
  */
 
 const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, Uitems}
-const Statements = {} // [statementId: ObjectId]{_id: ObjectId, discussionId: ObjectId, round: Number, subject: String, description: String, userId: ObjectId}
 //const ShownStatements = [] // [round: Number][{discussionId: ObjectId, round: Number, statementId: ObjectId, shownCount: Number, rank: Number}, ...]
 //const ShownGroups = [] // [round: Number][{ statementIds: [ObjectId], shownCount: Number},...]
 //const Gitems = [] // [round: Number]{discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
 //const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: [statementIds], groupings: [[statementIds],...]}...]
 //const Gitems = [] // [round: Number]{byLowerId: [{lowerStatementId: gitem }], byUpper: [{upperStatmentId: gitem}]}
 //const gitem={discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
-
-module.exports.Statements = Statements
 
 function initDiscussion(discussionId, options = {}) {
     Discussions[discussionId] = {
@@ -40,8 +47,10 @@ function initDiscussion(discussionId, options = {}) {
         max_rounds: options.max_rounds || MAX_ROUNDS,
         min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
         min_rank: options.min_rank || MIN_RANK,
+        updateUinfo: options.updateUInfo || (() => {}),
     }
 }
+module.exports.initDiscussion = initDiscussion
 
 function initUitems(discussionId, userId, round = 0) {
     if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
@@ -50,14 +59,13 @@ function initUitems(discussionId, userId, round = 0) {
 }
 
 // usually statements are only inserted at round 0, but this is made generic
-function insertStatement(discussionId, round, userId, statement) {
+function insertStatementId(discussionId, round, userId, statementId) {
     // this is where we would insert the statment into the DB
-    const _id = ObjectID().toString()
-    Statements[_id] = { _id, discussionId, ...statement }
+
     const shownItem = {
         discussionId,
         round,
-        statementId: _id,
+        statementId,
         shownCount: 0,
         rank: 0,
     }
@@ -68,11 +76,18 @@ function insertStatement(discussionId, round, userId, statement) {
     if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
     Discussions[discussionId].ShownStatements[round].push(shownItem)
     initUitems(discussionId, userId, round)
-    Discussions[discussionId].Uitems[userId][round].shownStatementIds.push(_id)
-    return Statements[_id]
+    Discussions[discussionId].Uitems[userId][round].shownStatementIds.push(statementId)
+    Discussions[discussionId].updateUinfo({
+        [userId]: {
+            [discussionId]: {
+                [round]: { shownStatementIds: Discussions[discussionId].Uitems[userId][round].shownStatementIds },
+            },
+        },
+    })
+    return statementId
 }
 
-module.exports.insertStatement = insertStatement
+module.exports.insertStatementId = insertStatementId
 
 /* on shownCount:
     when we give statements to people to look at, we need to track it so that they are not given to too many people
@@ -119,7 +134,7 @@ function sortLargestFirst(a, b) {
     return b - a
 }
 
-async function getStatements(discussionId, round, userId) {
+async function getStatementIds(discussionId, round, userId) {
     if (!Discussions[discussionId]) {
         await readDiscussionInFromDb(discussionId)
         if (!Discussions[discussionId]?.ShownStatements?.length) {
@@ -128,11 +143,10 @@ async function getStatements(discussionId, round, userId) {
     }
     if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1)
         return undefined
-    const statements = []
+    const statementIds = []
     if (!Discussions[discussionId].ShownGroups[round]) Discussions[discussionId].ShownGroups[round] = []
     if (Discussions[discussionId].ShownGroups[round].at(-1)?.shownCount < Discussions[discussionId].group_size) {
-        for (const sId of Discussions[discussionId].ShownGroups[round].at(-1).statementIds)
-            statements.push(Statements[sId])
+        for (const sId of Discussions[discussionId].ShownGroups[round].at(-1).statementIds) statementIds.push(sId)
         Discussions[discussionId].ShownGroups[round].at(-1).shownCount++
     } else if (round === 0) {
         // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
@@ -144,12 +158,12 @@ async function getStatements(discussionId, round, userId) {
         if (needToBeSeen.length < Discussions[discussionId].group_size - 1) {
             console.info('needToBeSeen', needToBeSeen.length, 'is less than  ', Discussions[discussionId].group_size)
             for (const sItem of needToBeSeen) {
-                statements.push(Statements[sItem.statementId])
+                statementIds.push(sItem.statementId)
                 shownGroup.statementIds.push(sItem.statementId)
             }
         } else {
             getRandomUniqueList(needToBeSeen.length, Discussions[discussionId].group_size - 1).forEach(index => {
-                statements.push(Statements[needToBeSeen[index].statementId])
+                statementIds.push(needToBeSeen[index].statementId)
                 shownGroup.statementIds.push(needToBeSeen[index].statementId)
             })
         }
@@ -218,17 +232,25 @@ async function getStatements(discussionId, round, userId) {
         shownItemsToRemove.forEach(index => Discussions[discussionId].ShownStatements[round].splice(index, 1))
         if (needToBeSeen.length < Discussions[discussionId].group_size) return
         getRandomUniqueList(needToBeSeen.length, Discussions[discussionId].group_size).forEach(index => {
-            statements.push(Statements[needToBeSeen[index].statementId])
+            statementIds.push(needToBeSeen[index].statementId)
             shownGroup.statementIds.push(needToBeSeen[index].statementId)
         })
         Discussions[discussionId].ShownGroups[round].push(shownGroup)
     }
     initUitems(discussionId, userId, round)
-    Discussions[discussionId].Uitems[userId][round].shownStatementIds.push(...statements.map(s => s._id))
-    return statements
+    Discussions[discussionId].Uitems[userId][round].shownStatementIds.push(...statementIds)
+    Discussions[discussionId].updateUinfo({
+        [userId]: {
+            [discussionId]: {
+                [round]: { shownStatementIds: Discussions[discussionId].Uitems[userId][round].shownStatementIds },
+            },
+        },
+    })
+
+    return statementIds
 }
 
-module.exports.getStatements = getStatements
+module.exports.getStatementIds = getStatementIds
 
 function getUserRecord(discussionId, userId) {
     return Discussions[discussionId].Uitems[userId]
@@ -364,10 +386,15 @@ function putGroupings(discussionId, round, userId, groupings) {
     uitem.shownStatementIds.forEach(s => incrementShownItems(discussionId, round, s))
     iteratePairs(discussionId, round, uitem.shownStatementIds, gitem => gitem.shownCount++)
     groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+    Discussions[discussionId].updateUinfo({
+        [userId]: {
+            [discussionId]: { [round]: { groupings: Discussions[discussionId].Uitems[userId][round].groupings } },
+        },
+    })
 }
 module.exports.putGroupings = putGroupings
 
-function rankMostImportant(discussionId, userId, round, statementId) {
+function rankMostImportant(discussionId, round, userId, statementId) {
     /* this is where we will write it to the database
     Rankings.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
     */
@@ -383,7 +410,7 @@ function findDeep(discussionId, sItem, id) {
     else return false
 }
 
-function report(discussionId) {
+function report(discussionId, Statements) {
     //console.info(JSON.stringify({ShownItems},null,2))
     console.info('the highest ranked is', Statements[Discussions[discussionId].ShownStatements.at(-1)[0].statementId])
     const lowest = Object.values(Statements).reduce(
