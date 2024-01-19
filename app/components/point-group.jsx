@@ -272,6 +272,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'absolute',
     top: '1rem',
     right: '1rem',
+    fontSize: '1.5rem',
   },
 
   selectPointsContainer: {
