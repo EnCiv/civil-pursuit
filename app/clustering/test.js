@@ -7,6 +7,7 @@ const {
     report,
     rankMostImportant,
     getUserRecord,
+    initDiscussion,
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
@@ -84,6 +85,7 @@ async function proxyUser() {
     }
 }
 async function main() {
+    //initDiscussion(DISCUSSION_ID, {})
     for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
         process.stdout.write('new user ' + i + '\r')
         await proxyUser()
@@ -101,7 +103,7 @@ async function main() {
             const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
             statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
         } else if (!userRecord[round].groupings?.length) {
-            statementsForGrouping = userRecord[round].shownStatementIds.map(id => Statements[id])
+            statementsForGrouping = Object.keys(userRecord[round].shownStatementIds).map(id => Statements[id])
         } else {
             round++
             const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
