@@ -11,6 +11,26 @@ import PointRemoveButton from './point-remove-button.jsx';
 import SvgChevronUp from '../svgr/chevron-up';
 import SvgChevronDown from '../svgr/chevron-down';
 import SvgClose from '../svgr/close';
+import Theme from './theme'
+
+
+function DemInfoComponent(props) {
+  const { vState, demInfo } = props
+  const theme = Theme
+  return (
+    <div
+      style={{
+        color: vState === 'selected' ? theme.colors.success : '#5D5D5C',
+        ...theme.font,
+        fontSize: '1rem',
+        fontWeight: '400',
+        lineHeight: '1.5rem',
+      }}
+    >
+      {demInfo}
+    </div>
+  )
+}
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children = null) => {
@@ -34,7 +54,7 @@ const PointGroup = (props) => {
   const [vState, setVState] = useState(defaultVState);
   const classes = useStylesFromThemeFunction();
   const [isHovered, setIsHovered] = useState(false);
-  const { subject, description, groupedPoints } = pointObj;
+  const { subject, description, groupedPoints, demInfo } = pointObj;
 
 
   const onMouseIn = () => {
@@ -52,6 +72,7 @@ const PointGroup = (props) => {
           {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
         </div>
       )}
+
       {vState === 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer, classes.selectWidth)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
@@ -62,7 +83,7 @@ const PointGroup = (props) => {
             {groupedPoints.map(point => {
               return (
                 <div key={point._id} className={classes.selectPoints}>
-                  {CreatePoint(point, 'default', [<PointLeadButton />])}
+                  {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />, <PointLeadButton />])}
                 </div>
               );
             })}
@@ -72,6 +93,7 @@ const PointGroup = (props) => {
           </div>
         </div>
       )}
+
       {vState !== 'collapsed' && vState !== 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
           <div className={classes.SvgContainer}>
@@ -83,13 +105,14 @@ const PointGroup = (props) => {
           {description && (
             <div className={cx(classes.descriptionStyle)}>{description}</div>
           )}
+          {demInfo && <DemInfoComponent demInfo={demInfo} />}
           {vState === 'edit' && (
             <div>
               <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints} >
-                    {CreatePoint(point, 'default', [<PointLeadButton />, <PointRemoveButton />])}
+                    {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />, <PointLeadButton />, <PointRemoveButton />])}
                   </div>);
               })}
             </div>
