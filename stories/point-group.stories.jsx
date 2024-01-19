@@ -43,10 +43,11 @@ function DemInfoTestComponent(props) {
 
 const point1 = createPointObj("1", "Point 1", "Point 1 Description");
 
-const point2 = createPointObj("2", "Point 2", "Point 2 Description");
+const point2 = createPointObj("2", "Point 2", "Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ");
 const point3 = createPointObj("3", "Point 3", "Point 3 Description");
 const point4 = createPointObj("4", "Point 4", "Point 4 Description");
-const point5 = createPointObj("5", "Point 5", "Point 5 Description", [point2, point3, point4]);
+const point6 = createPointObj("6", "Point 6", "Point 6 Description");
+const point5 = createPointObj("5", "Point 5", "Point 5 Description", [point2, point3, point4, point6]);
 
 
 
@@ -73,4 +74,13 @@ export const collapsedPoints = {
 
 export const selectLeadPoints = {
     args: { pointObj: point5, defaultVState: 'selectLead' },
+};
+
+export const mobileSelectLeadPoints = {
+    args: { pointObj: point5, defaultVState: 'selectLead' },
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        },
+    },
 };

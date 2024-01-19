@@ -30,7 +30,7 @@ const CreatePoint = (pointObj, vState, children = null) => {
 const PointGroup = (props) => {
   const { pointObj, defaultVState, className, ...otherProps } = props;
 
-  // vState for pointGroup: ['default', 'edit', 'view', 'selectLead']
+  // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vState, setVState] = useState(defaultVState);
   const classes = useStylesFromThemeFunction();
   const [isHovered, setIsHovered] = useState(false);
@@ -48,12 +48,12 @@ const PointGroup = (props) => {
   return (
     <div className={cx(className)}{...otherProps}>
       {vState === 'collapsed' && (
-        <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.contentContainer, classes.informationGrid)}>
+        <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
           {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
         </div>
       )}
       {vState === 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
+        <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer, classes.selectWidth)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
             <SvgClose />
@@ -67,53 +67,52 @@ const PointGroup = (props) => {
               );
             })}
           </div>
+          <div className={classes.selectButtonContainer}>
+            <button className={cx(classes.doneButton, classes.selectDoneButton)}>Done</button>
+          </div>
         </div>
       )}
       {vState !== 'collapsed' && vState !== 'selectLead' && (
-        <div className={classes.borderStyle}>
-          <div className={cx(classes.contentContainer)}>
-            <div className={classes.informationGrid}>
-              <div className={classes.SvgContainer}>
-                {vState === 'default' && (<SvgChevronDown />)}
-                {vState === 'edit' && (<SvgChevronUp />)}
-                {vState === 'view' && (<SvgChevronUp />)}
-              </div>
-              {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
-              {description && (
-                <div className={cx(classes.descriptionStyle)}>{description}</div>
-              )}
-              {vState === 'edit' && (
-                <div>
-                  <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>
-                  {groupedPoints.map(point => {
-                    return (
-                      <div key={point._id} className={classes.subPoints} >
-                        {CreatePoint(point, 'default', [<PointLeadButton />, <PointRemoveButton />])}
-                      </div>);
-                  })}
-                </div>
-              )}
-              {vState === 'view' && (
-                <div>
-                  <p className={classes.titleGroup}>Other Responses</p>
-                  {groupedPoints.map(point => {
-                    return (
-                      <div key={point._id} className={classes.subPoints}>
-                        {CreatePoint(point, 'view')}
-                      </div>);
-                  })}
-                </div>
-              )}
-              {vState !== 'view' && (
-                <div className={classes.bottomButtons}>
-                  {vState === 'default' && (
-                    <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>)}
-                  {vState === 'edit' && (
-                    <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>)}
-                  <a className={classes.ungroupButton}>Ungroup</a>
-                </div>)}
-            </div>
+        <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
+          <div className={classes.SvgContainer}>
+            {vState === 'default' && (<SvgChevronDown />)}
+            {vState === 'edit' && (<SvgChevronUp />)}
+            {vState === 'view' && (<SvgChevronUp />)}
           </div>
+          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+          {description && (
+            <div className={cx(classes.descriptionStyle)}>{description}</div>
+          )}
+          {vState === 'edit' && (
+            <div>
+              <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>
+              {groupedPoints.map(point => {
+                return (
+                  <div key={point._id} className={classes.subPoints} >
+                    {CreatePoint(point, 'default', [<PointLeadButton />, <PointRemoveButton />])}
+                  </div>);
+              })}
+            </div>
+          )}
+          {vState === 'view' && (
+            <div>
+              <p className={classes.titleGroup}>Other Responses</p>
+              {groupedPoints.map(point => {
+                return (
+                  <div key={point._id} className={classes.subPoints}>
+                    {CreatePoint(point, 'view')}
+                  </div>);
+              })}
+            </div>
+          )}
+          {vState !== 'view' && (
+            <div className={classes.bottomButtons}>
+              {vState === 'default' && (
+                <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>)}
+              {vState === 'edit' && (
+                <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>)}
+              <a className={classes.ungroupButton}>Ungroup</a>
+            </div>)}
         </div>
       )}
     </div>
@@ -124,10 +123,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
-    width: '32rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '20rem',
-    },
   },
 
   collapsedBorder: {
@@ -171,6 +166,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
   },
 
+  defaultWidth: {
+    width: '32rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '16rem',
+    },
+  },
+
+  selectWidth: {
+    width: '70rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '16rem',
+    },
+  },
   informationGrid: {
     display: 'flex',
     flexDirection: 'column',
@@ -210,7 +218,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: 'black',
     border: 'solid 0.125rem #000f4f',
     borderRadius: '0.5rem',
-    padding: '0.625rem 4.75rem',
+    padding: '0.625rem 3rem',
     fontSize: '0.9rem',
     fontWeight: '600',
     cursor: 'pointer',
@@ -246,11 +254,33 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectPointsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
+    margin: '0 1rem',
+    width: '68rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '16rem',
+      margin: '0',
+    },
   },
 
   selectPoints: {
-    flex: '0 0 50%'
-  }
+    flex: '0 0 45%',
+    margin: '1rem 1.5rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flex: '0 0 100%',
+      margin: '1rem 0',
+    },
+  },
+
+  selectButtonContainer: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+
+  selectDoneButton: {
+    width: '16rem',
+  },
 
 }));
 
