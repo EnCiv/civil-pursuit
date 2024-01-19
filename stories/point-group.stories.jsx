@@ -60,7 +60,16 @@ export const editMultiplePoints = { args: { pointObj: point5, defaultVState: 'ed
 export const viewMultiplePoints = { args: { pointObj: point5, defaultVState: 'view' } };
 
 export const mobileDefaultPoints = {
-    args: { pointObj: point5, defaultVState: 'default', isMobile: true },
+    args: { pointObj: point5, defaultVState: 'default' },
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        },
+    },
+};
+
+export const mobileViewPoints = {
+    args: { pointObj: point5, defaultVState: 'view' },
     parameters: {
         viewport: {
             defaultViewport: 'iphonex',

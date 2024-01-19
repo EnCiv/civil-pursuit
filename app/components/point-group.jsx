@@ -209,7 +209,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'pointer',
     outline: 'none',
     textDecoration: 'underline',
-    marginLeft: '2rem',
+    marginLeft: '1.5rem',
   },
 
   doneButton: {
