@@ -45,6 +45,17 @@ function PairCompare(props) {
     }
 
     const handleNeitherButton = () => {
+        if (selectedPoint) return
+
+        if (idxLeft >= idxRight) {
+            setIdxRight(idxLeft+1)
+            setIdxLeft(idxLeft+2)
+        } else {
+            setIdxLeft(idxRight+1)
+            setIdxRight(idxRight+2)
+        }
+
+        setPointsIdxCounter(pointsIdxCounter+2)
 
     }
 
@@ -56,7 +67,7 @@ function PairCompare(props) {
                 <div className={classes.mainPointDescription}>{mainPoint.description}</div>
             </div>
 
-            <span className={classes.statusBadge}>{`${pointsIdxCounter} out of ${pointList.length}`}</span>
+            <span className={classes.statusBadge}>{`${pointsIdxCounter <= pointList.length ? pointsIdxCounter : pointList.length} out of ${pointList.length}`}</span>
 
             <div className={classes.lowerContainer}>
 
@@ -73,7 +84,7 @@ function PairCompare(props) {
                     {idxRight < pointList.length &&
                         <div className={classes.visiblePoint} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
-                <div className={classes.neitherButton}>Neither</div>
+                <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>
             </div>
 
         </div>
