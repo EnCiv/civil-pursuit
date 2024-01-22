@@ -11,12 +11,12 @@ function PairCompare(props) {
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
-    let selectedPoint = null;
+    const [selectedPoint, setSelectedPoint] = useState(null);
     const classes = useStyles();
 
     useEffect(() => {
         if (pointsIdxCounter >= pointList.length) {
-            selectedPoint = pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight];
+            setSelectedPoint(pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight]);
         }
     }, [pointsIdxCounter])
 
@@ -42,6 +42,10 @@ function PairCompare(props) {
         }
 
         setPointsIdxCounter(pointsIdxCounter+1)
+    }
+
+    const handleNeitherButton = () => {
+
     }
 
     return (
@@ -71,7 +75,6 @@ function PairCompare(props) {
                 </div>
                 <div className={classes.neitherButton}>Neither</div>
             </div>
-
 
         </div>
     )
