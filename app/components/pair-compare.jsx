@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
 
 'use strict'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
@@ -10,8 +10,39 @@ function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
-    const [pointsIdxCounter, setPointsIdxCounter] = useState(1)
+    const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
+    let selectedPoint = null;
     const classes = useStyles();
+
+    useEffect(() => {
+        if (pointsIdxCounter >= pointList.length) {
+            selectedPoint = pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight];
+        }
+    }, [pointsIdxCounter])
+
+    const handleLeftPointClick = () => {
+        if (selectedPoint) return
+
+        if (idxLeft >= idxRight) {
+            setIdxRight(idxLeft+1)
+        } else {
+            setIdxRight(idxRight+1)
+        }
+
+        setPointsIdxCounter(pointsIdxCounter+1)
+    }
+
+    const handleRightPointClick = () => {
+        if (selectedPoint) return
+
+        if (idxLeft >= idxRight) {
+            setIdxLeft(idxLeft+1)
+        } else {
+            setIdxLeft(idxRight+1)
+        }
+
+        setPointsIdxCounter(pointsIdxCounter+1)
+    }
 
     return (
         <div className={classes.container} {...otherProps}>
@@ -34,9 +65,9 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint}>{pointList[idxLeft]}</div>}
+                        <div className={classes.visiblePoint} onClick={handleLeftPointClick}>{pointList[idxLeft]}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint}>{pointList[idxRight]}</div>}
+                        <div className={classes.visiblePoint} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
                 <div className={classes.neitherButton}>Neither</div>
             </div>
