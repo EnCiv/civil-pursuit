@@ -1,4 +1,6 @@
 // clustering test
+const merge = require('lodash').merge
+
 const ObjectID = require('bson-objectid')
 const {
     insertStatementId,
@@ -19,6 +21,11 @@ function sortLowestDescriptionFirst(a, b) {
     return Number(a.description) - Number(b.description)
 }
 const Statements = {} // [statementId: ObjectId]{_id: ObjectId, discussionId: ObjectId, round: Number, subject: String, description: String, userId: ObjectId}
+
+const UserInfo = {}
+function updateUInfo(obj) {
+    merge(UserInfo, obj)
+}
 
 // proxy user does this for grouping
 // because we are sorting to begine with, the values in the groups will be sorted too
@@ -85,7 +92,7 @@ async function proxyUser() {
     }
 }
 async function main() {
-    //initDiscussion(DISCUSSION_ID, {})
+    initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo })
     for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
         process.stdout.write('new user ' + i + '\r')
         await proxyUser()
