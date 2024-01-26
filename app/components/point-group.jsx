@@ -6,12 +6,11 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import Point from './point.jsx';
-import PointLeadButton from './point-lead-button.jsx';
-import PointRemoveButton from './point-remove-button.jsx';
 import SvgChevronUp from '../svgr/chevron-up';
 import SvgChevronDown from '../svgr/chevron-down';
 import SvgClose from '../svgr/close';
 import Theme from './theme'
+import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
 
 
 function DemInfoComponent(props) {
@@ -34,14 +33,13 @@ function DemInfoComponent(props) {
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children = null) => {
-  const { subject, description, groupedPoints } = pointObj;
+  const { subject, description } = pointObj;
   return (
     <Point
       subject={subject}
       description={description}
       vState={vState}
       children={children}
-      groupedPoints={groupedPoints}
     />
   )
 }
@@ -83,13 +81,17 @@ const PointGroup = (props) => {
             {groupedPoints.map(point => {
               return (
                 <div key={point._id} className={classes.selectPoints}>
-                  {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />, <PointLeadButton />])}
+                  {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />,
+                  <div className={classes.selectSelectButton}>
+                    <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
+                  </div>
+                  ])}
                 </div>
               );
             })}
           </div>
           <div className={classes.selectButtonContainer}>
-            <button className={cx(classes.doneButton, classes.selectDoneButton)}>Done</button>
+            <SecondaryButton className={classes.selectDoneButton} title="Done" children="Done" />
           </div>
         </div>
       )}
@@ -112,7 +114,13 @@ const PointGroup = (props) => {
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints} >
-                    {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />, <PointLeadButton />, <PointRemoveButton />])}
+                    {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />,
+                    <div className={classes.pointWidthButton}>
+                      <ModifierButton className={classes.pointWidthButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
+                    </div>,
+                    <div className={classes.pointWidthButton}>
+                      <TextButton className={classes.pointWidthButton} title="Remove" children="Remove from Group" />
+                    </div>])}
                   </div>);
               })}
             </div>
@@ -131,18 +139,22 @@ const PointGroup = (props) => {
           {vState !== 'view' && (
             <div className={classes.bottomButtons}>
               {vState === 'default' && (
-                <button className={classes.editButton} onClick={() => setVState('edit')}>Edit</button>)}
+                <ModifierButton className={classes.editButton} onDone={() => setVState('edit')} title="Edit" children="Edit" disableOnClick={true} />)}
               {vState === 'edit' && (
-                <button className={classes.doneButton} onClick={() => setVState('default')}>Done</button>)}
-              <a className={classes.ungroupButton}>Ungroup</a>
+                <SecondaryButton className={classes.doneButton} onDone={() => setVState('default')} title="Done" children="Done" disableOnClick={true} />)}
+              <TextButton className={classes.ungroupButton} title="Ungroup" children="Ungroup" />
             </div>)}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+  fullWidth: {
+    width: '100% !important',
+  },
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
@@ -211,41 +223,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   editButton: {
-    ...theme.font,
-    backgroundColor: theme.colors.white,
-    color: 'black',
-    border: 'solid 0.125rem' + theme.colors.encivYellow,
-    borderRadius: '0.5rem',
-    padding: '0.625rem 2.75rem',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    outline: 'none',
+    width: '8rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '7rem',
+    },
   },
 
   ungroupButton: {
-    ...theme.font,
-    backgroundColor: theme.colors.white,
-    color: 'black',
-    fontSize: '0.9rem',
-    fontWeight: '500',
-    cursor: 'pointer',
-    outline: 'none',
-    textDecoration: 'underline',
     marginLeft: '1.5rem',
+    width: '5rem',
   },
 
   doneButton: {
-    ...theme.font,
-    backgroundColor: theme.colors.white,
-    color: 'black',
-    border: 'solid 0.125rem #000f4f',
-    borderRadius: '0.5rem',
-    padding: '0.625rem 3rem',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    outline: 'none',
+    width: '17rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '7rem',
+    },
   },
 
   titleGroup: {
@@ -302,10 +295,24 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignContent: 'center',
   },
 
-  selectDoneButton: {
-    width: '16rem',
+  pointWidthButton: {
+    width: '24rem',
+    textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '13rem',
+    },
   },
 
+  selectDoneButton: {
+    width: '18rem',
+  },
+
+  selectSelectButton: {
+    width: '27rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '13rem',
+    },
+  },
 }));
 
 export default PointGroup;
