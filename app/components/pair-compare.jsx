@@ -18,8 +18,9 @@ function PairCompare(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        if (pointsIdxCounter >= pointList.length) {
+        if (isSelectionComplete()) {
             setSelectedPoint(pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight]);
+            onDone({valid: true})
         }
     }, [pointsIdxCounter])
 
@@ -59,10 +60,6 @@ function PairCompare(props) {
         }
 
         setPointsIdxCounter(pointsIdxCounter + 2)
-
-    }
-
-    const handleFinalPointSelected = () => {
 
     }
 
