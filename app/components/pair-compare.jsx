@@ -8,8 +8,11 @@ import cx from 'classnames';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
+
+    // idxLeft and idxRight can swap places at any point
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
+
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
     const classes = useStyles();
@@ -24,39 +27,47 @@ function PairCompare(props) {
         if (selectedPoint) return
 
         if (idxLeft >= idxRight) {
-            setIdxRight(idxLeft+1)
+            setIdxRight(idxLeft + 1)
         } else {
-            setIdxRight(idxRight+1)
+            setIdxRight(idxRight + 1)
         }
 
-        setPointsIdxCounter(pointsIdxCounter+1)
+        setPointsIdxCounter(pointsIdxCounter + 1)
     }
 
     const handleRightPointClick = () => {
         if (selectedPoint) return
 
         if (idxLeft >= idxRight) {
-            setIdxLeft(idxLeft+1)
+            setIdxLeft(idxLeft + 1)
         } else {
-            setIdxLeft(idxRight+1)
+            setIdxLeft(idxRight + 1)
         }
 
-        setPointsIdxCounter(pointsIdxCounter+1)
+        setPointsIdxCounter(pointsIdxCounter + 1)
     }
 
     const handleNeitherButton = () => {
         if (selectedPoint) return
 
         if (idxLeft >= idxRight) {
-            setIdxRight(idxLeft+1)
-            setIdxLeft(idxLeft+2)
+            setIdxRight(idxLeft + 1)
+            setIdxLeft(idxLeft + 2)
         } else {
-            setIdxLeft(idxRight+1)
-            setIdxRight(idxRight+2)
+            setIdxLeft(idxRight + 1)
+            setIdxRight(idxRight + 2)
         }
 
-        setPointsIdxCounter(pointsIdxCounter+2)
+        setPointsIdxCounter(pointsIdxCounter + 2)
 
+    }
+
+    const handleFinalPointSelected = () => {
+
+    }
+
+    const isSelectionComplete = () => {
+        return pointsIdxCounter >= pointList.length
     }
 
     return (
@@ -67,7 +78,7 @@ function PairCompare(props) {
                 <div className={classes.mainPointDescription}>{mainPoint.description}</div>
             </div>
 
-            <span className={classes.statusBadge}>{`${pointsIdxCounter <= pointList.length ? pointsIdxCounter : pointList.length} out of ${pointList.length}`}</span>
+            <span className={isSelectionComplete() ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= pointList.length ? pointsIdxCounter : pointList.length} out of ${pointList.length}`}</span>
 
             <div className={classes.lowerContainer}>
 
@@ -84,7 +95,8 @@ function PairCompare(props) {
                     {idxRight < pointList.length &&
                         <div className={classes.visiblePoint} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
-                <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>
+                {pointsIdxCounter < pointList.length &&
+                    <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}
             </div>
 
         </div>
@@ -97,10 +109,14 @@ const useStyles = createUseStyles(theme => ({
         fontFamily: theme.font.fontFamily,
     },
     statusBadge: {
-        borderRadius: '1rem',
-        padding: '0.375rem 0.625rem',
         backgroundColor: theme.colors.statusBadgeProgressBackground,
-        border: `${theme.border.width.thin} solid ${theme.colors.statusBadgeProgressBorder}`
+        border: `${theme.border.width.thin} solid ${theme.colors.statusBadgeProgressBorder}`,
+        ...sharedStatusBadgeStyle()
+    },
+    statusBadgeComplete: {
+        backgroundColor: theme.colors.statusBadgeCompletedBackground,
+        border: `${theme.border.width.thin} solid ${theme.colors.statusBadgeCompletedBorder}`,
+        ...sharedStatusBadgeStyle()
     },
     mainPointContainer: {
         textAlign: 'center',
@@ -133,9 +149,11 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-evenly',
         marginTop: '1rem',
+        gap: '1rem',
     },
     visiblePoint: {
         width: '30vw',
+        cursor: 'pointer',
     },
     lowerContainer: {
         marginTop: '1rem',
@@ -149,7 +167,14 @@ const useStyles = createUseStyles(theme => ({
         padding: '0.5rem 2.5rem',
         border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
         margin: '2rem auto',
-    }
+        cursor: 'pointer',
+    },
 }))
+
+const sharedStatusBadgeStyle = () => ({
+    borderRadius: '1rem',
+    padding: '0.375rem 0.625rem',
+
+})
 
 export default PairCompare;
