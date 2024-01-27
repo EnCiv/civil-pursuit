@@ -26,13 +26,24 @@ const Theme = {
     hoverGray: '#B3B3B3',
     darkModeGray: '#343433',
     lightGray: '#F7F7F7',
-    inactiveGray: '#D9D9D9',
-
+    statusBadgeProgressBorder: '#EDBF01',
+    statusBadgeProgressBackground: '#FFFAE8',
+    statusBadgeCompletedBorder: '#005621',
+    statusBadgeCompletedBackground: '#E6F3EB',
+    statusBadgeInactiveBorder: '#EBEBEB',
+    statusBadgeInactiveBackground: '#FFFFFF',
+    statusBadgeErrorBorder: '#BF1300',
+    statusBadgeErrorBackground: '#F9E7E5',
   },
   font: {
     fontFamily: 'Inter',
     fontStyle: 'normal',
     darkModeFont: '#FFFFFF',
+  },
+  border: {
+    width: {
+      thin: '0.0625rem'
+    },
   },
   condensedWidthBreakPoint: '40rem',
   maxPanelWidth: '90rem',
