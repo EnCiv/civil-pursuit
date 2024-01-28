@@ -7,8 +7,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
 import SvgStepBarArrowPale from '../svgr/step-bar-arrow-pale'
-import SvgStepBarSelectArrowOpen from '../svgr/step-bar-select-arrow-open'
-import SvgStepBarSelectArrowClosed from '../svgr/step-bar-select-arrow-closed'
+import SvgStepBarArrowFilled from '../svgr/step-bar-arrow-filled'
 // import ReactScrollBar from './util/react-scrollbar'
 
 function StepBar(props) {
@@ -64,6 +63,18 @@ function StepBar(props) {
    visible steps based on the container's width. The handleCarouselSetup function, debounced for optimization, 
    calculates visible steps by accumulating their widths within the container. Arrow clicks shift the visible step 
    range accordingly. The carousel is responsive to window resizing, and event listeners manage interactions. */
+  /*
+    why am i doing this? because we need to only render a certain amount of steps within the bar. rendering ALL the steps
+    will most likely cause headaches in the future when we need to truncate (...) the last visible step. We are debouncing it so that it doesn't
+    cause the page to slow down. 
+
+    TO DO: refactor the above paragrpahs, add an explanation to the debounced function
+    REFACTOR the css
+    TO DO: the navigation is a bit slow in the carousel
+    TO DO: going right, left and then right results in going to the third page when you go right
+    TO DO: when you get to the last page, the outer div shrinks to the size of the rendered steps
+  
+   */
 
   const handleCarouselSetup = useCallback(
     debounce(() => {
@@ -71,31 +82,37 @@ function StepBar(props) {
       let currentWidth = 0
       for (let i = firstStepIndex; i < stepRefs.length; i++) {
         currentWidth += stepRefs[i]?.current?.offsetWidth
+        // console.log(currentWidth, steps.slice(firstStepIndex), steps.slice(firstStepIndex, i + 1))
 
         if (i === stepRefs.length - 1) {
-          setVisibleSteps(steps.slice(firstStepIndex))
+          let newSteps = steps.slice(firstStepIndex)
+          setVisibleSteps(newSteps)
           setLastStepIndex(i)
           break
         }
 
         if (currentWidth > containerWidth) {
-          setVisibleSteps(steps.slice(firstStepIndex, i + 1))
+          let newSteps = steps.slice(firstStepIndex, i + 1)
+          setVisibleSteps(newSteps)
           setLastStepIndex(i)
+          console.log(newSteps)
           break
         }
+        console.log(visibleSteps)
       }
-      console.log('here')
+      // console.log(visibleSteps, containerWidth, currentWidth)
     }, 300), // Adjust the debounce delay as needed
-    []
+    [firstStepIndex, setPrevFirstStepIndex, setFirstStepIndex, setLastStepIndex, setVisibleSteps, steps]
   )
 
   const rightClick = () => {
-    console.log('here')
+    console.log('right click')
     setPrevFirstStepIndex(firstStepIndex)
     setFirstStepIndex(lastStepIndex)
   }
 
   const leftClick = () => {
+    console.log('left click')
     setFirstStepIndex(prevFirstStepIndex)
   }
 
@@ -115,18 +132,19 @@ function StepBar(props) {
 
   return !isMobile ? (
     <div className={classes.container} style={style}>
-      <SvgStepBarArrowPale
-        className={classes.svgStyling}
-        width="25"
-        height="4.9375rem"
-        style={{ transform: 'rotate(180deg)', flexShrink: '0' }}
-      />
+      <div onClick={leftClick}>
+        <SvgStepBarArrowPale
+          className={classes.svgStyling}
+          width="1rem"
+          height="1.5rem"
+          style={{ transform: 'rotate(180deg)', flexShrink: '0' }}
+        />
+      </div>
       <div className={classes.stepsContainer} ref={stepContainerRef}>
         {visibleSteps.map((step, index) => {
           return (
-            <div ref={stepRefs[index]} className={classes.stepDiv}>
+            <div ref={stepRefs[index]} className={classes.stepDiv} key={index}>
               <Step
-                key={index}
                 name={step.name}
                 title={step.title}
                 complete={step.complete}
@@ -144,7 +162,7 @@ function StepBar(props) {
         })}
       </div>
       <div onClick={rightClick}>
-        <SvgStepBarArrowPale style={{ flexShrink: '0' }} width="25" height="4.9375rem" />
+        <SvgStepBarArrowPale className={classes.svgStyling} width="1rem" height="1.5rem" />
       </div>
     </div>
   ) : (
@@ -155,9 +173,9 @@ function StepBar(props) {
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>Select a Step</div>
           {isOpen ? (
-            <SvgStepBarSelectArrowOpen width="20" height="20" />
+            <SvgStepBarArrowFilled style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" />
           ) : (
-            <SvgStepBarSelectArrowClosed width="20" height="20" />
+            <SvgStepBarArrowFilled width="13" height="13" />
           )}
         </div>
       </div>
@@ -203,11 +221,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   stepsContainer: {
     display: 'inline-flex',
-    padding: '0rem 0.625rem',
+    margin: '0rem 1rem',
     height: '3.5rem',
     alignItems: 'center',
     overflow: 'hidden',
     justifyContent: 'flex-start',
+    boxSizing: 'border-box',
   },
 
   stepDiv: {
@@ -218,6 +237,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     minWidth: 'fit-content',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
+    boxSizing: 'border-box',
   },
 
   //mobile styles
@@ -287,6 +307,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.3125rem',
     flexShrink: '0',
     width: '100%',
+  },
+  svgStyling: {
+    paddingRight: '1rem',
   },
 
   //scrollbar

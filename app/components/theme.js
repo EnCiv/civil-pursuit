@@ -34,6 +34,7 @@ const Theme = {
     statusBadgeInactiveBackground: '#FFFFFF',
     statusBadgeErrorBorder: '#BF1300',
     statusBadgeErrorBackground: '#F9E7E5',
+    inactiveGray: '#D9D9D9',
   },
   font: {
     fontFamily: 'Inter',
