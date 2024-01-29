@@ -11,25 +11,8 @@ import SvgChevronDown from '../svgr/chevron-down';
 import SvgClose from '../svgr/close';
 import Theme from './theme'
 import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
+import DemInfo from './dem-info.jsx'
 
-
-function DemInfoComponent(props) {
-  const { vState, demInfo } = props
-  const theme = Theme
-  return (
-    <div
-      style={{
-        color: vState === 'selected' ? theme.colors.success : '#5D5D5C',
-        ...theme.font,
-        fontSize: '1rem',
-        fontWeight: '400',
-        lineHeight: '1.5rem',
-      }}
-    >
-      {demInfo}
-    </div>
-  )
-}
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children = null) => {
@@ -52,7 +35,8 @@ const PointGroup = (props) => {
   const [vState, setVState] = useState(defaultVState);
   const classes = useStylesFromThemeFunction();
   const [isHovered, setIsHovered] = useState(false);
-  const { subject, description, groupedPoints, demInfo } = pointObj;
+  const { subject, description, groupedPoints, user } = pointObj;
+
 
 
   const onMouseIn = () => {
@@ -81,7 +65,7 @@ const PointGroup = (props) => {
             {groupedPoints.map(point => {
               return (
                 <div key={point._id} className={classes.selectPoints}>
-                  {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />,
+                  {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
                   <div className={classes.selectSelectButton}>
                     <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
                   </div>
@@ -107,14 +91,14 @@ const PointGroup = (props) => {
           {description && (
             <div className={cx(classes.descriptionStyle)}>{description}</div>
           )}
-          {demInfo && <DemInfoComponent demInfo={demInfo} />}
+          {user && <DemInfo user={user} />}
           {vState === 'edit' && (
             <div>
               <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints} >
-                    {CreatePoint(point, 'default', [<DemInfoComponent demInfo={point.demInfo} />,
+                    {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
                     <div className={classes.pointWidthButton}>
                       <ModifierButton className={classes.pointWidthButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
                     </div>,
