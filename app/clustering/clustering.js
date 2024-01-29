@@ -463,4 +463,29 @@ module.exports.report = report
 async function readDiscussionInFromDb(discussioinId) {
     // for now just act like nothing was found
     if (!Discussions[discussioinId]) initDiscussion(discussioinId)
+    const docs=await Discussions[discussioinId].getAllUInfo(discussionId)
+    for(const uinfo of docs){
+        const userId=Object.keys(uinfo)[0]
+        const rounds=uinfo[userId][discussionId]
+        let round=0
+        const statementIds=Object.keys(rounds[round].statementIds)
+        for(const id of statementIds){
+            insertStatementId(discussionId,round,userId,id)
+            if(rounds[round].shownStatementIds[id].rank)
+                rankMostImportant(discussionId,round,userId,rounds[round].shownStatementIds[id].rank)
+        }
+        putGroupings(discussionId,round,userId,roungs[round].groupings)
+    }
+    for(const uinfo of docs){
+        const userId=Object.keys(uinfo)[0]
+        const rounds=uinfo[userId][discussionId]
+        let round=1
+        const statementIds=Object.keys(rounds[round].statementIds)
+        for(const id of statementIds){
+            insertStatementId(discussionId,round,userId,id)
+            if(rounds[round].shownStatementIds[id].rank)
+                rankMostImportant(discussionId,round,userId,rounds[round].shownStatementIds[id].rank)
+        }
+        putGroupings(discussionId,round,userId,roungs[round].groupings)
+    }
 }
