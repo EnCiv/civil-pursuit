@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
-import { set } from 'lodash';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -149,12 +148,11 @@ const useStyles = createUseStyles(theme => ({
         paddingTop: '5rem',
     },
     hiddenPoint: {
-        width: '30vw',
+        width: '30%',
     },
     emptyPoint: {
-        border: '1px solid red',
         position: 'absolute',
-        width: '30vw',
+        width: '30%',
         top: '-2rem',
     },
     visiblePointsContainer: {
@@ -164,7 +162,7 @@ const useStyles = createUseStyles(theme => ({
         gap: '1rem',
     },
     visiblePoint: {
-        width: '30vw',
+        width: '30%',
         cursor: 'pointer',
     },
     lowerContainer: {
