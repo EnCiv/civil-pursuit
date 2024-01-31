@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
+import { set } from 'lodash';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -20,9 +21,12 @@ function PairCompare(props) {
     useEffect(() => {
         if (isSelectionComplete()) {
             setSelectedPoint(pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight]);
-            onDone({valid: true})
         }
     }, [pointsIdxCounter])
+
+    useEffect(() => {
+        onDone({valid: true, value: selectedPoint})
+    }, [selectedPoint])
 
     const handleLeftPointClick = () => {
         if (selectedPoint) return
@@ -63,6 +67,14 @@ function PairCompare(props) {
 
     }
 
+    const handleStartOverButton = () => {
+        onDone({valid: false, value: null})
+        setIdxRight(1)
+        setIdxLeft(0)
+        setPointsIdxCounter(1)
+        setSelectedPoint(null)
+    }
+
     const isSelectionComplete = () => {
         return pointsIdxCounter >= pointList.length
     }
@@ -92,8 +104,11 @@ function PairCompare(props) {
                     {idxRight < pointList.length &&
                         <div className={classes.visiblePoint} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
-                {pointsIdxCounter < pointList.length &&
+                {!isSelectionComplete() &&
                     <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}
+                {isSelectionComplete() &&
+                    <div className={classes.startOverButton} onClick={handleStartOverButton}>Start Over</div>
+                }
             </div>
 
         </div>
@@ -159,19 +174,27 @@ const useStyles = createUseStyles(theme => ({
         border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
     },
     neitherButton: {
-        width: 'fit-content',
-        borderRadius: '0.5rem',
-        padding: '0.5rem 2.5rem',
         border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
-        margin: '2rem auto',
-        cursor: 'pointer',
+        ...sharedButtonStyle(),
     },
+    startOverButton: {
+        border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
+        ...sharedButtonStyle(),
+    }
 }))
 
 const sharedStatusBadgeStyle = () => ({
     borderRadius: '1rem',
     padding: '0.375rem 0.625rem',
 
+})
+
+const sharedButtonStyle = () => ({
+    width: 'fit-content',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 2.5rem',
+    margin: '2rem auto',
+    cursor: 'pointer',
 })
 
 export default PairCompare;
