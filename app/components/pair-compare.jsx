@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
 
 'use strict'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
@@ -12,6 +12,8 @@ function PairCompare(props) {
     // idxLeft and idxRight can swap places at any point
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
+
+    const visibleRightPointRef = useRef(null)
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -30,13 +32,26 @@ function PairCompare(props) {
     const handleLeftPointClick = () => {
         if (selectedPoint) return
 
-        if (idxLeft >= idxRight) {
-            setIdxRight(idxLeft + 1)
-        } else {
-            setIdxRight(idxRight + 1)
-        }
+        // const visiblePointRight = document.querySelector("[class^='visiblePointRight-']");
+        const visiblePointRight = visibleRightPointRef.current
+        // console.log(visiblePointRight)
 
-        setPointsIdxCounter(pointsIdxCounter + 1)
+        visiblePointRight.style.position = 'relative';
+        visiblePointRight.style.left = '50rem';
+
+        setTimeout(() => {
+            if (idxLeft >= idxRight) {
+              setIdxRight(idxLeft + 1);
+            } else {
+              setIdxRight(idxRight + 1);
+            }
+
+            setPointsIdxCounter(pointsIdxCounter + 1);
+
+            visiblePointRight.style.position = '';
+            visiblePointRight.style.left = '';
+          }, 500);
+
     }
 
     const handleRightPointClick = () => {
@@ -101,7 +116,7 @@ function PairCompare(props) {
                     {idxLeft < pointList.length &&
                         <div className={classes.visiblePoint} onClick={handleLeftPointClick}>{pointList[idxLeft]}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
+                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
                 {!isSelectionComplete() &&
                     <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}
@@ -164,6 +179,9 @@ const useStyles = createUseStyles(theme => ({
     visiblePoint: {
         width: '30%',
         cursor: 'pointer',
+        left: '0',
+        right: '0',
+        transition: `all 0.5s linear`,
     },
     lowerContainer: {
         marginTop: '1rem',
@@ -178,7 +196,7 @@ const useStyles = createUseStyles(theme => ({
     startOverButton: {
         border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
         ...sharedButtonStyle(),
-    }
+    },
 }))
 
 const sharedStatusBadgeStyle = () => ({
