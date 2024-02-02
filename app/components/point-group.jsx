@@ -59,7 +59,7 @@ const PointGroup = (props) => {
         <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer, classes.selectWidth)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
-            <SvgClose />
+            <button className={classes.chevronButton}><SvgClose /></button>
           </div>
           <div className={classes.selectPointsContainer}>
             {groupedPoints.map(point => {
@@ -67,7 +67,7 @@ const PointGroup = (props) => {
                 <div key={point._id} className={classes.selectPoints}>
                   {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
                   <div className={classes.selectSelectButton}>
-                    <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
+                    <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
                   </div>
                   ])}
                 </div>
@@ -80,12 +80,12 @@ const PointGroup = (props) => {
         </div>
       )}
 
-      {vState !== 'collapsed' && vState !== 'selectLead' && (
+      {vState !== 'collapsed' && (vState !== 'selectLead') && (
         <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
           <div className={classes.SvgContainer}>
-            {vState === 'default' && (<SvgChevronDown />)}
-            {vState === 'edit' && (<SvgChevronUp />)}
-            {vState === 'view' && (<SvgChevronUp />)}
+            {vState === 'default' && (<button className={classes.chevronButton} onClick={() => setVState('edit')}><SvgChevronDown /></button>)}
+            {vState === 'edit' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
+            {vState === 'view' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
           </div>
           {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
           {description && (
@@ -100,7 +100,7 @@ const PointGroup = (props) => {
                   <div key={point._id} className={classes.subPoints} >
                     {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
                     <div className={classes.pointWidthButton}>
-                      <ModifierButton className={classes.pointWidthButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disabledOnClick={false} />
+                      <ModifierButton className={classes.pointWidthButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
                     </div>,
                     <div className={classes.pointWidthButton}>
                       <TextButton className={classes.pointWidthButton} title="Remove" children="Remove from Group" />
@@ -297,6 +297,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       width: '13rem',
     },
   },
+
+  chevronButton: {
+    background: 'none',
+    color: 'inherit',
+    padding: 0,
+    border: 'none',
+    outline: 'inherit',
+    '&:hover': {
+      background: 'none',
+      color: 'none',
+    }
+  },
+
 }));
 
 export default PointGroup;
