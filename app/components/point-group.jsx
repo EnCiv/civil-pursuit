@@ -83,7 +83,7 @@ const PointGroup = (props) => {
       {vState !== 'collapsed' && (vState !== 'selectLead') && (
         <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
           <div className={classes.SvgContainer}>
-            {vState === 'default' && (<button className={classes.chevronButton} onClick={() => setVState('edit')}><SvgChevronDown /></button>)}
+            {vState === 'default' && (<button className={classes.chevronButton} onClick={() => setVState('view')}><SvgChevronDown /></button>)}
             {vState === 'edit' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
             {vState === 'view' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
           </div>
