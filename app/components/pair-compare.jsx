@@ -34,7 +34,8 @@ function PairCompare(props) {
         if (selectedPoint) return
         const visiblePointRight = visibleRightPointRef.current
         visiblePointRight.style.position = 'relative';
-        visiblePointRight.style.left = '50rem';
+        visiblePointRight.style.transform = 'translateX(200%)'
+        visiblePointRight.style.transition = 'transform 0.5s linear';
 
         setTimeout(() => {
             if (idxLeft >= idxRight) {
@@ -46,7 +47,8 @@ function PairCompare(props) {
             setPointsIdxCounter(pointsIdxCounter + 1);
 
             visiblePointRight.style.position = '';
-            visiblePointRight.style.left = '';
+            visiblePointRight.style.transition = 'none';
+            visiblePointRight.style.transform = '';
           }, 500);
 
     }
@@ -189,9 +191,6 @@ const useStyles = createUseStyles(theme => ({
     visiblePoint: {
         width: '30%',
         cursor: 'pointer',
-        left: '0',
-        right: '0',
-        transition: `all 0.5s linear`,
     },
     lowerContainer: {
         marginTop: '1rem',
