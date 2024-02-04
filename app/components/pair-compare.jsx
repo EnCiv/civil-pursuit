@@ -9,11 +9,12 @@ import cx from 'classnames';
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
 
-    // idxLeft and idxRight can swap places at any point
+    // idxLeft and idxRight can swap places at any point - they are simply pointers to the current two <Point/> elements
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
 
-    const visibleRightPointRef = useRef(null)
+    const visibleRightPointRef = useRef(null);
+    const visibleLeftPointRef = useRef(null);
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -31,11 +32,7 @@ function PairCompare(props) {
 
     const handleLeftPointClick = () => {
         if (selectedPoint) return
-
-        // const visiblePointRight = document.querySelector("[class^='visiblePointRight-']");
         const visiblePointRight = visibleRightPointRef.current
-        // console.log(visiblePointRight)
-
         visiblePointRight.style.position = 'relative';
         visiblePointRight.style.left = '50rem';
 
@@ -56,14 +53,26 @@ function PairCompare(props) {
 
     const handleRightPointClick = () => {
         if (selectedPoint) return
+        const visiblePointLeft = visibleLeftPointRef.current;
 
-        if (idxLeft >= idxRight) {
-            setIdxLeft(idxLeft + 1)
-        } else {
-            setIdxLeft(idxRight + 1)
-        }
+        visiblePointLeft.style.position = 'relative';
+        visiblePointLeft.style.transform = 'translateX(-200%)';
+        visiblePointLeft.style.transition = 'transform 0.5s linear';
 
-        setPointsIdxCounter(pointsIdxCounter + 1)
+        setTimeout(() => {
+            if (idxLeft >= idxRight) {
+                setIdxLeft(idxLeft + 1)
+            } else {
+                setIdxLeft(idxRight + 1)
+            }
+
+            setPointsIdxCounter(pointsIdxCounter + 1)
+
+            visiblePointLeft.style.position = '';
+            visiblePointLeft.style.transition = 'none';
+            visiblePointLeft.style.transform = '';
+        }, 500);
+
     }
 
     const handleNeitherButton = () => {
@@ -114,7 +123,7 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} onClick={handleLeftPointClick}>{pointList[idxLeft]}</div>}
+                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{pointList[idxLeft]}</div>}
                     {idxRight < pointList.length &&
                         <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
                 </div>
@@ -133,6 +142,7 @@ const useStyles = createUseStyles(theme => ({
 
     container: {
         fontFamily: theme.font.fontFamily,
+        overflowX: 'hidden',
     },
     statusBadge: {
         backgroundColor: theme.colors.statusBadgeProgressBackground,
