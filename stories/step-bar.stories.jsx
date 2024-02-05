@@ -41,7 +41,7 @@ export const SecondaryDesktop = args => {
 }
 
 export const ParentsWidth = args => {
-  return <StepBar style={{ maxWidth: '50.375rem' }} {...args} />
+  return <StepBar style={{ width: '50.375rem' }} {...args} />
 }
 
 export const MobileViewOne = {}

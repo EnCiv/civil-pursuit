@@ -20,14 +20,10 @@ function Step(props) {
     className
   )
 
-  const textStyle = cx(
-    classes.sharedTextStyles,
-    {
-      [classes.stepTextActive]: (active && !complete) || (!active && complete),
-      [classes.stepTextInactiveIncomplete]: !active && !complete,
-    },
-    className
-  )
+  const textStyle = cx(classes.sharedTextStyles, {
+    [classes.stepTextActive]: (active && !complete) || (!active && complete),
+    [classes.stepTextInactiveIncomplete]: !active && !complete,
+  })
 
   return (
     <div className={containerStyle} {...otherProps}>
@@ -40,6 +36,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   sharedContainerStyles: {
     padding: '0.625rem 0.9375rem',
     borderRadius: '0.625rem',
+    overflow: 'hidden',
   },
 
   containerActive: {
@@ -60,6 +57,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '600',
     lineHeight: '1.4375rem',
     whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 
   stepTextActive: {
