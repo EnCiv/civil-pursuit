@@ -15,7 +15,7 @@ import DemInfo from './dem-info.jsx'
 
 
 // vState for Point: default, selected, disabled, collapsed
-const CreatePoint = (pointObj, vState, children = null) => {
+const CreatePoint = (pointObj, vState, children = null, className = null) => {
   const { subject, description } = pointObj;
   return (
     <Point
@@ -23,6 +23,7 @@ const CreatePoint = (pointObj, vState, children = null) => {
       description={description}
       vState={vState}
       children={children}
+      className={className}
     />
   )
 }
@@ -69,7 +70,8 @@ const PointGroup = (props) => {
                   <div className={classes.selectSelectButton}>
                     <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
                   </div>
-                  ])}
+                  ],
+                    classes.selectPointsPassDown)}
                 </div>
               );
             })}
@@ -270,6 +272,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       flex: '0 0 100%',
       margin: '1rem 0',
     },
+  },
+
+  selectPointsPassDown: {
+    height: '100%',
   },
 
   selectButtonContainer: {
