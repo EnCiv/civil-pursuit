@@ -17,6 +17,7 @@ function PairCompare(props) {
     const visibleLeftPointRef = useRef(null);
     const hiddenLeftPointRef = useRef(null);
     const hiddenRightPointRef = useRef(null);
+    const hiddenPointContainerRef = useRef(null);
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -31,18 +32,20 @@ function PairCompare(props) {
     useEffect(() => {
         onDone({ valid: true, value: selectedPoint })
     }, [selectedPoint])
-    console.log(hiddenRightPointRef.current)
+
     const handleLeftPointClick = () => {
         if (selectedPoint) return
         const visiblePointRight = visibleRightPointRef.current
         const hiddenPointRight = hiddenRightPointRef.current
+        const hiddenPointContainer = hiddenPointContainerRef.current
 
         visiblePointRight.style.position = 'relative';
         visiblePointRight.style.transform = 'translateX(200%)'
         visiblePointRight.style.transition = 'transform 0.5s linear';
 
-        hiddenPointRight.style.position = 'relative'
-        hiddenPointRight.style.transform = 'translateY(25%)'
+
+        hiddenPointRight.style.position = 'absolute'
+        hiddenPointRight.style.transform = 'translateY(200%)'
         hiddenPointRight.style.transition = 'transform 0.5s linear'
 
         setTimeout(() => {
@@ -61,6 +64,7 @@ function PairCompare(props) {
             hiddenPointRight.style.position = '';
             hiddenPointRight.style.transition = 'none';
             hiddenPointRight.style.transform = '';
+            // hiddenPointContainerRef.current.style.overflow = 'hidden';
         }, 500);
 
     }
@@ -128,11 +132,11 @@ function PairCompare(props) {
 
             <div className={classes.lowerContainer}>
 
-                <div className={classes.hiddenPointContainer}>
+                <div className={classes.hiddenPointContainer} ref={hiddenPointContainerRef}>
                     {pointsIdxCounter < pointList.length &&
                         <div className={classes.hiddenPoint}><Point ref={hiddenLeftPointRef} className={classes.emptyPoint} /></div>}
                     {pointsIdxCounter < pointList.length &&
-                        <div className={classes.hiddenPoint}><Point ref={hiddenRightPointRef} className={classes.emptyPoint}/></div>}
+                        <div className={classes.hiddenPoint}><Point ref={hiddenRightPointRef} className={classes.emptyPoint} /></div>}
                 </div>
 
                 <div className={classes.visiblePointsContainer}>
@@ -183,8 +187,10 @@ const useStyles = createUseStyles(theme => ({
         position: 'relative',
         display: 'flex',
         justifyContent: 'space-evenly',
-        overflow: 'hidden',
+        overflow: 'visible',
         paddingTop: '5rem',
+        marginBottom: '1rem',
+        clipPath: 'xywh(0 0 100% 500%)'
     },
     hiddenPoint: {
         width: '30%',
@@ -197,7 +203,6 @@ const useStyles = createUseStyles(theme => ({
     visiblePointsContainer: {
         display: 'flex',
         justifyContent: 'space-evenly',
-        marginTop: '1rem',
         gap: '1rem',
     },
     visiblePoint: {
