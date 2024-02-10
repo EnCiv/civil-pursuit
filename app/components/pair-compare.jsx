@@ -15,6 +15,8 @@ function PairCompare(props) {
 
     const visibleRightPointRef = useRef(null);
     const visibleLeftPointRef = useRef(null);
+    const hiddenLeftPointRef = useRef(null);
+    const hiddenRightPointRef = useRef(null);
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -27,21 +29,27 @@ function PairCompare(props) {
     }, [pointsIdxCounter])
 
     useEffect(() => {
-        onDone({valid: true, value: selectedPoint})
+        onDone({ valid: true, value: selectedPoint })
     }, [selectedPoint])
-
+    console.log(hiddenRightPointRef.current)
     const handleLeftPointClick = () => {
         if (selectedPoint) return
         const visiblePointRight = visibleRightPointRef.current
+        const hiddenPointRight = hiddenRightPointRef.current
+
         visiblePointRight.style.position = 'relative';
         visiblePointRight.style.transform = 'translateX(200%)'
         visiblePointRight.style.transition = 'transform 0.5s linear';
 
+        hiddenPointRight.style.position = 'relative'
+        hiddenPointRight.style.transform = 'translateY(25%)'
+        hiddenPointRight.style.transition = 'transform 0.5s linear'
+
         setTimeout(() => {
             if (idxLeft >= idxRight) {
-              setIdxRight(idxLeft + 1);
+                setIdxRight(idxLeft + 1);
             } else {
-              setIdxRight(idxRight + 1);
+                setIdxRight(idxRight + 1);
             }
 
             setPointsIdxCounter(pointsIdxCounter + 1);
@@ -49,7 +57,11 @@ function PairCompare(props) {
             visiblePointRight.style.position = '';
             visiblePointRight.style.transition = 'none';
             visiblePointRight.style.transform = '';
-          }, 500);
+
+            hiddenPointRight.style.position = '';
+            hiddenPointRight.style.transition = 'none';
+            hiddenPointRight.style.transform = '';
+        }, 500);
 
     }
 
@@ -93,7 +105,7 @@ function PairCompare(props) {
     }
 
     const handleStartOverButton = () => {
-        onDone({valid: false, value: null})
+        onDone({ valid: false, value: null })
         setIdxRight(1)
         setIdxLeft(0)
         setPointsIdxCounter(1)
@@ -118,9 +130,9 @@ function PairCompare(props) {
 
                 <div className={classes.hiddenPointContainer}>
                     {pointsIdxCounter < pointList.length &&
-                        <div className={classes.hiddenPoint}><Point className={classes.emptyPoint} /></div>}
+                        <div className={classes.hiddenPoint}><Point ref={hiddenLeftPointRef} className={classes.emptyPoint} /></div>}
                     {pointsIdxCounter < pointList.length &&
-                        <div className={classes.hiddenPoint}><Point className={classes.emptyPoint} /></div>}
+                        <div className={classes.hiddenPoint}><Point ref={hiddenRightPointRef} className={classes.emptyPoint}/></div>}
                 </div>
 
                 <div className={classes.visiblePointsContainer}>
