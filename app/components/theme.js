@@ -19,7 +19,7 @@ const Theme = {
     hoverGray: '#B3B3B3',
     darkModeGray: '#343433',
     lightGray: '#F7F7F7',
-
+    secondaryDivider: '#D9D9D9',
   },
   font: {
     fontFamily: 'Inter',
