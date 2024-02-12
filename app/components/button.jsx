@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
+
 import React, {useState, useRef, useEffect} from 'react';
 import { createUseStyles }  from 'react-jss';
 import { PositioningPortal } from '@codastic/react-positioning-portal';
@@ -16,9 +17,9 @@ function Button(props) {
 
     const {
         className = "", // may or may not be passed. Should be applied to the outer most tag, after local classNames
-        onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
+        onDone = () => { }, // a function that is called when the button is clicked.  - if it exists
         title = "", // text to display on hover
-        disabled = false, 
+        disabled = false,
         disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
         children,
         ...otherProps
@@ -126,7 +127,7 @@ const buttonStyles = createUseStyles(theme => ({
     secondaryButton: {
         extend: 'buttonBase',
         backgroundColor: theme.colors.white,
-        color: theme.colors.primaryButtonBlue, 
+        color: theme.colors.primaryButtonBlue,
         border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
 
         '&:focus': {
@@ -134,7 +135,7 @@ const buttonStyles = createUseStyles(theme => ({
 
         '&:disabled': {
             backgroundColor: theme.colors.white,
-            color: theme.colors.disableGray, 
+            color: theme.colors.disableGray,
             border: `0.125rem solid ${theme.colors.disableSecBorderGray}`,
             textDecoration: 'none',
             transition: 'none',
@@ -148,7 +149,7 @@ const buttonStyles = createUseStyles(theme => ({
 
         '&:active': {
             backgroundColor: theme.colors.primaryButtonBlue,
-            color: theme.colors.white, 
+            color: theme.colors.white,
             border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
             textDecoration: 'none',
         },
@@ -168,7 +169,7 @@ const buttonStyles = createUseStyles(theme => ({
             textDecoration: 'underline',
             backgroundColor: theme.colors.white,
             borderColor: theme.colors.encivYellow
-        }, 
+        },
 
         '&:active': {
             backgroundColor: theme.colors.encivYellow,
@@ -188,7 +189,7 @@ const buttonStyles = createUseStyles(theme => ({
         },
 
         '&:disabled': {
-            backgroundColor: theme.colors.borderGray, 
+            backgroundColor: theme.colors.borderGray,
             color: theme.colors.disableTextBlack,
             border: `0.0625rem solid ${theme.colors.borderGray}`,
             textDecoration: 'none',
@@ -213,7 +214,7 @@ const buttonStyles = createUseStyles(theme => ({
         backgroundColor: 'transparent',
         color: theme.colors.title,
         border: 'none',
-        textAlign: 'left', 
+        textAlign: 'left',
         textDecoration: 'underline',
 
         '&:hover, &.hover': {
@@ -223,7 +224,7 @@ const buttonStyles = createUseStyles(theme => ({
         },
 
         '&:active': {
-            color: theme.colors.title, 
+            color: theme.colors.title,
             textDecoration: 'none',
         },
     }

@@ -41,7 +41,7 @@ function DemInfo(props) {
 function calculateAge(birthdayStr) {
     const birthday = new Date(birthdayStr)
     const today = new Date()
-    const age = today.getFullYear() - birthday.getFullYear();
+    let age = today.getFullYear() - birthday.getFullYear();
     const month = today.getMonth() - birthday.getMonth();
 
     if (month < 0 || (month === 0 && today.getDate() < birthday.getDate())) {
