@@ -132,6 +132,16 @@ async function main() {
         }
     }
     report(DISCUSSION_ID, Statements)
+    console.info('Initialising discussion 2')
+    initDiscussion(2, {
+        getAllUInfo: () =>
+            Object.keys(UserInfo).map(uId => {
+                const rounds = UserInfo[uId][1]
+                return { [uId]: { 2: rounds } }
+            }),
+    })
+    console.info('reporting on discussion 2')
+    report(2, Statements)
 }
 
 main()

@@ -35,7 +35,18 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
 //const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: [statementIds], groupings: [[statementIds],...]}...]
 //const Gitems = [] // [round: Number]{byLowerId: [{lowerStatementId: gitem }], byUpper: [{upperStatmentId: gitem}]}
 //const gitem={discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
-
+/**const uInfo={
+        [userId]: {
+            [discussionId]: {
+                [round]: {
+                    shownStatementIds: {
+                        [statementId]: { rank: 0 },
+                    },
+                    groupings: []
+                },
+            },
+        },
+*/
 function initDiscussion(discussionId, options = {}) {
     Discussions[discussionId] = {
         ShownStatements: [],
@@ -48,6 +59,7 @@ function initDiscussion(discussionId, options = {}) {
         min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
         min_rank: options.min_rank || MIN_RANK,
         updateUInfo: options.updateUInfo || (() => {}),
+        getAllUInfo: options.getAllUInfo || (() => {}),
     }
 }
 module.exports.initDiscussion = initDiscussion
@@ -461,31 +473,26 @@ function report(discussionId, Statements) {
 module.exports.report = report
 
 async function readDiscussionInFromDb(discussioinId) {
+    const uniqueStatementIds = [] // need a quicker way to verifiy an id is unique - than finding it in the statementIds array
     // for now just act like nothing was found
     if (!Discussions[discussioinId]) initDiscussion(discussioinId)
-    const docs=await Discussions[discussioinId].getAllUInfo(discussionId)
-    for(const uinfo of docs){
-        const userId=Object.keys(uinfo)[0]
-        const rounds=uinfo[userId][discussionId]
-        let round=0
-        const statementIds=Object.keys(rounds[round].statementIds)
-        for(const id of statementIds){
-            insertStatementId(discussionId,round,userId,id)
-            if(rounds[round].shownStatementIds[id].rank)
-                rankMostImportant(discussionId,round,userId,rounds[round].shownStatementIds[id].rank)
+    const docs = await Discussions[discussioinId].getAllUInfo(discussionId)
+    for (const uinfo of docs) {
+        const userId = Object.keys(uinfo)[0]
+        const rounds = uinfo[userId][discussionId]
+        let round = 0
+        if (!uniqueStatementIds[round]) uniqueStatementIds[round] = {}
+        while (rounds[round]?.statementIds) {
+            const statementIds = Object.keys(rounds[round].statementIds)
+            for (const id of statementIds) {
+                if (uniqueStatementIds[round][id]) continue
+                uniqueStatementIds[round][id] = true
+                insertStatementId(discussionId, round, userId, id)
+                if (rounds[round].shownStatementIds[id].rank)
+                    rankMostImportant(discussionId, round, userId, rounds[round].shownStatementIds[id].rank)
+            }
+            putGroupings(discussionId, round, userId, roungs[round].groupings)
+            round++
         }
-        putGroupings(discussionId,round,userId,roungs[round].groupings)
-    }
-    for(const uinfo of docs){
-        const userId=Object.keys(uinfo)[0]
-        const rounds=uinfo[userId][discussionId]
-        let round=1
-        const statementIds=Object.keys(rounds[round].statementIds)
-        for(const id of statementIds){
-            insertStatementId(discussionId,round,userId,id)
-            if(rounds[round].shownStatementIds[id].rank)
-                rankMostImportant(discussionId,round,userId,rounds[round].shownStatementIds[id].rank)
-        }
-        putGroupings(discussionId,round,userId,roungs[round].groupings)
     }
 }
