@@ -29,7 +29,7 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontFamily: 'Inter',
     fontStyle: 'normal',
     paddingBottom: '4.375rem',
-    borderBottom: '1px solid #D9D9D9',
+    borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
   },
 
   title: {
