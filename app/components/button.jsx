@@ -1,6 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
-import React, { useState, useRef } from 'react';
-import { createUseStyles } from 'react-jss';
+
+import React, {useState, useRef, useEffect} from 'react';
+import { createUseStyles }  from 'react-jss';
+import { PositioningPortal } from '@codastic/react-positioning-portal';
 import cx from 'classnames';
 
 /**
@@ -24,23 +26,63 @@ function Button(props) {
     } = props;
 
     const [isDisabled, setIsDisabled] = useState(disabled);
+    const [isPortalOpen, setIsPortalOpen] = useState(false);
+    const timeRef = useRef(null);
 
     const classes = buttonStyles();
     const combinedClassName = cx(classes.buttonBase, className);
 
+    const handleMouseDown = () => {
+        timeRef.current = setTimeout(() => {
+            setIsPortalOpen(true);
+        }, 500);
+    }
+
+    const handleMouseUp = () => {
+        clearTimeout(timeRef.current);
+        setTimeout(() => setIsPortalOpen(false), displayTime);
+    }
+
+    useEffect(() => {
+        if (isPortalOpen) {
+            const displayTime = Math.max(8, 0.1 * title.length) * 1000;
+            const timeout = setTimeout(() => {
+                setIsPortalOpen(false);
+            }, displayTime);
+            return () => clearTimeout(timeout);
+        }
+    }, [isPortalOpen, title.length]);
+    
+
     return (
-        <button
-            className={combinedClassName}
-            title={title}
-            disabled={isDisabled}
-            onClick={() => {
-                if (onDone) onDone();
-                if (disableOnClick) setIsDisabled(true);
-            }}
-            {...otherProps}
+        <span 
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
         >
-            {children}
-        </button>
+            <PositioningPortal
+                isOpen={isPortalOpen}
+                portalContent={
+                    <span>
+                        {title}
+                    </span>
+            }>
+                <button
+                    className={combinedClassName}
+                    title={title}
+                    disabled={isDisabled}
+                    onClick={() => {
+                        if (onDone) onDone();
+                        if (disableOnClick) setIsDisabled(true);
+                    }}
+                    {...otherProps}
+                >
+                    {children}
+                </button>
+            </PositioningPortal>
+            
+        </span>
+        
     )
 }
 

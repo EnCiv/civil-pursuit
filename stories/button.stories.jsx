@@ -64,3 +64,12 @@ HoverTest.args = {
     disableOnClick: false,
     children: "Hover State Button"
 };
+
+export const LongPressTest = Template(SecondaryButton).bind({});
+LongPressTest.args = {
+    onDone: null,
+    title: "Press me fdsaf fdasfds  ewfavdszvwea dafd adfgew vdfgreat fsdgaew",
+    disabled: false,
+    disableOnClick: false,
+    children: "Hover State Button"
+};
