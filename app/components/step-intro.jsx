@@ -29,16 +29,15 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontFamily: 'Inter',
     fontStyle: 'normal',
     paddingBottom: '4.375rem',
-    borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
+    borderBottom: '1px solid #D9D9D9',
   },
 
   title: {
-    fontFamily: 'Inter',
-    fontStyle: 'normal',
     color: theme.colors.primaryButtonBlue,
     fontSize: '2.25rem',
     fontWeight: 300,
     lineHeight: '2.9375rem',
+    fontFamily: 'Inter',
   },
 
   paragraph: {
@@ -46,6 +45,7 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontSize: '1.25rem',
     fontWeight: 400,
     lineHeight: '1.875rem',
+    fontFamily: 'Inter',
   },
 }))
 
