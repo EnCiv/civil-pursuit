@@ -12,13 +12,6 @@ const selectedOption = (
 )
 
 const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke="#06335C" strokeWidth="2" />
-const rankingStyleClasses = createUseStyles({
-  optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.125rem' },
-  option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', color: 'inherit' },
-  group: { display: 'flex', gap: '1.4375rem' },
-  disabled: { opacity: '30%' },
-  hideDefaultRadio: { display: 'none !important' },
-})
 
 export default function Ranking(props) {
   //Isolate props and set initial state
@@ -38,11 +31,9 @@ export default function Ranking(props) {
     setResponse(e.target.value)
     if (!onDone) {
       return console.warn(
-        `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onSelected prop.`
+        `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`
       )
-    }
-
-    onDone({ valid: true, value: e.target.value })
+    } else onDone({ valid: true, value: e.target.value })
   }
 
   return (
@@ -80,3 +71,11 @@ export default function Ranking(props) {
     </div>
   )
 }
+
+const rankingStyleClasses = createUseStyles({
+  optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.125rem' },
+  option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', color: 'inherit' },
+  group: { display: 'flex', gap: '1.4375rem' },
+  disabled: { opacity: '30%' },
+  hideDefaultRadio: { display: 'none !important' },
+})
