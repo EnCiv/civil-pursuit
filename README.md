@@ -3,7 +3,7 @@
 This is a tool to enable large scale deliberation online. It leads people through a discussion process, not chat, that engages them in finding what they agree on. The process stages are derived from in-person dialog and deliberation but here they can be automated and made to scale to support very large numbers of participants.
 
 [<img width="638" alt="image" src="https://user-images.githubusercontent.com/3317487/233766186-d63eb3d3-4015-4551-bb00-7ff4403c64b5.png">](https://civilpursuit.herokuapp.com/item/pvote)
-[Clink here to try it](https://civilpursuit.herokuapp.com/item/pvote)
+[Click here to try it](https://civilpursuit.herokuapp.com/item/pvote)
 
 ## License
 
@@ -11,12 +11,30 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ## Getting Started
 
-We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
+### Dev Environment for Easy Project Switching
 
-I have been using [Node Version Switcher](https://github.com/jasongin/nvs) to make easially switch between versions of node.
-And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+This project uses bash. This follows the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+
+These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
+if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+    echo running `pwd`/.bashrc
+    source ./.bashrc
+fi
+```
+
+This works great when you open a terminal in a project directory, for example when you are using visual studio code. But do what it takes to make sure that you are running bash in your terminal.
+
+### Getting the corresponding version of Node
+We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
+
+[Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easially switch between versions of node.
+And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+
+```bash
 # get the node version from package.json and use https"//github.com/jasongin/nvs to switch to it
 export NODE_VERSION=$(cat package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
 nvs add $NODE_VERSION
@@ -34,7 +52,7 @@ npm install
 
 For the first stages of this project, we will be focusing on storybook
 
-```
+```bash
 npm run storybook
 ```
 
@@ -69,22 +87,19 @@ So after you get this far, request a link to the "civil-pursuit-template" google
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
-### Dev Environment for Easy Project Switching
+# Contributing
+Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
-This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+If you are not already, get on the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) by filling out this [form](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) and then getting the link it provides after submission to go to join slack.
 
-These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+To look for things to work on go to the [Issues](https://github.com/EnCiv/civil-pursuit/issues) tab above.
+Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list. 
 
-In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
+When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one. 
+You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucments are posted in the #developers channel on slack.
 
-```
-if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
-    echo running `pwd`/.bashrc
-    source ./.bashrc
-fi
-```
+Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
-This works great when you open a terminal in a project directory, for example when you are using visual studio code.
 
 # React Component guidelines and notes:
 
