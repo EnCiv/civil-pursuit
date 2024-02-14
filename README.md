@@ -58,9 +58,11 @@ npm run storybook
 
 ### MongoDB
 
-This app uses MONGODB and you will need a mongodb uri to get started. Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
+This app uses MONGODB and you will need a mongodb uri to get started. Cloud.[mongodb.com](https://www.mongodb.com/) has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
 
-you should end up with a line like this in your .bashrc file
+you should end up with a line like this in your .bashrc file.
+
+The instructions above are continually getting out of sync with MongoDB's lates UI.  Revised instructions would be a welcome contribution that would make it easier for the next developer. 
 
 ```
 export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
@@ -73,7 +75,6 @@ After you get Mongo setup, you also need these ENV variable in your .bashrc file
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
-export MONGODB_URI=$MONGODB_URI
 ```
 
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
@@ -83,7 +84,7 @@ npm run dev
 ```
 
 It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
-So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
+So after you get this far, request via slack a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
@@ -100,6 +101,17 @@ You are also welcome to ask about issues on slack or the developers meeting. The
 
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
+Before you start coding, create a new branch for this issue:
+```bash
+git checkout -b short-issue-text#issue-number
+```
+For example `point-group#35`. The issue text should just be a word or two that make it distinct, and the the issue number.
+Then when you are ready to create a PR for the issue, or if you just want to push the code so we can talk about it, do:
+```
+git push -u origin short-issue-text#issue-number
+```
+This will push the code to a new branch on github. (-u means upstream) After this first time, you only need to `git push` to push updates.
+After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to creat a PR for this branch. Go ahead.  Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
 
 # React Component guidelines and notes:
 
