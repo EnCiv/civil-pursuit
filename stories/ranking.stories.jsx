@@ -1,20 +1,13 @@
 import React from 'react'
 import Ranking from '../app/components/util/ranking'
-import common from './common'
+import common, { onDoneDecorator, onDoneResult } from './common'
 import expect from 'expect'
-import { userEvent } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/testing-library'
 
 export default {
   component: Ranking,
   parameters: { layout: 'centered' },
-  decorators: [
-    Story => (
-      <div style={common.outerStyle}>
-        {common.outerSetup()}
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [onDoneDecorator],
 }
 
 const testEnabledNoDefault = async (step, numericalIdentifier = '', defaultValue = '') => {
@@ -218,18 +211,44 @@ const testEnabledWithDashDefault = async (step, numericalIdentifier = '', defaul
 */
 const generateComponent = (numericalIdentifier, disabled = false, defaultValue = '') => {
   return (
-    <Ranking
-      disabled={disabled}
-      defaultValue={defaultValue}
-      block="true"
-      large="true"
-      className={['itemComponent', 'className2', 'className3', `testRanking-${numericalIdentifier}`]}
-      onSelect={e => {
-        console.log(e.target.value)
-      }}
-    ></Ranking>
+    <Ranking disabled={disabled} defaultValue={defaultValue} className={`testRanking-${numericalIdentifier}`}></Ranking>
   )
 }
+
+export const Empty = {
+  args: {},
+}
+
+export const LeastOnDone = {
+  args: {},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const leastEle = canvas.getByText(/Least/i)
+    await userEvent.click(leastEle)
+    const result = onDoneResult()
+    expect(result).toMatchObject({ count: 1, onDoneResult: { valid: true, value: 'Least' } })
+  },
+}
+
+export const DefaultMost = {
+  args: { defaultValue: 'Most' },
+}
+
+export const BadDefault = {
+  args: { defaultValue: 'BadDefault' },
+  play: async ({ step }) => {
+    // using step instead of canvasElement because don't want userEvent
+    await common.asyncSleep(1) // wait for the rerender after onDone is called
+    await step('onDone should be called after initial render with valid: false', async () => {
+      const result = onDoneResult()
+      expect(result).toMatchObject({
+        count: 1,
+        onDoneResult: { valid: false, value: '' },
+      })
+    })
+  },
+}
+
 export const Functionality_Enabled_and_No_Default = {
   render: () => generateComponent(1, false, ''),
   play: ({ step }) => {
@@ -268,6 +287,6 @@ export const Functionality_Enabled_and_Bad_Default = {
 export const Functionality_Enabled_and_Dash_Default = {
   render: () => generateComponent(6, false, '-'),
   play: ({ step }) => {
-    testEnabledWithBadDefault(step, '6', '')
+    testEnabledWithDashDefault(step, '6', '')
   },
 }
