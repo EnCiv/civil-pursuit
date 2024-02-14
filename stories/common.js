@@ -75,7 +75,7 @@ export function onDoneDecorator(Story, context) {
         <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
           <div>
             onDone:{' '}
-            <span title="onDoneResult" style={{ whiteSpace: 'pre-wrap' }}>
+            <span title="onDoneResult" id="onDoneResult" style={{ whiteSpace: 'pre-wrap' }}>
               {JSON.stringify(result, null, 4)}
             </span>
           </div>
@@ -84,8 +84,8 @@ export function onDoneDecorator(Story, context) {
     </>
   )
 }
-export function onDoneResult(canvas) {
-  return JSON.parse(canvas.getByTitle('onDoneResult').innerHTML)
+export function onDoneResult() {
+  return JSON.parse(document.getElementById('onDoneResult').innerHTML)
 }
 
 export default {
