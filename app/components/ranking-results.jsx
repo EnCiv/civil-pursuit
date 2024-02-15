@@ -16,11 +16,14 @@ export default function RankingResults(props) {
     { name: 'Least', value: 0 },
   ]
 
+  // Calculate the total sum of all values
+  const total = Object.values(resultList).reduce((sum, value) => sum + value, 0)
+
   const dataArray = isEmpty
     ? defaultData
     : Object.keys(resultList).map(key => ({
         name: key, // This will be "Most", "Neutral", or "Least"
-        value: resultList[key], // This is the corresponding number value
+        percentage: ((resultList[key] / total) * 100).toFixed(2), // This is the corresponding percentage value
       }))
 
   return (
@@ -28,10 +31,11 @@ export default function RankingResults(props) {
       <ResponsiveContainer width="100%" height="100%" className={cx(classes.wrapper, className)} {...props}>
         <BarChart data={dataArray} width="100%" height="100%" layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" />
+          <XAxis type="number" tickFormatter={tick => `${tick}%`} domain={[0, 100]} />
           <YAxis type="category" dataKey="name" className={cx(classes.yAxisFont)} />
+          {/*cursor={{fill: 'transparent'}} to disable hover effect*/}
           <Tooltip />
-          <Bar dataKey="value" maxBarSize={25}>
+          <Bar dataKey="percentage" maxBarSize={25}>
             {dataArray.map((entry, index) => (
               <Cell key={`cell-${index}`} fill="#038a47" />
             ))}
@@ -45,8 +49,7 @@ export default function RankingResults(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
     width: '100%',
-    height: '50vh',
-    background: theme.colorPrimary,
+    height: '20rem',
   },
   yAxisFont: {
     fontWeight: 'bold',
