@@ -47,7 +47,7 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
             },
         },
 */
-function initDiscussion(discussionId, options = {}) {
+async function initDiscussion(discussionId, options = {}) {
     Discussions[discussionId] = {
         ShownStatements: [],
         ShownGroups: [],
@@ -59,8 +59,9 @@ function initDiscussion(discussionId, options = {}) {
         min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
         min_rank: options.min_rank || MIN_RANK,
         updateUInfo: options.updateUInfo || (() => {}),
-        getAllUInfo: options.getAllUInfo || (() => {}),
+        getAllUInfo: options.getAllUInfo || (async () => {}),
     }
+    await readDiscussionInFromDb(discussionId)
 }
 module.exports.initDiscussion = initDiscussion
 
@@ -82,8 +83,7 @@ function insertStatementId(discussionId, round, userId, statementId) {
         rank: 0,
     }
     if (!Discussions[discussionId]) {
-        initDiscussion(discussionId)
-        readDiscussionInFromDb(discussionId) // this adds data in the background no need to async wait here
+        throw new Error('Discussion:', discussionId, 'not initialized')
     }
     if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
     Discussions[discussionId].ShownStatements[round].push(shownItem)
@@ -153,7 +153,7 @@ function sortLargestFirst(a, b) {
 
 async function getStatementIds(discussionId, round, userId) {
     if (!Discussions[discussionId]) {
-        await readDiscussionInFromDb(discussionId)
+        throw new Error('Discussion:', discussionId, 'not initialized')
     }
     if (!Discussions[discussionId]?.ShownStatements?.length) {
         return undefined
@@ -472,19 +472,19 @@ function report(discussionId, Statements) {
 }
 module.exports.report = report
 
-async function readDiscussionInFromDb(discussioinId) {
+async function readDiscussionInFromDb(discussionId) {
     const uniqueStatementIds = [] // need a quicker way to verifiy an id is unique - than finding it in the statementIds array
     // for now just act like nothing was found
-    if (!Discussions[discussioinId]) initDiscussion(discussioinId)
-    const docs = await Discussions[discussioinId].getAllUInfo(discussionId)
+    if (!Discussions[discussionId]) initDiscussion(discussionId)
+    const docs = await Discussions[discussionId].getAllUInfo(discussionId)
     for (const uinfo of docs) {
         const userId = Object.keys(uinfo)[0]
         const rounds = uinfo[userId][discussionId]
         let round = 0
         if (!uniqueStatementIds[round]) uniqueStatementIds[round] = {}
-        while (rounds[round]?.statementIds) {
-            const statementIds = Object.keys(rounds[round].statementIds)
-            for (const id of statementIds) {
+        while (rounds[round]?.shownStatementIds) {
+            const shownStatementIds = Object.keys(rounds[round].shownStatementIds)
+            for (const id of shownStatementIds) {
                 if (uniqueStatementIds[round][id]) continue
                 uniqueStatementIds[round][id] = true
                 insertStatementId(discussionId, round, userId, id)
