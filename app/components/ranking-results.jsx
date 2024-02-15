@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts'
 
-export default function RankingResult(props) {
+export default function RankingResults(props) {
   const { resultList, className, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
 
@@ -25,13 +25,13 @@ export default function RankingResult(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...props}>
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height="100%" className={cx(classes.wrapper, className)} {...props}>
         <BarChart data={dataArray} width="100%" height="100%" layout="vertical">
-          <CartesianGrid strokeDasharray="2 3" />
+          <CartesianGrid strokeDasharray="3 3" />
           <XAxis type="number" />
           <YAxis type="category" dataKey="name" className={cx(classes.yAxisFont)} />
           <Tooltip />
-          <Bar dataKey="value" barSize={30}>
+          <Bar dataKey="value" maxBarSize={25}>
             {dataArray.map((entry, index) => (
               <Cell key={`cell-${index}`} fill="#038a47" />
             ))}
@@ -45,6 +45,7 @@ export default function RankingResult(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
     width: '100%',
+    height: '50vh',
     background: theme.colorPrimary,
   },
   yAxisFont: {
