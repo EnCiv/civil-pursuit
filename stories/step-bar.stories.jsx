@@ -1,5 +1,6 @@
 import StepBar from '../app/components/step-bar'
 import React from 'react'
+import { onDoneDecorator, onDoneResult } from './common'
 
 let primarySteps = Array.from({ length: 9 }, (_, i) => ({
   name: `Step ${i + 1}: Test`,
@@ -19,9 +20,6 @@ export default {
   args: {
     steps: primarySteps,
     current: 0,
-    onDone: i => {
-      console.log(i)
-    },
   },
   decorators: [
     Story => {
@@ -31,6 +29,7 @@ export default {
         </div>
       )
     },
+    onDoneDecorator,
   ],
 }
 

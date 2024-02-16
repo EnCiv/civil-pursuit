@@ -95,29 +95,23 @@ function StepBar(props) {
           page++
           currentWidth = 0
           firstStepIndex = i
-          console.log('here')
-          console.log(newSteps, newMap)
         }
       }
       setPages(newMap)
       setVisibleSteps(newMap.get(1))
-      console.log(currentPage)
     }, 300),
     [setVisibleSteps, steps]
   )
 
   const rightClick = () => {
     if (currentPage < pages.size) {
-      console.log('right click')
       setVisibleSteps(pages.get(currentPage + 1))
       setCurrentPage(prev => prev + 1)
-      console.log(visibleSteps, pages, currentPage)
     }
   }
 
   const leftClick = () => {
     if (currentPage > 1) {
-      console.log('left click')
       setVisibleSteps(pages.get(currentPage - 1))
       setCurrentPage(prev => prev - 1)
     }
