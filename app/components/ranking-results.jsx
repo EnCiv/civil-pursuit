@@ -26,12 +26,19 @@ export default function RankingResults(props) {
         percentage: ((resultList[key] / total) * 100).toFixed(2), // This is the corresponding percentage value
       }))
 
+  // Calculate the maximum percentage value in your dataArray
+  const maxPercentage = Math.max(...dataArray.map(item => item.percentage))
+
   return (
     <div className={cx(classes.wrapper, className)} {...props}>
       <ResponsiveContainer width="100%" height="100%" className={cx(classes.wrapper, className)} {...props}>
         <BarChart data={dataArray} width="100%" height="100%" layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" tickFormatter={tick => `${tick}%`} domain={[0, 100]} />
+          <XAxis
+            type="number"
+            tickFormatter={tick => `${tick}%`}
+            domain={[0, dataMax => Math.max(dataMax, maxPercentage)]}
+          />
           <YAxis type="category" dataKey="name" className={cx(classes.yAxisFont)} />
           {/*cursor={{fill: 'transparent'}} to disable hover effect*/}
           <Tooltip />
