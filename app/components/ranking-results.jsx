@@ -26,8 +26,8 @@ export default function RankingResults(props) {
         percentage: ((resultList[key] / total) * 100).toFixed(2), // This is the corresponding percentage value
       }))
 
-  // Calculate the maximum percentage value in your dataArray
-  const maxPercentage = Math.max(...dataArray.map(item => item.percentage))
+  // Calculate the maximum percentage value ceiling in your dataArray
+  const maxPercentage = Math.ceil(Math.max(...dataArray.map(item => item.percentage)))
 
   return (
     <div className={cx(classes.wrapper, className)} {...props}>
