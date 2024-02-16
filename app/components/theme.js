@@ -26,6 +26,7 @@ const Theme = {
     hoverGray: '#B3B3B3',
     darkModeGray: '#343433',
     lightGray: '#F7F7F7',
+    secondaryDivider: '#D9D9D9',
     statusBadgeProgressBorder: '#EDBF01',
     statusBadgeProgressBackground: '#FFFAE8',
     statusBadgeCompletedBorder: '#005621',
@@ -43,7 +44,7 @@ const Theme = {
   },
   border: {
     width: {
-      thin: '0.0625rem'
+      thin: '0.0625rem',
     },
   },
   condensedWidthBreakPoint: '40rem',

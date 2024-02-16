@@ -3,7 +3,7 @@
 This is a tool to enable large scale deliberation online. It leads people through a discussion process, not chat, that engages them in finding what they agree on. The process stages are derived from in-person dialog and deliberation but here they can be automated and made to scale to support very large numbers of participants.
 
 [<img width="638" alt="image" src="https://user-images.githubusercontent.com/3317487/233766186-d63eb3d3-4015-4551-bb00-7ff4403c64b5.png">](https://civilpursuit.herokuapp.com/item/pvote)
-[Clink here to try it](https://civilpursuit.herokuapp.com/item/pvote)
+[Click here to try it](https://civilpursuit.herokuapp.com/item/pvote)
 
 ## License
 
@@ -11,12 +11,30 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ## Getting Started
 
-We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
+### Dev Environment for Easy Project Switching
 
-I have been using [Node Version Switcher](https://github.com/jasongin/nvs) to make easially switch between versions of node.
-And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+This project uses bash. This follows the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+
+These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+
+In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
+if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+    echo running `pwd`/.bashrc
+    source ./.bashrc
+fi
+```
+
+This works great when you open a terminal in a project directory, for example when you are using visual studio code. But do what it takes to make sure that you are running bash in your terminal.
+
+### Getting the corresponding version of Node
+We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
+
+[Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easially switch between versions of node.
+And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+
+```bash
 # get the node version from package.json and use https"//github.com/jasongin/nvs to switch to it
 export NODE_VERSION=$(cat package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
 nvs add $NODE_VERSION
@@ -34,15 +52,17 @@ npm install
 
 For the first stages of this project, we will be focusing on storybook
 
-```
+```bash
 npm run storybook
 ```
 
 ### MongoDB
 
-This app uses MONGODB and you will need a mongodb uri to get started. Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
+This app uses MONGODB and you will need a mongodb uri to get started. Cloud.[mongodb.com](https://www.mongodb.com/) has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
 
-you should end up with a line like this in your .bashrc file
+you should end up with a line like this in your .bashrc file.
+
+The instructions above are continually getting out of sync with MongoDB's lates UI.  Revised instructions would be a welcome contribution that would make it easier for the next developer. 
 
 ```
 export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
@@ -55,7 +75,6 @@ After you get Mongo setup, you also need these ENV variable in your .bashrc file
 ```
 export NODE_ENV="development"
 export SYNAPP_ENV="alpha"
-export MONGODB_URI=$MONGODB_URI
 ```
 
 Then you should be able to run the development server. You may also need to `source .bashrc` first.
@@ -65,34 +84,44 @@ npm run dev
 ```
 
 It should startup. You will be able to browse to [localhost:3011/](localhost:3011/) but there won't be anything useful in the database.
-So after you get this far, request a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
+So after you get this far, request via slack a link to the "civil-pursuit-template" google drive directory where there is a bunch of db records and a README file that explains how to put it into the database.
 
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
-### Dev Environment for Easy Project Switching
+# Contributing
+Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
-This project uses bash. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+If you are not already, get on the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) by filling out this [form](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) and then getting the link it provides after submission to go to join slack.
 
-These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+To look for things to work on go to the [Issues](https://github.com/EnCiv/civil-pursuit/issues) tab above.
+Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list. 
 
-In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
+When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one. 
+You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucments are posted in the #developers channel on slack.
 
+Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
+
+Before you start coding, create a new branch for this issue:
+```bash
+git checkout -b short-issue-text#issue-number
 ```
-if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
-    echo running `pwd`/.bashrc
-    source ./.bashrc
-fi
+For example `point-group#35`. The issue text should just be a word or two that make it distinct, and the the issue number.
+Then when you are ready to create a PR for the issue, or if you just want to push the code so we can talk about it, do:
 ```
-
-This works great when you open a terminal in a project directory, for example when you are using visual studio code.
+git push -u origin short-issue-text#issue-number
+```
+This will push the code to a new branch on github. (-u means upstream) After this first time, you only need to `git push` to push updates.
+After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to creat a PR for this branch. Go ahead.  Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
 
 # React Component guidelines and notes:
+
 <details>
     <summary>General notes on react component boilerplate stuff. Also, we want to state the 'why' for each guideline.</summary>
 
 These notes are pretty general and always open to reevaluation.
 
 **my-component.js**
+
 ```js
 // https://github.com/EnCiv/civil-pursuit/issue/NUMBER
 import React from 'react'
@@ -100,44 +129,75 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
 export default function MyComponent(props) {
-    const { className, ...otherProps } = props
-    const classes = useStylesFromThemeFunction(props)
-    // otherProps is gathered from props and expanded into to the outer tag so that
-    // the parent of this component can pass in things like style or onHover or whatever
-    // allowing this component to be as extensible as possible without recoding
-    return (
-        <div className={cx(classes.wrapper, className)} {...otherProps}>
-            Hello World
-        </div>
-    )
+  const { className, ...otherProps } = props
+  const classes = useStylesFromThemeFunction(props)
+  // otherProps is gathered from props and expanded into to the outer tag so that
+  // the parent of this component can pass in things like style or onHover or whatever
+  // allowing this component to be as extensible as possible without recoding
+  return (
+    <div className={cx(classes.wrapper, className)} {...otherProps}>
+      Hello World
+    </div>
+  )
 }
 
 // we want to see the code first, so we put the classes at the bottom
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-    wrapper: {
-        background: theme.colorPrimary,
-        padding: '1rem',
-    },
+  wrapper: {
+    background: theme.colorPrimary,
+    padding: '1rem',
+  },
 }))
-````
+```
 
-1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme so that absolute values like colors can be given names and shared across components. 
+1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme so that absolute values like colors can be given names and shared across components.
 
 2. The theme is in [**app/theme.js**](https://github.com/EnCiv/civil-pursuit/blob/master/app/theme.js). We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components. To see examples of how to use the theme and what colors, sizes and other styling information are currently part of the theme, we can also check out the 'Theme Examples' Storybook stories and its code at [**stories/theme.stories.js**](https://github.com/EnCiv/undebate-ssp/blob/main/stories/theme.stories.js).
 
-3. As in the above example, generally components should accept all props, extract out the ones that are specific to the component, and expand all the other props into the outer tag of what's being rendered. For props that are used by this component, like className (or style), but would also be passed down from a parent, this component should combine it's values with the values being passed down - as in using cx(className, classes.wrapper). 
+3. As in the above example, generally components should accept all props, extract out the ones that are specific to the component, and expand all the other props into the outer tag of what's being rendered. For props that are used by this component, like className (or style), but would also be passed down from a parent, this component should combine it's values with the values being passed down - as in using cx(className, classes.wrapper).
 
-4. To make components responsive, do not use 'px'. We need to convert this to 'rem', 'em', 'vw', or 'vh' as appropriate to make the components responsive. Figma now has a developers mode where you can get the output in rem rather than pixels.  See [Figma now supports REM](https://uxdesign.cc/figma-now-supports-rem-units-understanding-the-use-and-benefits-5957fc1ecb78)
+4. To make components responsive, do not use 'px'. We need to convert this to 'rem', 'em', 'vw', or 'vh' as appropriate to make the components responsive. Figma now has a developers mode where you can get the output in rem rather than pixels. See [Figma now supports REM](https://uxdesign.cc/figma-now-supports-rem-units-understanding-the-use-and-benefits-5957fc1ecb78)
 
-5. Most components should take their width from the parent - not set the width. They should have no margin (whitespace around the component), and expect their their parent will apply padding as necessary. - This makes it easier for parent component to line up their children.  If different child components have different built in white space, it's hard for the parent to line them up. 
+5. Most components should take their width from the parent - not set the width. They should have no margin (whitespace around the component), and expect their their parent will apply padding as necessary. - This makes it easier for parent component to line up their children. If different child components have different built in white space, it's hard for the parent to line them up.
 
-7. File names should be all lowercase, use '-' between words, and end in .js (.jsx should be reserved for react class based components). Some OS's are case sensitive others are not.
+6. File names should be all lowercase, use '-' between words, and end in .js (.jsx should be reserved for react class based components). Some OS's are case sensitive others are not.
 
-8. We are using storybook to build stories for each component.  This makes it quicker and easier to build and iterate the component. Then, after it's done we have a great test cases and a great visual library of all the components. Within the stories/my-component.stories.js file for a component, create multiple stories that exercise the functionality of the component. - Future contributors are going to come back to the story to see how the component works - or to test it for some new situation.  See the stories director for examples.
+7. We are using storybook to build stories for each component. This makes it quicker and easier to build and iterate the component. Then, after it's done we have a great test cases and a great visual library of all the components. Within the stories/my-component.stories.js file for a component, create multiple stories that exercise the functionality of the component. - Future contributors are going to come back to the story to see how the component works - or to test it for some new situation. See the stories director for examples.
 
-9. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
+8. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
 
-10. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
+9. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
+
+In storybook tests, onDone can be tested with a common function.
+
+**stories/my-text-input-component.stories.js:**
+
+```JS
+// https://github.com/EnCiv/civil-pursuit/issue/NUMBER
+import { onDoneDecorator, onDoneResult } from './common'
+import MyTextInputComponent from '../app/components/my-text-input-component'
+
+export default {
+  component: MyTextInputComponent,
+  args: {},
+  decorators: [onDoneDecorator], // inserts the onDone argument, and adds html to the bottom showing the onDone result
+}
+
+export const onDoneTest = {
+  args: { },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const textEle = canvas.getByPlaceholderText(/type some thing here/i)
+    await userEvent.type(textEle, 'This is text')
+    await userEvent.tab() // moving out of the input field causes onDone to be called
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: 1,
+      onDoneResult: { valid: false, value: { subject: 'This is text' } },
+    })
+  },
+}
+```
+
  </details>
 
 # Icons, Figma and SVG
@@ -171,14 +231,15 @@ function renderSomething(){
     return <SvgTrashCan />
 }
 ```
-When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and now padding around it.  
+
+When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and now padding around it.
 
 There is a Show Icons story in Storybook, that shows all the icons in the project.  
 ![image](https://github.com/EnCiv/civil-pursuit/assets/3317487/362baacb-23ec-4d77-a43b-288e434d1394)
 
 The green border shows the outline around the figure. Make sure the green box touches the figure on all four sides - or it will be hard to place and scale the component in different uses.
 
-Occasionally, I have had to edited the file in assets/svg to tweak the viewBox dimensions to get it exactly right.  After you do, you will have to re-run `npm run svgr` to update the component.  (but you can do it from another terminal window and leave storybook running)
+Occasionally, I have had to edited the file in assets/svg to tweak the viewBox dimensions to get it exactly right. After you do, you will have to re-run `npm run svgr` to update the component. (but you can do it from another terminal window and leave storybook running)
 
 </details>
 
