@@ -11,9 +11,9 @@ export default function RankingResults(props) {
   // Check if resultList is empty and set default data if so
   const isEmpty = Object.keys(resultList).length === 0
   const defaultData = [
-    { name: 'Most', value: 0 },
-    { name: 'Neutral', value: 0 },
-    { name: 'Least', value: 0 },
+    { name: 'Most', percentage: 0 },
+    { name: 'Neutral', percentage: 0 },
+    { name: 'Least', percentage: 0 },
   ]
 
   // Calculate the total sum of all values
