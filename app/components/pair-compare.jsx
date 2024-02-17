@@ -4,7 +4,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
-import cx from 'classnames';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -17,7 +16,6 @@ function PairCompare(props) {
     const visibleLeftPointRef = useRef(null);
     const hiddenLeftPointRef = useRef(null);
     const hiddenRightPointRef = useRef(null);
-    const hiddenPointContainerRef = useRef(null);
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -37,12 +35,10 @@ function PairCompare(props) {
         if (selectedPoint) return
         const visiblePointRight = visibleRightPointRef.current
         const hiddenPointRight = hiddenRightPointRef.current
-        const hiddenPointContainer = hiddenPointContainerRef.current
 
         visiblePointRight.style.position = 'relative';
         visiblePointRight.style.transform = 'translateX(200%)'
         visiblePointRight.style.transition = 'transform 0.5s linear';
-
 
         hiddenPointRight.style.position = 'absolute'
         hiddenPointRight.style.transform = 'translateY(200%)'
@@ -64,7 +60,6 @@ function PairCompare(props) {
             hiddenPointRight.style.position = '';
             hiddenPointRight.style.transition = 'none';
             hiddenPointRight.style.transform = '';
-            // hiddenPointContainerRef.current.style.overflow = 'hidden';
         }, 500);
 
     }
@@ -72,10 +67,15 @@ function PairCompare(props) {
     const handleRightPointClick = () => {
         if (selectedPoint) return
         const visiblePointLeft = visibleLeftPointRef.current;
+        const hiddenPointLeft = hiddenLeftPointRef.current;
 
         visiblePointLeft.style.position = 'relative';
         visiblePointLeft.style.transform = 'translateX(-200%)';
         visiblePointLeft.style.transition = 'transform 0.5s linear';
+
+        hiddenPointLeft.style.position = 'absolute'
+        hiddenPointLeft.style.transform = 'translateY(200%)'
+        hiddenPointLeft.style.transition = 'transform 0.5s linear'
 
         setTimeout(() => {
             if (idxLeft >= idxRight) {
@@ -89,6 +89,10 @@ function PairCompare(props) {
             visiblePointLeft.style.position = '';
             visiblePointLeft.style.transition = 'none';
             visiblePointLeft.style.transform = '';
+
+            hiddenPointLeft.style.position = '';
+            hiddenPointLeft.style.transition = 'none';
+            hiddenPointLeft.style.transform = '';
         }, 500);
 
     }
@@ -132,7 +136,7 @@ function PairCompare(props) {
 
             <div className={classes.lowerContainer}>
 
-                <div className={classes.hiddenPointContainer} ref={hiddenPointContainerRef}>
+                <div className={classes.hiddenPointContainer}>
                     {pointsIdxCounter < pointList.length &&
                         <div className={classes.hiddenPoint}><Point ref={hiddenLeftPointRef} className={classes.emptyPoint} /></div>}
                     {pointsIdxCounter < pointList.length &&
