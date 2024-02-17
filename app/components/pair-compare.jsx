@@ -36,13 +36,9 @@ function PairCompare(props) {
         const visiblePointRight = visibleRightPointRef.current
         const hiddenPointRight = hiddenRightPointRef.current
 
-        visiblePointRight.style.position = 'relative';
-        visiblePointRight.style.transform = 'translateX(200%)'
-        visiblePointRight.style.transition = 'transform 0.5s linear';
+        Object.assign(visiblePointRight.style, { position: 'relative', transform: 'translateX(200%)', transition: 'transform 0.5s linear' });
+        Object.assign(hiddenPointRight.style, { position: 'absolute', transform: 'translateY(200%)', transition: 'transform 0.5s linear' });
 
-        hiddenPointRight.style.position = 'absolute'
-        hiddenPointRight.style.transform = 'translateY(200%)'
-        hiddenPointRight.style.transition = 'transform 0.5s linear'
 
         setTimeout(() => {
             if (idxLeft >= idxRight) {
@@ -53,13 +49,9 @@ function PairCompare(props) {
 
             setPointsIdxCounter(pointsIdxCounter + 1);
 
-            visiblePointRight.style.position = '';
-            visiblePointRight.style.transition = 'none';
-            visiblePointRight.style.transform = '';
+            Object.assign(visiblePointRight.style, { position: '', transition: 'none', transform: '' });
+            Object.assign(hiddenPointRight.style, { position: '', transition: 'none', transform: '' });
 
-            hiddenPointRight.style.position = '';
-            hiddenPointRight.style.transition = 'none';
-            hiddenPointRight.style.transform = '';
         }, 500);
 
     }
@@ -69,13 +61,9 @@ function PairCompare(props) {
         const visiblePointLeft = visibleLeftPointRef.current;
         const hiddenPointLeft = hiddenLeftPointRef.current;
 
-        visiblePointLeft.style.position = 'relative';
-        visiblePointLeft.style.transform = 'translateX(-200%)';
-        visiblePointLeft.style.transition = 'transform 0.5s linear';
+        Object.assign(visiblePointLeft.style, { position: 'relative', transform: 'translateX(-200%)', transition: 'transform 0.5s linear' });
+        Object.assign(hiddenPointLeft.style, { position: 'absolute', transform: 'translateY(200%)', transition: 'transform 0.5s linear' });
 
-        hiddenPointLeft.style.position = 'absolute'
-        hiddenPointLeft.style.transform = 'translateY(200%)'
-        hiddenPointLeft.style.transition = 'transform 0.5s linear'
 
         setTimeout(() => {
             if (idxLeft >= idxRight) {
@@ -86,13 +74,9 @@ function PairCompare(props) {
 
             setPointsIdxCounter(pointsIdxCounter + 1)
 
-            visiblePointLeft.style.position = '';
-            visiblePointLeft.style.transition = 'none';
-            visiblePointLeft.style.transform = '';
+            Object.assign(visiblePointLeft.style, { position: '', transition: 'none', transform: '' });
+            Object.assign(hiddenPointLeft.style, { position: '', transition: 'none', transform: '' });
 
-            hiddenPointLeft.style.position = '';
-            hiddenPointLeft.style.transition = 'none';
-            hiddenPointLeft.style.transform = '';
         }, 500);
 
     }
