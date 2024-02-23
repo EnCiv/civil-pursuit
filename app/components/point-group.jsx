@@ -35,9 +35,8 @@ const PointGroup = (props) => {
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vState, setVState] = useState(defaultVState);
   const classes = useStylesFromThemeFunction();
-  const [isHovered, setIsHovered] = useState(false);
   const { subject, description, groupedPoints, user } = pointObj;
-
+  const singlePoint = groupedPoints.length === 0;
 
 
   const onMouseIn = () => {
@@ -84,11 +83,11 @@ const PointGroup = (props) => {
 
       {vState !== 'collapsed' && (vState !== 'selectLead') && (
         <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
-          <div className={classes.SvgContainer}>
+          {!singlePoint && <div className={classes.SvgContainer}>
             {vState === 'default' && (<button className={classes.chevronButton} onClick={() => setVState('view')}><SvgChevronDown /></button>)}
             {vState === 'edit' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
             {vState === 'view' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
-          </div>
+          </div>}
           {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
           {description && (
             <div className={cx(classes.descriptionStyle)}>{description}</div>
@@ -96,7 +95,7 @@ const PointGroup = (props) => {
           {user && <DemInfo user={user} />}
           {vState === 'edit' && (
             <div>
-              <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>
+              {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints} >
@@ -113,7 +112,7 @@ const PointGroup = (props) => {
           )}
           {vState === 'view' && (
             <div>
-              <p className={classes.titleGroup}>Other Responses</p>
+              {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints}>
@@ -122,7 +121,7 @@ const PointGroup = (props) => {
               })}
             </div>
           )}
-          {vState !== 'view' && (
+          {vState !== 'view' && !singlePoint && (
             <div className={classes.bottomButtons}>
               {vState === 'default' && (
                 <ModifierButton className={classes.editButton} onDone={() => setVState('edit')} title="Edit" children="Edit" disableOnClick={true} />)}
