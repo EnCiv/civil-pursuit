@@ -32,7 +32,7 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
 //const ShownStatements = [] // [round: Number][{discussionId: ObjectId, round: Number, statementId: ObjectId, shownCount: Number, rank: Number}, ...]
 //const ShownGroups = [] // [round: Number][{ statementIds: [ObjectId], shownCount: Number},...]
 //const Gitems = [] // [round: Number]{discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
-//const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: [statementIds], groupings: [[statementIds],...]}...]
+//const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: {[statementId]: {rank: number, author: boolean}}, groupings: [[statementIds],...]}...]
 //const Gitems = [] // [round: Number]{byLowerId: [{lowerStatementId: gitem }], byUpper: [{upperStatmentId: gitem}]}
 //const gitem={discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
 /**const uInfo={
@@ -40,7 +40,7 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
             [discussionId]: {
                 [round]: {
                     shownStatementIds: {
-                        [statementId]: { rank: 0 },
+                        [statementId]: { rank: 0, author: boolean },
                     },
                     groupings: []
                 },
@@ -59,7 +59,7 @@ async function initDiscussion(discussionId, options = {}) {
         min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
         min_rank: options.min_rank || MIN_RANK,
         updateUInfo: options.updateUInfo || (() => {}),
-        getAllUInfo: options.getAllUInfo || (async () => {}),
+        getAllUInfo: options.getAllUInfo || (async () => []),
     }
     await readDiscussionInFromDb(discussionId)
 }
@@ -89,13 +89,13 @@ function insertStatementId(discussionId, round, userId, statementId) {
     Discussions[discussionId].ShownStatements[round].push(shownItem)
     initUitems(discussionId, userId, round)
 
-    Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0 }
+    Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0, author: true }
     Discussions[discussionId].updateUInfo({
         [userId]: {
             [discussionId]: {
                 [round]: {
                     shownStatementIds: {
-                        [statementId]: { rank: 0 },
+                        [statementId]: { rank: 0, author: true },
                     },
                 },
             },
@@ -473,26 +473,40 @@ function report(discussionId, Statements) {
 module.exports.report = report
 
 async function readDiscussionInFromDb(discussionId) {
-    const uniqueStatementIds = [] // need a quicker way to verifiy an id is unique - than finding it in the statementIds array
     // for now just act like nothing was found
-    if (!Discussions[discussionId]) initDiscussion(discussionId)
     const docs = await Discussions[discussionId].getAllUInfo(discussionId)
+    // first insert all the statements from their authors.
+    // we have to do this pass first so that the Uinfo element will be created for the authors
+    let rounds_length = 0
+    let round = 0
+    // users can only insert statement at round 0
     for (const uinfo of docs) {
         const userId = Object.keys(uinfo)[0]
         const rounds = uinfo[userId][discussionId]
-        let round = 0
-        if (!uniqueStatementIds[round]) uniqueStatementIds[round] = {}
-        while (rounds[round]?.shownStatementIds) {
+        if (rounds[round]?.shownStatementIds) {
             const shownStatementIds = Object.keys(rounds[round].shownStatementIds)
             for (const id of shownStatementIds) {
-                if (uniqueStatementIds[round][id]) continue
-                uniqueStatementIds[round][id] = true
-                insertStatementId(discussionId, round, userId, id)
-                if (rounds[round].shownStatementIds[id].rank)
-                    rankMostImportant(discussionId, round, userId, rounds[round].shownStatementIds[id].rank)
+                if (rounds[round]?.shownStatementIds[id].author) insertStatementId(discussionId, round, userId, id)
             }
-            putGroupings(discussionId, round, userId, roungs[round].groupings)
-            round++
         }
+        rounds_length = Math.max(rounds_length, Object.keys(rounds).length)
+    }
+    // now go back through the users again and apply their rankings and groupings
+    console.info('rounds_length', rounds_length)
+    while (round < rounds_length) {
+        for (const uinfo of docs) {
+            const userId = Object.keys(uinfo)[0]
+            const rounds = uinfo[userId][discussionId]
+            if (rounds[round]?.shownStatementIds) {
+                const shownStatementIds = Object.keys(rounds[round].shownStatementIds)
+                for (const id of shownStatementIds) {
+                    if (rounds[round].shownStatementIds[id].rank)
+                        rankMostImportant(discussionId, round, userId, id, rounds[round].shownStatementIds[id].rank)
+                }
+                putGroupings(discussionId, round, userId, rounds[round].groupings)
+            }
+        }
+        console.info('round', round)
+        round++
     }
 }

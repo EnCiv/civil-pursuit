@@ -92,7 +92,7 @@ async function proxyUser() {
     }
 }
 async function main() {
-    initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo })
+    await initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo })
     for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
         process.stdout.write('new user ' + i + '\r')
         await proxyUser()
@@ -133,7 +133,7 @@ async function main() {
     }
     report(DISCUSSION_ID, Statements)
     console.info('Initialising discussion 2')
-    initDiscussion(2, {
+    await initDiscussion(2, {
         getAllUInfo: async () => {
             const Uinfos = Object.keys(UserInfo).map(uId => {
                 const rounds = UserInfo[uId][1]
