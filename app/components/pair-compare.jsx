@@ -19,6 +19,7 @@ function PairCompare(props) {
 
     const [pointsIdxCounter, setPointsIdxCounter] = useState(1);
     const [selectedPoint, setSelectedPoint] = useState(null);
+    const [isTransitioning, setIsTransitioning] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -58,14 +59,16 @@ function PairCompare(props) {
 
     const handleRightPointClick = () => {
         if (selectedPoint) return
+        setIsTransitioning(true)
         const visiblePointLeft = visibleLeftPointRef.current;
         const hiddenPointLeft = hiddenLeftPointRef.current;
 
         Object.assign(visiblePointLeft.style, { position: 'relative', transform: 'translateX(-200%)', transition: 'transform 0.5s linear' });
-        Object.assign(hiddenPointLeft.style, { position: 'absolute', transform: 'translateY(200%)', transition: 'transform 0.5s linear' });
+        Object.assign(hiddenPointLeft.style, { position: 'absolute', transform: 'translateY(100%)', transition: 'transform 0.5s linear' });
 
 
         setTimeout(() => {
+            setIsTransitioning(false)
             if (idxLeft >= idxRight) {
                 setIdxLeft(idxLeft + 1)
             } else {
@@ -108,6 +111,10 @@ function PairCompare(props) {
         return pointsIdxCounter >= pointList.length
     }
 
+    const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
+    let hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
+    let hiddenTransitioningLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
+
     return (
         <div className={classes.container} {...otherProps}>
 
@@ -122,7 +129,7 @@ function PairCompare(props) {
 
                 <div className={classes.hiddenPointContainer}>
                     {pointsIdxCounter < pointList.length &&
-                        <div className={classes.hiddenPoint}><Point ref={hiddenLeftPointRef} className={classes.emptyPoint} /></div>}
+                        <div className={classes.hiddenPoint}>{isTransitioning ? hiddenTransitioningLeftPoint : hiddenEmptyLeftPoint}</div>}
                     {pointsIdxCounter < pointList.length &&
                         <div className={classes.hiddenPoint}><Point ref={hiddenRightPointRef} className={classes.emptyPoint} /></div>}
                 </div>
