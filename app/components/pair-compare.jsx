@@ -137,10 +137,10 @@ function PairCompare(props) {
     }
 
     const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
-    let hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
-    let hiddenTransitioningLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
-    let hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
-    let hiddenTransitioningRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
+    const hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
+    const hiddenTransitioningLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
+    const hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
+    const hiddenTransitioningRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
 
     return (
         <div className={classes.container} {...otherProps}>
