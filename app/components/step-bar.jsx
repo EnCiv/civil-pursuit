@@ -13,17 +13,36 @@ import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
 
+  /* 
+  This component dynamically adjusts visible steps in the carousel based on container width. 
+  handleCarouselSetup, optimized with debouncing, computes steps' widths and manages shifts on arrow clicks.
+  Event listeners handle interactions and window resizing. 
+  */
+
+  /*
+  I opted for this method due to its versatility across screen sizes and step bar dimensions. 
+  Rendering only necessary steps outperforms CSS control, which may behave unpredictably across browsers or resolutions. 
+  This approach also offers precise control over the last visible step, crucial for truncation if cut-off. 
+  We debounce the function to prevent slowdowns caused from expensive page layout recalculations.
+  */
+
   const classes = useStylesFromThemeFunction()
 
+  // Create an array of references. Each reference will be assigned to a step, allowing easy access to its visual width.
   const stepRefs = steps.map(() => useRef(null))
+  // Refernce to the steps container, to collect the maximum width of step visibility.
   const stepContainerRef = useRef(null)
+  // Reference to the select dropdown. Any click event target that is not a descendant of the select input will close the input.
   const selectRef = useRef(null)
-
+  // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
   const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
+  // State to handle the select input.
   const [isOpen, setIsOpen] = useState(false)
-
+  // State to map each 'page' of the steps carousel to its steps.
   const [pages, setPages] = useState(new Map())
+  // State to hold the steps that should be rendered on each page. Not entirely necessary, but helps readability.
   const [visibleSteps, setVisibleSteps] = useState(steps)
+  // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
 
   const handleOpen = () => {
@@ -31,6 +50,7 @@ function StepBar(props) {
   }
 
   const handleClickOutside = event => {
+    // if the select input is currently rendered and it does not contain the click event target, then close the menu.
     if (selectRef.current && !selectRef.current.contains(event.target)) {
       setIsOpen(false)
     }
@@ -39,6 +59,20 @@ function StepBar(props) {
   const handleResize = () => {
     setIsMobile(window.innerWidth < 50 * 16)
     handleCarouselSetup()
+  }
+
+  const rightClick = () => {
+    if (currentPage < pages.size) {
+      setVisibleSteps(pages.get(currentPage + 1))
+      setCurrentPage(prev => prev + 1)
+    }
+  }
+
+  const leftClick = () => {
+    if (currentPage > 1) {
+      setVisibleSteps(pages.get(currentPage - 1))
+      setCurrentPage(prev => prev - 1)
+    }
   }
 
   /**
@@ -58,20 +92,6 @@ function StepBar(props) {
       }, delay)
     }
   }
-
-  /* The carousel functionality implemented in this React component dynamically adjusts the number of
-   visible steps based on the container's width. The handleCarouselSetup function, debounced for optimization, 
-   calculates visible steps by accumulating their widths within the container. Arrow clicks shift the visible step 
-   range accordingly. The carousel is responsive to window resizing, and event listeners manage interactions. */
-  /*
-  TO DO: refactor the explanation below, and add documentation to the debounce function and carousel setup, and the carousel (pages, visible steps, etc...). ADd debounce function to common
-
-    I chose this approach because it is very generic and will work with any screen size/step bar size. rendering only the necessary steps seemed like
-    the best option over attempting to control the visible steps through css, which may yield unpredictable results when used with different browsers or screen resolutions. 
-    This also allows us to isolate (and therefore have full control over) the last visible step, which needs to be truncated in the event that it is cut-off. 
-    This was a workaround, as attempting to achieve this behavior through pure css proved to be a headache (ie, adding text overflow property to every step would cause them all to truncate to the length of the cut-off step.)
-    We are debouncing it so that it doesn't cause the page to slow down. 
-   */
 
   const handleCarouselSetup = useCallback(
     debounce(() => {
@@ -103,20 +123,10 @@ function StepBar(props) {
     [setVisibleSteps, steps]
   )
 
-  const rightClick = () => {
-    if (currentPage < pages.size) {
-      setVisibleSteps(pages.get(currentPage + 1))
-      setCurrentPage(prev => prev + 1)
-    }
-  }
-
-  const leftClick = () => {
-    if (currentPage > 1) {
-      setVisibleSteps(pages.get(currentPage - 1))
-      setCurrentPage(prev => prev - 1)
-    }
-  }
-
+  /*
+   Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
+   UseLayoutEffect ensures that widths are calculated once the layout is rendered. 
+  */
   useLayoutEffect(() => {
     if (!isMobile) {
       handleCarouselSetup()
@@ -249,7 +259,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   svgColor: {
     '& path': {
-      stroke: 'rgb(206, 206, 206)',
+      stroke: theme.colors.svgArrow,
     },
   },
 
@@ -264,22 +274,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
   },
   mobileHeader: {
-    fontFamily: 'Inter',
+    ...theme.font,
     fontSize: '1rem',
-    fontStyle: 'normal',
     fontWeight: '400',
     lineHeight: '1.5rem',
-    color: '#343433',
+    color: theme.colors.title,
     paddingTop: '1.06rem',
     paddingLeft: '1.69rem',
   },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
-    height: '2.5rem',
     borderRadius: '0.25rem',
     border: '0.125rem solid #EBEBEB',
-    background: '#FFF',
+    background: theme.colors.white,
   },
   selectItemsContainer: {
     display: 'inline-flex',
@@ -289,15 +297,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
   },
   selectText: {
-    color: '#D9D9D9',
-    fontFamily: 'Inter',
+    color: theme.colors.encivGray,
+    ...theme.font,
     fontSize: '1rem',
-    fontStyle: 'normal',
     fontWeight: '400',
     lineHeight: '1.5rem',
   },
   breakStyle: {
-    background: '#D9D9D9',
+    background: theme.colors.inactiveGray,
     height: '0.0625rem',
     marginTop: '0.94rem',
   },
@@ -307,7 +314,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'flex-start',
     borderRadius: '0rem 0rem 0.25rem 0.25rem',
     border: '0.125rem solid #EBEBEB',
-    background: '#FFF',
+    background: theme.colors.white,
     margin: '0rem 1.56rem',
     overflowY: 'scroll',
   },

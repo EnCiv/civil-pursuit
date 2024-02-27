@@ -40,7 +40,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   containerActive: {
-    background: 'rgba(6, 51, 92, 0.10)',
+    background: theme.colors.stepContainerActive,
   },
 
   containerInactiveComplete: {
