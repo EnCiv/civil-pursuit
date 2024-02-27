@@ -13,7 +13,9 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ### Dev Environment for Easy Project Switching
 
-This project uses bash. This follows the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+This project uses **bash**. This follows the cloud environment. The OS manufactures have their idea about what shell to run, but that's for work in their environment.  Think of the shell as something that is project dependent. If you are on Windows and don't have bash yet, there's [gitforwindows.org](https://gitforwindows.org/). No need to change your default shell, just get it on your computer and think of it as a project by project configuration. In Visual Studio Code, open your terminnal at the top and it will allows you to select bash for this project. 
+
+The .bashrc file in each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
 
@@ -49,6 +51,8 @@ cd civil-pursuit
 npm install
 
 ```
+
+**Note:** If you started out with a newer version of node, but are now rolling back, you will need to run `npm ci` the first time to clean out the node_modules director and rebuild it.
 
 For the first stages of this project, we will be focusing on storybook
 
