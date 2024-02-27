@@ -23,7 +23,7 @@ const CreatePoint = (pointObj, vState, children = null, className = null) => {
       description={description}
       vState={vState}
       children={children}
-      className={className}
+      className={cx(className)}
     />
   )
 }
@@ -38,14 +38,6 @@ const PointGroup = (props) => {
   const { subject, description, groupedPoints, user } = pointObj;
   const singlePoint = groupedPoints.length === 0;
 
-
-  const onMouseIn = () => {
-    setIsHovered(true)
-  };
-
-  const onMouseOut = () => {
-    setIsHovered(false)
-  };
 
   return (
     <div className={cx(className)}{...otherProps}>
@@ -70,7 +62,7 @@ const PointGroup = (props) => {
                     <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
                   </div>
                   ],
-                    classes.selectPointsPassDown)}
+                    cx(classes.selectPointsPassDown, classes.noBoxShadow))}
                 </div>
               );
             })}
@@ -105,7 +97,7 @@ const PointGroup = (props) => {
                     </div>,
                     <div className={classes.pointWidthButton}>
                       <TextButton className={classes.pointWidthButton} title="Remove" children="Remove from Group" />
-                    </div>])}
+                    </div>], classes.noBoxShadow)}
                   </div>);
               })}
             </div>
@@ -116,7 +108,7 @@ const PointGroup = (props) => {
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints}>
-                    {CreatePoint(point, 'view')}
+                    {CreatePoint(point, 'view', null, classes.noBoxShadow)}
                   </div>);
               })}
             </div>
@@ -313,6 +305,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       background: 'none',
       color: 'none',
     }
+  },
+
+  noBoxShadow: {
+    boxShadow: 'none',
+    border: '1px solid rgba(217, 217, 217, 0.40)',
   },
 
 }));
