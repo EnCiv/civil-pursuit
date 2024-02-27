@@ -1,3 +1,5 @@
+const { deepEqual } = require('assert')
+
 // clustering
 const GROUP_SIZE = 7 // this is the group size
 const GMAJORITY = 0.5 //Group Majority - minimum percentage of group that votes for it to be part of the group
@@ -61,7 +63,7 @@ async function initDiscussion(discussionId, options = {}) {
         updateUInfo: options.updateUInfo || (() => {}),
         getAllUInfo: options.getAllUInfo || (async () => []),
     }
-    await readDiscussionInFromDb(discussionId)
+    await reconstructDiscussionFromUInfo(discussionId)
 }
 module.exports.initDiscussion = initDiscussion
 
@@ -472,41 +474,59 @@ function report(discussionId, Statements) {
 }
 module.exports.report = report
 
-async function readDiscussionInFromDb(discussionId) {
-    // for now just act like nothing was found
+function sortShownGroupItemsByLowestLast(a, b) {
+    return b.shownCount - a.shownCount
+}
+async function reconstructDiscussionFromUInfo(discussionId) {
+    console.info('readDiscussionInFromDb')
     const docs = await Discussions[discussionId].getAllUInfo(discussionId)
+    if (!docs?.length) return
     // first insert all the statements from their authors.
     // we have to do this pass first so that the Uinfo element will be created for the authors
-    let rounds_length = 0
+    let rounds_length = 1
     let round = 0
     // users can only insert statement at round 0
-    for (const uinfo of docs) {
-        const userId = Object.keys(uinfo)[0]
-        const rounds = uinfo[userId][discussionId]
-        if (rounds[round]?.shownStatementIds) {
-            const shownStatementIds = Object.keys(rounds[round].shownStatementIds)
-            for (const id of shownStatementIds) {
-                if (rounds[round]?.shownStatementIds[id].author) insertStatementId(discussionId, round, userId, id)
-            }
-        }
-        rounds_length = Math.max(rounds_length, Object.keys(rounds).length)
-    }
-    // now go back through the users again and apply their rankings and groupings
-    console.info('rounds_length', rounds_length)
     while (round < rounds_length) {
+        console.info('round', round, rounds_length)
+        const shownGroups = {} // object for quick existence test, to array later
+        const shownStatements = {} // object for quick existence test, to array later
         for (const uinfo of docs) {
             const userId = Object.keys(uinfo)[0]
-            const rounds = uinfo[userId][discussionId]
-            if (rounds[round]?.shownStatementIds) {
-                const shownStatementIds = Object.keys(rounds[round].shownStatementIds)
-                for (const id of shownStatementIds) {
-                    if (rounds[round].shownStatementIds[id].rank)
-                        rankMostImportant(discussionId, round, userId, id, rounds[round].shownStatementIds[id].rank)
-                }
-                putGroupings(discussionId, round, userId, rounds[round].groupings)
+            if (round === 0) rounds_length = Math.max(rounds_length, Object.keys(uinfo[userId][discussionId]).length)
+            const uitem = uinfo[userId][discussionId][round]
+            if (!uitem) continue
+            const shownStatementIds = Object.keys(uitem.shownStatementIds)
+            // shownGroups are identified by the first id in the list, that is not authored by the user
+            const shownGroupIds = shownStatementIds.filter(id => !uitem.shownStatementIds[id].author)
+            if (!shownGroups[shownGroupIds[0]])
+                shownGroups[shownGroupIds[0]] = { statementIds: shownGroupIds, shownCount: 1 }
+            else {
+                shownGroups[shownGroupIds[0]].shownCount += 1
+                if (process.env.NODE_ENV !== 'production')
+                    deepEqual(shownGroups[shownGroupIds[0]].statementIds, shownGroupIds)
             }
+            for (const id of shownStatementIds) {
+                if (!shownStatements[id])
+                    shownStatements[id] = {
+                        discussionId,
+                        round,
+                        statementId: id,
+                        shownCount: 0,
+                        rank: 0,
+                    }
+                shownStatements[id].shownCount += 1
+                if (uitem.shownStatementIds[id].author) shownStatements[id].author = true
+                if (uitem.shownStatementIds[id].rank) shownStatements[id].rank += uitem.shownStatementIds[id].rank
+            }
+            const groupings = uitem.groupings
+            iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
+            groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+            if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
+            Discussions[discussionId].Uitems[userId][round] = { userId, ...uitem }
         }
-        console.info('round', round)
+        Discussions[discussionId].ShownStatements[round] = Object.values(shownStatements).sort(sortShownItemsByRank)
+        Discussions[discussionId].ShownGroups[round] = Object.values(shownGroups).sort(sortShownGroupItemsByLowestLast)
         round++
     }
+    await getStatementIds(discussionId, round, 0)
 }
