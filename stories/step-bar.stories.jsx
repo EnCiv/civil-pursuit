@@ -19,7 +19,7 @@ export default {
   component: StepBar,
   args: {
     steps: primarySteps,
-    current: 0,
+    current: 1,
   },
   decorators: [
     Story => {
@@ -36,7 +36,7 @@ export default {
 export const PrimaryDesktop = {}
 
 export const SecondaryDesktop = args => {
-  return <StepBar {...args} current={1} steps={secondarySteps} />
+  return <StepBar {...args} current={2} steps={secondarySteps} />
 }
 
 export const ParentsWidth = args => {
@@ -65,7 +65,7 @@ export const SecondaryMobileView = {
   },
   args: {
     steps: secondarySteps,
-    current: 1,
+    current: 2,
     onDone: i => {
       console.log(i)
     },

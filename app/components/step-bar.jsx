@@ -44,6 +44,14 @@ function StepBar(props) {
   const [visibleSteps, setVisibleSteps] = useState(steps)
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
+  // add a unique numerical identifier to each step
+  const stepsWithIds = useMemo(() => {
+    let newSteps = []
+    for (let i = 0; i < steps.length; i++) {
+      newSteps.push({ ...steps[i], id: i + 1 })
+    }
+    return newSteps
+  }, [steps])
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -93,10 +101,12 @@ function StepBar(props) {
     }
   }
 
+  /*
+  To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
+  */
   const handleCarouselSetup = useCallback(
     debounce(() => {
-      const newMap = new Map(pages)
-      newMap.clear()
+      const newMap = new Map()
       let containerWidth = stepContainerRef?.current?.offsetWidth
       let currentWidth = 0
       let firstStepIndex = 0
@@ -107,10 +117,12 @@ function StepBar(props) {
         currentWidth += stepRefs[i]?.current?.offsetWidth
 
         if (i === stepRefs.length - 1) {
-          newSteps = steps.slice(firstStepIndex)
+          // if we are on the last step, slice from the index of the first visible step
+          newSteps = stepsWithIds.slice(firstStepIndex)
           newMap.set(page, newSteps)
         } else if (currentWidth > containerWidth) {
-          newSteps = steps.slice(firstStepIndex, i + 1)
+          // if the current width exceeds the container width, than we are currently on the last visible step
+          newSteps = stepsWithIds.slice(firstStepIndex, i + 1)
           newMap.set(page, newSteps)
           page++
           currentWidth = 0
@@ -119,7 +131,7 @@ function StepBar(props) {
       }
       setPages(newMap)
       setVisibleSteps(newMap.get(1))
-    }, 300),
+    }, 50),
     [setVisibleSteps, steps]
   )
 
@@ -141,6 +153,9 @@ function StepBar(props) {
     }
   }, [isMobile])
 
+  /*
+  NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.
+  */
   return !isMobile ? (
     <div className={cx(classes.container, className)} style={style}>
       <div onClick={leftClick} className={classes.svgContainer}>
@@ -163,7 +178,7 @@ function StepBar(props) {
                 name={step.name}
                 title={step.title}
                 complete={step.complete}
-                active={current === index ? true : false}
+                active={current === step.id ? true : false}
                 {...otherProps}
                 onMouseDown={() => {
                   if (step.complete) {
@@ -202,14 +217,14 @@ function StepBar(props) {
         <div className={cx(classes.dropdownContainer, classes.customScrollbar)}>
           <div className={classes.dropdownContent}>
             <div className={classes.stepsContainerMobile}>
-              {steps.map((step, index) => {
+              {stepsWithIds.map((step, index) => {
                 return (
                   <Step
                     key={index}
                     name={step.name}
                     title={step.title}
                     complete={step.complete}
-                    active={current === index ? true : false}
+                    active={current === step.id ? true : false}
                     {...otherProps}
                     onMouseDown={() => {
                       if (step.complete) {
