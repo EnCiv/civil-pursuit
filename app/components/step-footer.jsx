@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-
+import { Button, TextButton } from './button.jsx'
 // Create your Styles. Remember, since React-JSS uses the default preset,
 // most plugins are available without further configuration needed.
 const useStyles = createUseStyles({
@@ -23,10 +23,8 @@ const useStyles = createUseStyles({
   button: {
     backgroundColor: '#EBEBEB',
     borderStyle: 'none',
-    borderRadius: '8px',
-    padding: '8px 20px',
-    width: '221px',
-    height: '50px',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 1.25rem',
     '&:active': {
       backgroundColor: '#06335C',
       color: 'white',
@@ -41,8 +39,8 @@ function StepFooter() {
     <div>
       <hr className={classes.line}></hr>
       <div className={classes.footerDiv}>
-        <a className={classes.back}>&lt; Back</a>
-        <button className={classes.button}>Next</button>
+        <TextButton className={classes.back}>&lt; Back</TextButton>
+        <Button className={classes.button}>Next</Button>
       </div>
     </div>
   )
