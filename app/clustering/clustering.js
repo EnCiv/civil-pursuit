@@ -31,7 +31,7 @@ const MIN_RANK = 2 // when filterning statements for the next round, they must a
  */
 
 const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, Uitems}
-//const ShownStatements = [] // [round: Number][{discussionId: ObjectId, round: Number, statementId: ObjectId, shownCount: Number, rank: Number}, ...]
+//const ShownStatements = [] // [round: Number][{statementId: ObjectId, shownCount: Number, rank: Number}, ...]
 //const ShownGroups = [] // [round: Number][{ statementIds: [ObjectId], shownCount: Number},...]
 //const Gitems = [] // [round: Number]{discussionId: ObjectId, round: number, lowerStatementId: ObjectId, upperStatementId: ObjectId, shownCount: Number, groupedCound: Number}
 //const Uitems = {} // [userId: ObjectId][round: Number][{shownStatementIds: {[statementId]: {rank: number, author: boolean}}, groupings: [[statementIds],...]}...]
@@ -49,6 +49,8 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
             },
         },
 */
+module.exports.Discussions = Discussions // exported for testing purpose do not use this in production.
+
 async function initDiscussion(discussionId, options = {}) {
     Discussions[discussionId] = {
         ShownStatements: [],
@@ -78,8 +80,6 @@ function insertStatementId(discussionId, round, userId, statementId) {
     // this is where we would insert the statment into the DB
 
     const shownItem = {
-        discussionId,
-        round,
         statementId,
         shownCount: 0,
         rank: 0,
@@ -164,6 +164,13 @@ async function getStatementIds(discussionId, round, userId) {
         return undefined
     const dis = Discussions[discussionId]
     const statementIds = []
+    if (dis.Uitems?.[userId]?.[round]) {
+        // there user has been here before
+        console.error('user has been here before', discussionId, userId, round)
+        const sIds = Object.keys(dis.Uitems[userId][round].shownStatementIds)
+        if (sIds.length >= dis.group_size) return sIds
+        for (const id of sIds) statementIds.push(id)
+    }
     if (!dis.ShownGroups[round]) dis.ShownGroups[round] = []
     if (dis.ShownGroups[round].at(-1)?.shownCount < dis.group_size) {
         for (const sId of dis.ShownGroups[round].at(-1).statementIds) statementIds.push(sId)
@@ -200,8 +207,6 @@ async function getStatementIds(discussionId, round, userId) {
             for (sItem of dis.ShownStatements[round - 1]) {
                 if (sItem.rank < minRank) break // no need to go further
                 highestRankedItems.push({
-                    discussionId: sItem.discussionId,
-                    round,
                     statementId: sItem.statementId,
                     shownCount: 0,
                     rank: 0,
@@ -324,8 +329,6 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
                     /* this statment is not already in that list */
                     // list is sorted by rank, so put this at the end
                     dis.ShownStatements[round + 1].push({
-                        discussionId: discussionId,
-                        round: round + 1,
                         statementId: sitem.statementId,
                         shownCount: 0,
                         rank: 0,
@@ -360,8 +363,6 @@ function iteratePairs(discussionId, round, statementIds, func) {
             let gitem = g.byLowerId[lowerStatementId]?.find(gitem => gitem.upperStatementId == upperStatementId)
             if (!gitem) {
                 gitem = {
-                    discussionId,
-                    round,
                     lowerStatementId,
                     upperStatementId,
                     shownCount: 0,
@@ -379,11 +380,13 @@ function iteratePairs(discussionId, round, statementIds, func) {
 }
 
 function putGroupings(discussionId, round, userId, groupings) {
+    const dis = Discussions[discussionId]
     const uitem = Discussions[discussionId].Uitems[userId][round]
     //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
     if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
     uitem.groupings = groupings
     const shownStatementIds = Object.keys(uitem.shownStatementIds)
+    if (shownStatementIds.length <= 1) console.error('putGroupings', round, userId, shownStatementIds)
     for (id of shownStatementIds) incrementShownItems(discussionId, round, id)
     iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
     groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
@@ -508,19 +511,18 @@ async function reconstructDiscussionFromUInfo(discussionId) {
             for (const id of shownStatementIds) {
                 if (!shownStatements[id])
                     shownStatements[id] = {
-                        discussionId,
-                        round,
                         statementId: id,
                         shownCount: 0,
                         rank: 0,
                     }
                 shownStatements[id].shownCount += 1
-                if (uitem.shownStatementIds[id].author) shownStatements[id].author = true
                 if (uitem.shownStatementIds[id].rank) shownStatements[id].rank += uitem.shownStatementIds[id].rank
             }
             const groupings = uitem.groupings
-            iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
-            groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+            if (groupings) {
+                iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
+                groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+            }
             if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
             Discussions[discussionId].Uitems[userId][round] = { userId, ...uitem }
         }

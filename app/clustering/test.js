@@ -1,5 +1,6 @@
 // clustering test
 const merge = require('lodash').merge
+const showDeepDiff = require('show-deep-diff')
 
 const ObjectID = require('bson-objectid')
 const {
@@ -10,6 +11,7 @@ const {
     rankMostImportant,
     getUserRecord,
     initDiscussion,
+    Discussions,
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
@@ -98,6 +100,7 @@ async function main() {
         await proxyUser()
     }
     let i = 0
+    let ids
     for (const userId of UserIds) {
         process.stdout.write('returning user ' + i++ + '\r')
         let userRecord = getUserRecord(DISCUSSION_ID, userId) || []
@@ -109,8 +112,17 @@ async function main() {
             round = 0
             const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
             statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
-        } else if (!userRecord[round].groupings?.length) {
-            statementsForGrouping = Object.keys(userRecord[round].shownStatementIds).map(id => Statements[id])
+        } else if ((ids = Object.keys(userRecord[round].shownStatementIds)) <= 1) {
+            // the user didn't get a full set of statements so they didn't finish that round
+            const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
+            if (!statementIdsForGrouping.some(id => id === ids[0]))
+                console.error(
+                    "user is coming back again but didn't get the one they got before",
+                    userId,
+                    sIds,
+                    statementIdsForGrouping
+                )
+            statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
         } else {
             round++
             const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
@@ -144,6 +156,26 @@ async function main() {
     })
     console.info('reporting on discussion 2')
     report(2, Statements)
+    console.info('show differences between 1 and 2')
+    for (const round of Discussions[1].ShownStatements) round.sort(sortShownStatementsByRankThenId)
+    for (const round of Discussions[2].ShownStatements) round.sort(sortShownStatementsByRankThenId)
+    for (const round of Discussions[1].ShownGroups) round.sort(sortShownGroupsByCountThenId)
+    for (const round of Discussions[2].ShownGroups) round.sort(sortShownGroupsByCountThenId)
+    showDeepDiff(Discussions[1], Discussions[2])
+}
+
+function sortShownStatementsByRankThenId(a, b) {
+    if (b.rank - a.rank !== 0) return b.rank - a.rank
+    if (b.statementId > a.statementId) return -1
+    if (b.statementId < a.statementId) return 1
+    return 0
+}
+
+function sortShownGroupsByCountThenId(a, b) {
+    if (b.shownCount !== a.shownCount) return b.shownCount - a.shownCount
+    if (b.statementIds[0] > a.statementIds[0]) return -1
+    if (b.statementIds[0] < a.statementIds[0]) return 1
+    return 0
 }
 
 main()
