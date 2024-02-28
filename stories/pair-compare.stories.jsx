@@ -1,7 +1,7 @@
 import PairCompare from "../app/components/pair-compare";
 import Point from "../app/components/point";
 import { onDoneDecorator, onDoneResult } from "./common";
-import { within } from '@storybook/testing-library';
+import { within, userEvent } from '@storybook/testing-library';
 import expect from 'expect';
 import React from 'react';
 
@@ -42,20 +42,19 @@ export const onDoneTest = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement)
         const Point1 = canvas.getByText("Point 1");
-        Point1.click();
+        await userEvent.click(Point1);
 
         setTimeout(() => { // wait for transition to occur
             const Point3 = canvas.getByText("Point 3");
-            Point3.click();
+            userEvent.click(Point3);
         }, 500)
 
         setTimeout(() => {
             const Point4 = canvas.getByText("Point 4");
-            Point4.click();
+            userEvent.click(Point4)
         }, 1300);
 
         setTimeout(() => {
-            console.log(onDoneResult(canvas))
             expect(onDoneResult(canvas)).toMatchObject({
                 count: 2,
                 onDoneResult: {
