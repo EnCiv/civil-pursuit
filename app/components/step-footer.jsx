@@ -3,7 +3,26 @@ import { createUseStyles } from 'react-jss'
 import { Button, TextButton } from './button.jsx'
 // Create your Styles. Remember, since React-JSS uses the default preset,
 // most plugins are available without further configuration needed.
-const useStyles = createUseStyles({
+
+function StepFooter() {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.footerContainer}>
+      <hr className={classes.line}></hr>
+      <div className={classes.footerDiv}>
+        <TextButton className={classes.back}>&lt; Back</TextButton>
+        <Button className={classes.button}>Next</Button>
+      </div>
+    </div>
+  )
+}
+const useStyles = createUseStyles(theme => ({
+  footerContainer: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '4rem',
+    },
+  },
   footerDiv: {
     width: '100%',
     display: 'flex',
@@ -31,19 +50,5 @@ const useStyles = createUseStyles({
     },
     '&:hover': { backgroundColor: '#06335C', color: 'white' },
   },
-})
-function StepFooter() {
-  const classes = useStyles()
-
-  return (
-    <div>
-      <hr className={classes.line}></hr>
-      <div className={classes.footerDiv}>
-        <TextButton className={classes.back}>&lt; Back</TextButton>
-        <Button className={classes.button}>Next</Button>
-      </div>
-    </div>
-  )
-}
-
+}))
 export default StepFooter
