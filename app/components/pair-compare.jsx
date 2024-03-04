@@ -138,9 +138,9 @@ function PairCompare(props) {
 
     const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
     const hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
-    const hiddenTransitioningLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
+    const hiddenTransitioningLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.subject} description={pointList[nextIndex]?.description} />
     const hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
-    const hiddenTransitioningRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.props?.subject} description={pointList[nextIndex]?.props?.description} />
+    const hiddenTransitioningRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} subject={pointList[nextIndex]?.subject} description={pointList[nextIndex]?.description} />
 
     return (
         <div className={classes.container} {...otherProps}>
@@ -163,9 +163,9 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{pointList[idxLeft]}</div>}
+                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]}/>}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{pointList[idxRight]}</div>}
+                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]}/>}</div>}
                 </div>
                 {!isSelectionComplete() &&
                     <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}

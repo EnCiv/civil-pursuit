@@ -11,12 +11,12 @@ export default {
     decorators: [onDoneDecorator],
 }
 
-const pointOne = <Point subject="Point 1" description="This is the first point" />;
-const pointTwo = <Point subject="Point 2" description="This is the second point" />;
-const pointThree = <Point subject="Point 3" description="This is the third point" />;
-const pointFour = <Point subject="Point 4" description="This is the fourth point" />;
-const pointFive = <Point subject="Point 5" description="This is the fifth point" />;
-const pointSix = <Point subject="Point 6" description="This is the sixth point" />;
+const pointOne = { subject: "Point 1", description: "This is the first point" };
+const pointTwo = { subject: "Point 2", description: "This is the second point" };
+const pointThree = { subject: "Point 3", description: "This is the third point" };
+const pointFour = { subject: "Point 4", description: "This is the fourth point" };
+const pointFive = { subject: "Point 5", description: "This is the fifth point" };
+const pointSix = { subject: "Point 6", description: "This is the sixth point" };
 
 
 
