@@ -1,5 +1,4 @@
 import PairCompare from "../app/components/pair-compare";
-import Point from "../app/components/point";
 import { onDoneDecorator, onDoneResult } from "./common";
 import { within, userEvent } from '@storybook/testing-library';
 import expect from 'expect';
@@ -25,9 +24,39 @@ export const sixPoints = {
     args: {
         mainPoint: {
             subject: "Global Warming",
-            description: "Climate change and global warning"
+            description: "Climate change and global warming"
         },
         pointList: [pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix]
+    }
+}
+
+export const empty = {
+    args: {
+        mainPoint: {
+            subject: "Global Warming",
+            description: "Climate change and global warming"
+        }
+    },
+    pointList: []
+}
+
+export const onePoint = {
+    args: {
+        mainPoint: {
+            subject: "Global Warming",
+            description: "Climate change and global warming"
+        },
+        pointList: [pointOne]
+    }
+}
+
+export const twoPoints = {
+    args: {
+        mainPoint: {
+            subject: "Global Warming",
+            description: "Climate change and global warming"
+        },
+        pointList: [pointOne, pointTwo]
     }
 }
 
@@ -35,7 +64,7 @@ export const onDoneTest = {
     args: {
         mainPoint: {
             subject: "Global Warming",
-            description: "Climate change and global warning"
+            description: "Climate change and global warming"
         },
         pointList: [pointOne, pointTwo, pointThree, pointFour]
     },
@@ -56,14 +85,12 @@ export const onDoneTest = {
 
         setTimeout(() => {
             expect(onDoneResult(canvas)).toMatchObject({
-                count: 2,
+                count: 1,
                 onDoneResult: {
                     valid: true,
                     value: {
-                        props: {
                             description: "This is the fourth point",
                             subject: "Point 4"
-                        }
                     }
                 }
             })

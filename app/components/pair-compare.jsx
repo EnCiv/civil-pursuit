@@ -12,6 +12,8 @@ function PairCompare(props) {
     const [idxLeft, setIdxLeft] = useState(0);
     const [idxRight, setIdxRight] = useState(1);
 
+    const isInitialRender = useRef(true);
+
     const visibleRightPointRef = useRef(null);
     const visibleLeftPointRef = useRef(null);
     const hiddenLeftPointRef = useRef(null);
@@ -30,9 +32,16 @@ function PairCompare(props) {
     }, [pointsIdxCounter])
 
     useEffect(() => {
-        if (selectedPoint) {
-            onDone({ valid: true, value: selectedPoint });
-        }
+            if (isInitialRender.current) {
+                isInitialRender.current = false;
+                return
+            }
+
+            if (selectedPoint) {
+                onDone({ valid: true, value: selectedPoint });
+            } else {
+                onDone({ valid: false, value: null})
+            }
     }, [selectedPoint])
 
     const handleLeftPointClick = () => {
