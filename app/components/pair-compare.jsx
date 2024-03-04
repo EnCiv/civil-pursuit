@@ -30,7 +30,9 @@ function PairCompare(props) {
     }, [pointsIdxCounter])
 
     useEffect(() => {
-        onDone({ valid: true, value: selectedPoint })
+        if (selectedPoint) {
+            onDone({ valid: true, value: selectedPoint });
+        }
     }, [selectedPoint])
 
     const handleLeftPointClick = () => {
