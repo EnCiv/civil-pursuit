@@ -32,16 +32,16 @@ function PairCompare(props) {
     }, [pointsIdxCounter])
 
     useEffect(() => {
-            if (isInitialRender.current) {
-                isInitialRender.current = false;
-                return
-            }
+        if (isInitialRender.current) {
+            isInitialRender.current = false;
+            return
+        }
 
-            if (selectedPoint) {
-                onDone({ valid: true, value: selectedPoint });
-            } else {
-                onDone({ valid: false, value: null})
-            }
+        if (selectedPoint) {
+            onDone({ valid: true, value: selectedPoint });
+        } else {
+            onDone({ valid: false, value: null })
+        }
     }, [selectedPoint])
 
     const handleLeftPointClick = () => {
@@ -62,7 +62,7 @@ function PairCompare(props) {
         const hiddenPointRight = hiddenRightPointRef.current
 
         Object.assign(visiblePointRight.style, { position: 'relative', transform: 'translateX(200%)', transition: 'transform 0.5s linear' });
-        Object.assign(hiddenPointRight.style, { position: 'absolute', transform: 'translateY(100%)', transition: 'transform 0.5s linear' });
+        Object.assign(hiddenPointRight.style, { position: 'absolute', transform: 'translateY(8.25rem)', transition: 'transform 0.5s linear' });
 
 
         setTimeout(() => {
@@ -100,7 +100,7 @@ function PairCompare(props) {
         const hiddenPointLeft = hiddenLeftPointRef.current;
 
         Object.assign(visiblePointLeft.style, { position: 'relative', transform: 'translateX(-200%)', transition: 'transform 0.5s linear' });
-        Object.assign(hiddenPointLeft.style, { position: 'absolute', transform: 'translateY(100%)', transition: 'transform 0.5s linear' });
+        Object.assign(hiddenPointLeft.style, { position: 'absolute', transform: 'translateY(8.25rem)', transition: 'transform 0.5s linear' });
 
 
         setTimeout(() => {
@@ -174,9 +174,9 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]}/>}</div>}
+                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]} />}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]}/>}</div>}
+                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]} />}</div>}
                 </div>
                 {!isSelectionComplete() &&
                     <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}
