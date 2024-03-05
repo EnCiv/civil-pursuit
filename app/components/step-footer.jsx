@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { Button, TextButton } from './button.jsx'
+import { TextButton, PrimaryButton } from './button.jsx'
 import cx from 'classnames'
 
 // Create your Styles. Remember, since React-JSS uses the default preset,
@@ -18,21 +18,23 @@ function StepFooter(props) {
     ...otherProps
   } = props
 
-  return onDone() === undefined || onBack() === undefined ? (
-    <div></div>
-  ) : (
-    <div className={cx(classes.sharedBorderStyle, className)} {...otherProps}>
+  return (
+    <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.footerContainer}>
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
-          <TextButton className={classes.back}>&lt; Back</TextButton>
-          <Button className={classes.button}>Next</Button>
+          {onBack && <TextButton onBack={onBack}>&lt; Back</TextButton>}
+          {onDone && <PrimaryButton onDone={onDone}>Next</PrimaryButton>}
         </div>
       </div>
     </div>
   )
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+  wrapper: {
+    background: theme.colorPrimary,
+    padding: '1rem',
+  },
   footerContainer: {
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '4rem',
@@ -47,23 +49,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   line: {
     backgroundColor: '#EBEBEB',
     height: '0.5px',
-  },
-  back: {
-    color: '#5D5D5C',
-    textDecoration: 'underline',
-    textUnderlineOffset: '2px',
-    cursor: 'pointer',
-  },
-  button: {
-    backgroundColor: '#EBEBEB',
-    borderStyle: 'none',
-    borderRadius: '0.5rem',
-    padding: '0.5rem 1.25rem',
-    '&:active': {
-      backgroundColor: '#06335C',
-      color: 'white',
-    },
-    '&:hover': { backgroundColor: '#06335C', color: 'white' },
   },
 }))
 export default StepFooter
