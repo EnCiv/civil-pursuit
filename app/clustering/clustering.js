@@ -187,7 +187,7 @@ async function getStatementIds(discussionId, round, userId) {
     } else if (round === 0) {
         // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
         const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.shownCount < dis.group_size) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
-        const shownGroup = { statementIds: [], shownCount: 1 }
+        const shownGroup = { statementIds: [], shownCount: 0 }
         if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
         else if (needToBeSeen.length == dis.group_size - 1) {
             // exactly enough
@@ -204,6 +204,7 @@ async function getStatementIds(discussionId, round, userId) {
         if (!dis.ShownGroups[round]) dis.ShownGroups[round] = [] // don't create the blank until theres somthing to put there so showdeepdiff works after reconstituting
         dis.ShownGroups[round].push(shownGroup)
         if (authoredId && shownGroup.statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
+        shownGroup.shownCount++
     } else {
         if (!dis.ShownStatements[round]) {
             // first time for this round, need to setup
