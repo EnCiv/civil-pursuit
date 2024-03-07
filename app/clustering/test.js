@@ -15,7 +15,7 @@ const {
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 17000 // 4096 //240 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = 49 // 4096 //240 // the number of simulated people in the discussion
 // const NUMBER_OF_PARTICIPANTS = 17000
 //const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
@@ -135,7 +135,8 @@ async function proxyUserReturn(userId, final = 0) {
             userId,
             groupings.map(group => group.map(statement => statement._id))
         )
-        const rankMostId = statementsForGrouping.sort(sortLowestDescriptionFirst)[0]._id
+        const forRanking = groupings.map(group => group[0]).concat(ungrouped)
+        const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
         rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
         round++
         const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
