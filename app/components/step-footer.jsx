@@ -10,11 +10,12 @@ function StepFooter(props) {
   const classes = useStylesFromThemeFunction()
   const {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
-    onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
-    onBack = () => {},
+    onDone = undefined, // a function that is called when the button is clicked.  - if it exists
+    onBack = undefined,
     disabled = false,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
     children,
+
     ...otherProps
   } = props
 
@@ -24,7 +25,7 @@ function StepFooter(props) {
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
           {onBack && <TextButton onBack={onBack}>&lt; Back</TextButton>}
-          {onDone && <PrimaryButton onDone={onDone}>Next</PrimaryButton>}
+          {onDone && <PrimaryButton onClick={onDone}>Next</PrimaryButton>}
         </div>
       </div>
     </div>

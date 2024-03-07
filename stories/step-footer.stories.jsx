@@ -17,6 +17,8 @@ activeTrue.args = {
   subject: 'Active is true',
   description: 'Your description for when active is true...',
   active: true,
+  onDone: () => {},
+  onBack: () => {},
 }
 
 export const activeFalse = Template(StepFooter).bind({})
@@ -26,6 +28,8 @@ activeFalse.args = {
   subject: 'Active is false',
   description: 'Your description for when active is false...',
   active: false,
+  onDone: () => {},
+  onBack: () => {},
 }
 
 export const onBackNotPresent = Template(StepFooter).bind({})
@@ -34,7 +38,7 @@ onBackNotPresent.args = {
   className: '',
   subject: 'onBack is not present',
   description: 'Your description for when onBack is not present...',
-  onBack: undefined,
+  onDone: () => {},
 }
 
 export const onDoneNotPresent = Template(StepFooter).bind({})
@@ -43,5 +47,5 @@ onDoneNotPresent.args = {
   className: '',
   subject: 'onDone is not present',
   description: 'Your description for when onDone is not present...',
-  onDone: undefined,
+  onBack: () => {},
 }
