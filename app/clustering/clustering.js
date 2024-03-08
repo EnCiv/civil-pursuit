@@ -180,13 +180,15 @@ async function getStatementIds(discussionId, round, userId) {
                 `getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`
             )
     }
-    if (dis.ShownGroups[round]?.at(-1)?.shownCount < dis.group_size) {
+    if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
         if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
         for (const sId of dis.ShownGroups[round].at(-1).statementIds) statementIds.push(sId)
         dis.ShownGroups[round].at(-1).shownCount++
     } else if (round === 0) {
         // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
-        const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.shownCount < dis.group_size) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
+        const needToBeSeen = dis.ShownStatements[round].filter(
+            sItem => sItem.shownCount < Math.pow(dis.group_size, round + 1)
+        ) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
         const shownGroup = { statementIds: [], shownCount: 0 }
         if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
         else if (needToBeSeen.length == dis.group_size - 1) {
@@ -209,7 +211,7 @@ async function getStatementIds(discussionId, round, userId) {
         if (!dis.ShownStatements[round]) {
             // first time for this round, need to setup
             // make sure there are enough ranked items in the previous round to start
-            if (dis.ShownStatements[round - 1].length < dis.group_size * 2) return
+            if (dis.ShownStatements[round - 1].length < dis.group_size * dis.group_size) return
             const cutoff = Math.ceil(dis.ShownStatements[round - 1].length / dis.group_size)
             console.info('cutoff round', round, cutoff)
             let minRank = dis.ShownStatements[round - 1][cutoff].rank

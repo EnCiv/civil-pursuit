@@ -15,7 +15,7 @@ const {
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 49 // 4096 //240 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = 16807 // 4096 //240 // the number of simulated people in the discussion
 // const NUMBER_OF_PARTICIPANTS = 17000
 //const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
