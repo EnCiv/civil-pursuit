@@ -75,10 +75,15 @@ function initUitems(discussionId, userId, round = 0) {
     if (!Discussions[discussionId].Uitems[userId][round])
         Discussions[discussionId].Uitems[userId][round] = { userId, shownStatementIds: {}, groupings: [] }
 }
-
-// usually statements are only inserted at round 0, but this is made generic
-function insertStatementId(discussionId, round, userId, statementId) {
+/**
+ * returns statementId or undefined if the discussion Id does not exist - is not initialized
+ *
+ * calls the discussion's updateUinfo function with the new data
+ *
+ */
+function insertStatementId(discussionId, userId, statementId) {
     // this is where we would insert the statment into the DB
+    const round = 0 // for now statement ids can only be inserted at round 0
 
     const shownItem = {
         statementId,
@@ -86,7 +91,8 @@ function insertStatementId(discussionId, round, userId, statementId) {
         rank: 0,
     }
     if (!Discussions[discussionId]) {
-        throw new Error(`Discussion: ${discussionId} not initialized`)
+        console.error(`Discussion: ${discussionId} not initialized`)
+        return undefined
     }
     if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
     Discussions[discussionId].ShownStatements[round].push(shownItem)
@@ -113,11 +119,9 @@ module.exports.insertStatementId = insertStatementId
     when we give statements to people to look at, we need to track it so that they are not given to too many people
     but it doesn't really count as shown until the user submits their groupings.  Because it could be that the user gets them but never goes forwards, in which case we want to show them again.
     So, when we getStatements, we move the item to the next shown count bin, but we don't update the shown count until we get the response from the user.
-
+     
     ???TBD - at some point we need to detect that a statement was given to a user, but we never received a response and handle it appropriately.
-    ???How to put things into shownStatements or round 1 
     
-
 */
 
 function getRandomUniqueList(max, count) {
@@ -155,6 +159,22 @@ function sortLargestFirst(a, b) {
     return b - a
 }
 
+/**
+ * returns a list of statement ids
+ *
+ * the list will have group_size entries, if round 0 the list will have the users statement id, plus others that total group_size
+ * if user hasn't inserted a statement id yet, will return undefined
+ * once a group of statement ids has been returned, that same group will be returned to other users until it has been shown enought times to advance to the next group
+ * if the user calls this function again for the same round, they will get the same group of statement ids
+ * the number of times a group is shown increases by a factor of group_size with ever round
+ * **TBD** and enhancement could be to, instead of returning the same group every time, return a new group if poissible, or randomly select one of the groups that hasn't been shounn enough times yet.
+ * returnes undefined if unable to provide the right number of staement ids
+ * ensurs the user does not get a group of statement ids that also containes their statement id (statementId not repeated in list)
+ *
+ * generates a call to the discussion's updateUInfo function with an object representing the incremental data change
+ *
+ *
+ */
 async function getStatementIds(discussionId, round, userId) {
     if (!Discussions[discussionId]) {
         throw new Error(`Discussion ${discussionId} not initialized`)
@@ -272,6 +292,7 @@ async function getStatementIds(discussionId, round, userId) {
     // the Uitem may already exist in the case that user inseted a statment but didn't get any statements to group in the previous call
     initUitems(discussionId, userId, round)
     const delta = { [userId]: { [discussionId]: { [round]: { shownStatementIds: {} } } } }
+    // the user's own statement may be there, so check before writing
     for (sId of statementIds) {
         if (!dis.Uitems[userId][round].shownStatementIds[sId]) {
             dis.Uitems[userId][round].shownStatementIds[sId] = { rank: 0 }

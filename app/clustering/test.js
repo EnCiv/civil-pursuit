@@ -15,7 +15,7 @@ const {
 } = require('./clustering')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 16807 // 4096 //240 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
 // const NUMBER_OF_PARTICIPANTS = 17000
 //const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
@@ -64,13 +64,14 @@ function groupStatementsWithTheSameFloor(statements) {
             ungrouped.push(sortedStatements[s])
         }
     }
+    /* used to test imperfect groupings
     groups.forEach(group => {
         // randomize the top item of the group
         const topIndex = Math.floor(Math.random() * group.length)
         const top = group[topIndex]
         group.splice(topIndex, 1)
         group.unshift(top)
-    })
+    })*/
     return [groups, ungrouped]
 }
 
@@ -87,7 +88,7 @@ async function proxyUser() {
         userId,
     }
     Statements[statement._id] = statement
-    insertStatementId(DISCUSSION_ID, round, userId, statement._id)
+    insertStatementId(DISCUSSION_ID, userId, statement._id)
     while (1) {
         const statementIdsForGrouping = await getStatementIds(DISCUSSION_ID, round, userId)
         if (!statementIdsForGrouping) return
@@ -149,14 +150,14 @@ async function main() {
     for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
         process.stdout.write('new user ' + i + '\r')
         await proxyUser()
-        checkUInfo(DISCUSSION_ID)
+        //checkUInfo(DISCUSSION_ID) // only for debug
     }
     process.stdout.write('\n')
     let i = 0
     for (const userId of UserIds) {
         process.stdout.write('returning user ' + i++ + '\r')
         await proxyUserReturn(userId)
-        checkUInfo(DISCUSSION_ID)
+        //checkUInfo(DISCUSSION_ID) // only for debug
     }
     if (Discussions[DISCUSSION_ID].ShownStatements.at(-1).length > Discussions[DISCUSSION_ID].group_size) {
         console.info(
