@@ -4,6 +4,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
+import { PrimaryButton } from './button.jsx';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -178,11 +179,14 @@ function PairCompare(props) {
                     {idxRight < pointList.length &&
                         <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]} />}</div>}
                 </div>
-                {!isSelectionComplete() &&
-                    <div className={classes.neitherButton} onClick={handleNeitherButton}>Neither</div>}
-                {isSelectionComplete() &&
-                    <div className={classes.startOverButton} onClick={handleStartOverButton}>Start Over</div>
-                }
+
+                <div className={classes.buttonsContainer}>
+                    {
+                        !isSelectionComplete() ?
+                            <PrimaryButton className={classes.neitherButton} onClick={handleNeitherButton}>Neither</PrimaryButton>
+                            : <PrimaryButton className={classes.startOverButton} onClick={handleStartOverButton}>Start Over</PrimaryButton>
+                    }
+                </div>
             </div>
 
         </div>
@@ -248,13 +252,16 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '1rem',
         border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
     },
+    buttonsContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '2rem auto',
+    },
     neitherButton: {
-        border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
-        ...sharedButtonStyle(),
+        ...sharedButtonStyle(theme),
     },
     startOverButton: {
-        border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
-        ...sharedButtonStyle(),
+        ...sharedButtonStyle(theme),
     },
 }))
 
@@ -264,11 +271,16 @@ const sharedStatusBadgeStyle = () => ({
 
 })
 
-const sharedButtonStyle = () => ({
+const sharedButtonStyle = (theme) => ({
+    color: `${theme.colors.primaryButtonBlue}`,
+    "&:hover": {
+        color: 'white',
+    },
+    border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
+    backgroundColor: 'white',
     width: 'fit-content',
     borderRadius: '0.5rem',
     padding: '0.5rem 2.5rem',
-    margin: '2rem auto',
     cursor: 'pointer',
 })
 
