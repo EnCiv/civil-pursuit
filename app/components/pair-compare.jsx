@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
-import { PrimaryButton } from './button.jsx';
+import { PrimaryButton, SecondaryButton } from './button.jsx';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -183,8 +183,8 @@ function PairCompare(props) {
                 <div className={classes.buttonsContainer}>
                     {
                         !isSelectionComplete() ?
-                            <PrimaryButton className={classes.neitherButton} onClick={handleNeitherButton}>Neither</PrimaryButton>
-                            : <PrimaryButton className={classes.startOverButton} onClick={handleStartOverButton}>Start Over</PrimaryButton>
+                            <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton>
+                            : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>
                     }
                 </div>
             </div>
@@ -257,31 +257,12 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: 'center',
         margin: '2rem auto',
     },
-    neitherButton: {
-        ...sharedButtonStyle(theme),
-    },
-    startOverButton: {
-        ...sharedButtonStyle(theme),
-    },
 }))
 
 const sharedStatusBadgeStyle = () => ({
     borderRadius: '1rem',
     padding: '0.375rem 0.625rem',
 
-})
-
-const sharedButtonStyle = (theme) => ({
-    color: `${theme.colors.primaryButtonBlue}`,
-    "&:hover": {
-        color: 'white',
-    },
-    border: `${theme.border.width.thick} solid ${theme.colors.primaryButtonBlue}`,
-    backgroundColor: 'white',
-    width: 'fit-content',
-    borderRadius: '0.5rem',
-    padding: '0.5rem 2.5rem',
-    cursor: 'pointer',
 })
 
 export default PairCompare;
