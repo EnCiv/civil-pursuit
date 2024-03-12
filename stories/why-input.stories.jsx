@@ -1,5 +1,7 @@
+import { userEvent, within } from "@storybook/testing-library";
 import WhyInput from "../app/components/why-input";
-import { onDoneDecorator } from "./common";
+import expect from 'expect';
+import { onDoneDecorator, onDoneResult } from "./common";
 
 export default {
     component: WhyInput,
@@ -22,5 +24,31 @@ export const onDoneTest = {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien"
         }
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const subjectEle = canvas.getByPlaceholderText(/type some thing here/i)
+        const descriptionEle = canvas.getByPlaceholderText(/description/i)
+        await userEvent.type(subjectEle, 'This is the subject!')
+        await userEvent.tab() // onDone will be called after moving out of input field
+
+        expect(onDoneResult(canvas)).toMatchObject({
+            count: 1,
+            onDoneResult: { valid: false, value: { subject: 'This is the subject!', description: '' } }
+        })
+
+        await userEvent.type(descriptionEle, 'This is the description!')
+        await userEvent.tab() // onDone will be called after moving out of input field
+
+        expect(onDoneResult(canvas)).toMatchObject({
+            count: 2,
+            onDoneResult: {
+                valid: true,
+                value: {
+                    subject: 'This is the subject!',
+                    description: 'This is the description!',
+                }
+            }
+        })
     }
 }
