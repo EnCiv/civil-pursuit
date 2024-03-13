@@ -1,7 +1,9 @@
 import { userEvent, within } from "@storybook/testing-library";
+import React from 'react';
 import WhyInput from "../app/components/why-input";
 import expect from 'expect';
 import { onDoneDecorator, onDoneResult } from "./common";
+import DemInfo from '../app/components/dem-info';
 
 export default {
     component: WhyInput,
@@ -9,11 +11,17 @@ export default {
     decorators: [onDoneDecorator],
 }
 
+const user = {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent'
+}
 export const ExamplePoint = {
     args: {
         point: {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien"
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
+            // children: <DemInfo user={user} />
         }
     }
 }

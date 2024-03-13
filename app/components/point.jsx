@@ -100,6 +100,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       padding: '1.25rem',
     },
   },
+  secondaryBorder: {
+
+  },
 
   // subject states
   defaultSubject: {
@@ -117,6 +120,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem !important',
     fontWeight: '400',
     lineHeight: '1.5rem !important',
+  },
+  secondarySubject: {
+
   },
 
   // description states
@@ -154,7 +160,7 @@ export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'selected', 'disabled', or 'collapsed'
+- vState comes in as 'default', 'selected', 'disabled', 'collapsed', or secondary
 
 - Note that if multiple children are passed into this comopnent, then they must be siblings:
 

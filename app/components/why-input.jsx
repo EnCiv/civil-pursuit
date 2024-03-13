@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss';
 
 
 function WhyInput(props) {
-    const { point = { subject: "", description: "" }, defaultValue = { subject: "", description: "" }, onDone = () => { } } = props;
+    const { point = { subject: "", description: "", vState: "secondary" }, defaultValue = { subject: "", description: "" }, onDone = () => { } } = props;
     const classes = useStyles();
 
     const handleOnDone = ({ valid, value }) => {
