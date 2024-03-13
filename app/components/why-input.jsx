@@ -18,7 +18,7 @@ function WhyInput(props) {
     return (
         <div className={classes.container}>
             <Point {...point} />
-            <PointInput onDone={handleOnDone} />
+            <PointInput onDone={handleOnDone} defaultValue={defaultValue} />
         </div>
     )
 

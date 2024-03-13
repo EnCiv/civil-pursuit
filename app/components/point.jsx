@@ -101,7 +101,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   secondaryBorder: {
-
+    borderRadius: '0 !important',
+    boxShadow: 'none !important',
   },
 
   // subject states
@@ -160,7 +161,7 @@ export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'selected', 'disabled', 'collapsed', or secondary
+- vState comes in as 'default', 'selected', 'disabled', 'collapsed', or 'secondary'
 
 - Note that if multiple children are passed into this comopnent, then they must be siblings:
 

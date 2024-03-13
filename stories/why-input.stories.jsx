@@ -16,12 +16,14 @@ const user = {
     state: 'NY',
     party: 'Independent'
 }
+
 export const ExamplePoint = {
     args: {
         point: {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            // children: <DemInfo user={user} />
+            vState: "secondary",
+            children: <DemInfo user={user} />
         }
     }
 }
@@ -30,7 +32,8 @@ export const onDoneTest = {
     args: {
         point: {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien"
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
+            vState: "secondary",
         }
     },
     play: async ({ canvasElement }) => {
