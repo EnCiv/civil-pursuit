@@ -12,9 +12,7 @@ function StepFooter(props) {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = undefined, // a function that is called when the button is clicked.  - if it exists
     onBack = undefined,
-
     children,
-
     ...otherProps
   } = props
 
@@ -23,7 +21,7 @@ function StepFooter(props) {
       <div className={classes.footerContainer}>
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
-          {onDone && <TextButton onDone={onDone}>&lt; Back</TextButton>}
+          {onBack && <TextButton onBack={onBack}>&lt; Back</TextButton>}
           {onDone && <PrimaryButton onDone={onDone}>Next</PrimaryButton>}
         </div>
       </div>
