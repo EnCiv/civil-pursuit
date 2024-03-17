@@ -16,11 +16,11 @@ function Button(props) {
   const {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
-    onBack = () => {},
     title = '', // text to display on hover
     disabled = false,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
     children,
+
     ...otherProps
   } = props
   const displayTime = Math.max(8, 0.1 * title.length) * 1000
@@ -60,7 +60,7 @@ function Button(props) {
           disabled={isDisabled}
           onClick={() => {
             onDone()
-            onBack()
+
             if (disableOnClick) setIsDisabled(true)
           }}
           {...otherProps}

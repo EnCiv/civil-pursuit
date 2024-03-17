@@ -1,10 +1,8 @@
+//https://github.com/EnCiv/civil-pursuit/issues/51
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { TextButton, PrimaryButton } from './button.jsx'
 import cx from 'classnames'
-
-// Create your Styles. Remember, since React-JSS uses the default preset,
-// most plugins are available without further configuration needed.
 
 function StepFooter(props) {
   const classes = useStylesFromThemeFunction()
@@ -13,6 +11,7 @@ function StepFooter(props) {
     onDone = undefined, // a function that is called when the button is clicked.  - if it exists
     onBack = undefined,
     children,
+    active = true,
     ...otherProps
   } = props
 
@@ -21,8 +20,16 @@ function StepFooter(props) {
       <div className={classes.footerContainer}>
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
-          {onBack && <TextButton onBack={onBack}>&lt; Back</TextButton>}
-          {onDone && <PrimaryButton onDone={onDone}>Next</PrimaryButton>}
+          {onBack && (
+            <TextButton className={classes.back} onClick={onBack} disabled={!active}>
+              &lt; Back
+            </TextButton>
+          )}
+          {onDone && (
+            <PrimaryButton className={classes.next} onDone={onDone} disabled={!active}>
+              Next
+            </PrimaryButton>
+          )}
         </div>
       </div>
     </div>
@@ -46,6 +53,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   line: {
     height: '0.5px',
+  },
+  back: {
+    margin: '0.5rem 2rem',
+  },
+  next: {
+    margin: '1rem 2rem',
   },
 }))
 export default StepFooter

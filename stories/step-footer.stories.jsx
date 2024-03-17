@@ -1,3 +1,4 @@
+//https://github.com/EnCiv/civil-pursuit/issues/51
 import StepFooter from '../app/components/step-footer'
 import React from 'react'
 import expect from 'expect'
@@ -18,23 +19,15 @@ const Template = Component => args => <Component {...args} />
 export const activeTrue = Template(StepFooter).bind({})
 activeTrue.args = {
   style: {},
-  className: '',
   subject: 'Active is true',
-  description: 'Your description for when active is true...',
   active: true,
-  onDone: () => {},
-  onBack: () => {},
 }
 
-export const activeFalse = Template(StepFooter).bind({})
-activeFalse.args = {
+export const ActiveFalse = Template(StepFooter).bind({})
+ActiveFalse.args = {
   style: {},
-  className: '',
   subject: 'Active is false',
-  description: 'Your description for when active is false...',
   active: false,
-  onDone: () => {},
-  onBack: () => {},
 }
 
 export const onBackNotPresent = Template(StepFooter).bind({})
@@ -42,8 +35,8 @@ onBackNotPresent.args = {
   style: {},
   className: '',
   subject: 'onBack is not present',
-  description: 'Your description for when onBack is not present...',
   onBack: undefined,
+  onDone: () => {},
 }
 
 export const onDoneNotPresent = Template(StepFooter).bind({})
@@ -51,8 +44,8 @@ onDoneNotPresent.args = {
   style: {},
   className: '',
   subject: 'onDone is not present',
-  description: 'Your description for when onDone is not present...',
   onDone: undefined,
+  onBack: () => {},
 }
 
 //Story name, each story is a state of the component
@@ -60,8 +53,9 @@ export const OnDoneClicked = {
   args: {
     style: {},
     title: 'Press me',
-    children: 'Click Here',
     onBack: undefined,
+    onDone: () => {},
+    onBack: () => {},
   },
   //Property we use to define test case for this story
   play: async ({ canvasElement }) => {
@@ -79,7 +73,6 @@ export const OnBackClicked = {
   args: {
     style: {},
     title: 'Press me',
-    children: 'Click Here',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
