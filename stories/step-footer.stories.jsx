@@ -20,6 +20,8 @@ activeTrue.args = {
   style: {},
   subject: 'Active is true',
   active: true,
+  onDone: () => {},
+  onBack: () => {},
 }
 
 export const ActiveFalse = Template(StepFooter).bind({})
@@ -27,6 +29,8 @@ ActiveFalse.args = {
   style: {},
   subject: 'Active is false',
   active: false,
+  onDone: () => {},
+  onBack: () => {},
 }
 
 export const onBackNotPresent = Template(StepFooter).bind({})
