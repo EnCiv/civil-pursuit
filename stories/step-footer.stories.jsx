@@ -11,7 +11,6 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator, onBackDecorator],
 }
 
 const Template = Component => args => <Component {...args} />
@@ -57,9 +56,12 @@ export const OnDoneClicked = {
     onDone: () => {},
     onBack: () => {},
   },
+  decorators: [onDoneDecorator, onBackDecorator],
+
   //Property we use to define test case for this story
   play: async ({ canvasElement }) => {
     //Query the component so we can interact with it
+    console.log(decorators)
     const canvas = within(canvasElement)
     //userEvent will simulate user behavior to test the element of the component
     await userEvent.click(canvas.getByRole('button', { name: 'Next' }))
@@ -74,6 +76,8 @@ export const OnBackClicked = {
     style: {},
     title: 'Press me',
   },
+  decorators: [onDoneDecorator, onBackDecorator],
+
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
