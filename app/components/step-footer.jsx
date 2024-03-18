@@ -20,10 +20,12 @@ function StepFooter(props) {
       <div className={classes.footerContainer}>
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
-          {onBack && (
-            <TextButton className={classes.back} onClick={onBack} disabled={!active}>
+          {onBack ? (
+            <TextButton className={classes.back} onClick={onBack}>
               &lt; Back
             </TextButton>
+          ) : (
+            <div></div>
           )}
           {onDone && (
             <PrimaryButton className={classes.next} onDone={onDone} disabled={!active}>

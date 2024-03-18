@@ -65,7 +65,7 @@ export const OnDoneClicked = {
   //Property we use to define test case for this story
   play: async ({ canvasElement }) => {
     //Query the component so we can interact with it
-    console.log(decorators)
+
     const canvas = within(canvasElement)
     //userEvent will simulate user behavior to test the element of the component
     await userEvent.click(canvas.getByRole('button', { name: 'Next' }))
