@@ -42,11 +42,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colorPrimary,
     padding: '1rem',
   },
-  footerContainer: {
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '4rem',
-    },
-  },
+  footerContainer: {},
   footerDiv: {
     width: '100%',
     display: 'flex',
@@ -55,6 +51,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   line: {
     height: '0.5px',
+    width: '100%',
   },
   back: {
     margin: '0.5rem 2rem',

@@ -20,7 +20,6 @@ function Button(props) {
     disabled = false,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
     children,
-
     ...otherProps
   } = props
   const displayTime = Math.max(8, 0.1 * title.length) * 1000
@@ -60,7 +59,6 @@ function Button(props) {
           disabled={isDisabled}
           onClick={() => {
             onDone()
-
             if (disableOnClick) setIsDisabled(true)
           }}
           {...otherProps}
