@@ -2,69 +2,101 @@
 
 'use strict'
 
-import React, { useState } from 'react';
-import cx from 'classnames';
-import { createUseStyles } from 'react-jss';
-import Point from './point.jsx';
-import SvgChevronUp from '../svgr/chevron-up';
-import SvgChevronDown from '../svgr/chevron-down';
-import SvgClose from '../svgr/close';
-import Theme from './theme'
+import React, { useEffect, useState } from 'react'
+import cx from 'classnames'
+import { createUseStyles } from 'react-jss'
+import Point from './point.jsx'
+import SvgChevronUp from '../svgr/chevron-up'
+import SvgChevronDown from '../svgr/chevron-down'
+import SvgClose from '../svgr/close'
 import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
 import DemInfo from './dem-info.jsx'
 
-
 // vState for Point: default, selected, disabled, collapsed
-const CreatePoint = (pointObj, vState, children = null, className = null) => {
-  const { subject, description } = pointObj;
+const CreatePoint = (pointObj, vState, children, className) => {
+  const { subject, description } = pointObj
   return (
-    <Point
-      subject={subject}
-      description={description}
-      vState={vState}
-      children={children}
-      className={cx(className)}
-    />
+    <Point subject={subject} description={description} vState={vState} children={children} className={cx(className)} />
   )
 }
 
-
-const PointGroup = (props) => {
-  const { pointObj, defaultVState, className, ...otherProps } = props;
+const PointGroup = props => {
+  const { pointObj, vState, className, onDone = () => {}, ...otherProps } = props
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
-  const [vState, setVState] = useState(defaultVState);
-  const classes = useStylesFromThemeFunction();
-  const { subject, description, groupedPoints, user } = pointObj;
-  const singlePoint = groupedPoints.length === 0;
+  const [vs, setVState] = useState(vState)
+  const [pO, setPointObj] = useState(pointObj)
+  const classes = useStylesFromThemeFunction()
+  const { subject, description, user } = pO
+  const { groupedPoints, ...soloPoint } = pO
+  const singlePoint = !groupedPoints || groupedPoints.length === 0
 
+  useEffect(() => {
+    setVState(vState)
+  }, [vState]) // could be changed by parent component, or within this component
+  useEffect(() => {
+    setPointObj(pointObj)
+  }, [pointObj]) // could be changed by parent component, or within this component
 
   return (
-    <div className={cx(className)}{...otherProps}>
-      {vState === 'collapsed' && (
-        <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
+    <div className={cx(className)} {...otherProps}>
+      {vs === 'collapsed' && (
+        <div
+          className={cx(
+            classes.borderStyle,
+            classes.collapsedBorder,
+            classes.defaultWidth,
+            classes.contentContainer,
+            classes.informationGrid
+          )}
+        >
           {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
         </div>
       )}
 
-      {vState === 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer, classes.selectWidth)}>
+      {vs === 'selectLead' && (
+        <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
-            <button className={classes.chevronButton}><SvgClose /></button>
+            <button className={classes.chevronButton}>
+              <SvgClose />
+            </button>
           </div>
           <div className={classes.selectPointsContainer}>
-            {groupedPoints.map(point => {
+            {groupedPoints.map((point, leadIndex) => {
               return (
                 <div key={point._id} className={classes.selectPoints}>
-                  {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
-                  <div className={classes.selectSelectButton}>
-                    <ModifierButton className={classes.selectSelectButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
-                  </div>
-                  ],
-                    cx(classes.selectPointsPassDown, classes.noBoxShadow))}
+                  {CreatePoint(
+                    point,
+                    'default',
+                    [
+                      <DemInfo user={point.user} />,
+                      <div className={classes.selectSelectButton}>
+                        <ModifierButton
+                          className={classes.selectSelectButton}
+                          title="Select as Lead"
+                          children="Select as Lead"
+                          disabled={false}
+                          disableOnClick={false}
+                          onDone={() => {
+                            const newPointObj = {
+                              ...point,
+                              groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                            }
+                            setPointObj(newPointObj)
+                            onDone({
+                              valid: true,
+                              value: { pointObj: newPointObj },
+                            })
+                            setVState('default')
+                          }}
+                        />
+                      </div>,
+                    ],
+                    cx(classes.selectPointsPassDown, classes.noBoxShadow)
+                  )}
                 </div>
-              );
+              )
             })}
           </div>
           <div className={classes.selectButtonContainer}>
@@ -73,60 +105,145 @@ const PointGroup = (props) => {
         </div>
       )}
 
-      {vState !== 'collapsed' && (vState !== 'selectLead') && (
-        <div className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}>
-          {!singlePoint && <div className={classes.SvgContainer}>
-            {vState === 'default' && (<button className={classes.chevronButton} onClick={() => setVState('view')}><SvgChevronDown /></button>)}
-            {vState === 'edit' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
-            {vState === 'view' && (<button className={classes.chevronButton} onClick={() => setVState('default')}><SvgChevronUp /></button>)}
-          </div>}
-          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
-          {description && (
-            <div className={cx(classes.descriptionStyle)}>{description}</div>
+      {vs !== 'collapsed' && vs !== 'selectLead' && (
+        <div
+          className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}
+        >
+          {!singlePoint && (
+            <div className={classes.SvgContainer}>
+              {vs === 'default' && (
+                <button className={classes.chevronButton} onClick={() => setVState('view')}>
+                  <SvgChevronDown />
+                </button>
+              )}
+              {vs === 'edit' && (
+                <button className={classes.chevronButton} onClick={() => setVState('default')}>
+                  <SvgChevronUp />
+                </button>
+              )}
+              {vs === 'view' && (
+                <button className={classes.chevronButton} onClick={() => setVState('default')}>
+                  <SvgChevronUp />
+                </button>
+              )}
+            </div>
           )}
+          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+          {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
           {user && <DemInfo user={user} />}
-          {vState === 'edit' && (
+          {vs === 'edit' && (
             <div>
               {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
-              {groupedPoints.map(point => {
+              {groupedPoints.map((point, leadIndex) => {
                 return (
-                  <div key={point._id} className={classes.subPoints} >
-                    {CreatePoint(point, 'default', [<DemInfo user={point.user} />,
-                    <div className={classes.pointWidthButton}>
-                      <ModifierButton className={classes.pointWidthButton} title="Select as Lead" children="Select as Lead" onDone={null} disabled={false} disableOnClick={false} />
-                    </div>,
-                    <div className={classes.pointWidthButton}>
-                      <TextButton className={classes.pointWidthButton} title="Remove" children="Remove from Group" />
-                    </div>], classes.noBoxShadow)}
-                  </div>);
+                  <div key={point._id} className={classes.subPoints}>
+                    {CreatePoint(
+                      point,
+                      'default',
+                      [
+                        <DemInfo user={point.user} />,
+                        <div className={classes.pointWidthButton}>
+                          <ModifierButton
+                            className={classes.pointWidthButton}
+                            title="Select as Lead"
+                            children="Select as Lead"
+                            onDone={() => {
+                              const newPointObj = {
+                                ...point,
+                                groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                              }
+                              setPointObj(newPointObj)
+                              onDone({
+                                valid: true,
+                                value: { pointObj: newPointObj },
+                              })
+                              setVState('default')
+                            }}
+                            disabled={false}
+                            disableOnClick={false}
+                          />
+                        </div>,
+                        <div className={classes.pointWidthButton}>
+                          <TextButton
+                            className={classes.pointWidthButton}
+                            title="Remove this from the group"
+                            children="Remove from Group"
+                            onDone={() => {
+                              const newPointObj = {
+                                ...soloPoint,
+                                groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                              }
+                              setPointObj(newPointObj)
+                              onDone({
+                                valid: true,
+                                value: { pointObj: newPointObj, removedPointObjs: [point] },
+                              })
+                            }}
+                          />
+                        </div>,
+                      ],
+                      classes.noBoxShadow
+                    )}
+                  </div>
+                )
               })}
             </div>
           )}
-          {vState === 'view' && (
+          {vs === 'view' && (
             <div>
               {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
               {groupedPoints.map(point => {
                 return (
                   <div key={point._id} className={classes.subPoints}>
                     {CreatePoint(point, 'view', null, classes.noBoxShadow)}
-                  </div>);
+                  </div>
+                )
               })}
             </div>
           )}
-          {vState !== 'view' && !singlePoint && (
+          {vs !== 'view' && !singlePoint && (
             <div className={classes.bottomButtons}>
-              {vState === 'default' && (
-                <ModifierButton className={classes.editButton} onDone={() => setVState('edit')} title="Edit" children="Edit" disableOnClick={true} />)}
-              {vState === 'edit' && (
-                <SecondaryButton className={classes.doneButton} onDone={() => setVState('default')} title="Done" children="Done" disableOnClick={true} />)}
-              <TextButton className={classes.ungroupButton} title="Ungroup" children="Ungroup" />
-            </div>)}
+              {vs === 'default' && (
+                <ModifierButton
+                  className={classes.editButton}
+                  onDone={() => setVState('edit')}
+                  title="Edit"
+                  children="Edit"
+                  disableOnClick={true}
+                />
+              )}
+              {vs === 'edit' && (
+                <SecondaryButton
+                  className={classes.doneButton}
+                  onDone={() => setVState('default')}
+                  title="Done"
+                  children="Done"
+                  disableOnClick={true}
+                />
+              )}
+              <TextButton
+                className={classes.ungroupButton}
+                title="Ungroup"
+                children="Ungroup"
+                onDone={() => {
+                  const newPointObj = {
+                    ...soloPoint,
+                    groupedPoints: [],
+                  }
+                  setPointObj(newPointObj)
+                  onDone({
+                    valid: true,
+                    value: { pointObj: newPointObj, removedPointObjs: groupedPoints },
+                  })
+                }}
+              />
+            </div>
+          )}
         </div>
-      )
-      }
-    </div >
-  );
-};
+      )}
+    </div>
+  )
+}
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   fullWidth: {
@@ -304,14 +421,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover': {
       background: 'none',
       color: 'none',
-    }
+    },
   },
 
   noBoxShadow: {
     boxShadow: 'none',
     border: '1px solid rgba(217, 217, 217, 0.40)',
   },
+}))
 
-}));
-
-export default PointGroup;
+export default PointGroup
