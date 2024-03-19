@@ -296,17 +296,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   defaultWidth: {
-    width: '32rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '16rem',
-    },
+    // width: '32rem',
+    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    //   width: '16rem',
+    // },
   },
 
   selectWidth: {
-    width: '70rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '16rem',
-    },
+    // width: '70rem',
+    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    //   width: '16rem',
+    // },
   },
   informationGrid: {
     display: 'flex',
@@ -345,10 +345,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   subPoints: {
     margin: '1.5rem 0',
-    width: '28rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '17rem',
-    },
+    // width: '28rem',
+    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    //   width: '17rem',
+    // },
   },
 
   bottomButtons: {
@@ -365,17 +365,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectPointsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: '0 1rem',
-    width: '68rem',
+    flexDirection: 'row',
+    gap: '2rem',
+    //margin: '0 1rem',
+    width: '100%',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '16rem',
+      //width: '16rem',
       margin: '0',
     },
   },
 
   selectPoints: {
-    flex: '0 0 45%',
-    margin: '1rem 1.5rem',
+    flex: '1 1 41%',
+    height: 'inherit',
+    //margin: '1rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
       margin: '1rem 0',
@@ -406,9 +409,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectSelectButton: {
-    width: '27rem',
+    //width: '27rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '13rem',
+      //width: '13rem',
     },
   },
 
