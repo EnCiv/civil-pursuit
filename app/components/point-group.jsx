@@ -15,9 +15,7 @@ import DemInfo from './dem-info.jsx'
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children, className) => {
   const { subject, description } = pointObj
-  return (
-    <Point subject={subject} description={description} vState={vState} children={children} className={cx(className)} />
-  )
+  return <Point subject={subject} description={description} vState={vState} children={children} className={className} />
 }
 
 const PointGroup = props => {
@@ -71,7 +69,7 @@ const PointGroup = props => {
                     'default',
                     [
                       <DemInfo user={point.user} />,
-                      <div className={classes.selectSelectButton}>
+                      <div className={classes.selectButtonRow}>
                         <ModifierButton
                           className={classes.selectSelectButton}
                           title="Select as Lead"
@@ -99,7 +97,7 @@ const PointGroup = props => {
               )
             })}
           </div>
-          <div className={classes.selectButtonContainer}>
+          <div className={classes.doneButtonContainer}>
             <SecondaryButton className={classes.selectDoneButton} title="Done" children="Done" />
           </div>
         </div>
@@ -389,7 +387,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '100%',
   },
 
-  selectButtonContainer: {
+  doneButtonContainer: {
     display: 'flex',
     width: '100%',
     justifyContent: 'center',
@@ -408,11 +406,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '18rem',
   },
 
+  selectButtonRow: {
+    width: '100%',
+    textAlign: 'center',
+  },
+
   selectSelectButton: {
-    //width: '27rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      //width: '13rem',
-    },
+    width: '75%',
   },
 
   chevronButton: {
