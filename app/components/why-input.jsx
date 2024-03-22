@@ -1,14 +1,14 @@
 // https://github.com/EnCiv/civil-pursuit/issues/68
 
 'use strict'
-import React, { useEffect } from 'react';
+import React from 'react';
 import Point from './point';
 import PointInput from './point-input';
 import { createUseStyles } from 'react-jss';
 
 
 function WhyInput(props) {
-    const { point = { subject: "", description: "", vState: "secondary" }, defaultValue = { subject: "", description: "" }, onDone = () => { } } = props;
+    const { point = { subject: "", description: "", vState: "secondary" }, defaultValue = { subject: "", description: "" }, onDone = () => { }, className, ...otherProps } = props;
     const classes = useStyles();
 
     const handleOnDone = ({ valid, value }) => {
@@ -16,9 +16,9 @@ function WhyInput(props) {
     }
 
     return (
-        <div className={classes.container}>
-            <Point {...point} />
-            <PointInput onDone={handleOnDone} defaultValue={defaultValue} />
+        <div className={classes.container} {...otherProps}>
+            <Point {...point} className={className} {...otherProps} />
+            <PointInput onDone={handleOnDone} defaultValue={defaultValue} className={className} {...otherProps} />
         </div>
     )
 
