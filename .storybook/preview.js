@@ -20,10 +20,7 @@ const preview = {
   decorators: [
     Story => (
       <ThemeProvider theme={theme}>
-        <div>
-          <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
-          <Story />
-        </div>
+        <Story />
       </ThemeProvider>
     ),
   ],
