@@ -37,6 +37,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.625rem 0.9375rem',
     borderRadius: '0.625rem',
     overflow: 'hidden',
+    cursor: 'default'
   },
 
   containerActive: {

@@ -44,6 +44,8 @@ function StepBar(props) {
   const [visibleSteps, setVisibleSteps] = useState(steps)
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
+  // State to hold the widths of each step, for when we are on the last page and have to fill the bar with steps
+  const [widths, setWidths] = useState()
   // add a unique numerical identifier to each step
   const stepsWithIds = useMemo(() => {
     let newSteps = []
@@ -112,10 +114,19 @@ function StepBar(props) {
       let firstStepIndex = 0
       let page = 1
       let newSteps = []
-
+      let initialPage = 1
+      let widths = new Map()
+      // TO DO: SPECIAL RENDERING FOR THE LAST STEP TO FILL IT UP, AND TRUNCATE THE FIRST STEP
       for (let i = 0; i < stepRefs.length; i++) {
-        currentWidth += stepRefs[i]?.current?.offsetWidth
+        let width = stepRefs[i]?.current?.offsetWidth
+        currentWidth += width
+        widths.set(i + 1, width)
 
+        if (i === current - 1) {
+          // if the step is the current step, then we set the initial page
+          initialPage = page
+          setCurrentPage(initialPage)
+        }
         if (i === stepRefs.length - 1) {
           // if we are on the last step, slice from the index of the first visible step
           newSteps = stepsWithIds.slice(firstStepIndex)
@@ -127,17 +138,19 @@ function StepBar(props) {
           page++
           currentWidth = 0
           firstStepIndex = i
+          i = i - 1
         }
       }
       setPages(newMap)
-      setVisibleSteps(newMap.get(1))
+      setVisibleSteps(newMap.get(initialPage))
+      setWidths(widths)
     }, 50),
     [setVisibleSteps, steps]
   )
 
   /*
    Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
-   UseLayoutEffect ensures that widths are calculated once the layout is rendered. 
+   UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
   */
   useLayoutEffect(() => {
     if (!isMobile) {
@@ -158,7 +171,7 @@ function StepBar(props) {
   */
   return !isMobile ? (
     <div className={cx(classes.container, className)} style={style}>
-      <div onClick={leftClick} className={classes.svgContainer}>
+      <div onClick={leftClick} className={classes.svgContainer} data-testid="leftclick">
         <SvgStepBarArrowDesktop
           className={cx({ [classes.svgColor]: currentPage === 1 })}
           width="1rem"
@@ -190,7 +203,11 @@ function StepBar(props) {
           )
         })}
       </div>
-      <div onClick={rightClick} className={cx(classes.svgContainer, classes.svgContainerRight)}>
+      <div
+        onClick={rightClick}
+        className={cx(classes.svgContainer, classes.svgContainerRight)}
+        data-testid="rightclick"
+      >
         <SvgStepBarArrowDesktop
           className={cx({ [classes.svgColor]: currentPage === pages.size })}
           width="1rem"
@@ -199,6 +216,7 @@ function StepBar(props) {
       </div>
     </div>
   ) : (
+    // MOBILE view
     <div className={classes.mobileContainer}>
       <div className={classes.mobileHeader}>Go to</div>
 
