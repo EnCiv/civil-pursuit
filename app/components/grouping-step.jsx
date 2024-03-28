@@ -1,40 +1,59 @@
 // https://github.com/EnCiv/civil-pursuit/issue/49
 'use strict'
+import React, { useEffect, useState } from 'react';
+import { createUseStyles } from 'react-jss';
+import cx from 'classnames';
+import Point from './point';
 
-import React, { useEffect, useState } from 'react'
-import { createUseStyles } from 'react-jss'
-import cx from 'classnames'
-import Point from './point'
-
-export default function GroupingStep(props) {
-  const { onDone, shared, className, ...otherProps } = props
-  const classes = useStylesFromThemeFunction(props)
-
-  const [points, setPoints] = useState(shared.pointList || [])
-  const [groupedPoints, setGroupedPoints] = useState(shared.groupedPointList || [])
-
-  // Initialize groupedPointList if it doesn't exist and manage the ready state
-  useEffect(() => {
-    if (!shared.groupedPointList) {
-      setGroupedPoints([...points]) // Deep clone pointList to groupedPointList
-    }
-    onDone({ valid: true, value: groupedPoints }) // Call onDone with true initially
-  }, [points, groupedPoints, shared.groupedPointList, onDone])
-
+// creates a pointGroup, will render a single point if the pointObj contains no groupedPoints
+// vState for Point: default, selected, disabled, collapsed
+const CreatePointGroup = (pointObj, vState, children = null, className = null) => {
+  const { subject, description } = pointObj;
   return (
-    <div className={cx(classes.wrapper, className)} {...otherProps}>
-      {points.map((point, index) => (
-        <Point key={index} subject={point.subject} description={point.description} vState={point.vState} />
-      ))}
-    </div>
+    <PointG
+      subject={subject}
+      description={description}
+      vState={vState}
+      children={children}
+      className={cx(className)}
+    />
   )
 }
 
-const useStylesFromThemeFunction = createUseStyles(theme => ({
+export default function GroupingStep(props) {
+  const { onDone, shared, className, ...otherProps } = props;
+  // groupedPoints and pointList are both a list of pointObj
+  // groupdPoints is shared across states (user may move back and forth between states)
+  // pointList is the original list of points, we set groupedPoints to pointList if it is empty
+  const { pointList, groupedPointList } = shared;
+  const classes = useStylesFromThemeFunction(props);
+  const [groupedPoints, setGroupedPoints] = useState([...groupedPointList]);
+
+
+  useEffect(() => {
+    if (groupedPoints.length === 0 || !groupedPoints) {
+      setGroupedPoints([...pointList]);
+    }
+    onDone({ valid: true, value: groupedPoints });
+  }, [groupedPoints, pointList, onDone]);
+
+  return (
+    <div className={cx(className)} {...otherProps}>
+      {groupedPoints.map((point, index) => (
+        <Point
+          key={index}
+          subject={point.subject}
+          description={point.description}
+          vState={point.vState}
+        />
+      ))}
+    </div>
+  );
+}
+
+const useStylesFromThemeFunction = createUseStyles((theme) => ({
   wrapper: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-    // Add other styles as necessary for layout and responsiveness
   },
-  // Additional styles can be added here
-}))
+}));

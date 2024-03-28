@@ -13,27 +13,26 @@ const pointItems = [
     subject: 'Subject 1',
     description: 'Description for subject 1...',
     vState: 'default',
+    children: null,
   },
   {
     subject: 'Subject 2',
     description: 'Description for subject 2...',
     vState: 'default',
+    children: null,
   },
   {
     subject: 'Subject 3',
     description: 'Description for subject 3...',
     vState: 'default',
+    children: null,
   },
 ]
-
-const pointsList = pointItems.map((point, index) => (
-  <Point key={index} subject={point.subject} description={point.description} vState={point.vState} />
-))
 
 export const TestGroupingStep = {
   args: {
     shared: {
-      pointList: pointsList,
+      pointList: pointItems,
       groupedPointList: [],
     },
     onDone: () => {},
