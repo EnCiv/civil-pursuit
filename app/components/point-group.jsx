@@ -24,13 +24,16 @@ const PointGroup = props => {
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState)
   const [pO, setPointObj] = useState(pointObj)
+  const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
-  const { subject, description, user } = pO
   const { groupedPoints, ...soloPoint } = pO
+  const { subject, description, user } = soloPoint
   const singlePoint = !groupedPoints || groupedPoints.length === 0
+  const [selected, setSelected] = useState('')
 
   useEffect(() => {
     setVState(vState)
+    setExpanded(vState === 'selectLead' || vState === 'edit')
   }, [vState]) // could be changed by parent component, or within this component
   useEffect(() => {
     setPointObj(pointObj)
@@ -43,7 +46,6 @@ const PointGroup = props => {
           className={cx(
             classes.borderStyle,
             classes.collapsedBorder,
-            classes.defaultWidth,
             classes.contentContainer,
             classes.informationGrid
           )}
@@ -53,175 +55,217 @@ const PointGroup = props => {
       )}
 
       {vs === 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.selectWidth, classes.contentContainer)}>
+        <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
-            <button className={classes.chevronButton}>
-              <SvgClose />
-            </button>
+            <TextButton
+              title="Ungroup and close"
+              tabIndex={0}
+              onClick={() => {
+                setPointObj({})
+                onDone({
+                  valid: true,
+                  value: { pointObj: undefined, removedPointObjs: groupedPoints },
+                })
+              }}
+            >
+              <span className={classes.chevronButton}>
+                <SvgClose />
+              </span>
+            </TextButton>
           </div>
-          <div className={classes.selectPointsContainer}>
-            {groupedPoints.map((point, leadIndex) => {
-              return (
-                <div key={point._id} className={classes.selectPoints}>
-                  {CreatePoint(
-                    point,
-                    'default',
-                    [
-                      <DemInfo user={point.user} />,
-                      <div className={classes.selectButtonRow}>
-                        <ModifierButton
-                          className={classes.selectSelectButton}
-                          title="Select as Lead"
-                          children="Select as Lead"
-                          disabled={false}
-                          disableOnClick={false}
-                          onDone={() => {
-                            const newPointObj = {
-                              ...point,
-                              groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
-                            }
-                            setPointObj(newPointObj)
-                            onDone({
-                              valid: true,
-                              value: { pointObj: newPointObj },
-                            })
-                            setVState('default')
-                          }}
-                        />
-                      </div>,
-                    ],
-                    cx(classes.selectPointsPassDown, classes.noBoxShadow)
-                  )}
-                </div>
-              )
-            })}
-          </div>
-          <div className={classes.doneButtonContainer}>
-            <SecondaryButton className={classes.selectDoneButton} title="Done" children="Done" />
-          </div>
-        </div>
-      )}
-
-      {vs !== 'collapsed' && vs !== 'selectLead' && (
-        <div
-          className={cx(classes.borderStyle, classes.defaultWidth, classes.contentContainer, classes.informationGrid)}
-        >
-          {!singlePoint && (
-            <div className={classes.SvgContainer}>
-              {vs === 'default' && (
-                <button className={classes.chevronButton} onClick={() => setVState('view')}>
-                  <SvgChevronDown />
-                </button>
-              )}
-              {vs === 'edit' && (
-                <button className={classes.chevronButton} onClick={() => setVState('default')}>
-                  <SvgChevronUp />
-                </button>
-              )}
-              {vs === 'view' && (
-                <button className={classes.chevronButton} onClick={() => setVState('default')}>
-                  <SvgChevronUp />
-                </button>
-              )}
-            </div>
-          )}
-          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
-          {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
-          {user && <DemInfo user={user} />}
-          {vs === 'edit' && (
-            <div>
-              {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
-              {groupedPoints.map((point, leadIndex) => {
+          {expanded && (
+            <div className={classes.selectPointsContainer}>
+              {groupedPoints?.map(point => {
                 return (
-                  <div key={point._id} className={classes.subPoints}>
+                  <div key={point._id} className={classes.selectPoints}>
                     {CreatePoint(
                       point,
-                      'default',
+                      point._id === selected ? 'selected' : 'default',
                       [
                         <DemInfo user={point.user} />,
-                        <div className={classes.pointWidthButton}>
+                        <div className={classes.selectButtonRow}>
                           <ModifierButton
-                            className={classes.pointWidthButton}
-                            title="Select as Lead"
+                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${point.subject}`}
+                            tabIndex={0}
                             children="Select as Lead"
-                            onDone={() => {
-                              const newPointObj = {
-                                ...point,
-                                groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
-                              }
-                              setPointObj(newPointObj)
-                              onDone({
-                                valid: true,
-                                value: { pointObj: newPointObj },
-                              })
-                              setVState('default')
-                            }}
                             disabled={false}
                             disableOnClick={false}
-                          />
-                        </div>,
-                        <div className={classes.pointWidthButton}>
-                          <TextButton
-                            className={classes.pointWidthButton}
-                            title="Remove this from the group"
-                            children="Remove from Group"
                             onDone={() => {
-                              const newPointObj = {
-                                ...soloPoint,
-                                groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
-                              }
-                              setPointObj(newPointObj)
-                              onDone({
-                                valid: true,
-                                value: { pointObj: newPointObj, removedPointObjs: [point] },
-                              })
+                              setSelected(point._id)
                             }}
                           />
                         </div>,
                       ],
-                      classes.noBoxShadow
+                      cx(classes.selectPointsPassDown, classes.noBoxShadow)
                     )}
                   </div>
                 )
               })}
             </div>
           )}
-          {vs === 'view' && (
-            <div>
-              {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
-              {groupedPoints.map(point => {
-                return (
-                  <div key={point._id} className={classes.subPoints}>
-                    {CreatePoint(point, 'view', null, classes.noBoxShadow)}
-                  </div>
+          <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
+            <SecondaryButton
+              disabled={selected === ''}
+              title="Done"
+              tabIndex={0}
+              children="Done"
+              onDone={() => {
+                const [p, g] = groupedPoints.reduce(
+                  ([p, g], point) => {
+                    if (point._id === selected) p = point
+                    else g.push(point)
+                    return [p, g]
+                  },
+                  [undefined, []]
                 )
-              })}
+                const newPointObj = {
+                  ...p,
+                  groupedPoints: g,
+                }
+                setPointObj(newPointObj)
+                onDone({
+                  valid: true,
+                  value: { pointObj: newPointObj },
+                })
+                setVState('edit')
+                setExpanded(false)
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {vs !== 'collapsed' && vs !== 'selectLead' && (
+        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
+          {!singlePoint && (
+            <div className={classes.SvgContainer}>
+              {expanded ? (
+                <TextButton onClick={() => setExpanded(false)} title="collapse" tabIndex={0}>
+                  <span className={classes.chevronButton}>
+                    <SvgChevronUp />
+                  </span>
+                </TextButton>
+              ) : (
+                <TextButton onClick={() => setExpanded(true)} title="expand" tabIndex={0}>
+                  <span className={classes.chevronButton}>
+                    <SvgChevronDown />
+                  </span>
+                </TextButton>
+              )}
             </div>
           )}
-          {vs !== 'view' && !singlePoint && (
-            <div className={classes.bottomButtons}>
-              {vs === 'default' && (
-                <ModifierButton
-                  className={classes.editButton}
-                  onDone={() => setVState('edit')}
-                  title="Edit"
-                  children="Edit"
-                  disableOnClick={true}
-                />
-              )}
-              {vs === 'edit' && (
+          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+          {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
+          {user && <DemInfo user={user} />}
+          {vs === 'edit' && expanded && !singlePoint && (
+            <div className={classes.defaultWidth}>
+              {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
+              <div className={classes.selectPointsContainer}>
+                {groupedPoints.map((point, leadIndex) => {
+                  return (
+                    <div key={point._id} className={classes.selectPoints}>
+                      {CreatePoint(
+                        point,
+                        'default',
+                        [
+                          <DemInfo user={point.user} />,
+                          <div className={classes.pointBottomButtons}>
+                            <div className={classes.pointWidthButton}>
+                              <ModifierButton
+                                className={classes.pointWidthButton}
+                                title={`Select as Lead: ${point.subject}`}
+                                children="Select as Lead"
+                                tabIndex={0}
+                                onDone={() => {
+                                  const newPointObj = {
+                                    ...point,
+                                    groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                                  }
+                                  setPointObj(newPointObj)
+                                  onDone({
+                                    valid: true,
+                                    value: { pointObj: newPointObj },
+                                  })
+                                }}
+                                disabled={false}
+                                disableOnClick={false}
+                              />
+                            </div>
+                            <div className={classes.pointWidthButton}>
+                              <TextButton
+                                className={classes.pointWidthButton}
+                                title={`Remove from Group: ${point.subject}`}
+                                tabIndex={0}
+                                children="Remove from Group"
+                                onDone={() => {
+                                  const newPointObj = {
+                                    ...soloPoint,
+                                    groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                                  }
+                                  setPointObj(newPointObj)
+                                  onDone({
+                                    valid: true,
+                                    value: { pointObj: newPointObj, removedPointObjs: [point] },
+                                  })
+                                }}
+                              />
+                            </div>
+                          </div>,
+                        ],
+                        cx(classes.selectPointsPassDown, classes.noBoxShadow)
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+          {vs !== 'edit' && expanded && (
+            <div className={classes.defaultWidth}>
+              {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
+              <div className={classes.selectPointsContainer}>
+                {groupedPoints.map(point => {
+                  return (
+                    <div key={point._id} className={classes.selectPoints}>
+                      {CreatePoint(point, 'default', null, cx(classes.selectPointsPassDown, classes.noBoxShadow))}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+          {(vs === 'edit' || vs === 'selectLead') && !singlePoint && (
+            <div className={cx(classes.bottomButtons, classes.bottomButtonsTwo)}>
+              {expanded ? (
                 <SecondaryButton
                   className={classes.doneButton}
-                  onDone={() => setVState('default')}
+                  onDone={() => {
+                    setExpanded(false)
+                  }}
                   title="Done"
+                  tabIndex={0}
                   children="Done"
+                  disableOnClick={true}
+                />
+              ) : (
+                <ModifierButton
+                  className={classes.editButton}
+                  onDone={() => {
+                    setVState('edit')
+                    setExpanded(true)
+                  }}
+                  title="Edit"
+                  tabIndex={0}
+                  children="Edit"
                   disableOnClick={true}
                 />
               )}
               <TextButton
                 className={classes.ungroupButton}
                 title="Ungroup"
+                tabIndex={0}
                 children="Ungroup"
                 onDone={() => {
                   const newPointObj = {
@@ -244,9 +288,6 @@ const PointGroup = props => {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  fullWidth: {
-    width: '100% !important',
-  },
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
@@ -291,21 +332,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'flex-start',
     gap: '0.625rem',
     position: 'relative',
+    width: '100%',
+    boxSizing: 'border-box',
+    '& :focus': {
+      outline: theme.focusOutline,
+    },
   },
 
   defaultWidth: {
-    // width: '32rem',
-    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-    //   width: '16rem',
-    // },
+    width: '100%',
   },
 
-  selectWidth: {
-    // width: '70rem',
-    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-    //   width: '16rem',
-    // },
-  },
   informationGrid: {
     display: 'flex',
     flexDirection: 'column',
@@ -321,13 +358,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  ungroupButton: {
-    marginLeft: '1.5rem',
-    width: '5rem',
-  },
+  ungroupButton: {},
 
   doneButton: {
     width: '17rem',
+    '& :focus': {
+      outline: theme.focusOutline,
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '7rem',
     },
@@ -341,16 +378,36 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
   },
 
-  subPoints: {
-    margin: '1.5rem 0',
-    // width: '28rem',
-    // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-    //   width: '17rem',
-    // },
-  },
+  bottomButtonsTwo: {},
+  bottomButtonsOne: {},
 
   bottomButtons: {
+    width: '100%',
     padding: '1.5rem 1rem 0 1rem',
+    display: 'flex',
+    '&$bottomButtonsTwo': {
+      '& span': {
+        flex: '0 0 50%',
+        textAlign: 'center',
+        '$ :focus': {
+          outline: theme.focusOutline,
+        },
+      },
+    },
+    '&$bottomButtonsOne': {
+      '& span': {
+        flex: '0 0 100%',
+        textAlign: 'center',
+        '$ :focus': {
+          outline: theme.focusOutline,
+        },
+      },
+    },
+  },
+
+  pointBottomButtons: {
+    width: '100%',
+    textAlign: 'center',
   },
 
   SvgContainer: {
@@ -361,16 +418,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectPointsContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
     gap: '2rem',
-    //margin: '0 1rem',
     width: '100%',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      //width: '16rem',
-      margin: '0',
-    },
   },
 
   selectPoints: {
@@ -387,23 +438,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '100%',
   },
 
-  doneButtonContainer: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-
   pointWidthButton: {
-    width: '24rem',
-    textAlign: 'center',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '13rem',
-    },
-  },
-
-  selectDoneButton: {
-    width: '18rem',
+    margin: '.5rem',
   },
 
   selectButtonRow: {
@@ -415,15 +451,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '75%',
   },
 
+  selectedButton: {
+    backgroundColor: theme.colors.encivYellow,
+    '&:hover, &.hover': {
+      backgroundColor: theme.colors.encivYellow,
+    },
+  },
+
   chevronButton: {
-    background: 'none',
-    color: 'inherit',
-    padding: 0,
-    border: 'none',
-    outline: 'inherit',
-    '&:hover': {
+    '& svg': {
+      fontSize: '1.5rem',
       background: 'none',
-      color: 'none',
+      color: 'inherit',
+      padding: 0,
+      border: 'none',
+      outline: 'inherit',
+      '&:hover': {
+        background: 'none',
+        color: 'none',
+      },
     },
   },
 
