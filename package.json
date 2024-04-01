@@ -31,7 +31,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
-    "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr"
+    "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
+    "chromatic": "bash ./node_modules/.bin/chromatic"
   },
   "author": {
     "email": "davidfridley@enciv.org",
@@ -77,6 +78,7 @@
     "browserify": "^16.2.3",
     "browserify-zlib": "^0.2.0",
     "bson-objectid": "^1.2.4",
+    "chromatic": "^11.3.0",
     "classnames": "^2.2.6",
     "clean-css": "^4.2.1",
     "clone": "^2.1.2",
