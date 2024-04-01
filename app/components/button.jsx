@@ -30,6 +30,10 @@ function Button(props) {
   const classes = buttonStyles()
   const combinedClassName = cx(classes.buttonBase, className)
 
+  useEffect(() => {
+    setIsDisabled(disabled)
+  }, [disabled])
+
   const handleMouseDown = () => {
     timeRef.current = setTimeout(() => {
       setIsPortalOpen(true)
