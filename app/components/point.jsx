@@ -22,7 +22,7 @@ const Point = forwardRef((props, ref) => {
 
   const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
     return React.cloneElement(child, {
-      className: cx(className, { isHovered: isHovered }),
+      className: cx(child.props.className, { isHovered: isHovered }),
       vState: vState,
     })
   })
@@ -46,8 +46,7 @@ const Point = forwardRef((props, ref) => {
       </div>
     </div>
   )
-}
-)
+})
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
