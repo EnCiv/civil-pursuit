@@ -3,6 +3,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Point from './point.jsx'
+// import PointGroup from './point.jsx'
 import Ranking from './util/ranking.jsx'
 
 function RankStep(props) {
@@ -12,16 +13,35 @@ function RankStep(props) {
     onDone = undefined, // a function that is called when the button is clicked.  - if it exists
     children,
     active = true,
-    pointList = [{}, {}, {}, {}, {}],
-    rankList = [{}],
+    pointList = [],
+    rankList = [],
     ...otherProps
   } = props
-
+  const setRank = (index, val) => {
+    for (let i = 0; i < rankList.length; i++) {
+      if (i === index) {
+        rankList[i]['rank'] = val
+        break
+      }
+    }
+  }
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.pointDiv}>
         {pointList.map((point, i) => (
-          <Point key={i} subject={point.subject} children={<Ranking key={i} />} />
+          <Point
+            key={i}
+            subject={point.subject}
+            children={
+              <Ranking
+                key={i}
+                defaultValue={rankList[i] && rankList[i]['rank']}
+                onDone={({ valid, value }) => {
+                  setRank(i, value)
+                }}
+              />
+            }
+          />
         ))}
       </div>
     </div>
