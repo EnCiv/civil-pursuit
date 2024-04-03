@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/77
 
 'use strict'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import PairCompare from './pair-compare';
 
@@ -9,9 +9,34 @@ import PairCompare from './pair-compare';
 function CompareReasons(props) {
     const { pointList = [], side = '', onDone = () => { }, className, ...otherProps } = props;
     const classes = useStyles();
+    const [completedPoints, setCompletedPoints] = useState(new Set());
+    const [percentDone, setPercentDone] = useState(0);
 
-    const handleOnDone = ({ valid, value }) => {
-        onDone({ valid, value })
+    useEffect(() => {
+        if (completedPoints.size === pointList.length) {
+            onDone({valid: true, value: percentDone})
+        } else {
+            onDone({valid: false, value: percentDone})
+        }
+    }, [completedPoints, pointList, percentDone])
+
+    useEffect(() => {
+        setPercentDone(((completedPoints.size / pointList.length) * 100).toFixed(2))
+    }, [completedPoints, pointList])
+
+
+    const handlePairCompare = ({ valid, value }, idx) => {
+
+        setCompletedPoints(prevPoints => {
+            const updatedPoints = new Set(prevPoints);
+            if (valid) {
+                updatedPoints.add(idx)
+            } else {
+                updatedPoints.delete(idx)
+            }
+            return updatedPoints;
+        })
+
     }
 
     return (
@@ -24,7 +49,7 @@ function CompareReasons(props) {
                         <PairCompare
                             className={classes.pairCompare}
                             pointList={side === "most" ? headlinePoint.reasonPoints?.most : headlinePoint.reasonPoints?.least}
-                            onDone={handleOnDone} />
+                            onDone={(value) => handlePairCompare(value, idx)} />
                     </div>
                 ))
             }
