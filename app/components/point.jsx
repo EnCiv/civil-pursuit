@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 
 'use strict'
-import React, { useState } from 'react'
+import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
-function Point(props) {
+const Point = forwardRef((props, ref) => {
   const { subject, description, vState, children, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
@@ -22,7 +22,7 @@ function Point(props) {
 
   const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
     return React.cloneElement(child, {
-      className: cx(className, { isHovered: isHovered }),
+      className: cx(child.props.className, { isHovered: isHovered }),
       vState: vState,
     })
   })
@@ -33,6 +33,7 @@ function Point(props) {
       {...otherProps}
       onMouseEnter={onMouseIn}
       onMouseLeave={onMouseOut}
+      ref={ref}
     >
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
@@ -45,7 +46,7 @@ function Point(props) {
       </div>
     </div>
   )
-}
+})
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
@@ -155,8 +156,8 @@ NOTES:
 - vState comes in as 'default', 'selected', 'disabled', or 'collapsed'
 
 - Note that if multiple children are passed into this comopnent, then they must be siblings:
-  
-  Good Example: 
+
+  Good Example:
       children: (
       <>
         <DemInfo />
