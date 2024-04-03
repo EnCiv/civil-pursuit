@@ -4,21 +4,23 @@
 import React from 'react';
 import Point from './point';
 import PointInput from './point-input';
+import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 
 
 function WhyInput(props) {
-    const { point = { subject: "", description: "", vState: "secondary" }, defaultValue = { subject: "", description: "" }, onDone = () => { }, className, ...otherProps } = props;
+    const { point = { subject: "", description: "", _id: "" }, defaultValue = { subject: "", description: "" }, onDone = () => { }, className, ...otherProps } = props;
     const classes = useStyles();
 
     const handleOnDone = ({ valid, value }) => {
-        onDone({ valid, value })
+        value.parentId = `${point._id}`;
+        onDone({ valid, value})
     }
 
     return (
-        <div className={classes.container} {...otherProps}>
-            <Point {...point} className={className} {...otherProps} />
-            <PointInput onDone={handleOnDone} defaultValue={defaultValue} className={className} {...otherProps} />
+        <div className={cx(classes.container, className)} {...otherProps}>
+            <Point {...point} vState="secondary" />
+            <PointInput onDone={handleOnDone} defaultValue={defaultValue} />
         </div>
     )
 

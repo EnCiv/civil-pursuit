@@ -22,7 +22,7 @@ export const ExamplePoint = {
         point: {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            vState: "secondary",
+            _id: "ExampleId",
             children: <DemInfo user={user} />
         }
     }
@@ -33,7 +33,7 @@ export const onDoneTest = {
         point: {
             subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            vState: "secondary",
+            _id: "ExampleId",
         }
     },
     play: async ({ canvasElement }) => {
