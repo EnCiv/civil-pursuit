@@ -5,6 +5,7 @@ import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
 import Point from './point';
 
+
 // creates a pointGroup, will render a single point if the pointObj contains no groupedPoints
 // vState for Point: default, selected, disabled, collapsed
 const CreatePointGroup = (pointObj, vState, children = null, className = null) => {
