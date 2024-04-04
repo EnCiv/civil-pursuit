@@ -8,26 +8,12 @@ export default {
   args: {},
 }
 
-const pointItems = [
-  {
-    subject: 'Subject 1',
-    description: 'Description for subject 1...',
-    vState: 'default',
-    children: null,
-  },
-  {
-    subject: 'Subject 2',
-    description: 'Description for subject 2...',
-    vState: 'default',
-    children: null,
-  },
-  {
-    subject: 'Subject 3',
-    description: 'Description for subject 3...',
-    vState: 'default',
-    children: null,
-  },
-]
+const pointItems = Array.from({ length: 5 }, (_, index) => ({
+  subject: `Subject ${index + 1}`,
+  description: `Description for subject ${index + 1}...`,
+  vState: 'default',
+  children: null,
+}));
 
 export const TestGroupingStep = {
   args: {
