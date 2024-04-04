@@ -2,7 +2,7 @@
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
 
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
@@ -44,8 +44,6 @@ function StepBar(props) {
   const [visibleSteps, setVisibleSteps] = useState(steps)
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
-  // State to hold the widths of each step, for when we are on the last page and have to fill the bar with steps
-  const [widths, setWidths] = useState()
   // add a unique numerical identifier to each step
   const stepsWithIds = useMemo(() => {
     let newSteps = []
@@ -106,6 +104,7 @@ function StepBar(props) {
   /*
   To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
   */
+
   const handleCarouselSetup = useCallback(
     debounce(() => {
       const newMap = new Map()
@@ -114,14 +113,13 @@ function StepBar(props) {
       let firstStepIndex = 0
       let page = 1
       let newSteps = []
-      let initialPage = 1
-      let widths = new Map()
-      // TO DO: SPECIAL RENDERING FOR THE LAST STEP TO FILL IT UP, AND TRUNCATE THE FIRST STEP
+      let initialPage = findPage()
+
       for (let i = 0; i < stepRefs.length; i++) {
         let width = stepRefs[i]?.current?.offsetWidth
         currentWidth += width
-        widths.set(i + 1, width)
-
+        // TO DO: CLEAN UP THIS FUNCTION, ADD COMMENTS TO NEW FINDPAGE FUNCTION AND OTHERS, AND FIGURE OUT WHY THE WIDTH IS UNDEFINED EVERY SECOND RESIZE.
+        // ONCE YOU DO THAT, YOU ARE PRETTY MUCH DONE.
         if (i === current - 1) {
           // if the step is the current step, then we set the initial page
           initialPage = page
@@ -143,10 +141,28 @@ function StepBar(props) {
       }
       setPages(newMap)
       setVisibleSteps(newMap.get(initialPage))
-      setWidths(widths)
     }, 50),
-    [setVisibleSteps, steps]
+    [
+      stepContainerRef,
+      stepRefs,
+      current,
+      currentPage,
+      setCurrentPage,
+      stepsWithIds,
+      pages,
+      setPages,
+      setVisibleSteps,
+      visibleSteps,
+      steps,
+      debounce,
+    ]
   )
+
+  const findPage = () => {
+    const currentStep = stepsWithIds[current]
+    const pageIndex = Object.values(pages).findIndex(page => page.includes(currentStep))
+    return pageIndex !== -1 ? pageIndex + 1 : 1
+  }
 
   /*
    Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
