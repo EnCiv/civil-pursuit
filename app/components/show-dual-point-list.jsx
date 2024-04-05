@@ -35,12 +35,16 @@ export default function ShowDualPointList({
                 description={isExpanded ? point.description : ''}
                 vState={isExpanded ? 'expanded' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                // Override styles to remove shadow and round corners
+                style={{ borderRadius: 0, boxShadow: 'none' }}
               />
               <Point
                 {...(rightPoints[index] || {})}
                 description={isExpanded ? (rightPoints[index] || {}).description : ''}
                 vState={isExpanded ? 'expanded' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                // Override styles to remove shadow and round corners
+                style={{ borderRadius: 0, boxShadow: 'none' }}
               />
             </React.Fragment>
           ))}
