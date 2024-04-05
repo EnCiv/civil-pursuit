@@ -1,4 +1,5 @@
 import { userEvent, within } from "@storybook/testing-library";
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import React from 'react';
 import WhyInput from "../app/components/why-input";
 import expect from 'expect';
@@ -9,6 +10,11 @@ export default {
     component: WhyInput,
     args: {},
     decorators: [onDoneDecorator],
+    parameters: {
+        viewport: {
+            viewports: INITIAL_VIEWPORTS
+        }
+    }
 }
 
 const user = {
@@ -17,19 +23,32 @@ const user = {
     party: 'Independent'
 }
 
+const point = {
+    subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
+    _id: "ExampleId",
+    children: <DemInfo user={user} />
+}
+
 export const ExamplePoint = {
     args: {
-        point: {
-            subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            _id: "ExampleId",
-            children: <DemInfo user={user} />
-        }
-    }
+        point
+    },
 }
 
 export const Empty = {
     args: {}
+}
+
+export const Mobile = {
+    parameters: {
+        viewport: {
+            defaultViewport: 'iphonex',
+        }
+    },
+    args: {
+        point
+    },
 }
 
 export const onDoneTest = {

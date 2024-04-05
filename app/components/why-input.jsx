@@ -14,7 +14,7 @@ function WhyInput(props) {
 
     const handleOnDone = ({ valid, value }) => {
         value.parentId = `${point._id}`;
-        onDone({ valid, value})
+        onDone({ valid, value })
     }
 
     return (
@@ -31,12 +31,14 @@ const useStyles = createUseStyles(theme => ({
 
     container: {
         display: 'flex',
-        justifyContent: 'space-evenly',
         gap: '1rem',
         alignItems: 'center',
-    }
-
-
+    },
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+        container: {
+            flexDirection: 'column',
+        },
+    },
 }))
 
 export default WhyInput;
