@@ -28,6 +28,10 @@ export const ExamplePoint = {
     }
 }
 
+export const Empty = {
+    args: {}
+}
+
 export const onDoneTest = {
     args: {
         point: {
