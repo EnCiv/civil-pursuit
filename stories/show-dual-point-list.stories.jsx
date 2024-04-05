@@ -6,6 +6,10 @@ import ShowDualPointList from '../app/components/show-dual-point-list'
 
 export default {
   component: ShowDualPointList,
+  args: {
+    leftHeader: "Why It's most Important",
+    rightHeader: "Why It's least Important",
+  },
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -21,18 +25,14 @@ export const UndefinedProps = {
 // Case when lists are empty:
 export const ListsEmpty = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [],
-    rightHeader: "Why It's least Important",
     rightPoints: [],
   },
 }
 
 export const MobileListsEmpty = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [],
-    rightHeader: "Why It's least Important",
     rightPoints: [],
   },
   parameters: {
@@ -79,9 +79,7 @@ const point6 = {
 // Case when the chart is collapsed:
 export const CollapsedChart = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [point1, point2, point3],
-    rightHeader: "Why It's least Important",
     rightPoints: [point4, point5, point6],
     vState: 'collapsed',
   },
@@ -89,9 +87,7 @@ export const CollapsedChart = {
 
 export const MobileCollapsedChart = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [point1, point2, point3],
-    rightHeader: "Why It's least Important",
     rightPoints: [point4, point5, point6],
     vState: 'collapsed',
   },
@@ -106,9 +102,7 @@ export const MobileCollapsedChart = {
 // Case when the chart is expanded:
 export const ExpandedChart = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [point1, point2, point3],
-    rightHeader: "Why It's least Important",
     rightPoints: [point4, point5, point6],
     vState: 'expanded',
   },
@@ -116,13 +110,10 @@ export const ExpandedChart = {
 
 export const MobileExpandedChart = {
   args: {
-    leftHeader: "Why It's most Important",
     leftPoints: [point1, point2, point3],
-    rightHeader: "Why It's least Important",
     rightPoints: [point4, point5, point6],
     vState: 'expanded',
   },
-
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',

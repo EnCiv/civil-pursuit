@@ -9,9 +9,9 @@ import { ModifierButton } from './button.jsx'
 
 export default function ShowDualPointList({
   className,
-  leftPoints,
+  leftPoints = [],
   leftHeader,
-  rightPoints,
+  rightPoints = [],
   rightHeader,
   vState,
   ...otherProps
