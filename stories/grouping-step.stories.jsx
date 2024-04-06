@@ -8,14 +8,43 @@ export default {
   args: {},
 }
 
-const pointItems = Array.from({ length: 5 }, (_, index) => ({
-  subject: `Subject ${index + 1}`,
-  description: `Description for subject ${index + 1}...`,
-  vState: 'default',
-  children: null,
-}));
+const createPointObj = (
+  _id,
+  subject,
+  description = 'Point Description',
+  groupedPoints = [],
+  user = {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent',
+  }
+) => {
+  return {
+    _id,
+    subject,
+    description,
+    groupedPoints,
+    user,
+  }
+}
 
-export const TestGroupingStep = {
+const pointItems = Array.from({ length: 10 }, (_, index) => createPointObj(index, 'Point ' + index, 'Point Description ' + index));
+
+export const TestGroupingStep = () => (
+  <div style={{ width: '1174px', height: '1720px' }}>
+    <GroupingStep
+      shared={{
+        pointList: pointItems,
+        groupedPointList: [],
+      }}
+      onDone={() => {}}
+      viewports={['desktop']}
+    />
+  </div>
+);
+
+export const mobileOverview = {
+  component: GroupingStep,
   args: {
     shared: {
       pointList: pointItems,
@@ -23,4 +52,10 @@ export const TestGroupingStep = {
     },
     onDone: () => {},
   },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
 }
+
