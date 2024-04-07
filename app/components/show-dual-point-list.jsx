@@ -101,8 +101,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '1rem',
-    marginBottom: '1rem',
+    marginTop: '2rem',
+    marginBottom: '2rem',
   },
   button: {
     padding: '0.5rem 5rem',
