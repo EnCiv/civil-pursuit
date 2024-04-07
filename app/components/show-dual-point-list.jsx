@@ -4,8 +4,8 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Point from './point'
-import { ModifierButton } from './button.jsx'
+import PointGroup from './point-group' // Importing the PointGroup component
+import { ModifierButton } from './button'
 
 export default function ShowDualPointList({
   className,
@@ -30,21 +30,17 @@ export default function ShowDualPointList({
         <div className={classes.pointGrid}>
           {leftPoints.map((point, index) => (
             <React.Fragment key={index}>
-              <Point
-                {...point}
-                description={isExpanded ? point.description : ''}
-                vState={isExpanded ? 'expanded' : 'collapsed'}
+              <PointGroup
+                pointObj={point}
+                vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                // Override styles to remove shadow and round corners
-                style={{ borderRadius: 0, boxShadow: 'none' }}
+                pointClassName={cx(classes.noBoxShadow)}
               />
-              <Point
-                {...(rightPoints[index] || {})}
-                description={isExpanded ? (rightPoints[index] || {}).description : ''}
-                vState={isExpanded ? 'expanded' : 'collapsed'}
+              <PointGroup
+                pointObj={rightPoints[index] || {}}
+                vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                // Override styles to remove shadow and round corners
-                style={{ borderRadius: 0, boxShadow: 'none' }}
+                pointClassName={cx(classes.noBoxShadow)}
               />
             </React.Fragment>
           ))}
@@ -71,8 +67,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   header: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    borderBottom: '1px solid rgba(217, 217, 217, 0.40)',
-    columnGap: '0.3rem',
+    gridColumnGap: '1rem',
   },
   leftHeader: {
     padding: '1rem',
@@ -90,7 +85,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     gridRowGap: '0',
-    columnGap: '0.3rem',
+    gridColumnGap: '1rem',
   },
   point: {
     flex: 1,
@@ -106,5 +101,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'center',
     marginTop: '1rem',
     marginBottom: '1rem',
+  },
+  noBoxShadow: {
+    boxShadow: 'none',
+    borderRadius: 0,
   },
 }))
