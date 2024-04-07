@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import PointGroup from './point-group' // Importing the PointGroup component
+import PointGroup from './point-group'
 import { ModifierButton } from './button'
 
 export default function ShowDualPointList({
@@ -34,20 +34,22 @@ export default function ShowDualPointList({
                 pointObj={point}
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                pointClassName={cx(classes.noBoxShadow)}
+                pointClassName={cx(classes.customStyle)}
               />
               <PointGroup
                 pointObj={rightPoints[index] || {}}
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                pointClassName={cx(classes.noBoxShadow)}
+                pointClassName={cx(classes.customStyle)}
               />
             </React.Fragment>
           ))}
         </div>
       </div>
       <div className={classes.buttonContainer}>
-        <ModifierButton onDone={toggleExpandCollapse}>{isExpanded ? 'Collapse Chart' : 'Expand Chart'}</ModifierButton>
+        <ModifierButton className={classes.button} onDone={toggleExpandCollapse}>
+          {isExpanded ? 'Collapse Chart' : 'Expand Chart'}
+        </ModifierButton>
       </div>
     </div>
   )
@@ -65,27 +67,27 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     overflow: 'hidden',
   },
   header: {
+    fontSize: '1.5rem',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gridColumnGap: '1rem',
+    gridColumnGap: '0.2rem',
+    borderBottom: '1px solid #fff',
   },
   leftHeader: {
     padding: '1rem',
-    paddingLeft: '1.5rem',
-    fontSize: '1.25rem',
+    paddingLeft: '1.75rem',
     backgroundColor: theme.colors.lightSuccess,
   },
   rightHeader: {
     padding: '1rem',
-    paddingLeft: '1.5rem',
-    fontSize: '1.25rem',
+    paddingLeft: '1.75rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
   },
   pointGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     gridRowGap: '0',
-    gridColumnGap: '1rem',
+    gridColumnGap: '0.2rem',
   },
   point: {
     flex: 1,
@@ -102,8 +104,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '1rem',
     marginBottom: '1rem',
   },
-  noBoxShadow: {
+  button: {
+    padding: '0.5rem 5rem',
+  },
+  customStyle: {
     boxShadow: 'none',
     borderRadius: 0,
+    backgroundColor: 'transparent',
+    padding: '1.2rem',
   },
 }))
