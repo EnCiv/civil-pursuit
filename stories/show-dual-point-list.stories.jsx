@@ -120,3 +120,90 @@ export const MobileExpandedChart = {
     },
   },
 }
+
+// cases when story data include some pointGroups
+
+const createPointObj = (
+  _id,
+  subject,
+  description = 'Point Description',
+  groupedPoints = [],
+  user = {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent',
+  }
+) => {
+  return {
+    _id,
+    subject,
+    description,
+    groupedPoints,
+    user,
+  }
+}
+
+const point7 = createPointObj('7', 'Point 7', 'Point 7 Description', [])
+const point8 = createPointObj(
+  '8',
+  'Point 8',
+  'Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, ',
+  [],
+  {
+    dob: '1980-10-20T00:00:00.000Z',
+    state: 'GA',
+    party: 'Independent',
+  }
+)
+const point9 = createPointObj('9', 'Point 9', 'Point 9 Description', [], {
+  dob: '1995-10-20T00:00:00.000Z',
+  state: 'CA',
+  party: 'Independent',
+})
+const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
+const point11 = createPointObj('11', 'Point 11', 'Point 11 Description', [point7, point8, point9, point10])
+const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
+
+// Case when the chart is collapsed:
+export const CollapsedChartWithGroups = {
+  args: {
+    leftPoints: [point7, point8, point9],
+    rightPoints: [point10, point11, point12],
+    vState: 'collapsed',
+  },
+}
+
+export const MobileCollapsedChartWithGroups = {
+  args: {
+    leftPoints: [point7, point8, point9],
+    rightPoints: [point10, point11, point12],
+    vState: 'collapsed',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+// Case when the chart is expanded:
+export const ExpandedChartWithGroups = {
+  args: {
+    leftPoints: [point7, point8, point9],
+    rightPoints: [point10, point11, point12],
+    vState: 'expanded',
+  },
+}
+
+export const MobileExpandedChartWithGroups = {
+  args: {
+    leftPoints: [point7, point8, point9],
+    rightPoints: [point10, point11, point12],
+    vState: 'expanded',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
