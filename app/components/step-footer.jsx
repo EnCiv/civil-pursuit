@@ -21,7 +21,7 @@ function StepFooter(props) {
         <hr className={classes.line}></hr>
         <div className={classes.footerDiv}>
           {onBack ? (
-            <TextButton className={classes.back} onClick={onBack}>
+            <TextButton className={classes.back} onDone={onBack}>
               &lt; Back
             </TextButton>
           ) : (
