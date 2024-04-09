@@ -19,7 +19,7 @@ const CreatePoint = (pointObj, vState, children, className) => {
 }
 
 const PointGroup = props => {
-  const { pointObj, vState, className, pointClassName, onDone = () => {}, ...otherProps } = props
+  const { pointObj, vState, className, onDone = () => {}, ...otherProps } = props
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState)
@@ -44,7 +44,6 @@ const PointGroup = props => {
       {vs === 'collapsed' && (
         <div
           className={cx(
-            pointClassName,
             classes.borderStyle,
             classes.collapsedBorder,
             classes.contentContainer,
@@ -56,7 +55,7 @@ const PointGroup = props => {
       )}
 
       {vs === 'selectLead' && (
-        <div className={cx(pointClassName, classes.borderStyle, classes.contentContainer)}>
+        <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
             <TextButton
@@ -139,7 +138,7 @@ const PointGroup = props => {
       )}
 
       {vs !== 'collapsed' && vs !== 'selectLead' && (
-        <div className={cx(pointClassName, classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
+        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (

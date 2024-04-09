@@ -34,13 +34,11 @@ export default function ShowDualPointList({
                 pointObj={point}
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                pointClassName={cx(classes.customStyle)}
               />
               <PointGroup
                 pointObj={rightPoints[index] || {}}
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                pointClassName={cx(classes.customStyle)}
               />
             </React.Fragment>
           ))}
@@ -91,6 +89,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   point: {
     flex: 1,
+    '& div': {
+      boxShadow: 'none',
+      borderRadius: 0,
+      backgroundColor: 'transparent',
+    },
   },
   oddRow: {
     backgroundColor: `#EFEFEF`,
@@ -106,11 +109,5 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   button: {
     padding: '0.5rem 5rem',
-  },
-  customStyle: {
-    boxShadow: 'none',
-    borderRadius: 0,
-    backgroundColor: 'transparent',
-    padding: '1.2rem',
   },
 }))

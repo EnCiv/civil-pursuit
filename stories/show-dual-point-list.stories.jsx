@@ -189,7 +189,7 @@ export const MobileCollapsedChartWithGroups = {
 // Case when the chart is expanded:
 export const ExpandedChartWithGroups = {
   args: {
-    leftPoints: [point7, point8, point9],
+    leftPoints: [point7, point11, point9],
     rightPoints: [point10, point11, point12],
     vState: 'expanded',
   },
@@ -197,7 +197,7 @@ export const ExpandedChartWithGroups = {
 
 export const MobileExpandedChartWithGroups = {
   args: {
-    leftPoints: [point7, point8, point9],
+    leftPoints: [point7, point11, point9],
     rightPoints: [point10, point11, point12],
     vState: 'expanded',
   },
