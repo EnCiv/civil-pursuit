@@ -3,7 +3,8 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Point from './point.jsx'
-// import PointGroup from './point.jsx'
+import PointGroup from './point-group.jsx'
+
 import Ranking from './util/ranking.jsx'
 
 function RankStep(props) {
@@ -29,19 +30,15 @@ function RankStep(props) {
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.pointDiv}>
         {pointList.map((point, i) => (
-          <Point
-            key={i}
-            subject={point.subject}
-            children={
-              <Ranking
-                key={i}
-                defaultValue={rankList[i] && rankList[i]['rank']}
-                onDone={({ valid, value }) => {
-                  setRank(i, value)
-                }}
-              />
-            }
-          />
+          <Point key={i} subject={point.subject}>
+            <Ranking
+              key={i}
+              defaultValue={rankList[i] && rankList[i]['rank']}
+              onDone={({ valid, value }) => {
+                setRank(i, value)
+              }}
+            />
+          </Point>
         ))}
       </div>
     </div>

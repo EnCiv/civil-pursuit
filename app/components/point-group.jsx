@@ -38,7 +38,7 @@ const PointGroup = props => {
   useEffect(() => {
     setPointObj(pointObj)
   }, [pointObj]) // could be changed by parent component, or within this component
-
+  console.log(groupedPoints, soloPoint)
   return (
     <div className={cx(className)} {...otherProps}>
       {vs === 'collapsed' && (
