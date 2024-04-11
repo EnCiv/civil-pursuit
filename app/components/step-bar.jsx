@@ -2,7 +2,7 @@
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
 
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
@@ -12,6 +12,14 @@ import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
+  const classes = useStylesFromThemeFunction()
+  const mobileBreakpoint = 40
+  const stepbarDebounceTime = 100
+  /* 
+  The overflow: hidden property on the last step prevents us from finding the width of the last step, which
+  messes up step width calculations. The dummy step below prevents this issue, by acting as the last step of width 0
+  */
+  const dummyStep = { name: '', title: '', complete: false, id: steps.length }
 
   /* 
   This component dynamically adjusts visible steps in the carousel based on container width. 
@@ -21,27 +29,25 @@ function StepBar(props) {
 
   /*
   I opted for this method due to its versatility across screen sizes and step bar dimensions. 
-  Rendering only necessary steps outperforms CSS control, which may behave unpredictably across browsers or resolutions. 
+  Rendering only necessary steps outperforms CSS-heavy solutions, which may behave unpredictably across browsers or resolutions. 
   This approach also offers precise control over the last visible step, crucial for truncation if cut-off. 
   We debounce the function to prevent slowdowns caused from expensive page layout recalculations.
   */
 
-  const classes = useStylesFromThemeFunction()
-
   // Create an array of references. Each reference will be assigned to a step, allowing easy access to its visual width.
-  const stepRefs = steps.map(() => useRef(null))
-  // Refernce to the steps container, to collect the maximum width of step visibility.
+  const [stepRefs, setStepRefs] = useState(steps.map(() => useRef(null)))
+  // Reference to the steps container, to collect the maximum width of step visibility.
   const stepContainerRef = useRef(null)
   // Reference to the select dropdown. Any click event target that is not a descendant of the select input will close the input.
   const selectRef = useRef(null)
   // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 50 * 16)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint * 16)
   // State to handle the select input.
   const [isOpen, setIsOpen] = useState(false)
   // State to map each 'page' of the steps carousel to its steps.
   const [pages, setPages] = useState(new Map())
-  // State to hold the steps that should be rendered on each page. Not entirely necessary, but helps readability.
-  const [visibleSteps, setVisibleSteps] = useState(steps)
+  // State to hold the steps that should be rendered on each page.
+  const [visibleSteps, setVisibleSteps] = useState([...steps, dummyStep])
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
   // add a unique numerical identifier to each step
@@ -59,13 +65,13 @@ function StepBar(props) {
 
   const handleClickOutside = event => {
     // if the select input is currently rendered and it does not contain the click event target, then close the menu.
-    if (selectRef.current && !selectRef.current.contains(event.target)) {
+    if (selectRef?.current && !selectRef?.current?.contains(event?.target)) {
       setIsOpen(false)
     }
   }
 
   const handleResize = () => {
-    setIsMobile(window.innerWidth < 50 * 16)
+    setIsMobile(window.innerWidth < mobileBreakpoint * 16)
     handleCarouselSetup()
   }
 
@@ -104,83 +110,71 @@ function StepBar(props) {
   /*
   To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
   */
+  const handleCarouselSetup = () => {
+    // render all the steps so that all the widths can be measured
+    setVisibleSteps([...steps, dummyStep])
 
-  const handleCarouselSetup = useCallback(
-    debounce(() => {
-      const newMap = new Map()
-      let containerWidth = stepContainerRef?.current?.offsetWidth
-      let currentWidth = 0
-      let firstStepIndex = 0
-      let page = 1
-      let newSteps = []
-      let initialPage = findPage()
+    if (!stepContainerRef?.current) return
+    let containerWidth = stepContainerRef?.current?.offsetWidth
 
-      for (let i = 0; i < stepRefs.length; i++) {
-        let width = stepRefs[i]?.current?.offsetWidth
-        currentWidth += width
-        // TO DO: CLEAN UP THIS FUNCTION, ADD COMMENTS TO NEW FINDPAGE FUNCTION AND OTHERS, AND FIGURE OUT WHY THE WIDTH IS UNDEFINED EVERY SECOND RESIZE.
-        // ONCE YOU DO THAT, YOU ARE PRETTY MUCH DONE.
-        if (i === current - 1) {
-          // if the step is the current step, then we set the initial page
-          initialPage = page
-          setCurrentPage(initialPage)
-        }
-        if (i === stepRefs.length - 1) {
-          // if we are on the last step, slice from the index of the first visible step
-          newSteps = stepsWithIds.slice(firstStepIndex)
-          newMap.set(page, newSteps)
-        } else if (currentWidth > containerWidth) {
-          // if the current width exceeds the container width, than we are currently on the last visible step
-          newSteps = stepsWithIds.slice(firstStepIndex, i + 1)
-          newMap.set(page, newSteps)
-          page++
-          currentWidth = 0
-          firstStepIndex = i
-          i = i - 1
-        }
+    const newMap = new Map()
+    let currentWidth = 0
+    let firstStepIndex = 0
+    let page = 1
+    let newSteps = []
+    let initialPage = 1
+
+    for (let i = 0; i < stepRefs.length; i++) {
+      if (!stepRefs[i]?.current) return
+
+      let width = stepRefs[i]?.current?.offsetWidth
+      currentWidth += width
+
+      if (i === current - 1) {
+        // if the step is the current step, then we set the initial page
+        initialPage = page
+        setCurrentPage(initialPage)
       }
-      setPages(newMap)
-      setVisibleSteps(newMap.get(initialPage))
-    }, 50),
-    [
-      stepContainerRef,
-      stepRefs,
-      current,
-      currentPage,
-      setCurrentPage,
-      stepsWithIds,
-      pages,
-      setPages,
-      setVisibleSteps,
-      visibleSteps,
-      steps,
-      debounce,
-    ]
-  )
-
-  const findPage = () => {
-    const currentStep = stepsWithIds[current]
-    const pageIndex = Object.values(pages).findIndex(page => page.includes(currentStep))
-    return pageIndex !== -1 ? pageIndex + 1 : 1
+      if (currentWidth > containerWidth) {
+        // if the current width exceeds the container width, then we are currently on the last visible step.
+        // we slice to the last visible step, which is truncated (...) if needed. we then begin the process
+        // from this step, so that it is the first step displayed on the next page.
+        newSteps = stepsWithIds.slice(firstStepIndex, i + 1)
+        newMap.set(page, newSteps)
+        page++
+        currentWidth = 0
+        firstStepIndex = i
+        i = i - 1
+      }
+      if (i === stepRefs.length - 1) {
+        // if we are on the last step, slice from the index of the first visible step
+        newSteps = stepsWithIds.slice(firstStepIndex)
+        newMap.set(page, newSteps)
+      }
+    }
+    setPages(newMap)
+    setVisibleSteps(newMap.get(initialPage))
   }
+
+  useEffect(() => {
+    const handleResizeDebounced = debounce(handleResize, stepbarDebounceTime)
+
+    window.addEventListener('resize', handleResizeDebounced)
+    window.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      window.removeEventListener('resize', handleResizeDebounced)
+      window.removeEventListener('mousedown', handleClickOutside)
+    }
+  })
 
   /*
    Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
    UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
   */
   useLayoutEffect(() => {
-    if (!isMobile) {
-      handleCarouselSetup()
-    }
-
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isMobile])
+    if (!isMobile) handleCarouselSetup()
+  }, [isMobile, current])
 
   /*
   NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.

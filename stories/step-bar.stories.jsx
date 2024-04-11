@@ -38,7 +38,7 @@ export default {
 export const PrimaryDesktop = {}
 
 export const ParentsWidth = args => {
-  return <StepBar style={{ width: '50.375rem' }} {...args} />
+  return <StepBar style={{ maxWidth: '50.375rem' }} {...args} />
 }
 
 export const MobileViewOne = {}
@@ -74,7 +74,7 @@ export const ScrollLeft = {
     const leftScroll = canvas.getByTestId('leftclick')
 
     setTimeout(async () => {
-      // await userEvent.tripleClick(leftScroll)
+      await userEvent.tripleClick(leftScroll)
     }, 500)
   },
 }
