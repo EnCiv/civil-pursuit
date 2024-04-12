@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 function Step(props) {
-  const { name, title, complete, active, className, ...otherProps } = props
+  const { name, title, complete, active, onDone = () => {}, index, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -26,7 +26,14 @@ function Step(props) {
   })
 
   return (
-    <div className={containerStyle} {...otherProps}>
+    <div
+      className={containerStyle}
+      onMouseDown={() => {
+        if (complete) onDone(index)
+      }}
+      data-testid="testClick"
+      {...otherProps}
+    >
       <div className={textStyle}>{name}</div>
     </div>
   )
@@ -37,7 +44,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.625rem 0.9375rem',
     borderRadius: '0.625rem',
     overflow: 'hidden',
-    cursor: 'default'
+    cursor: 'default',
   },
 
   containerActive: {

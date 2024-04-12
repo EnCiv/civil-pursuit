@@ -8,7 +8,6 @@ import { createUseStyles } from 'react-jss'
 import Step from './step'
 import SvgStepBarArrowDesktop from '../svgr/step-bar-arrow-desktop'
 import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
-// import ReactScrollBar from './util/react-scrollbar'
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
@@ -202,12 +201,9 @@ function StepBar(props) {
                 title={step.title}
                 complete={step.complete}
                 active={current === step.id ? true : false}
+                onDone={onDone}
+                index={index}
                 {...otherProps}
-                onMouseDown={() => {
-                  if (step.complete) {
-                    onDone(index)
-                  }
-                }}
               />
             </div>
           )
@@ -253,12 +249,9 @@ function StepBar(props) {
                     title={step.title}
                     complete={step.complete}
                     active={current === step.id ? true : false}
+                    onDone={onDone}
+                    index={index}
                     {...otherProps}
-                    onMouseDown={() => {
-                      if (step.complete) {
-                        onDone(index)
-                      }
-                    }}
                   />
                 )
               })}
@@ -375,44 +368,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexShrink: '0',
     width: '100%',
   },
-
-  //scrollbar
-  // customScrollbar: {
-  //   /* Track */
-  //   '&::-webkit-scrollbar': {
-  //     width: '12px',
-  //     backgroundColor: '#fff', // White background for the scrollbar
-  //     padding: '0.5rem', // Added padding
-  //   },
-  //   /* Handle */
-  //   '&::-webkit-scrollbar-thumb': {
-  //     width: '0.375rem',
-  //     height: '5.6875rem',
-  //     borderRadius: '2.5rem',
-  //     background: '#D5D5DE',
-  //   },
-  //   /* Handle on hover */
-  //   '&::-webkit-scrollbar-thumb:hover': {
-  //     backgroundColor: '#45a049',
-  //   },
-  //   /* Track */
-  //   '&::-webkit-scrollbar-track': {
-  //     backgroundColor: '#f1f1f1',
-  //   },
-  //   /* For Firefox */
-  //   scrollbarColor: '#D5D5DE #f1f1f1', // White background for the scrollbar
-  //   scrollbarWidth: 'thin',
-  //   /* For Edge and IE */
-  //   '&::-ms-scrollbar-thumb': {
-  //     width: '0.375rem',
-  //     height: '5.6875rem',
-  //     borderRadius: '2.5rem',
-  //     backgroundColor: '#D5D5DE',
-  //   },
-  //   '&::-ms-scrollbar-track': {
-  //     backgroundColor: '#f1f1f1',
-  //   },
-  // },
 }))
 
 export default StepBar
