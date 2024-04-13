@@ -90,9 +90,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   point: {
     flex: 1,
     '& div': {
+      padding: '1rem',
       boxShadow: 'none',
       borderRadius: 0,
       backgroundColor: 'transparent',
+      '& div': {
+        padding: '0rem',
+      },
     },
   },
   oddRow: {
