@@ -95,7 +95,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       borderRadius: 0,
       backgroundColor: 'transparent',
       '& div': {
-        padding: '0rem',
+        padding: '0.1rem',
       },
     },
   },
