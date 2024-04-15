@@ -59,16 +59,16 @@ tenRanks.args = {
   pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
 
   rankList: [
-    { id: 1, rank: 'Most' },
-    { id: 2, rank: 'Most' },
-    { id: 3, rank: 'Least' },
-    { id: 4, rank: 'Neutral' },
-    { id: 5, rank: 'Neutral' },
-    { id: 6, rank: 'Neutral' },
-    { id: 7, rank: 'Neutral' },
-    { id: 8, rank: 'Neutral' },
-    { id: 9, rank: 'Neutral' },
-    { id: 10, rank: 'Neutral' },
+    { id: point1._id, rank: 'Most' },
+    { id: point2._id, rank: 'Most' },
+    { id: point3._id, rank: 'Least' },
+    { id: point4._id, rank: 'Neutral' },
+    { id: point5._id, rank: 'Neutral' },
+    { id: point6._id, rank: 'Neutral' },
+    { id: point7._id, rank: 'Neutral' },
+    { id: point8._id, rank: 'Neutral' },
+    { id: point9._id, rank: 'Neutral' },
+    { id: point10._id, rank: 'Neutral' },
   ],
 }
 export const sevenPoints = Template(RankStep).bind({})
@@ -77,13 +77,13 @@ sevenPoints.args = {
   onDone: null,
   pointList: [point1, point2, point3, point4, point5, point6, point7],
   rankList: [
-    { id: 1, rank: 'Most' },
-    { id: 2, rank: 'Most' },
-    { id: 3, rank: 'Least' },
-    { id: 4, rank: 'Neutral' },
-    { id: 5, rank: 'Neutral' },
-    { id: 6, rank: 'Neutral' },
-    { id: 7, rank: 'Neutral' },
+    { id: point1._id, rank: 'Most' },
+    { id: point2._id, rank: 'Most' },
+    { id: point3._id, rank: 'Least' },
+    { id: point4._id, rank: 'Neutral' },
+    { id: point5._id, rank: 'Neutral' },
+    { id: point6._id, rank: 'Neutral' },
+    { id: point7._id, rank: 'Neutral' },
   ],
 }
 
@@ -93,8 +93,8 @@ threePoints.args = {
   onDone: null,
   pointList: [point1, point2, point3],
   rankList: [
-    { id: 1, rank: 'Most' },
-    { id: 2, rank: 'Least' },
-    { id: 3, rank: 'Neutral' },
+    { id: point1._id, rank: 'Most' },
+    { id: point2._id, rank: 'Most' },
+    { id: point3._id, rank: 'Least' },
   ],
 }

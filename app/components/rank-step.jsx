@@ -20,9 +20,16 @@ function RankStep(props) {
   } = props
   const setRank = (index, val) => {
     for (let i = 0; i < rankList.length; i++) {
-      if (i === index) {
+      if (rankList[i].id === index) {
         rankList[i]['rank'] = val
         break
+      }
+    }
+  }
+  const findRank = index => {
+    for (let i = 0; i < rankList.length; i++) {
+      if (rankList[i].id === index) {
+        return i
       }
     }
   }
@@ -30,14 +37,15 @@ function RankStep(props) {
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.pointDiv}>
         {pointList.map((point, i) => (
-          <Point key={i} subject={point.subject}>
-            <Ranking
-              key={i}
-              defaultValue={rankList[i] && rankList[i]['rank']}
-              onDone={({ valid, value }) => {
-                setRank(i, value)
-              }}
-            />
+          <Point key={point._id} subject={point.subject}>
+            {rankList[i] && (
+              <Ranking
+                defaultValue={rankList[findRank(point._id)]['rank']}
+                onDone={({ valid, value }) => {
+                  setRank(point._id, value)
+                }}
+              />
+            )}
           </Point>
         ))}
       </div>
