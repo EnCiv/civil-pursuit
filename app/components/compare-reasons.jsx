@@ -18,7 +18,7 @@ function CompareReasons(props) {
         } else {
             onDone({valid: false, value: percentDone})
         }
-    }, [completedPoints, pointList, percentDone])
+    }, [completedPoints, percentDone])
 
     useEffect(() => {
         if (pointList.length === 0) setPercentDone(100);

@@ -65,10 +65,14 @@ export const threePointLists = {
     }
 }
 
-export const empty = {
+export const emptyPointList = {
     args: {
         pointList: [],
     }
+}
+
+export const emptyArgs = {
+    args: {}
 }
 
 export const twoPointListsPlayThrough = {
