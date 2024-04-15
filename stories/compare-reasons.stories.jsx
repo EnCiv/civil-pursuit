@@ -62,3 +62,9 @@ export const threePointLists = {
         side: "most",
     }
 }
+
+export const empty = {
+    args: {
+        pointList: [],
+    }
+}
