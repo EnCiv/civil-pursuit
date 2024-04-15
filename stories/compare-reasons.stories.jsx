@@ -1,5 +1,7 @@
 import CompareReasons from "../app/components/compare-reasons";
 import { onDoneDecorator, onDoneResult } from "./common";
+import { within, userEvent } from '@storybook/testing-library';
+import expect from 'expect';
 
 export default {
     component: CompareReasons,
@@ -41,16 +43,16 @@ const pointList = [
         subject: "Headline Issue #2",
         description: "Description for Headline Issue #2",
         reasonPoints: {
-            most: [pointEleven, pointTwelve, pointThirteen],
-            least: [pointFourteen, pointFifteen, pointSixteen]
+            most: [pointEleven, pointTwelve],
+            least: [pointThirteen, pointFourteen]
         }
     },
     {
         subject: "Headline Issue #3",
         description: "Description for Headline Issue #3",
         reasonPoints: {
-            most: [pointSeventeen, pointEighteen],
-            least: []
+            most: [pointFifteen, pointSixteen],
+            least: [pointSeventeen, pointEighteen]
         }
     }
 ]
@@ -66,5 +68,27 @@ export const threePointLists = {
 export const empty = {
     args: {
         pointList: [],
+    }
+}
+
+export const twoPointListsPlayThrough = {
+    args: {
+        pointList: pointList.slice(1,3),
+        side: "least"
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const pointThirteen = canvas.getByText("Point 13");
+        const pointSeventeen = canvas.getByText("Point 17");
+
+        await userEvent.click(pointThirteen);
+        await userEvent.click(pointSeventeen);
+        expect(onDoneResult(canvas)).toMatchObject({
+            count: 5,
+            onDoneResult: {
+                valid: true,
+                value: 100,
+            }
+        })
     }
 }

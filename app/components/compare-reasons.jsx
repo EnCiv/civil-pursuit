@@ -21,9 +21,9 @@ function CompareReasons(props) {
     }, [completedPoints, pointList, percentDone])
 
     useEffect(() => {
-        if (pointList.length === 0) setPercentDone(0);
+        if (pointList.length === 0) setPercentDone(100);
         else {
-            setPercentDone(((completedPoints.size / pointList.length) * 100).toFixed(2))
+            setPercentDone(Number(((completedPoints.size / pointList.length) * 100).toFixed(2)))
         }
     }, [completedPoints, pointList])
 
