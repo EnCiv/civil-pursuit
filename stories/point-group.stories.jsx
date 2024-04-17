@@ -57,10 +57,14 @@ const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
 const point5 = createPointObj('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
 
 export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' } }
+export const SelectedSinglePoint = { args: { pointObj: point1, vState: 'default', select: true} }
 export const EditSinglePoint = { args: { pointObj: point1, vState: 'edit' } }
 
+
 export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } }
+export const selectedDefaultMultiplePoints = { args: { pointObj: point5, vState: 'default', select: true } }
 export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } }
+export const selectedEditMultiplePoints = { args: { pointObj: point5, vState: 'edit', select: true} }
 
 export const mobileSingePoint = {
   args: { pointObj: point1, vState: 'default' },

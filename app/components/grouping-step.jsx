@@ -14,13 +14,12 @@ import Point from './point';
 
 
 // vState for Point: default, selected, disabled, collapsed
-const CreatePoint = ({ pointObj, vState, children, className, onClick }) => {
-  const { subject, description } = pointObj;
+const CreatePointGroup = ({ pointObj, vState, children, select, className, onClick }) => {
   return (
-    <Point
-      subject={subject}
-      description={description}
+    <PointGroup
+      pointObj={pointObj}
       vState={vState}
+      select = {select}
       children={children}
       className={className}
       onClick={onClick}
@@ -60,8 +59,8 @@ export default function GroupingStep(props) {
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
-          <StatusBadge name="Groups Created" status="" number={groupsCreated} />
-          <StatusBadge name="Response Selected" status="" number={responseSelected} />
+          <StatusBadge name="Groups Created" status={groupsCreated === 0 ? "" : "complete"} number={groupsCreated} />
+          <StatusBadge name="Response Selected" status={responseSelected === 0 ? "" : "complete"} number={responseSelected} />
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
@@ -72,10 +71,11 @@ export default function GroupingStep(props) {
       </div>
       <div className={classes.groupsContainer}>
       {groupedPoints.map((point, index) => (
-          <CreatePoint
+          <CreatePointGroup
             key={index}
             pointObj={point}
-            vState={selectedPoints[index] ? "selected" : "default"}
+            vState="default"
+            select = {selectedPoints[index]}
             onClick={() => togglePointSelection(index)}
           />
         ))}
@@ -108,6 +108,7 @@ const useStylesFromThemeFunction = createUseStyles((theme) => ({
   },
   buttons: {
     display: 'flex',
+    alignItems: 'center',
     marginLeft: 'auto',
     gap: '0.875rem',
     marginRight: '0',
@@ -119,13 +120,10 @@ const useStylesFromThemeFunction = createUseStyles((theme) => ({
       alignItems: 'center',
     }
   },
-  primaryButton: {
-  },
   statusBadges: {
     display: 'flex',
-    marginTop: '0.5rem',
+    alignItems: 'center',
     gap: '0.875rem',
-    align: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginTop: '0',
       width: '100%',
