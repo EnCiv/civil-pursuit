@@ -1,4 +1,3 @@
-//https://github.com/EnCiv/civil-pursuit/issues/62
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
