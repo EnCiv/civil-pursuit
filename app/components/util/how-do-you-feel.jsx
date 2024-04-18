@@ -1,32 +1,28 @@
-import React, { useState, useEffect } from 'react'
+//https://github.com/EnCiv/civil-pursuit/issues/62
+import React from 'react'
 import { createUseStyles } from 'react-jss'
-import cx from 'classnames'
+import { Button } from '../button'
 
 const responseOptions = ['Awesome!', 'Just Okay', 'Unsatisfied']
-
 export default function HowDoYouFeel(props) {
-    //Isolate props and set initial state
-    const { disabled, className, onDone, ...otherProps } = props
+    const { disabled = false, className, onDone, title = '', ...otherProps } = props
     const styleClasses = rankingStyleClasses(props)
-    const classes = buttonStyles()
-    const combinedClassName = cx(classes.Howdoyoufeel, className)
-    const textClasses = textStyles()
-    const textClassName = cx(textClasses.textStyle)
     const onSelection = e => {
         onDone({ valid: true, value: e.target.value })
     }
     return (
         <>
-            <p className={textClassName}>How do you feel about it</p>
-            <div className={cx(className, styleClasses.group, disabled)}{...otherProps}>
+            <p className={styleClasses.textStyle}>How do you feel about it</p>
+            <div className={styleClasses.group}{...otherProps}>
                 {responseOptions.map(option => {
                     return (
                         <label>
-                            <button
+                            <Button
+                                title={title}
                                 onClick={onSelection}
                                 value={option}
-                                className={combinedClassName}
-                            >{option}</button>
+                                className={styleClasses.Howdoyoufeel}
+                            >{option}</Button>
                         </label>
                     )
                 })}
@@ -34,38 +30,10 @@ export default function HowDoYouFeel(props) {
         </>
     )
 }
-
 const rankingStyleClasses = createUseStyles({
-    optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.125rem' },
-    option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', color: 'inherit' },
     group: { display: 'flex', gap: '1.4375rem' },
-    disabled: { opacity: '30%' },
-    hideDefaultRadio: { display: 'none !important' },
-})
-const textStyles = createUseStyles(theme => ({
-    textStyle: {
-        fontSize: "2.4rem",
-        fontWeight: "normal"
-    },
-}))
-
-const buttonStyles = createUseStyles(theme => ({
-    buttonBase: {
-        // These are common styles
-        width: 'auto',
-        height: 'auto',
-        borderRadius: '0.5rem',
-        padding: '0.5rem 1.25rem',
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: 600,
-        fontSize: '1rem',
-        lineHeight: '1.5rem',
-        textAlign: 'center',
-        // Add any other common styles here
-    },
-
+    textStyle: { fontSize: "2.4rem", fontWeight: "normal" },
     Howdoyoufeel: {
-        extend: 'buttonBase',
         backgroundColor: theme.colors.white,
         color: theme.colors.primaryButtonBlue,
         border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
