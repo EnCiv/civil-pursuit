@@ -110,6 +110,9 @@ const buttonStyles = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
+    '&:focus': {
+      outline: `5px solid #DCE8F2`,
+    },
     // Add any other common styles here
   },
 
@@ -118,8 +121,6 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-    '&:focus': {},
 
     '&:disabled': {
       backgroundColor: theme.colors.white,
@@ -149,8 +150,6 @@ const buttonStyles = createUseStyles(theme => ({
     color: theme.colors.textBrown,
     border: `0.125rem solid ${theme.colors.encivYellow}`,
 
-    '&:focus': {},
-
     '&:hover, &.hover': {
       textDecoration: 'underline',
       backgroundColor: theme.colors.white,
@@ -170,8 +169,6 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.primaryButtonBlue,
     color: theme.colors.white,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-    '&:focus': {},
 
     '&:disabled': {
       backgroundColor: theme.colors.borderGray,
