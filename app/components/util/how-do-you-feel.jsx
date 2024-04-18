@@ -30,7 +30,7 @@ export default function HowDoYouFeel(props) {
         </>
     )
 }
-const rankingStyleClasses = createUseStyles({
+const rankingStyleClasses = createUseStyles(theme => ({
     group: { display: 'flex', gap: '1.4375rem' },
     textStyle: { fontSize: "2.4rem", fontWeight: "normal" },
     Howdoyoufeel: {
