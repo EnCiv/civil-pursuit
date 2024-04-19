@@ -207,3 +207,19 @@ export const MobileExpandedChartWithGroups = {
     },
   },
 }
+
+// Case with Differing Number of Left and Right Points
+export const DifferentNumberOfPoints = {
+  args: {
+    leftPoints: [point1, point2],
+    rightPoints: [point4, point5, point6],
+  },
+}
+
+// Case When There Are No Points on One Side
+export const NoPointsOnOneSide = {
+  args: {
+    leftPoints: [point1, point2, point3],
+    rightPoints: [],
+  },
+}

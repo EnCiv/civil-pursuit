@@ -20,6 +20,9 @@ export default function ShowDualPointList({
   const [isExpanded, setIsExpanded] = useState(vState === 'expanded')
   const toggleExpandCollapse = () => setIsExpanded(!isExpanded)
 
+  // Determine the maximum number of points between left and right sides
+  const maxPoints = Math.max(leftPoints.length, rightPoints.length)
+
   return (
     <div className={cx(classes.sharedBorderStyle, className)} {...otherProps}>
       <div className={classes.contentContainer}>
@@ -28,15 +31,15 @@ export default function ShowDualPointList({
           <div className={classes.rightHeader}>{rightHeader}</div>
         </div>
         <div className={classes.pointGrid}>
-          {leftPoints.map((point, index) => (
+          {[...Array(maxPoints)].map((_, index) => (
             <React.Fragment key={index}>
               <PointGroup
-                pointObj={point}
+                pointObj={leftPoints[index] || {}} // Render empty object if no point exists
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
               />
               <PointGroup
-                pointObj={rightPoints[index] || {}}
+                pointObj={rightPoints[index] || {}} // Render empty object if no point exists
                 vState={isExpanded ? 'default' : 'collapsed'}
                 className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
               />
