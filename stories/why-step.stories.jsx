@@ -32,8 +32,7 @@ const createPointObj = (
         _id,
         subject,
         description,
-        groupedPoints,
-        user,
+        children: <DemInfo user={user} />,
     };
 };
 
