@@ -7,6 +7,7 @@ export default {
   component: Step,
   args: {
     name: 'Step 2: Rate',
+    title: 'this is a title',
   },
   decorators: [onDoneDecorator],
 }

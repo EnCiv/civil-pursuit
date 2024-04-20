@@ -180,14 +180,18 @@ function StepBar(props) {
   */
   return !isMobile ? (
     <div className={cx(classes.container, className)} style={style}>
-      <div onClick={leftClick} className={classes.svgContainer} data-testid="leftclick">
+      <button
+        onClick={leftClick}
+        className={cx(classes.resetButtonStyling, classes.svgContainer)}
+        data-testid="leftclick"
+      >
         <SvgStepBarArrowDesktop
           className={cx({ [classes.svgColor]: currentPage === 1 })}
           width="1rem"
           height="1.2rem"
           style={{ transform: 'rotate(180deg)' }}
         />
-      </div>
+      </button>
       <div className={classes.stepsContainer} ref={stepContainerRef}>
         {visibleSteps.map((step, index) => {
           return (
@@ -209,9 +213,9 @@ function StepBar(props) {
           )
         })}
       </div>
-      <div
+      <button
         onClick={rightClick}
-        className={cx(classes.svgContainer, classes.svgContainerRight)}
+        className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)}
         data-testid="rightclick"
       >
         <SvgStepBarArrowDesktop
@@ -219,20 +223,18 @@ function StepBar(props) {
           width="1rem"
           height="1.2rem"
         />
-      </div>
+      </button>
     </div>
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div className={classes.mobileHeader}>Go to</div>
-
       <div className={classes.selectInput} onClick={handleOpen} ref={selectRef}>
         <div className={classes.selectItemsContainer}>
-          <div className={classes.selectText}>Select a Step</div>
+          <div className={classes.selectText}>{steps[current - 1].name}</div>
           {isOpen ? (
             <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" />
           ) : (
-            <SvgStepBarArrowMobile width="13" height="13" />
+            <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />
           )}
         </div>
       </div>
@@ -303,20 +305,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     overflow: 'hidden',
   },
 
+  resetButtonStyling: {
+    border: 'none',
+    width: 'auto',
+    overflow: 'visible',
+    background: 'transparent',
+
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+    '&:active': {
+      backgroundColor: 'transparent',
+    },
+  },
+
   //mobile styles
   mobileContainer: {
     height: '23.0625rem',
     display: 'flex',
     flexDirection: 'column',
-  },
-  mobileHeader: {
-    ...theme.font,
-    fontSize: '1rem',
-    fontWeight: '400',
-    lineHeight: '1.5rem',
-    color: theme.colors.title,
-    paddingTop: '1.06rem',
-    paddingLeft: '1.69rem',
   },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',

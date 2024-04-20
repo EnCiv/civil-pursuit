@@ -9,6 +9,7 @@ let primarySteps = Array.from({ length: 9 }, (_, i) => ({
   complete: false,
 }))
 primarySteps[0].complete = true
+primarySteps[1].name = 'Step 2: Rate'
 
 let secondarySteps = Array.from({ length: 9 }, (_, i) => ({
   name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
