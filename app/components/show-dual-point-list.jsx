@@ -31,20 +31,24 @@ export default function ShowDualPointList({
           <div className={classes.rightHeader}>{rightHeader}</div>
         </div>
         <div className={classes.pointGrid}>
-          {[...Array(maxPoints)].map((_, index) => (
-            <React.Fragment key={index}>
-              <PointGroup
-                pointObj={leftPoints[index] || {}} // Render empty object if no point exists
-                vState={isExpanded ? 'default' : 'collapsed'}
-                className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-              />
-              <PointGroup
-                pointObj={rightPoints[index] || {}} // Render empty object if no point exists
-                vState={isExpanded ? 'default' : 'collapsed'}
-                className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-              />
-            </React.Fragment>
-          ))}
+          {[...Array(maxPoints)].map((_, index) => {
+            const leftPoint = leftPoints[index]
+            const rightPoint = rightPoints[index]
+            return (
+              <React.Fragment key={leftPoint?._id || rightPoint?._id}>
+                <PointGroup
+                  pointObj={leftPoint || {}}
+                  vState={isExpanded ? 'default' : 'collapsed'}
+                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                />
+                <PointGroup
+                  pointObj={rightPoint || {}}
+                  vState={isExpanded ? 'default' : 'collapsed'}
+                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                />
+              </React.Fragment>
+            )
+          })}
         </div>
       </div>
       <div className={classes.buttonContainer}>

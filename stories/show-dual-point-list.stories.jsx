@@ -43,34 +43,40 @@ export const MobileListsEmpty = {
 }
 
 const point1 = {
+  _id: '1',
   subject: 'Equality is a human right',
   description:
     'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
 }
 
 const point2 = {
+  _id: '2',
   subject: 'Income equality reduction',
   description:
     'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
 }
 
 const point3 = {
+  _id: '3',
   subject: 'Separation of wealth',
   description: 'Fusce nibh quam, sollicitudin ut sodales id, molestie sit amet mi. Nunc nec augue odio.',
 }
 
 const point4 = {
+  _id: '4',
   subject: 'Not a crucial issue',
   description: 'Fusce nibh quam, sollicitudin ut sodales id, molestie sit amet mi. Nunc nec augue odio.',
 }
 
 const point5 = {
+  _id: '5',
   subject: 'Poverty',
   description:
     'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
 }
 
 const point6 = {
+  _id: '6',
   subject: 'Poverty increasing with time',
   description:
     'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
@@ -122,7 +128,6 @@ export const MobileExpandedChart = {
 }
 
 // cases when story data include some pointGroups
-
 const createPointObj = (
   _id,
   subject,
@@ -209,15 +214,33 @@ export const MobileExpandedChartWithGroups = {
 }
 
 // Case with Differing Number of Left and Right Points
-export const DifferentNumberOfPoints = {
+// Case When There Are More Points on the Left Side
+export const MorePointsOnLeftSide = {
   args: {
-    leftPoints: [point1, point2],
+    leftPoints: [point1, point2, point3],
+    rightPoints: [point4],
+  },
+}
+
+// Case When There Are More Points on the Right Side
+export const MorePointsOnRightSide = {
+  args: {
+    leftPoints: [point1],
     rightPoints: [point4, point5, point6],
   },
 }
 
-// Case When There Are No Points on One Side
-export const NoPointsOnOneSide = {
+// Cases When There Are No Points on One Side
+// Case When There Are No Points on the Left Side
+export const NoPointsOnLeftSide = {
+  args: {
+    leftPoints: [],
+    rightPoints: [point4, point5, point6],
+  },
+}
+
+// Case When There Are No Points on the Right Side
+export const NoPointsOnRightSide = {
   args: {
     leftPoints: [point1, point2, point3],
     rightPoints: [],
