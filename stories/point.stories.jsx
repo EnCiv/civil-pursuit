@@ -95,3 +95,7 @@ export const ParentsWidth = args => {
 export const Collapsed = args => {
   return <Point vState={'collapsed'} subject={args.subject}></Point>
 }
+
+export const Secondary = args => {
+  return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />}></Point>
+}

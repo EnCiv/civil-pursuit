@@ -1,6 +1,7 @@
 'use strict'
 
 const Theme = {
+  focusOutline: 'solid .3rem #B3B3B3',
   // ui colors
   colors: {
     success: '#005621',
@@ -47,6 +48,7 @@ const Theme = {
   border: {
     width: {
       thin: '0.0625rem',
+      thick: '0.125rem',
     },
   },
   condensedWidthBreakPoint: '40rem',
