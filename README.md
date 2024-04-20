@@ -22,7 +22,7 @@ These steps will make it easy to switch between multiple projects and repos, but
 In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
-if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+if [ `pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     echo running `pwd`/.bashrc
     source ./.bashrc
 fi
