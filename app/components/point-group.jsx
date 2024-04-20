@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/35
+// https://github.com/EnCiv/civil-pursuit/issues/35// https://github.com/EnCiv/civil-pursuit/issues/104
 
 'use strict'
 
@@ -78,28 +78,26 @@ const PointGroup = props => {
             <div className={classes.selectPointsContainer}>
               {groupedPoints?.map(point => {
                 return (
-                  <div key={point._id} className={classes.selectPoints}>
+                  <div key={point._id} className={cx(classes.selectPoints, classes.borderStyle, classes.noBoxShadow)}>
                     {CreatePoint(
                       point,
                       point._id === selected ? 'selected' : 'default',
-                      [
-                        <DemInfo user={point.user} />,
-                        <div className={classes.selectButtonRow}>
-                          <ModifierButton
-                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${point.subject}`}
-                            tabIndex={0}
-                            children="Select as Lead"
-                            disabled={false}
-                            disableOnClick={false}
-                            onDone={() => {
-                              setSelected(point._id)
-                            }}
-                          />
-                        </div>,
-                      ],
-                      cx(classes.selectPointsPassDown, classes.noBoxShadow)
+                      [<DemInfo user={point.user} />],
+                      classes.noBoxShadow
                     )}
+                    <div className={classes.selectButtonRow}>
+                      <ModifierButton
+                        className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
+                        title={`Select as L: ${point.subject}`}
+                        tabIndex={0}
+                        children="Select as Li"
+                        disabled={false}
+                        disableOnClick={false}
+                        onDone={() => {
+                          setSelected(point._id)
+                        }}
+                      />
+                    </div>
                   </div>
                 )
               })}
@@ -425,9 +423,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectPoints: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     flex: '1 1 41%',
     height: 'inherit',
-    //margin: '1rem 1.5rem',
+    // margin: '1rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
       margin: '1rem 0',
