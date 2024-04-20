@@ -89,7 +89,7 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   signUp (e) {
-    //onsole.info("signup");
+    //console.info("signup");
     e.preventDefault();
 
     this.props.join();
@@ -98,7 +98,7 @@ class Login extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   forgotPassword (e) {
-    //onsole.info("facebook");
+    //console.info("facebook");
     e.preventDefault();
 
     this.props['forgot-password']();
@@ -108,7 +108,7 @@ class Login extends React.Component {
 
   loginWithFacebook () {
     // location.href = '/sign/in/facebook';
-    //onsole.info("loginWithFacebook");
+    //console.info("loginWithFacebook");
     Facebook.connect();
   }
 

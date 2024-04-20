@@ -31,7 +31,7 @@ function signIn (req, res, next) {
         .then(
           user => {
             req.user = user.toJSON();
-            //onsole.info("sign-in user",user);
+            //console.info("sign-in user",user);
 
             // were we passed updated info in the signin
             var p1=new Promise((ok,ko)=>{

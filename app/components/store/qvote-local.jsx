@@ -48,7 +48,7 @@ class QVoteLocal extends React.Component {
     }
 
     componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
-        //onsole.info("QVoteLocal");
+        //console.info("QVoteLocal");
         let currentIndex = [];
         let unsortedLength = 0;
         var newObj = merge({}, this.state.sections);
@@ -85,7 +85,7 @@ class QVoteLocal extends React.Component {
     }
 
     render() {
-        //onsole.info("QVoteLocal");
+        //console.info("QVoteLocal");
         return (
             <section>{this.renderChildren()}</section>
         );

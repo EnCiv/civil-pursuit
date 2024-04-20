@@ -32,7 +32,7 @@ export default class Promote extends React.Component {
 class RASPPromote extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'side');
-        //onsole.info("RASPPromote.constructor", this.props)
+        //console.info("RASPPromote.constructor", this.props)
         this.transitionedOC = [];
         if(!(props.rasp)) logger.error("RASPPromote rasp missing");
     }
@@ -170,7 +170,7 @@ class RASPPromote extends ReactActionStatePathClient {
     slideClosed=[]; //keep track of the sides as they close, make sure both sides are closed if 'next' before continuing
 
     slide(side, opened) {
-      //onsole.info("RASPPromote.slide",side, opened);
+      //console.info("RASPPromote.slide",side, opened);
       const hiddenDuration=250;// hold closed position for 250mSec
         if (!opened) {
             if (this.buttons.event === 'promote') {
@@ -193,7 +193,7 @@ class RASPPromote extends ReactActionStatePathClient {
 
     render() {
         const { item, hideFinish, limit, items, criterias, user, rasp } = this.props;
-        //onsole.info(this.constructor.name,"RASPPromote.render",this.props);
+        //console.info(this.constructor.name,"RASPPromote.render",this.props);
 
         if(!(items && items.length && criterias && criterias.length)){
           return (

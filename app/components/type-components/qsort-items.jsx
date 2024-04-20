@@ -47,7 +47,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     constructor(props){
         super(props, 'itemId');  // shortId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
-        //onsole.info("RASPQSortItems.constructor");
+        //console.info("RASPQSortItems.constructor");
         this.createDefaults();
     }
 
@@ -157,7 +157,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        //onsole.info("RASPQSortItems.render");
+        //console.info("RASPQSortItems.render");
 
         const { count, user, rasp, items, type, parent, sections, buttons=['QSortButtons'] } = this.props;
 

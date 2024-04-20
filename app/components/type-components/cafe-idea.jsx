@@ -103,7 +103,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
             this.ideaState[action.ideaNum].posted=false;
             delta.ideaCount=ideaCount();          
         } else if(action.wasType ==="TOGGLE_BUTTON" && action.distance===2 && action.button==='Edit'){
-            // user is editing something already posted - this happend on DESCENDANT_FOCUS and UNFOCUS
+            // user is editing something already posted - this happened on DESCENDANT_FOCUS and UNFOCUS
                 this.ideaState[action.ideaNum].posted=false;
                 delta.ideaCount=ideaCount();          
         } else if(action.type === "DESCENDANT_UNFOCUS"){
@@ -128,7 +128,7 @@ class RASPCafeIdea extends ReactActionStatePathClient {
     }
 
     componentDidMount(){
-        //onsole.info("CafeIdea.componentDidMount change shape to open");
+        //console.info("CafeIdea.componentDidMount change shape to open");
         this.queueFocus({type: "COMPONENT_DID_MOUNT"});
     }
 

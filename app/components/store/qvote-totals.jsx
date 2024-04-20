@@ -28,7 +28,7 @@ class QVoteTotals extends React.Component {
     }
 
     componentWillReceiveProps(newProps) { //just read in the new props and through out the old ones and fetch new votes
-        //onsole.info("qvote-totals: newProps");
+        //console.info("qvote-totals: newProps");
         var newFinale = [];
         var idList = [];
         if (newProps.shared && newProps.shared.items) {
@@ -48,7 +48,7 @@ class QVoteTotals extends React.Component {
         var sortButtons=Object.keys(qbuttons);
         sortButtons.splice(0,1); // the first element is unsorted - remove that
         var newFinale = this.state.finale.slice(0);
-        //onsole.info("QVoteTotal got qvote info length,accumulation.length");
+        //console.info("QVoteTotal got qvote info length,accumulation.length");
         if (accumulation.length) {
             accumulation.forEach(qvote => {
                 newFinale.some((qobj, i) => {

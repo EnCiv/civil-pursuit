@@ -97,7 +97,7 @@ class PanelStore extends React.Component {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	render() {
-		//onsole.info("PanelStore.render, this.props, this.state")
+		//console.info("PanelStore.render, this.props, this.state")
 		if(!this.props.type) return null
 		else if (this.state.panel && this.state.panel.items)  // render children when there are items to render
 			return (

@@ -17,7 +17,7 @@ import insertQVote from '../../api-wrapper/insert-qvote';
 
 class QSortReLook extends React.Component {
     render() {
-        //onsole.info("QSortReLook");
+        //console.info("QSortReLook");
         return (
             <ReactActionStatePath {...this.props} >
                     <PanelHeading items={[]} cssName={'syn-qsort-relook'} panelButtons={['Instruction']} >
@@ -41,7 +41,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || QSortButtonList;
-        //onsole.info("QsortReLook.constructor",props);
+        //console.info("QsortReLook.constructor",props);
         this.createDefaults();
     }
 
@@ -151,7 +151,7 @@ class RASPQSortReLook extends ReactActionStatePathClient {
 
         const {createMethod="visible", promoteMethod="visible", feedbackMethod="visible"} = type;
 
-        //onsole.info("RASPQSortReLook");
+        //console.info("RASPQSortReLook");
 
         const onServer = typeof window === 'undefined';
 

@@ -21,7 +21,7 @@ class Welcome extends React.Component {
       <section>
         <div className="civil-pursuit">
           <div className="civil-pursuit wide-box">
-            <div className="civil-pursuit conteiner">
+            <div className="civil-pursuit container">
               <div className="civil-pursuit welcome-bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
@@ -71,7 +71,7 @@ class Welcome extends React.Component {
 
             <div className="civil-pursuit-container-outer">
               <a name="read-anchor" ></a>
-              <div className="civil-pursuit-conteiner-inner">
+              <div className="civil-pursuit-container-inner">
                 <div className="civil-pursuit-text-block">
                   <h2>The Problem</h2>
                   <p>

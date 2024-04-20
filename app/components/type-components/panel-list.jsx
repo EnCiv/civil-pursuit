@@ -245,7 +245,7 @@ class RASPPanelList extends ReactActionStatePathMulti {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	render() {
-		//onsole.info("RASPPanelList.render",this.props);
+		//console.info("RASPPanelList.render",this.props);
 		let loading;
 		let crumbs = [];
 		let { typeList } = this.state;

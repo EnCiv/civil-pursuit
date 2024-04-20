@@ -8,7 +8,7 @@ function updateFeedback (feedback) {
   try {
     const query={item: feedback.item, user: this.synuser.id};
     if(feedback._id) query._id=Mungo.mongodb.ObjectID(feedback._id);
-    //onsole.info("UpdateFeedback",{query},{feedback});
+    // console.info("UpdateFeedback",{query},{feedback});
     Feedback.update(query, feedback, {upsert: true}).then(
       (result) => {console.info("UpdateFeedback",result)} ,
       this.error.bind(this)

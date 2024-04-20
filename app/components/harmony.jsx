@@ -16,7 +16,7 @@ var other={L: 'R', R: 'L'};
 
 export default class Harmony extends React.Component {
   render() {
-    //onsole.info("Harmony above.render");
+    //console.info("Harmony above.render");
     return (
       <ReactActionStatePath {...this.props}>
         <RASPHarmony />
@@ -36,7 +36,7 @@ class RASPHarmony extends ReactActionStatePathClient {
       console.error("RASPHarmony.constructor visualMethod unknown:", visMeth)
       this.vM = this.visualMethods['default'];
     }
-    //onsole.info("RASPHarmony.constructor", this.props)
+    //console.info("RASPHarmony.constructor", this.props)
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +148,7 @@ class RASPHarmony extends ReactActionStatePathClient {
           if(action.distance===1){
             if(rasp.side) {
               this.toChild[rasp.side]({type: "FOCUS_STATE"}); // the panel should stay focused
-              action.type="NOP"; // this action should stop propogating.  This does not seem to be the elegant way to do that
+              action.type="NOP"; // this action should stop propagating.  This does not seem to be the elegant way to do that
             } else if(rasp.focus) {
               delta.focus=false;
               this.toChild[other[action.side]]({ type: "UNFOCUS_STATE" })

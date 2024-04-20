@@ -30,3 +30,5 @@
 .lesshst
 // chromatic generated
 build-storybook.log
+
+node_modules

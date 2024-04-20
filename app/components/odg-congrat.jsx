@@ -36,7 +36,7 @@ class ODGCongrat extends React.Component {
     this.setState({response: "Sending ...."});
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
-      //onsole.info("contactUs response:", response);
+      //console.info("contactUs response:", response);
       if ( response && response.error ) {
         let { error } = response;
 
@@ -47,7 +47,7 @@ class ODGCongrat extends React.Component {
       }
     });
 
-    //onsole.info("contactUs");
+    //console.info("contactUs");
   }
 
   // credit to http://www.w3resource.com/javascript/form/email-validation.php#
@@ -60,12 +60,12 @@ class ODGCongrat extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
-    //onsole.info("odgCongrats", this.props);
+    // console.info("odgCongrats", this.props);
     const page = (
       <section>
         <div className="civil-pursuit">
           <div className="civil-pursuit wide-box">
-            <div className="civil-pursuit conteiner">
+            <div className="civil-pursuit container">
               <div className="civil-pursuit bg-image">
                 <div className="civil-pursuit news-headline">
                   <div className="civil-pursuit news-headline-inner">
@@ -85,7 +85,7 @@ class ODGCongrat extends React.Component {
             </div>
 
             <div className="civil-pursuit-container-outer">
-              <div className="civil-pursuit-conteiner-inner">
+              <div className="civil-pursuit-container-inner">
                 <div className="civil-pursuit-text-block odg-text">
                     <h2>You did it!</h2>
                     <p>

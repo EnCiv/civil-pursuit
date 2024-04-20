@@ -116,7 +116,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 
 	actionToState(action, rasp, source, defaultRASP, delta) {
 		var nextRASP = {};
-		//onsole.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
+		//console.info("PanelItems.actionToState", this.childName, this.childTitle, ...arguments);
 		if (action.type === "TOGGLE_CREATOR") {
 			if (rasp.creator) {// it's on so toggle it off
 				delta.creator = false;
@@ -168,7 +168,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 		if (newProps.type && newProps.type.name && newProps.type.name !== this.title) { this.title = newProps.type.name; this.props.rasp.toParent({ type: "SET_TITLE", title: this.title }); } // this is for pretty debugging
 		let oldLength = this.props.items && this.props.items.length || 0;
 		if (newProps.items && (newProps.items.length > oldLength)) {  // if the length changes, history needs to be updated
-			//onsole.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
+			//console.info("PanelItems.componentWillReceiveProps length change", oldLength, "->", newProps.items.length)
 			this.qaction(() => {
 				this.props.rasp.toParent({ type: "CHILD_STATE_CHANGED", length: newProps.items.length })
 			}, 0)

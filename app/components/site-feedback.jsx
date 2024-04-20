@@ -123,7 +123,7 @@ const styles = {
     this.setState({response: "Sending ...."});
 
     window.socket.emit('send contact us', email, fname,  lname, subject, message, response => {
-      //onsole.info("contactUs response:", response);
+      //console.info("contactUs response:", response);
       if ( response && response.error ) {
         let { error } = response;
 
@@ -131,7 +131,7 @@ const styles = {
       }
       else {
         this.setState({ response : 'Message sent! Looking forward to reading it' });
-        setTimeout(()=>this.setState({open: false, response: null}),1000);  // affer a second close the comment window
+        setTimeout(()=>this.setState({open: false, response: null}),1000);  // After a second, close the comment window
       }
     });
   }

@@ -211,16 +211,16 @@ class App extends React.Component {
 
           const panelId2 = Object.keys(panels)[0]
 
-          //onsole.info("App.render items", { panelId2 });
+          // console.info("App.render items", { panelId2 });
 
           const panel2 = Object.assign({}, panels[panelId2].panel)
 
           //panel.items = panel.items.filter(item => item.id === paths[1]);
 
-          //console.info("app item panel filtered", panel );
+          // console.info("app item panel filtered", panel );
 
           const component2 = panel2.type.component || 'Subtype'
-          //onsole.info("App.render panel2", { panel2 });
+          // console.info("App.render panel2", { panel2 });
 
           return (
             <Layout {...lessProps} setPath={this.setPath.bind(this)}>

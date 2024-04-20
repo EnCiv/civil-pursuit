@@ -92,7 +92,7 @@ class ItemsStore extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    //onsole.info("PanelStore.render, this.props, this.state")
+    //console.info("PanelStore.render, this.props, this.state")
     const {children, ...lessProps}=this.props;
     return (  
       <section>

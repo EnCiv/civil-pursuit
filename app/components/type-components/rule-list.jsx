@@ -67,7 +67,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     constructor(props){
         super(props, 'itemId');  // itemId is the key for indexing to child RASP functions
         this.QSortButtonList=this.props.qbuttons || RuleButtonList;
-        //onsole.info("RASPRuleList.constructor", props);
+        //console.info("RASPRuleList.constructor", props);
         if (typeof window !== 'undefined' && this.props.type.harmony) 
         window.socket.emit('get listo type', this.props.type.harmony, this.okGetListoType.bind(this));
         this.createDefaults();
@@ -154,7 +154,7 @@ export class RASPRuleList extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     render() {
-        //onsole.info("RASPRuleList.render");
+        //console.info("RASPRuleList.render");
 
         const { count, user, rasp, items, type, parent, panel, buttons=['QSortButtons'], ...otherProps } = this.props;
 

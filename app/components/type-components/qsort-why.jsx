@@ -39,7 +39,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     constructor(props) {
         super(props, 'itemId');
         var unsortedList = [];
-        //onsole.info("qsortWhy constructor");
+        //console.info("qsortWhy constructor");
         const qbuttons=this.props.qbuttons || QSortButtonList;
         this.ButtonList['unsorted']=qbuttons['unsorted'];
         const qbprops=Object.keys(qbuttons);
@@ -53,7 +53,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
         this.results.why=this.props.shared.why || {};
         this.results.why[this.whyName]={};
         this.ButtonList[this.whyName]=qbuttons[this.whyName];
-        //onsole.info("qsort-why constructor buttonlist")
+        //console.info("qsort-why constructor buttonlist")
         this.state.sections = {};
         this.buttons = Object.keys(this.ButtonList);
         this.buttons.forEach(button => {
@@ -68,7 +68,7 @@ class RASPQSortWhy extends ReactActionStatePathClient {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
     componentWillReceiveProps(newProps) { //items that are nolonger there will be removed, existing item section will be preserved, new items will be in unsorted.
-        //onsole.info("qsortWhy componentWillReceiveProps");
+        //console.info("qsortWhy componentWillReceiveProps");
         var newSections={};
         const qbuttons=this.props.qbuttons || QSortButtonList;
         this.buttons.forEach(button=> newSections[button]=[] );

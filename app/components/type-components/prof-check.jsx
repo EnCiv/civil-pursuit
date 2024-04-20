@@ -36,7 +36,7 @@ class ProfileCheck extends React.Component {
     const { userInfo } = this.state
     const { buttons } = panel.type || type || { buttons: { zip: ['90274'] } }
 
-    //onsole.info("ProfileCheck", this.props);
+    //console.info("ProfileCheck", this.props);
 
     if (this.state.ready) {
       // if there is a users and the user info in ready or if input is going to be needed

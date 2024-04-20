@@ -54,7 +54,7 @@ class RandomItemStore extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   render () {
-    //onsole.info("RandomItemStore.render", this.props, this.state)
+    //console.info("RandomItemStore.render", this.props, this.state)
     const {children, ...childProps}=this.props;
     Object.assign(childProps, this.state, {randomItemStoreRefresh: this.randomItemStoreRefresh.bind(this), toggle: this.toggle.bind(this)})
 

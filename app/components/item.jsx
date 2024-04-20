@@ -64,7 +64,7 @@ const styles = {
         "margin-bottom": 0, /* -2px; border on top of border */
         "background-color": "inherit",
         "position": "relative", /* otherwise things that are relative will obscure this when they move around */
-        "font-size": "1rem", /* setting this for all the sub compnents */
+        "font-size": "1rem", /* setting this for all the sub components */
 
         "&div, &section, &article": {
             "background-color": "inherit",  // any div, section, or article under Item should inherit the background color from above rather than setting to rgb(0,0,0,0), unless otherwise specified. 
@@ -816,7 +816,7 @@ class RASPItem extends ReactActionStatePathClient {
             }
         }
 
-        //onsole.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
+        //console.info("RASPItem render", this.props.rasp.depth, this.title, this.props);
 
         if (!item) { return (<div style={Object.assign({},style,{ textAlign: "center" })}>Nothing available at this time.</div>); }
 

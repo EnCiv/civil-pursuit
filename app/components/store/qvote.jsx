@@ -38,7 +38,7 @@ class QVoteStore extends React.Component {
         return clone;
     }
 
-    componentWillReceiveProps(newProps) { //deleting items from sections that are nolonger in newProps is not a usecase
+    componentWillReceiveProps(newProps) { // Deleting items from sections that are no longer in newProps is not a usecase
         let currentIndex = [];
         let unsortedLength = 0;
         var idList = [];
@@ -71,7 +71,7 @@ class QVoteStore extends React.Component {
 
 
     okGetQVoteInfo(accumulation) {
-        //onsole.info("QVote got qvote info length", accumulation.length);
+        //console.info("QVote got qvote info length", accumulation.length);
         if (accumulation) {
             var sections=this.cloneSections(this.state.sections);
             accumulation.forEach(qvote => {

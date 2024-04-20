@@ -223,7 +223,7 @@ class OnlineDeliberationGame extends React.Component {
     }
 
     resizeListener() {
-        //onsole.info("OnlineDeliberationGame.resizeListener");
+        //console.info("OnlineDeliberationGame.resizeListener");
         this.forceUpdate();
     }
 
@@ -238,7 +238,7 @@ class OnlineDeliberationGame extends React.Component {
     toChild=null;
 
     toMeFromChild(vs) {
-        //onsole.info("ODG.toMeFromChild", vs);
+        //console.info("ODG.toMeFromChild", vs);
         if(vs.state) this.setState({vs: Object.assign({},this.state.vs, {state: vs.state})});
         if(vs.toChild) this.toChild=vs.toChild;
     }

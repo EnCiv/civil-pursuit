@@ -18,7 +18,7 @@ class Modal extends React.Component {
   }
 
   mutations(mutations){
-      //onsole.info("modal mutation");
+      //console.info("modal mutation");
       this.hvcenter();
   }
 

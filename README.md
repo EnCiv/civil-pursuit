@@ -13,9 +13,9 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ### Dev Environment for Easy Project Switching
 
-This project uses **bash**. This follows the cloud environment. The OS manufactures have their idea about what shell to run, but that's for work in their environment.  Think of the shell as something that is project dependent. If you are on Windows and don't have bash yet, there's [gitforwindows.org](https://gitforwindows.org/). No need to change your default shell, just get it on your computer and think of it as a project by project configuration. In Visual Studio Code, open your terminnal at the top and it will allows you to select bash for this project. 
+This project uses **bash**. This follows the cloud environment. The OS manufactures have their idea about what shell to run, but that's for work in their environment. Think of the shell as something that is project dependent. If you are on Windows and don't have bash yet, there's [gitforwindows.org](https://gitforwindows.org/). No need to change your default shell, just get it on your computer and think of it as a project by project configuration. In Visual Studio Code, open your terminal at the top and it will allows you to select bash for this project.
 
-The .bashrc file in each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+The .bashrc file in each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets because the .bashrc file is ignored by .gitignore and won't be put in the repo.
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
 
@@ -31,9 +31,10 @@ fi
 This works great when you open a terminal in a project directory, for example when you are using visual studio code. But do what it takes to make sure that you are running bash in your terminal.
 
 ### Getting the corresponding version of Node
-We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
 
-[Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easially switch between versions of node.
+We are resurrecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
+
+[Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easily switch between versions of node.
 And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
 
 ```bash
@@ -66,7 +67,7 @@ This app uses MONGODB and you will need a mongodb uri to get started. Cloud.[mon
 
 you should end up with a line like this in your .bashrc file.
 
-The instructions above are continually getting out of sync with MongoDB's lates UI.  Revised instructions would be a welcome contribution that would make it easier for the next developer. 
+The instructions above are continually getting out of sync with MongoDB's lates UI. Revised instructions would be a welcome contribution that would make it easier for the next developer.
 
 ```
 export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
@@ -93,29 +94,34 @@ So after you get this far, request via slack a link to the "civil-pursuit-templa
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
 # Contributing
+
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
 If you are not already, get on the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) by filling out this [form](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) and then getting the link it provides after submission to go to join slack.
 
 To look for things to work on go to the [Issues](https://github.com/EnCiv/civil-pursuit/issues) tab above.
-Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list. 
+Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list.
 
-When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one. 
-You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucments are posted in the #developers channel on slack.
+When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one.
+You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucements are posted in the #developers channel on slack.
 
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
 Before you start coding, create a new branch for this issue:
+
 ```bash
 git checkout -b short-issue-text#issue-number
 ```
+
 For example `point-group#35`. The issue text should just be a word or two that make it distinct, and the the issue number.
 Then when you are ready to create a PR for the issue, or if you just want to push the code so we can talk about it, do:
+
 ```
 git push -u origin short-issue-text#issue-number
 ```
+
 This will push the code to a new branch on github. (-u means upstream) After this first time, you only need to `git push` to push updates.
-After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to creat a PR for this branch. Go ahead.  Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
+After your initial push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to create a PR for this branch. Go ahead. Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
 
 # React Component guidelines and notes:
 
@@ -256,7 +262,7 @@ Occasionally, I have had to edited the file in assets/svg to tweak the viewBox d
 These ENV variables need to be set:
 
 - CLOUDINARY_URL - to a cloudinary CDN, one can be shared by many instances
-- MONGO_HQ_URL - not we don't use mongohq anymore, we are using mongolabs, but we still set that env variable
+- MONGO_HQ_URL - we are using mongolabs rather than mongohq anymore, but we still set that env variable
 - NODE_ENV - production or development
 - SYNAPP_ENV - used as index into config files like public.json
 
@@ -298,8 +304,8 @@ npm start
   and the file name-of-api with the exported function nameOfAPI will be executed on the server and its results returned.
 
 - `app/components` these are the react/jsx components that make up the app
-- `app/components/app.jsx` this is the fist component, called from client.js. It looks at the url path and (like the server did) and calls subcomponents from there. The browsr can move between components (eg from / to /About) without going back to the server.
-- `app/components/store` data is gathers through the api calls and stored in state, for child componets to use as props. This is how DB stuff gets to the browser.
+- `app/components/app.jsx` this is the fist component, called from client.js. It looks at the url path and (like the server did) and calls subcomponents from there. The browser can move between components (eg from / to /About) without going back to the server.
+- `app/components/store` data is gathers through the api calls and stored in state, for child components to use as props. This is how DB stuff gets to the browser.
 
 - `app/lib` this is js (not jsx) code used in the app
 - `app/lib/proptypes`
@@ -312,7 +318,7 @@ npm start
   -migration.js
   -schema.js
   -migrations (directory)
-  -hooks (dirctory)
+  -hooks (directory)
   -methods (directory)
   -statics (directory)
   -lambda.js is used in testing
@@ -332,11 +338,11 @@ npm start
 - `fixtures`
   each sub directory is named for the db collection and contains a 1.json file with initialization data for that collection.
 
-- `post-install.sh` - on heroku, after everyting in installed, this is run to create the dist directory and build the required files.
+- `post-install.sh` - on Heroku, after everything in installed, this is run to create the dist directory and build the required files.
 
 # DB File and name Structure
 
-Explaining the stucture using 'politcal party' as the name to show how naming and capitalization go:
+Explaining the structure using 'political party' as the name to show how naming and capitalization go:
 
 windows.socket.emit('get political parties',ok); to request the fixture data from the collection
 

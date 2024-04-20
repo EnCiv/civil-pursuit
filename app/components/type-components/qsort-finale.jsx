@@ -31,7 +31,7 @@ class QSortFinale extends React.Component {
     }
 
     render() {
-        //onsole.info("QSortFinale");
+        //console.info("QSortFinale");
         if(!this.state.type) return null; // don't render until the type info has been filled in
         return (
             <QVoteTotals{...this.props} type={this.state.type} >
@@ -64,7 +64,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
 
     actionToState(action, rasp, source, initialRASP, delta) {
         var nextRASP = {};
-        //onsole.info("RASPQSortFinale.actionToState", ...arguments);
+        //console.info("RASPQSortFinale.actionToState", ...arguments);
         if (action.type === "DESCENDANT_FOCUS" && action.distance > 0) {
             if (!action.shortId) logger.error("RASPQFortFinale.actionToState action without shortId", action);
             if (action.shortId) {
@@ -137,7 +137,7 @@ class RASPQSortFinale extends ReactActionStatePathClient {
         const items = shared.items;
         const { createMethod = "visible", promoteMethod = "visible", feedbackMethod = 'visible' } = type;
 
-        //onsole.info("QSortFinale");
+        //console.info("QSortFinale");
         const onServer = typeof window === 'undefined';
         let content = [], direction = [], loading = [];
 
