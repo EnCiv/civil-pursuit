@@ -134,7 +134,7 @@ class Login extends React.Component {
 
     let content = (
       <div onClick={this.stopPropagation.bind(this)}>
-      {(this.socialMeida)?(
+      {(this.socialMedia)?(
         <ButtonGroup block>
           <Button medium primary onClick={ this.loginWithFacebook } className="login-with-facebook" ref='facebook'>
             <Icon icon="facebook" />
@@ -182,7 +182,7 @@ class Login extends React.Component {
     );
 
     if ( this.state.info ) {
-      content = ( <Loading message="Loggin you in..." /> );
+      content = ( <Loading message="Log in you in..." /> );
     }
 
     else if ( this.state.successMessage ) {

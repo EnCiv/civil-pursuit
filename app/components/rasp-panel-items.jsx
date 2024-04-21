@@ -29,7 +29,7 @@ class InfiniteScroll extends React.PureComponent {
 	}
 
 	loadMore(){
-		if(!this.state.loading && this.props.loadMore && this.lastItemsLength<(this.props.items && this.props.items.length || 0)) // loadmore may get called multiple times for the same 'event' due to rerenders
+		if(!this.state.loading && this.props.loadMore && this.lastItemsLength<(this.props.items && this.props.items.length || 0)) // loadMore may get called multiple times for the same 'event' due to rerenders
 		{
 			this.lastItemsLength=this.props.items.length
 			this.props.loadMore(1);
@@ -139,7 +139,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 		}else if (this.vM.actionToState(action, rasp, source, defaultRASP, delta)) {
 			; //then do nothing - it's been done
 		} else if (Object.keys(delta).length > 0) {
-			; // then do nothing - it's already beend done but skip over the final else statement
+			; // then do nothing - it's already been done but skip over the final else statement
 		} else
 			return null; // don't know this action, null so the default methods can have a shot at it
 
@@ -206,7 +206,7 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 				} else if (action.type === "ITEM_DELVE") {
 					if (rasp.shortId) {
 						var nextFunc = () => this.toChild[rasp.shortId](action);
-						if (this.toChild[rasp.shortId]) nextFunc(); // update child before propogating up
+						if (this.toChild[rasp.shortId]) nextFunc(); // update child before propagating up
 						else this.waitingOn = { nextRASP: Object.assign({}, rasp), nextFunc: nextFunc };
 					}
 				} else if (action.type === "SHOW_ITEM") {
@@ -366,13 +366,13 @@ export default class RASPPanelItems extends ReactActionStatePathClient {
 				} else if (action.type === "SHOW_ITEM") {
 					; // do nothing and consume the action
 				} else
-					return false; // action has not been processed continute checking
-				action.toBeContinued = true; // supress shape_changed events
+					return false; // action has not been processed continue checking
+				action.toBeContinued = true; // suppress shape_changed events
 				return true; // action has been processed
 			},
 			// derive shape and pathSegment from the other parts of the RASP
 			deriveRASP: (rasp, initialRASP) => {
-				rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : (rasp.focus ? 'truncated' : 'title'); //if something hapens with a decendant, display the list as open or truncated. otherwise it's titleized.
+				rasp.shape = rasp.decendantFocus ? (rasp.shortId ? 'open' : 'truncated') : (rasp.focus ? 'truncated' : 'title'); //if something happens with a decendant, display the list as open or truncated. otherwise it's titleized.
 				let parts = [];
 				if (rasp.decendantFocus) parts.push('d');
 				if (rasp.shortId) parts.push(rasp.shortId);

@@ -42,7 +42,7 @@ class RASPSmallLayout extends ReactActionStatePathClient {
           <SiteFeedback />
           <LogupBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}} />
           <ReactScrollBar style={myScrollbar} topBar={this.topBar} extent={0}>
-              <div className="should-have-a-chidren scroll-me">
+              <div className="should-have-a-children scroll-me">
                   <section role="main">
                   { React.Children.map(React.Children.only(children), child=>{
                       var newProps=Object.assign({},lessProps, {rasp: this.childRASP('truncated','default')});

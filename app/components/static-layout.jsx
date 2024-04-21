@@ -22,7 +22,7 @@ export default class StaticLayout extends React.Component {
         <div id="fb-root"></div>
         <TopBar {...lessProps} ref={e=>{this.topBar=e && e.getBannerNode()}}/>
           <ReactScrollBar style={myScrollbar} topBar={this.topBar}>
-            <div className="should-have-a-chidren scroll-me">
+            <div className="should-have-a-children scroll-me">
               <section role="main">
                 { React.Children.map(React.Children.only(children), child=>{
                       var newProps=Object.assign({},lessProps);

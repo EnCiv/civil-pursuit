@@ -43,7 +43,7 @@ class StreetAddress extends React.Component {
     validateTimeout;  // timer to reset on each user input action
 
     componentWillMount(){
-        if(this.info.validatedAt && this.props.onChange) this.props.onChange({[this.name]: this.info })  // if the info is initailly valid notify parent immediately
+        if(this.info.validatedAt && this.props.onChange) this.props.onChange({[this.name]: this.info })  // if the info is initially valid notify parent immediately
         else if(this.isAddressComplete()) this.validate(this.addressString()); // if there's data that's not been validated, validate it.
     }
 

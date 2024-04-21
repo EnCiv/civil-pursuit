@@ -40,7 +40,7 @@ export class QSortItems extends React.Component {
 
 export class RASPQSortItems extends ReactActionStatePathClient {
 
-    motionDuration = publicConfig.timeouts.animation; //500mSec
+    motionDuration = publicConfig.timeouts.animation; //500ms
 
     scrollBackToTop = false;
 
@@ -72,7 +72,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         }
     }
 
-    // the results to be passed forward to other pannels in the list
+    // the results to be passed forward to other panels in the list
     results(props){
         if(!props) return {index: {}, sections: {}, items: [] };
         else return {index: props.index, sections: props.sections, items: props.items };
@@ -119,7 +119,7 @@ export class RASPQSortItems extends ReactActionStatePathClient {
         var nextRASP={};
         if(action.type==="TOGGLE_QBUTTON") {
             //this browser may scroll the window down if the element being moved is below the fold.  Let the browser do that, but then scroll back to where it was.
-            //this doesn't happen when moveing and object up, above the fold. 
+            //this doesn't happen when moving and object up, above the fold. 
             this.scrollBackToTop = true;
             this.props.toggle(action.itemId, action.button); // toggle the item in QSort store
             insertQVote({ item: action.itemId, criteria: action.button });
@@ -212,9 +212,9 @@ export default QSortItems;
 // sections is an array of named sections.
 // each section is an array of itemIds
 // if you 'toggle' any itemId in a section, you are moving that itemId into that section, from whatever section it was in,
-// or, if the itemId is already in that section, you are moving it to the unsored section.
+// or, if the itemId is already in that section, you are moving it to the unsorted section.
 // the unsorted section is the first in the list
-// if 'set' is equal to 'set' then you are moving the itemId into that section regardless of whethere it is in there or not.
+// if 'set' is equal to 'set' then you are moving the itemId into that section regardless of whether it is in there or not.
 // if itemId is not in any section it will be added
 // if section is not in sections, it will be added and itemId will be the first element in it
 // a new copy is returned - sections is not mutated;
@@ -245,13 +245,13 @@ export function QSortToggle(sections,itemId,section, set) {
                     } else if (sectionName === unsorted) {
                         // it was in unsorted, so take it out and put it in the section's section
                         clone[unsorted] = update(sections[unsorted], { $splice: [[i, 1]] });
-                        if(sections[section]) clone[section] = update(sections[section], { $unshift: [itemId] }); // section alread there, add the new itemId to it
+                        if(sections[section]) clone[section] = update(sections[section], { $unshift: [itemId] }); // section already there, add the new itemId to it
                         else clone[section]=[itemId] // add the section and the itemId
                         done = true;
                     } else { // the item is in some other sectionName and should be moved to this section's section
                         clone[sectionName] = update(sections[sectionName], { $splice: [[i, 1]] });
                         if(sections[section]) clone[section] = update(sections[section], { $unshift: [itemId] });
-                        else clone[section]=[itemId]; // if the section didn't exisit in sections add it.
+                        else clone[section]=[itemId]; // if the section didn't exist in sections add it.
                         done = true;
                     }
                 } else if (sectionName != section) {  // copy over the other section but don't overwrite the one you are modifying

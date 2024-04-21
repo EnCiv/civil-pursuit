@@ -242,7 +242,7 @@ function renderSomething(){
 }
 ```
 
-When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and now padding around it.
+When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and no padding around it.
 
 There is a Show Icons story in Storybook, that shows all the icons in the project.  
 ![image](https://github.com/EnCiv/civil-pursuit/assets/3317487/362baacb-23ec-4d77-a43b-288e434d1394)
