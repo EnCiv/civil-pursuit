@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/35// https://github.com/EnCiv/civil-pursuit/issues/104
+// https://github.com/EnCiv/civil-pursuit/issues/35
 
 'use strict'
 
@@ -78,17 +78,22 @@ const PointGroup = props => {
             <div className={classes.selectPointsContainer}>
               {groupedPoints?.map(point => {
                 return (
-                  <div key={point._id} className={cx(classes.selectPoints, classes.borderStyle, classes.noBoxShadow)}>
+                  <div key={point._id} className={classes.selectPoints}>
                     {CreatePoint(
                       point,
                       point._id === selected ? 'selected' : 'default',
-                      [<DemInfo user={point.user} />],
-                      classes.noBoxShadow
+                      [
+                        <DemInfo user={point.user} />,
+                        <div className={classes.invisibleElement}>
+                          <ModifierButton />
+                        </div>,
+                      ],
+                      cx(classes.selectPointsPassDown, classes.noBoxShadow)
                     )}
                     <div className={classes.selectButtonRow}>
                       <ModifierButton
                         className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
-                        title={`Select as L: ${point.subject}`}
+                        title={`Select as Lead: ${point.subject}`}
                         tabIndex={0}
                         children="Select as Li"
                         disabled={false}
@@ -423,9 +428,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectPoints: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    position: 'relative',
     flex: '1 1 41%',
     height: 'inherit',
     // margin: '1rem 1.5rem',
@@ -443,7 +446,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     margin: '.5rem',
   },
 
+  invisibleElement: {
+    width: '100%',
+    visibility: 'hidden',
+  },
+
   selectButtonRow: {
+    position: 'absolute',
+    bottom: '1rem',
     width: '100%',
     textAlign: 'center',
   },
