@@ -27,6 +27,13 @@ const CreatePointGroup = ({ pointObj, vState, children, select, className, onCli
   );
 };
 
+const handleCreateGroupClick = () => {
+}
+
+const handleAddExistingGroupClick = () => {
+}
+
+
 export default function GroupingStep(props) {
   const { onDone, shared, className, ...otherProps } = props;
   const { pointList, groupedPointList } = shared;
@@ -60,13 +67,13 @@ export default function GroupingStep(props) {
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={groupsCreated === 0 ? "" : "complete"} number={groupsCreated} />
-          <StatusBadge name="Response Selected" status={responseSelected === 0 ? "" : "complete"} number={responseSelected} />
+          <StatusBadge name="Response Selected" status={responseSelected === 0 ? "" : "complete"} number={responseSelected}/>
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-          <PrimaryButton disabled={responseSelected < 2}>Create Group</PrimaryButton>
+          <PrimaryButton disabled={responseSelected < 2} className={classes.primaryButton} onClick={handleCreateGroupClick}>Create Group</PrimaryButton>
           </div>
-          <SecondaryButton disabled={groupsCreated < 1}>+ Add to Existing Group</SecondaryButton>
+          <SecondaryButton disabled={groupsCreated < 1} className={classes.secondaryButton} onClick={handleAddExistingGroupClick}>+ Add to Existing Group</SecondaryButton>
         </div>
       </div>
       <div className={classes.groupsContainer}>
@@ -101,6 +108,7 @@ const useStylesFromThemeFunction = createUseStyles((theme) => ({
     display: 'flex',
     marginTop: '2.5rem', 
     marginBottom: '2.5rem',
+    gap: '0.875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       alignItems: 'center',
@@ -117,17 +125,30 @@ const useStylesFromThemeFunction = createUseStyles((theme) => ({
       width: '100%',
       marginBottom: '1rem',
       order: -1,
-      alignItems: 'center',
+      alignItems: 'stretch',
     }
   },
   statusBadges: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.875rem',
+    justifyContent: 'space-between',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginTop: '0',
+      gap: '0',
+      gap: '0.875rem',
+      flexDirection: 'row', // Make sure this is 'row' to keep badges on left and right
       width: '100%',
-      justifyContent: 'center',
+    }
+  },
+  primaryButton: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%', 
+    }
+  },
+  secondaryButton: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%', 
     }
   },
 }));
