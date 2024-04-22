@@ -1,3 +1,32 @@
 {
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.configPath": "",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "source": "Git Bash",
+      "args": ["--rcfile", "./.bashrc"]
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.profiles.osx": {
+    "bash": {
+      "path": "bash",
+      "args": ["-rcfile", "./.bashrc", "-l"],
+      "icon": "terminal-bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash",
+      "args": ["-rcfile", "./.bashrc"]
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "bash"
 }
