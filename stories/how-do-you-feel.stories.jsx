@@ -1,5 +1,5 @@
 import React from 'react'
-import HowDoYouFeel from '../app/components/util/HowDoYouFeel'
+import HowDoYouFeel from '../app/components/util/how-do-you-feel'
 import common, { onDoneDecorator, onDoneResult } from './common'
 
 export default {
