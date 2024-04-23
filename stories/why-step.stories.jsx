@@ -108,51 +108,135 @@ export const mobileLeastPoints = {
     },
 };
 
-export const noPoints = {
+export const noPointsMost = {
     args: {
         type: "most",
         intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
         shared: { mosts: [], leasts: [], whyMosts: [], whyLeasts: [] },
     },
+
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        expect(onDoneResult(canvas)).toMatchObject({
+            count: 1,
+            onDoneResult: {
+                valid: true,
+                value: []
+            }
+        });
+    }
 };
 
 export const noArgs = {
     args: {},
+
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        expect(onDoneResult(canvas)).toMatchObject({
+            count: 1,
+            onDoneResult: {
+                valid: true,
+                value: []
+            }
+        });
+    }
 };
 
 
 export const onDoneTest = {
     args: {
-
-        point: {
-            subject: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien",
-            _id: "ExampleId",
+        type: "most",
+        intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
+        shared: {
+            mosts: [point1, point2],
+            leasts: [point3],
+            whyMosts: [point1, point2],
+            whyLeasts: [point3],
         }
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const subjectEle = canvas.getByPlaceholderText(/type some thing here/i);
-        const descriptionEle = canvas.getByPlaceholderText(/description/i);
-        await userEvent.type(subjectEle, 'This is the subject!');
-        await userEvent.tab(); // onDone will be called after moving out of input field
+        const subjectEle = canvas.getAllByPlaceholderText(/type some thing here/i);
+        const descriptionEle = canvas.getAllByPlaceholderText(/description/i);
+
+        // fill in the first point subject and description
+        await userEvent.type(subjectEle[0], 'This is the first subject!');
+        await userEvent.tab();
+        await userEvent.type(descriptionEle[0], 'This is the first description!');
+        await userEvent.tab();
+
+        // fill in the second point subject and description
+        await userEvent.type(subjectEle[1], 'This is the second subject!');
+        await userEvent.tab();
+        await userEvent.type(descriptionEle[1], 'This is the second description!');
+        await userEvent.tab();
 
         expect(onDoneResult(canvas)).toMatchObject({
             count: 1,
-            onDoneResult: { valid: false, value: { subject: 'This is the subject!', description: '' } }
-        });
-
-        await userEvent.type(descriptionEle, 'This is the description!');
-        await userEvent.tab(); // onDone will be called after moving out of input field
-
-        expect(onDoneResult(canvas)).toMatchObject({
-            count: 2,
             onDoneResult: {
                 valid: true,
-                value: {
-                    subject: 'This is the subject!',
-                    description: 'This is the description!',
-                }
+                value: [
+                    {
+                        "_id": "1",
+                        "subject": "Point 1",
+                        "description": "Point 1 Description",
+                        "children": {
+                            "type": {
+                                "displayName": "WithStyles(DemInfo)",
+                                "defaultProps": {},
+                                "__docgenInfo": {
+                                    "description": "",
+                                    "methods": [],
+                                    "displayName": "DemInfo"
+                                }
+                            },
+                            "key": null,
+                            "ref": null,
+                            "props": {
+                                "user": {
+                                    "dob": "1990-10-20T00:00:00.000Z",
+                                    "state": "NY",
+                                    "party": "Independent"
+                                }
+                            },
+                            "_owner": null,
+                            "_store": {}
+                        },
+                        "answerSubject": "This is the first subject!",
+                        "answerDescription": "This is the first description!"
+                    },
+                    {
+                        "_id": "2",
+                        "subject": "Point 2",
+                        "description": "Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ",
+                        "children": {
+                            "type": {
+                                "displayName": "WithStyles(DemInfo)",
+                                "defaultProps": {},
+                                "__docgenInfo": {
+                                    "description": "",
+                                    "methods": [],
+                                    "displayName": "DemInfo"
+                                }
+                            },
+                            "key": null,
+                            "ref": null,
+                            "props": {
+                                "user": {
+                                    "dob": "1980-10-20T00:00:00.000Z",
+                                    "state": "GA",
+                                    "party": "Independent"
+                                }
+                            },
+                            "_owner": null,
+                            "_store": {}
+                        },
+                        "answerSubject": "This is the second subject!",
+                        "answerDescription": "This is the second description!"
+                    },
+                ]
             }
         });
     }

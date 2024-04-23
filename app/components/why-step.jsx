@@ -57,7 +57,7 @@ export default function WhyStep(props) {
                 </div>
             </div>
             <div className={classes.introText}>{intro}</div>
-            <div className={classes.points}>
+            <div className={classes.pointsContainer}>
                 {points.length ? (
                     points.map((point) => (
                         <div key={point._id} className={classes.pointContainer}>
@@ -89,6 +89,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     introText: {
         fontSize: "1.25rem",
+    },
+    pointsContainer: {
+        fontSize: "1.25rem"
     }
 }));
 
