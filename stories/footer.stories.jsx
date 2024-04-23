@@ -14,6 +14,31 @@ export default {
   },
 }
 
-export const Empty = () => {
+export const StandardFooter = () => {
   return <Footer />
+}
+
+export const MobileFooter = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const DarkMode = {
+  args: {
+    mode: 'dark',
+  },
+}
+
+export const DarkModeMobile = {
+  args: {
+    mode: 'dark',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
 }
