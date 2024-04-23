@@ -62,8 +62,8 @@ const point4 = createPointObj('4', 'Point 4', 'Point 4 Description', [], {
 const defaultSharedPoints = {
     mosts: [point1, point2],
     leasts: [point3, point4],
-    whyMosts: [],
-    whyLeasts: [],
+    whyMosts: [point1, point2],
+    whyLeasts: [point3, point4],
 };
 
 export const mostPoints = {
@@ -71,7 +71,7 @@ export const mostPoints = {
         type: "most",
         intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
         shared: defaultSharedPoints
-    }
+    },
 };
 
 export const leastPoints = {
@@ -79,7 +79,7 @@ export const leastPoints = {
         type: "least",
         intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
         shared: defaultSharedPoints
-    }
+    },
 };
 
 export const mobileMostPoints = {
@@ -107,6 +107,19 @@ export const mobileLeastPoints = {
         }
     },
 };
+
+export const noPoints = {
+    args: {
+        type: "most",
+        intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
+        shared: { mosts: [], leasts: [], whyMosts: [], whyLeasts: [] },
+    },
+};
+
+export const noArgs = {
+    args: {},
+};
+
 
 export const onDoneTest = {
     args: {

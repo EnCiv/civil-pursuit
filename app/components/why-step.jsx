@@ -1,6 +1,8 @@
 //https://github.com/EnCiv/civil-pursuit/issues/103
 
-import React, { useState } from 'react';
+'use strict';
+
+import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import WhyInput from './why-input.jsx';
@@ -14,28 +16,51 @@ export default function WhyStep(props) {
         onDone = () => { },
         ...otherProps
     } = props;
-    const classes = useStylesFromThemeFunction();
+    const classes = useStylesFromThemeFunction({ valid: true, value: [] });
 
     const [points, setPoints] = useState(type === "most" ? shared.mosts : shared.leasts);
     const [answeredPoints, setAnsweredPoints] = useState(type === "most" ? shared.whyMosts : shared.whyLeasts);
 
-    console.log("points", points, "answeredPoints", answeredPoints);
-    const updateWhyResponse = () => {
+    useEffect(() => {
+        if (!points.length || areAnswersComplete(answeredPoints)) {
+            onDone({ valid: true, value: answeredPoints });
+        };
+    }, [answeredPoints]);
 
+    const updateWhyResponse = ({ valid, value }) => {
+        if (!valid) return;
+        const updatedAnswers = answeredPoints.map(answer => {
+            if (answer._id === value.parentId) {
+                answer.answerSubject = value.subject;
+                answer.answerDescription = value.description;
+            }
+            return answer;
+        });
+        setAnsweredPoints(updatedAnswers);
+    };
+
+    const areAnswersComplete = (answeredPoints) => {
+        return (answeredPoints.every(answer => {
+            if ("answerSubject" in answer && "answerDescription" in answer) {
+                return true;
+            }
+        }));
     };
 
     return (
         <div className={cx(classes.wrapper, className)} {...otherProps}>
             <div className={classes.introContainer}>
                 <div className={classes.introTitle}>
-                    {`Why it's ${type[0].toUpperCase() + type.slice(1)} Important`}
+                    {type &&
+                        `Why it's ${type[0].toUpperCase() + type.slice(1)} Important`
+                    }
                 </div>
             </div>
             <div className={classes.introText}>{intro}</div>
             <div className={classes.points}>
-                {points.length && (
-                    points.map((point, idx) => (
-                        <div className={classes.pointContainer}>
+                {points.length ? (
+                    points.map((point) => (
+                        <div key={point._id} className={classes.pointContainer}>
                             <hr></hr>
                             <WhyInput
                                 point={point}
@@ -44,7 +69,7 @@ export default function WhyStep(props) {
                             />
                         </div>
                     ))
-                )}
+                ) : ""}
             </div>
         </div>
     );
@@ -66,3 +91,4 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         fontSize: "1.25rem",
     }
 }));
+
