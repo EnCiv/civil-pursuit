@@ -11,24 +11,39 @@ const Footer = props => {
 
   return (
     <footer className={classes.footerWrapper}>
-      <div className={classes.footerColumns}>
-        <div className={classes.footerColumn}>
-          <div>Questions, Comments,</div>
-          <div>Suggestions, Want to Help?</div>
-          <div className={classes.spacedDiv}>Contact Us</div>
-          <div>
-            <a href="mailto:info@enciv.org">info@enciv.org</a>
+      <div className={classes.footerGrid}>
+        <div className={classes.row}>
+          <div className={`${classes.column} ${classes.emailRow}`}>
+            <div className={classes.mainText}>Questions, Comments, Suggestions, Want to Help?</div>
+            <div className={classes.spacedDiv}>
+              <a href="mailto:email@email.com" className={`${classes.secondaryText} ${classes.links}`}>
+                email@email.com
+              </a>
+            </div>
+          </div>
+          <div className={classes.column}>
+            {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
           </div>
         </div>
-        <div className={classes.footerColumn}>
-          {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
+        <div className={classes.row}>
+          <div className={classes.column}>
+            <div className={classes.secondaryText}>
+              Copyright © {new Date().getFullYear()}{' '}
+              <a href="http://www.enciv.org" target="_blank" style={{ color: 'white' }}>
+                EnCiv
+              </a>
+            </div>
+          </div>
+          <div className={classes.column}>
+            <a href="/terms" className={`${classes.secondaryText} ${classes.links}`}>
+              Terms and Conditions
+            </a>{' '}
+            |{' '}
+            <a href="/privacy" className={`${classes.secondaryText} ${classes.links}`}>
+              Privacy Policy
+            </a>
+          </div>
         </div>
-      </div>
-      <div>
-        Copyright © 2014 - {new Date().getFullYear()} by{' '}
-        <a href="http://www.enciv.org" target="_blank">
-          EnCiv, Inc a 501(c)(3) nonprofit.
-        </a>
       </div>
     </footer>
   )
@@ -36,26 +51,53 @@ const Footer = props => {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   footerWrapper: props => ({
-    textAlign: 'center',
-    padding: '1rem',
+    width: '100%',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
     color: props.mode === 'dark' ? 'white' : 'defaultColor',
+    textAlign: 'left',
   }),
-  footerColumns: {
+  footerGrid: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
-      textAlign: 'center',
+      alignItems: 'center',
     },
   },
-  footerColumn: {
-    flex: 1,
-    maxWidth: '50%',
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
   },
+  column: {
+    flex: 1,
+    padding: '10px',
+    maxWidth: '100%',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      textAlign: 'center',
+      flex: 'none',
+      maxWidth: 'calc(100% - 20px)',
+    },
+  },
+  mainText: {
+    fontWeight: 'bold',
+    marginTop: '20px',
+    marginBottom: '10px',
+  },
+  emailRow: {
+    marginTop: '20px',
+    marginBottom: '10px',
+  },
+  secondaryText: props => ({
+    fontSize: '0.7em',
+    color: props.mode === 'dark' ? 'white' : 'black',
+  }),
+  links: { textDecoration: 'underline' },
   spacedDiv: {
-    margin: '20px 0',
+    margin: '10px 0 30px 0',
   },
   logo: {
     width: '10rem',
