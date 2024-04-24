@@ -8,6 +8,7 @@ import { userEvent, within } from '@storybook/testing-library'
 export default {
   component: Footer,
   parameters: {
+    layout: 'fullscreen',
     viewport: {
       viewports: INITIAL_VIEWPORTS,
     },

@@ -16,8 +16,8 @@ const Footer = props => {
           <div className={`${classes.column} ${classes.emailRow}`}>
             <div className={classes.mainText}>Questions, Comments, Suggestions, Want to Help?</div>
             <div className={classes.spacedDiv}>
-              <a href="mailto:email@email.com" className={`${classes.secondaryText} ${classes.links}`}>
-                email@email.com
+              <a href="mailto:contact@enciv.org" className={`${classes.secondaryText} ${classes.links}`}>
+                contact@enciv.org
               </a>
             </div>
           </div>
@@ -35,11 +35,11 @@ const Footer = props => {
             </div>
           </div>
           <div className={classes.column}>
-            <a href="/terms" className={`${classes.secondaryText} ${classes.links}`}>
+            <a href="https://enciv.org/terms/" className={`${classes.secondaryText} ${classes.links}`}>
               Terms and Conditions
             </a>{' '}
             |{' '}
-            <a href="/privacy" className={`${classes.secondaryText} ${classes.links}`}>
+            <a href="https://enciv.org/privacy" className={`${classes.secondaryText} ${classes.links}`}>
               Privacy Policy
             </a>
           </div>
