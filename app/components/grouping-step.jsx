@@ -27,11 +27,22 @@ const CreatePointGroup = ({ pointObj, vState, children, select, className, onCli
   );
 };
 
-const handleCreateGroupClick = () => {
+const createPointObj = (
+  _id,
+  subject,
+  description,
+  groupedPoints,
+  user
+) => {
+  return {
+    _id,
+    subject,
+    description,
+    groupedPoints,
+    user,
+  }
 }
 
-const handleAddExistingGroupClick = () => {
-}
 
 
 export default function GroupingStep(props) {
@@ -43,6 +54,8 @@ export default function GroupingStep(props) {
   const [groupsCreated, setGroupsCreated] = useState(0);
   const [responseSelected, setResponseSelected] = useState(0);
   const [selectedPoints, setSelectedPoints] = useState(new Array(groupedPoints.length).fill(false));
+  // the grouping step to select a lead
+  const [selectLead, setSelectLead] = useState(null);
   
   useEffect(() => {
     if (groupedPoints.length === 0 || !groupedPoints) {
@@ -62,6 +75,23 @@ export default function GroupingStep(props) {
     setSelectedPoints(updatedSelections);
   };
 
+  const handleCreateGroupClick = () => {
+    if (responseSelected < 2) {
+      return;
+    }
+  
+    const currentSelectedPoints = groupedPoints.filter((point, index) => selectedPoints[index]);
+    const newLeadPoint = createPointObj('1', 'Point 1', 'Point 1 Description', currentSelectedPoints);
+    setSelectLead(newLeadPoint); // Store just the data
+    console.log("Before update:", groupedPoints);
+    setGroupedPoints(groupedPoints.filter((point, index) => !selectedPoints[index])); // Remove selected points
+    console.log("After update:", groupedPoints);
+    setSelectedPoints(new Array(groupedPoints.length).fill(false)); // Reset selection states
+  }
+  
+  const handleAddExistingGroupClick = () => {
+  }
+
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.statusContainer}>
@@ -76,6 +106,15 @@ export default function GroupingStep(props) {
           <SecondaryButton disabled={groupsCreated < 1} className={classes.secondaryButton} onClick={handleAddExistingGroupClick}>+ Add to Existing Group</SecondaryButton>
         </div>
       </div>
+      {selectLead != null ? 
+      <div className={classes.selectLead}>
+        <CreatePointGroup
+        pointObj={selectLead}
+        vState="selectLead"
+      />
+      </div>
+      : null
+    }
       <div className={classes.groupsContainer}>
       {groupedPoints.map((point, index) => (
           <CreatePointGroup
@@ -147,6 +186,13 @@ const useStylesFromThemeFunction = createUseStyles((theme) => ({
     }
   },
   secondaryButton: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%', 
+    }
+  },
+  selectLead: {
+    marginTop: '3.125rem',
+    marginBottom: '3.125rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '100%', 
     }
