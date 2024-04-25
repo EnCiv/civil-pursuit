@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import WhyInput from './why-input.jsx';
+import { Z_FULL_FLUSH } from 'zlib';
 
 export default function WhyStep(props) {
     const {
@@ -80,18 +81,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         padding: '1rem',
     },
     introContainer: {
-        width: "33rem",
+        display: "flex",
         textAlign: "left",
+        // margin: "0 0 4rem 0",
     },
     introTitle: {
         fontSize: "2.25rem",
         paddingBottom: "2rem",
     },
     introText: {
+        width: "33rem",
         fontSize: "1.25rem",
     },
     pointsContainer: {
-        fontSize: "1.25rem"
-    }
+        fontSize: "1.25rem",
+    },
+    // pointHr: {
+    //     borderTop: "1px solid #D9D9D9",
+    // },
 }));
 
