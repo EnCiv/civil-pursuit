@@ -69,7 +69,10 @@ export default function WhyStep(props) {
                             />
                         </div>
                     ))
-                ) : ''}
+                ) : <div className={classes.noPointsContainer}>
+                    <hr className={classes.pointsHr}></hr>
+                    There are no issues to respond to.
+                </div>}
             </div>
         </div>
     );
