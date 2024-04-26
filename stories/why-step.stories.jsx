@@ -108,10 +108,10 @@ export const mobileLeastPoints = {
     },
 };
 
-export const noPointsMost = {
+export const zeroPoints = {
     args: {
         type: "most",
-        intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
+        intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
         shared: { mosts: [], leasts: [], whyMosts: [], whyLeasts: [] },
     },
 
@@ -128,7 +128,7 @@ export const noPointsMost = {
     }
 };
 
-export const noArgs = {
+export const empty = {
     args: {},
 
     play: async ({ canvasElement }) => {
