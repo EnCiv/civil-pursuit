@@ -6,7 +6,6 @@ import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import WhyInput from './why-input.jsx';
-import { Z_FULL_FLUSH } from 'zlib';
 
 export default function WhyStep(props) {
     const {
@@ -19,8 +18,8 @@ export default function WhyStep(props) {
     } = props;
     const classes = useStylesFromThemeFunction({ valid: true, value: [] });
 
-    const [points, setPoints] = useState(type === "most" ? shared.mosts : shared.leasts);
-    const [answeredPoints, setAnsweredPoints] = useState(type === "most" ? shared.whyMosts : shared.whyLeasts);
+    const [points, setPoints] = useState(type === 'most' ? shared.mosts : shared.leasts);
+    const [answeredPoints, setAnsweredPoints] = useState(type === 'most' ? shared.whyMosts : shared.whyLeasts);
 
     useEffect(() => {
         if (!points.length || areAnswersComplete(answeredPoints)) {
@@ -42,7 +41,7 @@ export default function WhyStep(props) {
 
     const areAnswersComplete = (answeredPoints) => {
         return (answeredPoints.every(answer => {
-            if ("answerSubject" in answer && "answerDescription" in answer) {
+            if ('answerSubject' in answer && 'answerDescription' in answer) {
                 return true;
             }
         }));
@@ -56,13 +55,13 @@ export default function WhyStep(props) {
                         `Why it's ${type[0].toUpperCase() + type.slice(1)} Important`
                     }
                 </div>
+                <div className={classes.introText}>{intro}</div>
             </div>
-            <div className={classes.introText}>{intro}</div>
             <div className={classes.pointsContainer}>
                 {points.length ? (
                     points.map((point) => (
                         <div key={point._id} className={classes.pointContainer}>
-                            <hr></hr>
+                            <hr className={classes.pointsHr}></hr>
                             <WhyInput
                                 point={point}
                                 defaultValue={{ subject: answeredPoints.subject, description: answeredPoints.description }}
@@ -70,7 +69,7 @@ export default function WhyStep(props) {
                             />
                         </div>
                     ))
-                ) : ""}
+                ) : ''}
             </div>
         </div>
     );
@@ -81,23 +80,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         padding: '1rem',
     },
     introContainer: {
-        display: "flex",
-        textAlign: "left",
-        // margin: "0 0 4rem 0",
+        textAlign: 'left',
     },
     introTitle: {
-        fontSize: "2.25rem",
-        paddingBottom: "2rem",
+        fontSize: '2.25rem',
+        paddingBottom: '2rem',
     },
     introText: {
-        width: "33rem",
-        fontSize: "1.25rem",
+        display: 'block',
+        width: '33rem',
+        fontSize: '1.25rem',
     },
     pointsContainer: {
-        fontSize: "1.25rem",
+        fontSize: '1.25rem',
     },
-    // pointHr: {
-    //     borderTop: "1px solid #D9D9D9",
-    // },
+    pointsHr: {
+        color: '#D9D9D9',
+        margin: '4rem 0',
+    },
 }));
 
