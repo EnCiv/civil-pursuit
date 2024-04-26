@@ -6,14 +6,14 @@ import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 
 const Footer = props => {
-  const { className, menu, mode, defaultSelectedItem, ...otherProps } = props
+  const { mode } = props
   const classes = useStylesFromThemeFunction(props)
 
   return (
     <footer className={classes.footerWrapper}>
       <div className={classes.footerGrid}>
         <div className={classes.row}>
-          <div className={`${classes.column} ${classes.emailRow}`}>
+          <div className={`${classes.column} ${classes.item2}`}>
             <div className={classes.mainText}>Questions, Comments, Suggestions, Want to Help?</div>
             <div className={classes.spacedDiv}>
               <a href="mailto:contact@enciv.org" className={`${classes.secondaryText} ${classes.links}`}>
@@ -21,20 +21,20 @@ const Footer = props => {
               </a>
             </div>
           </div>
-          <div className={classes.column}>
+          <div className={`${classes.column} ${classes.item1}`}>
             {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
           </div>
         </div>
         <div className={classes.row}>
-          <div className={classes.column}>
+          <div className={`${classes.column} ${classes.item3}`}>
             <div className={classes.secondaryText}>
               Copyright © {new Date().getFullYear()}{' '}
-              <a href="http://www.enciv.org" target="_blank" style={{ color: 'white' }}>
+              <a href="http://www.enciv.org" className={classes.links}>
                 EnCiv
               </a>
             </div>
           </div>
-          <div className={classes.column}>
+          <div className={`${classes.column} ${classes.item4}`}>
             <a href="https://enciv.org/terms/" className={`${classes.secondaryText} ${classes.links}`}>
               Terms and Conditions
             </a>{' '}
@@ -55,6 +55,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
     color: props.mode === 'dark' ? 'white' : 'defaultColor',
     textAlign: 'left',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '0 0 25px 0',
+    },
   }),
   footerGrid: {
     display: 'flex',
@@ -74,28 +77,47 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   column: {
     flex: 1,
-    padding: '10px',
+    padding: '15px 50px',
     maxWidth: '100%',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       textAlign: 'center',
       flex: 'none',
-      maxWidth: 'calc(100% - 20px)',
+      width: '100%',
+      padding: 0,
     },
   },
   mainText: {
     fontWeight: 'bold',
-    marginTop: '20px',
-    marginBottom: '10px',
-  },
-  emailRow: {
-    marginTop: '20px',
-    marginBottom: '10px',
+    margin: '50px 0 10px 0',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: 0,
+    },
   },
   secondaryText: props => ({
-    fontSize: '0.7em',
+    fontSize: '0.8em',
     color: props.mode === 'dark' ? 'white' : 'black',
   }),
-  links: { textDecoration: 'underline' },
+  item1: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 1,
+    },
+  },
+  item2: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 2,
+    },
+  },
+  item3: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 3,
+    },
+  },
+  item4: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 4,
+    },
+  },
+  links: { rel: 'noopener noreferrer', target: '_blank', textDecoration: 'underline' },
   spacedDiv: {
     margin: '10px 0 30px 0',
   },
