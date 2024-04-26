@@ -84,7 +84,13 @@ const PointGroup = props => {
                       point._id === selected ? 'selected' : 'default',
                       [
                         <DemInfo user={point.user} />,
+                        <div className={classes.invisibleElement}>
+                          {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
+                          <ModifierButton children={'Select as Lead'} />
+                        </div>,
                         <div className={classes.selectButtonRow}>
+                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell 
+                          We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
                             className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
                             title={`Select as Lead: ${point.subject}`}
@@ -425,9 +431,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectPoints: {
+    position: 'relative',
     flex: '1 1 41%',
     height: 'inherit',
-    //margin: '1rem 1.5rem',
+    // margin: '1rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
       margin: '1rem 0',
@@ -442,7 +449,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     margin: '.5rem',
   },
 
+  invisibleElement: {
+    width: '100%',
+    visibility: 'hidden',
+  },
+
   selectButtonRow: {
+    position: 'absolute',
+    bottom: '1rem',
+    left: 0,
     width: '100%',
     textAlign: 'center',
   },
