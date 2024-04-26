@@ -85,24 +85,27 @@ const PointGroup = props => {
                       [
                         <DemInfo user={point.user} />,
                         <div className={classes.invisibleElement}>
-                          <ModifierButton />
+                          {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
+                          <ModifierButton children={'Select as Lead'} />
+                        </div>,
+                        <div className={classes.selectButtonRow}>
+                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell 
+                          We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
+                          <ModifierButton
+                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${point.subject}`}
+                            tabIndex={0}
+                            children="Select as Lead"
+                            disabled={false}
+                            disableOnClick={false}
+                            onDone={() => {
+                              setSelected(point._id)
+                            }}
+                          />
                         </div>,
                       ],
                       cx(classes.selectPointsPassDown, classes.noBoxShadow)
                     )}
-                    <div className={classes.selectButtonRow}>
-                      <ModifierButton
-                        className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
-                        title={`Select as Lead: ${point.subject}`}
-                        tabIndex={0}
-                        children="Select as Li"
-                        disabled={false}
-                        disableOnClick={false}
-                        onDone={() => {
-                          setSelected(point._id)
-                        }}
-                      />
-                    </div>
                   </div>
                 )
               })}
@@ -454,6 +457,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectButtonRow: {
     position: 'absolute',
     bottom: '1rem',
+    left: 0,
     width: '100%',
     textAlign: 'center',
   },
