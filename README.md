@@ -19,41 +19,96 @@ The .bashrc file in each project's directory can contain custom environment vari
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
 
+The default setting for the startup terminal in VS Code for this repo has been set to use bash, and to run the local .bashrc file on startup.
+
+If you are not using VS Code, or not using the terminal within VS Code, then you should consider doing this:
+
 In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
-if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+if [ `pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     echo running `pwd`/.bashrc
     source ./.bashrc
 fi
 ```
 
-This works great when you open a terminal in a project directory, for example when you are using visual studio code. But do what it takes to make sure that you are running bash in your terminal.
+This works great when you open a terminal in a project directory. But do what it takes to make sure that you are running bash in your terminal. PowerShell, or zsh will not work.
 
 ### Getting the corresponding version of Node
 
 We are resurrecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
 
 [Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easily switch between versions of node.
-And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+And if you have that installed, you can use this to get the right version.
+
+Now, create a folder for EnCiv repos (if you don't already have one) and clone the repo into it
+
+```bash
+mkdir ~/enciv
+cd enciv
+git clone https://github.com/EnCiv/civil-pursuit.git
+cd civil-pursuit
+```
+
+Now, open the civil-pursuit folder from VS Code and then open a new terminal window. With visual studio code, just click on **Terminal** / **New Terminal** at the top of the window.
+
+In the terminal, type this
+
+```bash
+nvs --version
+```
+
+and it works then all is good.
+
+If not, open, or create, a **.bashrc** file. (Note there is a "." at the beginning)
+
+If you are on a Mac, add this to the first line of your .bashrc file
+
+```bash
+export NVS_HOME="$HOME/.nvs"
+```
+
+If you are on Windows, add this to the top of your .bashrc file
+
+```bash
+function setupNvs {
+	export NVS_HOME="$HOME/AppData/Local/nvs/";
+	[ -s "$NVS_HOME/nvs.sh" ] && source "$NVS_HOME/nvs.sh" >> /dev/null;
+	return 0;
+}
+setupNvs
+```
+
+Save the file, close the terminal window, and open another terminal window. Then try `nvs --version` again.
+
+After you have nvs running, create or add this to the bottom of your .bashrc file.
 
 ```bash
 # get the node version from package.json and use https"//github.com/jasongin/nvs to switch to it
-export NODE_VERSION=$(cat package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
+export NODE_VERSION=`cat .nvmrc`
 nvs add $NODE_VERSION
 source nvs.sh use $NODE_VERSION
+```
+
+Then save the file, close the terminal window, and open a new one. It should look like this the first time:
+
+```bash
+Downloading [##############################################################################################################################################################################################################################################################] 100%
+Extracting  [##############################################################################################################################################################################################################################################################] 100%
+Added at: ~\AppData\Local\nvs\node\16.20.1\x64\node.exe
+To use this version now: nvs use node/16.20.1/x64
+PATH += ~\AppData\Local\nvs\node\16.20.1\x64
+
+~/git/EnCiv/civil-pursuit (master)
 ```
 
 Then, after you get the right version of node (and npm) do this
 
 ```bash
-git clone https://github.com/EnCiv/civil-pursuit.git
-cd civil-pursuit
 npm install
-
 ```
 
-**Note:** If you started out with a newer version of node, but are now rolling back, you will need to run `npm ci` the first time to clean out the node_modules director and rebuild it.
+**Note:** If you started out with a different version of node, but are now rolling back, you will need to run `npm ci` the first time to clean out the node_modules director and rebuild it.
 
 For the first stages of this project, we will be focusing on storybook
 
@@ -103,7 +158,7 @@ To look for things to work on go to the [Issues](https://github.com/EnCiv/civil-
 Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list.
 
 When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one.
-You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucements are posted in the #developers channel on slack.
+You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and announcements are posted in the #developers channel on slack.
 
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
@@ -242,7 +297,7 @@ function renderSomething(){
 }
 ```
 
-When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and no padding around it.
+When copying the svg code out of figma, it is important to drill all the way down until you just get the figure and now padding around it.
 
 There is a Show Icons story in Storybook, that shows all the icons in the project.  
 ![image](https://github.com/EnCiv/civil-pursuit/assets/3317487/362baacb-23ec-4d77-a43b-288e434d1394)
@@ -262,7 +317,7 @@ Occasionally, I have had to edited the file in assets/svg to tweak the viewBox d
 These ENV variables need to be set:
 
 - CLOUDINARY_URL - to a cloudinary CDN, one can be shared by many instances
-- MONGO_HQ_URL - we are using mongolabs rather than mongohq anymore, but we still set that env variable
+- MONGO_HQ_URL - not we don't use mongohq anymore, we are using mongolabs, but we still set that env variable
 - NODE_ENV - production or development
 - SYNAPP_ENV - used as index into config files like public.json
 
@@ -338,7 +393,7 @@ npm start
 - `fixtures`
   each sub directory is named for the db collection and contains a 1.json file with initialization data for that collection.
 
-- `post-install.sh` - on Heroku, after everything in installed, this is run to create the dist directory and build the required files.
+- `post-install.sh` - on heroku, after everything in installed, this is run to create the dist directory and build the required files.
 
 # DB File and name Structure
 
