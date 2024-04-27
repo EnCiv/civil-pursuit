@@ -29,7 +29,7 @@ const Footer = props => {
           <div className={`${classes.column} ${classes.item3}`}>
             <div className={classes.secondaryText}>
               Copyright © {new Date().getFullYear()}{' '}
-              <a href="http://www.enciv.org" className={classes.links}>
+              <a href="http://www.enciv.org" className={`${classes.copyright} ${classes.links}`}>
                 EnCiv
               </a>
             </div>
@@ -52,11 +52,11 @@ const Footer = props => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   footerWrapper: props => ({
     width: '100%',
-    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
-    color: props.mode === 'dark' ? 'white' : 'defaultColor',
+    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
     textAlign: 'left',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: '0 0 25px 0',
+      padding: '0 0 1.5rem 0',
     },
   }),
   footerGrid: {
@@ -77,7 +77,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   column: {
     flex: 1,
-    padding: '15px 50px',
+    padding: '1rem 3rem',
     maxWidth: '100%',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       textAlign: 'center',
@@ -88,15 +88,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   mainText: {
     fontWeight: 'bold',
-    margin: '50px 0 10px 0',
+    margin: '3rem 0 1rem 0',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: 0,
     },
   },
   secondaryText: props => ({
-    fontSize: '0.8em',
-    color: props.mode === 'dark' ? 'white' : 'black',
+    fontSize: '0.8rem',
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
   }),
+  spacedDiv: {
+    margin: '1rem 0 1rem 0',
+  },
   item1: {
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       order: 1,
@@ -118,9 +121,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   links: { rel: 'noopener noreferrer', target: '_blank', textDecoration: 'underline' },
-  spacedDiv: {
-    margin: '10px 0 30px 0',
-  },
+  copyright: props => ({
+    textDecoration: 'none',
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
+  }),
   logo: {
     width: '10rem',
     height: 'auto',
