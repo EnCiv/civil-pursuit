@@ -59,6 +59,7 @@ const PointGroup = props => {
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
           <div className={classes.SvgContainer}>
             <TextButton
+              className={className}
               title="Ungroup and close"
               tabIndex={0}
               onClick={() => {
@@ -86,13 +87,13 @@ const PointGroup = props => {
                         <DemInfo user={point.user} />,
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
-                          <ModifierButton children={'Select as Lead'} />
+                          <ModifierButton children={'Select as Lead'} className={className} />
                         </div>,
                         <div className={classes.selectButtonRow}>
-                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell 
+                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
-                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
+                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton, className)}
                             title={`Select as Lead: ${point.subject}`}
                             tabIndex={0}
                             children="Select as Lead"
@@ -113,6 +114,7 @@ const PointGroup = props => {
           )}
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <SecondaryButton
+              className={className}
               disabled={selected === ''}
               title="Done"
               tabIndex={0}
@@ -144,17 +146,17 @@ const PointGroup = props => {
       )}
 
       {vs !== 'collapsed' && vs !== 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
+        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid, className)}>
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (
-                <TextButton onClick={() => setExpanded(false)} title="collapse" tabIndex={0}>
+                <TextButton onClick={() => setExpanded(false)} title="collapse" tabIndex={0} className={className}>
                   <span className={classes.chevronButton}>
                     <SvgChevronUp />
                   </span>
                 </TextButton>
               ) : (
-                <TextButton onClick={() => setExpanded(true)} title="expand" tabIndex={0}>
+                <TextButton onClick={() => setExpanded(true)} title="expand" tabIndex={0} className={className}>
                   <span className={classes.chevronButton}>
                     <SvgChevronDown />
                   </span>
@@ -180,7 +182,7 @@ const PointGroup = props => {
                           <div className={classes.pointBottomButtons}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton
-                                className={classes.pointWidthButton}
+                                className={cx(classes.pointWidthButton, className)}
                                 title={`Select as Lead: ${point.subject}`}
                                 children="Select as Lead"
                                 tabIndex={0}
@@ -201,7 +203,7 @@ const PointGroup = props => {
                             </div>
                             <div className={classes.pointWidthButton}>
                               <TextButton
-                                className={classes.pointWidthButton}
+                                className={cx(classes.pointWidthButton, className)}
                                 title={`Remove from Group: ${point.subject}`}
                                 tabIndex={0}
                                 children="Remove from Group"
@@ -246,7 +248,7 @@ const PointGroup = props => {
             <div className={cx(classes.bottomButtons, classes.bottomButtonsTwo)}>
               {expanded ? (
                 <SecondaryButton
-                  className={classes.doneButton}
+                  className={cx(classes.doneButton, className)}
                   onDone={() => {
                     setExpanded(false)
                   }}
@@ -257,7 +259,7 @@ const PointGroup = props => {
                 />
               ) : (
                 <ModifierButton
-                  className={classes.editButton}
+                  className={cx(classes.editButton, className)}
                   onDone={() => {
                     setVState('edit')
                     setExpanded(true)
@@ -269,7 +271,7 @@ const PointGroup = props => {
                 />
               )}
               <TextButton
-                className={classes.ungroupButton}
+                className={cx(classes.ungroupButton, className)}
                 title="Ungroup"
                 tabIndex={0}
                 children="Ungroup"

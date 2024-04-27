@@ -60,7 +60,9 @@ export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' 
 export const EditSinglePoint = { args: { pointObj: point1, vState: 'edit' } }
 
 export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } }
-export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } }
+export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit'} }
+
+export const passClassnameToButtons = { args: { pointObj: point5, vState: 'edit', className: "TestingClassName"}}
 
 export const mobileSingePoint = {
   args: { pointObj: point1, vState: 'default' },
