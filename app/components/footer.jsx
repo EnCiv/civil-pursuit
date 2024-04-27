@@ -1,29 +1,130 @@
-'use strict';
+'use strict'
 
-import React from 'react';
-import LogoutSpan from './logout-span';
+import React from 'react'
+import { createUseStyles } from 'react-jss'
+import SvgEncivBlack from '../svgr/enciv-black'
+import SvgEncivWhite from '../svgr/enciv-white'
 
-class Footer extends React.Component {
-  render () {
-    return (
-      <footer className="syn-footer">
-        <div style={{display: "table", width: "100%"}} >
-          <div style={{display: "table-cell", width: "33%"}} ></div>
-          <div style={{display: "table-cell", width: "33%"}} >
-            <p>
-              Copyright © 2014 - { new Date().getFullYear() } by <a href="http://www.enciv.org" target="_blank">EnCiv, Inc a 501(c)(3) nonprofit.</a>
-            </p>
+const Footer = props => {
+  const { mode } = props
+  const classes = useStylesFromThemeFunction(props)
+
+  return (
+    <footer className={classes.footerWrapper}>
+      <div className={classes.footerGrid}>
+        <div className={classes.row}>
+          <div className={`${classes.column} ${classes.item2}`}>
+            <div className={classes.mainText}>Questions, Comments, Suggestions, Want to Help?</div>
+            <div className={classes.spacedDiv}>
+              <a href="mailto:contact@enciv.org" className={`${classes.secondaryText} ${classes.links}`}>
+                contact@enciv.org
+              </a>
+            </div>
           </div>
-          <div style={{display: "table-cell", width: "33%", textAlign: "right"}}>
-            <LogoutSpan user={this.props.user}/>
+          <div className={`${classes.column} ${classes.item1}`}>
+            {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
           </div>
         </div>
-        <p>
-          <a href="https://enciv.org/terms/">Terms</a>
-        </p>
-      </footer>
-    );
-  }
+        <div className={classes.row}>
+          <div className={`${classes.column} ${classes.item3}`}>
+            <div className={classes.secondaryText}>
+              Copyright © {new Date().getFullYear()}{' '}
+              <a href="http://www.enciv.org" className={classes.links}>
+                EnCiv
+              </a>
+            </div>
+          </div>
+          <div className={`${classes.column} ${classes.item4}`}>
+            <a href="https://enciv.org/terms/" className={`${classes.secondaryText} ${classes.links}`}>
+              Terms and Conditions
+            </a>{' '}
+            |{' '}
+            <a href="https://enciv.org/privacy" className={`${classes.secondaryText} ${classes.links}`}>
+              Privacy Policy
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
 }
 
-export default Footer;
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+  footerWrapper: props => ({
+    width: '100%',
+    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+    color: props.mode === 'dark' ? 'white' : 'defaultColor',
+    textAlign: 'left',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '0 0 25px 0',
+    },
+  }),
+  footerGrid: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  column: {
+    flex: 1,
+    padding: '15px 50px',
+    maxWidth: '100%',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      textAlign: 'center',
+      flex: 'none',
+      width: '100%',
+      padding: 0,
+    },
+  },
+  mainText: {
+    fontWeight: 'bold',
+    margin: '50px 0 10px 0',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: 0,
+    },
+  },
+  secondaryText: props => ({
+    fontSize: '0.8em',
+    color: props.mode === 'dark' ? 'white' : 'black',
+  }),
+  item1: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 1,
+    },
+  },
+  item2: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 2,
+    },
+  },
+  item3: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 3,
+    },
+  },
+  item4: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      order: 4,
+    },
+  },
+  links: { rel: 'noopener noreferrer', target: '_blank', textDecoration: 'underline' },
+  spacedDiv: {
+    margin: '10px 0 30px 0',
+  },
+  logo: {
+    width: '10rem',
+    height: 'auto',
+  },
+}))
+
+export default Footer
