@@ -18,21 +18,32 @@ export default function WhyStep(props) {
     } = props;
     const classes = useStylesFromThemeFunction({ valid: true, value: [] });
 
+    const generateInitialAnswers = () => {
+        const typeAnswers = type === 'most' ? shared.whyMosts : shared.whyLeasts;
+        const initialAnswers = typeAnswers.map(answer => {
+            answer.valid = false;
+            return { ...answer };
+        });
+        return initialAnswers;
+    };
+
     const [points, setPoints] = useState(type === 'most' ? shared.mosts : shared.leasts);
-    const [answeredPoints, setAnsweredPoints] = useState(type === 'most' ? shared.whyMosts : shared.whyLeasts);
+    const [answeredPoints, setAnsweredPoints] = useState(() => generateInitialAnswers());
 
     useEffect(() => {
         if (!points.length || areAnswersComplete(answeredPoints)) {
             onDone({ valid: true, value: answeredPoints });
+        } else {
+            onDone({ valid: false, value: answeredPoints });
         };
     }, [answeredPoints]);
 
     const updateWhyResponse = ({ valid, value }) => {
-        if (!valid) return;
         const updatedAnswers = answeredPoints.map(answer => {
             if (answer._id === value.parentId) {
                 answer.answerSubject = value.subject;
                 answer.answerDescription = value.description;
+                answer.valid = valid;
             }
             return answer;
         });
@@ -40,11 +51,7 @@ export default function WhyStep(props) {
     };
 
     const areAnswersComplete = (answeredPoints) => {
-        return (answeredPoints.every(answer => {
-            if ('answerSubject' in answer && 'answerDescription' in answer) {
-                return true;
-            }
-        }));
+        return (answeredPoints.every(answer => answer.valid));
     };
 
     return (

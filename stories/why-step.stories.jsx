@@ -144,7 +144,6 @@ export const empty = {
     }
 };
 
-
 export const onDoneTest = {
     args: {
         type: "most",
@@ -204,6 +203,7 @@ export const onDoneTest = {
                             "_owner": null,
                             "_store": {}
                         },
+                        "valid": true,
                         "answerSubject": "This is the first subject!",
                         "answerDescription": "This is the first description!"
                     },
@@ -233,6 +233,7 @@ export const onDoneTest = {
                             "_owner": null,
                             "_store": {}
                         },
+                        "valid": true,
                         "answerSubject": "This is the second subject!",
                         "answerDescription": "This is the second description!"
                     },
