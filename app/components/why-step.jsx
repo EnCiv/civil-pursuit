@@ -93,7 +93,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
         introText: {
-            width: '33rem',
+            maxWidth: '33rem',
         }
     },
     pointsContainer: {
