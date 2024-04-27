@@ -64,6 +64,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    maxWidth: theme.maxPanelWidth,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       alignItems: 'center',
@@ -101,7 +104,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     margin: '1rem 0 1rem 0',
   },
   item1: {
+    textAlign: 'right',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      textAlign: 'center',
       order: 1,
     },
   },
@@ -116,7 +121,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   item4: {
+    textAlign: 'right',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      textAlign: 'center',
       order: 4,
     },
   },
