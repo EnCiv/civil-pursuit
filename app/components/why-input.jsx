@@ -13,9 +13,9 @@ function WhyInput(props) {
     const classes = useStyles();
 
     const handleOnDone = ({ valid, value }) => {
-        value.parentId = `${point._id}`
+        value.parentId = `${point._id}`;
         onDone({ valid, value })
-    };
+    }
 
     return (
         <div className={cx(classes.container, className)} {...otherProps}>
