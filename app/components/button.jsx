@@ -58,6 +58,7 @@ function Button(props) {
     <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
       <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
         <button
+          tabIndex={0}
           className={combinedClassName}
           title={title}
           disabled={isDisabled}
