@@ -51,9 +51,7 @@ export default function WhyStep(props) {
         <div className={cx(classes.wrapper, className)} {...otherProps}>
             <div className={classes.introContainer}>
                 <div className={classes.introTitle}>
-                    {type &&
-                        `Why it's ${type[0].toUpperCase() + type.slice(1)} Important`
-                    }
+                    {`Why it's ${type && type[0].toUpperCase() + type.slice(1)} Important`}
                 </div>
                 <div className={classes.introText}>{intro}</div>
             </div>
