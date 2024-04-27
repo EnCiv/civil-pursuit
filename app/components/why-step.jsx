@@ -58,7 +58,7 @@ export default function WhyStep(props) {
             <div className={classes.pointsContainer}>
                 {points.length ? (
                     points.map((point) => (
-                        <div key={point._id} className={classes.pointContainer}>
+                        <div key={point._id}>
                             <hr className={classes.pointsHr}></hr>
                             <WhyInput
                                 point={point}
@@ -89,8 +89,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     introText: {
         display: 'block',
-        width: '33rem',
         fontSize: '1.25rem',
+    },
+    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+        introText: {
+            width: '33rem',
+        }
     },
     pointsContainer: {
         fontSize: '1.25rem',
@@ -98,6 +102,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     pointsHr: {
         color: '#D9D9D9',
         margin: '4rem 0',
+    },
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+        pointsHr: {
+            margin: '2rem 0',
+        },
     },
 }));
 
