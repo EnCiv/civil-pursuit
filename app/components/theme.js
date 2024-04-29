@@ -1,7 +1,7 @@
 'use strict'
 
 const Theme = {
-  focusOutline: 'solid .3rem #B3B3B3',
+  focusOutline: 'solid .3rem #DCE8F2',
   // ui colors
   colors: {
     success: '#005621',
@@ -28,7 +28,6 @@ const Theme = {
     darkModeGray: '#343433',
     lightGray: '#F7F7F7',
     secondaryDivider: '#D9D9D9',
-    buttonFocus: '#DCE8F2',
     statusBadgeProgressBorder: '#EDBF01',
     statusBadgeProgressBackground: '#FFFAE8',
     statusBadgeCompletedBorder: '#005621',
