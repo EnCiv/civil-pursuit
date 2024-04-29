@@ -99,3 +99,7 @@ export const Collapsed = args => {
 export const Secondary = args => {
   return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />}></Point>
 }
+
+export const Loading = args => {
+  return <Point vState={'loading'} />
+}
