@@ -28,7 +28,6 @@ function Button(props) {
   const timeRef = useRef(null)
 
   const classes = buttonStyles()
-  const combinedClassName = cx(classes.buttonBase, className)
 
   useEffect(() => {
     setIsDisabled(disabled)
@@ -55,18 +54,23 @@ function Button(props) {
   }, [isPortalOpen, title.length])
 
   return (
-    <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+    <span
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      className={className}
+      {...otherProps}
+    >
       <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
         <button
+          className={classes.buttonBase}
           tabIndex={0}
-          className={combinedClassName}
           title={title}
           disabled={isDisabled}
           onClick={() => {
             onDone()
             if (disableOnClick) setIsDisabled(true)
           }}
-          {...otherProps}
         >
           {children}
         </button>

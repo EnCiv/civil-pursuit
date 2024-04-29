@@ -93,7 +93,11 @@ const PointGroup = props => {
                           {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
-                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton, className)}
+                            className={cx(
+                              classes.selectSelectButton,
+                              point._id === selected && classes.selectedButton,
+                              className
+                            )}
                             title={`Select as Lead: ${point.subject}`}
                             tabIndex={0}
                             children="Select as Lead"
@@ -342,9 +346,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
-    '& :focus': {
-      outline: theme.focusOutline,
-    },
   },
 
   defaultWidth: {
@@ -370,9 +371,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   doneButton: {
     width: '17rem',
-    '& :focus': {
-      outline: theme.focusOutline,
-    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '7rem',
     },
@@ -397,18 +395,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       '& span': {
         flex: '0 0 50%',
         textAlign: 'center',
-        '$ :focus': {
-          outline: theme.focusOutline,
-        },
       },
     },
     '&$bottomButtonsOne': {
       '& span': {
         flex: '0 0 100%',
         textAlign: 'center',
-        '$ :focus': {
-          outline: theme.focusOutline,
-        },
       },
     },
   },
