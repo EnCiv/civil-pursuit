@@ -28,6 +28,7 @@ const Theme = {
     darkModeGray: '#343433',
     lightGray: '#F7F7F7',
     secondaryDivider: '#D9D9D9',
+    buttonFocus: '#DCE8F2',
     statusBadgeProgressBorder: '#EDBF01',
     statusBadgeProgressBackground: '#FFFAE8',
     statusBadgeCompletedBorder: '#005621',
