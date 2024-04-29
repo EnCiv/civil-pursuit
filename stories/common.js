@@ -105,7 +105,7 @@ export function onBackDecorator(Story, context) {
             {' '}
             onBack:{' '}
             <span title="onBackResult" id="onBackResult" style={{ whiteSpace: 'pre-wrap' }}>
-              {JSON.stringify(result.count, null, 4)}
+              {JSON.stringify(result, null, 4)}
             </span>
           </div>
         </div>
