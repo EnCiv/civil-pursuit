@@ -100,6 +100,10 @@ export const Secondary = args => {
   return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />}></Point>
 }
 
-export const Loading = args => {
+export const LoadingLoop = args => {
+  return <Point vState={'loading'} />
+}
+
+export const LoadingThenLoads = args => {
   return <Point vState={'loading'} />
 }

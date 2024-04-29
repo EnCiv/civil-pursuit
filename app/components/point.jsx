@@ -42,24 +42,25 @@ const Point = forwardRef((props, ref) => {
       onMouseLeave={onMouseOut}
       ref={ref}
     >
-      {isLoading ? (
-        <>
-          <div className={`${classes.loadingAnimation} ${classes.loadingAnimationSubject}`} />
-          <div className={`${classes.loadingAnimation} ${classes.loadingAnimationDescription}`} />
-          <div className={`${classes.loadingAnimation} ${classes.loadingAnimationDescription}`} />
-          <div className={`${classes.loadingAnimation} ${classes.loadingAnimationDescription}`} />
-        </>
-      ) : (
-        <div className={classes.contentContainer}>
-          <div className={classes.informationGrid}>
-            {subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
-            {description && (
-              <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>{description}</div>
-            )}
-            {childrenWithProps}
+      <div className={classes.contentContainer}>
+        <div className={classes.informationGrid}>
+          <div className={`${isLoading ? `${classes.loadingAnimation} ${classes.loadingAnimationSubject}` : ''}`}>
+            {isLoading
+              ? null
+              : subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
           </div>
+          <div className={`${isLoading ? `${classes.loadingAnimation} ${classes.loadingAnimationDescription}` : ''}`}>
+            {isLoading
+              ? null
+              : description && (
+                  <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>
+                    {description}
+                  </div>
+                )}
+          </div>
+          {childrenWithProps}
         </div>
-      )}
+      </div>
     </div>
   )
 })
