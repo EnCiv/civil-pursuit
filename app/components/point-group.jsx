@@ -22,7 +22,7 @@ const PointGroup = props => {
   const { pointObj, vState, select, className, onDone = () => {}, ...otherProps } = props
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
-  const [vs, setVState] = useState(vState)
+  const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
   const [pO, setPointObj] = useState(pointObj)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
@@ -41,7 +41,7 @@ const PointGroup = props => {
   }
 
   useEffect(() => {
-    setVState(vState)
+    setVState(vState === 'editable' ? 'edit' : vState)
     setExpanded(vState === 'selectLead' || vState === 'edit')
   }, [vState]) // could be changed by parent component, or within this component
   useEffect(() => {
@@ -173,13 +173,27 @@ const PointGroup = props => {
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (
-                <TextButton onClick={() => setExpanded(false)} title="collapse" tabIndex={0}>
+                <TextButton
+                  onClick={e => {
+                    e.stopPropagation()
+                    setExpanded(false)
+                  }}
+                  title="collapse"
+                  tabIndex={0}
+                >
                   <span className={classes.chevronButton}>
                     <SvgChevronUp />
                   </span>
                 </TextButton>
               ) : (
-                <TextButton onClick={() => setExpanded(true)} title="expand" tabIndex={0}>
+                <TextButton
+                  onClick={e => {
+                    e.stopPropagation()
+                    setExpanded(true)
+                  }}
+                  title="expand"
+                  tabIndex={0}
+                >
                   <span className={classes.chevronButton}>
                     <SvgChevronDown />
                   </span>
