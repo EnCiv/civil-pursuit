@@ -61,7 +61,8 @@ function Button(props) {
           className={combinedClassName}
           title={title}
           disabled={isDisabled}
-          onClick={() => {
+          onClick={e => {
+            e.stopPropagation()
             onDone()
             if (disableOnClick) setIsDisabled(true)
           }}
