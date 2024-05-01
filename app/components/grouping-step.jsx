@@ -10,44 +10,22 @@ import cx from 'classnames'
 import PointGroup from './point-group'
 import { TextButton, PrimaryButton, SecondaryButton } from './button'
 import StatusBadge from './status-badge'
-import Point from './point'
-import { update } from 'lodash'
-
-// vState for Point: default, selected, disabled, collapsed
-const CreatePointGroup = ({ pointObj, vState, children, select, className, onClick }) => {
-  return (
-    <PointGroup
-      pointObj={pointObj}
-      vState={vState}
-      select={select}
-      children={children}
-      className={className}
-      onClick={onClick}
-    />
-  )
-}
-
-const createPointObj = (_id, subject, description, groupedPoints, user) => {
-  return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
-  }
-}
+import { cloneDeep } from 'lodash'
 
 export default function GroupingStep(props) {
   const { onDone, shared, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
-  const [pointsToGroup, setPointsToGroup] = useState([...pointList])
-  const [yourGroups, setYourGroups] = useState([])
-  const [yourGroupsSelected, setYourGroupsSelected] = useState([]) // points that have been grouped that have been selected again to be incorporated into a group
-  const [selectedPoints, setSelectedPoints] = useState([])
-  // the grouping step to select a lead
-  const [selectLead, setSelectLead] = useState(null)
+  // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
+  // also reduces the number of different set-somethings that have to be called each time.
+  const [gs, setGs] = useState({
+    selectedPoints: [], // points the user has clicked on, for combining into a group
+    pointsToGroup: cloneDeep(pointList), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    yourGroups: [], // points that have been grouped
+    yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
+    selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
+  })
 
   /**useEffect(() => {
     if (pointsToGroup.length === 0 || !pointsToGroup) {
@@ -57,121 +35,175 @@ export default function GroupingStep(props) {
   }, [pointsToGroup, pointList, onDone])*/
 
   const togglePointSelection = _id => {
-    // if the _id is already in there, remove it
-    const updatedSelectedPoints = selectedPoints.filter(id => id !== _id)
-    // if the _id wasn't in there, push it
-    if (updatedSelectedPoints.length === selectedPoints.length) updatedSelectedPoints.push(_id)
-    setSelectedPoints(updatedSelectedPoints)
+    setGs(oldGs => {
+      // if the _id is already in there, remove it
+      const selectedPoints = oldGs.selectedPoints.filter(id => id !== _id)
+      // if the _id wasn't in there, push it
+      if (selectedPoints.length === oldGs.selectedPoints.length) selectedPoints.push(_id)
+      if (selectedPoints.length) onDone({ valid: false, value: {} })
+      return { ...oldGs, selectedPoints }
+    })
   }
 
   const handleCreateGroupClick = () => {
-    if (selectedPoints.length < 2) {
-      return
-    }
-    let newPointsToGroup = []
-    let newYourGroups = []
-    let groupedPoints = []
-    let newGroupedPointsSelected = []
-    for (const point of pointsToGroup) {
-      if (selectedPoints.some(_id => _id === point._id)) groupedPoints.push(point)
-      else newPointsToGroup.push(point)
-    }
-    // do not add yourGroups to the notSelected if they are not selected
-    for (const point of yourGroups) {
-      if (selectedPoints.some(_id => _id === point._id)) {
-        groupedPoints.push(point)
-        newGroupedPointsSelected.push(point)
-      } else newYourGroups.push(point)
-    }
-    setSelectLead({ groupedPoints }) // Store just the data
-    setPointsToGroup(newPointsToGroup) // Remove selected points
-    setYourGroups(newYourGroups)
-    setYourGroupsSelected(newGroupedPointsSelected)
-    setSelectedPoints([]) // Reset selection states
+    setGs(oldGs => {
+      if (oldGs.selectedPoints.length < 2) {
+        return oldGs
+      }
+      let pointsToGroup = []
+      let yourGroups = []
+      let groupedPoints = []
+      let yourGroupsSelected = []
+      for (const point of oldGs.pointsToGroup) {
+        if (oldGs.selectedPoints.some(_id => _id === point._id)) groupedPoints.push(point)
+        else pointsToGroup.push(point)
+      }
+      // do not add yourGroups to the notSelected if they are not selected
+      for (const point of oldGs.yourGroups) {
+        if (oldGs.selectedPoints.some(_id => _id === point._id)) {
+          groupedPoints.push(point)
+          yourGroupsSelected.push(point)
+        } else yourGroups.push(point)
+      }
+      onDone({ valid: false, value: {} })
+      return {
+        ...oldGs,
+        pointsToGroup,
+        yourGroups,
+        yourGroupsSelected,
+        selectedPoints: [],
+        selectLead: { groupedPoints },
+      }
+    })
   }
 
   const handleAddExistingGroupClick = () => {}
 
   const onSelectLeadDone = ({ valid, value }) => {
     if (!valid) return
-    let newPointsToGroup = [...pointsToGroup]
-    let newYourGroups = [...yourGroups]
-    for (const point of value.removedPointObjs || []) {
-      // leave it in the yourGroups
-      if (yourGroupsSelected.some(p => p._id === point._id)) {
-        newYourGroups.push(point)
+    setGs(oldGs => {
+      let pointsToGroup = [...oldGs.pointsToGroup]
+      let yourGroups = [...oldGs.yourGroups]
+      for (const point of value.removedPointObjs || []) {
+        // leave it in the yourGroups
+        if (oldGs.yourGroupsSelected.some(p => p._id === point._id)) {
+          yourGroups.push(point)
+        }
+        // move it back to the ungrouped points
+        else pointsToGroup.push(point)
       }
-      // move it back to the ungrouped points
-      else newPointsToGroup.push(point)
-    }
-    if (value.pointObj) {
-      newYourGroups.push(value.pointObj)
-      // we have to change it because the new one may have different children
-    }
-    setYourGroups(newYourGroups)
-    setYourGroupsSelected([])
-    setPointsToGroup(newPointsToGroup)
-    setSelectLead(null)
+      if (value.pointObj) {
+        yourGroups.push(value.pointObj)
+        // we have to change it because the new one may have different children
+      }
+      shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
+      onDone({ valid: true, value: shared.groupedPointList })
+      return { ...oldGs, pointsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null }
+    })
+  }
+
+  const onYourPointEdited = ({ valid, value }) => {
+    if (!valid) return
+    setGs(oldGs => {
+      let index
+      let pointsToGroup = [...oldGs.pointsToGroup]
+      let yourGroups = [...oldGs.yourGroups]
+      let selectedPoints = [...oldGs.selectedPoints]
+      for (const point of value.removedPointObjs || []) {
+        // move it back to the ungrouped points
+        pointsToGroup.push(point)
+        yourGroups = yourGroups.filter(p => p._id !== point._id)
+        selectedPoints = selectedPoints.filter(id => id !== point._id)
+      }
+      // it doeosn't create a new pointObj, but it delete it, or change the existing one.
+      if (value.pointObj) {
+        if (!value.pointObj.groupedPoints?.length) {
+          // user has ungrouped this point
+          if ((index = yourGroups.findIndex(p => value.pointObj._id === p._id)) >= 0) {
+            yourGroups.splice(index, 1)
+            pointsToGroup.push(value.pointObj)
+          }
+          selectedPoints = selectedPoints.filter(id => id !== value.pointObj._id)
+        } else if (yourGroups.some(p => p._id === value.pointObj._id)) {
+          //do nothing
+        } else {
+          // lead point is changed - find the old one
+          index = yourGroups.findIndex(p => p.groupedPoints.some(p => p._id === value.pointObj._id))
+          if (index >= 0) {
+            yourGroups.splice(index, 1)
+            yourGroups.push(value.pointObj)
+          } else {
+            console.info("got new pointObj don't know why")
+            yourGroups.push(value.pointObj)
+          }
+        }
+      }
+      shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
+      onDone({ valid: true, value: shared.groupedPointList })
+      return { ...oldGs, pointsToGroup, yourGroups, selectedPoints }
+    })
   }
 
   return (
     <div className={cx(classes.groupingStep, className)} {...otherProps}>
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
-          <StatusBadge name="Groups Created" status={'progress'} number={yourGroups.length} />
+          <StatusBadge name="Groups Created" status={'progress'} number={gs.yourGroups.length} />
           <StatusBadge
             name="Responses Selected"
-            status={selectedPoints.length === 0 ? '' : 'complete'}
-            number={selectedPoints.length}
+            status={gs.selectedPoints.length === 0 ? '' : 'complete'}
+            number={gs.selectedPoints.length}
           />
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
             <PrimaryButton
-              disabled={selectedPoints.length < 2}
+              disabled={gs.selectedPoints.length < 2}
               className={classes.primaryButton}
               onClick={handleCreateGroupClick}
             >
               Create Group
             </PrimaryButton>
           </div>
-          <SecondaryButton
-            disabled={yourGroups.length < 1}
+          {/*<SecondaryButton
+            disabled={gs.yourGroups.length < 1}
             className={classes.secondaryButton}
             onClick={handleAddExistingGroupClick}
           >
             + Add to Existing Group
-          </SecondaryButton>
+          </SecondaryButton> */}
         </div>
       </div>
-      {selectLead != null ? (
+      {gs.selectLead != null ? (
         <div className={classes.selectLead}>
-          <PointGroup pointObj={selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
+          <PointGroup pointObj={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
       ) : null}
       <div className={classes.groupsContainer}>
-        {pointsToGroup.map(point => (
+        {gs.pointsToGroup.map(point => (
           <PointGroup
             key={point._id}
             pointObj={point}
             vState="default"
-            select={selectedPoints.some(id => id === point._id)}
+            select={gs.selectedPoints.some(id => id === point._id)}
             onClick={() => togglePointSelection(point._id)}
           />
         ))}
       </div>
-      {!!yourGroups.length && (
+      {!!gs.yourGroups.length && (
         <div className={classes.yourGroupsWrapper}>
           <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
           <div className={classes.groupsContainer}>
-            {yourGroups.map(point => {
+            {gs.yourGroups.map(point => {
               return (
                 <PointGroup
+                  className={classes.yourGroupsPoint}
                   key={point._id}
                   pointObj={point}
-                  vState="default"
-                  select={selectedPoints.some(id => id === point._id)}
+                  vState="editable"
+                  select={gs.selectedPoints.some(id => id === point._id)}
                   onClick={() => togglePointSelection(point._id)}
+                  onDone={onYourPointEdited}
                 />
               )
             })}
@@ -262,5 +294,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingBottom: '1rem',
     fontSize: '2rem',
     lineHeight: '2.625rem',
+  },
+  yourGroupsPoint: {
+    backgroundColor: 'white',
   },
 }))
