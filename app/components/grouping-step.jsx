@@ -1,14 +1,14 @@
 // https://github.com/EnCiv/civil-pursuit/issue/49
 
 // groupedPoints and pointList are both a list of pointObj
-// groupdPoints is shared across states (user may move back and forth between states)
+// groupedPoints is shared across states (user may move back and forth between states)
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from './point-group'
-import { TextButton, PrimaryButton, SecondaryButton } from './button'
+import { PrimaryButton, SecondaryButton } from './button'
 import StatusBadge from './status-badge'
 import { cloneDeep } from 'lodash'
 
@@ -17,22 +17,18 @@ export default function GroupingStep(props) {
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
+
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
-    pointsToGroup: cloneDeep(pointList), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
-    yourGroups: [], // points that have been grouped
+    pointsToGroup: cloneDeep(
+      groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointList
+    ), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    yourGroups: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => p.groupedPoints?.length) : []), // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
   })
-
-  /**useEffect(() => {
-    if (pointsToGroup.length === 0 || !pointsToGroup) {
-      setPointsToGroup([...pointList])
-    }
-    onDone({ valid: true, value: pointsToGroup })
-  }, [pointsToGroup, pointList, onDone])*/
 
   const togglePointSelection = _id => {
     setGs(oldGs => {
@@ -76,8 +72,6 @@ export default function GroupingStep(props) {
       }
     })
   }
-
-  const handleAddExistingGroupClick = () => {}
 
   const onSelectLeadDone = ({ valid, value }) => {
     if (!valid) return
@@ -165,7 +159,8 @@ export default function GroupingStep(props) {
               Create Group
             </PrimaryButton>
           </div>
-          {/*<SecondaryButton
+          {/* ui works without this but need design feedback
+           <SecondaryButton
             disabled={gs.yourGroups.length < 1}
             className={classes.secondaryButton}
             onClick={handleAddExistingGroupClick}
