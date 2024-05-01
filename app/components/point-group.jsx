@@ -127,8 +127,20 @@ const PointGroup = props => {
                 onDone={() => {
                   const [p, g] = groupedPoints.reduce(
                     ([p, g], point) => {
-                      if (point._id === selected) p = point
-                      else g.push(point)
+                      if (point._id === selected) {
+                        p = point
+                        // need to flatten groupedPoints so children to not have children
+                        if (point.groupedPoints) {
+                          g.push(...point.groupedPoints)
+                        }
+                      } else {
+                        g.push(point)
+                        // need to flatten groupedPoints so children to not have children
+                        if (point.groupedPoints) {
+                          g.push(...point.groupedPoints)
+                          delete point.groupedPoints
+                        }
+                      }
                       return [p, g]
                     },
                     [undefined, []]
