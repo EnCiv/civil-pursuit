@@ -7,13 +7,9 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 const Point = forwardRef((props, ref) => {
-  const { subject, description, vState, children, className, ...otherProps } = props
-
+  const { subject, description, vState, children, className, isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-
   const [isHovered, setIsHovered] = useState(false)
-
-  const [isLoading, setIsLoading] = useState(true)
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -21,10 +17,6 @@ const Point = forwardRef((props, ref) => {
 
   const onMouseOut = () => {
     setIsHovered(false)
-  }
-
-  const handleLoading = () => {
-    setIsLoading(false)
   }
 
   const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
@@ -44,12 +36,24 @@ const Point = forwardRef((props, ref) => {
     >
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
-          <div className={`${isLoading ? `${classes.loadingAnimation} ${classes.loadingAnimationSubject}` : ''}`}>
+          <div
+            className={
+              isLoading
+                ? cx(classes.loadingAnimation, classes.loadingAnimationSubject, classes[vState + 'Loading'])
+                : ''
+            }
+          >
             {isLoading
               ? null
               : subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
           </div>
-          <div className={`${isLoading ? `${classes.loadingAnimation} ${classes.loadingAnimationDescription}` : ''}`}>
+          <div
+            className={
+              isLoading
+                ? cx(classes.loadingAnimation, classes.loadingAnimationDescription, classes[vState + 'Loading'])
+                : ''
+            }
+          >
             {isLoading
               ? null
               : description && (
@@ -84,11 +88,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // animation states
   loadingAnimation: {
-    animationDuration: '1s',
-    animationFillMode: 'forwards',
-    animationIterationCount: 'infinite',
-    animationName: '$loadingAnimation_keyframes',
-    animationTimingFunction: 'linear',
+    animation: '$loadingAnimation_keyframes 1s linear infinite forwards',
     background: '#f6f7f8',
     backgroundImage: 'linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%)',
     backgroundSize: 'inherit',
@@ -99,6 +99,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   loadingAnimationSubject: {
     height: '2rem',
   },
+  // 30rem should not effect the size responsiveness of the point
   loadingAnimationDescription: { height: '1rem' },
   '@keyframes loadingAnimation_keyframes': {
     '0%': {
@@ -210,7 +211,7 @@ export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'selected', 'disabled', 'collapsed', or 'secondary'
+- vState comes in as 'default', 'selected', 'disabled', 'collapsed', 'loading', or 'secondary'
 
 - Note that if multiple children are passed into this component, then they must be siblings:
 
