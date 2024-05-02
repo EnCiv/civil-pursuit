@@ -13,7 +13,7 @@ import StatusBadge from './status-badge'
 import { cloneDeep } from 'lodash'
 
 export default function GroupingStep(props) {
-  const { onDone, shared, className, ...otherProps } = props
+  const { onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
@@ -23,7 +23,7 @@ export default function GroupingStep(props) {
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
     pointsToGroup: cloneDeep(
-      groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointList
+      groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointList || []
     ), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
     yourGroups: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => p.groupedPoints?.length) : []), // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
@@ -220,6 +220,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     // Ensure theme.condensedWidthBreakPoint is in pixels. Then, for the media query:
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       gridTemplateColumns: 'repeat(1, 1fr)',
+      paddingLeft: '0.5rem',
+      paddingRight: '0.5rem',
     },
   },
   statusContainer: {
@@ -279,13 +281,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   yourGroupsWrapper: {
+    marginTop: '2rem',
     width: '100%',
     backgroundColor: theme.colors.lightGray,
     paddingBottom: '2rem',
   },
   yourGroupsTitle: {
     marginLeft: '2rem',
-    paddingTop: '2rem',
+    paddingTop: '.5rem',
     paddingBottom: '1rem',
     fontSize: '2rem',
     lineHeight: '2.625rem',
