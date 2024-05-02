@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issue/49
+// https://github.com/EnCiv/civil-pursuit/issues/49
 
 // groupedPoints and pointList are both a list of pointObj
 // groupedPoints is shared across states (user may move back and forth between states)
