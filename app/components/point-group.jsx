@@ -19,10 +19,10 @@ const CreatePoint = (pointObj, vState, children, className) => {
 }
 
 const PointGroup = props => {
-  const { pointObj, vState, className, onDone = () => {}, ...otherProps } = props
+  const { pointObj, vState, select, className, onDone = () => {}, ...otherProps } = props
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
-  const [vs, setVState] = useState(vState)
+  const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
   const [pO, setPointObj] = useState(pointObj)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
@@ -30,9 +30,18 @@ const PointGroup = props => {
   const { subject, description, user } = soloPoint
   const singlePoint = !groupedPoints || groupedPoints.length === 0
   const [selected, setSelected] = useState('')
+  const [isHovered, setIsHovered] = useState(false)
+
+  const onMouseIn = () => {
+    setIsHovered(true)
+  }
+
+  const onMouseOut = () => {
+    setIsHovered(false)
+  }
 
   useEffect(() => {
-    setVState(vState)
+    setVState(vState === 'editable' ? 'edit' : vState)
     setExpanded(vState === 'selectLead' || vState === 'edit')
   }, [vState]) // could be changed by parent component, or within this component
   useEffect(() => {
@@ -118,8 +127,20 @@ const PointGroup = props => {
                 onDone={() => {
                   const [p, g] = groupedPoints.reduce(
                     ([p, g], point) => {
-                      if (point._id === selected) p = point
-                      else g.push(point)
+                      if (point._id === selected) {
+                        p = point
+                        // need to flatten groupedPoints so children to not have children
+                        if (point.groupedPoints) {
+                          g.push(...point.groupedPoints)
+                        }
+                      } else {
+                        g.push(point)
+                        // need to flatten groupedPoints so children to not have children
+                        if (point.groupedPoints) {
+                          g.push(...point.groupedPoints)
+                          delete point.groupedPoints
+                        }
+                      }
                       return [p, g]
                     },
                     [undefined, []]
@@ -143,17 +164,35 @@ const PointGroup = props => {
       )}
 
       {vs !== 'collapsed' && vs !== 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid)}>
+        <div
+          className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid, {
+            [classes.selectedBorder]: select,
+          })}
+        >
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (
-                <TextButton onClick={() => setExpanded(false)} title="collapse">
+                <TextButton
+                  onClick={e => {
+                    e.stopPropagation()
+                    setExpanded(false)
+                  }}
+                  title="collapse"
+                  tabIndex={0}
+                >
                   <span className={classes.chevronButton}>
                     <SvgChevronUp />
                   </span>
                 </TextButton>
               ) : (
-                <TextButton onClick={() => setExpanded(true)} title="expand">
+                <TextButton
+                  onClick={e => {
+                    e.stopPropagation()
+                    setExpanded(true)
+                  }}
+                  title="expand"
+                  tabIndex={0}
+                >
                   <span className={classes.chevronButton}>
                     <SvgChevronDown />
                   </span>
@@ -297,6 +336,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+    '&:hover': {
+      outline: `0.1875rem solid ${theme.colors.success}`,
+    },
+    '&:hover $defaultSubject': {
+      color: theme.colors.success,
+    },
+    '&:hover $defaultDescription': {
+      color: theme.colors.success,
+    },
   },
 
   collapsedBorder: {
@@ -382,6 +430,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   bottomButtonsOne: {},
 
   bottomButtons: {
+    boxSizing: 'border-box',
     width: '100%',
     padding: '1.5rem 1rem 0 1rem',
     display: 'flex',
@@ -479,6 +528,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   noBoxShadow: {
     boxShadow: 'none',
     border: '1px solid rgba(217, 217, 217, 0.40)',
+  },
+  selectedSubject: {
+    color: theme.colors.success,
+  },
+  selectedDescription: {
+    color: theme.colors.success,
+  },
+  selectedBorder: {
+    outline: `0.1875rem solid ${theme.colors.success}`,
+    background: theme.colors.lightSuccess,
+    '& $informationGrid': {
+      color: theme.colors.success,
+    },
   },
 }))
 
