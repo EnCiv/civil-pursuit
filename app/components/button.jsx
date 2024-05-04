@@ -36,6 +36,7 @@ function Button(props) {
   }, [disabled])
 
   const handleMouseDown = e => {
+    e.stopPropagation()
     timeRef.current = setTimeout(() => {
       setIsPortalOpen(true)
     }, 500)
@@ -43,6 +44,7 @@ function Button(props) {
   }
 
   const handleMouseUp = e => {
+    e.stopPropagation()
     if (timeRef.current) clearTimeout(timeRef.current)
     timeRef.current = null
     if (e.timeStamp - downTimeStamp < 500) {
