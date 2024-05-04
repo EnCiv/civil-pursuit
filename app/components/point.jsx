@@ -43,9 +43,9 @@ const Point = forwardRef((props, ref) => {
                 : ''
             }
           >
-            {isLoading
-              ? null
-              : subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
+            {!isLoading && subject && (
+              <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>
+            )}
           </div>
           <div
             className={
@@ -54,13 +54,9 @@ const Point = forwardRef((props, ref) => {
                 : ''
             }
           >
-            {isLoading
-              ? null
-              : description && (
-                  <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>
-                    {description}
-                  </div>
-                )}
+            {!isLoading && description && (
+              <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>{description}</div>
+            )}
           </div>
           {childrenWithProps}
         </div>
@@ -100,7 +96,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '2rem',
   },
   // 30rem should not effect the size responsiveness of the point
-  loadingAnimationDescription: { height: '1rem' },
+  // It affects the animation speed, not the width of the background
+  loadingAnimationDescription: { height: '3rem' },
   '@keyframes loadingAnimation_keyframes': {
     '0%': {
       backgroundPosition: '-30rem 0',
