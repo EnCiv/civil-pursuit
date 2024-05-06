@@ -190,6 +190,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.625rem',
     position: 'relative',
   },
+  ranking: {
+    width: '70%',
+    fontSize: '1rem',
+    '& label': {
+      fontWeight: 'normal',
+    },
+  },
   showDualPointList: {
     width: '100%',
     padding: '0rem',
@@ -198,13 +205,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       '& > div': {
         borderTopLeftRadius: '0rem',
         borderTopRightRadius: '0rem',
-      },
-    },
-    ranking: {
-      width: '70%',
-      fontSize: '1rem',
-      '& label': {
-        fontWeight: 'normal',
       },
     },
   },
