@@ -1,0 +1,178 @@
+// https://github.com/EnCiv/civil-pursuit/issues/58
+
+'use strict'
+import React, { useEffect, useState } from 'react'
+import cx from 'classnames'
+import { createUseStyles } from 'react-jss'
+import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
+import ShowDualPointList from './show-dual-point-list.jsx'
+import Ranking from './util/ranking.jsx'
+import SvgChevronUp from '../svgr/chevron-up'
+import SvgChevronDown from '../svgr/chevron-down'
+
+function ReviewPoint(props) {
+  const {
+    className,
+    read = false,
+    rank = '',
+    subject = '',
+    description = '',
+    leftPointList = [],
+    rightPointList = [],
+    onDone = () => {},
+    ...otherProps
+  } = props
+
+  const [isRead, setIsRead] = useState(read)
+  const [isOpened, setIsOpened] = useState(false)
+  const [isRanked, setIsRanked] = useState(rank !== '')
+  const [isRankActive, setIsRankActive] = useState(false)
+
+  const classes = useStylesFromThemeFunction()
+
+  useEffect(() => {
+    if (isOpened) {
+      setIsRead(true)
+      setIsRankActive(true)
+    }
+  }, [isOpened])
+
+  useEffect(() => {
+    if (!isOpened && !isRead) {
+      setIsRankActive(false)
+    }
+  }, [isOpened, isRead])
+
+  useEffect(() => {
+    if (!isOpened && isRanked) {
+      setIsRead(true)
+    }
+    if (!isOpened && !isRanked) {
+      setIsRead(false)
+    }
+  }, [isOpened, isRanked])
+
+  return (
+    <div className={cx(className)} {...otherProps}>
+      <div className={cx(classes.borderStyle)}>
+        <div className={classes.contentContainer}>
+          <div className={classes.informationGrid}>
+            <div className={classes.informationColumn}>
+              <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>{`${
+                isRead ? 'Read' : 'Unread'
+              }`}</span>
+              {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+              {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
+            </div>
+
+            <div className={classes.rankingColumn}>
+              <Ranking disabled={!isRankActive} rank={rank} onDone={rank => setIsRanked(rank !== '')} />
+            </div>
+          </div>
+          <div className={classes.SvgContainer}>
+            {isOpened ? (
+              <TextButton onClick={() => setIsOpened(false)} title="close" tabIndex={0}>
+                <span className={classes.chevronButton}>
+                  <SvgChevronUp />
+                </span>
+              </TextButton>
+            ) : (
+              <TextButton onClick={() => setIsOpened(true)} title="open" tabIndex={0}>
+                <span className={classes.chevronButton}>
+                  <SvgChevronDown />
+                </span>
+              </TextButton>
+            )}
+          </div>
+          {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
+            <ShowDualPointList
+              leftHeader="Why It's Most important"
+              rightHeader="Why It's Least important"
+              leftPoints={leftPointList}
+              rightPoints={rightPointList}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+  borderStyle: {
+    borderRadius: '0.9375rem',
+    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+  },
+
+  container: {
+    fontFamily: theme.font.fontFamily,
+    overflowX: 'hidden',
+  },
+  statusBadge: {
+    backgroundColor: theme.colors.statusBadgeProgressBackground,
+    border: `${theme.border.width.thin} solid ${theme.colors.statusBadgeProgressBorder}`,
+    ...sharedStatusBadgeStyle(),
+    alignSelf: 'flex-start',
+  },
+  statusBadgeComplete: {
+    backgroundColor: theme.colors.statusBadgeCompletedBackground,
+    border: `${theme.border.width.thin} solid ${theme.colors.statusBadgeCompletedBorder}`,
+    ...sharedStatusBadgeStyle(),
+    alignSelf: 'flex-start',
+  },
+  SvgContainer: {
+    position: 'absolute',
+    top: '0.3rem',
+    right: '0rem',
+    fontSize: '1.5rem',
+  },
+  subjectStyle: {
+    ...theme.font,
+    fontSize: '1.25rem',
+    fontWeight: '400',
+    lineHeight: '1.875rem',
+  },
+  descriptionStyle: {
+    ...theme.font,
+    alignSelf: 'stretch',
+    fontSize: '1rem',
+    fontWeight: '400',
+    lineHeight: '1.5rem',
+  },
+  contentContainer: {
+    padding: '1.1875rem 0.875rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '0.625rem',
+    position: 'relative',
+    width: '100%',
+    boxSizing: 'border-box',
+    alignSelf: 'stretch',
+  },
+  informationGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
+    gap: '1rem',
+    width: '100%',
+  },
+  informationColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.625rem',
+    position: 'relative',
+  },
+  rankingColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.625rem',
+    position: 'relative',
+  },
+}))
+
+const sharedStatusBadgeStyle = () => ({
+  borderRadius: '1rem',
+  padding: '0.375rem 0.625rem',
+})
+
+export default ReviewPoint
