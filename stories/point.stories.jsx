@@ -106,7 +106,7 @@ export const LoadingLoop = () => {
   return <Point vState={'loading'} isLoading={isLoading} />
 }
 
-export const LoadingThenLoads = () => {
+export const LoadingThenLoads = args => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -117,5 +117,5 @@ export const LoadingThenLoads = () => {
     return () => clearTimeout(timeout)
   }, [])
 
-  return <Point vState={'loading'} isLoading={isLoading} />
+  return <Point vState={isLoading ? 'loading' : 'default'} isLoading={isLoading} {...args} />
 }
