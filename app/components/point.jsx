@@ -36,28 +36,28 @@ const Point = forwardRef((props, ref) => {
     >
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
-          <div
-            className={
-              isLoading
-                ? cx(classes.loadingAnimation, classes.loadingAnimationSubject, classes[vState + 'Loading'])
-                : ''
-            }
-          >
-            {!isLoading && subject && (
-              <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>
-            )}
-          </div>
-          <div
-            className={
-              isLoading
-                ? cx(classes.loadingAnimation, classes.loadingAnimationDescription, classes[vState + 'Loading'])
-                : ''
-            }
-          >
-            {!isLoading && description && (
-              <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>{description}</div>
-            )}
-          </div>
+          {(isLoading || subject) && (
+            <div
+              className={
+                isLoading
+                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
+                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+              }
+            >
+              {isLoading ? '' : subject}
+            </div>
+          )}
+          {(isLoading || description) && (
+            <div
+              className={
+                isLoading
+                  ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
+                  : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])
+              }
+            >
+              {isLoading ? '' : description}
+            </div>
+          )}
           {childrenWithProps}
         </div>
       </div>
@@ -98,6 +98,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   // 30rem should not effect the size responsiveness of the point
   // It affects the animation speed, not the width of the background
   loadingAnimationDescription: { height: '3rem' },
+
   '@keyframes loadingAnimation_keyframes': {
     '0%': {
       backgroundPosition: '-30rem 0',
