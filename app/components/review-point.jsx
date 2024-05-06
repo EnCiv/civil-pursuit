@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
+import { TextButton } from './button.jsx'
 import ShowDualPointList from './show-dual-point-list.jsx'
 import Ranking from './util/ranking.jsx'
 import SvgChevronUp from '../svgr/chevron-up'
@@ -55,7 +55,7 @@ function ReviewPoint(props) {
   return (
     <div className={cx(className)} {...otherProps}>
       <div className={cx(classes.borderStyle)}>
-        <div className={classes.contentContainer}>
+        <div className={cx(classes.contentContainer)}>
           <div className={classes.informationGrid}>
             <div className={classes.informationColumn}>
               <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>{`${
@@ -66,7 +66,12 @@ function ReviewPoint(props) {
             </div>
 
             <div className={classes.rankingColumn}>
-              <Ranking disabled={!isRankActive} rank={rank} onDone={rank => setIsRanked(rank !== '')} />
+              <Ranking
+                className={classes.ranking}
+                disabled={!isRankActive}
+                rank={rank}
+                onDone={rank => setIsRanked(rank !== '')}
+              />
             </div>
           </div>
           <div className={classes.SvgContainer}>
@@ -84,15 +89,18 @@ function ReviewPoint(props) {
               </TextButton>
             )}
           </div>
-          {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
+        </div>
+        {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
+          <div className={classes.showDualPointListContainer}>
             <ShowDualPointList
+              className={classes.showDualPointList}
               leftHeader="Why It's Most important"
               rightHeader="Why It's Least important"
               leftPoints={leftPointList}
               rightPoints={rightPointList}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -128,7 +136,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   subjectStyle: {
     ...theme.font,
-    fontSize: '1.25rem',
+    fontSize: '1.5rem',
     fontWeight: '400',
     lineHeight: '1.875rem',
   },
@@ -140,11 +148,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
   },
   contentContainer: {
-    padding: '1.1875rem 0.875rem',
+    padding: '2rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.625rem',
+    gap: '1rem',
+    position: 'relative',
+    width: '100%',
+    boxSizing: 'border-box',
+    alignSelf: 'stretch',
+  },
+  showDualPointListContainer: {
+    padding: '0rem 2rem 1.875rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '0rem 0rem 1.875rem',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1rem',
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
@@ -159,7 +181,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   informationColumn: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.625rem',
+    gap: '1rem',
     position: 'relative',
   },
   rankingColumn: {
@@ -167,6 +189,24 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     gap: '0.625rem',
     position: 'relative',
+  },
+  showDualPointList: {
+    width: '100%',
+    padding: '0rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      border: 'none',
+      '& > div': {
+        borderTopLeftRadius: '0rem',
+        borderTopRightRadius: '0rem',
+      },
+    },
+    ranking: {
+      width: '70%',
+      fontSize: '1rem',
+      '& label': {
+        fontWeight: 'normal',
+      },
+    },
   },
 }))
 
