@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
+// https://github.com/EnCiv/civil-pursuit/issues/76
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
@@ -6,10 +7,8 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 const Point = forwardRef((props, ref) => {
-  const { subject, description, vState, children, className, ...otherProps } = props
-
+  const { subject, description, vState, children, className, isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-
   const [isHovered, setIsHovered] = useState(false)
 
   const onMouseIn = () => {
@@ -37,9 +36,27 @@ const Point = forwardRef((props, ref) => {
     >
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
-          {subject && <div className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])}>{subject}</div>}
-          {description && (
-            <div className={cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])}>{description}</div>
+          {(isLoading || subject) && (
+            <div
+              className={
+                isLoading
+                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
+                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+              }
+            >
+              {isLoading ? '' : subject}
+            </div>
+          )}
+          {(isLoading || description) && (
+            <div
+              className={
+                isLoading
+                  ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
+                  : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])
+              }
+            >
+              {isLoading ? '' : description}
+            </div>
           )}
           {childrenWithProps}
         </div>
@@ -63,6 +80,40 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'flex-start',
     gap: '0.9375rem',
     alignSelf: 'stretch',
+  },
+
+  // animation states
+  loadingAnimation: {
+    animation: '$loadingAnimation_keyframes 1s linear infinite forwards',
+    background: '#f6f7f8',
+    backgroundImage: 'linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%)',
+    backgroundSize: 'inherit',
+    position: 'relative',
+    width: '100%',
+    marginBottom: '0.625rem',
+  },
+  loadingAnimationSubject: {
+    height: '2rem',
+  },
+  // 30rem should not effect the size responsiveness of the point
+  // It affects the animation speed, not the width of the background
+  loadingAnimationDescription: { height: '3rem' },
+
+  '@keyframes loadingAnimation_keyframes': {
+    '0%': {
+      backgroundPosition: '-30rem 0',
+    },
+    '100%': {
+      backgroundPosition: '30rem 0',
+    },
+  },
+  '@-webkit-keyframes loadingAnimation_keyframes': {
+    '0%': {
+      backgroundPosition: '-30rem 0',
+    },
+    '100%': {
+      backgroundPosition: '30rem 0',
+    },
   },
 
   // border states
@@ -121,9 +172,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '400',
     lineHeight: '1.5rem !important',
   },
-  secondarySubject: {
-
-  },
+  secondarySubject: {},
 
   // description states
   defaultDescription: {
@@ -160,9 +209,9 @@ export default Point
 
 /*
 NOTES:
-- vState comes in as 'default', 'selected', 'disabled', 'collapsed', or 'secondary'
+- vState comes in as 'default', 'selected', 'disabled', 'collapsed', 'loading', or 'secondary'
 
-- Note that if multiple children are passed into this comopnent, then they must be siblings:
+- Note that if multiple children are passed into this component, then they must be siblings:
 
   Good Example:
       children: (
@@ -179,7 +228,7 @@ NOTES:
           <DemInfo />
         </div>
         <div>
-          <PointLeadB utton vState="default" />
+          <PointLeadButton vState="default" />
         </div>
       </>
     )
