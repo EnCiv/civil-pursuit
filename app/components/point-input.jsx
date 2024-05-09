@@ -98,7 +98,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         gap: '0.625rem',
-        padding: '0 1.875rem',
+        width: '100%',
     },
     sharedInputStyle: {
         radius: '0.25rem',

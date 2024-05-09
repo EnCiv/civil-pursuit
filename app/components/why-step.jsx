@@ -75,7 +75,6 @@ export default function WhyStep(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
     wrapper: {
         background: theme.colorPrimary,
-        padding: '1rem',
     },
     introContainer: {
         textAlign: 'left',
