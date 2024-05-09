@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/68
 
-'use strict'
+'use strict';
 import React from 'react';
 import Point from './point';
 import PointInput from './point-input';
@@ -14,8 +14,8 @@ function WhyInput(props) {
 
     const handleOnDone = ({ valid, value }) => {
         value.parentId = `${point._id}`;
-        onDone({ valid, value })
-    }
+        onDone({ valid, value });
+    };
 
     return (
         <div className={cx(classes.container, className)} {...otherProps}>
@@ -26,7 +26,7 @@ function WhyInput(props) {
                 <PointInput onDone={handleOnDone} defaultValue={defaultValue} />
             </div>
         </div>
-    )
+    );
 
 
 }
@@ -47,7 +47,7 @@ const useStyles = createUseStyles(theme => ({
     point: {
     },
     pointInput: {
-        alignSelf: 'center',
+        width: '100%',
     },
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
         point: {
