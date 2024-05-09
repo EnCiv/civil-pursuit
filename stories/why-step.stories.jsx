@@ -173,7 +173,7 @@ export const onDoneTest = {
         await userEvent.tab();
 
         expect(onDoneResult(canvas)).toMatchObject({
-            count: 1,
+            count: 5,
             onDoneResult: {
                 valid: true,
                 value: [
