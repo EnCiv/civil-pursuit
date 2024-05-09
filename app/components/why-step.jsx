@@ -18,17 +18,8 @@ export default function WhyStep(props) {
     } = props;
     const classes = useStylesFromThemeFunction({ valid: true, value: [] });
 
-    const generateInitialAnswers = () => {
-        const typeAnswers = type === 'most' ? shared.whyMosts : shared.whyLeasts;
-        const initialAnswers = typeAnswers.map(answer => {
-            answer.valid = false;
-            return { ...answer };
-        });
-        return initialAnswers;
-    };
-
     const [points, setPoints] = useState(type === 'most' ? shared.mosts : shared.leasts);
-    const [answeredPoints, setAnsweredPoints] = useState(() => generateInitialAnswers());
+    const [answeredPoints, setAnsweredPoints] = useState(type === 'most' ? shared.whyMosts : shared.whyLeasts);
 
     useEffect(() => {
         if (!points.length || areAnswersComplete(answeredPoints)) {
@@ -44,8 +35,7 @@ export default function WhyStep(props) {
                 answer.answerSubject = value.subject;
                 answer.answerDescription = value.description;
                 answer.valid = valid;
-            }
-            return answer;
+            } return answer;
         });
         setAnsweredPoints(updatedAnswers);
     };
@@ -69,7 +59,7 @@ export default function WhyStep(props) {
                             <hr className={classes.pointsHr}></hr>
                             <WhyInput
                                 point={point}
-                                defaultValue={{ subject: answeredPoints.subject, description: answeredPoints.description }}
+                                defaultValue={{ subject: "", description: "" }}
                                 onDone={updateWhyResponse}
                             />
                         </div>
@@ -89,6 +79,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     introContainer: {
         textAlign: 'left',
+        padding: '0 1.875rem',
     },
     introTitle: {
         fontSize: '2.25rem',
@@ -99,6 +90,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         fontSize: '1.25rem',
     },
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+        introContainer: {
+            padding: '0',
+        },
         introText: {
             maxWidth: '33rem',
         }
@@ -112,8 +106,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
         pointsHr: {
-            margin: '2rem 0',
+            margin: '2rem 1.875rem',
         },
     },
 }));
-
