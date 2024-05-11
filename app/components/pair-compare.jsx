@@ -245,6 +245,7 @@ const useStyles = createUseStyles(theme => ({
     visiblePoint: {
         width: '30%',
         cursor: 'pointer',
+        borderRadius: '0.9375rem',
         '&:focus': {
             outline: `${theme.focusOutline}`,
     },
