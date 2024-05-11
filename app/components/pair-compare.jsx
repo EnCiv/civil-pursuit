@@ -175,9 +175,9 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]} />}</div>}
+                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]} tabIndex={0} />}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]} />}</div>}
+                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]} tabIndex={0} />}</div>}
                 </div>
 
                 <div className={classes.buttonsContainer}>
