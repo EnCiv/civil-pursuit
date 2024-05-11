@@ -175,9 +175,9 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick}>{<Point {...pointList[idxLeft]} tabIndex={0} title={`Choose as more important: ${pointList[idxLeft]?.subject}`} />}</div>}
+                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxLeft]?.subject}`}>{<Point {...pointList[idxLeft]} />}</div>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick}>{<Point {...pointList[idxRight]} tabIndex={0} title={`Choose as more important: ${pointList[idxRight]?.subject}`} />}</div>}
+                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxRight]?.subject}`} >{<Point {...pointList[idxRight]}/>}</div>}
                 </div>
 
                 <div className={classes.buttonsContainer}>
@@ -245,6 +245,9 @@ const useStyles = createUseStyles(theme => ({
     visiblePoint: {
         width: '30%',
         cursor: 'pointer',
+        '&:focus': {
+            outline: `${theme.focusOutline}`,
+    },
     },
     lowerContainer: {
         marginTop: '1rem',
