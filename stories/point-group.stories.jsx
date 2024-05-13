@@ -57,10 +57,13 @@ const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
 const point5 = createPointObj('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
 
 export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' } }
+export const SelectedSinglePoint = { args: { pointObj: point1, vState: 'default', select: true } }
 export const EditSinglePoint = { args: { pointObj: point1, vState: 'edit' } }
 
 export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } }
+export const selectedDefaultMultiplePoints = { args: { pointObj: point5, vState: 'default', select: true } }
 export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } }
+export const selectedEditMultiplePoints = { args: { pointObj: point5, vState: 'edit', select: true } }
 
 export const mobileSingePoint = {
   args: { pointObj: point1, vState: 'default' },
@@ -121,7 +124,6 @@ export const selectLeadPoint3OnDone = {
                 subject: 'Point 2',
                 description:
                   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-                groupedPoints: [],
                 user: {
                   dob: '1980-10-20T00:00:00.000Z',
                   state: 'GA',
@@ -132,7 +134,6 @@ export const selectLeadPoint3OnDone = {
                 _id: '4',
                 subject: 'Point 4',
                 description: 'Point 4 Description',
-                groupedPoints: [],
                 user: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
@@ -143,7 +144,6 @@ export const selectLeadPoint3OnDone = {
                 _id: '6',
                 subject: 'Point 6',
                 description: 'Point 6 Description',
-                groupedPoints: [],
                 user: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
