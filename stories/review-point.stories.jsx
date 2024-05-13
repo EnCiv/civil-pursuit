@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { expect } from '@storybook/jest'
-import PointGroup from '../app/components/point-group'
 import ReviewPoint from '../app/components/review-point'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
@@ -58,12 +57,52 @@ const point6 = {
     'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
 }
 
-// Case when props are undefined:
-export const UndefinedProps = {
+export const Empty = {
+  args: {},
+}
+
+export const Desktop = {
   args: {
     subject: 'Ineuqality',
     description: 'Inequality can hinder economic growth and stablity',
     leftPointList: [point1, point2, point3],
     rightPointList: [point4, point5, point6],
+  },
+}
+
+export const Mobile = {
+  args: {
+    subject: 'Ineuqality',
+    description: 'Inequality can hinder economic growth and stablity',
+    leftPointList: [point1, point2, point3],
+    rightPointList: [point4, point5, point6],
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const ReviewOnDone = {
+  args: {
+    subject: 'Inequality',
+    description: 'Inequality can hinder economic growth and stability',
+    leftPointList: [point1, point2, point3],
+    rightPointList: [point4, point5, point6],
+  },
+  decorators: [onDoneDecorator],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByTitle('open'))
+    await userEvent.click(canvas.getByText('Expand Chart'))
+    await userEvent.click(canvas.getByText('Collapse Chart'))
+    await userEvent.click(canvas.getByText('Most'))
+    expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
+        valid: true,
+        value: 'Most',
+      },
+    })
   },
 }
