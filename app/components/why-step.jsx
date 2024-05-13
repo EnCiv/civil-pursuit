@@ -16,7 +16,7 @@ export default function WhyStep(props) {
         onDone = () => { },
         ...otherProps
     } = props;
-    const classes = useStylesFromThemeFunction({ valid: true, value: [] });
+    const classes = useStylesFromThemeFunction();
 
     const [points, setPoints] = useState(type === 'most' ? shared.mosts : shared.leasts);
     const [answeredPoints, setAnsweredPoints] = useState(type === 'most' ? shared.whyMosts : shared.whyLeasts);
