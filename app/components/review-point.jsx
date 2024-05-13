@@ -150,6 +150,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   contentContainer: {
     padding: '2rem 1.875rem',
+    paddingRight: '10rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '2rem 1.875rem',
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -160,7 +164,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignSelf: 'stretch',
   },
   showDualPointListContainer: {
-    padding: '0rem 2rem 1.875rem',
+    padding: '0rem 1.875rem 1.875rem',
+    paddingRight: '10rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '0rem 0rem 1.875rem',
     },
@@ -175,22 +180,35 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   informationGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
+    gridTemplateColumns: '1fr', // Initially, set to 1 column
     gap: '1rem',
     width: '100%',
   },
+
   informationColumn: {
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
     position: 'relative',
+    width: '100%', // Initially set to 100%
   },
+
   rankingColumn: {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.625rem',
     position: 'relative',
+    width: '100%', // Initially set to 100%
   },
+
+  // Additional style for adjusting grid layout
+  '@media (min-width: 40rem)': {
+    // Adjust breakpoint as needed
+    informationGrid: {
+      gridTemplateColumns: '1fr 0.25fr', // Adjusted grid layout
+    },
+  },
+
   ranking: {
     width: '70%',
     fontSize: '1rem',
