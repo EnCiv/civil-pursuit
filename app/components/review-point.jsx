@@ -150,7 +150,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   contentContainer: {
     padding: '2rem 1.875rem',
-    paddingRight: '10rem',
+    paddingRight: '15%',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '2rem 1.875rem',
     },
@@ -165,7 +165,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   showDualPointListContainer: {
     padding: '0rem 1.875rem 1.875rem',
-    paddingRight: '10rem',
+    paddingRight: '15%',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '0rem 0rem 1.875rem',
     },
