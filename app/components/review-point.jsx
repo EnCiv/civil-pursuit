@@ -52,6 +52,12 @@ function ReviewPoint(props) {
     }
   }, [isOpened, isRanked])
 
+  const handleRankingDone = selectedRank => {
+    setIsOpened(false) // Close the component when a ranking is chosen
+    setIsRanked(selectedRank !== '') // Update isRanked based on whether a rank is selected
+    onDone(selectedRank) // Call the onDone callback with the selected rank
+  }
+
   return (
     <div className={cx(className)} {...otherProps}>
       <div className={cx(classes.borderStyle)}>
@@ -66,12 +72,7 @@ function ReviewPoint(props) {
             </div>
 
             <div className={classes.rankingColumn}>
-              <Ranking
-                className={classes.ranking}
-                disabled={!isRankActive}
-                rank={rank}
-                onDone={rank => setIsRanked(rank !== '')}
-              />
+              <Ranking className={classes.ranking} disabled={!isRankActive} rank={rank} onDone={handleRankingDone} />
             </div>
           </div>
           <div className={classes.SvgContainer}>
