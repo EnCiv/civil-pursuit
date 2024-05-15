@@ -9,12 +9,14 @@ export default {
   component: MoreDetails,
   args: {},
   // decorators: [onDoneDecorator],
-  // parameters: {
-  //   viewport: {
-  //     viewports: INITIAL_VIEWPORTS,
-  //   },
-  // },
+  parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+    },
+  },
 }
+
+const initialDetails = { householdIncome: '0-10000', housing: 'Apartment', numberOfSiblings: '2' }
 
 export const Empty = {
   args: {},
