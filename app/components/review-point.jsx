@@ -110,7 +110,7 @@ function ReviewPoint(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
-    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+    boxShadow: theme.boxShadow,
   },
 
   container: {
