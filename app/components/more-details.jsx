@@ -40,11 +40,14 @@ const MoreDetails = props => {
         type: 'string',
         enum: ['0', '1', '2'],
       },
-      submit: {
-        type: 'button',
-        title: 'Submit',
-      },
     },
+    form: [
+      '*',
+      {
+        type: 'submit',
+        title: 'OK Go - This Too Shall Pass',
+      },
+    ],
   }
   const uischema = {
     type: 'VerticalLayout',
@@ -67,22 +70,11 @@ const MoreDetails = props => {
         scope: '#/properties/numberOfSiblings',
         labelAlignment: 'top',
       },
-      {
-        type: 'Button',
-        scope: '#/properties/submit',
-      },
     ],
   }
 
-  const handleOnDone = ({ valid, value }) => {
-    console.log('handleOnDone clicked')
-    // value.parentId = `${point._id}`
-    // onDone({ valid, value })
-  }
-
-  const onSubmit = data => {
-    console.log('Form data:', data)
-    console.log('onSubmit clicked')
+  const handleOnSubmit = () => {
+    console.log('Form data: ', data)
     // Handle form submission logic here
   }
 
@@ -99,12 +91,12 @@ const MoreDetails = props => {
             uischema={uischema}
             data={data}
             renderers={vanillaRenderers}
-            details={} // the data for jsonforms
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
-            onSubmit={onSubmit}
           />
-          <Submit className={classes.submitButton}>Submit</Submit>
+          <Submit className={classes.submitButton} onClick={handleOnSubmit}>
+            Submit
+          </Submit>
         </Column>
       </div>
     </div>
@@ -117,21 +109,29 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     fontFamily: 'Inter',
-    // border: 'medium dashed green',
   },
   formContainer: {
     margin: '1.25rem',
-    // border: 'medium solid red'
   },
   selectList: {},
   selectTitle: { fontWeight: 'bold' },
-  submitButton: { backgroundColor: '#06335C', color: '#fff', borderRadius: '10px', width: '100%' },
+  submitButton: {
+    backgroundColor: '#06335C',
+    color: '#fff',
+    borderRadius: '10px',
+    width: '100%',
+  },
   stackedControl: {
     fontWeight: 'bold',
     '& > .control': {
       fontWeight: 'bold',
       display: 'block',
-      marginBottom: '10px',
+      marginBottom: '1.25rem',
+    },
+  },
+  [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    container: {
+      flexDirection: 'column',
     },
   },
 }))
