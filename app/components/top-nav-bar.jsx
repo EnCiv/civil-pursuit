@@ -168,7 +168,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     fontSize: '1rem',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
-    color: props.mode === 'dark' ? 'white' : 'defaultColor',
+    color: props.mode === 'dark' ? 'white' : theme.colors.darkModeGray,
   }),
 
   columnAligner: props => ({
@@ -231,7 +231,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   dropdownMenu: props => ({
     position: 'absolute',
     background: theme.colors.encivYellow,
-    color: theme.colors.darkModeGray,
+    color: 'black',
     display: 'flex',
     flexDirection: 'column',
   }),
@@ -241,6 +241,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.25rem 0.25rem',
   },
   menuItem: {
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
     cursor: 'pointer',
     background: 'none',
     border: 'none',
@@ -249,7 +253,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     whiteSpace: 'nowrap',
     textAlign: 'left',
     '&:hover': {
-      background: theme.colors.hoverGray,
+      background: theme.colors.encivYellow,
+      color: 'black',
     },
   },
   selectedItem: props => ({
