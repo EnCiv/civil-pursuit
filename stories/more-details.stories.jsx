@@ -18,8 +18,8 @@ export default {
 
 const initialDetails = { householdIncome: '0-10000', housing: 'Apartment', numberOfSiblings: '2' }
 
-export const Empty = {
-  args: {},
+export const Empty = () => {
+  return <MoreDetails />
 }
 
 export const FigmaInputMatch = {

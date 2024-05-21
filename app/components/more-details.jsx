@@ -4,21 +4,13 @@
 import React, { useState } from 'react'
 import Column from './util/column'
 import Submit from './util/submit'
-import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 
 const MoreDetails = props => {
-  const {
-    point = { subject: '', description: '', _id: '' },
-    defaultValue = { subject: '', description: '' },
-    onDone = () => {},
-    className,
-    ...otherProps
-  } = props
   const [data, setData] = useState(initialData)
-  const classes = useStyles()
+  const classes = useStyles(props)
   const initialData = {}
 
   const schema = {
@@ -28,7 +20,6 @@ const MoreDetails = props => {
         title: 'Household Income',
         type: 'string',
         enum: ['0-10000', '10000-20000', '20000-30000'],
-        default: 'Select household range',
       },
       housing: {
         title: 'Housing',
@@ -41,34 +32,25 @@ const MoreDetails = props => {
         enum: ['0', '1', '2'],
       },
     },
-    form: [
-      '*',
-      {
-        type: 'submit',
-        title: 'OK Go - This Too Shall Pass',
-      },
-    ],
   }
   const uischema = {
     type: 'VerticalLayout',
     elements: [
       {
+        type: 'Label',
+        text: 'Household Income',
+      },
+      {
         type: 'Control',
         scope: '#/properties/householdIncome',
-        options: {
-          classNames: classes.stackedControl,
-        },
       },
-
       {
         type: 'Control',
         scope: '#/properties/housing',
-        labelAlignment: 'top',
       },
       {
         type: 'Control',
         scope: '#/properties/numberOfSiblings',
-        labelAlignment: 'top',
       },
     ],
   }
@@ -80,10 +62,9 @@ const MoreDetails = props => {
 
   return (
     <div
-      className={cx(classes.container, className)}
-      {...otherProps}
+      className={classes.container}
     >
-      <h3>We just need a few more details about you to get started.</h3>
+      <p className={classes.title}>We just need a few more details about you to get started.</p>
       <div className={classes.formContainer}>
         <Column>
           <JsonForms
@@ -94,7 +75,10 @@ const MoreDetails = props => {
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
           />
-          <Submit className={classes.submitButton} onClick={handleOnSubmit}>
+          <Submit
+            className={classes.submitButton}
+            onClick={handleOnSubmit}
+          >
             Submit
           </Submit>
         </Column>
@@ -104,23 +88,20 @@ const MoreDetails = props => {
 }
 
 const useStyles = createUseStyles(theme => ({
-  container: {
+  container: props => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    fontFamily: 'Inter',
-  },
+    width: '100%',
+    backgroundColor: props.mode != 'dark' ? theme.colors.darkModeGray : theme.colors.white,
+    color: props.mode != 'dark' ? theme.colors.white : theme.colors.black,
+    border: 'medium dashed green',
+  }),
   formContainer: {
-    margin: '1.25rem',
+    border: 'medium solid red',
   },
   selectList: {},
   selectTitle: { fontWeight: 'bold' },
-  submitButton: {
-    backgroundColor: '#06335C',
-    color: '#fff',
-    borderRadius: '10px',
-    width: '100%',
-  },
   stackedControl: {
     fontWeight: 'bold',
     '& > .control': {
