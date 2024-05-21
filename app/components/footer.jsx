@@ -35,11 +35,11 @@ const Footer = props => {
             </div>
           </div>
           <div className={`${classes.column} ${classes.item4}`}>
-            <a href="https://enciv.org/terms/" className={`${classes.secondaryText} ${classes.links}`}>
+            <a href="/terms" className={`${classes.secondaryText} ${classes.links}`}>
               Terms and Conditions
             </a>{' '}
             |{' '}
-            <a href="https://enciv.org/privacy" className={`${classes.secondaryText} ${classes.links}`}>
+            <a href="/privacy" className={`${classes.secondaryText} ${classes.links}`}>
               Privacy Policy
             </a>
           </div>
