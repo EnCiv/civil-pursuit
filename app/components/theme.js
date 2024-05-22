@@ -52,7 +52,7 @@ const Theme = {
     },
   },
   condensedWidthBreakPoint: '40rem',
-  maxPanelWidth: '90rem',
+  maxPanelWidth: '78rem',
 }
 
 export default Theme

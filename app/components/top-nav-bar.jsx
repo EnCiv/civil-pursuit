@@ -47,7 +47,7 @@ const TopNavBar = props => {
   }
 
   return (
-    <div className={cx(classes.componentWrapper, className)} {...otherProps}>
+    <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
       <div className={classes.columnAligner}>
         <div className={`${classes.navBarContainer}`}>
           {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
@@ -70,7 +70,7 @@ const TopNavBar = props => {
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
-                              className={cx(classes.menuItem, {
+                              className={cx(classes.menuItem, classes.colors, {
                                 [classes.selectedItem]: selectedItem === subItem.name,
                               })}
                               onClick={() => handleMenuItemClick(subItem)}
@@ -86,7 +86,9 @@ const TopNavBar = props => {
                   <li className={classes.menuList}>
                     <button
                       key={item.name}
-                      className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                      className={cx(classes.menuItem, classes.colors, {
+                        [classes.selectedItem]: selectedItem === item.name,
+                      })}
                       onClick={() => handleMenuItemClick(item)}
                     >
                       {item.name}
@@ -102,7 +104,7 @@ const TopNavBar = props => {
             </div>
           )}
 
-          <button className={classes.menuToggle} onClick={toggleMenu}>
+          <button className={cx(classes.menuToggle, classes.colors)} onClick={toggleMenu}>
             &#8801;
           </button>
         </div>
@@ -115,7 +117,9 @@ const TopNavBar = props => {
                 Array.isArray(item) ? (
                   <li className={classes.menuList}>
                     <div
-                      className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
+                      className={cx(classes.menuGroup, classes.colors, {
+                        [classes.selectedItem]: selectedItem === item[0].name,
+                      })}
                       key={index}
                       onClick={() => handleMobileMenuGroupClick(item, index)}
                     >
@@ -125,7 +129,7 @@ const TopNavBar = props => {
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
-                              className={cx(classes.menuItem, {
+                              className={cx(classes.menuItem, classes.colors, {
                                 [classes.selectedItem]: selectedItem === subItem.name,
                               })}
                               onClick={event => {
@@ -144,7 +148,9 @@ const TopNavBar = props => {
                   <li className={classes.menuList}>
                     <div
                       key={item.name}
-                      className={cx(classes.menuItem, { [classes.selectedItem]: selectedItem === item.name })}
+                      className={cx(classes.menuItem, classes.colors, {
+                        [classes.selectedItem]: selectedItem === item.name,
+                      })}
                       onClick={() => handleMenuItemClick(item)}
                     >
                       {item.name}
@@ -161,14 +167,16 @@ const TopNavBar = props => {
 
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  componentWrapper: props => ({
+  colors: props => ({
+    color: props.mode === 'dark' ? 'white' : theme.colors.darkModeGray,
+  }),
+  topNavBar: props => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '1rem',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
-    color: props.mode === 'dark' ? 'white' : theme.colors.darkModeGray,
   }),
 
   columnAligner: props => ({
@@ -217,7 +225,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
   }),
-  menuGroup: {
+  menuGroup: props => ({
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
     cursor: 'default',
     background: 'none',
     border: 'none',
@@ -227,11 +239,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       cursor: 'pointer',
     },
-  },
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' ? 'black' : 'white',
+    },
+  }),
   dropdownMenu: props => ({
     position: 'absolute',
     background: theme.colors.encivYellow,
-    color: 'black',
     display: 'flex',
     flexDirection: 'column',
   }),
@@ -240,7 +255,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     padding: '0.25rem 0.25rem',
   },
-  menuItem: {
+  menuItem: props => ({
     fontFamily: 'Inter',
     fontStyle: 'normal',
     fontWeight: 500,
@@ -254,9 +269,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'left',
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: 'black',
+      color: props.mode === 'dark' ? 'black' : 'white',
     },
-  },
+  }),
   selectedItem: props => ({
     borderBottom: '0.125rem solid' + (props.mode === 'dark' ? theme.colors.white : theme.colors.black),
   }),
@@ -282,7 +297,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
     '&:hover': {
-      background: theme.colors.hoverGray,
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' ? 'black' : 'white',
     },
   }),
   menuList: {
