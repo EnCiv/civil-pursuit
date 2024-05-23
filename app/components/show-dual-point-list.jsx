@@ -104,6 +104,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       '& div': {
         padding: '0.1rem',
       },
+      '&:hover': {
+        outline: 'none !important',
+      },
+      '&:hover $defaultSubject': {
+        color: 'inherit !important',
+      },
+      '&:hover $defaultDescription': {
+        color: 'inherit !important',
+      },
     },
   },
   oddRow: {
