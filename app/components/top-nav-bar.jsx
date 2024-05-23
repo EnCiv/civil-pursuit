@@ -57,10 +57,9 @@ const TopNavBar = props => {
             {menu &&
               menu.map((item, index) =>
                 Array.isArray(item) ? (
-                  <li className={classes.menuList}>
+                  <li className={classes.menuList} key={index}>
                     <div
                       className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
-                      key={index}
                       onMouseEnter={() => handleMouseEnter(index)}
                       onMouseLeave={() => handleMouseLeave()}
                     >
@@ -83,9 +82,8 @@ const TopNavBar = props => {
                     </div>
                   </li>
                 ) : (
-                  <li className={classes.menuList}>
+                  <li className={classes.menuList} key={item.name}>
                     <button
-                      key={item.name}
                       className={cx(classes.menuItem, classes.colors, {
                         [classes.selectedItem]: selectedItem === item.name,
                       })}
