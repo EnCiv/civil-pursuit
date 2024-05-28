@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Point from './point.jsx';
 import { createUseStyles } from 'react-jss';
-import { PrimaryButton, SecondaryButton } from './button.jsx';
+import { SecondaryButton } from './button.jsx';
 
 function PairCompare(props) {
     const { pointList = [], onDone = () => { }, mainPoint = { subject: "", description: "" }, ...otherProps } = props
@@ -175,11 +175,10 @@ function PairCompare(props) {
 
                 <div className={classes.visiblePointsContainer}>
                     {idxLeft < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxLeft]?.subject}`}>{<Point {...pointList[idxLeft]} />}</div>}
+                        <button className={classes.visiblePoint} ref={visibleLeftPointRef} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxLeft]?.subject}`}>{<Point {...pointList[idxLeft]} />}</button>}
                     {idxRight < pointList.length &&
-                        <div className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxRight]?.subject}`} >{<Point {...pointList[idxRight]}/>}</div>}
+                        <button className={classes.visiblePoint} ref={visibleRightPointRef} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${pointList[idxRight]?.subject}`} >{<Point {...pointList[idxRight]}/>}</button>}
                 </div>
-
                 <div className={classes.buttonsContainer}>
                     {
                         !isSelectionComplete() ?
@@ -248,7 +247,8 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '0.9375rem',
         '&:focus': {
             outline: `${theme.focusOutline}`,
-    },
+        },
+        ...sharedButtonStyle(),
     },
     lowerContainer: {
         marginTop: '1rem',
@@ -266,7 +266,17 @@ const useStyles = createUseStyles(theme => ({
 const sharedStatusBadgeStyle = () => ({
     borderRadius: '1rem',
     padding: '0.375rem 0.625rem',
+})
 
+const sharedButtonStyle = () => ({
+    background: 'none',
+    border: 'none',
+    padding: '0',
+    textAlign: 'left',
+    '&:hover': {
+        background: 'none',
+        border: 'none',
+    }
 })
 
 export default PairCompare;
