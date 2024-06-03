@@ -14,7 +14,7 @@ const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
   useEffect(() => {
     if (!isCompleted && rankedPoints.length === ReviewPoints.length) {
       const donePercentage = (rankedPoints.length / ReviewPoints.length) * 100
-      onDone(true, donePercentage)
+      onDone({ valid: true, value: donePercentage })
       setIsCompleted(true)
     }
   }, [rankedPoints, ReviewPoints, onDone, isCompleted])
