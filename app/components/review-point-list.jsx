@@ -2,11 +2,14 @@
 
 'use strict'
 import React, { useState, useEffect } from 'react'
+import { createUseStyles } from 'react-jss'
 import ReviewPoint from './review-point.jsx'
 
 const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
   const [rankedPoints, setRankedPoints] = useState([])
   const [isCompleted, setIsCompleted] = useState(false)
+
+  const classes = useStylesFromThemeFunction()
 
   useEffect(() => {
     if (!isCompleted && rankedPoints.length === ReviewPoints.length) {
@@ -22,7 +25,7 @@ const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
   }
 
   return (
-    <div>
+    <div className={classes.reviewPointsContainer}>
       {ReviewPoints.map(reviewPoint => (
         <ReviewPoint
           key={reviewPoint.point._id}
@@ -36,5 +39,13 @@ const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
     </div>
   )
 }
+
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+  reviewPointsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+}))
 
 export default ReviewPointList
