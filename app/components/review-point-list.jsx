@@ -6,22 +6,32 @@ import { createUseStyles } from 'react-jss'
 import ReviewPoint from './review-point.jsx'
 
 const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
-  const [rankedPoints, setRankedPoints] = useState([])
-  const [isCompleted, setIsCompleted] = useState(false)
+  const [rankedPoints, setRankedPoints] = useState(new Map())
 
   const classes = useStylesFromThemeFunction()
 
   useEffect(() => {
-    if (!isCompleted && rankedPoints.length === ReviewPoints.length) {
-      const donePercentage = (rankedPoints.length / ReviewPoints.length) * 100
-      onDone({ valid: true, value: donePercentage })
-      setIsCompleted(true)
+    // Check if all points have been ranked
+    if (rankedPoints.size === ReviewPoints.length) {
+      console.log('ReviewPoints:', ReviewPoints)
+      const donePercentage = (rankedPoints.size / ReviewPoints.length) * 100
+
+      // Call onDone with the completed ranking information
+      onDone({
+        valid: true,
+        value: {
+          donePercentage,
+        },
+      })
     }
-  }, [rankedPoints, ReviewPoints, onDone, isCompleted])
-  const handleReviewPointDone = pointId => {
-    if (!rankedPoints.includes(pointId)) {
-      setRankedPoints(prevPoints => [...prevPoints, pointId])
-    }
+  }, [rankedPoints])
+
+  const handleReviewPointDone = (pointId, selectedRank) => {
+    setRankedPoints(prevRankedPoints => {
+      const newRankedPoints = new Map(prevRankedPoints)
+      newRankedPoints.set(pointId, selectedRank)
+      return newRankedPoints
+    })
   }
 
   return (
@@ -32,8 +42,8 @@ const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
           point={reviewPoint.point}
           leftPointList={reviewPoint.leftPoints}
           rightPointList={reviewPoint.rightPoints}
-          rank={reviewPoint.rank}
-          onDone={() => handleReviewPointDone(reviewPoint.point._id)}
+          rank={rankedPoints.get(reviewPoint.point._id) || reviewPoint.rank}
+          onDone={selectedRank => handleReviewPointDone(reviewPoint.point._id, selectedRank)}
         />
       ))}
     </div>
