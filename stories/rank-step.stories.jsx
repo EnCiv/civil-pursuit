@@ -5,14 +5,13 @@ import expect from 'expect'
 
 import { onDoneDecorator, onDoneResult } from './common'
 import { userEvent, within } from '@storybook/testing-library'
-import Point from '../app/components/point'
 export default {
   component: RankStep,
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [onDoneDecorator],
 }
-const Template = Component => args => <Component {...args} />
 
 const createPointObj = (
   _id,
@@ -45,56 +44,52 @@ const point8 = createPointObj('8', 'Point 8', 'Point 8 Description')
 const point9 = createPointObj('9', 'Point 9', 'Point 9 Description')
 const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
 
-export const emptyRank = Template(RankStep).bind({})
-emptyRank.args = {
-  style: {},
-  onDone: null,
-  pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+export const Empty = { args: {} }
+
+export const emptyRank = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [],
+  },
 }
 
-export const tenRanks = Template(RankStep).bind({})
-tenRanks.args = {
-  style: {},
-  onDone: null,
-  pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-
-  rankList: [
-    { id: point1._id, rank: 'Most' },
-    { id: point2._id, rank: 'Most' },
-    { id: point3._id, rank: 'Least' },
-    { id: point4._id, rank: 'Neutral' },
-    { id: point5._id, rank: 'Neutral' },
-    { id: point6._id, rank: 'Neutral' },
-    { id: point7._id, rank: 'Neutral' },
-    { id: point8._id, rank: 'Neutral' },
-    { id: point9._id, rank: 'Neutral' },
-    { id: point10._id, rank: 'Neutral' },
-  ],
-}
-export const sevenPoints = Template(RankStep).bind({})
-sevenPoints.args = {
-  style: {},
-  onDone: null,
-  pointList: [point1, point2, point3, point4, point5, point6, point7],
-  rankList: [
-    { id: point1._id, rank: 'Most' },
-    { id: point2._id, rank: 'Most' },
-    { id: point3._id, rank: 'Least' },
-    { id: point4._id, rank: 'Neutral' },
-    { id: point5._id, rank: 'Neutral' },
-    { id: point6._id, rank: 'Neutral' },
-    { id: point7._id, rank: 'Neutral' },
-  ],
+export const tenRanks = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Most' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Neutral' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Neutral' },
+      { id: point7._id, rank: 'Neutral' },
+      { id: point8._id, rank: 'Neutral' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+    ],
+  },
 }
 
-export const threePoints = Template(RankStep).bind({})
-threePoints.args = {
-  style: {},
-  onDone: null,
-  pointList: [point1, point2, point3],
-  rankList: [
-    { id: point1._id, rank: 'Most' },
-    { id: point2._id, rank: 'Most' },
-    { id: point3._id, rank: 'Least' },
-  ],
+export const sevenPointsWith3Ranked = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Most' },
+      { id: point3._id, rank: 'Least' },
+    ],
+  },
+}
+
+export const threePoints = {
+  args: {
+    style: {},
+    pointList: [point1, point2, point3],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Most' },
+      { id: point3._id, rank: 'Least' },
+    ],
+  },
 }
