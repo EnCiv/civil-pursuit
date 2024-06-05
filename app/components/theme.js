@@ -1,7 +1,10 @@
 'use strict'
 
 const Theme = {
-  focusOutline: 'solid .3rem #B3B3B3',
+  zIndexes: {
+    menu: 10,
+  },
+  focusOutline: 'solid .3rem #DCE8F2',
   // ui colors
   colors: {
     success: '#005621',

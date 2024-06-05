@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
-import React from 'react'
 import Theme from '../app/components/theme'
 
-function DemInfoTestComponent(props) {
+const DemInfoTestComponent = props => {
   const { vState } = props
   const theme = Theme
   return (
@@ -87,11 +87,35 @@ export const ParentsWidth = args => {
             <PointLeadButton vState="default" />
           </>
         }
-      ></Point>
+      />
     </div>
   )
 }
 
 export const Collapsed = args => {
-  return <Point vState={'collapsed'} subject={args.subject}></Point>
+  return <Point vState={'collapsed'} subject={args.subject} />
+}
+
+export const Secondary = args => {
+  return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />} />
+}
+
+export const LoadingLoop = () => {
+  const [isLoading, setIsLoading] = useState(true)
+
+  return <Point vState={'loading'} isLoading={isLoading} />
+}
+
+export const LoadingThenLoads = args => {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLoading(false)
+    }, 2000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
+  return <Point vState={isLoading ? 'loading' : 'default'} isLoading={isLoading} {...args} />
 }

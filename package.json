@@ -1,8 +1,8 @@
 {
   "name": "civil-pursuit",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Civil Pursuit - so millions of people can deliberate productively online",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "babel app --out-dir dist && redtea dist/test/migrate dist/test/run --fork",
     "syntest": "node dist/bin/test",
