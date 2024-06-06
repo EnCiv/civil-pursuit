@@ -21,6 +21,7 @@ function Button(props) {
     tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
     value,
+    type = 'button', // by default this is a button
     children,
     ...otherProps
   } = props
@@ -87,6 +88,7 @@ function Button(props) {
         tabIndex={tabIndex}
         title={title}
         disabled={isDisabled}
+        type={type}
         value={value}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
