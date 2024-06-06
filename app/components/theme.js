@@ -39,6 +39,7 @@ const Theme = {
     inactiveGray: '#D9D9D9',
     stepContainerActive: 'rgba(6, 51, 92, 0.10)',
     svgArrow: 'rgb(206, 206, 206)',
+    transparent: 'transparent'
   },
   font: {
     fontFamily: 'Inter',

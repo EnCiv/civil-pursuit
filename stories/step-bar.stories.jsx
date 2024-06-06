@@ -98,3 +98,18 @@ export const ScrollLeft = {
   },
 }
 ScrollLeft.args = { steps: secondarySteps, current: 9 }
+
+// Accessibility tests
+// export const AccessibilityTest = {
+//   play: async ({ canvasElement }) => {
+//     const canvas = within(canvasElement)
+
+//     const rightScroll = canvas.getByTestId('rightclick')
+//     const leftScroll = canvas.getByTestId('leftclick')
+//     const step = canvas.getByTestId('testClick')
+
+//     setTimeout(async () => {
+//       await userEvent.click(step)
+//     }, 500)
+//   },
+// }

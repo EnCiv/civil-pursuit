@@ -37,8 +37,10 @@ function StepBar(props) {
   const [stepRefs, setStepRefs] = useState(steps.map(() => useRef(null)))
   // Reference to the steps container, to collect the maximum width of step visibility.
   const stepContainerRef = useRef(null)
-  // Reference to the select dropdown. Any click event target that is not a descendant of the select input will close the input.
+  // Reference to the select dropdown. to track click event targets that are not a descendant of the select input.
   const selectRef = useRef(null)
+  // Reference to the select dropdown's options container. To track click event targets that are not in the options container.
+  const optionsContainerRef = useRef(null)
   // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
   const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint * 16)
   // State to handle the select input.
@@ -58,14 +60,38 @@ function StepBar(props) {
     return newSteps
   }, [steps])
 
-  const handleOpen = () => {
-    setIsOpen(!isOpen)
-  }
-
   const handleClickOutside = event => {
-    // if the select input is currently rendered and it does not contain the click event target, then close the menu.
-    if (selectRef?.current && !selectRef?.current?.contains(event?.target)) {
-      setIsOpen(false)
+    if (!isMobile) return
+    // If the menu is closed then check for the existence of select input reference.
+    // If it exists and contains the click event target, then open the menu.
+    // In other words, the user has clicked the input to open the menu.
+    if (!isOpen) {
+      if (selectRef?.current && selectRef?.current.contains(event?.target)) {
+        setIsOpen(true)
+      }
+      // If the menu is open, then check for the existence of all the references.
+      // If non-existent, then return.
+    } else {
+      if (selectRef?.current && optionsContainerRef?.current) {
+        // If the user clicks an incomplete option that isn't active and it is inside of the
+        // dropdowon container, then the menu stays open.
+        // Otherwise, then menu closes. Note that only complete steps will call onDone.
+        for (let i = 0; i < stepRefs.length; i++) {
+          if (stepRefs[i]?.current) {
+            if (
+              !stepRefs[i]?.current?.contains(event?.target) &&
+              optionsContainerRef?.current?.contains(event?.target)
+            ) {
+              continue
+            } else {
+              setIsOpen(false)
+              return
+            }
+          }
+        }
+      } else {
+        return
+      }
     }
   }
 
@@ -110,6 +136,7 @@ function StepBar(props) {
   To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
   */
   const handleCarouselSetup = () => {
+    if (isMobile) return
     // render all the steps so that all the widths can be measured
     setVisibleSteps([...steps, dummyStep])
 
@@ -159,11 +186,11 @@ function StepBar(props) {
     const handleResizeDebounced = debounce(handleResize, stepbarDebounceTime)
 
     window.addEventListener('resize', handleResizeDebounced)
-    window.addEventListener('mousedown', handleClickOutside)
+    window.addEventListener('mouseup', handleClickOutside)
 
     return () => {
       window.removeEventListener('resize', handleResizeDebounced)
-      window.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('mouseup', handleClickOutside)
     }
   })
 
@@ -228,7 +255,7 @@ function StepBar(props) {
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div className={classes.selectInput} onClick={handleOpen} ref={selectRef}>
+      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0}>
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>{steps[current - 1].name}</div>
           {isOpen ? (
@@ -240,7 +267,7 @@ function StepBar(props) {
       </div>
 
       {isOpen && (
-        <div className={cx(classes.dropdownContainer, classes.customScrollbar)}>
+        <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef}>
           <div className={classes.dropdownContent}>
             <div className={classes.stepsContainerMobile}>
               {stepsWithIds.map((step, index) => {
@@ -254,6 +281,7 @@ function StepBar(props) {
                     onDone={onDone}
                     index={index}
                     {...otherProps}
+                    ref={stepRefs[index]}
                   />
                 )
               })}
@@ -269,7 +297,7 @@ function StepBar(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'flex',
-    background: '#FFF',
+    background: theme.transparent,
   },
 
   stepsContainer: {
@@ -307,8 +335,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   resetButtonStyling: {
     border: 'none',
-    width: 'auto',
-    overflow: 'visible',
     background: 'transparent',
 
     '&:hover': {
@@ -316,6 +342,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:active': {
       backgroundColor: 'transparent',
+    },
+    '&:focus': {
+      outline: theme.focusOutline,
     },
   },
 

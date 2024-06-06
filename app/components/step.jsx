@@ -2,12 +2,12 @@
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal/lib'
 
-function Step(props) {
+const Step = forwardRef((props, ref) => {
   const { name, title, complete, active, onDone = () => {}, index, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
@@ -20,12 +20,12 @@ function Step(props) {
   const timeRef = useRef(null)
 
   const containerStyle = cx(
+    classes.buttonFocus,
     classes.sharedContainerStyles,
     {
       [classes.containerActive]: active,
       [classes.containerInactiveComplete]: !active,
     },
-    classes.resetButtonStyling,
     className
   )
 
@@ -57,23 +57,25 @@ function Step(props) {
   }, [isPortalOpen, title.length])
 
   return (
-    <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-      <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-        <button
-          className={containerStyle}
-          onClick={() => {
-            if (complete) onDone(index)
-          }}
-          title={`${title}`}
-          data-testid="testClick"
-          {...otherProps}
-        >
+    <div
+      className={containerStyle}
+      onMouseDown={() => {
+        if (complete) onDone(index)
+      }}
+      title={`${title}`}
+      tabIndex={complete && !active ? 0 : -1}
+      data-testid="testClick"
+      ref={complete || active ? ref : null}
+      {...otherProps}
+    >
+      <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+        <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
           <div className={textStyle}>{name}</div>
-        </button>
-      </PositioningPortal>
-    </span>
+        </PositioningPortal>
+      </span>
+    </div>
   )
-}
+})
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   sharedContainerStyles: {
@@ -83,12 +85,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'default',
   },
 
+  test: {
+    background: 'rgb(200, 200, 35)',
+  },
+
   containerActive: {
     background: theme.colors.stepContainerActive,
   },
 
   containerInactiveComplete: {
-    background: theme.colors.white,
+    background: theme.transparent,
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
     },
@@ -113,15 +119,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.inactiveGray,
   },
 
-  resetButtonStyling: {
-    border: 'none',
-    // background: 'transparent',
-
-    '&:hover': {
-      backgroundColor: 'inherit',
-    },
-    '&:active': {
-      backgroundColor: 'transparent',
+  buttonFocus: {
+    '&:focus': {
+      outline: theme.focusOutline,
     },
   },
 }))
