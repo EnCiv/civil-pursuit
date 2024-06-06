@@ -18,6 +18,7 @@ function Button(props) {
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
     title = '', // text to display on hover
     disabled = false,
+    tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
     children,
     ...otherProps
@@ -25,20 +26,37 @@ function Button(props) {
   const displayTime = Math.max(8, 0.1 * title.length) * 1000
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [isPortalOpen, setIsPortalOpen] = useState(false)
+  const [downTimeStamp, setDownTimeStamp] = useState(0)
   const timeRef = useRef(null)
 
   const classes = buttonStyles()
-  const combinedClassName = cx(classes.buttonBase, className)
 
-  const handleMouseDown = () => {
+  useEffect(() => {
+    setIsDisabled(disabled)
+  }, [disabled])
+
+  const handleMouseDown = e => {
+    e.stopPropagation()
     timeRef.current = setTimeout(() => {
       setIsPortalOpen(true)
     }, 500)
+    setDownTimeStamp(e.timeStamp)
   }
 
-  const handleMouseUp = () => {
-    clearTimeout(timeRef.current)
-    setTimeout(() => setIsPortalOpen(false), displayTime)
+  const handleMouseUp = e => {
+    e.stopPropagation()
+    if (timeRef.current) clearTimeout(timeRef.current)
+    timeRef.current = null
+    if (e.timeStamp - downTimeStamp < 500) {
+      // short click
+      onDone({ valid: true })
+      if (disableOnClick) setIsDisabled(true)
+    }
+  }
+
+  const handleMouseLeave = e => {
+    if (timeRef.current) clearTimeout(timeRef.current)
+    timeRef.current = null
   }
 
   useEffect(() => {
@@ -50,23 +68,22 @@ function Button(props) {
     }
   }, [isPortalOpen, title.length])
 
+  // PositioningPortal doesn't put a tag around the button, so className and other props can be applied to the Button
   return (
-    <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-      <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-        <button
-          className={combinedClassName}
-          title={title}
-          disabled={isDisabled}
-          onClick={() => {
-            onDone()
-            if (disableOnClick) setIsDisabled(true)
-          }}
-          {...otherProps}
-        >
-          {children}
-        </button>
-      </PositioningPortal>
-    </span>
+    <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
+      <button
+        className={cx(classes.buttonBase, className)}
+        tabIndex={tabIndex}
+        title={title}
+        disabled={isDisabled}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        {...otherProps}
+      >
+        {children}
+      </button>
+    </PositioningPortal>
   )
 }
 
@@ -106,6 +123,9 @@ const buttonStyles = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
     // Add any other common styles here
   },
 
@@ -114,8 +134,6 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-    '&:focus': {},
 
     '&:disabled': {
       backgroundColor: theme.colors.white,
@@ -145,8 +163,6 @@ const buttonStyles = createUseStyles(theme => ({
     color: theme.colors.textBrown,
     border: `0.125rem solid ${theme.colors.encivYellow}`,
 
-    '&:focus': {},
-
     '&:hover, &.hover': {
       textDecoration: 'underline',
       backgroundColor: theme.colors.white,
@@ -166,8 +182,6 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.primaryButtonBlue,
     color: theme.colors.white,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
-
-    '&:focus': {},
 
     '&:disabled': {
       backgroundColor: theme.colors.borderGray,

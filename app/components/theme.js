@@ -1,6 +1,10 @@
 'use strict'
 
 const Theme = {
+  zIndexes: {
+    menu: 10,
+  },
+  focusOutline: 'solid .3rem #DCE8F2',
   // ui colors
   colors: {
     success: '#005621',
@@ -44,6 +48,7 @@ const Theme = {
   border: {
     width: {
       thin: '0.0625rem',
+      thick: '0.125rem',
     },
   },
   condensedWidthBreakPoint: '40rem',
