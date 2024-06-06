@@ -1,8 +1,8 @@
 // app/apis/tests/upsert-point.test.js
 const upsertPoint = require('../upsert-point');
+const Points = require('../../models/points');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
-const Points = require('../../models/points');
 
 let client;
 let db;
@@ -11,7 +11,7 @@ beforeAll(async () => {
     const mongoServer = new MongoMemoryServer();
     client = await MongoClient.connect(await mongoServer.getUri(), {});
     db = client.db();
-    Points.setCollectionProps(); // Initialize collection properties
+    Points.setCollectionProps();
 });
 
 afterAll(async () => {
