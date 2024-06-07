@@ -40,7 +40,9 @@ function ReviewPoint(props) {
   const handleRankingDone = selectedRank => {
     setIsOpened(false)
     setIsRanked(selectedRank !== '')
-    onDone(selectedRank)
+    if (rank !== selectedRank) {
+      onDone(selectedRank)
+    }
   }
 
   return (
