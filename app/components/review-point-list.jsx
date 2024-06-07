@@ -10,26 +10,30 @@ const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
 
   const classes = useStylesFromThemeFunction()
 
-  useEffect(() => {
-    // Check if all points have been ranked
-    if (rankedPoints.size === ReviewPoints.length) {
-      console.log('ReviewPoints:', ReviewPoints)
-      const donePercentage = (rankedPoints.size / ReviewPoints.length) * 100
-
-      // Call onDone with the completed ranking information
-      onDone({
-        valid: true,
-        value: {
-          donePercentage,
-        },
-      })
-    }
-  }, [rankedPoints])
-
   const handleReviewPointDone = (pointId, selectedRank) => {
     setRankedPoints(prevRankedPoints => {
       const newRankedPoints = new Map(prevRankedPoints)
       newRankedPoints.set(pointId, selectedRank)
+
+      // Check if all points have been ranked
+      if (newRankedPoints.size === ReviewPoints.length) {
+        const donePercentage = (newRankedPoints.size / ReviewPoints.length) * 100
+        onDone({
+          valid: true,
+          value: {
+            donePercentage,
+          },
+        })
+      } else {
+        const donePercentage = (newRankedPoints.size / ReviewPoints.length) * 100
+        onDone({
+          valid: false,
+          value: {
+            donePercentage,
+          },
+        })
+      }
+
       return newRankedPoints
     })
   }
