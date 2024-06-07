@@ -88,6 +88,15 @@ export const Mobile = {
   },
 }
 
+export const WithDefaultRank = {
+  args: {
+    point: point0,
+    leftPointList: [point1, point2, point3],
+    rightPointList: [point4, point5, point6],
+    rank: 'Neutral',
+  },
+}
+
 export const ReviewOnDone = {
   args: {
     point: point0,
