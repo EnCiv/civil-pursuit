@@ -22,24 +22,20 @@ function ReviewPoint(props) {
   useEffect(() => {
     if (isOpened) {
       setIsRead(true)
-      setIsRankActive(true)
     }
   }, [isOpened])
 
   useEffect(() => {
-    if (!isOpened && !isRead) {
-      setIsRankActive(false)
+    if (isRead) {
+      setIsRankActive(true)
     }
-  }, [isOpened, isRead])
+  }, [isRead])
 
   useEffect(() => {
-    if (!isOpened && isRanked) {
+    if (isRanked) {
       setIsRead(true)
     }
-    if (!isOpened && !isRanked) {
-      setIsRead(false)
-    }
-  }, [isOpened, isRanked])
+  }, [isRanked])
 
   const handleRankingDone = selectedRank => {
     setIsOpened(false)
@@ -59,7 +55,12 @@ function ReviewPoint(props) {
             {point.description && <div className={cx(classes.descriptionStyle)}>{point.description}</div>}
           </div>
           <div className={classes.rankingColumn}>
-            <Ranking className={classes.ranking} disabled={!isRankActive} rank={rank} onDone={handleRankingDone} />
+            <Ranking
+              className={classes.ranking}
+              disabled={!isRankActive}
+              defaultValue={rank}
+              onDone={handleRankingDone}
+            />
           </div>
         </div>
         <div className={classes.SvgContainer}>
