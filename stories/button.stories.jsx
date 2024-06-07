@@ -93,3 +93,89 @@ export const OnDoneClicked = {
     expect(result.count).toEqual(1)
   },
 }
+
+export const BaseFocus = {
+  args: {
+    style: {},
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Base Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+}
+
+export const SecondaryFocus = {
+  args: {
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Secondary Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+};
+
+export const ModifierFocus = {
+  args: {
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Modifier Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+};
+
+export const PrimaryFocus = {
+  args: {
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Primary Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+};
+
+export const TextFocus = {
+  args: {
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Text Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+};
+
+export const HoverTestFocus = {
+  args: {
+    className: 'hover',
+    onDone: null,
+    title: 'Press me',
+    disabled: false,
+    disableOnClick: false,
+    children: 'Hover State Button',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button'))
+  },
+};

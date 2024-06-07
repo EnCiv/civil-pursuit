@@ -19,8 +19,8 @@ function WhyInput(props) {
 
     return (
         <div className={cx(classes.container, className)} {...otherProps}>
-            <Point {...point} vState="secondary" />
-            <PointInput onDone={handleOnDone} defaultValue={defaultValue} />
+            <Point className={classes.point} {...point} vState="secondary" />
+            <PointInput className={classes.pointInput} onDone={handleOnDone} defaultValue={defaultValue} />
         </div>
     )
 
@@ -37,8 +37,23 @@ const useStyles = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
         container: {
             flexDirection: 'column',
+            alignItems: 'flex-start',
         },
     },
-}))
+    point: {
+    },
+    pointInput: {
+        padding: '0 1.875rem',
+        boxSizing: 'border-box',
+    },
+    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+        point: {
+            width: '35%',
+        },
+        pointInput: {
+            width: '60%',
+        },
+    },
+}));
 
 export default WhyInput;

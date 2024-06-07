@@ -18,11 +18,25 @@ const preview = {
     },
   },
   decorators: [
+<<<<<<< HEAD
     Story => (
       <ThemeProvider theme={theme}>
         <Story />
       </ThemeProvider>
     ),
+=======
+    Story => {
+      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full with even through index.css has a media query keeping it at 982
+      return (
+        <ThemeProvider theme={theme}>
+          <div>
+            <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+            <Story />
+          </div>
+        </ThemeProvider>
+      )
+    },
+>>>>>>> master
   ],
 }
 
