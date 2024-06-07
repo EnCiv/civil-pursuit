@@ -153,25 +153,46 @@ const point20 = {
   description: 'Lack of public awareness about biodiversity and its importance can hinder conservation efforts.',
 }
 
-const ReviewPoint1 = {
+const reviewPoint1 = {
   point: point0,
   leftPoints: [point1, point2, point3],
   rightPoints: [point4, point5, point6],
   rank: '',
 }
 
-const ReviewPoint2 = {
+const reviewPoint2 = {
   point: point7,
   leftPoints: [point8, point9, point10],
   rightPoints: [point11, point12, point13],
   rank: '',
 }
 
-const ReviewPoint3 = {
+const reviewPoint3 = {
   point: point14,
   leftPoints: [point15, point16, point17],
   rightPoints: [point18, point19, point20],
   rank: '',
+}
+
+const reviewPoint4 = {
+  point: point0,
+  leftPoints: [point1, point2, point3],
+  rightPoints: [point4, point5, point6],
+  rank: 'Most',
+}
+
+const reviewPoint5 = {
+  point: point7,
+  leftPoints: [point8, point9, point10],
+  rightPoints: [point11, point12, point13],
+  rank: 'Least',
+}
+
+const reviewPoint6 = {
+  point: point14,
+  leftPoints: [point15, point16, point17],
+  rightPoints: [point18, point19, point20],
+  rank: 'Neutral',
 }
 
 export const Empty = {
@@ -180,17 +201,29 @@ export const Empty = {
 
 export const Desktop = {
   args: {
-    ReviewPoints: [ReviewPoint1, ReviewPoint2, ReviewPoint3],
+    reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
 }
 
 export const Mobile = {
   args: {
-    ReviewPoints: [ReviewPoint1, ReviewPoint2, ReviewPoint3],
+    reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
     },
+  },
+}
+
+export const AllWithInitialRank = {
+  args: {
+    reviewPoints: [reviewPoint4, reviewPoint5, reviewPoint6],
+  },
+}
+
+export const PartialWithInitialRank = {
+  args: {
+    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
   },
 }
