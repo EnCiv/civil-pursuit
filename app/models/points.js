@@ -1,5 +1,6 @@
-// app/models/points.js
-const { Collection } = require('mongo-collections');
+// https://github.com/EnCiv/civil-pursuit/issues/129
+
+import { Collection } from '@enciv/mongo-collections';
 
 class Points extends Collection {
     static collectionName = 'points'; // name of the collection in MongoDB

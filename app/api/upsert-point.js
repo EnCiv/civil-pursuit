@@ -1,4 +1,5 @@
-// app/apis/upsert-point.js
+// https://github.com/EnCiv/civil-pursuit/issues/129
+
 const Points = require('../models/points');
 
 async function upsertPoint(pointObj, cb) {

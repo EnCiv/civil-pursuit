@@ -1,8 +1,9 @@
-// app/apis/tests/upsert-point.test.js
-const upsertPoint = require('../upsert-point');
-const Points = require('../../models/points');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const { MongoClient } = require('mongodb');
+// https://github.com/EnCiv/civil-pursuit/issues/129
+
+import upsertPoint from '../upsert-point';
+import Points from '../../models/points';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoClient } from 'mongodb';
 
 let client;
 let db;

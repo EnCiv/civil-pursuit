@@ -3,4 +3,5 @@ module.exports = {
     preset: '@shelf/jest-mongodb',
     watchPathIgnorePatterns: ['<rootDir>/tmp/', '<rootDir>/node_modules/'],
     roots: ['app'],
+    testMatch: ['**/app/api/__tests__/**/*.js'],
 }
