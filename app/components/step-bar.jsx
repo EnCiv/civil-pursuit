@@ -255,7 +255,12 @@ function StepBar(props) {
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0}>
+      <div
+        className={cx(classes.resetButtonStyling, classes.selectInput)}
+        ref={selectRef}
+        tabIndex={0}
+        data-testid="mobile-select-bar"
+      >
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>{steps[current - 1].name}</div>
           {isOpen ? (

@@ -79,8 +79,9 @@ export const ScrollRight = {
 
     const rightScroll = canvas.getByTestId('rightclick')
 
-    setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       await userEvent.tripleClick(rightScroll)
+      clearTimeout(timeout)
     }, 500)
   },
 }
@@ -92,24 +93,51 @@ export const ScrollLeft = {
 
     const leftScroll = canvas.getByTestId('leftclick')
 
-    setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       await userEvent.tripleClick(leftScroll)
+      clearTimeout(timeout)
     }, 500)
   },
 }
 ScrollLeft.args = { steps: secondarySteps, current: 9 }
 
 // Accessibility tests
-// export const AccessibilityTest = {
-//   play: async ({ canvasElement }) => {
-//     const canvas = within(canvasElement)
+export const AccessibilityTestDesktop = {
+  play: async ({ canvasElement }) => {
+    const interval = setInterval(async () => {
+      await userEvent.keyboard('{tab}')
+    }, 250)
 
-//     const rightScroll = canvas.getByTestId('rightclick')
-//     const leftScroll = canvas.getByTestId('leftclick')
-//     const step = canvas.getByTestId('testClick')
+    const timeout = setTimeout(() => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }, 5000)
+  },
+}
 
-//     setTimeout(async () => {
-//       await userEvent.click(step)
-//     }, 500)
-//   },
-// }
+// Accessibility tests
+export const AccessibilityTestMobile = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const select = canvas.getByTestId('mobile-select-bar')
+
+    const timeoutOne = setTimeout(async () => {
+      await userEvent.click(select)
+      clearTimeout(timeoutOne)
+    }, 500)
+
+    const interval = setInterval(async () => {
+      await userEvent.keyboard('{tab}')
+    }, 250)
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }, 5000)
+  },
+}
+AccessibilityTestMobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
+}
