@@ -48,6 +48,7 @@ const Step = forwardRef((props, ref) => {
   }
 
   useEffect(() => {
+    // Set the timeout for the portal whenver it is opened.
     if (isPortalOpen) {
       const timeout = setTimeout(() => {
         setIsPortalOpen(false)

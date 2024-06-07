@@ -211,6 +211,7 @@ function StepBar(props) {
         onClick={leftClick}
         className={cx(classes.resetButtonStyling, classes.svgContainer)}
         data-testid="leftclick"
+        tabIndex={currentPage !== 1 ? 0 : -1}
       >
         <SvgStepBarArrowDesktop
           className={cx({ [classes.svgColor]: currentPage === 1 })}
@@ -232,7 +233,7 @@ function StepBar(props) {
                 title={step.title}
                 complete={step.complete}
                 active={current === step.id ? true : false}
-                onDone={onDone}
+                onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
               />
@@ -244,6 +245,7 @@ function StepBar(props) {
         onClick={rightClick}
         className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)}
         data-testid="rightclick"
+        tabIndex={currentPage !== pages.size ? 0 : -1}
       >
         <SvgStepBarArrowDesktop
           className={cx({ [classes.svgColor]: currentPage === pages.size })}
@@ -283,7 +285,7 @@ function StepBar(props) {
                     title={step.title}
                     complete={step.complete}
                     active={current === step.id ? true : false}
-                    onDone={onDone}
+                    onDone={() => onDone({ valid: true, value: step.id })}
                     index={index}
                     {...otherProps}
                     ref={stepRefs[index]}

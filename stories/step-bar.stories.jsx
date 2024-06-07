@@ -111,7 +111,7 @@ export const AccessibilityTestDesktop = {
     const timeout = setTimeout(() => {
       clearInterval(interval)
       clearTimeout(timeout)
-    }, 5000)
+    }, 2000)
   },
 }
 
@@ -133,7 +133,7 @@ export const AccessibilityTestMobile = {
     const timeout = setTimeout(() => {
       clearInterval(interval)
       clearTimeout(timeout)
-    }, 5000)
+    }, 2000)
   },
 }
 AccessibilityTestMobile.parameters = {
