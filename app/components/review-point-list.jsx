@@ -3,52 +3,60 @@
 'use strict'
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
-import ReviewPoint from './review-point.jsx'
+import ReviewPoint from './review-point'
 
-const ReviewPointList = ({ ReviewPoints = [], onDone = () => {} }) => {
-  const [rankedPoints, setRankedPoints] = useState(new Map())
+function ReviewPointList(props) {
+  const { reviewPoints = [], onDone = () => {}, className, ...otherProps } = props
+  const [rankedPoints, setRankedPoints] = useState(new Set())
+  const [percentDone, setPercentDone] = useState(0)
 
   const classes = useStylesFromThemeFunction()
 
-  const handleReviewPointDone = (pointId, selectedRank) => {
-    setRankedPoints(prevRankedPoints => {
-      const newRankedPoints = new Map(prevRankedPoints)
-      newRankedPoints.set(pointId, selectedRank)
+  useEffect(() => {
+    if (reviewPoints.length === 0) {
+      setPercentDone(100)
+    } else {
+      const initialRankedPoints = reviewPoints.filter(point => point.rank !== '').length
+      setRankedPoints(new Set(reviewPoints.filter(point => point.rank !== '').map(point => point.point._id)))
+      setPercentDone(Number(((initialRankedPoints / reviewPoints.length) * 100).toFixed(2)))
+    }
+  }, [reviewPoints])
 
-      // Check if all points have been ranked
-      if (newRankedPoints.size === ReviewPoints.length) {
-        const donePercentage = (newRankedPoints.size / ReviewPoints.length) * 100
-        onDone({
-          valid: true,
-          value: {
-            donePercentage,
-          },
-        })
+  useEffect(() => {
+    if (rankedPoints.size === reviewPoints.length) {
+      onDone({ valid: true, value: percentDone })
+    } else {
+      onDone({ valid: false, value: percentDone })
+    }
+  }, [rankedPoints, percentDone])
+
+  const handleReviewPoint = (pointId, selectedRank) => {
+    setRankedPoints(prevPoints => {
+      const rankedPoints = new Set(prevPoints)
+      if (selectedRank !== '') {
+        rankedPoints.add(pointId)
       } else {
-        const donePercentage = (newRankedPoints.size / ReviewPoints.length) * 100
-        onDone({
-          valid: false,
-          value: {
-            donePercentage,
-          },
-        })
+        rankedPoints.delete(pointId)
       }
 
-      return newRankedPoints
+      const newPercentDone = Number(((rankedPoints.size / reviewPoints.length) * 100).toFixed(2))
+      setPercentDone(newPercentDone)
+      return rankedPoints
     })
   }
 
   return (
-    <div className={classes.reviewPointsContainer}>
-      {ReviewPoints.map(reviewPoint => (
-        <ReviewPoint
-          key={reviewPoint.point._id}
-          point={reviewPoint.point}
-          leftPointList={reviewPoint.leftPoints}
-          rightPointList={reviewPoint.rightPoints}
-          rank={rankedPoints.get(reviewPoint.point._id) || reviewPoint.rank}
-          onDone={selectedRank => handleReviewPointDone(reviewPoint.point._id, selectedRank)}
-        />
+    <div className={classes.reviewPointsContainer} {...otherProps}>
+      {reviewPoints.map((reviewPoint, idx) => (
+        <div key={idx} className={classes.reviewPoint}>
+          <ReviewPoint
+            point={reviewPoint.point}
+            leftPointList={reviewPoint.leftPoints}
+            rightPointList={reviewPoint.rightPoints}
+            rank={reviewPoint.rank}
+            onDone={selectedRank => handleReviewPoint(reviewPoint.point._id, selectedRank)}
+          />
+        </div>
       ))}
     </div>
   )

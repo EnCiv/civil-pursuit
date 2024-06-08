@@ -181,7 +181,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     width: '100%',
   },
-
   informationColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -189,7 +188,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%', // Initially set to 100%
   },
-
   rankingColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -197,7 +195,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%', // Initially set to 100%
   },
-
   // Additional style for adjusting grid layout
   '@media (min-width: 40rem)': {
     // Adjust breakpoint as needed
@@ -205,7 +202,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       gridTemplateColumns: '1fr 0.25fr', // Adjusted grid layout
     },
   },
-
   ranking: {
     width: '70%',
     fontSize: '1rem',
