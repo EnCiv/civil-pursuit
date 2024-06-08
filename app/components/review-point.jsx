@@ -28,6 +28,8 @@ function ReviewPoint(props) {
   useEffect(() => {
     if (isRead) {
       setIsRankActive(true)
+    } else {
+      setIsRankActive(false)
     }
   }, [isRead])
 
@@ -36,6 +38,12 @@ function ReviewPoint(props) {
       setIsRead(true)
     }
   }, [isRanked])
+
+  useEffect(() => {
+    if (!isRanked && !isOpened) {
+      setIsRead(false)
+    }
+  }, [isRanked, isOpened])
 
   const handleRankingDone = selectedRank => {
     setIsOpened(false)
