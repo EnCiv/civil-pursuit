@@ -115,6 +115,7 @@
     "prop-types": "^15.6.2",
     "randomstring": "^1.1.5",
     "react": "^16.8.6",
+    "react-accessible-headings": "^4.2.0",
     "react-action-state-path": "github:ddfridley/react-action-state-path#deep",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
