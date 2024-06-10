@@ -52,7 +52,8 @@ const Theme = {
     },
   },
   condensedWidthBreakPoint: '40rem',
-  maxPanelWidth: '90rem',
+  maxPanelWidth: '78rem',
+  boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
 }
 
 export default Theme
