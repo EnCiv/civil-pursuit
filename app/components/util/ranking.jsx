@@ -35,7 +35,6 @@ export default function Ranking(props) {
       )
     } else onDone({ valid: true, value: e.target.value })
   }
-
   return (
     <div
       data-value={response}
