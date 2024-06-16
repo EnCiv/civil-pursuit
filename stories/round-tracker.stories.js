@@ -26,17 +26,17 @@ TwoRounds.args = {
 
 export const ThreeRounds = Template.bind({});
 ThreeRounds.args = {
-  roundsStatus: ['complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
 };
 
 export const FourRounds = Template.bind({});
 FourRounds.args = {
-  roundsStatus: ['complete', 'complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
 };
 
 export const EightRounds = Template.bind({});
 EightRounds.args = {
-  roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
 };
 
 export const TwelveRounds = Template.bind({});
@@ -47,7 +47,8 @@ TwelveRounds.args = {
 // Mobile views
 export const MobileOneRound = Template.bind({});
 MobileOneRound.args = {
-  roundsStatus: ['inProgress', 'pending', 'pending'],
+  roundsStatus: ['inProgress', 'pending'],
+  isMobile: true,
 };
 MobileOneRound.parameters = {
   viewport: {
@@ -58,6 +59,7 @@ MobileOneRound.parameters = {
 export const MobileTwoRounds = Template.bind({});
 MobileTwoRounds.args = {
   roundsStatus: ['complete', 'inProgress', 'pending'],
+  isMobile: true,
 };
 MobileTwoRounds.parameters = {
   viewport: {
@@ -67,7 +69,8 @@ MobileTwoRounds.parameters = {
 
 export const MobileThreeRounds = Template.bind({});
 MobileThreeRounds.args = {
-  roundsStatus: ['complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
+  isMobile: true,
 };
 MobileThreeRounds.parameters = {
   viewport: {
@@ -77,7 +80,8 @@ MobileThreeRounds.parameters = {
 
 export const MobileFourRounds = Template.bind({});
 MobileFourRounds.args = {
-  roundsStatus: ['complete', 'complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
+  isMobile: true,
 };
 MobileFourRounds.parameters = {
   viewport: {
@@ -87,7 +91,8 @@ MobileFourRounds.parameters = {
 
 export const MobileEightRounds = Template.bind({});
 MobileEightRounds.args = {
-  roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+  roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
+  isMobile: true,
 };
 MobileEightRounds.parameters = {
   viewport: {
@@ -98,6 +103,7 @@ MobileEightRounds.parameters = {
 export const MobileTwelveRounds = Template.bind({});
 MobileTwelveRounds.args = {
   roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+  isMobile: true,
 };
 MobileTwelveRounds.parameters = {
   viewport: {

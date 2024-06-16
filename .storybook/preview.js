@@ -1,10 +1,10 @@
-import { ThemeProvider } from 'react-jss'
-import '../assets/css/index.css'
-import '../assets/css/normalize.css'
-import React from 'react'
-import Theme from '../app/components/theme'
+import { ThemeProvider } from 'react-jss';
+import '../assets/css/index.css';
+import '../assets/css/normalize.css';
+import React from 'react';
+import Theme from '../app/components/theme';
 
-const theme = Theme
+const theme = Theme;
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -16,10 +16,31 @@ const preview = {
         date: /Date$/,
       },
     },
+    viewport: {
+      viewports: {
+        responsive: {
+          name: 'Responsive',
+          styles: {
+            width: '100%',
+            height: '100%',
+          },
+          type: 'desktop',
+        },
+        iphonex: {
+          name: 'iPhone X',
+          styles: {
+            width: '375px',
+            height: '812px',
+          },
+          type: 'mobile',
+        },
+        // Add other viewports as needed
+      },
+    },
   },
   decorators: [
-    Story => {
-      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full with even through index.css has a media query keeping it at 982
+    (Story) => {
+      document.getElementsByTagName('body')[0].style.width = '100%'; // this is a hack to force full with even through index.css has a media query keeping it at 982
       return (
         <ThemeProvider theme={theme}>
           <div>
@@ -27,9 +48,9 @@ const preview = {
             <Story />
           </div>
         </ThemeProvider>
-      )
+      );
     },
   ],
-}
+};
 
-export default preview
+export default preview;

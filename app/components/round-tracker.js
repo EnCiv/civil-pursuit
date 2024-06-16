@@ -4,11 +4,31 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import StatusBadge from './status-badge';
 
-const RoundTracker = ({ roundsStatus = [] }) => {
-  const classes = useStyles();
+const RoundTracker = ({ roundsStatus = [], isMobile = false }) => {
+  const classes = useStyles({ isMobile });
 
   const renderRounds = () => {
-    const visibleRounds = roundsStatus.slice(-3); // Only show the last 3 rounds
+    let visibleRounds;
+
+    if (isMobile) {
+      const currentRoundIndex = roundsStatus.indexOf('inProgress');
+      if (currentRoundIndex === 0) {
+        visibleRounds = roundsStatus.slice(0, 2); // Show the first two rounds
+      } else if (currentRoundIndex === roundsStatus.length - 1) {
+        visibleRounds = roundsStatus.slice(currentRoundIndex); // Show only the last round
+      } else {
+        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2); // Show the current and next rounds
+      }
+    } else {
+        const currentRoundIndex = roundsStatus.indexOf('inProgress');
+      if (currentRoundIndex === 0) {
+        visibleRounds = ['inProgress', 'pending', 'pending'];
+      } else if (currentRoundIndex < 11) {
+        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2); // Ensure only showing the last 3 rounds
+      } else {
+        visibleRounds = roundsStatus.slice(-2); // Only show the last 3 rounds for round 12
+      }
+    }
 
     return visibleRounds.map((status, index) => (
       <React.Fragment key={index}>
@@ -32,33 +52,32 @@ const useStyles = createUseStyles({
   roundTracker: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     flexWrap: 'wrap',
-    '@media (max-width: 600px)': {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
+    flexDirection: ({ isMobile }) => (isMobile ? 'row' : 'row'),
   },
   roundContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    margin: '0 0.5rem',
     '@media (max-width: 600px)': {
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
     },
   },
   roundNumber: {
     marginBottom: '0.25rem',
     fontWeight: 'bold',
+    textAlign: 'center',
     '@media (max-width: 600px)': {
-      marginBottom: '0',
-      marginRight: '0.5rem',
+      marginBottom: '0.5rem',
     },
   },
   badge: {
     margin: '0 0.5rem',
     '@media (max-width: 600px)': {
-      margin: '0 0.25rem',
+      margin: '0 0.5rem 0.5rem 0.5rem',
     },
   },
   dash: {

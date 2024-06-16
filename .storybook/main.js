@@ -5,7 +5,7 @@ const webpack = require("webpack");
 
 const config = {
   stories: [
-    '../stories/**/*.stories.@(js|jsx|ts|tsx)', // Path to stories outside the app folder
+    '../stories/**/*.stories.@(js|jsx|ts|tsx)', // Correct path to the stories folder
     '../app/components/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
@@ -14,7 +14,7 @@ const config = {
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
-    '@storybook/addon-viewport', // Addon to test mobile views
+    '@storybook/addon-viewport',
   ],
   framework: {
     name: '@storybook/react-webpack5',
