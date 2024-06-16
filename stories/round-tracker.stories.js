@@ -5,18 +5,23 @@ import RoundTracker from '../app/components/round-tracker';
 export default {
   title: 'RoundTracker',
   component: RoundTracker,
+  parameters: {
+    viewport: {
+      defaultViewport: 'responsive',
+    },
+  },
 };
 
 const Template = (args) => <RoundTracker {...args} />;
 
 export const OneRound = Template.bind({});
 OneRound.args = {
-  roundsStatus: ['inProgress', 'Pending', 'Pending'],
+  roundsStatus: ['inProgress', 'pending', 'pending'],
 };
 
 export const TwoRounds = Template.bind({});
 TwoRounds.args = {
-  roundsStatus: ['complete', 'inProgress', 'Pending'],
+  roundsStatus: ['complete', 'inProgress', 'pending'],
 };
 
 export const ThreeRounds = Template.bind({});
@@ -42,21 +47,21 @@ TwelveRounds.args = {
 // Mobile views
 export const MobileOneRound = Template.bind({});
 MobileOneRound.args = {
-  roundsStatus: ['inProgress'],
+  roundsStatus: ['inProgress', 'pending', 'pending'],
 };
 MobileOneRound.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
 
 export const MobileTwoRounds = Template.bind({});
 MobileTwoRounds.args = {
-  roundsStatus: ['complete', 'inProgress'],
+  roundsStatus: ['complete', 'inProgress', 'pending'],
 };
 MobileTwoRounds.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
 
@@ -66,7 +71,7 @@ MobileThreeRounds.args = {
 };
 MobileThreeRounds.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
 
@@ -76,7 +81,7 @@ MobileFourRounds.args = {
 };
 MobileFourRounds.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
 
@@ -86,7 +91,7 @@ MobileEightRounds.args = {
 };
 MobileEightRounds.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
 
@@ -96,6 +101,6 @@ MobileTwelveRounds.args = {
 };
 MobileTwelveRounds.parameters = {
   viewport: {
-    defaultViewport: 'iphone6',
+    defaultViewport: 'iphonex',
   },
 };
