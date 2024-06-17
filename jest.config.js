@@ -1,5 +1,5 @@
 module.exports = {
-    setupFilesAfterEnv: ['<rootDir>/setupTests.js', '<rootDir>/node_modules/jest-enzyme/lib/index.js'],
+    setupFilesAfterEnv: ['<rootDir>/jest-test-setup.js', '<rootDir>/node_modules/jest-enzyme/lib/index.js'],
     preset: '@shelf/jest-mongodb',
     watchPathIgnorePatterns: ['<rootDir>/tmp/', '<rootDir>/node_modules/'],
     roots: ['app'],
