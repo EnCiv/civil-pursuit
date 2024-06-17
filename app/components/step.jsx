@@ -47,6 +47,15 @@ const Step = forwardRef((props, ref) => {
     setTimeout(() => setIsPortalOpen(false), displayTime)
   }
 
+  const handleKeyDown = e => {
+    if (e.keyCode === 32) {
+      e.stopPropagation()
+      if (timeRef.current) clearTimeout(timeRef.current)
+      timeRef.current = null
+      if (complete || active) onDone(index)
+    }
+  }
+
   useEffect(() => {
     // Set the timeout for the portal whenver it is opened.
     if (isPortalOpen) {
@@ -61,10 +70,11 @@ const Step = forwardRef((props, ref) => {
     <div
       className={containerStyle}
       onMouseDown={() => {
-        if (complete) onDone(index)
+        if (complete || active) onDone(index)
       }}
+      onKeyDown={handleKeyDown}
       title={`${title}`}
-      tabIndex={complete && !active ? 0 : -1}
+      tabIndex={complete || active ? 0 : -1}
       data-testid="testClick"
       ref={complete || active ? ref : null}
       {...otherProps}
@@ -86,18 +96,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'default',
   },
 
-  test: {
-    background: 'rgb(200, 200, 35)',
-  },
-
   containerActive: {
     background: theme.colors.stepContainerActive,
+    '&:hover $stepTextActive': {
+      ...theme.enCivUnderline,
+      cursor: 'pointer',
+    },
   },
 
   containerInactiveComplete: {
     background: theme.transparent,
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
+      cursor: 'pointer',
     },
   },
 
