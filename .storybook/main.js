@@ -12,6 +12,7 @@ const config = {
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
+    '@storybook/addon-viewport',
   ],
   framework: {
     name: '@storybook/react-webpack5',
