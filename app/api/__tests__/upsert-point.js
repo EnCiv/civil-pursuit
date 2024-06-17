@@ -57,3 +57,21 @@ test('User not logged in, not allowed to upsert a document', async () => {
   const point = await Mongo.db.collection('points').findOne({ _id: POINT2 })
   expect(point).toBeNull()
 })
+
+test('Validation error when upserting a document', async () => {
+  const invalidPointObj = { _id: POINT2, title: '', description: 'Description 2' }; // Assuming title is a required field
+  const user = { id: USER1 };
+
+  // Mock the validate method to return an error
+  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' });
+
+  const cb = jest.fn();
+
+  await upsertPoint.call({ synuser: user }, invalidPointObj, cb);
+
+  expect(cb).toHaveBeenCalledTimes(1);
+  expect(cb).toHaveBeenCalledWith(null);
+
+  const point = await Mongo.db.collection('points').findOne({ _id: POINT2 });
+  expect(point).toBeNull();
+})

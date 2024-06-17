@@ -13,13 +13,17 @@ async function upsertPoint(pointObj, cb) {
   const validation = Points.validate(pointObj)
   if (validation.error) {
     console.error(validation.error)
-    return cb && cb(null, validation.error) // Return validation error
+    return cb && cb(null) // Return validation error
   }
 
-  const result = await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true })
-
-  const updatedDoc = await Points.findOne({ _id: pointObj._id })
-  cb(updatedDoc)
+  try {
+    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
+    const updatedDoc = await Points.findOne({ _id: pointObj._id });
+    cb(updatedDoc);
+  } catch (error) {
+    console.error(error);
+    cb(null); // Return null indicating an error
+  }
 }
 
 module.exports = upsertPoint
