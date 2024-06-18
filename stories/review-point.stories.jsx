@@ -17,6 +17,12 @@ export default {
   },
 }
 
+const point0 = {
+  _id: '0',
+  subject: 'Inequality',
+  description: 'Inequality can hinder economic growth and stability',
+}
+
 const point1 = {
   _id: '1',
   subject: 'Equality is a human right',
@@ -63,8 +69,7 @@ export const Empty = {
 
 export const Desktop = {
   args: {
-    subject: 'Ineuqality',
-    description: 'Inequality can hinder economic growth and stablity',
+    point: point0,
     leftPointList: [point1, point2, point3],
     rightPointList: [point4, point5, point6],
   },
@@ -72,8 +77,7 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
-    subject: 'Ineuqality',
-    description: 'Inequality can hinder economic growth and stablity',
+    point: point0,
     leftPointList: [point1, point2, point3],
     rightPointList: [point4, point5, point6],
   },
@@ -84,10 +88,18 @@ export const Mobile = {
   },
 }
 
+export const WithDefaultRank = {
+  args: {
+    point: point0,
+    leftPointList: [point1, point2, point3],
+    rightPointList: [point4, point5, point6],
+    rank: 'Neutral',
+  },
+}
+
 export const ReviewOnDone = {
   args: {
-    subject: 'Inequality',
-    description: 'Inequality can hinder economic growth and stability',
+    point: point0,
     leftPointList: [point1, point2, point3],
     rightPointList: [point4, point5, point6],
   },
