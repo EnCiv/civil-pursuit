@@ -4,11 +4,18 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import StatusBadge from './status-badge';
 
-const RoundTracker = ({ roundsStatus = [], isMobile = false }) => {
-  const classes = useStyles({ isMobile });
+const RoundTracker = ({ roundsStatus = [] }) => {
+  const classes = useStyles();
 
   const renderRounds = () => {
+    if (roundsStatus.length === 0) {
+      return <div className={classes.emptyMessage}>No rounds available</div>;
+    }
+
     let visibleRounds;
+
+    // Determine if the viewport is mobile
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
 
     if (isMobile) {
       const currentRoundIndex = roundsStatus.indexOf('inProgress');
@@ -20,13 +27,13 @@ const RoundTracker = ({ roundsStatus = [], isMobile = false }) => {
         visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2); // Show the current and next rounds
       }
     } else {
-        const currentRoundIndex = roundsStatus.indexOf('inProgress');
+      const currentRoundIndex = roundsStatus.indexOf('inProgress');
       if (currentRoundIndex === 0) {
         visibleRounds = ['inProgress', 'pending', 'pending'];
-      } else if (currentRoundIndex < 11) {
+      } else if (currentRoundIndex < roundsStatus.length - 1) {
         visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2); // Ensure only showing the last 3 rounds
       } else {
-        visibleRounds = roundsStatus.slice(-2); // Only show the last 3 rounds for round 12
+        visibleRounds = roundsStatus.slice(-2); // Only show the last 2 rounds for the final round
       }
     }
 
@@ -54,7 +61,9 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    flexDirection: ({ isMobile }) => (isMobile ? 'row' : 'row'),
+    '@media (max-width: 600px)': {
+      flexDirection: 'row',
+    },
   },
   roundContainer: {
     display: 'flex',
@@ -62,7 +71,7 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     margin: '0 0.5rem',
     '@media (max-width: 600px)': {
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'center',
     },
   },
@@ -71,13 +80,14 @@ const useStyles = createUseStyles({
     fontWeight: 'bold',
     textAlign: 'center',
     '@media (max-width: 600px)': {
-      marginBottom: '0.5rem',
+      marginBottom: '0',
+      marginRight: '0.5rem',
     },
   },
   badge: {
     margin: '0 0.5rem',
     '@media (max-width: 600px)': {
-      margin: '0 0.5rem 0.5rem 0.5rem',
+      margin: '0 0.25rem',
     },
   },
   dash: {
@@ -88,6 +98,10 @@ const useStyles = createUseStyles({
       width: '0.75rem',
       height: '0.0625rem',
     },
+  },
+  emptyMessage: {
+    fontSize: '1rem',
+    color: '#666',
   },
 });
 
