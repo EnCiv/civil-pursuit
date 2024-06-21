@@ -26,7 +26,7 @@ const config = {
           {
             test: /\.jsx$/,
             exclude: /node_modules/,
-            //include: /(.*profile.*)/, // for some reason, webpack will exclude files with names containing 'profile' (or 'profile-' not sure) so I has to explicitly include them
+            //include: /(.*profile.*)/, // for some reason, webpack (4.25.1) will exclude files with names containing 'profile' (or 'profile-' not sure) so I has to explicitly include them
             loader: 'babel-loader',
           },
           {
@@ -37,7 +37,7 @@ const config = {
         ],
       },
       resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.*', '.js', '.jsx'],
         fallback: {
           fs: false,
           os: require.resolve('os-browserify/browser'),
@@ -61,7 +61,7 @@ const config = {
         new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, resource => {
           resource.request = '../models/client-side-model'
         }),
-        new webpack.HotModuleReplacementPlugin(),
+        new webpack.HotModuleReplacementPlugin(), // DO NOT use --hot in the command line - it will cause a stack overflow on the client
       ],
     })
     return newConfig
