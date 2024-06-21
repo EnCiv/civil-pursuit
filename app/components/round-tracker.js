@@ -33,7 +33,7 @@ const RoundTracker = ({ roundsStatus = [] }) => {
       } else if (currentRoundIndex < roundsStatus.length - 1) {
         visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2); // Ensure only showing the last 3 rounds
       } else {
-        visibleRounds = roundsStatus.slice(-2); // Only show the last 2 rounds for the final round
+        visibleRounds = roundsStatus.slice(-3); // Only show the last 3 rounds
       }
     }
 
@@ -61,8 +61,10 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
+    flexDirection: 'row',
     '@media (max-width: 600px)': {
       flexDirection: 'row',
+      flexWrap: 'nowrap',
     },
   },
   roundContainer: {
@@ -71,8 +73,9 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     margin: '0 0.5rem',
     '@media (max-width: 600px)': {
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
+      marginBottom: '0.5rem',
     },
   },
   roundNumber: {
@@ -80,8 +83,8 @@ const useStyles = createUseStyles({
     fontWeight: 'bold',
     textAlign: 'center',
     '@media (max-width: 600px)': {
-      marginBottom: '0',
-      marginRight: '0.5rem',
+      marginBottom: '0.25rem',
+      marginRight: '0',
     },
   },
   badge: {
@@ -97,6 +100,7 @@ const useStyles = createUseStyles({
     '@media (max-width: 600px)': {
       width: '0.75rem',
       height: '0.0625rem',
+      marginBottom: '0.5rem',
     },
   },
   emptyMessage: {

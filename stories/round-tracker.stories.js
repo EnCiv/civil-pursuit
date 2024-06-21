@@ -45,6 +45,11 @@ TwelveRounds.args = {
   roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
 };
 
+export const EmptyRounds = Template.bind({});
+EmptyRounds.args = {
+  roundsStatus: [],
+};
+
 // Mobile views
 export const MobileOneRound = Template.bind({});
 MobileOneRound.args = {
@@ -99,15 +104,9 @@ MobileEightRounds.parameters = {
 export const MobileTwelveRounds = Template.bind({});
 MobileTwelveRounds.args = {
   roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
-  isMobile: true,
 };
 MobileTwelveRounds.parameters = {
   viewport: {
     defaultViewport: 'iphonex',
   },
-};
-
-export const EmptyRounds = Template.bind({});
-EmptyRounds.args = {
-  roundsStatus: [],
 };
