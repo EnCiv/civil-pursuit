@@ -3,6 +3,8 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 import StatusBadge from './status-badge';
+import Theme from './theme';
+
 
 const RoundTracker = ({ roundsStatus = [] }) => {
   const classes = useStyles();
@@ -15,7 +17,7 @@ const RoundTracker = ({ roundsStatus = [] }) => {
     let visibleRounds;
 
     // Determine if the viewport is mobile
-    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    const isMobile = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`).matches;
 
     if (isMobile) {
       const currentRoundIndex = roundsStatus.indexOf('inProgress');
