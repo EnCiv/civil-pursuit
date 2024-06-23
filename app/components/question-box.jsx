@@ -5,30 +5,28 @@ import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
-
-const QuestionBox = (props) => {
-  const { subject = '', description = '', participants = 0 } = props;
-  const classes = useStyles();
-  const badgeName = `${participants} participants`;
+const QuestionBox = props => {
+  const { subject = '', description = '', participants = 0 } = props
+  const classes = useStyles()
+  const badgeName = `${participants} participants`
 
   return (
-<div className={classes.container}>
-    <div className = {classes.topic}>
-      <div className={classes.fixedText}>Civil Pursuit</div>
-      <div className={classes.subject}>{subject}</div>
-      <div className = {classes.description}>
-        <Markdown>{description}</Markdown>
+    <div className={classes.container}>
+      <div className={classes.topic}>
+        <div className={classes.fixedText}>Civil Pursuit</div>
+        <div className={classes.subject}>{subject}</div>
+        <div className={classes.description}>
+          <Markdown>{description}</Markdown>
+        </div>
       </div>
-      
-    </div>
-    <div className={classes.participants}>
-      <StatusBadge name={badgeName} status="" />
+      <div className={classes.participants}>
+        <StatusBadge name={badgeName} status="" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default QuestionBox;
+export default QuestionBox
 
 const useStyles = createUseStyles({
   container: {
@@ -42,7 +40,7 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     padding: '3.625rem 9.875rem',
   },
-  
+
   topic: {
     textAlign: 'center',
     display: 'flex',
@@ -82,8 +80,6 @@ const useStyles = createUseStyles({
   participants: {
     display: 'flex',
     alignItems: 'center',
-    paddingTop: '1.6875rem'
+    paddingTop: '1.6875rem',
   },
-});
-
-
+})
