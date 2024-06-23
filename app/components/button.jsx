@@ -20,6 +20,8 @@ function Button(props) {
     disabled = false,
     tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
+    value,
+    type = 'button', // by default this is a button
     children,
     ...otherProps
   } = props
@@ -49,7 +51,7 @@ function Button(props) {
     timeRef.current = null
     if (e.timeStamp - downTimeStamp < 500) {
       // short click
-      onDone({ valid: true })
+      onDone({ valid: true, value })
       if (disableOnClick) setIsDisabled(true)
     }
   }
@@ -57,6 +59,16 @@ function Button(props) {
   const handleMouseLeave = e => {
     if (timeRef.current) clearTimeout(timeRef.current)
     timeRef.current = null
+  }
+
+  const handleKeyDown = e => {
+    if (e.keyCode === 32) {
+      e.stopPropagation()
+      if (timeRef.current) clearTimeout(timeRef.current)
+      timeRef.current = null
+      onDone({ valid: true, value })
+      if (disableOnClick) setIsDisabled(true)
+    }
   }
 
   useEffect(() => {
@@ -76,9 +88,12 @@ function Button(props) {
         tabIndex={tabIndex}
         title={title}
         disabled={isDisabled}
+        type={type}
+        value={value}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onKeyDown={handleKeyDown}
         {...otherProps}
       >
         {children}
