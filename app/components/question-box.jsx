@@ -7,7 +7,7 @@ import Markdown from 'markdown-to-jsx'
 
 
 const QuestionBox = (props) => {
-  const { subject, description, participants } = props;
+  const { subject = '', description = '', participants = 0 } = props;
   const classes = useStyles();
   const badgeName = `${participants} participants`;
 
