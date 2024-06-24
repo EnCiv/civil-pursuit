@@ -41,75 +41,76 @@ test('Insert a new document with no id set', async () => {
   expect(point).toMatchObject({ ...pointObj, userId: USER1 })
 })
 
-// test('Upsert changes to an existing document with its id set', async () => {
-//   const existingPoint = {
-//     _id: POINT1,
-//     title: 'Existing Subject',
-//     description: 'Existing Description',
-//     round: 1,
-//     parentId: 'parent-id',
-//     userId: USER1,
-//     category: 'most',
-//   }
-//   await Mongo.db.collection('points').insertOne(existingPoint)
+test('Upsert changes to an existing document with its id set', async () => {
+  const existingPoint = {
+    _id: POINT1,
+    title: 'Existing Subject',
+    description: 'Existing Description',
+    round: 1,
+    parentId: 'parent-id',
+    userId: USER1,
+    category: 'most',
+  }
+  await Mongo.db.collection('points').insertOne(existingPoint)
 
-//   const updatedPointObj = {
-//     _id: POINT1,
-//     title: 'Updated Subject',
-//     description: 'Updated Description',
-//     round: 1,
-//     parentId: 'parent-id',
-//     category: 'most',
-//   }
-//   const user = { id: USER1 }
+  const updatedPointObj = {
+    _id: POINT1,
+    title: 'Updated Subject',
+    description: 'Updated Description',
+    round: 1,
+    parentId: 'parent-id',
+    category: 'most',
+  }
+  const user = { id: USER1 }
 
-//   const cb = jest.fn()
+  const cb = jest.fn()
 
-//   await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
+  await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
-//   expect(cb).toHaveBeenCalledTimes(1)
-//   const point = await Mongo.db.collection('points').findOne({ _id: POINT1 })
-//   expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
-// })
+  expect(cb).toHaveBeenCalledTimes(1)
+  const point = await Mongo.db.collection('points').findOne({ _id: POINT1 })
+  expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
+})
 
-// test('User not logged in, not allowed to upsert a document', async () => {
-//   const pointObj = {
-//     title: 'Test Subject',
-//     description: 'Test Description',
-//     round: 1,
-//     parentId: 'parent-id',
-//     category: 'most',
-//   }
+test('User not logged in, not allowed to upsert a document', async () => {
+  const pointObj = {
+    _id: POINT2,
+    title: 'Test Subject',
+    description: 'Test Description',
+    round: 1,
+    parentId: 'parent-id',
+    category: 'most',
+  }
 
-//   const cb = jest.fn()
+  const cb = jest.fn()
 
-//   await upsertWhy.call({}, pointObj, cb)
+  await upsertWhy.call({}, pointObj, cb)
 
-//   expect(cb).toHaveBeenCalledTimes(1)
-//   const point = await Mongo.db.collection('points').findOne({ subject: 'Test Subject' })
-//   expect(point).toBeNull()
-// })
+  expect(cb).toHaveBeenCalledTimes(1)
+  const point = await Mongo.db.collection('points').findOne({ _id: POINT2})
+  expect(point).toBeNull()
+})
 
-// test('Validation error when upserting a document', async () => {
-//   const invalidPointObj = {
-//     title: 'Test Subject',
-//     description: '',
-//     round: 1,
-//     parentId: 'parent-id',
-//     category: 'most',
-//   }
-//   const user = { id: USER1 }
+test('Validation error when upserting a document', async () => {
+  const invalidPointObj = {
+    title: 'Test Subject',
+    description: '',
+    round: 1,
+    parentId: 'parent-id',
+    category: 'most',
+  }
+  const user = { id: USER1 }
 
-//   // Mock the validate method to return an error
-//   Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' })
+  // Mock the validate method to return an error
+  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' })
 
-//   const cb = jest.fn()
+  const cb = jest.fn()
 
-//   await upsertWhy.call({ synuser: user }, invalidPointObj, cb)
+  await upsertWhy.call({ synuser: user }, invalidPointObj, cb)
 
-//   expect(cb).toHaveBeenCalledTimes(1)
-//   expect(cb).toHaveBeenCalledWith(null)
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(null)
 
-//   const point = await Mongo.db.collection('points').findOne({ subject: 'Test Subject' })
-//   expect(point).toBeNull()
-// })
+  const point = await Mongo.db.collection('points').findOne({ subject: 'Test Subject' })
+  expect(point).toBeNull()
+})
