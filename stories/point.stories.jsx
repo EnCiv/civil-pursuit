@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
@@ -118,4 +120,80 @@ export const LoadingThenLoads = args => {
   }, [])
 
   return <Point vState={isLoading ? 'loading' : 'default'} isLoading={isLoading} {...args} />
+}
+
+const createPoint = (subject, description = 'Point Description', children = null, vState = 'default') => (
+  <Point subject={subject} description={description} vState={vState}>
+    {children}
+  </Point>
+)
+
+const point6 = createPoint('Point 6', 'Point 6 Description')
+const point5 = createPoint('Point 5', 'Point 5 Description', point6)
+const point4 = createPoint('Point 4', 'Point 4 Description', point5)
+const point3 = createPoint('Point 3', 'Point 3 Description', point4)
+const point2 = createPoint('Point 2', 'Point 2 Description', point3)
+const point1 = createPoint('Point 1', 'Point 1 Description', point2)
+
+export const SingleLayerDeep = {
+  args: {
+    subject: 'Point 5',
+    description: 'Point 5 Description',
+    vState: 'default',
+    children: point6,
+  },
+}
+
+export const TwoLayersDeep = {
+  args: {
+    subject: 'Point 4',
+    description: 'Point 4 Description',
+    vState: 'default',
+    children: point5,
+  },
+}
+
+export const ThreeLayersDeep = {
+  args: {
+    subject: 'Point 3',
+    description: 'Point 3 Description',
+    vState: 'default',
+    children: point4,
+  },
+}
+
+export const FourLayersDeep = {
+  args: {
+    subject: 'Point 2',
+    description: 'Point 2 Description',
+    vState: 'default',
+    children: point3,
+  },
+}
+
+export const FiveLayersDeep = {
+  args: {
+    subject: 'Point 1',
+    description: 'Point 1 Description',
+    vState: 'default',
+    children: point2,
+  },
+}
+
+export const SixLayersDeep = {
+  args: {
+    subject: 'Point 0',
+    description: 'Point 0 Description',
+    vState: 'default',
+    children: point1,
+  },
+}
+
+export const SevenLayersDeep = {
+  args: {
+    subject: 'Point 0',
+    description: 'Point 0 Description',
+    vState: 'default',
+    children: point1,
+  },
 }
