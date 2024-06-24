@@ -1,10 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
+// https://github.com/EnCiv/civil-pursuit/issues/80
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { H, Level } from 'react-accessible-headings'
 
 const Point = forwardRef((props, ref) => {
   const { subject, description, vState, children, className, isLoading, ...otherProps } = props
@@ -19,13 +21,6 @@ const Point = forwardRef((props, ref) => {
     setIsHovered(false)
   }
 
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      className: cx(child.props.className, { isHovered: isHovered }),
-      vState: vState,
-    })
-  })
-
   return (
     <div
       className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)}
@@ -37,18 +32,20 @@ const Point = forwardRef((props, ref) => {
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <div
-              className={
-                isLoading
-                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
-              }
-            >
-              {isLoading ? '' : subject}
-            </div>
+            <H>
+              <div
+                className={
+                  isLoading
+                    ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
+                    : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+                }
+              >
+                {isLoading ? '' : subject}
+              </div>
+            </H>
           )}
           {(isLoading || description) && (
-            <div
+            <p
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
@@ -56,9 +53,9 @@ const Point = forwardRef((props, ref) => {
               }
             >
               {isLoading ? '' : description}
-            </div>
+            </p>
           )}
-          {childrenWithProps}
+          <Level>{children}</Level>
         </div>
       </div>
     </div>
