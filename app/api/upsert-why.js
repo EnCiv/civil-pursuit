@@ -17,12 +17,12 @@ async function upsertWhy(pointObj, cb) {
   }
 
   try {
-    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true })
-    const updatedDoc = await Points.findOne({ _id: pointObj._id })
-    cb(updatedDoc)
+    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
+    const updatedDoc = await Points.findOne({ _id: pointObj._id });
+    cb(updatedDoc);
   } catch (error) {
-    console.error(error)
-    cb(null) // Return null indicating an error
+    console.error(error);
+    cb(null); // Return null indicating an error
   }
 }
 
