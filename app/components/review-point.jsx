@@ -11,19 +11,8 @@ import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 
 function ReviewPoint(props) {
-  const {
-    className,
-    read = false,
-    rank = '',
-    subject = '',
-    description = '',
-    leftPointList = [],
-    rightPointList = [],
-    onDone = () => {},
-    ...otherProps
-  } = props
-
-  const [isRead, setIsRead] = useState(read)
+  const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
+  const [isRead, setIsRead] = useState(false)
   const [isOpened, setIsOpened] = useState(false)
   const [isRanked, setIsRanked] = useState(rank !== '')
   const [isRankActive, setIsRankActive] = useState(false)
@@ -33,76 +22,84 @@ function ReviewPoint(props) {
   useEffect(() => {
     if (isOpened) {
       setIsRead(true)
-      setIsRankActive(true)
     }
   }, [isOpened])
 
   useEffect(() => {
-    if (!isOpened && !isRead) {
+    if (isRead) {
+      setIsRankActive(true)
+    } else {
       setIsRankActive(false)
     }
-  }, [isOpened, isRead])
+  }, [isRead])
 
   useEffect(() => {
-    if (!isOpened && isRanked) {
+    if (isRanked) {
       setIsRead(true)
     }
-    if (!isOpened && !isRanked) {
+  }, [isRanked])
+
+  useEffect(() => {
+    if (!isRanked && !isOpened) {
       setIsRead(false)
     }
-  }, [isOpened, isRanked])
+  }, [isRanked, isOpened])
 
   const handleRankingDone = selectedRank => {
-    setIsOpened(false) // Close the component when a ranking is chosen
-    setIsRanked(selectedRank !== '') // Update isRanked based on whether a rank is selected
-    onDone(selectedRank) // Call the onDone callback with the selected rank
+    setIsOpened(false)
+    setIsRanked(selectedRank !== '')
+    if (rank !== selectedRank) {
+      onDone(selectedRank)
+    }
   }
 
   return (
-    <div className={cx(className)} {...otherProps}>
-      <div className={cx(classes.borderStyle)}>
-        <div className={cx(classes.contentContainer)}>
-          <div className={classes.informationGrid}>
-            <div className={classes.informationColumn}>
-              <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>{`${
-                isRead ? 'Read' : 'Unread'
-              }`}</span>
-              {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
-              {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
-            </div>
-
-            <div className={classes.rankingColumn}>
-              <Ranking className={classes.ranking} disabled={!isRankActive} rank={rank} onDone={handleRankingDone} />
-            </div>
+    <div className={cx(classes.borderStyle)} {...otherProps}>
+      <div className={cx(classes.contentContainer)}>
+        <div className={classes.informationGrid}>
+          <div className={classes.informationColumn}>
+            <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>
+              {isRead ? 'Read' : 'Unread'}
+            </span>
+            {point.subject && <div className={cx(classes.subjectStyle)}>{point.subject}</div>}
+            {point.description && <div className={cx(classes.descriptionStyle)}>{point.description}</div>}
           </div>
-          <div className={classes.SvgContainer}>
-            {isOpened ? (
-              <TextButton onClick={() => setIsOpened(false)} title="close" tabIndex={0}>
-                <span className={classes.chevronButton}>
-                  <SvgChevronUp />
-                </span>
-              </TextButton>
-            ) : (
-              <TextButton onClick={() => setIsOpened(true)} title="open" tabIndex={0}>
-                <span className={classes.chevronButton}>
-                  <SvgChevronDown />
-                </span>
-              </TextButton>
-            )}
-          </div>
-        </div>
-        {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
-          <div className={classes.showDualPointListContainer}>
-            <ShowDualPointList
-              className={classes.showDualPointList}
-              leftHeader="Why It's Most important"
-              rightHeader="Why It's Least important"
-              leftPoints={leftPointList}
-              rightPoints={rightPointList}
+          <div className={classes.rankingColumn}>
+            <Ranking
+              className={classes.ranking}
+              disabled={!isRankActive}
+              defaultValue={rank}
+              onDone={handleRankingDone}
             />
           </div>
-        )}
+        </div>
+        <div className={classes.SvgContainer}>
+          {isOpened ? (
+            <TextButton onClick={() => setIsOpened(false)} title="close" tabIndex={0}>
+              <span className={classes.chevronButton}>
+                <SvgChevronUp />
+              </span>
+            </TextButton>
+          ) : (
+            <TextButton onClick={() => setIsOpened(true)} title="open" tabIndex={0}>
+              <span className={classes.chevronButton}>
+                <SvgChevronDown />
+              </span>
+            </TextButton>
+          )}
+        </div>
       </div>
+      {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
+        <div className={classes.showDualPointListContainer}>
+          <ShowDualPointList
+            className={classes.showDualPointList}
+            leftHeader="Why It's Most Important"
+            rightHeader="Why It's Least Important"
+            leftPoints={leftPointList}
+            rightPoints={rightPointList}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -184,7 +181,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     width: '100%',
   },
-
   informationColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -192,7 +188,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%', // Initially set to 100%
   },
-
   rankingColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -200,7 +195,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%', // Initially set to 100%
   },
-
   // Additional style for adjusting grid layout
   '@media (min-width: 40rem)': {
     // Adjust breakpoint as needed
@@ -208,7 +202,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       gridTemplateColumns: '1fr 0.25fr', // Adjusted grid layout
     },
   },
-
   ranking: {
     width: '70%',
     fontSize: '1rem',
