@@ -20,6 +20,7 @@ const initialDetails = { householdIncome: '0-10000', housing: 'Apartment', numbe
 
 export const Empty = () => {
   return <MoreDetails />
+  // args: {},
 }
 
 export const FigmaInputMatch = {

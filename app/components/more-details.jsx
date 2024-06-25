@@ -9,6 +9,7 @@ import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 
 const MoreDetails = props => {
+  const { onDone = () => {} } = props
   const [data, setData] = useState(initialData)
   const classes = useStyles(props)
   const initialData = {}
@@ -37,10 +38,6 @@ const MoreDetails = props => {
     type: 'VerticalLayout',
     elements: [
       {
-        type: 'Label',
-        text: 'Household Income',
-      },
-      {
         type: 'Control',
         scope: '#/properties/householdIncome',
       },
@@ -60,10 +57,16 @@ const MoreDetails = props => {
     // Handle form submission logic here
   }
 
+  const handleOnDone = ({ valid, value }) => {
+    console.log('Form data: ', data)
+    console.log(valid, value)
+
+    value.parentId = `${point._id}`
+    onDone({ valid, value })
+  }
+
   return (
-    <div
-      className={classes.container}
-    >
+    <div className={classes.container}>
       <p className={classes.title}>We just need a few more details about you to get started.</p>
       <div className={classes.formContainer}>
         <Column>
@@ -74,10 +77,12 @@ const MoreDetails = props => {
             renderers={vanillaRenderers}
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
+            onDone={handleOnDone}
           />
           <Submit
+            primary
             className={classes.submitButton}
-            onClick={handleOnSubmit}
+            // onClick={handleOnSubmit}
           >
             Submit
           </Submit>
@@ -93,28 +98,29 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: props.mode != 'dark' ? theme.colors.darkModeGray : theme.colors.white,
-    color: props.mode != 'dark' ? theme.colors.white : theme.colors.black,
-    border: 'medium dashed green',
+    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
   }),
-  formContainer: {
-    border: 'medium solid red',
-  },
-  selectList: {},
-  selectTitle: { fontWeight: 'bold' },
-  stackedControl: {
-    fontWeight: 'bold',
-    '& > .control': {
-      fontWeight: 'bold',
-      display: 'block',
-      marginBottom: '1.25rem',
-    },
-  },
-  [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-    container: {
-      flexDirection: 'column',
-    },
-  },
+  // selectList: {},
+  // selectTitle: { fontWeight: 'bold' },
+  // stackedControl: {
+  //   fontWeight: 'bold',
+  //   '& > .control': {
+  //     fontWeight: 'bold',
+  //     display: 'block',
+  //     marginBottom: '1.25rem',
+  //   },
+  // },
+  submitButton: { width: '100%', margin: '1rem 0 1rem 0', borderRadius: '15px' },
+  title: props => ({
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
+    fontSize: '2rem',
+  }),
+  // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+  //   container: {
+  //     flexDirection: 'column',
+  //   },
+  // },
 }))
 
 export default MoreDetails
