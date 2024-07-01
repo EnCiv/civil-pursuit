@@ -1,6 +1,5 @@
-// https://github.com/EnCiv/civil-pursuit/issues/101
 'use strict'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
@@ -9,27 +8,39 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`)
+    const handleResize = () => setIsMobile(mediaQuery.matches)
+
+    // Initial check
+    handleResize()
+
+    // Add event listener
+    mediaQuery.addListener(handleResize)
+
+    // Cleanup event listener
+    return () => mediaQuery.removeListener(handleResize)
+  }, [])
+
   const renderRounds = () => {
     if (roundsStatus.length === 0) {
       return <div className={classes.emptyMessage}>No rounds available</div>
     }
 
     let visibleRounds
-
-    // Determine if the viewport is mobile
-    const isMobile = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`).matches
+    const currentRoundIndex = roundsStatus.indexOf('inProgress')
 
     if (isMobile) {
-      const currentRoundIndex = roundsStatus.indexOf('inProgress')
       if (currentRoundIndex === 0) {
         visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(currentRoundIndex) // Show only the last round
+        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 1) // Show the last two rounds
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next rounds
+        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next round
       }
     } else {
-      const currentRoundIndex = roundsStatus.indexOf('inProgress')
       if (currentRoundIndex === 0) {
         visibleRounds = ['inProgress', 'pending', 'pending']
       } else if (currentRoundIndex < roundsStatus.length - 1) {
@@ -71,7 +82,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
   },
   roundTrackerWrapper: {
-    backgroundColor: '#FDFF7',
+    backgroundColor: '#FDFDF7',
     borderRadius: '0.5rem',
     padding: '1rem',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
@@ -82,7 +93,7 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    '@media (max-width: 600px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'row',
       flexWrap: 'nowrap',
     },
@@ -92,7 +103,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     margin: '0 0.5rem',
-    '@media (max-width: 600px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       alignItems: 'center',
       marginBottom: '0.5rem',
@@ -102,14 +113,14 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '0.25rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    '@media (max-width: 600px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginBottom: '0.25rem',
       marginRight: '0',
     },
   },
   badge: {
     margin: '0 0.5rem',
-    '@media (max-width: 600px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: '0 0.25rem',
     },
   },
@@ -119,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: '#ccc',
     alignSelf: 'center',
     transform: 'translateY(0.65rem)', // Further adjust the vertical position
-    '@media (max-width: 600px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '0.75rem',
       height: '0.0625rem',
       marginBottom: '0.5rem',
