@@ -37,6 +37,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: '3.625rem 9.875rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '3.1875rem 1.5625rem',
+      borderRadius: '0',
+    },
   },
 
   topic: {
@@ -58,6 +62,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'center',
     whiteSpace: 'nowrap',
   },
+
   subject: {
     fontFamily: 'Inter',
     fontWeight: 700,
@@ -66,7 +71,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     letterSpacing: '-0.03em',
     color: theme.colors.primaryButtonBlue,
     textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      fontSize: '3rem',
+      lineHeight: '3.3rem',
+    },
   },
+
   description: {
     fontFamily: 'Inter',
     fontWeight: 400,
@@ -75,6 +85,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: 'center',
   },
+  
   participants: {
     display: 'flex',
     alignItems: 'center',
