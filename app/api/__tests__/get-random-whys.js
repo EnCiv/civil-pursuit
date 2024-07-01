@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/135
 
-import getRandomWhys from '../api/get-random-whys'
+import getRandomWhys from '../get-random-whys'
 import Points from '../../models/points'
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -58,14 +58,15 @@ test('Case where there are 0 matching whys', async () => {
   await getRandomWhys.call({ synuser: user }, POINT1.toString(), 'least', 5, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith([])
+  const result = cb.mock.calls[0][0]
+  expect(result).toEqual([])
 })
 
 test('Case where there are 5 matching whys and qty is 5', async () => {
   const whys = [
     {
       _id: new ObjectId(),
-      subject: 'Why 1',
+      title: 'Why 1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1,
@@ -74,7 +75,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 2',
+      title: 'Why 2',
       description: 'Description 2',
       round: 1,
       parentId: POINT1,
@@ -83,7 +84,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 3',
+      title: 'Why 3',
       description: 'Description 3',
       round: 1,
       parentId: POINT1,
@@ -92,7 +93,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 4',
+      title: 'Why 4',
       description: 'Description 4',
       round: 1,
       parentId: POINT1,
@@ -101,7 +102,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 5',
+      title: 'Why 5',
       description: 'Description 5',
       round: 1,
       parentId: POINT1,
@@ -109,7 +110,10 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
       category: 'most',
     },
   ]
-  await Mongo.db.collection('points').insertMany(whys)
+  await Points.insertMany(whys) // Insert whys into the Points collection
+
+  const insertedWhys = await Points.find({}).toArray()
+//   console.log('Inserted whys:', insertedWhys)
 
   const user = { id: USER1 }
   const cb = jest.fn()
@@ -118,6 +122,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
   const result = cb.mock.calls[0][0]
+//   console.log('Test result:', result)
   expect(result.length).toBe(5)
   result.forEach(why => {
     expect(why).not.toHaveProperty('userId')
@@ -130,7 +135,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
   const whys = [
     {
       _id: new ObjectId(),
-      subject: 'Why 1',
+      title: 'Why1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1,
@@ -139,7 +144,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 2',
+      title: 'Why2',
       description: 'Description 2',
       round: 1,
       parentId: POINT1,
@@ -148,7 +153,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 3',
+      title: 'Why3',
       description: 'Description 3',
       round: 1,
       parentId: POINT1,
@@ -157,7 +162,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 4',
+      title: 'Why4',
       description: 'Description 4',
       round: 1,
       parentId: POINT1,
@@ -166,7 +171,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 5',
+      title: 'Why5',
       description: 'Description 5',
       round: 1,
       parentId: POINT1,
@@ -175,7 +180,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 6',
+      title: 'Why6',
       description: 'Description 6',
       round: 1,
       parentId: POINT1,
@@ -184,7 +189,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 7',
+      title: 'Why7',
       description: 'Description 7',
       round: 1,
       parentId: POINT1,
@@ -193,7 +198,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 8',
+      title: 'Why8',
       description: 'Description 8',
       round: 1,
       parentId: POINT1,
@@ -202,7 +207,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 9',
+      title: 'Why9',
       description: 'Description 9',
       round: 1,
       parentId: POINT1,
@@ -211,7 +216,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      subject: 'Why 10',
+      title: 'Why10',
       description: 'Description 10',
       round: 1,
       parentId: POINT1,
