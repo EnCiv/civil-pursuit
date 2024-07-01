@@ -4,8 +4,9 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
+import cx from 'classnames'
 
-const RoundTracker = ({ roundsStatus = [] }) => {
+const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
   const renderRounds = () => {
@@ -53,10 +54,28 @@ const RoundTracker = ({ roundsStatus = [] }) => {
     ))
   }
 
-  return <div className={classes.roundTracker}>{renderRounds()}</div>
+  return (
+    <div className={cx(classes.centerWrapper, className)} {...otherProps}>
+      <div className={classes.roundTrackerWrapper}>
+        <div className={classes.roundTracker}>{renderRounds()}</div>
+      </div>
+    </div>
+  )
 }
 
 const useStyles = createUseStyles(theme => ({
+  centerWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
+  roundTrackerWrapper: {
+    backgroundColor: '#FDFF7',
+    borderRadius: '0.5rem',
+    padding: '1rem',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  },
   roundTracker: {
     display: 'flex',
     alignItems: 'center',
