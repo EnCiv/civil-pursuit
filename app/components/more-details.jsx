@@ -51,10 +51,6 @@ const MoreDetails = props => {
     ],
   }
 
-  const handleOnSubmit = ({ valid, value }) => {
-    onDone({ valid: true, value })
-  }
-
   return (
     <div className={classes.container}>
       <p className={classes.title}>We just need a few more details about you to get started.</p>
@@ -68,7 +64,7 @@ const MoreDetails = props => {
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
           />
-          <Submit primary className={classes.submitButton} onClick={handleOnSubmit}>
+          <Submit primary className={classes.submitButton} onClick={() => onDone({ valid: true, value })}>
             Submit
           </Submit>
         </Column>
@@ -86,7 +82,7 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
   }),
-  submitButton: { width: '100%', margin: '1rem 0 1rem 0', borderRadius: '15px' },
+  submitButton: { width: '100%', margin: '1rem 0', borderRadius: '15px' },
   title: props => ({
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',

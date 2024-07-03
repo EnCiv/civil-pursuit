@@ -8,7 +8,7 @@ import MoreDetails from './../app/components/more-details'
 export default {
   component: MoreDetails,
   args: {},
-  // decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -18,9 +18,8 @@ export default {
 
 const initialDetails = { householdIncome: '0-10000', housing: 'Apartment', numberOfSiblings: '2' }
 
-export const Empty = () => {
-  return <MoreDetails />
-  // args: {},
+export const Empty = {
+  args: {},
 }
 
 export const FigmaInputMatch = {
@@ -28,7 +27,7 @@ export const FigmaInputMatch = {
 }
 
 export const InitialDetailsInput = {
-  args: {},
+  args: { initialDetails },
 }
 
 export const UserInputAndOnDoneCall = {
