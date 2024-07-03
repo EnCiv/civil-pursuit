@@ -9,10 +9,9 @@ import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 
 const MoreDetails = props => {
-  const { onDone = () => {} } = props
+  const { onDone = () => {}, initialData = {} } = props
   const [data, setData] = useState(initialData)
   const classes = useStyles(props)
-  const initialData = {}
 
   const schema = {
     type: 'object',
@@ -52,17 +51,8 @@ const MoreDetails = props => {
     ],
   }
 
-  const handleOnSubmit = () => {
-    console.log('Form data: ', data)
-    // Handle form submission logic here
-  }
-
-  const handleOnDone = ({ valid, value }) => {
-    console.log('Form data: ', data)
-    console.log(valid, value)
-
-    value.parentId = `${point._id}`
-    onDone({ valid, value })
+  const handleOnSubmit = ({ valid, value }) => {
+    onDone({ valid: true, value })
   }
 
   return (
@@ -77,13 +67,8 @@ const MoreDetails = props => {
             renderers={vanillaRenderers}
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
-            onDone={handleOnDone}
           />
-          <Submit
-            primary
-            className={classes.submitButton}
-            // onClick={handleOnSubmit}
-          >
+          <Submit primary className={classes.submitButton} onClick={handleOnSubmit}>
             Submit
           </Submit>
         </Column>
@@ -101,26 +86,11 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
   }),
-  // selectList: {},
-  // selectTitle: { fontWeight: 'bold' },
-  // stackedControl: {
-  //   fontWeight: 'bold',
-  //   '& > .control': {
-  //     fontWeight: 'bold',
-  //     display: 'block',
-  //     marginBottom: '1.25rem',
-  //   },
-  // },
   submitButton: { width: '100%', margin: '1rem 0 1rem 0', borderRadius: '15px' },
   title: props => ({
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
-  // [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-  //   container: {
-  //     flexDirection: 'column',
-  //   },
-  // },
 }))
 
 export default MoreDetails
