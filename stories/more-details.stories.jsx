@@ -16,28 +16,71 @@ export default {
   },
 }
 
-const initialDetails = { householdIncome: '0-10000', housing: 'Apartment', numberOfSiblings: '2' }
+const testSchema = {
+  type: 'object',
+  properties: {
+    householdIncome: {
+      title: 'Household Income',
+      type: 'string',
+      enum: ['0-10000', '10000-20000', '20000-30000'],
+    },
+    housing: {
+      title: 'Housing',
+      type: 'string',
+      enum: ['House', 'Apartment', 'None'],
+    },
+    numberOfSiblings: {
+      title: 'Number of Siblings',
+      type: 'string',
+      enum: ['0', '1', '2'],
+    },
+  },
+}
+
+const testUIschema = {
+  type: 'VerticalLayout',
+  elements: [
+    {
+      type: 'Control',
+      scope: '#/properties/householdIncome',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/housing',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/numberOfSiblings',
+    },
+  ],
+}
+
+const initialDetails = {
+  householdIncome: '0-10000',
+  housing: 'Apartment',
+  numberOfSiblings: '2',
+}
 
 export const Empty = {
   args: {},
 }
 
 export const FigmaInputMatch = {
-  args: {},
+  args: { schema: testSchema, uischema: testUIschema },
 }
 
 export const InitialDetailsInput = {
-  args: { initialDetails },
+  args: { schema: testSchema, uischema: testUIschema, details: initialDetails },
 }
 
 export const UserInputAndOnDoneCall = {
-  args: {},
+  args: { schema: testSchema, uischema: testUIschema },
 }
 
 export const StateOfResidenceSelection = {
-  args: {},
+  args: { schema: testSchema, uischema: testUIschema },
 }
 
 export const BirthDateInput = {
-  args: {},
+  args: { schema: testSchema, uischema: testUIschema },
 }
