@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/135
 
 const Points = require('../models/points')
-const { ObjectId } = require('mongodb') // Add this line
+const { ObjectId } = require('mongodb')
 
 async function getRandomWhys(pointId, category, qty, cb) {
   if (!this.synuser || !this.synuser.id) {
@@ -15,11 +15,14 @@ async function getRandomWhys(pointId, category, qty, cb) {
   }
 
   try {
-    // console.log('Getting existing whys')
-    // console.log(`Querying for pointId: ${pointId}, category: ${category}, qty: ${qty}`)
-    
+    // Ensure pointId is converted to ObjectId if it's not already
+    if (typeof pointId === 'string') {
+      pointId = new ObjectId(pointId)
+    }
+
+    // console.log(`Querying Points with parentId: ${pointId}, category: ${category}`)
     const whys = await Points.aggregate([
-      { $match: { parentId: new ObjectId(pointId), category: category } },
+      { $match: { parentId: pointId.toString(), category: category } }, // Ensure parentId is a string in the match query
       { $sample: { size: qty } },
     ]).toArray()
 
