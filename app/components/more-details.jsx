@@ -7,6 +7,32 @@ import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 import { PrimaryButton } from './button.jsx'
+import { rankWith, isEnumControl } from '@jsonforms/core'
+import { withJsonFormsControlProps } from '@jsonforms/react'
+
+const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema }) => {
+  const classes = useStyles({ mode: 'light' })
+  const options = schema.enum || []
+  const label = uischema.label || schema.title
+
+  return (
+    <div className={classes.formControl}>
+      <label className={classes.label}>{label}</label>
+      <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.select}>
+        <option value="" disabled>
+          Choose one
+        </option>
+        {options.map(option => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+})
+
+const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isEnumControl), renderer: CustomSelectRenderer }]
 
 const MoreDetails = props => {
   const {
@@ -18,11 +44,14 @@ const MoreDetails = props => {
       valid, value
     },
     active = true,
+    ...otherProps
   } = props
   const [data, setData] = useState(details)
   const classes = useStyles(props)
 
   const handleOnClick = ({ valid, value }) => {
+    console.log(valid)
+    console.log(value)
     onDone({ valid: true, value })
   }
 
@@ -35,7 +64,7 @@ const MoreDetails = props => {
             schema={schema}
             uischema={uischema}
             data={data}
-            renderers={vanillaRenderers}
+            renderers={customRenderers}
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
           />
@@ -43,6 +72,12 @@ const MoreDetails = props => {
         <PrimaryButton
           primary
           className={classes.submitButton}
+          // onClick={() => handleOnClick()}
+          // disabled={true && data}
+          // tile={'Submit form'}
+          // onDone={() => {
+          //   handleOnClick
+          // }}
           onDone={onDone}
           disabled={!active}
         >
@@ -67,9 +102,34 @@ const useStyles = createUseStyles(theme => ({
     margin: '1rem 0',
   },
   title: props => ({
+    textAlign: 'center',
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
+  formContainer: {
+    // width: '100%',
+    // padding: '1rem',
+  },
+  jsonFormsContainer: {
+    // width: '100%',
+    // marginBottom: '1rem',
+  },
+  formControl: {
+    marginBottom: '1rem',
+  },
+  label: {
+    // marginBottom: '0.5rem',
+    // display: 'block',
+    // color: 'blue',
+  },
+  select: {
+    width: '100%',
+    padding: '0.5rem',
+    borderRadius: '4px',
+    border: '1px solid #EBEBEB',
+    backgroundColor: '#FBFBFB',
+    color: '#1A1A1A',
+  },
 }))
 
 export default MoreDetails

@@ -56,6 +56,7 @@ const testUIschema = {
 }
 
 const initialDetails = {
+  // householdIncome[0],
   householdIncome: '0-10000',
   housing: 'Apartment',
   numberOfSiblings: '2',
