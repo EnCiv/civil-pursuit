@@ -1,5 +1,5 @@
 'use strict'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
@@ -8,24 +8,37 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isReady, setIsReady] = useState(false)
 
-  useEffect(() => {
-    // Perform an immediate synchronous check for screen size
-    const initialCheck = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`).matches
-    setIsMobile(initialCheck)
+  useLayoutEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`)
 
     const handleResize = () => {
-      setIsMobile(window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`).matches)
+      setIsMobile(mediaQuery.matches)
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    handleResize()
+
+    mediaQuery.addEventListener('change', handleResize)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleResize)
+    }
   }, [])
 
-  if (isMobile === null) {
-    // Render nothing to avoid flicker
-    return null
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsReady(true)
+    }, 1000)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [])
+
+  if (!isReady) {
+    return <div style={{ visibility: 'hidden' }} />
   }
 
   const renderRounds = () => {
@@ -38,19 +51,19 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
 
     if (isMobile) {
       if (currentRoundIndex < 0) {
-        visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds if no in-progress round is found
+        visibleRounds = roundsStatus.slice(0, 2)
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-2) // Show the last two rounds if the last round is in progress
+        visibleRounds = roundsStatus.slice(-2)
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next rounds
+        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2)
       }
     } else {
       if (currentRoundIndex <= 0) {
-        visibleRounds = roundsStatus.slice(0, 3) // Show the first three rounds
+        visibleRounds = roundsStatus.slice(0, 3)
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-3) // Show the last three rounds
+        visibleRounds = roundsStatus.slice(-3)
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2) // Show the previous, current, and next round
+        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2)
       }
     }
 
@@ -89,7 +102,7 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.roundTrackerBackground,
     borderRadius: '0.5rem',
     padding: '1rem',
-    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)', // Updated to use rem units
+    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)',
   },
   roundTracker: {
     display: 'flex',
@@ -133,7 +146,7 @@ const useStyles = createUseStyles(theme => ({
     height: '0.125rem',
     backgroundColor: theme.colors.borderGray,
     alignSelf: 'center',
-    transform: 'translateY(0.65rem)', // Further adjust the vertical position
+    transform: 'translateY(0.65rem)',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '0.75rem',
       height: '0.0625rem',
