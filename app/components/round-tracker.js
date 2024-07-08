@@ -37,12 +37,12 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
     const currentRoundIndex = roundsStatus.findIndex(status => status === 'inProgress')
 
     if (isMobile) {
-      if (currentRoundIndex <= 0) {
-        visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds
+      if (currentRoundIndex < 0) {
+        visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds if no in-progress round is found
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-2) // Show the last two rounds
+        visibleRounds = roundsStatus.slice(-2) // Show the last two rounds if the last round is in progress
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 1) // Show the previous, current, and next round
+        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next rounds
       }
     } else {
       if (currentRoundIndex <= 0) {
@@ -57,7 +57,7 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
     return visibleRounds.map((status, index) => (
       <React.Fragment key={index}>
         <div className={classes.roundContainer}>
-          <div className={classes.roundNumber}>Round {currentRoundIndex + index + 1}</div>
+          <div className={classes.roundNumber}>Round {roundsStatus.length - visibleRounds.length + index + 1}</div>
           <StatusBadge
             name={status.charAt(0).toUpperCase() + status.slice(1)}
             status={status.toLowerCase()}
