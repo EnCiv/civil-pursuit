@@ -1,5 +1,5 @@
 'use strict'
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
@@ -8,8 +8,7 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(false)
-  const [isReady, setIsReady] = useState(false)
+  const [isMobile, setIsMobile] = useState(true) // Set isMobile to true initially
 
   useLayoutEffect(() => {
     const mediaQuery = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`)
@@ -26,20 +25,6 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
       mediaQuery.removeEventListener('change', handleResize)
     }
   }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true)
-    }, 1000)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [])
-
-  if (!isReady) {
-    return <div style={{ visibility: 'hidden' }} />
-  }
 
   const renderRounds = () => {
     if (roundsStatus.length === 0) {
