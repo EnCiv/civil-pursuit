@@ -67,15 +67,30 @@ export const Empty = {
 }
 
 export const FigmaInputMatch = {
-  args: { schema: testSchema, uischema: testUIschema },
+  args: {
+    schema: testSchema,
+    uischema: testUIschema,
+    // renderers: vanillaRenderers
+  },
 }
 
 export const InitialDetailsInput = {
-  args: { schema: testSchema, uischema: testUIschema, details: initialDetails },
+  args: {
+    schema: testSchema,
+    uischema: testUIschema,
+    // renderers: customRenderers,
+    details: initialDetails,
+  },
 }
 
 export const UserInputAndOnDoneCall = {
-  args: { schema: testSchema, uischema: testUIschema },
+  args: { schema: testSchema, uischema: testUIschema, onDone: null },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
+    let result = onDoneResult(canvas)
+    expect(result.count).toEqual(1)
+  },
 }
 
 export const StateOfResidenceSelection = {

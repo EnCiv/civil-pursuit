@@ -16,8 +16,8 @@ const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, pa
   const label = uischema.label || schema.title
 
   return (
-    <div className={classes.formControl}>
-      <label className={classes.label}>{label}</label>
+    <div>
+      <label>{label}</label>
       <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.select}>
         <option value="" disabled>
           Choose one
@@ -44,14 +44,13 @@ const MoreDetails = props => {
       valid, value
     },
     active = true,
+    value,
     ...otherProps
   } = props
   const [data, setData] = useState(details)
   const classes = useStyles(props)
 
-  const handleOnClick = ({ valid, value }) => {
-    console.log(valid)
-    console.log(value)
+  const handleOnClick = () => {
     onDone({ valid: true, value })
   }
 
@@ -69,18 +68,7 @@ const MoreDetails = props => {
             onChange={({ data, _errors }) => setData(data)}
           />
         </div>
-        <PrimaryButton
-          primary
-          className={classes.submitButton}
-          // onClick={() => handleOnClick()}
-          // disabled={true && data}
-          // tile={'Submit form'}
-          // onDone={() => {
-          //   handleOnClick
-          // }}
-          onDone={onDone}
-          disabled={!active}
-        >
+        <PrimaryButton primary tile={'Submit form'} className={classes.submitButton} onClick={() => handleOnClick()}>
           Submit
         </PrimaryButton>
       </div>
@@ -106,27 +94,14 @@ const useStyles = createUseStyles(theme => ({
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
-  formContainer: {
-    // width: '100%',
-    // padding: '1rem',
-  },
-  jsonFormsContainer: {
-    // width: '100%',
-    // marginBottom: '1rem',
-  },
   formControl: {
     marginBottom: '1rem',
-  },
-  label: {
-    // marginBottom: '0.5rem',
-    // display: 'block',
-    // color: 'blue',
   },
   select: {
     width: '100%',
     padding: '0.5rem',
     borderRadius: '4px',
-    border: '1px solid #EBEBEB',
+    border: '0.1rem solid #EBEBEB',
     backgroundColor: '#FBFBFB',
     color: '#1A1A1A',
   },
