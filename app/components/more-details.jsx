@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/89
 
 'use strict'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
@@ -43,16 +43,24 @@ const MoreDetails = props => {
     onDone = () => {
       valid, value
     },
-    active = true,
     value,
-    ...otherProps
   } = props
   const [data, setData] = useState(details)
+  const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
 
   const handleOnClick = () => {
     onDone({ valid: true, value })
   }
+
+  const handleIsValid = () => {
+    const requiredData = ['householdIncome', 'housing', 'numberOfSiblings']
+    return requiredData.every(i => data[i])
+  }
+
+  useEffect(() => {
+    setIsValid(handleIsValid())
+  }, [data])
 
   return (
     <div className={cx(classes.moreDetailsContainer, className)}>
@@ -68,7 +76,14 @@ const MoreDetails = props => {
             onChange={({ data, _errors }) => setData(data)}
           />
         </div>
-        <PrimaryButton primary tile={'Submit form'} className={classes.submitButton} onClick={() => handleOnClick()}>
+        <PrimaryButton
+          primary
+          tile={'Submit form'}
+          className={classes.submitButton}
+          onClick={() => handleOnClick()}
+          onDone={onDone}
+          disabled={!isValid}
+        >
           Submit
         </PrimaryButton>
       </div>

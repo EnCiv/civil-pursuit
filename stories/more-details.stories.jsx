@@ -56,7 +56,6 @@ const testUIschema = {
 }
 
 const initialDetails = {
-  // householdIncome[0],
   householdIncome: '0-10000',
   housing: 'Apartment',
   numberOfSiblings: '2',
@@ -70,7 +69,6 @@ export const FigmaInputMatch = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
-    // renderers: vanillaRenderers
   },
 }
 
@@ -78,18 +76,17 @@ export const InitialDetailsInput = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
-    // renderers: customRenderers,
     details: initialDetails,
   },
 }
 
 export const UserInputAndOnDoneCall = {
-  args: { schema: testSchema, uischema: testUIschema, onDone: null },
+  args: { schema: testSchema, uischema: testUIschema, details: initialDetails, onDone: null },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
     let result = onDoneResult(canvas)
-    expect(result.count).toEqual(1)
+    expect(result.count).toEqual(2)
   },
 }
 
