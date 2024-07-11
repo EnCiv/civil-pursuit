@@ -1,14 +1,14 @@
 {
-  "tmp"             :   "/tmp",
-  "forgotPasswordEmail":  "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
+  "tmp": "/tmp",
+  "forgotPasswordEmail": "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
   "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36",
-  "cookie":{
-    "path":"/",
+  "cookie": {
+    "path": "/",
     "signed": false,
     "maxAge": 1209600000,
     "httpOnly": true
   },
-  "dbDefaults":{
+  "dbDefaults": {
     "limit": 10,
     "bigLimit": 20
   },
