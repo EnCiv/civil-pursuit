@@ -1,4 +1,12 @@
-// clustering test
+/** deliberative tournament test
+ *
+ * tests the dturn api by generating a bunch of statements with random numbers, and simulates users grouping and ranking the statements by their numeric value
+ *
+ * This is a development test, not a unit test, and could run for a very long time, depending on the NUMBER_OF_PARTICIPANTS.
+ *
+ * And because numbers are random, no two runs of this are the same.  The idea is to ensure we covered everything.
+ *
+ */
 const merge = require('lodash').merge
 const showDeepDiff = require('show-deep-diff')
 
@@ -12,7 +20,7 @@ const {
     getUserRecord,
     initDiscussion,
     Discussions,
-} = require('./clustering')
+} = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
