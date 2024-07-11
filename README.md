@@ -13,42 +13,102 @@ This work is licensed under the terms described in [LICENSE.txt](https://github.
 
 ### Dev Environment for Easy Project Switching
 
-This project uses bash. This follows the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
+This project uses **bash**. This follows the cloud environment. The OS manufactures have their idea about what shell to run, but that's for work in their environment. Think of the shell as something that is project dependent. If you are on Windows and don't have bash yet, there's [gitforwindows.org](https://gitforwindows.org/). No need to change your default shell, just get it on your computer and think of it as a project by project configuration. In Visual Studio Code, open your terminnal at the top and it will allows you to select bash for this project.
+
+The .bashrc file in each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by .gitignore and won't be put in the repo.
 
 These steps will make it easy to switch between multiple projects and repos, but automatically running the .bashrc file in a project when you start bash in that directory.
+
+The default setting for the startup terminal in VS Code for this repo has been set to use bash, and to run the local .bashrc file on startup.
+
+If you are not using VS Code, or not using the terminal within VS Code, then you should consider doing this:
 
 In your home (cd ~) directory find or create a **.bash_profile** on PC or a **.profile** on mac and add this to it. If neither exist, create both just to be sure.
 
 ```
-if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
+if [ `pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     echo running `pwd`/.bashrc
     source ./.bashrc
 fi
 ```
 
-This works great when you open a terminal in a project directory, for example when you are using visual studio code. But do what it takes to make sure that you are running bash in your terminal.
+This works great when you open a terminal in a project directory. But do what it takes to make sure that you are running bash in your terminal. PowerShell, or zsh will not work.
 
 ### Getting the corresponding version of Node
+
 We are reserecting this project from the past. At this point it needs Node version v16.20.1, but we will be moving toward a more current version as we work on this.
 
 [Node Version Switcher](https://github.com/jasongin/nvs) is recommended to make easially switch between versions of node.
-And if you have that installed, you can use this to get the right version. You could also add this to the .bashrc file in the civil-pursuit directory after it gets created.
+And if you have that installed, you can use this to get the right version.
+
+Now, create a folder for EnCiv repos (if you don't already have one) and clone the repo into it
+
+```bash
+mkdir ~/enciv
+cd enciv
+git clone https://github.com/EnCiv/civil-pursuit.git
+cd civil-pursuit
+```
+
+Now, open the civil-pursuit folder from VS Code and then open a new terminal window. With visual studio code, just click on **Terminal** / **New Terminal** at the top of the window.
+
+In the terminal, type this
+
+```bash
+nvs --version
+```
+
+and it works then all is good.
+
+If not, open, or create, a **.bashrc** file. (Note there is a "." at the beginning)
+
+If you are on a Mac, add this to the first line of your .bashrc file
+
+```bash
+export NVS_HOME="$HOME/.nvs"
+```
+
+If you are on Windows, add this to the top of your .bashrc file
+
+```bash
+function setupNvs {
+	export NVS_HOME="$HOME/AppData/Local/nvs/";
+	[ -s "$NVS_HOME/nvs.sh" ] && source "$NVS_HOME/nvs.sh" >> /dev/null;
+	return 0;
+}
+setupNvs
+```
+
+Save the file, close the terminal window, and open another terminal windown. Then try `nvs --version` again.
+
+After you have nvs running, create or add this to the bottom of your .bashrc file.
 
 ```bash
 # get the node version from package.json and use https"//github.com/jasongin/nvs to switch to it
-export NODE_VERSION=$(cat package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
+export NODE_VERSION=`cat .nvmrc`
 nvs add $NODE_VERSION
 source nvs.sh use $NODE_VERSION
+```
+
+Then save the file, close the terminal window, and open a new one. It should look like this the first time:
+
+```bash
+Downloading [##############################################################################################################################################################################################################################################################] 100%
+Extracting  [##############################################################################################################################################################################################################################################################] 100%
+Added at: ~\AppData\Local\nvs\node\16.20.1\x64\node.exe
+To use this version now: nvs use node/16.20.1/x64
+PATH += ~\AppData\Local\nvs\node\16.20.1\x64
+
+~/git/EnCiv/civil-pursuit (master)
 ```
 
 Then, after you get the right version of node (and npm) do this
 
 ```bash
-git clone https://github.com/EnCiv/civil-pursuit.git
-cd civil-pursuit
 npm install
-
 ```
+
+**Note:** If you started out with a different version of node, but are now rolling back, you will need to run `npm ci` the first time to clean out the node_modules director and rebuild it.
 
 For the first stages of this project, we will be focusing on storybook
 
@@ -62,7 +122,7 @@ This app uses MONGODB and you will need a mongodb uri to get started. Cloud.[mon
 
 you should end up with a line like this in your .bashrc file.
 
-The instructions above are continually getting out of sync with MongoDB's lates UI.  Revised instructions would be a welcome contribution that would make it easier for the next developer. 
+The instructions above are continually getting out of sync with MongoDB's lates UI. Revised instructions would be a welcome contribution that would make it easier for the next developer.
 
 ```
 export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
@@ -89,29 +149,34 @@ So after you get this far, request via slack a link to the "civil-pursuit-templa
 Then you can browse to [localhost:3011/item/pvote](localhost:3011/item/pvote) and see the discussion.
 
 # Contributing
+
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
 If you are not already, get on the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) by filling out this [form](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform?usp=sf_link) and then getting the link it provides after submission to go to join slack.
 
 To look for things to work on go to the [Issues](https://github.com/EnCiv/civil-pursuit/issues) tab above.
-Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list. 
+Look for issues that do not have anyone assigned. Also, issues toward the top may indicate that earlier issues are required first, so make sure those are closed, or look further down the list.
 
-When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one. 
+When you find one that you want to work on, assign it to yourself, or if you do not have permission yet, leave a comment saying you want to take this one.
 You are also welcome to ask about issues on slack or the developers meeting. The dev meeting link and annoucments are posted in the #developers channel on slack.
 
 Before you begin, please review the [React Component guidelines and notes](#react-component-guidelines-and-notes) below.
 
 Before you start coding, create a new branch for this issue:
+
 ```bash
 git checkout -b short-issue-text#issue-number
 ```
+
 For example `point-group#35`. The issue text should just be a word or two that make it distinct, and the the issue number.
 Then when you are ready to create a PR for the issue, or if you just want to push the code so we can talk about it, do:
+
 ```
 git push -u origin short-issue-text#issue-number
 ```
+
 This will push the code to a new branch on github. (-u means upstream) After this first time, you only need to `git push` to push updates.
-After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to creat a PR for this branch. Go ahead.  Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
+After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.com/EnCiv/civil-pursuit) and there will be a banner asking you if you want to creat a PR for this branch. Go ahead. Also, if you are only pushing this for review, there is a box you can check that says draft, or you can just day Draft in the comment title.
 
 # React Component guidelines and notes:
 

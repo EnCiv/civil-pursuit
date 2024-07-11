@@ -66,14 +66,15 @@ export function onDoneDecorator(Story, context) {
   const onDone = useCallback(res => {
     setResult({ count: result.count + 1, onDoneResult: res })
   })
-
   context.args.onDone = onDone
   return (
     <>
       <Story />
+
       {result.count ? (
         <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
           <div>
+            {' '}
             onDone:{' '}
             <span title="onDoneResult" id="onDoneResult" style={{ whiteSpace: 'pre-wrap' }}>
               {JSON.stringify(result, null, 4)}
@@ -86,6 +87,34 @@ export function onDoneDecorator(Story, context) {
 }
 export function onDoneResult() {
   return JSON.parse(document.getElementById('onDoneResult').innerHTML)
+}
+
+export function onBackDecorator(Story, context) {
+  const [result, setResult] = useState({ count: 0 })
+  const onBack = useCallback(res => {
+    setResult({ count: result.count + 1, onBackResult: res })
+  })
+  context.args.onBack = onBack
+  return (
+    <>
+      <Story />
+
+      {result.count ? (
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+          <div>
+            {' '}
+            onBack:{' '}
+            <span title="onBackResult" id="onBackResult" style={{ whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(result, null, 4)}
+            </span>
+          </div>
+        </div>
+      ) : null}
+    </>
+  )
+}
+export function onBackResult() {
+  return JSON.parse(document.getElementById('onBackResult').innerHTML)
 }
 
 export default {
