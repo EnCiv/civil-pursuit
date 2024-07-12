@@ -129,6 +129,7 @@
     "redtea": "^3.4.1",
     "shallowequal": "^0.2.2",
     "should": "^7.1.0",
+    "show-deep-diff": "github:ddfridley/show-deep-diff",
     "sniffr": "^1.1.4",
     "socket.io": "^1.3.6",
     "socket.io-client": "^1.3.7",
