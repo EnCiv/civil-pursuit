@@ -2,12 +2,12 @@ import React from 'react'
 import { expect } from '@storybook/jest'
 import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 
 export default {
   component: PointGroup,
-  decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator, levelDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

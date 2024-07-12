@@ -34,16 +34,14 @@ const Point = forwardRef((props, ref) => {
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <H>
-              <div
-                className={
-                  isLoading
-                    ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                    : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
-                }
-              >
-                {isLoading ? '' : subject}
-              </div>
+            <H
+              className={
+                isLoading
+                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
+                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+              }
+            >
+              {isLoading ? '' : subject}
             </H>
           )}
           {(isLoading || description) && (

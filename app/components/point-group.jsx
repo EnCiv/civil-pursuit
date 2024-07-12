@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
+// https://github.com/EnCiv/civil-pursuit/issues/80
 
 'use strict'
 
@@ -11,6 +12,7 @@ import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
 import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
 import DemInfo from './dem-info.jsx'
+import { H, Level, useLevel } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children, className) => {
@@ -59,7 +61,7 @@ const PointGroup = props => {
             classes.informationGrid
           )}
         >
-          {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
+          {subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}
         </div>
       )}
 
@@ -86,7 +88,7 @@ const PointGroup = props => {
             <div className={classes.selectPointsContainer}>
               {groupedPoints?.map(point => {
                 return (
-                  <div key={point._id} className={classes.selectPoints}>
+                  <Level key={point._id} className={classes.selectPoints}>
                     {CreatePoint(
                       point,
                       point._id === selected ? 'selected' : 'default',
@@ -113,7 +115,7 @@ const PointGroup = props => {
                       ],
                       cx(classes.selectPointsPassDown, classes.noBoxShadow)
                     )}
-                  </div>
+                  </Level>
                 )
               })}
             </div>
@@ -200,7 +202,7 @@ const PointGroup = props => {
               )}
             </div>
           )}
-          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+          {subject && <H className={cx(classes.subjectStyle)}>{subject}</H>}
           {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
           {user && <DemInfo user={user} />}
           {vs === 'edit' && expanded && !singlePoint && (
@@ -209,7 +211,7 @@ const PointGroup = props => {
               <div className={classes.selectPointsContainer}>
                 {groupedPoints.map((point, leadIndex) => {
                   return (
-                    <div key={point._id} className={classes.selectPoints}>
+                    <Level key={point._id} className={classes.selectPoints}>
                       {CreatePoint(
                         point,
                         'default',
@@ -258,7 +260,7 @@ const PointGroup = props => {
                         ],
                         cx(classes.selectPointsPassDown, classes.noBoxShadow)
                       )}
-                    </div>
+                    </Level>
                   )
                 })}
               </div>
@@ -270,9 +272,9 @@ const PointGroup = props => {
               <div className={classes.selectPointsContainer}>
                 {groupedPoints.map(point => {
                   return (
-                    <div key={point._id} className={classes.selectPoints}>
+                    <Level key={point._id} className={classes.selectPoints}>
                       {CreatePoint(point, 'default', null, cx(classes.selectPointsPassDown, classes.noBoxShadow))}
-                    </div>
+                    </Level>
                   )
                 })}
               </div>
