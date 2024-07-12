@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
 import Theme from '../app/components/theme'
+import { levelDecorator } from './common'
 
 const DemInfoTestComponent = props => {
   const { vState } = props
@@ -30,6 +31,7 @@ export default {
     description:
       'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
   },
+  decorators: [levelDecorator],
 }
 
 // Empty, in the case that the component data is loading:
@@ -137,17 +139,17 @@ const point1 = createPoint('Point 1', 'Point 1 Description', point2)
 
 export const ChildrenPointsSixLayersDeep = {
   args: {
-    subject: 'Point 1',
-    description: 'Point 1 Description',
+    subject: 'Point 2',
+    description: 'Point 2 Description',
     vState: 'default',
-    children: point2,
+    children: point3,
   },
 }
 export const ChildrenPointsSevenLayersDeep = {
   args: {
-    subject: 'Point 0',
-    description: 'Point 0 Description',
+    subject: 'Point 1',
+    description: 'Point 1 Description',
     vState: 'default',
-    children: point1,
+    children: point2,
   },
 }

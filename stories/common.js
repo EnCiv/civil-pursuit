@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/80
 
 import React, { useState, useCallback } from 'react'
-import { Level } from 'react-accessible-headings'
+import { Level, useLevel } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }
 
@@ -122,8 +122,10 @@ export function onBackResult() {
 
 // Create the level adjustment decorator
 export const levelDecorator = (Story, context) => {
+  const level = useLevel()
+  console.log('the level is', level)
   return (
-    <Level offset={1}>
+    <Level>
       <Story {...context} />
     </Level>
   )

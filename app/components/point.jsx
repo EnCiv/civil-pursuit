@@ -6,12 +6,14 @@
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { H, Level } from 'react-accessible-headings'
+import { H, Level, useLevel } from 'react-accessible-headings'
 
 const Point = forwardRef((props, ref) => {
   const { subject, description, vState, children, className, isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
+  const level = useLevel()
+  console.log('level', level)
 
   const onMouseIn = () => {
     setIsHovered(true)
