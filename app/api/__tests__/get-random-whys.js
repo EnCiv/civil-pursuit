@@ -112,9 +112,6 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
   ]
   await Points.insertMany(whys)
 
-  const insertedWhys = await Points.find({}).toArray()
-//   console.log('Inserted whys:', insertedWhys)
-
   const user = { id: USER1 }
   const cb = jest.fn()
 
@@ -122,7 +119,6 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
   const result = cb.mock.calls[0][0]
-//   console.log('Test result:', result)
   expect(result.length).toBe(5)
   result.forEach(why => {
     expect(why).not.toHaveProperty('userId')
@@ -304,9 +300,6 @@ test('Case where the results are randomized', async () => {
 
   const result1 = cb1.mock.calls[0][0]
   const result2 = cb2.mock.calls[0][0]
-
-//   console.log('First result set:', result1)
-//   console.log('Second result set:', result2)
 
   // Ensure that both results have the same length
   expect(result1.length).toBe(5)
