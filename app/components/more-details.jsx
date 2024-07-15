@@ -10,15 +10,14 @@ import { PrimaryButton } from './button.jsx'
 import { rankWith, isEnumControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 
-const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema }) => {
-  const classes = useStyles({ mode: 'light' })
+const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
   const label = uischema.label || schema.title
 
   return (
     <div>
       <label>{label}</label>
-      <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.select}>
+      <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.formSelect}>
         <option value="" disabled>
           Choose one
         </option>
@@ -35,32 +34,25 @@ const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, pa
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isEnumControl), renderer: CustomSelectRenderer }]
 
 const MoreDetails = props => {
-  const {
-    className = 'Submit Form',
-    schema = {},
-    uischema = {},
-    details = {},
-    onDone = () => {
-      valid, value
-    },
-    value,
-  } = props
+  const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, ...otherProps } = props
   const [data, setData] = useState(details)
   const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
 
   const handleOnClick = () => {
-    onDone({ valid: true, value })
+    if (isValid) {
+      onDone({ valid: true, value: data })
+    }
   }
 
   const handleIsValid = () => {
-    const requiredData = ['householdIncome', 'housing', 'numberOfSiblings']
-    return requiredData.every(i => data[i])
+    const requiredData = schema.properties || {}
+    return Object.keys(requiredData).every(i => (requiredData[i].enum ? data[i] !== undefined && data[i] !== '' : true))
   }
 
   useEffect(() => {
     setIsValid(handleIsValid())
-  }, [data])
+  }, [data, schema])
 
   return (
     <div className={cx(classes.moreDetailsContainer, className)}>
@@ -71,7 +63,13 @@ const MoreDetails = props => {
             schema={schema}
             uischema={uischema}
             data={data}
-            renderers={customRenderers}
+            renderers={customRenderers.map(renderer => ({
+              ...renderer,
+              renderer:
+                renderer.renderer === CustomSelectRenderer
+                  ? props => <CustomSelectRenderer {...props} classes={classes} />
+                  : renderer.renderer,
+            }))}
             cells={vanillaCells}
             onChange={({ data, _errors }) => setData(data)}
           />
@@ -80,8 +78,8 @@ const MoreDetails = props => {
           primary
           tile={'Submit form'}
           className={classes.submitButton}
-          onClick={() => handleOnClick()}
-          onDone={onDone}
+          onClick={handleOnClick}
+          onDone={() => onDone({ valid: isValid, value: data })}
           disabled={!isValid}
         >
           Submit
@@ -102,23 +100,24 @@ const useStyles = createUseStyles(theme => ({
   }),
   submitButton: {
     width: '100%',
-    margin: '1rem 0',
+    margin: '2rem 0',
   },
   title: props => ({
     textAlign: 'center',
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
-  formControl: {
+  formContainer: {
     marginBottom: '1rem',
+    lineHeight: '2.25rem',
   },
-  select: {
+  formSelect: {
     width: '100%',
     padding: '0.5rem',
-    borderRadius: '4px',
-    border: '0.1rem solid #EBEBEB',
-    backgroundColor: '#FBFBFB',
-    color: '#1A1A1A',
+    borderRadius: '0.25rem',
+    border: `0.1rem solid ${theme.colors.borderGray}`,
+    backgroundColor: theme.colors.cardOutline,
+    color: theme.colors.title,
   },
 }))
 

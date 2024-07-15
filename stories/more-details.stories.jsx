@@ -81,19 +81,39 @@ export const InitialDetailsInput = {
 }
 
 export const UserInputAndOnDoneCall = {
-  args: { schema: testSchema, uischema: testUIschema, details: initialDetails, onDone: null },
+  args: {
+    schema: testSchema,
+    uischema: testUIschema,
+    details: initialDetails,
+    onDone: null,
+    details: initialDetails,
+    className: 'Submit form',
+  },
+
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
-    let result = onDoneResult(canvas)
-    expect(result.count).toEqual(2)
+
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: 2,
+      onDoneResult: {
+        valid: true,
+        value: [
+          {
+            householdIncome: '0-10000',
+            housing: 'Apartment',
+            numberOfSiblings: '2',
+          },
+        ],
+      },
+    })
   },
 }
 
-export const StateOfResidenceSelection = {
-  args: { schema: testSchema, uischema: testUIschema },
-}
+// export const StateOfResidenceSelection = {
+//   args: { schema: testSchema, uischema: testUIschema },
+// }
 
-export const BirthDateInput = {
-  args: { schema: testSchema, uischema: testUIschema },
-}
+// export const BirthDateInput = {
+//   args: { schema: testSchema, uischema: testUIschema },
+// }
