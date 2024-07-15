@@ -12,7 +12,7 @@ import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
 import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
 import DemInfo from './dem-info.jsx'
-import { H, Level, useLevel } from 'react-accessible-headings'
+import { H, Level } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children, className) => {
@@ -67,7 +67,7 @@ const PointGroup = props => {
 
       {vs === 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
-          <p className={classes.titleGroup}>Please select the response you want to lead with</p>
+          <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
             <TextButton
               title="Ungroup and close"
@@ -85,40 +85,45 @@ const PointGroup = props => {
             </TextButton>
           </div>
           {expanded && (
-            <div className={classes.selectPointsContainer}>
-              {groupedPoints?.map(point => {
-                return (
-                  <Level key={point._id} className={classes.selectPoints}>
-                    {CreatePoint(
-                      point,
-                      point._id === selected ? 'selected' : 'default',
-                      [
-                        <DemInfo user={point.user} />,
-                        <div className={classes.invisibleElement}>
-                          {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
-                          <ModifierButton children={'Select as Lead'} />
-                        </div>,
-                        <div className={classes.selectButtonRow}>
-                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
+            <Level>
+              <div className={classes.selectPointsContainer}>
+                {groupedPoints?.map(point => {
+                  return (
+                    <div key={point._id} className={classes.selectPoints}>
+                      {CreatePoint(
+                        point,
+                        point._id === selected ? 'selected' : 'default',
+                        [
+                          <DemInfo user={point.user} />,
+                          <div className={classes.invisibleElement}>
+                            {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
+                            <ModifierButton children={'Select as Lead'} />
+                          </div>,
+                          <div className={classes.selectButtonRow}>
+                            {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
-                          <ModifierButton
-                            className={cx(classes.selectSelectButton, point._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${point.subject}`}
-                            children="Select as Lead"
-                            disabled={false}
-                            disableOnClick={false}
-                            onDone={() => {
-                              setSelected(point._id)
-                            }}
-                          />
-                        </div>,
-                      ],
-                      cx(classes.selectPointsPassDown, classes.noBoxShadow)
-                    )}
-                  </Level>
-                )
-              })}
-            </div>
+                            <ModifierButton
+                              className={cx(
+                                classes.selectSelectButton,
+                                point._id === selected && classes.selectedButton
+                              )}
+                              title={`Select as Lead: ${point.subject}`}
+                              children="Select as Lead"
+                              disabled={false}
+                              disableOnClick={false}
+                              onDone={() => {
+                                setSelected(point._id)
+                              }}
+                            />
+                          </div>,
+                        ],
+                        cx(classes.selectPointsPassDown, classes.noBoxShadow)
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </Level>
           )}
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <span>
@@ -207,77 +212,81 @@ const PointGroup = props => {
           {user && <DemInfo user={user} />}
           {vs === 'edit' && expanded && !singlePoint && (
             <div className={classes.defaultWidth}>
-              {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
-              <div className={classes.selectPointsContainer}>
-                {groupedPoints.map((point, leadIndex) => {
-                  return (
-                    <Level key={point._id} className={classes.selectPoints}>
-                      {CreatePoint(
-                        point,
-                        'default',
-                        [
-                          <DemInfo user={point.user} />,
-                          <div className={classes.pointBottomButtons}>
-                            <div className={classes.pointWidthButton}>
-                              <ModifierButton
-                                className={classes.pointWidthButton}
-                                title={`Select as Lead: ${point.subject}`}
-                                children="Select as Lead"
-                                onDone={() => {
-                                  const newPointObj = {
-                                    ...point,
-                                    groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
-                                  }
-                                  setPointObj(newPointObj)
-                                  onDone({
-                                    valid: true,
-                                    value: { pointObj: newPointObj },
-                                  })
-                                }}
-                                disabled={false}
-                                disableOnClick={false}
-                              />
-                            </div>
-                            <div className={classes.pointWidthButton}>
-                              <TextButton
-                                className={classes.pointWidthButton}
-                                title={`Remove from Group: ${point.subject}`}
-                                children="Remove from Group"
-                                onDone={() => {
-                                  const newPointObj = {
-                                    ...soloPoint,
-                                    groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
-                                  }
-                                  setPointObj(newPointObj)
-                                  onDone({
-                                    valid: true,
-                                    value: { pointObj: newPointObj, removedPointObjs: [point] },
-                                  })
-                                }}
-                              />
-                            </div>
-                          </div>,
-                        ],
-                        cx(classes.selectPointsPassDown, classes.noBoxShadow)
-                      )}
-                    </Level>
-                  )
-                })}
-              </div>
+              {!singlePoint && <H className={classes.titleGroup}>Edit the response you'd like to lead with</H>}
+              <Level>
+                <div className={classes.selectPointsContainer}>
+                  {groupedPoints.map((point, leadIndex) => {
+                    return (
+                      <div key={point._id} className={classes.selectPoints}>
+                        {CreatePoint(
+                          point,
+                          'default',
+                          [
+                            <DemInfo user={point.user} />,
+                            <div className={classes.pointBottomButtons}>
+                              <div className={classes.pointWidthButton}>
+                                <ModifierButton
+                                  className={classes.pointWidthButton}
+                                  title={`Select as Lead: ${point.subject}`}
+                                  children="Select as Lead"
+                                  onDone={() => {
+                                    const newPointObj = {
+                                      ...point,
+                                      groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                                    }
+                                    setPointObj(newPointObj)
+                                    onDone({
+                                      valid: true,
+                                      value: { pointObj: newPointObj },
+                                    })
+                                  }}
+                                  disabled={false}
+                                  disableOnClick={false}
+                                />
+                              </div>
+                              <div className={classes.pointWidthButton}>
+                                <TextButton
+                                  className={classes.pointWidthButton}
+                                  title={`Remove from Group: ${point.subject}`}
+                                  children="Remove from Group"
+                                  onDone={() => {
+                                    const newPointObj = {
+                                      ...soloPoint,
+                                      groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                                    }
+                                    setPointObj(newPointObj)
+                                    onDone({
+                                      valid: true,
+                                      value: { pointObj: newPointObj, removedPointObjs: [point] },
+                                    })
+                                  }}
+                                />
+                              </div>
+                            </div>,
+                          ],
+                          cx(classes.selectPointsPassDown, classes.noBoxShadow)
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </Level>
             </div>
           )}
           {vs !== 'edit' && expanded && (
             <div className={classes.defaultWidth}>
-              {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
-              <div className={classes.selectPointsContainer}>
-                {groupedPoints.map(point => {
-                  return (
-                    <Level key={point._id} className={classes.selectPoints}>
-                      {CreatePoint(point, 'default', null, cx(classes.selectPointsPassDown, classes.noBoxShadow))}
-                    </Level>
-                  )
-                })}
-              </div>
+              {!singlePoint && <H className={classes.titleGroup}>Other Responses</H>}
+              <Level>
+                <div className={classes.selectPointsContainer}>
+                  {groupedPoints.map(point => {
+                    return (
+                      <div key={point._id} className={classes.selectPoints}>
+                        {CreatePoint(point, 'default', null, cx(classes.selectPointsPassDown, classes.noBoxShadow))}
+                      </div>
+                    )
+                  })}
+                </div>
+              </Level>
             </div>
           )}
           {(vs === 'edit' || vs === 'selectLead') && !singlePoint && (
