@@ -55,6 +55,99 @@ const testUIschema = {
   ],
 }
 
+const testStateOfResidenceSchema = {
+  type: 'object',
+  properties: {
+    stateOfResidence: {
+      title: 'State of Residence',
+      type: 'string',
+      enum: [
+        'Alabama',
+        'Alaska',
+        'Arizona',
+        'Arkansas',
+        'California',
+        'Colorado',
+        'Connecticut',
+        'Delaware',
+        'Florida',
+        'Georgia',
+        'Hawaii',
+        'Idaho',
+        'Illinois',
+        'Indiana',
+        'Iowa',
+        'Kansas',
+        'Kentucky',
+        'Louisiana',
+        'Maine',
+        'Maryland',
+        'Massachusetts',
+        'Michigan',
+        'Minnesota',
+        'Mississippi',
+        'Missouri',
+        'Montana',
+        'Nebraska',
+        'Nevada',
+        'New Hampshire',
+        'New Jersey',
+        'New Mexico',
+        'New York',
+        'North Carolina',
+        'North Dakota',
+        'Ohio',
+        'Oklahoma',
+        'Oregon',
+        'Pennsylvania',
+        'Rhode Island',
+        'South Carolina',
+        'South Dakota',
+        'Tennessee',
+        'Texas',
+        'Utah',
+        'Vermont',
+        'Virginia',
+        'Washington',
+        'West Virginia',
+        'Wisconsin',
+        'Wyoming',
+      ],
+    },
+  },
+}
+
+const testStateOfResidenceUIschema = {
+  type: 'VerticalLayout',
+  elements: [
+    {
+      type: 'Control',
+      scope: '#/properties/stateOfResidence',
+    },
+  ],
+}
+
+const testDOBSchema = {
+  type: 'object',
+  properties: {
+    dateOfBirth: {
+      title: 'Date of Birth',
+      type: 'string',
+      enum: [''],
+    },
+  },
+}
+
+const testDOBUISchema = {
+  type: 'VerticalLayout',
+  elements: [
+    {
+      type: 'Control',
+      scope: '#/properties/dateOfBirth',
+    },
+  ],
+}
+
 const initialDetails = {
   householdIncome: '0-10000',
   housing: 'Apartment',
@@ -69,6 +162,8 @@ export const FigmaInputMatch = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
+    onDone: null,
+    className: 'Submit form',
   },
 }
 
@@ -77,6 +172,8 @@ export const InitialDetailsInput = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialDetails,
+    onDone: null,
+    className: 'Submit form',
   },
 }
 
@@ -86,7 +183,6 @@ export const UserInputAndOnDoneCall = {
     uischema: testUIschema,
     details: initialDetails,
     onDone: null,
-    details: initialDetails,
     className: 'Submit form',
   },
 
@@ -110,10 +206,10 @@ export const UserInputAndOnDoneCall = {
   },
 }
 
-// export const StateOfResidenceSelection = {
-//   args: { schema: testSchema, uischema: testUIschema },
-// }
+export const StateOfResidenceSelection = {
+  args: { schema: testStateOfResidenceSchema, uischema: testStateOfResidenceUIschema },
+}
 
-// export const BirthDateInput = {
-//   args: { schema: testSchema, uischema: testUIschema },
-// }
+export const BirthDateInput = {
+  args: { schema: testDOBSchema, uischema: testDOBUISchema },
+}
