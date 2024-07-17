@@ -6,14 +6,14 @@
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
   const { point, vState = 'default', children = [], className = '', isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
-  const subject = point ? point.subject : ''
-  const description = point ? point.description : ''
+  const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -62,6 +62,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </div>
           )}
+          <DemInfo user={demInfo.user} />
           {childrenWithProps}
         </div>
       </div>

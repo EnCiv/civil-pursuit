@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import Point from './point.jsx'
+import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
@@ -14,8 +14,7 @@ import DemInfo from './dem-info.jsx'
 
 // vState for Point: default, selected, disabled, collapsed
 const CreatePoint = (pointObj, vState, children, className) => {
-  const { subject, description } = pointObj
-  return <Point subject={subject} description={description} vState={vState} children={children} className={className} />
+  return <Point point={pointObj} vState={vState} children={children} className={className} />
 }
 
 const PointGroup = props => {
@@ -91,7 +90,6 @@ const PointGroup = props => {
                       point,
                       point._id === selected ? 'selected' : 'default',
                       [
-                        <DemInfo user={point.user} />,
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -214,7 +212,6 @@ const PointGroup = props => {
                         point,
                         'default',
                         [
-                          <DemInfo user={point.user} />,
                           <div className={classes.pointBottomButtons}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton
