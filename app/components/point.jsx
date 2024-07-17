@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
+// https://github.com/EnCiv/civil-pursuit/issues/140
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
@@ -7,9 +8,12 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 const Point = forwardRef((props, ref) => {
-  const { subject, description, vState, children, className, isLoading, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
+
+  const subject = point ? point.subject : ''
+  const description = point ? point.description : ''
 
   const onMouseIn = () => {
     setIsHovered(true)
