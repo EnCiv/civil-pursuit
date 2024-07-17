@@ -1,4 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/101
 import React from 'react'
 import RoundTracker from '../app/components/round-tracker'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'

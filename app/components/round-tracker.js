@@ -1,5 +1,5 @@
 'use strict'
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
@@ -8,23 +8,28 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(true) // Set isMobile to true initially
+  const [isMobile, setIsMobile] = useState(true)
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mediaQuery = window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`)
-
     const handleResize = () => {
       setIsMobile(mediaQuery.matches)
     }
 
-    handleResize()
+    setIsMobile(mediaQuery.matches)
+    setIsInitialized(true)
 
     mediaQuery.addEventListener('change', handleResize)
-
     return () => {
       mediaQuery.removeEventListener('change', handleResize)
     }
   }, [])
+
+  if (!isInitialized) {
+    // Render nothing until the initial check is done
+    return null
+  }
 
   const renderRounds = () => {
     if (roundsStatus.length === 0) {
@@ -35,20 +40,20 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
     const currentRoundIndex = roundsStatus.findIndex(status => status === 'inProgress')
 
     if (isMobile) {
-      if (currentRoundIndex < 0) {
-        visibleRounds = roundsStatus.slice(0, 2)
+      if (currentRoundIndex === 0) {
+        visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-2)
+        visibleRounds = roundsStatus.slice(-1) // Show only the last round
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2)
+        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next round
       }
     } else {
       if (currentRoundIndex <= 0) {
-        visibleRounds = roundsStatus.slice(0, 3)
+        visibleRounds = roundsStatus.slice(0, 3) // Show the first three rounds
       } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-3)
+        visibleRounds = roundsStatus.slice(-3) // Show the last three rounds
       } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2)
+        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2) // Show the previous, current, and next round
       }
     }
 
