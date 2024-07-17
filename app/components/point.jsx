@@ -62,7 +62,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </div>
           )}
-          <DemInfo user={demInfo.user} />
+          <DemInfo {...demInfo} />
           {childrenWithProps}
         </div>
       </div>

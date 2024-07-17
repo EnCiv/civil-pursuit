@@ -26,7 +26,7 @@ const point = {
   subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
   description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
   _id: 'ExampleId',
-  demInfo: { user: user },
+  demInfo: { user },
 }
 
 export const ExamplePoint = {
