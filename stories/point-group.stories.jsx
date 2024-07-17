@@ -20,10 +20,12 @@ const createPointObj = (
   subject,
   description = 'Point Description',
   groupedPoints = [],
-  user = {
-    dob: '1990-10-20T00:00:00.000Z',
-    state: 'NY',
-    party: 'Independent',
+  demInfo = {
+    user: {
+      dob: '1990-10-20T00:00:00.000Z',
+      state: 'NY',
+      party: 'Independent',
+    },
   }
 ) => {
   return {
@@ -31,7 +33,7 @@ const createPointObj = (
     subject,
     description,
     groupedPoints,
-    user,
+    demInfo,
   }
 }
 
@@ -42,15 +44,19 @@ const point2 = createPointObj(
   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
   [],
   {
-    dob: '1980-10-20T00:00:00.000Z',
-    state: 'GA',
-    party: 'Independent',
+    user: {
+      dob: '1980-10-20T00:00:00.000Z',
+      state: 'GA',
+      party: 'Independent',
+    },
   }
 )
 const point3 = createPointObj('3', 'Point 3', 'Point 3 Description', [], {
-  dob: '1995-10-20T00:00:00.000Z',
-  state: 'CA',
-  party: 'Independent',
+  user: {
+    dob: '1995-10-20T00:00:00.000Z',
+    state: 'CA',
+    party: 'Independent',
+  },
 })
 const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
 const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
@@ -124,37 +130,45 @@ export const selectLeadPoint3OnDone = {
                 subject: 'Point 2',
                 description:
                   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-                user: {
-                  dob: '1980-10-20T00:00:00.000Z',
-                  state: 'GA',
-                  party: 'Independent',
+                demInfo: {
+                  user: {
+                    dob: '1980-10-20T00:00:00.000Z',
+                    state: 'GA',
+                    party: 'Independent',
+                  },
                 },
               },
               {
                 _id: '4',
                 subject: 'Point 4',
                 description: 'Point 4 Description',
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
+                deminfo: {
+                  user: {
+                    dob: '1990-10-20T00:00:00.000Z',
+                    state: 'NY',
+                    party: 'Independent',
+                  },
                 },
               },
               {
                 _id: '6',
                 subject: 'Point 6',
                 description: 'Point 6 Description',
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
+                demInfo: {
+                  user: {
+                    dob: '1990-10-20T00:00:00.000Z',
+                    state: 'NY',
+                    party: 'Independent',
+                  },
                 },
               },
             ],
-            user: {
-              dob: '1995-10-20T00:00:00.000Z',
-              state: 'CA',
-              party: 'Independent',
+            demInfo: {
+              user: {
+                dob: '1995-10-20T00:00:00.000Z',
+                state: 'CA',
+                party: 'Independent',
+              },
             },
           },
         },
@@ -182,10 +196,12 @@ export const selectLeadUngroupOnDone = {
               description:
                 'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
               groupedPoints: [],
-              user: {
-                dob: '1980-10-20T00:00:00.000Z',
-                state: 'GA',
-                party: 'Independent',
+              demInfo: {
+                user: {
+                  dob: '1980-10-20T00:00:00.000Z',
+                  state: 'GA',
+                  party: 'Independent',
+                },
               },
             },
             {
@@ -193,10 +209,12 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 3',
               description: 'Point 3 Description',
               groupedPoints: [],
-              user: {
-                dob: '1995-10-20T00:00:00.000Z',
-                state: 'CA',
-                party: 'Independent',
+              demInfo: {
+                user: {
+                  dob: '1995-10-20T00:00:00.000Z',
+                  state: 'CA',
+                  party: 'Independent',
+                },
               },
             },
             {
@@ -204,10 +222,12 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 4',
               description: 'Point 4 Description',
               groupedPoints: [],
-              user: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
+              demInfo: {
+                user: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
               },
             },
             {
@@ -215,10 +235,12 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 6',
               description: 'Point 6 Description',
               groupedPoints: [],
-              user: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
+              demInfo: {
+                user: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
               },
             },
           ],
@@ -244,10 +266,12 @@ export const editMultiplePointsRemovePoint3OnDone = {
             _id: '5',
             subject: 'Point 5',
             description: 'Point 5 Description',
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
+            demInfo: {
+              user: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
             },
             groupedPoints: [
               {
@@ -256,10 +280,12 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 description:
                   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
                 groupedPoints: [],
-                user: {
-                  dob: '1980-10-20T00:00:00.000Z',
-                  state: 'GA',
-                  party: 'Independent',
+                demInfo: {
+                  user: {
+                    dob: '1980-10-20T00:00:00.000Z',
+                    state: 'GA',
+                    party: 'Independent',
+                  },
                 },
               },
               {
@@ -267,10 +293,12 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 subject: 'Point 4',
                 description: 'Point 4 Description',
                 groupedPoints: [],
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
+                demInfo: {
+                  user: {
+                    dob: '1990-10-20T00:00:00.000Z',
+                    state: 'NY',
+                    party: 'Independent',
+                  },
                 },
               },
               {
@@ -278,10 +306,12 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 subject: 'Point 6',
                 description: 'Point 6 Description',
                 groupedPoints: [],
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
+                demInfo: {
+                  user: {
+                    dob: '1990-10-20T00:00:00.000Z',
+                    state: 'NY',
+                    party: 'Independent',
+                  },
                 },
               },
             ],
@@ -292,10 +322,12 @@ export const editMultiplePointsRemovePoint3OnDone = {
               subject: 'Point 3',
               description: 'Point 3 Description',
               groupedPoints: [],
-              user: {
-                dob: '1995-10-20T00:00:00.000Z',
-                state: 'CA',
-                party: 'Independent',
+              demInfo: {
+                user: {
+                  dob: '1995-10-20T00:00:00.000Z',
+                  state: 'CA',
+                  party: 'Independent',
+                },
               },
             },
           ],
