@@ -79,7 +79,7 @@ export const ParentsWidth = args => {
   return (
     <div style={{ width: '33.5625rem' }}>
       <Point
-        {...args}
+        point={args}
         vState={'default'}
         children={
           <>
@@ -93,11 +93,11 @@ export const ParentsWidth = args => {
 }
 
 export const Collapsed = args => {
-  return <Point vState={'collapsed'} subject={args.subject} />
+  return <Point vState={'collapsed'} point={args} />
 }
 
 export const Secondary = args => {
-  return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />} />
+  return <Point vState={'secondary'} point={args} children={<DemInfoTestComponent />} />
 }
 
 export const LoadingLoop = () => {
