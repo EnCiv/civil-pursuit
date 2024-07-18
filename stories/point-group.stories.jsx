@@ -56,17 +56,17 @@ const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
 const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
 const point5 = createPointObj('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
 
-export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' } }
-export const SelectedSinglePoint = { args: { pointObj: point1, vState: 'default', select: true } }
-export const EditSinglePoint = { args: { pointObj: point1, vState: 'edit' } }
+export const DefaultSinglePoint = { args: { point: point1, vState: 'default' } }
+export const SelectedSinglePoint = { args: { point: point1, vState: 'default', select: true } }
+export const EditSinglePoint = { args: { point: point1, vState: 'edit' } }
 
-export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } }
-export const selectedDefaultMultiplePoints = { args: { pointObj: point5, vState: 'default', select: true } }
-export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } }
-export const selectedEditMultiplePoints = { args: { pointObj: point5, vState: 'edit', select: true } }
+export const defaultMultiplePoints = { args: { point: point5, vState: 'default' } }
+export const selectedDefaultMultiplePoints = { args: { point: point5, vState: 'default', select: true } }
+export const editMultiplePoints = { args: { point: point5, vState: 'edit' } }
+export const selectedEditMultiplePoints = { args: { point: point5, vState: 'edit', select: true } }
 
-export const mobileSingePoint = {
-  args: { pointObj: point1, vState: 'default' },
+export const mobileSinglePoint = {
+  args: { point: point1, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -75,7 +75,7 @@ export const mobileSingePoint = {
 }
 
 export const mobileDefaultPoints = {
-  args: { pointObj: point5, vState: 'default' },
+  args: { point: point5, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -84,15 +84,15 @@ export const mobileDefaultPoints = {
 }
 
 export const collapsedPoints = {
-  args: { pointObj: point5, vState: 'collapsed' },
+  args: { point: point5, vState: 'collapsed' },
 }
 
 export const selectLeadPoints = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { point: point5, vState: 'selectLead' },
 }
 
 export const mobileSelectLeadPoints = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { point: point5, vState: 'selectLead' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -101,7 +101,7 @@ export const mobileSelectLeadPoints = {
 }
 
 export const selectLeadPoint3OnDone = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { point: point5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const SelectedPoint = canvas.getByTitle('Select as Lead: Point 3')
@@ -164,7 +164,7 @@ export const selectLeadPoint3OnDone = {
 }
 
 export const selectLeadUngroupOnDone = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { point: point5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Ungroup and close')
