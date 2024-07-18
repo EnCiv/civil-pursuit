@@ -21,8 +21,8 @@ const PointGroup = props => {
   const [p, setPoint] = useState(point)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
-  console.log(p)
-  const { subject, description, user, groupedPoints, demInfo } = p
+  const { subject, description, user, groupedPoints } = p
+  const soloPoint = p
   const singlePoint = !groupedPoints || groupedPoints.length === 0
   const [selected, setSelected] = useState('')
   const [isHovered, setIsHovered] = useState(false)
@@ -65,10 +65,10 @@ const PointGroup = props => {
             <TextButton
               title="Ungroup and close"
               onClick={() => {
-                setPointObj({})
+                setPoint({})
                 onDone({
                   valid: true,
-                  value: { pointObj: undefined, removedPointObjs: groupedPoints },
+                  value: { point: undefined, removedPoints: groupedPoints },
                 })
               }}
             >
@@ -140,14 +140,11 @@ const PointGroup = props => {
                     },
                     [undefined, []]
                   )
-                  const newPointObj = {
-                    ...p,
-                    groupedPoints: g,
-                  }
-                  setPointObj(newPointObj)
+                  const newPoint = <Point {...p} groupedPoints={g} />
+                  setPoint(newPoint)
                   onDone({
                     valid: true,
-                    value: { pointObj: newPointObj },
+                    value: { point: newPoint },
                   })
                   setVState('edit')
                   setExpanded(false)
@@ -211,14 +208,17 @@ const PointGroup = props => {
                           title={`Select as Lead: ${point.subject}`}
                           children="Select as Lead"
                           onDone={() => {
-                            const newPointObj = {
-                              ...point,
-                              groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
-                            }
-                            setPointObj(newPointObj)
+                            const newPoint = (
+                              <Point
+                                {...point}
+                                groupedPoints={[soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)]}
+                              />
+                            )
+
+                            setPoint(newPoint)
                             onDone({
                               valid: true,
-                              value: { pointObj: newPointObj },
+                              value: { point: newPoint },
                             })
                           }}
                           disabled={false}
@@ -231,14 +231,14 @@ const PointGroup = props => {
                           title={`Remove from Group: ${point.subject}`}
                           children="Remove from Group"
                           onDone={() => {
-                            const newPointObj = {
-                              ...soloPoint,
-                              groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
-                            }
-                            setPointObj(newPointObj)
+                            const newPoint = (
+                              <Point {...soloPoint} groupedPoints={groupedPoints.filter((e, i) => i !== leadIndex)} />
+                            )
+
+                            setPoint(newPoint)
                             onDone({
                               valid: true,
-                              value: { pointObj: newPointObj, removedPointObjs: [point] },
+                              value: { point: newPoint, removedPoints: [point] },
                             })
                           }}
                         />
@@ -306,14 +306,12 @@ const PointGroup = props => {
                   title="Ungroup"
                   children="Ungroup"
                   onDone={() => {
-                    const newPointObj = {
-                      ...soloPoint,
-                      groupedPoints: [],
-                    }
-                    setPointObj(newPointObj)
+                    const newPoint = <Point {...soloPoint} groupedPoints={[]} />
+
+                    setPoint(newPoint)
                     onDone({
                       valid: true,
-                      value: { pointObj: newPointObj, removedPointObjs: groupedPoints },
+                      value: { point: newPoint, removedPoints: groupedPoints },
                     })
                   }}
                 />
