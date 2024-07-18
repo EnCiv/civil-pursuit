@@ -21,7 +21,7 @@ const PointGroup = props => {
   const [p, setPoint] = useState(point)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
-  const { subject, description, user, groupedPoints } = p
+  const { subject, description, demInfo, groupedPoints } = p
   const soloPoint = p
   const singlePoint = !groupedPoints || groupedPoints.length === 0
   const [selected, setSelected] = useState('')
@@ -88,7 +88,7 @@ const PointGroup = props => {
               {groupedPoints?.map(point => {
                 const pointChildren = [
                   <div className={classes.invisibleElement}>
-                    {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
+                    {/* this is here to take up space for the height calculation of every grid cell, but not be visible */}
                     <ModifierButton children={'Select as Lead'} />
                   </div>,
                   <div className={classes.selectButtonRow}>
@@ -199,7 +199,7 @@ const PointGroup = props => {
           )}
           {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
           {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
-          {user && <DemInfo user={user} />}
+          {demInfo && <DemInfo user={demInfo} />}
           {childrenWithProps}
           {vs === 'edit' && expanded && !singlePoint && (
             <div className={classes.defaultWidth}>
