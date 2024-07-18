@@ -21,11 +21,9 @@ const createPointObj = (
   description = 'Point Description',
   groupedPoints = [],
   demInfo = {
-    user: {
-      dob: '1990-10-20T00:00:00.000Z',
-      state: 'NY',
-      party: 'Independent',
-    },
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent',
   }
 ) => {
   return {
@@ -44,19 +42,15 @@ const point2 = createPointObj(
   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
   [],
   {
-    user: {
-      dob: '1980-10-20T00:00:00.000Z',
-      state: 'GA',
-      party: 'Independent',
-    },
+    dob: '1980-10-20T00:00:00.000Z',
+    state: 'GA',
+    party: 'Independent',
   }
 )
 const point3 = createPointObj('3', 'Point 3', 'Point 3 Description', [], {
-  user: {
-    dob: '1995-10-20T00:00:00.000Z',
-    state: 'CA',
-    party: 'Independent',
-  },
+  dob: '1995-10-20T00:00:00.000Z',
+  state: 'CA',
+  party: 'Independent',
 })
 const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
 const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
