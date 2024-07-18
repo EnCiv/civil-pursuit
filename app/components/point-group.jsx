@@ -14,7 +14,7 @@ import DemInfo from './dem-info.jsx'
 
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
-  const { point, vState, select, className, onDone = () => {}, ...otherProps } = props
+  const { point, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
@@ -34,6 +34,13 @@ const PointGroup = props => {
   const onMouseOut = () => {
     setIsHovered(false)
   }
+
+  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
+    return React.cloneElement(child, {
+      className: cx(child.props.className, { isHovered: isHovered }),
+      vState: vState,
+    })
+  })
 
   useEffect(() => {
     setVState(vState === 'editable' ? 'edit' : vState)
@@ -57,7 +64,6 @@ const PointGroup = props => {
           {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
         </div>
       )}
-
       {vs === 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <p className={classes.titleGroup}>Please select the response you want to lead with</p>
@@ -154,7 +160,6 @@ const PointGroup = props => {
           </div>
         </div>
       )}
-
       {vs !== 'collapsed' && vs !== 'selectLead' && (
         <div
           className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid, {
@@ -195,6 +200,7 @@ const PointGroup = props => {
           {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
           {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
           {user && <DemInfo user={user} />}
+          {childrenWithProps}
           {vs === 'edit' && expanded && !singlePoint && (
             <div className={classes.defaultWidth}>
               {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}

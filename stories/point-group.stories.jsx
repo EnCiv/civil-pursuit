@@ -4,6 +4,7 @@ import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
+import DemInfo from '../app/components/dem-info'
 
 export default {
   component: PointGroup,
@@ -71,6 +72,23 @@ export const mobileSinglePoint = {
     viewport: {
       defaultViewport: 'iphonex',
     },
+  },
+}
+
+export const selectedEditMultiplePointsWithChildren = {
+  args: {
+    point: point5,
+    vState: 'edit',
+    select: true,
+    children: [
+      <DemInfo
+        user={{
+          dob: '1995-10-20T00:00:00.000Z',
+          state: 'CA',
+          party: 'Independent',
+        }}
+      />,
+    ],
   },
 }
 
