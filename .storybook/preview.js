@@ -1,6 +1,4 @@
 import { ThemeProvider } from 'react-jss'
-import '../assets/css/index.css'
-import '../assets/css/normalize.css'
 import React from 'react'
 import Theme from '../app/components/theme'
 
