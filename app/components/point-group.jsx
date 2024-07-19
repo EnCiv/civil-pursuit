@@ -71,7 +71,7 @@ const PointGroup = props => {
             <TextButton
               title="Ungroup and close"
               onClick={() => {
-                setPoint({})
+                setPoint(null)
                 onDone({
                   valid: true,
                   value: { point: undefined, removedPoints: groupedPoints },
@@ -146,7 +146,7 @@ const PointGroup = props => {
                     },
                     [undefined, []]
                   )
-                  const newPoint = <Point {...p} groupedPoints={g} />
+                  const newPoint = <Point point={p} groupedPoints={g} />
                   setPoint(newPoint)
                   onDone({
                     valid: true,
@@ -216,11 +216,16 @@ const PointGroup = props => {
                           onDone={() => {
                             const newPoint = (
                               <Point
-                                {...point}
-                                groupedPoints={[soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)]}
+                                key={point._id}
+                                point={point}
+                                groupedPoints={[
+                                  <Point point={soloPoint} />,
+                                  ...groupedPoints
+                                    .filter((e, i) => i !== leadIndex)
+                                    .map(p => <Point key={p._id} point={p} />),
+                                ]}
                               />
                             )
-
                             setPoint(newPoint)
                             onDone({
                               valid: true,
@@ -238,9 +243,15 @@ const PointGroup = props => {
                           children="Remove from Group"
                           onDone={() => {
                             const newPoint = (
-                              <Point {...soloPoint} groupedPoints={groupedPoints.filter((e, i) => i !== leadIndex)} />
+                              <Point
+                                point={soloPoint}
+                                groupedPoints={[
+                                  ...groupedPoints
+                                    .filter((e, i) => i !== leadIndex)
+                                    .map(p => <Point key={p._id} point={p} />),
+                                ]}
+                              />
                             )
-
                             setPoint(newPoint)
                             onDone({
                               valid: true,
@@ -312,7 +323,7 @@ const PointGroup = props => {
                   title="Ungroup"
                   children="Ungroup"
                   onDone={() => {
-                    const newPoint = <Point {...soloPoint} groupedPoints={[]} />
+                    const newPoint = <Point point={soloPoint} groupedPoints={[]} />
 
                     setPoint(newPoint)
                     onDone({
