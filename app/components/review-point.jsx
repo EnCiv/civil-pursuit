@@ -4,9 +4,9 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { TextButton } from './button'
-import ShowDualPointList from './show-dual-point-list'
-import Ranking from './ranking'
+import { TextButton } from './button.jsx'
+import ShowDualPointList from './show-dual-point-list.jsx'
+import Ranking from './ranking.jsx'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 

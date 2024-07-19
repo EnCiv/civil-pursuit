@@ -1,7 +1,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { TextButton, PrimaryButton } from './button'
+import { TextButton, PrimaryButton } from './button.jsx'
 import cx from 'classnames'
 
 function StepFooter(props) {

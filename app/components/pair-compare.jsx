@@ -2,9 +2,9 @@
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
-import Point from './point'
+import Point from './point.jsx'
 import { createUseStyles } from 'react-jss'
-import { SecondaryButton } from './button'
+import { SecondaryButton } from './button.jsx'
 
 function PairCompare(props) {
   const { pointList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, ...otherProps } = props
