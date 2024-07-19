@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
-import SvgClose from '../svgr/close.js'
+import SvgClose from '../svgr/close'
 import { ModifierButton, TextButton, SecondaryButton } from './button'
 import DemInfo from './dem-info'
 
