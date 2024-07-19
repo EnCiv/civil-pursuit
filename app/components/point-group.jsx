@@ -18,7 +18,10 @@ const PointGroup = props => {
 
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
-  const [p, setPoint] = useState(point)
+
+  // This refers to a point object that's passed to the point property of the Point component
+  // It's different than the point component passed in
+  const [p, setPointDoc] = useState(point)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
   const { subject, description, demInfo, groupedPoints } = p
@@ -47,7 +50,7 @@ const PointGroup = props => {
     setExpanded(vState === 'selectLead' || vState === 'edit')
   }, [vState]) // could be changed by parent component, or within this component
   useEffect(() => {
-    setPoint(point)
+    setPointDoc(point)
   }, [point]) // could be changed by parent component, or within this component
 
   return (
@@ -71,10 +74,10 @@ const PointGroup = props => {
             <TextButton
               title="Ungroup and close"
               onClick={() => {
-                setPoint(null)
+                setPointDoc({})
                 onDone({
                   valid: true,
-                  value: { point: undefined, removedPoints: groupedPoints },
+                  value: { pointDoc: undefined, removedPointDocs: groupedPoints },
                 })
               }}
             >
@@ -146,11 +149,14 @@ const PointGroup = props => {
                     },
                     [undefined, []]
                   )
-                  const newPoint = <Point point={p} groupedPoints={g} />
-                  setPoint(newPoint)
+                  const newPointDoc = {
+                    ...p,
+                    groupedPoints: g,
+                  } // This is a point object, not a component
+                  setPointDoc(newPointDoc)
                   onDone({
                     valid: true,
-                    value: { point: newPoint },
+                    value: { pointDoc: newPoint },
                   })
                   setVState('edit')
                   setExpanded(false)
@@ -214,22 +220,14 @@ const PointGroup = props => {
                           title={`Select as Lead: ${point.subject}`}
                           children="Select as Lead"
                           onDone={() => {
-                            const newPoint = (
-                              <Point
-                                key={point._id}
-                                point={point}
-                                groupedPoints={[
-                                  <Point point={soloPoint} />,
-                                  ...groupedPoints
-                                    .filter((e, i) => i !== leadIndex)
-                                    .map(p => <Point key={p._id} point={p} />),
-                                ]}
-                              />
-                            )
-                            setPoint(newPoint)
+                            const newPointDoc = {
+                              ...point,
+                              groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                            } // This is a point object, not a component
+                            setPointDoc(newPointDoc)
                             onDone({
                               valid: true,
-                              value: { point: newPoint },
+                              value: { pointDoc: newPoint },
                             })
                           }}
                           disabled={false}
@@ -242,20 +240,14 @@ const PointGroup = props => {
                           title={`Remove from Group: ${point.subject}`}
                           children="Remove from Group"
                           onDone={() => {
-                            const newPoint = (
-                              <Point
-                                point={soloPoint}
-                                groupedPoints={[
-                                  ...groupedPoints
-                                    .filter((e, i) => i !== leadIndex)
-                                    .map(p => <Point key={p._id} point={p} />),
-                                ]}
-                              />
-                            )
-                            setPoint(newPoint)
+                            const newPointDoc = {
+                              ...soloPoint,
+                              groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                            } // This is a point object, not a component
+                            setPointDoc(newPointDoc)
                             onDone({
                               valid: true,
-                              value: { point: newPoint, removedPoints: [point] },
+                              value: { pointDoc: newPoint, removedPointDocs: [point] },
                             })
                           }}
                         />
@@ -323,12 +315,14 @@ const PointGroup = props => {
                   title="Ungroup"
                   children="Ungroup"
                   onDone={() => {
-                    const newPoint = <Point point={soloPoint} groupedPoints={[]} />
-
-                    setPoint(newPoint)
+                    const newPointDoc = {
+                      ...soloPoint,
+                      groupedPoints: [],
+                    } // This is a point object, not a component
+                    setPointDoc(newPointDoc)
                     onDone({
                       valid: true,
-                      value: { point: newPoint, removedPoints: groupedPoints },
+                      value: { pointDoc: newPoint, removedPointDocs: groupedPoints },
                     })
                   }}
                 />
