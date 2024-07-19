@@ -10,31 +10,42 @@ import { PrimaryButton } from './button.jsx'
 import { rankWith, isEnumControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 
-const CustomSelectRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
+const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
   const label = uischema.label || schema.title
+  // const type = schema.format || uischema.options?.inputType || 'text'
 
   return (
     <div>
       <label>{label}</label>
-      <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.formSelect}>
-        <option value="" disabled>
-          Choose one
-        </option>
-        {options.map(option => (
-          <option key={option} value={option}>
-            {option}
+      {options.length > 0 ? (
+        <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.formInput}>
+          <option value="" disabled>
+            Choose one
           </option>
-        ))}
-      </select>
+          {options.map(option => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          // type={type}
+          value={data || ''}
+          onChange={ev => handleChange(path, ev.target.value)}
+          className={classes.formInput}
+        />
+      )}
     </div>
   )
 })
 
-const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isEnumControl), renderer: CustomSelectRenderer }]
+const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isEnumControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
   const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, ...otherProps } = props
+  const { formTitle } = otherProps
   const [data, setData] = useState(details)
   const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
@@ -55,25 +66,23 @@ const MoreDetails = props => {
   }, [data, schema])
 
   return (
-    <div className={cx(classes.moreDetailsContainer, className)}>
-      <p className={classes.title}>We just need a few more details about you to get started.</p>
-      <div className={classes.formContainer}>
-        <div>
-          <JsonForms
-            schema={schema}
-            uischema={uischema}
-            data={data}
-            renderers={customRenderers.map(renderer => ({
-              ...renderer,
-              renderer:
-                renderer.renderer === CustomSelectRenderer
-                  ? props => <CustomSelectRenderer {...props} classes={classes} />
-                  : renderer.renderer,
-            }))}
-            cells={vanillaCells}
-            onChange={({ data, _errors }) => setData(data)}
-          />
-        </div>
+    <div className={cx(classes.formContainer, className)}>
+      <p className={classes.formTitle}>{formTitle}</p>
+      <div className={classes.jsonFormContainer}>
+        <JsonForms
+          schema={schema}
+          uischema={uischema}
+          data={data}
+          renderers={customRenderers.map(renderer => ({
+            ...renderer,
+            renderer:
+              renderer.renderer === CustomInputRenderer
+                ? props => <CustomInputRenderer {...props} classes={classes} />
+                : renderer.renderer,
+          }))}
+          cells={vanillaCells}
+          onChange={({ data, _errors }) => setData(data)}
+        />
         <PrimaryButton
           primary
           tile={'Submit form'}
@@ -90,7 +99,7 @@ const MoreDetails = props => {
 }
 
 const useStyles = createUseStyles(theme => ({
-  moreDetailsContainer: props => ({
+  formContainer: props => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -98,26 +107,26 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
   }),
-  submitButton: {
-    width: '100%',
-    margin: '2rem 0',
-  },
-  title: props => ({
+  formTitle: props => ({
     textAlign: 'center',
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
-  formContainer: {
+  jsonFormContainer: {
     marginBottom: '1rem',
     lineHeight: '2.25rem',
   },
-  formSelect: {
+  formInput: {
     width: '100%',
     padding: '0.5rem',
     borderRadius: '0.25rem',
     border: `0.1rem solid ${theme.colors.borderGray}`,
     backgroundColor: theme.colors.cardOutline,
     color: theme.colors.title,
+  },
+  submitButton: {
+    width: '100%',
+    margin: '2rem 0',
   },
 }))
 

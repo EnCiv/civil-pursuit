@@ -55,6 +55,12 @@ const testUIschema = {
   ],
 }
 
+const initialTestSchemaDetails = {
+  householdIncome: '0-10000',
+  housing: 'Apartment',
+  numberOfSiblings: '2',
+}
+
 const testStateOfResidenceSchema = {
   type: 'object',
   properties: {
@@ -127,18 +133,17 @@ const testStateOfResidenceUIschema = {
   ],
 }
 
-const testDOBSchema = {
+const testDobSchema = {
   type: 'object',
   properties: {
     dateOfBirth: {
-      title: 'Date of Birth',
       type: 'string',
-      enum: [''],
+      format: 'date',
     },
   },
 }
 
-const testDOBUISchema = {
+const testDobUISchema = {
   type: 'VerticalLayout',
   elements: [
     {
@@ -148,11 +153,47 @@ const testDOBUISchema = {
   ],
 }
 
-const initialDetails = {
-  householdIncome: '0-10000',
-  housing: 'Apartment',
-  numberOfSiblings: '2',
+const testAllInputsSchema = {
+  type: 'object',
+  properties: {
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    age: {
+      type: 'integer',
+    },
+    confirmation: {
+      type: 'boolean',
+    },
+  },
 }
+
+const testAllInputsUISchema = {
+  type: 'VerticalLayout',
+  elements: [
+    {
+      type: 'Control',
+      scope: '#/properties/firstName',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/lastName',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/age',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/confirmation',
+    },
+  ],
+}
+
+// Stories
 
 export const Empty = {
   args: {},
@@ -160,30 +201,33 @@ export const Empty = {
 
 export const FigmaInputMatch = {
   args: {
+    className: 'Submit form',
     schema: testSchema,
     uischema: testUIschema,
     onDone: null,
-    className: 'Submit form',
+    formTitle: 'We just need a few more details about you to get started.',
   },
 }
 
-export const InitialDetailsInput = {
+export const InitialTestSchemaDetailsInput = {
   args: {
+    className: 'Submit form',
     schema: testSchema,
     uischema: testUIschema,
-    details: initialDetails,
+    details: initialTestSchemaDetails,
     onDone: null,
-    className: 'Submit form',
+    formTitle: 'We just need a few more details about you to get started.',
   },
 }
 
 export const UserInputAndOnDoneCall = {
   args: {
+    className: 'Submit form',
     schema: testSchema,
     uischema: testUIschema,
-    details: initialDetails,
+    details: initialTestSchemaDetails,
     onDone: null,
-    className: 'Submit form',
+    formTitle: 'We just need a few more details about you to get started.',
   },
 
   play: async ({ canvasElement }) => {
@@ -194,13 +238,11 @@ export const UserInputAndOnDoneCall = {
       count: 2,
       onDoneResult: {
         valid: true,
-        value: [
-          {
-            householdIncome: '0-10000',
-            housing: 'Apartment',
-            numberOfSiblings: '2',
-          },
-        ],
+        value: {
+          householdIncome: '0-10000',
+          housing: 'Apartment',
+          numberOfSiblings: '2',
+        },
       },
     })
   },
@@ -211,5 +253,9 @@ export const StateOfResidenceSelection = {
 }
 
 export const BirthDateInput = {
-  args: { schema: testDOBSchema, uischema: testDOBUISchema },
+  args: { schema: testDobSchema, uischema: testDobUISchema },
+}
+
+export const AllInputTypes = {
+  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema },
 }
