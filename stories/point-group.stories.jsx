@@ -1,5 +1,6 @@
 import React from 'react'
 import { expect } from '@storybook/jest'
+import Point from '../app/components/point'
 import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
@@ -16,7 +17,7 @@ export default {
   },
 }
 
-const createPointObj = (
+const createPoint = (
   _id,
   subject,
   description = 'Point Description',
@@ -27,17 +28,21 @@ const createPointObj = (
     party: 'Independent',
   }
 ) => {
-  return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    demInfo,
-  }
+  return (
+    <Point
+      point={{
+        _id,
+        subject,
+        description,
+        groupedPoints,
+        demInfo,
+      }}
+    />
+  )
 }
 
-const point1 = createPointObj('1', 'Point 1', 'Point 1 Description', [])
-const point2 = createPointObj(
+const point1 = createPoint('1', 'Point 1', 'Point 1 Description', [])
+const point2 = createPoint(
   '2',
   'Point 2',
   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
@@ -48,14 +53,14 @@ const point2 = createPointObj(
     party: 'Independent',
   }
 )
-const point3 = createPointObj('3', 'Point 3', 'Point 3 Description', [], {
+const point3 = createPoint('3', 'Point 3', 'Point 3 Description', [], {
   dob: '1995-10-20T00:00:00.000Z',
   state: 'CA',
   party: 'Independent',
 })
-const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
-const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
-const point5 = createPointObj('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
+const point4 = createPoint('4', 'Point 4', 'Point 4 Description')
+const point6 = createPoint('6', 'Point 6', 'Point 6 Description')
+const point5 = createPoint('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
 
 export const DefaultSinglePoint = { args: { point: point1, vState: 'default' } }
 export const SelectedSinglePoint = { args: { point: point1, vState: 'default', select: true } }
@@ -132,7 +137,7 @@ export const selectLeadPoint3OnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          pointObj: {
+          pointDoc: {
             _id: '3',
             subject: 'Point 3',
             description: 'Point 3 Description',
@@ -152,7 +157,7 @@ export const selectLeadPoint3OnDone = {
                 _id: '4',
                 subject: 'Point 4',
                 description: 'Point 4 Description',
-                deminfo: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -193,7 +198,7 @@ export const selectLeadUngroupOnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          removedPointObjs: [
+          removedPointDocs: [
             {
               _id: '2',
               subject: 'Point 2',
@@ -247,7 +252,7 @@ export const selectLeadUngroupOnDone = {
 }
 
 export const editMultiplePointsRemovePoint3OnDone = {
-  args: { pointObj: point5, vState: 'edit' },
+  args: { point: point5, vState: 'edit' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Remove from Group: Point 3')
@@ -258,7 +263,7 @@ export const editMultiplePointsRemovePoint3OnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          pointObj: {
+          pointDoc: {
             _id: '5',
             subject: 'Point 5',
             description: 'Point 5 Description',
@@ -304,7 +309,7 @@ export const editMultiplePointsRemovePoint3OnDone = {
               },
             ],
           },
-          removedPointObjs: [
+          removedPointDocs: [
             {
               _id: '3',
               subject: 'Point 3',
