@@ -7,19 +7,31 @@ import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 import { PrimaryButton } from './button.jsx'
-import { rankWith, isEnumControl } from '@jsonforms/core'
+import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
-  const label = uischema.label || schema.title
-  // const type = schema.format || uischema.options?.inputType || 'text'
+  const label = schema.title || uischema.label
+
+  let type
+  if (schema.format === 'date') {
+    type = 'date'
+  } else if (schema.type === 'integer' || schema.type === 'number') {
+    type = 'number'
+  } else if (schema.type === 'boolean') {
+    type = 'checkbox'
+  } else if (options.length > 0) {
+    type = 'select'
+  } else {
+    type = 'text'
+  }
 
   return (
     <div>
       <label>{label}</label>
-      {options.length > 0 ? (
-        <select value={data || ''} onChange={ev => handleChange(path, ev.target.value)} className={classes.formInput}>
+      {type === 'select' ? (
+        <select value={data || ''} onChange={i => handleChange(path, i.target.value)} className={classes.formInput}>
           <option value="" disabled>
             Choose one
           </option>
@@ -31,9 +43,10 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         </select>
       ) : (
         <input
-          // type={type}
-          value={data || ''}
-          onChange={ev => handleChange(path, ev.target.value)}
+          type={type}
+          checked={type === 'checkbox' ? data : undefined}
+          value={type === 'checkbox' ? undefined : data || ''}
+          onChange={i => handleChange(path, type === 'checkbox' ? i.target.checked : i.target.value)}
           className={classes.formInput}
         />
       )}
@@ -41,11 +54,11 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   )
 })
 
-const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isEnumControl), renderer: CustomInputRenderer }]
+const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
   const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, ...otherProps } = props
-  const { formTitle } = otherProps
+  const { title } = otherProps
   const [data, setData] = useState(details)
   const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
@@ -67,7 +80,7 @@ const MoreDetails = props => {
 
   return (
     <div className={cx(classes.formContainer, className)}>
-      <p className={classes.formTitle}>{formTitle}</p>
+      {title && <p className={classes.formTitle}>{title}</p>}
       <div className={classes.jsonFormContainer}>
         <JsonForms
           schema={schema}
@@ -116,14 +129,14 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '1rem',
     lineHeight: '2.25rem',
   },
-  formInput: {
+  formInput: props => ({
     width: '100%',
     padding: '0.5rem',
     borderRadius: '0.25rem',
     border: `0.1rem solid ${theme.colors.borderGray}`,
-    backgroundColor: theme.colors.cardOutline,
-    color: theme.colors.title,
-  },
+    backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.cardOutline,
+    color: props.mode === 'dark' ? theme.colors.cardOutline : theme.colors.title,
+  }),
   submitButton: {
     width: '100%',
     margin: '2rem 0',

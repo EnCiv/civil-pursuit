@@ -137,6 +137,7 @@ const testDobSchema = {
   type: 'object',
   properties: {
     dateOfBirth: {
+      title: 'Date of Birth',
       type: 'string',
       format: 'date',
     },
@@ -156,17 +157,34 @@ const testDobUISchema = {
 const testAllInputsSchema = {
   type: 'object',
   properties: {
-    firstName: {
+    stringExample: {
+      title: 'String',
       type: 'string',
     },
-    lastName: {
+    integerExample: { title: 'Integer', type: 'integer' },
+    numberExample: {
+      title: 'Number',
+      type: 'number',
+    },
+    checkboxExample: { title: 'Checkbox', type: 'boolean' },
+    selectionExample: {
+      title: 'Select',
       type: 'string',
+      enum: ['option 1', 'option 2', 'option 3'],
     },
-    age: {
-      type: 'integer',
-    },
-    confirmation: {
-      type: 'boolean',
+    dateExample: { title: 'Date', type: 'string', format: 'date' },
+    objectExample: {
+      title: 'Object',
+      type: 'object',
+      properties: {
+        fieldOne: {
+          title: 'Field one',
+          type: 'string',
+        },
+        fieldTwo: { title: 'Field two', type: 'string' },
+        fieldThree: { title: 'Field three', type: 'string' },
+        fieldFour: { title: 'Field four', type: 'string' },
+      },
     },
   },
 }
@@ -176,19 +194,59 @@ const testAllInputsUISchema = {
   elements: [
     {
       type: 'Control',
-      scope: '#/properties/firstName',
+      scope: '#/properties/stringExample',
     },
     {
       type: 'Control',
-      scope: '#/properties/lastName',
+      scope: '#/properties/integerExample',
     },
     {
       type: 'Control',
-      scope: '#/properties/age',
+      scope: '#/properties/numberExample',
     },
     {
       type: 'Control',
-      scope: '#/properties/confirmation',
+      scope: '#/properties/checkboxExample',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/selectionExample',
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/dateExample',
+    },
+    {
+      type: 'Group',
+      label: 'Object',
+      elements: [
+        {
+          type: 'HorizontalLayout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/objectExample/properties/fieldOne',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/objectExample/properties/fieldTwo',
+            },
+          ],
+        },
+        {
+          type: 'HorizontalLayout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/objectExample/properties/fieldThree',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/objectExample/properties/fieldFour',
+            },
+          ],
+        },
+      ],
     },
   ],
 }
@@ -205,7 +263,7 @@ export const FigmaInputMatch = {
     schema: testSchema,
     uischema: testUIschema,
     onDone: null,
-    formTitle: 'We just need a few more details about you to get started.',
+    title: 'We just need a few more details about you to get started.',
   },
 }
 
@@ -216,7 +274,7 @@ export const InitialTestSchemaDetailsInput = {
     uischema: testUIschema,
     details: initialTestSchemaDetails,
     onDone: null,
-    formTitle: 'We just need a few more details about you to get started.',
+    title: 'We just need a few more details about you to get started.',
   },
 }
 
@@ -227,7 +285,7 @@ export const UserInputAndOnDoneCall = {
     uischema: testUIschema,
     details: initialTestSchemaDetails,
     onDone: null,
-    formTitle: 'We just need a few more details about you to get started.',
+    title: 'We just need a few more details about you to get started.',
   },
 
   play: async ({ canvasElement }) => {
@@ -249,13 +307,13 @@ export const UserInputAndOnDoneCall = {
 }
 
 export const StateOfResidenceSelection = {
-  args: { schema: testStateOfResidenceSchema, uischema: testStateOfResidenceUIschema },
+  args: { schema: testStateOfResidenceSchema, uischema: testStateOfResidenceUIschema, onDone: null },
 }
 
 export const BirthDateInput = {
-  args: { schema: testDobSchema, uischema: testDobUISchema },
+  args: { schema: testDobSchema, uischema: testDobUISchema, onDone: null },
 }
 
 export const AllInputTypes = {
-  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema },
+  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema, onDone: null },
 }
