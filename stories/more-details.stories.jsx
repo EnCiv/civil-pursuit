@@ -16,6 +16,8 @@ export default {
   },
 }
 
+// Base test schema
+
 const testSchema = {
   type: 'object',
   properties: {
@@ -60,6 +62,8 @@ const initialTestSchemaDetails = {
   housing: 'Apartment',
   numberOfSiblings: '2',
 }
+
+// State of Residence schema
 
 const testStateOfResidenceSchema = {
   type: 'object',
@@ -133,6 +137,8 @@ const testStateOfResidenceUIschema = {
   ],
 }
 
+// Date of Birth schema
+
 const testDobSchema = {
   type: 'object',
   properties: {
@@ -153,6 +159,8 @@ const testDobUISchema = {
     },
   ],
 }
+
+// All inputs schema
 
 const testAllInputsSchema = {
   type: 'object',
