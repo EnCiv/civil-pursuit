@@ -79,7 +79,7 @@ export default function GroupingStep(props) {
     setGs(oldGs => {
       let pointsToGroup = [...oldGs.pointsToGroup]
       let yourGroups = [...oldGs.yourGroups]
-      for (const point of value.removedPointObjs || []) {
+      for (const point of value.removedPointDocs || []) {
         // leave it in the yourGroups
         if (oldGs.yourGroupsSelected.some(p => p._id === point._id)) {
           yourGroups.push(point)
@@ -87,8 +87,8 @@ export default function GroupingStep(props) {
         // move it back to the ungrouped points
         else pointsToGroup.push(point)
       }
-      if (value.pointObj) {
-        yourGroups.push(value.pointObj)
+      if (value.pointDoc) {
+        yourGroups.push(value.pointDoc)
         // we have to change it because the new one may have different children
       }
       shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
@@ -104,32 +104,32 @@ export default function GroupingStep(props) {
       let pointsToGroup = [...oldGs.pointsToGroup]
       let yourGroups = [...oldGs.yourGroups]
       let selectedPoints = [...oldGs.selectedPoints]
-      for (const point of value.removedPointObjs || []) {
+      for (const point of value.removedPointDocs || []) {
         // move it back to the ungrouped points
         pointsToGroup.push(point)
         yourGroups = yourGroups.filter(p => p._id !== point._id)
         selectedPoints = selectedPoints.filter(id => id !== point._id)
       }
       // it doeosn't create a new pointObj, but it delete it, or change the existing one.
-      if (value.pointObj) {
-        if (!value.pointObj.groupedPoints?.length) {
+      if (value.pointDoc) {
+        if (!value.pointDoc.groupedPoints?.length) {
           // user has ungrouped this point
-          if ((index = yourGroups.findIndex(p => value.pointObj._id === p._id)) >= 0) {
+          if ((index = yourGroups.findIndex(p => value.pointDoc._id === p._id)) >= 0) {
             yourGroups.splice(index, 1)
-            pointsToGroup.push(value.pointObj)
+            pointsToGroup.push(value.pointDoc)
           }
-          selectedPoints = selectedPoints.filter(id => id !== value.pointObj._id)
-        } else if (yourGroups.some(p => p._id === value.pointObj._id)) {
+          selectedPoints = selectedPoints.filter(id => id !== value.pointDoc._id)
+        } else if (yourGroups.some(p => p._id === value.pointDoc._id)) {
           //do nothing
         } else {
           // lead point is changed - find the old one
           index = yourGroups.findIndex(p => p.groupedPoints.some(p => p._id === value.pointObj._id))
           if (index >= 0) {
             yourGroups.splice(index, 1)
-            yourGroups.push(value.pointObj)
+            yourGroups.push(value.pointDoc)
           } else {
-            console.info("got new pointObj don't know why")
-            yourGroups.push(value.pointObj)
+            console.info("got new pointDoc don't know why")
+            yourGroups.push(value.pointDoc)
           }
         }
       }
