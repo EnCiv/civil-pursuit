@@ -88,8 +88,7 @@ const PointGroup = props => {
           </div>
           {expanded && (
             <div className={classes.selectPointsContainer}>
-              {groupedPoints?.map(point => {
-                const pointDoc = point.props.point
+              {groupedPoints?.map(pointDoc => {
                 const pointChildren = [
                   <div className={classes.invisibleElement}>
                     {/* this is here to take up space for the height calculation of every grid cell, but not be visible */}
@@ -212,8 +211,7 @@ const PointGroup = props => {
             <div className={classes.defaultWidth}>
               {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
               <div className={classes.selectPointsContainer}>
-                {groupedPoints.map((point, leadIndex) => {
-                  const pointDoc = point.props.point
+                {groupedPoints.map((pointDoc, leadIndex) => {
                   const pointChildren = [
                     <div className={classes.pointBottomButtons}>
                       <div className={classes.pointWidthButton}>
@@ -273,8 +271,7 @@ const PointGroup = props => {
             <div className={classes.defaultWidth}>
               {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
               <div className={classes.selectPointsContainer}>
-                {groupedPoints.map(point => {
-                  const pointDoc = point.props.point
+                {groupedPoints.map(pointDoc => {
                   return (
                     <div key={pointDoc._id} className={classes.selectPoints}>
                       <Point point={pointDoc} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />

@@ -17,7 +17,7 @@ export default {
   },
 }
 
-const createPoint = (
+const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
@@ -28,21 +28,19 @@ const createPoint = (
     party: 'Independent',
   }
 ) => {
-  return (
-    <Point
-      point={{
-        _id,
-        subject,
-        description,
-        groupedPoints,
-        demInfo,
-      }}
-    />
-  )
+  return {
+    _id,
+    subject,
+    description,
+    groupedPoints,
+    demInfo,
+  }
 }
 
-const point1 = createPoint('1', 'Point 1', 'Point 1 Description', [])
-const point2 = createPoint(
+const createPoint = pointDoc => <Point point={pointDoc} />
+
+const pointDoc1 = createPointDoc('1', 'Point 1', 'Point 1 Description', [])
+const pointDoc2 = createPointDoc(
   '2',
   'Point 2',
   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
@@ -53,14 +51,21 @@ const point2 = createPoint(
     party: 'Independent',
   }
 )
-const point3 = createPoint('3', 'Point 3', 'Point 3 Description', [], {
+const pointDoc3 = createPointDoc('3', 'Point 3', 'Point 3 Description', [], {
   dob: '1995-10-20T00:00:00.000Z',
   state: 'CA',
   party: 'Independent',
 })
-const point4 = createPoint('4', 'Point 4', 'Point 4 Description')
-const point6 = createPoint('6', 'Point 6', 'Point 6 Description')
-const point5 = createPoint('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
+const pointDoc4 = createPointDoc('4', 'Point 4', 'Point 4 Description')
+const pointDoc6 = createPointDoc('6', 'Point 6', 'Point 6 Description')
+const pointDoc5 = createPointDoc('5', 'Point 5', 'Point 5 Description', [pointDoc2, pointDoc3, pointDoc4, pointDoc6])
+
+const point1 = createPoint(pointDoc1)
+const point2 = createPoint(pointDoc2)
+const point3 = createPoint(pointDoc3)
+const point4 = createPoint(pointDoc4)
+const point5 = createPoint(pointDoc5)
+const point6 = createPoint(pointDoc6)
 
 export const DefaultSinglePoint = { args: { point: point1, vState: 'default' } }
 export const SelectedSinglePoint = { args: { point: point1, vState: 'default', select: true } }
