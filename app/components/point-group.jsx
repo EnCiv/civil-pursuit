@@ -156,7 +156,7 @@ const PointGroup = props => {
                   setPointDoc(newPointDoc)
                   onDone({
                     valid: true,
-                    value: { pointDoc: newPointDoc },
+                    value: { pointDoc: newPointDoc, groupedPoints: [] },
                   })
                   setVState('edit')
                   setExpanded(false)
@@ -227,7 +227,7 @@ const PointGroup = props => {
                             setPointDoc(newPointDoc)
                             onDone({
                               valid: true,
-                              value: { pointDoc: newPointDoc },
+                              value: { pointDoc: newPointDoc, groupedPoints: [] },
                             })
                           }}
                           disabled={false}
