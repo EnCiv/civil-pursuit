@@ -3,21 +3,34 @@
 import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
-// import Color from 'color';
 import { useAuth } from 'civil-client';
+import SvgAlertTriangle from '../svgr/alert-triangle';
 
 function SignUp(props, ref) {
-    
-    const { className, style, onDone = () => {}, startTab = 'login', ...otherProps} = props
-    
+
+    const { className, style, onDone = () => { }, startTab = 'login', submitted = false, ...otherProps } = props
+
     // checks if start tab requests login or sign up page
     const [isLogIn, setIsLogIn] = useState(
         startTab.toLowerCase().includes('up') ? false : startTab.toLowerCase().includes('in') ? true : false
     )
+    // checks if user has pressed signed up or logged in button yet
+    const [isSubmitted, setIsSubmitted] = useState(submitted)
+    console.log('isSubmitted', isSubmitted)
+
     const { destination, userInfo = {} } = props
     const classes = useStyles()
     const [state, methods] = useAuth(destination, userInfo)
 
+    // updates if the user has submitted the form and then calls the respective method
+    function handleSubmit(page) {
+        setIsSubmitted(true)
+        if (page === "signup") {
+            methods.signup()
+        } else if (page === "login") {
+            methods.login()
+        }
+    }
     // if user has filled out required fields, automatically log them in
     if (userInfo.email && userInfo.password) {
         useEffect(() => {
@@ -29,12 +42,6 @@ function SignUp(props, ref) {
     // otherwise, continue showing login/sign up page
     return (
         <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
-            <div className={cx(classes.error, !(state.error || state.info || state.success) && classes.disabled)}>
-                {!(state.email && state.password) && <div>Oops! Please fill out the missing items before continuing on.</div>}
-                {state.error && <div>{state.error}</div>}
-                {state.info && <div>{state.info}</div>}
-                {state.success && <div>{state.success}</div>}
-            </div>
             <div className={classes.tabs}>
                 <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
                     <button onClick={e => setIsLogIn(false)} className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)}>
@@ -50,50 +57,45 @@ function SignUp(props, ref) {
             <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
                 <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
                     <p id="text">First Name</p>
-                <input
-                    name='first-name'
-                    placeholder='John'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                />
+                    <input
+                        name='first-name'
+                        className={cx(classes.input, isLogIn && classes.disabled)}
+                    />
                 </div>
                 <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
-                   <p id="text">Last Name</p>
-                <input
-                    name='last-name'
-                    placeholder='Doe'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                />
+                    <p id="text">Last Name</p>
+                    <input
+                        name='last-name'
+                        className={cx(classes.input, isLogIn && classes.disabled)}
+                    />
                 </div>
-                <div className={cx(classes.inputBoxes, !state.email && classes.invalid)}>
+                <div className={cx(classes.inputBoxes, !state.email && isSubmitted && classes.invalid)}>
                     <p id="text">E-mail</p>
-                <input
-                    name='email'
-                    placeholder='Johndoe@gmail.com'
-                    className={cx(classes.input, !state.email && classes.invalidInput)}
-                    onChange={e => methods.onChangeEmail(e.target.value)}
-                />
+                    <input
+                        name='email'
+                        className={cx(classes.input, !state.email && isSubmitted && classes.invalidInput)}
+                        onChange={e => methods.onChangeEmail(e.target.value)}
+                    />
                 </div>
-                <div className={cx(classes.inputBoxes, !state.password && classes.invalid)}>
+                <div className={cx(classes.inputBoxes, !state.password && isSubmitted && classes.invalid)}>
                     <p id="text">Password</p>
-                <input
-                    name='password'
-                    type='password'
-                    placeholder='********'
-                    className={cx(classes.input, !state.password && classes.invalidInput)}
-                    onChange={e => methods.onChangePassword(e.target.value)}
-                />
+                    <input
+                        name='password'
+                        type='password'
+                        className={cx(classes.input, !state.password && isSubmitted && classes.invalidInput)}
+                        onChange={e => methods.onChangePassword(e.target.value)}
+                    />
                 </div>
                 <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
                     <p id="text">Confirm Password</p>
-                <input
-                    name='confirm'
-                    type='password'
-                    placeholder='********'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                    onChange={e => methods.onChangeConfirm(e.target.value)}
-                />
+                    <input
+                        name='confirm'
+                        type='password'
+                        className={cx(classes.input, isLogIn && classes.disabled)}
+                        onChange={e => methods.onChangeConfirm(e.target.value)}
+                    />
                 </div>
-                <div className={classes.agreeTermContainer}>
+                <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
                     <div className={classes.checkTerm}>
                         <input
                             className={classes.checkTermBox}
@@ -104,23 +106,30 @@ function SignUp(props, ref) {
                         <label className={classes.agreeTermLabel}>
                             Yes, I agree to the
                             <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
-                                Terms of Service 
+                                Terms of Service
                             </a>
-                             and
+                            and
                             <a href='https://enciv.org/privacy' target='_blank' className={classes.aLinkTerm}>
                                 Privacy Policy.
                             </a>
                         </label>
                     </div>
                 </div>
+                <div className={cx(classes.error, !(state.error || state.info || state.success) && classes.disabled)}>
+                    <SvgAlertTriangle viewBox="0 0 24 20" />
+                    <span> Oops! </span>
+                    {state.error && <span>{state.error}</span>}
+                    {state.info && <span>{state.info}</span>}
+                    {state.success && <span>{state.success}</span>}
+                </div>
                 <div className={classes.btnContainer}>
-                    <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.signup()}>
+                    <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => handleSubmit("signup")}>
                         Sign Up
                     </button>
-                    <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.login()}>
+                    <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => handleSubmit("login")}>
                         Log In
                     </button>
-                    <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.skip()}>
+                    <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.skip()}>
                         Skip
                     </button>
                 </div>
@@ -128,16 +137,6 @@ function SignUp(props, ref) {
                     <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
                         Send Reset Password
                     </button>
-                </div>
-                <div className={cx("go-to-sign-up", isLogIn && classes.disabled)}>
-                    <p> Don't have an account? Click Join, it only takes a minute to sign up!</p>
-                </div>
-                <div className={cx("privacy-statement", isLogIn && classes.disabled)}>
-                    <p> By submitting my information, I confirm that I have read and agreed to the
-                        <a href="https://c1.sfdcstatic.com/content/dam/web/en_us/www/documents/legal/Privacy/salesforce-candidate-privacy-statement.pdf" target="_blank" className={classes.aLinkTerm}>
-                            Privacy Statement.
-                        </a>
-                    </p>
                 </div>
             </div>
         </div>)
@@ -147,7 +146,7 @@ export default React.forwardRef(SignUp);
 
 const useStyles = createUseStyles(theme => ({
     SignUp: {
-        color: theme.colors.textPrimary, 
+        color: theme.colors.textPrimary,
         margin: 0,
         borderRadius: '1rem',
         padding: '0',
@@ -180,13 +179,13 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     tabs: {
-        // width: '80%',
+        width: '80%',
         height: '3rem',
         margin: 'auto',
         borderRadius: '5rem',
         border: '0.1rem solid #D9D9D9',
         padding: '0.2rem 0.2rem 0 0.2rem ',
-        boxShadow:' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
+        boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
     },
     tab: {
         display: 'inline-block',
@@ -243,7 +242,6 @@ const useStyles = createUseStyles(theme => ({
     },
     inputBoxes: {
         margin: '0 0.1rem',
-        width: '80%',
         textAlign: 'left',
     },
     text: {
