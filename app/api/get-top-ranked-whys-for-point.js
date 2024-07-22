@@ -1,5 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/136
-
 const Points = require('../models/points')
 const Rankings = require('../models/rankings')
 const { ObjectId } = require('mongodb')
@@ -33,19 +31,15 @@ async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) 
       { $limit: pageSize },
       {
         $project: {
-          _id: 1,
-          title: '$doc.title',
-          description: '$doc.description',
-          round: '$doc.round',
-          parentId: '$doc.parentId',
-          category: '$doc.category',
-          rankCount: '$count',
+          doc: {
+            $mergeObjects: ['$doc', { rankCount: '$count' }],
+          },
         },
       },
     ]).toArray()
 
     const result = whys.map(why => {
-      const { userId, ...rest } = why
+      const { userId, ...rest } = why.doc
       return rest
     })
 
