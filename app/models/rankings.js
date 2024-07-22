@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/136
+
 const { Collection } = require('@enciv/mongo-collections')
 
 class Rankings extends Collection {
