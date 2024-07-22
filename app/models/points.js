@@ -17,11 +17,12 @@ const Number = () => Joi.number()
 
 const pointSchema = Joi.object({
   _id: Joi.objectId().required(),
+  userId: String().required(),
   title: String().required(),
   description: String().required(),
-  parentId: Number().optional(),
-  category: String.optional(),
-  round: Number().optional()
+  parentId: Number(),
+  category: String(),
+  round: Number(),
   })
 
 class Points extends Collection {

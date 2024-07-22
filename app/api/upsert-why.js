@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
 
-const Points = require('../models/points')
+const { Points } = require('../models/points')
 
 async function upsertWhy(pointObj, cb) {
   if (!this.synuser || !this.synuser.id) {
