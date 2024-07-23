@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/163
 
 import insertDturnStatement from '../insert-dturn-statement'
-import Discussion from '../../models/discussion'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -36,15 +35,6 @@ beforeAll(async () => {
   MemoryServer = await MongoMemoryServer.create()
   const uri = MemoryServer.getUri()
   await Mongo.connect(uri)
-
-  await Discussion.create({
-    _id: existentDTurnId,
-    subject: 'Test discussion',
-    description: 'Test discussion description',
-    goal: 10,
-    starts: new Date(),
-    deadline: new Date(Date.now() + 1000 * 5),
-  })
 })
 
 afterAll(async () => {

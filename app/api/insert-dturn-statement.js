@@ -3,7 +3,8 @@
 'use strict'
 
 import { insertStatementId } from '../dturn/dturn'
-const Points = require('../models/points')
+
+import upsertPoint from './upsert-point'
 const { BSON } = require('bson')
 import { ObjectId } from 'mongodb'
 
@@ -19,8 +20,7 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
 
   // Verify user is logged in.
   if (!this.synuser || !this.synuser.id) {
-    cbFailure('Cannot insert Dturn statement - user is not logged in.')
-    return
+    return cbFailure('Cannot insert Dturn statement - user is not logged in.')
   }
 
   // Add userId to pointObj.
@@ -36,17 +36,19 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
 
   // If insert to dturn failed - discussion isn't initialized, and don't need to try to insert into Points.
   if (!insertStatementResult) {
-    cbFailure()
-    return
+    return cbFailure()
   }
 
   // Attempt to insert pointObj.
-  try {
-    await Points.insertOne(pointObj)
-    cbSuccess()
-  } catch (error) {
-    cbFailure(error)
+  const pointInsertCb = success => {
+    if (success) {
+      cbSuccess()
+    } else {
+      cbFailure('An error occured inserting the pointObj.')
+    }
   }
+
+  await upsertPoint.call(this.synuser, pointObj, pointInsertCb)
 }
 
 module.exports = insertDturnStatement
