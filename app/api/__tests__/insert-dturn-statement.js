@@ -1,24 +1,27 @@
 // https://github.com/EnCiv/civil-pursuit/issues/163
 
 import insertDturnStatement from '../insert-dturn-statement'
+import { initDiscussion } from '../../dturn/dturn'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 
+const { BSON } = require('bson')
+
+const Points = require('../../models/points')
+
 // Config
 
-const nonExistentDTurnId = new ObjectId()
-const existentDTurnId = new ObjectId()
+const nonExistentDiscussionId = new ObjectId()
+const existentDiscussionId = new ObjectId()
 const synuser = { synuser: { id: '6667d5a33da5d19ddc304a6b' } }
 
-const pointTitle = 'Point 1'
-const pointDesc = 'Description 1 '
-const pointObjNoId = { title: pointTitle, description: pointDesc }
+const pointObjNoId = { title: 'NoIdTitle', description: 'NoIdDesc' }
 const pointObjWithId = {
   _id: new ObjectId('6667d688b20d8e339ca50020'),
-  title: pointTitle,
-  description: pointDesc,
+  title: 'WithIdTitle',
+  description: 'WithIdDesc',
 }
 
 let MemoryServer
@@ -35,6 +38,8 @@ beforeAll(async () => {
   MemoryServer = await MongoMemoryServer.create()
   const uri = MemoryServer.getUri()
   await Mongo.connect(uri)
+
+  await initDiscussion(existentDiscussionId, obj => {})
 })
 
 afterAll(async () => {
@@ -45,7 +50,7 @@ afterAll(async () => {
 // Tests
 test('Fail if user is not logged in.', async () => {
   const cb = jest.fn()
-  await insertDturnStatement.call({}, nonExistentDTurnId, pointObjNoId, cb)
+  await insertDturnStatement.call({}, nonExistentDiscussionId, pointObjNoId, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
@@ -54,18 +59,49 @@ test('Fail if user is not logged in.', async () => {
 
 test('Fail if discussion is not initialized.', async () => {
   const cb = jest.fn()
-  await insertDturnStatement.call(synuser, nonExistentDTurnId, pointObjNoId, cb)
+  await insertDturnStatement.call(synuser, nonExistentDiscussionId, pointObjNoId, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
-  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${nonExistentDTurnId} not initialized`)
+  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${nonExistentDiscussionId} not initialized`)
 })
 
-test('Success if discussion exists.', async () => {
+test('Success if discussion exists and pointObj ID provided.', async () => {
   const cb = jest.fn()
-  await insertDturnStatement.call(synuser, existentDTurnId, pointObjWithId, cb)
+  await insertDturnStatement.call(synuser, existentDiscussionId, pointObjWithId, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(true)
-  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${nonExistentDTurnId} not initialized`)
+
+  // Preexisting _id should've been converted to BSON.
+  const insertedDoc = await Points.findOne({ _id: BSON.ObjectId.createFromHexString(pointObjWithId._id.toString()) })
+  expect(insertedDoc).toEqual(pointObjWithId)
+
+  console.info(insertedDoc)
+})
+
+test('Success if discussion exists and pointObj ID not provided.', async () => {
+  const cb = jest.fn()
+  await insertDturnStatement.call(synuser, existentDiscussionId, pointObjNoId, cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(true)
+
+  // _id should've been set to a new ID.
+  const insertedDoc = await Points.findOne({ title: 'NoIdTitle', description: 'NoIdDesc' })
+  expect(insertedDoc._id).not.toBeNaN
+
+  console.info(insertedDoc)
+})
+
+test('Fail if pointObj insert fails.', async () => {
+  const cb = jest.fn()
+  const invalidPointObj = { title: 'NoIdTitle', title: 'NoIdDesc' }
+
+  await insertDturnStatement.call(synuser, existentDiscussionId, invalidPointObj, cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(undefined)
+
+  console.info(`Error: ${console.error.mock.calls[0][0]}`)
 })

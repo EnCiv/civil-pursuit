@@ -48,7 +48,7 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
     }
   }
 
-  await upsertPoint.call(this.synuser, pointObj, pointInsertCb)
+  await upsertPoint.call({ synuser: this.synuser }, pointObj, pointInsertCb)
 }
 
 module.exports = insertDturnStatement
