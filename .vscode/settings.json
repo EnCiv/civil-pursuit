@@ -28,8 +28,5 @@
       "args": ["-rcfile", "./.bashrc"]
     }
   },
-  "terminal.integrated.defaultProfile.linux": "bash",
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  "terminal.integrated.defaultProfile.linux": "bash"
 }
