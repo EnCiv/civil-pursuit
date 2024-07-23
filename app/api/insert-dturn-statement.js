@@ -28,7 +28,7 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
   pointObj.userId = userId
 
   // If _id is present, convert to BSON, else add ID.
-  const statementId = pointObj._id ? BSON.serialize(pointObj._id) : new ObjectId()
+  const statementId = pointObj._id ? BSON.ObjectId.createFromHexString(pointObj._id.toString()) : new ObjectId()
   pointObj._id = statementId
 
   // Insert ID into dturn

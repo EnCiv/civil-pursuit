@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/163
 
 import insertDturnStatement from '../insert-dturn-statement'
+import Discussion from '../../models/discussion'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -8,7 +9,8 @@ import { MongoClient, ObjectId } from 'mongodb'
 
 // Config
 
-const dTurnId = new ObjectId()
+const nonExistentDTurnId = new ObjectId()
+const existentDTurnId = new ObjectId()
 const synuser = { synuser: { id: '6667d5a33da5d19ddc304a6b' } }
 
 const pointTitle = 'Point 1'
@@ -34,6 +36,15 @@ beforeAll(async () => {
   MemoryServer = await MongoMemoryServer.create()
   const uri = MemoryServer.getUri()
   await Mongo.connect(uri)
+
+  await Discussion.create({
+    _id: existentDTurnId,
+    subject: 'Test discussion',
+    description: 'Test discussion description',
+    goal: 10,
+    starts: new Date(),
+    deadline: new Date(Date.now() + 1000 * 5),
+  })
 })
 
 afterAll(async () => {
@@ -44,7 +55,7 @@ afterAll(async () => {
 // Tests
 test('Fail if user is not logged in.', async () => {
   const cb = jest.fn()
-  await insertDturnStatement.call({}, dTurnId, pointObjNoId, cb)
+  await insertDturnStatement.call({}, nonExistentDTurnId, pointObjNoId, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
@@ -53,9 +64,18 @@ test('Fail if user is not logged in.', async () => {
 
 test('Fail if discussion is not initialized.', async () => {
   const cb = jest.fn()
-  await insertDturnStatement.call(synuser, dTurnId, pointObjNoId, cb)
+  await insertDturnStatement.call(synuser, nonExistentDTurnId, pointObjNoId, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
-  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${dTurnId} not initialized`)
+  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${nonExistentDTurnId} not initialized`)
+})
+
+test('Success if discussion exists.', async () => {
+  const cb = jest.fn()
+  await insertDturnStatement.call(synuser, existentDTurnId, pointObjWithId, cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(true)
+  expect(console.error.mock.calls[0][0]).toBe(`Discussion: ${nonExistentDTurnId} not initialized`)
 })
