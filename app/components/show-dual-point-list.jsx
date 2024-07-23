@@ -4,7 +4,6 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Point from './point'
 import PointGroup from './point-group'
 import { ModifierButton } from './button'
 
@@ -38,12 +37,12 @@ export default function ShowDualPointList({
             return (
               <React.Fragment key={leftPoint?._id || rightPoint?._id}>
                 <PointGroup
-                  point={<Point point={leftPoint || {}} />}
+                  pointDoc={leftPoint || {}}
                   vState={isExpanded ? 'default' : 'collapsed'}
                   className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
                 />
                 <PointGroup
-                  point={<Point point={rightPoint || {}} />}
+                  pointDoc={rightPoint || {}}
                   vState={isExpanded ? 'default' : 'collapsed'}
                   className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
                 />

@@ -1,6 +1,5 @@
 import React from 'react'
 import { expect } from '@storybook/jest'
-import Point from '../app/components/point'
 import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
@@ -37,8 +36,6 @@ const createPointDoc = (
   }
 }
 
-const createPoint = pointDoc => <Point point={pointDoc} />
-
 const pointDoc1 = createPointDoc('1', 'Point 1', 'Point 1 Description', [])
 const pointDoc2 = createPointDoc(
   '2',
@@ -60,24 +57,17 @@ const pointDoc4 = createPointDoc('4', 'Point 4', 'Point 4 Description')
 const pointDoc6 = createPointDoc('6', 'Point 6', 'Point 6 Description')
 const pointDoc5 = createPointDoc('5', 'Point 5', 'Point 5 Description', [pointDoc2, pointDoc3, pointDoc4, pointDoc6])
 
-const point1 = createPoint(pointDoc1)
-const point2 = createPoint(pointDoc2)
-const point3 = createPoint(pointDoc3)
-const point4 = createPoint(pointDoc4)
-const point5 = createPoint(pointDoc5)
-const point6 = createPoint(pointDoc6)
+export const DefaultSinglePoint = { args: { pointDoc: pointDoc1, vState: 'default' } }
+export const SelectedSinglePoint = { args: { pointDoc: pointDoc1, vState: 'default', select: true } }
+export const EditSinglePoint = { args: { pointDoc: pointDoc1, vState: 'edit' } }
 
-export const DefaultSinglePoint = { args: { point: point1, vState: 'default' } }
-export const SelectedSinglePoint = { args: { point: point1, vState: 'default', select: true } }
-export const EditSinglePoint = { args: { point: point1, vState: 'edit' } }
-
-export const defaultMultiplePoints = { args: { point: point5, vState: 'default' } }
-export const selectedDefaultMultiplePoints = { args: { point: point5, vState: 'default', select: true } }
-export const editMultiplePoints = { args: { point: point5, vState: 'edit' } }
-export const selectedEditMultiplePoints = { args: { point: point5, vState: 'edit', select: true } }
+export const defaultMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'default' } }
+export const selectedDefaultMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'default', select: true } }
+export const editMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'edit' } }
+export const selectedEditMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'edit', select: true } }
 
 export const mobileSinglePoint = {
-  args: { point: point1, vState: 'default' },
+  args: { pointDoc: pointDoc1, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -87,23 +77,15 @@ export const mobileSinglePoint = {
 
 export const selectedEditMultiplePointsWithChildren = {
   args: {
-    point: point5,
+    pointDoc: pointDoc5,
     vState: 'edit',
     select: true,
-    children: [
-      <DemInfo
-        user={{
-          dob: '1995-10-20T00:00:00.000Z',
-          state: 'CA',
-          party: 'Independent',
-        }}
-      />,
-    ],
+    children: [<DemInfo dob="1995-10-20T00:00:00.000Z" state="CA" party="Independent" />],
   },
 }
 
 export const mobileDefaultPoints = {
-  args: { point: point5, vState: 'default' },
+  args: { pointDoc: pointDoc5, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -112,15 +94,15 @@ export const mobileDefaultPoints = {
 }
 
 export const collapsedPoints = {
-  args: { point: point5, vState: 'collapsed' },
+  args: { pointDoc: pointDoc5, vState: 'collapsed' },
 }
 
 export const selectLeadPoints = {
-  args: { point: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
 }
 
 export const mobileSelectLeadPoints = {
-  args: { point: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -129,7 +111,7 @@ export const mobileSelectLeadPoints = {
 }
 
 export const selectLeadPoint3OnDone = {
-  args: { point: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const SelectedPoint = canvas.getByTitle('Select as Lead: Point 3')
@@ -192,7 +174,7 @@ export const selectLeadPoint3OnDone = {
 }
 
 export const selectLeadUngroupOnDone = {
-  args: { point: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Ungroup and close')
@@ -257,7 +239,7 @@ export const selectLeadUngroupOnDone = {
 }
 
 export const editMultiplePointsRemovePoint3OnDone = {
-  args: { point: point5, vState: 'edit' },
+  args: { pointDoc: pointDoc5, vState: 'edit' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Remove from Group: Point 3')

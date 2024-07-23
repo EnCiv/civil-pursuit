@@ -7,7 +7,6 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Point from './point'
 import PointGroup from './point-group'
 import { PrimaryButton, SecondaryButton } from './button'
 import StatusBadge from './status-badge'
@@ -172,14 +171,14 @@ export default function GroupingStep(props) {
       </div>
       {gs.selectLead != null ? (
         <div className={classes.selectLead}>
-          <PointGroup point={<Point point={gs.selectLead} />} vState={'selectLead'} onDone={onSelectLeadDone} />
+          <PointGroup pointDoc={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
       ) : null}
       <div className={classes.groupsContainer}>
         {gs.pointsToGroup.map(point => (
           <PointGroup
             key={point._id}
-            point={<Point point={point} />}
+            pointDoc={point}
             vState="default"
             select={gs.selectedPoints.some(id => id === point._id)}
             onClick={() => togglePointSelection(point._id)}
@@ -195,7 +194,7 @@ export default function GroupingStep(props) {
                 <PointGroup
                   className={classes.yourGroupsPoint}
                   key={point._id}
-                  point={<Point point={point} />}
+                  pointDoc={point}
                   vState="editable"
                   select={gs.selectedPoints.some(id => id === point._id)}
                   onClick={() => togglePointSelection(point._id)}
