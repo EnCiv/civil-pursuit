@@ -111,5 +111,7 @@ test('Fail if arguments are invalid', async () => {
 
   await insertDturnStatement.call(synuser, existentDiscussionId, cb)
 
+  expect(console.error.mock.calls[0][0]).toEqual('Expected 3 arguments (dTurnId, pointObj, cb) but got 2.')
+
   console.info(`Error: ${console.error.mock.calls[0][0]}`)
 })
