@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/52
 
+// https://github.com/EnCiv/civil-pursuit/issues/144
+
 'use strict'
 
 import React, { useState } from 'react'
@@ -9,10 +11,11 @@ import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 
 const TopNavBar = props => {
-  const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, ...otherProps } = props
+  const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedItem, setSelectedItem] = useState(defaultSelectedItem)
   const [openDropdown, setOpenDropdown] = useState(null)
+
   const handleMouseEnter = index => {
     setOpenDropdown(index)
   }
@@ -31,11 +34,6 @@ const TopNavBar = props => {
     setSelectedItem(item.name)
   }
 
-  const handleMenuDropdownClick = (item, index) => {
-    setSelectedItem(item[0].name)
-    item[index].func()
-  }
-
   const handleMobileMenuGroupClick = (item, index) => {
     item[0].func()
 
@@ -46,6 +44,18 @@ const TopNavBar = props => {
     }
   }
 
+  // taken from button.jsx
+  const handleKeyDown = (e, type, index) => {
+    e.stopPropagation()
+    // if space key is pressed
+    if (e.keyCode === 32) {
+      if (type === 'menu') {
+        handleMouseLeave() // closes any dropdowns still open
+      } else if (type === 'menuGroup') {
+        handleMouseEnter(index)
+      }
+    }
+  }
   return (
     <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
       <div className={classes.columnAligner}>
@@ -60,6 +70,8 @@ const TopNavBar = props => {
                   <li className={classes.menuList} key={index}>
                     <div
                       className={cx(classes.menuGroup, { [classes.selectedItem]: selectedItem === item[0].name })}
+                      tabIndex={tabIndex}
+                      onKeyDown={e => handleKeyDown(e, 'menuGroup', index)}
                       onMouseEnter={() => handleMouseEnter(index)}
                       onMouseLeave={() => handleMouseLeave()}
                     >
@@ -69,6 +81,7 @@ const TopNavBar = props => {
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
+                              tabIndex={tabIndex}
                               className={cx(classes.menuItem, classes.colors, {
                                 [classes.selectedItem]: selectedItem === subItem.name,
                               })}
@@ -84,6 +97,8 @@ const TopNavBar = props => {
                 ) : (
                   <li className={classes.menuList} key={item.name}>
                     <button
+                      tabIndex={tabIndex}
+                      onKeyDown={e => handleKeyDown(e, 'menu', index)}
                       className={cx(classes.menuItem, classes.colors, {
                         [classes.selectedItem]: selectedItem === item.name,
                       })}
@@ -241,6 +256,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       background: theme.colors.encivYellow,
       color: props.mode === 'dark' ? 'black' : 'white',
     },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
   }),
   dropdownMenu: props => ({
     position: 'absolute',
@@ -268,6 +286,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover': {
       background: theme.colors.encivYellow,
       color: props.mode === 'dark' ? 'black' : 'white',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
     },
   }),
   selectedItem: props => ({
