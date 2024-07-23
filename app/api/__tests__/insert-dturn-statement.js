@@ -105,3 +105,11 @@ test('Fail if pointObj insert fails.', async () => {
 
   console.info(`Error: ${console.error.mock.calls[0][0]}`)
 })
+
+test('Fail if arguments are invalid', async () => {
+  const cb = jest.fn()
+
+  await insertDturnStatement.call(synuser, existentDiscussionId, cb)
+
+  console.info(`Error: ${console.error.mock.calls[0][0]}`)
+})

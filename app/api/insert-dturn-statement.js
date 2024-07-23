@@ -18,6 +18,11 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
     if (cb) cb(true)
   }
 
+  // Verify arguments
+  if (arguments.length != 3) {
+    return console.error(`Expected 3 arguments (dTurnId, pointObj, cb) but got ${arguments.length}.`)
+  }
+
   // Verify user is logged in.
   if (!this.synuser || !this.synuser.id) {
     return cbFailure('Cannot insert Dturn statement - user is not logged in.')
