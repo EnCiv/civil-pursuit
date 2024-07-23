@@ -2,9 +2,10 @@
 
 'use strict'
 
-import insertStatementId from '../dturn/dturn.js'
+import { insertStatementId } from '../dturn/dturn'
 const Points = require('../models/points')
 const { BSON } = require('bson')
+import { ObjectId } from 'mongodb'
 
 async function insertDturnStatement(dTurnId, pointObj, cb) {
   // Anonymous functions to handle success/fail
@@ -22,16 +23,6 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
     return
   }
 
-  // Verify arguments.
-  if (!dTurnId) {
-    cbFailure('No dTurnId provided for insert DturnStatement operation.')
-    return
-  }
-  if (!pointObj) {
-    cbFailure('No pointObj provided for insert DturnStatement operation.')
-    return
-  }
-
   // Add userId to pointObj.
   const userId = this.synuser.id
   pointObj.userId = userId
@@ -44,7 +35,7 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
   const insertStatementResult = insertStatementId(dTurnId, userId, statementId)
 
   // If insert to dturn failed - discussion isn't initialized, and don't need to try to insert into Points.
-  if (insertStatementResult === undefined) {
+  if (!insertStatementResult) {
     cbFailure()
     return
   }
@@ -57,3 +48,5 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
     cbFailure(error)
   }
 }
+
+module.exports = insertDturnStatement
