@@ -15,7 +15,16 @@ function SignUp(props, ref) {
   )
   // checks if user has pressed signed up or logged in button yet
   const [isSubmitted, setIsSubmitted] = useState(submitted)
-  console.log('isSubmitted', isSubmitted)
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  // these variables are here to ensure empty fields dont turn red when user first loads in page
+  const [clickedOnFirst, setClickedOnFirst] = useState(false)
+  const [clickedOnLast, setClickedOnLast] = useState(false)
+  const [clickedOnEmail, setClickedOnEmail] = useState(false)
+  const [clickedOnPassword, setClickedOnPassword] = useState(false)
+  const [clickedOnConfirm, setClickedOnConfirm] = useState(false)
 
   const { destination, userInfo = {} } = props
   const classes = useStyles()
@@ -30,6 +39,32 @@ function SignUp(props, ref) {
       methods.login()
     }
   }
+
+  function changeFirstName(value) {
+    setClickedOnFirst(true)
+    setFirstName(value)
+  }
+
+  function changeLastName(value) {
+    setClickedOnLast(true)
+    setLastName(value)
+  }
+
+  function changeEmail(value) {
+    setClickedOnEmail(true)
+    methods.onChangeEmail(value)
+  }
+
+  function changePassword(value) {
+    setClickedOnPassword(true)
+    methods.onChangePassword(value)
+  }
+
+  function changeConfirm(value) {
+    setClickedOnConfirm(true)
+    methods.onChangeConfirm(value)
+  }
+
   // if user has filled out required fields, automatically log them in
   if (userInfo.email && userInfo.password) {
     useEffect(() => {
@@ -57,38 +92,74 @@ function SignUp(props, ref) {
         </div>
       </div>
       <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
-        <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
+        <div
+          className={cx(
+            classes.inputBoxes,
+            !firstName && (clickedOnFirst || isSubmitted) && classes.invalid,
+            isLogIn && classes.disabled
+          )}
+        >
           <p id="text">First Name</p>
-          <input name="first-name" className={cx(classes.input, isLogIn && classes.disabled)} />
+          <input
+            name="first-name"
+            className={cx(
+              classes.input,
+              !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput,
+              isLogIn && classes.disabled
+            )}
+            onBlur={e => changeFirstName(e.target.value)}
+          />
         </div>
-        <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
+        <div
+          className={cx(
+            classes.inputBoxes,
+            isLogIn && classes.disabled,
+            !lastName && (clickedOnLast || isSubmitted) && classes.invalid
+          )}
+        >
           <p id="text">Last Name</p>
-          <input name="last-name" className={cx(classes.input, isLogIn && classes.disabled)} />
+          <input
+            name="last-name"
+            className={cx(
+              classes.input,
+              isLogIn && classes.disabled,
+              !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput
+            )}
+            onBlur={e => changeLastName(e.target.value)}
+          />
         </div>
-        <div className={cx(classes.inputBoxes, !state.email && isSubmitted && classes.invalid)}>
+        <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
           <p id="text">E-mail</p>
           <input
             name="email"
-            className={cx(classes.input, !state.email && isSubmitted && classes.invalidInput)}
-            onChange={e => methods.onChangeEmail(e.target.value)}
+            className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)}
+            onBlur={e => changeEmail(e.target.value)}
           />
         </div>
-        <div className={cx(classes.inputBoxes, !state.password && isSubmitted && classes.invalid)}>
+        <div
+          className={cx(classes.inputBoxes, !state.password && (clickedOnPassword || isSubmitted) && classes.invalid)}
+        >
           <p id="text">Password</p>
           <input
             name="password"
             type="password"
-            className={cx(classes.input, !state.password && isSubmitted && classes.invalidInput)}
-            onChange={e => methods.onChangePassword(e.target.value)}
+            className={cx(classes.input, !state.password && (clickedOnPassword || isSubmitted) && classes.invalidInput)}
+            onChange={e => changePassword(e.target.value)}
           />
         </div>
-        <div className={cx(classes.inputBoxes, isLogIn && classes.disabled)}>
+        <div
+          className={cx(classes.inputBoxes, !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid)}
+        >
           <p id="text">Confirm Password</p>
           <input
             name="confirm"
             type="password"
-            className={cx(classes.input, isLogIn && classes.disabled)}
-            onChange={e => methods.onChangeConfirm(e.target.value)}
+            className={cx(
+              classes.input,
+              !state.confirm && (clickedOnConfirm || isSubmitted) && classes.invalidInput,
+              isLogIn && classes.disabled
+            )}
+            onChange={e => changeConfirm(e.target.value)}
           />
         </div>
         <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
@@ -260,8 +331,7 @@ const useStyles = createUseStyles(theme => ({
     // '!important' to override from index.css
     width: '100%',
     background: '#FBFBFB',
-    border: 'solid 0.1rem #EBEBEB !important',
-    borderColor: theme.colors.borderGray + ' !important',
+    border: `solid 0.1rem ${theme.colors.borderGray} !important`,
     padding: '1rem !important',
     marginBottom: '2rem',
     borderRadius: '0.5rem !important',

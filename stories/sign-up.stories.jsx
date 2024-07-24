@@ -8,14 +8,17 @@ export default {
   component: SignUp,
   args: {},
   decorators: [
-    Story => (
-      <div>
-        success@email.com / 'password' will succeed
-        <br />
-        all other combinations will fail
-        <Story />
-      </div>
-    ),
+    Story => {
+      if (!window.logger) window.logger = console
+      return (
+        <div>
+          success@email.com / 'password' will succeed
+          <br />
+          all other combinations will fail
+          <Story />
+        </div>
+      )
+    },
   ],
   parameters: {
     viewport: {
