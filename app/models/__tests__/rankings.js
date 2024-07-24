@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/136
 
 const { Mongo, Collection } = require('@enciv/mongo-collections')
-const Rankings = require('../../models/rankings')
+const Rankings = require('../rankings')
 
 beforeAll(async () => {
   await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
@@ -12,7 +12,7 @@ beforeEach(async () => {
   await Rankings.drop()
   await Rankings.setCollectionProps()
   await Rankings.createIndexes([
-    { key: { parentId: 1, userId: 1 }, name: 'unique_parentId_userId_index', unique: true }
+    { key: { parentId: 1, userId: 1 }, name: 'unique_parentId_userId_index', unique: true },
   ])
 })
 
@@ -56,10 +56,6 @@ describe('Rankings Model', () => {
 
   it('should have the correct indexes', async () => {
     const indexes = await Rankings.indexes()
-    expect(indexes).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ name: 'unique_parentId_userId_index' }),
-      ])
-    )
+    expect(indexes).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'unique_parentId_userId_index' })]))
   })
 })
