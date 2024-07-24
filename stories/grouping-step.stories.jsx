@@ -14,7 +14,7 @@ export default {
   },
 }
 
-const createPointObj = (
+const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
@@ -35,7 +35,7 @@ const createPointObj = (
 }
 
 const pointItems = Array.from({ length: 10 }, (_, index) =>
-  createPointObj(index, 'Point ' + index, 'Point Description ' + index)
+  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
 )
 
 export const Empty = {

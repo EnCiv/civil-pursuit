@@ -41,6 +41,10 @@ const Footer = props => {
             |{' '}
             <a href="/privacy" className={`${classes.secondaryText} ${classes.links}`}>
               Privacy Policy
+            </a>{' '}
+            |{' '}
+            <a href="/nondiscrimination" className={`${classes.secondaryText} ${classes.links}`}>
+              Nondiscrimination Policy
             </a>
           </div>
         </div>

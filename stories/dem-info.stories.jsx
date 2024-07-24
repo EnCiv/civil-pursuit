@@ -1,94 +1,74 @@
-import DemInfo from '../app/components/dem-info';
-import React from 'react';
+import DemInfo from '../app/components/dem-info'
+import React from 'react'
 
 export default {
-    component: DemInfo,
-    args: {}
+  component: DemInfo,
+  args: {},
 }
 
-export const PrimaryAllFieldsIncluded = { args: {
-    user: {
-        dob: '1990-10-20T00:00:00.000Z',
-        state: 'NY',
-        party: 'Independent'
-      },
-}}
+export const PrimaryAllFieldsIncluded = {
+  args: {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent',
+  },
+}
 
-export const UserNotFound = { args: {}}
-
-export const NoUserFields = { args: { user: {}}}
+export const UserNotFound = { args: {} }
 
 export const AgeAndStateOnly = {
-    args: {
-        user: {
-            dob: '1990-10-20T00:00:00.000Z',
-            state: 'NY',
-        },
-    }
+  args: {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+  },
 }
 
 export const StateAndPartyOnly = {
-    args: {
-        user: {
-            state: 'NY',
-            party: 'Independent',
-        },
-    }
+  args: {
+    state: 'NY',
+    party: 'Independent',
+  },
 }
 
 export const AgeAndPartyOnly = {
-    args: {
-        user: {
-            dob: '1990-10-20T00:00:00.000Z',
-            party: 'Independent',
-        },
-    }
+  args: {
+    dob: '1990-10-20T00:00:00.000Z',
+    party: 'Independent',
+  },
 }
 
 export const PartyOnly = {
-    args: {
-        user: {
-            party: 'Independent',
-        },
-    }
+  args: {
+    party: 'Independent',
+  },
 }
 
 export const AgeOnly = {
-    args: {
-        user: {
-            dob: '1990-10-20T00:00:00.000Z',
-        },
-    }
+  args: {
+    dob: '1990-10-20T00:00:00.000Z',
+  },
 }
 
 export const StateOnly = {
-    args: {
-        user: {
-            state: 'NY',
-        },
-    }
+  args: {
+    state: 'NY',
+  },
 }
 
 export const PartyOnlyEmptyField = {
-    args: {
-        user: {
-            party: '',
-        },
-    }
+  args: {
+    party: '',
+  },
 }
 
 export const AgeOnlyEmptyField = {
-    args: {
-        user: {
-            dob: null,
-        },
-    }
+  args: {
+    dob: null,
+  },
 }
 
 export const StateOnlyEmptyField = {
-    args: {
-        user: {
-            state: '',
-        },
-    }
+  args: {
+    state: '',
+  },
 }

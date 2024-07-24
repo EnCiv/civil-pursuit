@@ -46,7 +46,7 @@ function RankStep(props) {
     <div className={cx(classes.rankStep, className)} {...otherProps}>
       <div className={classes.pointDiv}>
         {pointList.map((point, i) => (
-          <Point key={point._id} {...point} vState="default">
+          <Point key={point._id} point={point} vState="default">
             <Ranking
               className={classes.rank}
               defaultValue={(rankList.find(ro => ro.id === point._id) || {}).rank}
