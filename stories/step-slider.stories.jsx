@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
-import NavBar from '../app/components/nav-bar'
+import StepBar from '../app/components/step-bar'
 
 export default {
   title: 'step-slider',
@@ -11,6 +11,35 @@ export default {
 }
 
 const storybookPadding = '2rem' // it padds the iframe with 1rem all around
+
+function createPrimarySteps() {
+  function stepLengthGenerator() {
+    const subjects = ['Cat ', 'Mountain ', 'Teacher ', 'Bird ', 'Astronaut ']
+    const verbs = ['Eats ', 'Discovers ', 'Teaches ', 'Climbs ', 'Paints ']
+    const predicates = ['Quickly', 'Mathematics', 'Delicious Meals', 'Happily ', 'Stunning Landscapes']
+    const words = [subjects, verbs, predicates]
+
+    let sentence = ''
+    for (let i = 0; i < 3; i++) {
+      const random = Math.floor((Math.random() * 10) % 5)
+      sentence += words[i][random]
+    }
+
+    return sentence
+  }
+
+  let primarySteps = Array.from({ length: 9 }, (_, i) => ({
+    name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
+    title: `this is step ${i + 1}`,
+    complete: false,
+  }))
+  primarySteps[0].complete = true
+  primarySteps[1].name = 'Step 2: Rate'
+
+  return primarySteps
+}
+const primarySteps = createPrimarySteps()
+const NavBar = React.forwardRef((props, ref) => <StepBar {...props} steps={primarySteps} />)
 
 const Template = args => {
   const [backgroundColor, setBackgroundColor] = useState('white')
