@@ -17,7 +17,8 @@ const Points = require('../../models/points')
 const nonExistentDiscussionId = new ObjectId()
 const existentDiscussionId = '66a174b0c3f2051ad387d2a6'
 
-const synuser = { synuser: { id: '6667d5a33da5d19ddc304a6b' } }
+const userId = '6667d5a33da5d19ddc304a6b'
+const synuser = { synuser: { id: userId } }
 
 const pointObjNoId = { title: 'NoIdTitle', description: 'NoIdDesc' }
 const pointObjWithId = {
@@ -29,6 +30,27 @@ const pointObjWithId = {
 let MemoryServer
 
 const UInfoHistory = []
+
+function checkUInfoHistoryConsistent() {
+  for (let index = 1; index < UInfoHistory.length; index++) {
+    const getStatementData = index => {
+      try {
+        const shownStatementIds = UInfoHistory[index][userId][existentDiscussionId]['0']['shownStatementIds']
+        // The statement ID will differ between test cases, since if there's no ID provided it's generated.
+        // The rest of the object data will be checked for consistency.
+        const testStatementIdKey = Object.keys(shownStatementIds)[0]
+
+        return JSON.stringify(shownStatementIds[testStatementIdKey])
+      } catch {
+        return undefined
+      }
+    }
+
+    if (getStatementData(index) !== getStatementData(index - 1)) return false
+  }
+
+  return true
+}
 
 beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
@@ -44,7 +66,7 @@ beforeAll(async () => {
   await Mongo.connect(uri)
 
   await initDiscussion(existentDiscussionId, {
-    updateUinfo: obj => {
+    updateUInfo: obj => {
       UInfoHistory.push(obj)
     },
   })
@@ -86,6 +108,8 @@ test('Success if discussion exists and pointObj ID provided.', async () => {
   expect(insertedDoc).toEqual(pointObjWithId)
 
   console.info(insertedDoc)
+
+  expect(checkUInfoHistoryConsistent()).toBe(true)
 })
 
 test('Success if discussion exists and pointObj ID not provided.', async () => {
@@ -99,18 +123,9 @@ test('Success if discussion exists and pointObj ID not provided.', async () => {
   const insertedDoc = await Points.findOne({ title: 'NoIdTitle', description: 'NoIdDesc' })
   expect(insertedDoc._id).not.toBeNaN
 
-  await Discussions[existentDiscussionId].updateUInfo({
-    // test
-    [synuser.synuser.id]: {
-      [existentDiscussionId]: {
-        [0]: {
-          shownStatementIds: {},
-        },
-      },
-    },
-  })
   console.info(insertedDoc)
-  console.log(UInfoHistory)
+
+  expect(checkUInfoHistoryConsistent()).toBe(true)
 })
 
 test('Fail if pointObj insert fails.', async () => {
