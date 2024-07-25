@@ -148,7 +148,11 @@ function SignUp(props, ref) {
           />
         </div>
         <div
-          className={cx(classes.inputBoxes, !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid)}
+          className={cx(
+            classes.inputBoxes,
+            isLogIn && classes.disabled,
+            !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid
+          )}
         >
           <p id="text">Confirm Password</p>
           <input
