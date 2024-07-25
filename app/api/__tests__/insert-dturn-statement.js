@@ -1,7 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/163
 
 import insertDturnStatement from '../insert-dturn-statement'
-import { initDiscussion } from '../../dturn/dturn'
+
+import { initDiscussion, Discussions } from '../../dturn/dturn'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -14,7 +15,8 @@ const Points = require('../../models/points')
 // Config
 
 const nonExistentDiscussionId = new ObjectId()
-const existentDiscussionId = new ObjectId()
+const existentDiscussionId = '66a174b0c3f2051ad387d2a6'
+
 const synuser = { synuser: { id: '6667d5a33da5d19ddc304a6b' } }
 
 const pointObjNoId = { title: 'NoIdTitle', description: 'NoIdDesc' }
@@ -25,6 +27,8 @@ const pointObjWithId = {
 }
 
 let MemoryServer
+
+const UInfoHistory = []
 
 beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
@@ -39,7 +43,11 @@ beforeAll(async () => {
   const uri = MemoryServer.getUri()
   await Mongo.connect(uri)
 
-  await initDiscussion(existentDiscussionId, obj => {})
+  await initDiscussion(existentDiscussionId, {
+    updateUinfo: obj => {
+      UInfoHistory.push(obj)
+    },
+  })
 })
 
 afterAll(async () => {
@@ -91,7 +99,18 @@ test('Success if discussion exists and pointObj ID not provided.', async () => {
   const insertedDoc = await Points.findOne({ title: 'NoIdTitle', description: 'NoIdDesc' })
   expect(insertedDoc._id).not.toBeNaN
 
+  await Discussions[existentDiscussionId].updateUInfo({
+    // test
+    [synuser.synuser.id]: {
+      [existentDiscussionId]: {
+        [0]: {
+          shownStatementIds: {},
+        },
+      },
+    },
+  })
   console.info(insertedDoc)
+  console.log(UInfoHistory)
 })
 
 test('Fail if pointObj insert fails.', async () => {
