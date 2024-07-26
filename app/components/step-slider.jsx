@@ -7,6 +7,8 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import shallowEqual from 'shallowequal'
 
+import StepFooter from './step-footer.jsx'
+
 import PerfectScrollbar from 'react-perfect-scrollbar'
 if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/styles.css')
 
@@ -18,6 +20,7 @@ export const StepSlider = props => {
   const navRef = useRef() // didn't work right with ref= so navRef
   const outerRef = useRef()
   const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, bottom: 0 })
+  const [footerRect, setFooterRect] = useState({ height: 0, width: 0, top: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
@@ -141,6 +144,8 @@ export const StepSlider = props => {
             </div>
           ))}
       </div>
+
+      <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
     </div>
   )
 }
@@ -150,9 +155,14 @@ const useStyles = createUseStyles({
     verticalAlign: 'top',
   },
   navBar: {
-    position: 'fixed',
     width: 'inherit',
     zIndex: 1,
+  },
+  stepFooter: {
+    width: 'inherit',
+    zIndex: 1,
+    padding: 0,
+    backgroundColor: 'white',
   },
   outerWrapper: {
     position: 'absolute', // so that clip will work
