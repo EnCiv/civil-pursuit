@@ -31,27 +31,6 @@ let MemoryServer
 
 const UInfoHistory = []
 
-function checkUInfoHistoryConsistent() {
-  for (let index = 1; index < UInfoHistory.length; index++) {
-    const getStatementData = index => {
-      try {
-        const shownStatementIds = UInfoHistory[index][userId][existentDiscussionId]['0']['shownStatementIds']
-        // The statement ID will differ between test cases, since if there's no ID provided it's generated.
-        // The rest of the object data will be checked for consistency.
-        const testStatementIdKey = Object.keys(shownStatementIds)[0]
-
-        return JSON.stringify(shownStatementIds[testStatementIdKey])
-      } catch {
-        return undefined
-      }
-    }
-
-    if (getStatementData(index) !== getStatementData(index - 1)) return false
-  }
-
-  return true
-}
-
 beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
 })
@@ -106,10 +85,22 @@ test('Success if discussion exists and pointObj ID provided.', async () => {
   // Preexisting _id should've been converted to BSON.
   const insertedDoc = await Points.findOne({ _id: BSON.ObjectId.createFromHexString(pointObjWithId._id.toString()) })
   expect(insertedDoc).toEqual(pointObjWithId)
-
-  console.info(insertedDoc)
-
-  expect(checkUInfoHistoryConsistent()).toBe(true)
+  expect(UInfoHistory).toMatchObject([
+    {
+      '6667d5a33da5d19ddc304a6b': {
+        '66a174b0c3f2051ad387d2a6': {
+          0: {
+            shownStatementIds: {
+              '6667d688b20d8e339ca50020': {
+                rank: 0,
+                author: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  ])
 })
 
 test('Success if discussion exists and pointObj ID not provided.', async () => {
@@ -123,9 +114,40 @@ test('Success if discussion exists and pointObj ID not provided.', async () => {
   const insertedDoc = await Points.findOne({ title: 'NoIdTitle', description: 'NoIdDesc' })
   expect(insertedDoc._id).not.toBeNaN
 
-  console.info(insertedDoc)
+  const doctoredUInfoHistoryStr = JSON.stringify(UInfoHistory, null, 2).replace(insertedDoc._id.toString(), 'randomId1')
+  //console.info('set toMatchObject to this:', doctoredUInfoHistoryStr) // for toMatchObject contents, temporarially uncomment this
+  const doctoredUInfoHistory = JSON.parse(doctoredUInfoHistoryStr)
 
-  expect(checkUInfoHistoryConsistent()).toBe(true)
+  expect(doctoredUInfoHistory).toMatchObject([
+    {
+      '6667d5a33da5d19ddc304a6b': {
+        '66a174b0c3f2051ad387d2a6': {
+          0: {
+            shownStatementIds: {
+              '6667d688b20d8e339ca50020': {
+                rank: 0,
+                author: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      '6667d5a33da5d19ddc304a6b': {
+        '66a174b0c3f2051ad387d2a6': {
+          0: {
+            shownStatementIds: {
+              randomId1: {
+                rank: 0,
+                author: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  ])
 })
 
 test('Fail if pointObj insert fails.', async () => {
