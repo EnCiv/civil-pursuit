@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/58
+// https://github.com/EnCiv/civil-pursuit/issues/80
 
 'use strict'
 import React, { useEffect, useState } from 'react'
@@ -9,6 +10,7 @@ import ShowDualPointList from './show-dual-point-list.jsx'
 import Ranking from './util/ranking.jsx'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
+import { H, Level } from 'react-accessible-headings'
 
 function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
@@ -61,8 +63,8 @@ function ReviewPoint(props) {
             <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>
               {isRead ? 'Read' : 'Unread'}
             </span>
-            {point.subject && <div className={cx(classes.subjectStyle)}>{point.subject}</div>}
-            {point.description && <div className={cx(classes.descriptionStyle)}>{point.description}</div>}
+            {point.subject && <H className={cx(classes.subjectStyle)}>{point.subject}</H>}
+            {point.description && <p className={cx(classes.descriptionStyle)}>{point.description}</p>}
           </div>
           <div className={classes.rankingColumn}>
             <Ranking
@@ -90,7 +92,7 @@ function ReviewPoint(props) {
         </div>
       </div>
       {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
-        <div className={classes.showDualPointListContainer}>
+        <Level className={classes.showDualPointListContainer}>
           <ShowDualPointList
             className={classes.showDualPointList}
             leftHeader="Why It's Most Important"
@@ -98,7 +100,7 @@ function ReviewPoint(props) {
             leftPoints={leftPointList}
             rightPoints={rightPointList}
           />
-        </div>
+        </Level>
       )}
     </div>
   )
