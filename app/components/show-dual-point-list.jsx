@@ -6,6 +6,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from './point-group'
 import { ModifierButton } from './button'
+import { H, Level } from 'react-accessible-headings'
 
 export default function ShowDualPointList({
   className,
@@ -26,29 +27,32 @@ export default function ShowDualPointList({
   return (
     <div className={cx(classes.sharedBorderStyle, className)} {...otherProps}>
       <div className={classes.contentContainer}>
-        <div className={classes.header}>
-          <div className={classes.leftHeader}>{leftHeader}</div>
-          <div className={classes.rightHeader}>{rightHeader}</div>
+        <div className={classes.headerContainer}>
+          <H className={classes.leftHeader}>{leftHeader}</H>
+          <H className={classes.rightHeader}>{rightHeader}</H>
         </div>
+
         <div className={classes.pointGrid}>
-          {[...Array(maxPoints)].map((_, index) => {
-            const leftPoint = leftPoints[index]
-            const rightPoint = rightPoints[index]
-            return (
-              <React.Fragment key={leftPoint?._id || rightPoint?._id}>
-                <PointGroup
-                  pointObj={leftPoint || {}}
-                  vState={isExpanded ? 'default' : 'collapsed'}
-                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                />
-                <PointGroup
-                  pointObj={rightPoint || {}}
-                  vState={isExpanded ? 'default' : 'collapsed'}
-                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                />
-              </React.Fragment>
-            )
-          })}
+          <Level>
+            {[...Array(maxPoints)].map((_, index) => {
+              const leftPoint = leftPoints[index]
+              const rightPoint = rightPoints[index]
+              return (
+                <React.Fragment key={leftPoint?._id || rightPoint?._id}>
+                  <PointGroup
+                    pointObj={leftPoint || {}}
+                    vState={isExpanded ? 'default' : 'collapsed'}
+                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                  />
+                  <PointGroup
+                    pointObj={rightPoint || {}}
+                    vState={isExpanded ? 'default' : 'collapsed'}
+                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                  />
+                </React.Fragment>
+              )
+            })}
+          </Level>
         </div>
       </div>
       <div className={classes.buttonContainer}>
@@ -71,7 +75,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     borderTopRightRadius: '0.9375rem',
     overflow: 'hidden',
   },
-  header: {
+  headerContainer: {
     fontSize: '1.5rem',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -81,11 +85,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   leftHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
+    margin: '0rem',
     backgroundColor: theme.colors.lightSuccess,
   },
   rightHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
+    margin: '0rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
   },
   pointGrid: {
