@@ -1,7 +1,10 @@
 // https://github.com/EnCiv/civil-pursuit/issues/50
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { H } from 'react-accessible-headings'
 
 const StepIntro = props => {
   const { className = '', subject = '', description = '', ...otherProps } = props
@@ -16,7 +19,7 @@ const StepIntro = props => {
 
   return (
     <div className={cx(classes.stepIntro, className)} {...otherProps}>
-      <h2 className={classes.title}>{subject}</h2>
+      <H className={classes.title}>{subject}</H>
       {paragraphs}
     </div>
   )

@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
+// https://github.com/EnCiv/civil-pursuit/issues/80
 
 'use strict'
 
@@ -11,6 +12,7 @@ import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
 import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
 import DemInfo from './dem-info.jsx'
+import { H, Level } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
@@ -60,12 +62,12 @@ const PointGroup = props => {
             classes.informationGrid
           )}
         >
-          {subject && <div className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</div>}
+          {subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}
         </div>
       )}
       {vs === 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
-          <p className={classes.titleGroup}>Please select the response you want to lead with</p>
+          <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
             <TextButton
               title="Ungroup and close"
@@ -83,38 +85,40 @@ const PointGroup = props => {
             </TextButton>
           </div>
           {expanded && (
-            <div className={classes.selectPointsContainer}>
-              {groupedPoints?.map(pD => {
-                return (
-                  <div key={pD._id} className={classes.selectPoints}>
-                    <Point
-                      point={pD}
-                      vState={pD._id === selected ? 'selected' : 'default'}
-                      className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                    >
-                      <div className={classes.invisibleElement}>
-                        {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
-                        <ModifierButton children={'Select as Lead'} />
-                      </div>
-                      <div className={classes.selectButtonRow}>
-                        {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
+            <Level>
+              <div className={classes.selectPointsContainer}>
+                {groupedPoints?.map(pD => {
+                  return (
+                    <div key={pD._id} className={classes.selectPoints}>
+                      <Point
+                        point={pD}
+                        vState={pD._id === selected ? 'selected' : 'default'}
+                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                      >
+                        <div className={classes.invisibleElement}>
+                          {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
+                          <ModifierButton children={'Select as Lead'} />
+                        </div>
+                        <div className={classes.selectButtonRow}>
+                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
-                        <ModifierButton
-                          className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
-                          title={`Select as Lead: ${pD.subject}`}
-                          children="Select as Lead"
-                          disabled={false}
-                          disableOnClick={false}
-                          onDone={() => {
-                            setSelected(pD._id)
-                          }}
-                        />
-                      </div>
-                    </Point>
-                  </div>
-                )
-              })}
-            </div>
+                          <ModifierButton
+                            className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${pD.subject}`}
+                            children="Select as Lead"
+                            disabled={false}
+                            disableOnClick={false}
+                            onDone={() => {
+                              setSelected(pD._id)
+                            }}
+                          />
+                        </div>
+                      </Point>
+                    </div>
+                  )
+                })}
+              </div>
+            </Level>
           )}
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <span>
@@ -197,7 +201,7 @@ const PointGroup = props => {
               )}
             </div>
           )}
-          {subject && <div className={cx(classes.subjectStyle)}>{subject}</div>}
+          {subject && <H className={cx(classes.subjectStyle)}>{subject}</H>}
           {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
           {demInfo && <DemInfo {...demInfo} />}
           {childrenWithProps}
@@ -262,16 +266,18 @@ const PointGroup = props => {
           )}
           {vs !== 'edit' && expanded && (
             <div className={classes.defaultWidth}>
-              {!singlePoint && <p className={classes.titleGroup}>Other Responses</p>}
-              <div className={classes.selectPointsContainer}>
-                {groupedPoints.map(pD => {
-                  return (
-                    <div key={pD._id} className={classes.selectPoints}>
-                      <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />
-                    </div>
-                  )
-                })}
-              </div>
+              {!singlePoint && <H className={classes.titleGroup}>Other Responses</H>}
+              <Level>
+                <div className={classes.selectPointsContainer}>
+                  {groupedPoints.map(pD => {
+                    return (
+                      <div key={pD._id} className={classes.selectPoints}>
+                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />
+                      </div>
+                    )
+                  })}
+                </div>
+              </Level>
             </div>
           )}
           {(vs === 'edit' || vs === 'selectLead') && !singlePoint && (

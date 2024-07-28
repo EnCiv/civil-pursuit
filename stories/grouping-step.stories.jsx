@@ -1,6 +1,6 @@
 import React from 'react'
 import GroupingStep from '../app/components/grouping-step'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
 import { expect } from '@storybook/jest'
 import { within, userEvent } from '@storybook/testing-library'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
@@ -12,6 +12,7 @@ export default {
       viewports: INITIAL_VIEWPORTS,
     },
   },
+  decorators: [levelDecorator],
 }
 
 const createPointDoc = (

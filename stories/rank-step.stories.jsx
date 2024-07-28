@@ -2,15 +2,14 @@
 import RankStep from '../app/components/rank-step'
 import React from 'react'
 import expect from 'expect'
-
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
 import { userEvent, within } from '@storybook/testing-library'
 export default {
   component: RankStep,
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator, levelDecorator],
 }
 
 const createPointObj = (
