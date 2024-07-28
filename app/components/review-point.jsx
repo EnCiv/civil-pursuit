@@ -216,6 +216,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       border: 'none',
+      paddingBottom: '0.1rem',
       '& > div': {
         borderTopLeftRadius: '0rem',
         borderTopRightRadius: '0rem',
