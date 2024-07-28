@@ -25,11 +25,14 @@ const Point = forwardRef((props, ref) => {
     setIsHovered(false)
   }
 
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      className: cx(child.props.className, { isHovered: isHovered }),
-      vState: vState,
-    })
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        className: cx(child.props.className, { isHovered: isHovered }),
+        vState: vState,
+      })
+    }
+    return child
   })
 
   return (

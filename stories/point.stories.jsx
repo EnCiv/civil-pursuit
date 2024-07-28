@@ -135,7 +135,7 @@ export const LoadingThenLoads = args => {
 }
 
 const createPoint = (subject, description = 'Point Description', children = null, vState = 'default') => (
-  <Point subject={subject} description={description} vState={vState}>
+  <Point point={{ subject, description }} vState={vState} style={{ width: '100%' }}>
     {children}
   </Point>
 )
@@ -145,20 +145,24 @@ const point5 = createPoint('Point 5', 'Point 5 Description', point6)
 const point4 = createPoint('Point 4', 'Point 4 Description', point5)
 const point3 = createPoint('Point 3', 'Point 3 Description', point4)
 const point2 = createPoint('Point 2', 'Point 2 Description', point3)
-const point1 = createPoint('Point 1', 'Point 1 Description', point2)
 
 export const ChildrenPointsSixLayersDeep = {
   args: {
-    subject: 'Point 2',
-    description: 'Point 2 Description',
+    point: {
+      subject: 'Point 2',
+      description: 'Point 2 Description',
+    },
     vState: 'default',
     children: point3,
   },
 }
+
 export const ChildrenPointsSevenLayersDeep = {
   args: {
-    subject: 'Point 1',
-    description: 'Point 1 Description',
+    point: {
+      subject: 'Point 1',
+      description: 'Point 1 Description',
+    },
     vState: 'default',
     children: point2,
   },
