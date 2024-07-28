@@ -26,10 +26,6 @@ export const StepSlider = props => {
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
 
-  const Footer = React.forwardRef((props, ref) => (
-    <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
-  ))
-
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
   const resizeHandler = useCallback(() => {
@@ -68,7 +64,6 @@ export const StepSlider = props => {
   // has to be useLaoutEffect not useEffect or transitions will get enabled before the first render of the children and it will be blurry
   if (typeof window !== 'undefined') {
     useLayoutEffect(() => {
-      console.log(footerRef.current ? true : false)
       if (navRef.current) {
         let navRect = navRef.current.getBoundingClientRect()
         if (navRect.height && navRect.width) setNavBarRect(navRect)
@@ -127,16 +122,16 @@ export const StepSlider = props => {
   }, [state.sendDoneToParent])
   return (
     <div className={classes.outerWrapper} ref={outerRef}>
-      <NavBar
-        ref={navRef}
-        navSteps={children.length}
-        currentStep={state.currentStep}
-        onBackButton={e => dispatch({ type: 'decrement' })}
-        className={classes.navBar}
-      />
+      <div ref={navRef} className={classes.wrapper}>
+        <NavBar
+          navSteps={children.length}
+          currentStep={state.currentStep}
+          onBackButton={e => dispatch({ type: 'decrement' })}
+          className={classes.navBar}
+        />
+      </div>
       <div
         style={{
-          top: navBarRect.height + 'px',
           left: -outerRect.width * state.currentStep + 'px',
           width: outerRect.width * children.length + 'px',
         }}
@@ -149,8 +144,8 @@ export const StepSlider = props => {
                 width: outerRect.width + 'px',
                 height:
                   window.innerHeight -
-                  (footerRect.height ? footerRect.height : 200) -
-                  (navBarRect.top ? navBarRect.top : outerRect.top),
+                  (footerRect.height ? footerRect.height : outerRect.top) -
+                  (navBarRect.height ? navBarRect.height : outerRect.top),
               }}
               className={classes.panel}
             >
@@ -158,7 +153,9 @@ export const StepSlider = props => {
             </div>
           ))}
       </div>
-      <Footer ref={footerRef} />
+      <div ref={footerRef} className={classes.wrapper}>
+        <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
+      </div>
     </div>
   )
 }
