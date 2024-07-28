@@ -18,12 +18,17 @@ export const StepSlider = props => {
   const { children, onDone, NavBar = React.forwardRef((props, ref) => null), ...otherProps } = props
   const classes = useStyles(props)
   const navRef = useRef() // didn't work right with ref= so navRef
+  const footerRef = useRef()
   const outerRef = useRef()
-  const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, bottom: 0 })
-  const [footerRect, setFooterRect] = useState({ height: 0, width: 0, top: 0 })
+  const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, top: 0 })
+  const [footerRect, setFooterRect] = useState({ height: 0, width: 0, bottom: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
+
+  const Footer = React.forwardRef((props, ref) => (
+    <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
+  ))
 
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
@@ -61,13 +66,19 @@ export const StepSlider = props => {
   if (!shallowEqual(_this.otherProps, otherProps)) _this.otherProps = otherProps
 
   // has to be useLaoutEffect not useEffect or transitions will get enabled before the first render of the children and it will be blurry
-  if (typeof window !== 'undefined')
+  if (typeof window !== 'undefined') {
     useLayoutEffect(() => {
+      console.log(footerRef.current ? true : false)
       if (navRef.current) {
-        let rect = navRef.current.getBoundingClientRect()
-        if (rect.height && rect.width) setNavBarRect(rect)
+        let navRect = navRef.current.getBoundingClientRect()
+        if (navRect.height && navRect.width) setNavBarRect(navRect)
       }
-    }, [navRef.current])
+      if (footerRef.current) {
+        let footRect = footerRef.current.getBoundingClientRect()
+        if (footRect.height && footRect.width) setFooterRect(footRect)
+      }
+    }, [navRef.current, footerRef.current])
+  }
   if (typeof window !== 'undefined') useLayoutEffect(resizeHandler, [outerRef.current])
 
   function reducer(state, action) {
@@ -136,7 +147,10 @@ export const StepSlider = props => {
             <div
               style={{
                 width: outerRect.width + 'px',
-                height: window.innerHeight - (navBarRect.bottom ? navBarRect.bottom : outerRect.top),
+                height:
+                  window.innerHeight -
+                  (footerRect.height ? footerRect.height : 200) -
+                  (navBarRect.top ? navBarRect.top : outerRect.top),
               }}
               className={classes.panel}
             >
@@ -144,8 +158,7 @@ export const StepSlider = props => {
             </div>
           ))}
       </div>
-
-      <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
+      <Footer ref={footerRef} />
     </div>
   )
 }
@@ -157,6 +170,7 @@ const useStyles = createUseStyles({
   navBar: {
     width: 'inherit',
     zIndex: 1,
+    backgroundColor: 'white',
   },
   stepFooter: {
     width: 'inherit',
