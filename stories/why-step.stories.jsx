@@ -24,7 +24,7 @@ const createPointObj = (
   subject,
   description = 'Point Description',
   groupedPoints = [],
-  user = {
+  demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
@@ -34,7 +34,7 @@ const createPointObj = (
     _id,
     subject,
     description,
-    children: <DemInfo user={user} />,
+    demInfo,
   }
 }
 

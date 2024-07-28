@@ -43,6 +43,7 @@ const Theme = {
     stepContainerActive: 'rgba(6, 51, 92, 0.10)',
     svgArrow: 'rgb(206, 206, 206)',
     transparent: 'transparent',
+    tabSelected: '#DCE8F2',
   },
   font: {
     fontFamily: 'Inter',

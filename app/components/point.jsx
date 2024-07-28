@@ -1,17 +1,21 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/140
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { H, Level } from 'react-accessible-headings'
+import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
-  const { subject, description, vState, children, className, isLoading, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
+
+  const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -20,6 +24,13 @@ const Point = forwardRef((props, ref) => {
   const onMouseOut = () => {
     setIsHovered(false)
   }
+
+  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
+    return React.cloneElement(child, {
+      className: cx(child.props.className, { isHovered: isHovered }),
+      vState: vState,
+    })
+  })
 
   return (
     <div
@@ -53,7 +64,8 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </p>
           )}
-          <Level>{children}</Level>
+          <DemInfo {...demInfo} />
+          <Level>{childrenWithProps}</Level>
         </div>
       </div>
     </div>

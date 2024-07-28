@@ -17,17 +17,15 @@ export default {
   },
 }
 
-const user = {
-  dob: '1990-10-20T00:00:00.000Z',
-  state: 'NY',
-  party: 'Independent',
-}
-
 const point = {
   subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
   description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
   _id: 'ExampleId',
-  children: <DemInfo user={user} />,
+  demInfo: {
+    dob: '1990-10-20T00:00:00.000Z',
+    state: 'NY',
+    party: 'Independent',
+  },
 }
 
 export const ExamplePoint = {

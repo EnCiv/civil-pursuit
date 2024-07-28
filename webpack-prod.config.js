@@ -42,8 +42,17 @@ module.exports = {
     resolve: {
         extensions: ['.*','.js','.jsx'],
         fallback: {
-            fs: false,
-            "path": require.resolve("path-browserify")
+            "fs": false,
+            "os": require.resolve("os-browserify/browser"),
+            "http": require.resolve("stream-http"),
+            "https": require.resolve("https-browserify"),
+            "crypto": require.resolve("crypto-browserify"),
+            "constants": require.resolve("constants-browserify"),
+            "path": require.resolve("path-browserify"),
+            "stream": require.resolve("stream-browserify"),
+            "buffer": require.resolve('buffer'),
+            "zlib": require.resolve('browserify-zlib'),
+            "assert": require.resolve('assert/'),
         }
     },
     node: false,
@@ -55,5 +64,13 @@ module.exports = {
           new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, resource => {
               resource.request = "../models/client-side-model";
           }),
+
+          // Work around for Buffer is undefined:
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
     ],
 };
