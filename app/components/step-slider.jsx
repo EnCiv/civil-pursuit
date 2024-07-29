@@ -23,6 +23,15 @@ export const StepSlider = props => {
   const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, top: 0 })
   const [footerRect, setFooterRect] = useState({ height: 0, width: 0, bottom: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
+
+  // Keep track of each step's completion status
+  // Populate statuses with initial values
+  let initialStatuses = {}
+  for (let stepIndex = 0; stepIndex < children.length; stepIndex++) {
+    initialStatuses[stepIndex] = { valid: false }
+  }
+  const [stepStatuses, setStepStatuses] = useState(initialStatuses)
+
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
 
@@ -96,23 +105,21 @@ export const StepSlider = props => {
   }
   const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false })
 
-  // Keep track of each step's completion status
-  state.stepStatuses = {}
-  // Populate statuses with initial values
-  for (let stepIndex = 0; stepIndex < children.length; stepIndex++) {
-    state.stepStatuses[stepIndex] = { valid: false }
-  }
-
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
   // so it's done in a memo
   const clonedChildren = useMemo(
     () =>
-      children.map(child =>
+      children.map((child, index) =>
         React.cloneElement(child, {
           ...otherProps,
           ...child.props,
           onDone: valid => {
-            if (valid) state.stepStatuses[state.currentStep]['valid'] = true
+            if (valid) {
+              setStepStatuses({
+                ...stepStatuses,
+                [index]: { valid: true },
+              })
+            }
           },
         })
       ),
@@ -135,14 +142,18 @@ export const StepSlider = props => {
       <div ref={navRef} className={classes.wrapper}>
         <NavBar
           navSteps={children.length}
-          currentStep={state.currentStep}
+          current={state.currentStep}
           onBackButton={e => dispatch({ type: 'decrement' })}
           className={classes.navBar}
           onDone={onDoneResult => {
-            // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-            let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
-            for (let reps = 0; reps < repetitions; reps++) {
-              dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+            console.log(onDoneResult)
+            if (onDoneResult.value) {
+              // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
+              console.log('CURRENT VIA NAVBAR: ' + state.currentStep + ' ' + (onDoneResult.value - 1))
+              let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
+              for (let reps = 0; reps < repetitions; reps++) {
+                dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+              }
             }
           }}
         />
@@ -173,9 +184,11 @@ export const StepSlider = props => {
       <div ref={footerRef} className={classes.wrapper}>
         <StepFooter
           className={classes.stepFooter}
-          onDone={() => dispatch({ type: 'increment' })}
+          onDone={() => {
+            dispatch({ type: 'increment' })
+          }}
           onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
-          active={state.stepStatuses[state.currentStep]['valid']}
+          active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['valid']}
         />
       </div>
     </div>
