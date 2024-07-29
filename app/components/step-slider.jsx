@@ -95,6 +95,14 @@ export const StepSlider = props => {
     }
   }
   const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false })
+
+  // Keep track of each step's completion status
+  state.stepStatuses = {}
+  // Populate statuses with initial values
+  for (let stepIndex = 0; stepIndex < children.length; stepIndex++) {
+    state.stepStatuses[stepIndex] = { valid: false }
+  }
+
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
   // so it's done in a memo
   const clonedChildren = useMemo(
@@ -103,7 +111,9 @@ export const StepSlider = props => {
         React.cloneElement(child, {
           ...otherProps,
           ...child.props,
-          onDone: val => val && dispatch({ type: 'increment' }),
+          onDone: valid => {
+            if (valid) state.stepStatuses[state.currentStep]['valid'] = true
+          },
         })
       ),
     [children, _this.otherProps]
@@ -128,6 +138,13 @@ export const StepSlider = props => {
           currentStep={state.currentStep}
           onBackButton={e => dispatch({ type: 'decrement' })}
           className={classes.navBar}
+          onDone={onDoneResult => {
+            // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
+            let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
+            for (let reps = 0; reps < repetitions; reps++) {
+              dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+            }
+          }}
         />
       </div>
       <div
@@ -154,7 +171,12 @@ export const StepSlider = props => {
           ))}
       </div>
       <div ref={footerRef} className={classes.wrapper}>
-        <StepFooter className={classes.stepFooter} onDone={() => {}} onBack={() => {}} />
+        <StepFooter
+          className={classes.stepFooter}
+          onDone={() => dispatch({ type: 'increment' })}
+          onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
+          active={state.stepStatuses[state.currentStep]['valid']}
+        />
       </div>
     </div>
   )
