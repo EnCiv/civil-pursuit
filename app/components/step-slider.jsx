@@ -26,11 +26,9 @@ export const StepSlider = props => {
 
   // Keep track of each step's completion status
   // Populate statuses with initial values
-  let initialStatuses = {}
-  for (let stepIndex = 0; stepIndex < children.length; stepIndex++) {
-    initialStatuses[stepIndex] = { valid: false }
-  }
-  const [stepStatuses, setStepStatuses] = useState(initialStatuses)
+  const [stepStatuses, setStepStatuses] = useState(
+    Object.fromEntries(children.map((child, index) => [index, { valid: false }]))
+  )
 
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
@@ -123,7 +121,7 @@ export const StepSlider = props => {
           },
         })
       ),
-    [children, _this.otherProps]
+    [children, _this.otherProps, stepStatuses]
   )
   // don't enable transitions until after the children have been rendered or the initial render will be blurry
   // the delayedSideEffect is necessary to delay the transitions until after the initial render
