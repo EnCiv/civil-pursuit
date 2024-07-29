@@ -43,6 +43,12 @@ module.exports = {
     fallback: {
       fs: false,
       path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      zlib: require.resolve('browserify-zlib'),
+      constants: require.resolve('constants-browserify'),
+      buffer: require.resolve('buffer'),
+      assert: require.resolve('assert/'),
     },
   },
   node: false,
@@ -77,5 +83,13 @@ module.exports = {
     }),
 
     new webpack.HotModuleReplacementPlugin(), // DO NOT use --hot in the command line - it will cause a stack overflow on the client
+
+    // Work around for Buffer is undefined:
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
 }

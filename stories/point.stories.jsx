@@ -24,9 +24,12 @@ const DemInfoTestComponent = props => {
 export default {
   component: Point,
   args: {
-    subject: 'Phasellus diam sapien, placerat id sollicitudin eget',
-    description:
-      'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
+    point: {
+      subject: 'Phasellus diam sapien, placerat id sollicitudin eget',
+      description:
+        'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
+      demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' },
+    },
   },
 }
 
@@ -34,8 +37,12 @@ export default {
 export const Empty = () => {
   return <Point />
 }
-export const PrimaryDefault = { args: { vState: 'default', children: <DemInfoTestComponent /> } }
-export const PrimarySelected = { args: { vState: 'selected', children: <DemInfoTestComponent /> } }
+export const PrimaryDefault = {
+  args: { vState: 'default' },
+}
+export const PrimarySelected = {
+  args: { vState: 'selected' },
+}
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
 
 export const Lead = {
@@ -56,8 +63,11 @@ export const MultipleChildren = {
     vState: 'default',
     children: (
       <>
-        <DemInfoTestComponent />
         <PointLeadButton vState="default" />
+        <Point
+          point={{ _id: '42', subject: 'sub child', description: 'this is a point as a child of a point' }}
+          style={{ width: '100%' }}
+        />
       </>
     ),
   },
@@ -68,8 +78,9 @@ export const MultipleChildrenSelected = {
     vState: 'selected',
     children: (
       <>
-        <DemInfoTestComponent />
-        <PointLeadButton vState="selected" />
+        <PointLeadButton />
+        <PointLeadButton />
+        <PointLeadButton />
       </>
     ),
   },
@@ -83,7 +94,6 @@ export const ParentsWidth = args => {
         vState={'default'}
         children={
           <>
-            <DemInfoTestComponent />
             <PointLeadButton vState="default" />
           </>
         }
@@ -92,12 +102,12 @@ export const ParentsWidth = args => {
   )
 }
 
-export const Collapsed = args => {
-  return <Point vState={'collapsed'} subject={args.subject} />
+export const Collapsed = {
+  args: { vState: 'collapsed' },
 }
 
 export const Secondary = args => {
-  return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />} />
+  return <Point {...args} vState={'secondary'} />
 }
 
 export const LoadingLoop = () => {

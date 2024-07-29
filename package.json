@@ -37,6 +37,8 @@
     "@enciv/mongo-collections": "^0.0.3",
     "autosize": "^3.0.15",
     "bson-objectid": "^1.2.4",
+    "buffer": "^6.0.3",
+    "chromatic": "^11.3.0",
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",
     "log4js": "git+https://github.com/ddfridley/log4js-node.git#onbrowser",
@@ -46,6 +48,7 @@
     "react-hot-loader": "^4.8.4",
     "react-jss": "^10.10.0",
     "recharts": "^2.12.0",
+    "stream-browserify": "^3.0.0",
     "show-deep-diff": "github:ddfridley/show-deep-diff"
   },
   "devDependencies": {

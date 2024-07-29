@@ -2,7 +2,7 @@
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
-import Point from './point.jsx'
+import Point from './point'
 import { createUseStyles } from 'react-jss'
 import { SecondaryButton } from './button.jsx'
 
@@ -158,21 +158,11 @@ function PairCompare(props) {
   const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
   const hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
   const hiddenTransitioningLeftPoint = (
-    <Point
-      ref={hiddenLeftPointRef}
-      className={classes.emptyPoint}
-      subject={pointList[nextIndex]?.subject}
-      description={pointList[nextIndex]?.description}
-    />
+    <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
   )
   const hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
   const hiddenTransitioningRightPoint = (
-    <Point
-      ref={hiddenRightPointRef}
-      className={classes.emptyPoint}
-      subject={pointList[nextIndex]?.subject}
-      description={pointList[nextIndex]?.description}
-    />
+    <Point ref={hiddenRightPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
   )
 
   return (
@@ -209,7 +199,7 @@ function PairCompare(props) {
               tabIndex={0}
               title={`Choose as more important: ${pointList[idxLeft]?.subject}`}
             >
-              {<Point {...pointList[idxLeft]} />}
+              {<Point point={pointList[idxLeft]} />}
             </button>
           )}
           {idxRight < pointList.length && (
@@ -220,7 +210,7 @@ function PairCompare(props) {
               tabIndex={0}
               title={`Choose as more important: ${pointList[idxRight]?.subject}`}
             >
-              {<Point {...pointList[idxRight]} />}
+              {<Point point={pointList[idxRight]} />}
             </button>
           )}
         </div>

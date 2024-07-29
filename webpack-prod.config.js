@@ -8,6 +8,7 @@ module.exports = {
   context: path.resolve(__dirname, 'app'),
   entry: {
     main: './client/main-app.js',
+    // item:    "./vtest/item.jsx" // split chunks can't be disable if there is more than one entry point
   },
   devtool: 'source-map',
   output: {
@@ -42,7 +43,15 @@ module.exports = {
     extensions: ['.*', '.js', '.jsx'],
     fallback: {
       fs: false,
+      os: require.resolve('os-browserify/browser'),
+      https: require.resolve('https-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      constants: require.resolve('constants-browserify'),
       path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer'),
+      zlib: require.resolve('browserify-zlib'),
+      assert: require.resolve('assert/'),
     },
   },
   node: false,
@@ -59,6 +68,14 @@ module.exports = {
     // using a function because when this ran on heroku using just "../modules/client-side-model" failed
     new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, resource => {
       resource.request = '../models/client-side-model'
+    }),
+
+    // Work around for Buffer is undefined:
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
 }
