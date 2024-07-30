@@ -1,0 +1,11 @@
+[
+  {
+    "_id": {
+      "$oid": "5d56e411e7179a084eefb365"
+    },
+    "path": "/join",
+    "subject": "Join",
+    "description": "Join the Civil Server",
+    "webComponent": "Join"
+  }
+]
