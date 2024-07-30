@@ -27,11 +27,16 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     type = 'text'
   }
 
+  const handleInputChange = i => {
+    const value = type === 'checkbox' ? i.target.checked : i.target.value
+    handleChange(path, value)
+  }
+
   return (
     <div>
       <label>{label}</label>
       {type === 'select' ? (
-        <select value={data || ''} onChange={i => handleChange(path, i.target.value)} className={classes.formInput}>
+        <select value={data || ''} onChange={handleInputChange} className={classes.formInput}>
           <option value="" disabled>
             Choose one
           </option>
@@ -45,7 +50,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         <input
           type={type}
           checked={type === 'checkbox' ? data : undefined}
-          value={type === 'checkbox' ? undefined : data || ''}
+          value={type !== 'checkbox' ? data || '' : undefined}
           onChange={i => handleChange(path, type === 'checkbox' ? i.target.checked : i.target.value)}
           className={classes.formInput}
         />
@@ -94,7 +99,7 @@ const MoreDetails = props => {
                 : renderer.renderer,
           }))}
           cells={vanillaCells}
-          onChange={({ data, _errors }) => setData(data)}
+          onChange={({ data }) => setData(data)}
         />
         <PrimaryButton
           primary
@@ -131,7 +136,7 @@ const useStyles = createUseStyles(theme => ({
   },
   formInput: props => ({
     width: '100% !important',
-    padding: '0.5rem !important',
+    padding: '0.5rem 0 !important',
     borderRadius: '0.25rem !important',
     border: `0.1rem solid ${theme.colors.borderGray} !important`,
     backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.cardOutline,
