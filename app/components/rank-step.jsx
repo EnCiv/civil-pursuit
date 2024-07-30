@@ -5,7 +5,7 @@ import cx from 'classnames'
 import Point from './point'
 import PointGroup from './point-group' // should be using PointGroup but it needs to support children
 
-import Ranking from './util/ranking'
+import Ranking from './ranking'
 
 function RankStep(props) {
   const classes = useStylesFromThemeFunction()
