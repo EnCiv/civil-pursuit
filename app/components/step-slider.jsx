@@ -7,7 +7,8 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import shallowEqual from 'shallowequal'
 
-import StepFooter from './step-footer.jsx'
+import StepBar from './step-bar'
+import StepFooter from './step-footer'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
 if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/styles.css')
@@ -15,7 +16,7 @@ if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/sty
 const delayedSideEffect = setTimeout // basically put the side effect on the process queue and do it later
 
 export const StepSlider = props => {
-  const { children, onDone, NavBar = React.forwardRef((props, ref) => null), ...otherProps } = props
+  const { children, onDone, steps = [], ...otherProps } = props
   const classes = useStyles(props)
   const navRef = useRef() // didn't work right with ref= so navRef
   const footerRef = useRef()
@@ -26,10 +27,7 @@ export const StepSlider = props => {
 
   // Keep track of each step's completion status
   // Populate statuses with initial values
-  const [stepStatuses, setStepStatuses] = useState(
-    Object.fromEntries(children.map((child, index) => [index, { valid: false }]))
-  )
-
+  const [stepStatuses, setStepStatuses] = useState(steps)
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
 
@@ -113,10 +111,11 @@ export const StepSlider = props => {
           ...child.props,
           onDone: valid => {
             if (valid) {
-              setStepStatuses({
+              let newStatuses = {
                 ...stepStatuses,
-                [index]: { valid: true },
-              })
+                [index]: { ...stepStatuses[index], complete: true },
+              }
+              setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
             }
           },
         })
@@ -138,23 +137,24 @@ export const StepSlider = props => {
   return (
     <div className={classes.outerWrapper} ref={outerRef}>
       <div ref={navRef} className={classes.wrapper}>
-        <NavBar
-          navSteps={children.length}
-          current={state.currentStep}
-          onBackButton={e => dispatch({ type: 'decrement' })}
-          className={classes.navBar}
-          onDone={onDoneResult => {
-            console.log(onDoneResult)
-            if (onDoneResult.value) {
-              // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-              console.log('CURRENT VIA NAVBAR: ' + state.currentStep + ' ' + (onDoneResult.value - 1))
-              let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
-              for (let reps = 0; reps < repetitions; reps++) {
-                dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+        {stepStatuses.length > 0 && (
+          <StepBar
+            steps={stepStatuses}
+            current={state.currentStep + 1}
+            className={classes.navBar}
+            onDone={onDoneResult => {
+              console.log(onDoneResult)
+              if (onDoneResult.value) {
+                // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
+                console.log('CURRENT VIA NAVBAR: ' + state.currentStep + ' ' + (onDoneResult.value - 1))
+                let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
+                for (let reps = 0; reps < repetitions; reps++) {
+                  dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+                }
               }
-            }
-          }}
-        />
+            }}
+          />
+        )}
       </div>
       <div
         style={{
@@ -186,7 +186,7 @@ export const StepSlider = props => {
             dispatch({ type: 'increment' })
           }}
           onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
-          active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['valid']}
+          active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['complete']}
         />
       </div>
     </div>

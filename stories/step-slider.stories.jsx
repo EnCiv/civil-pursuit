@@ -28,12 +28,12 @@ function createPrimarySteps() {
     return sentence
   }
 
-  let primarySteps = Array.from({ length: 9 }, (_, i) => ({
+  let primarySteps = Array.from({ length: 4 }, (_, i) => ({
     name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
     title: `this is step ${i + 1}`,
     complete: false,
   }))
-  primarySteps[0].complete = true
+  //primarySteps[0].complete = true
   primarySteps[1].name = 'Step 2: Rate'
 
   return primarySteps
@@ -89,7 +89,7 @@ export const NoNavBar = Template.bind({})
 NoNavBar.args = { children: list }
 
 export const WithNavBar = Template.bind({})
-WithNavBar.args = { NavBar: NavBar, children: list }
+WithNavBar.args = { steps: primarySteps, children: list }
 
 const list2 = [
   <Panel backGroundColor="yellow" />,
@@ -100,7 +100,7 @@ const list2 = [
 ]
 
 export const Nested = Template.bind({})
-Nested.args = { NavBar: undefined, children: list2 }
+Nested.args = { children: list2 }
 
 export const NestedWithNavBar = Template.bind({})
-NestedWithNavBar.args = { NavBar: NavBar, children: list2 }
+NestedWithNavBar.args = { steps: primarySteps, children: list2 }
