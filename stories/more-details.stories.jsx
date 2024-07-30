@@ -301,7 +301,7 @@ export const UserInputAndOnDoneCall = {
     await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
+      count: 1,
       onDoneResult: {
         valid: true,
         value: {

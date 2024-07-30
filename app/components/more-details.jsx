@@ -14,6 +14,8 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const options = schema.enum || []
   const label = schema.title || uischema.label
 
+  const id = `input-${path.replace(/\./g, '-')}`
+
   let type
   if (schema.format === 'date') {
     type = 'date'
@@ -27,16 +29,16 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     type = 'text'
   }
 
-  const handleInputChange = i => {
-    const value = type === 'checkbox' ? i.target.checked : i.target.value
+  const handleInputChange = event => {
+    const value = type === 'checkbox' ? event.target.checked : event.target.value
     handleChange(path, value)
   }
 
   return (
     <div>
-      <label>{label}</label>
+      <label htmlFor={id}>{label}</label>
       {type === 'select' ? (
-        <select value={data || ''} onChange={handleInputChange} className={classes.formInput}>
+        <select id={id} value={data || ''} onChange={handleInputChange} className={classes.formInput}>
           <option value="" disabled>
             Choose one
           </option>
@@ -48,10 +50,11 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         </select>
       ) : (
         <input
+          id={id}
           type={type}
           checked={type === 'checkbox' ? data : undefined}
-          value={type !== 'checkbox' ? data || '' : undefined}
-          onChange={i => handleChange(path, type === 'checkbox' ? i.target.checked : i.target.value)}
+          value={type === 'checkbox' ? undefined : data || ''}
+          onChange={handleInputChange}
           className={classes.formInput}
         />
       )}
@@ -68,15 +71,11 @@ const MoreDetails = props => {
   const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
 
-  const handleOnClick = () => {
-    if (isValid) {
-      onDone({ valid: true, value: data })
-    }
-  }
-
   const handleIsValid = () => {
     const requiredData = schema.properties || {}
-    return Object.keys(requiredData).every(i => (requiredData[i].enum ? data[i] !== undefined && data[i] !== '' : true))
+    return Object.keys(requiredData).every(key =>
+      requiredData[key].enum ? data[key] !== undefined && data[key] !== '' : true
+    )
   }
 
   useEffect(() => {
@@ -102,10 +101,8 @@ const MoreDetails = props => {
           onChange={({ data }) => setData(data)}
         />
         <PrimaryButton
-          primary
           tile={'Submit form'}
           className={classes.submitButton}
-          onClick={handleOnClick}
           onDone={() => onDone({ valid: isValid, value: data })}
           disabled={!isValid}
         >
