@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
-import StepBar from '../app/components/step-bar'
 
 export default {
   title: 'step-slider',
@@ -12,7 +11,7 @@ export default {
 
 const storybookPadding = '2rem' // it padds the iframe with 1rem all around
 
-function createPrimarySteps() {
+function createPrimarySteps(num = 4) {
   function stepLengthGenerator() {
     const subjects = ['Cat ', 'Mountain ', 'Teacher ', 'Bird ', 'Astronaut ']
     const verbs = ['Eats ', 'Discovers ', 'Teaches ', 'Climbs ', 'Paints ']
@@ -28,7 +27,7 @@ function createPrimarySteps() {
     return sentence
   }
 
-  let primarySteps = Array.from({ length: 4 }, (_, i) => ({
+  let primarySteps = Array.from({ length: num }, (_, i) => ({
     name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
     title: `this is step ${i + 1}`,
     complete: false,
@@ -38,7 +37,6 @@ function createPrimarySteps() {
 
   return primarySteps
 }
-const primarySteps = createPrimarySteps()
 
 const Template = args => {
   const [backgroundColor, setBackgroundColor] = useState('white')
@@ -84,22 +82,19 @@ const list = [
   <Panel backGroundColor="purple" />,
 ]
 
-export const NoNavBar = Template.bind({})
-NoNavBar.args = { children: list }
+function createPanels(panels = 4) {
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+  const panelList = []
 
-export const WithNavBar = Template.bind({})
-WithNavBar.args = { steps: primarySteps, children: list }
+  for (let count = 0; count < panels; count++) {
+    panelList.push(<Panel backGroundColor={colors[count % colors.length]} />)
+  }
 
-const list2 = [
-  <Panel backGroundColor="yellow" />,
-  <Panel backGroundColor="gray" />,
-  <StepSlider steps={primarySteps} children={list} />,
-  <Panel backGroundColor="aqua" />,
-  <Panel backGroundColor="magenta" />,
-]
+  return panelList
+}
 
-export const Nested = Template.bind({})
-Nested.args = { children: list2 }
+export const WithFourSteps = Template.bind({})
+WithFourSteps.args = { steps: createPrimarySteps(4), children: createPanels(4) }
 
-export const NestedWithNavBar = Template.bind({})
-NestedWithNavBar.args = { steps: primarySteps, children: list2 }
+export const WithSevenSteps = Template.bind({})
+WithSevenSteps.args = { steps: createPrimarySteps(7), children: createPanels(7) }

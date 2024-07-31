@@ -123,16 +123,26 @@ export const StepSlider = props => {
             ...otherProps,
             ...child.props,
             onDone: valid => {
+              let newStatuses
+
               if (valid) {
-                let newStatuses = {
+                newStatuses = {
                   ...stepStatuses,
                   [index]: { ...stepStatuses[index], complete: true },
                 }
-                setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
               } else {
                 // Disable navigation to all steps after if invalid
-                console.log(stepStatuses)
+                newStatuses = stepStatuses.map((stepStatus, index) => {
+                  if (index >= state.currentStep) {
+                    return { ...stepStatus, complete: false }
+                  } else {
+                    return stepStatus
+                  }
+                })
               }
+
+              // Update statuses
+              setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
             },
           })
       ),
