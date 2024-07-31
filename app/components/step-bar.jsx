@@ -302,7 +302,7 @@ function StepBar(props) {
         </div>
       )}
 
-      {!isOpen && <div className={classes.breakStyle} />}
+      <div className={classes.breakStyle} />
     </div>
   )
 }
@@ -362,9 +362,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   //mobile styles
   mobileContainer: {
-    height: '23.0625rem',
     display: 'flex',
     flexDirection: 'column',
+    background: theme.colors.white,
   },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
@@ -401,6 +401,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.white,
     margin: '0rem 1.56rem',
     overflowY: 'scroll',
+    position: 'absolute',
+    top: '100%',
+    left: '0',
+    width: '100%',
+    zIndex: '1000',
   },
   dropdownContent: {
     display: 'flex',
