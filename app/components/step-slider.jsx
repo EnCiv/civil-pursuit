@@ -25,9 +25,11 @@ export const StepSlider = props => {
   const [footerRect, setFooterRect] = useState({ height: 0, width: 0, bottom: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
 
-  // Keep track of each step's completion status
+  // Keep track of each step's seen/completion status
   // Populate statuses with initial values
+  steps[0].seen = true
   const [stepStatuses, setStepStatuses] = useState(steps)
+
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
 
@@ -84,9 +86,17 @@ export const StepSlider = props => {
   function reducer(state, action) {
     switch (action.type) {
       case 'increment':
+        // Set next navigated-to panel as seen so we can render it
+        let currentStep = Math.min(state.currentStep + 1, children.length - 1)
+        let newStatuses = {
+          ...stepStatuses,
+          [currentStep]: { ...stepStatuses[currentStep], seen: true },
+        }
+        setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+
         return {
           ...state,
-          currentStep: Math.min(state.currentStep + 1, children.length - 1),
+          currentStep: currentStep,
           sendDoneToParent: state.currentStep >= children.length - 1,
         }
       case 'decrement':
@@ -105,20 +115,26 @@ export const StepSlider = props => {
   // so it's done in a memo
   const clonedChildren = useMemo(
     () =>
-      children.map((child, index) =>
-        React.cloneElement(child, {
-          ...otherProps,
-          ...child.props,
-          onDone: valid => {
-            if (valid) {
-              let newStatuses = {
-                ...stepStatuses,
-                [index]: { ...stepStatuses[index], complete: true },
+      // Only render if component has been seen
+      children.map(
+        (child, index) =>
+          stepStatuses[index].seen &&
+          React.cloneElement(child, {
+            ...otherProps,
+            ...child.props,
+            onDone: valid => {
+              if (valid) {
+                let newStatuses = {
+                  ...stepStatuses,
+                  [index]: { ...stepStatuses[index], complete: true },
+                }
+                setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+              } else {
+                // Disable navigation to all steps after if invalid
+                console.log(stepStatuses)
               }
-              setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
-            }
-          },
-        })
+            },
+          })
       ),
     [children, _this.otherProps, stepStatuses]
   )
@@ -143,10 +159,8 @@ export const StepSlider = props => {
             current={state.currentStep + 1}
             className={classes.navBar}
             onDone={onDoneResult => {
-              console.log(onDoneResult)
               if (onDoneResult.value) {
                 // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-                console.log('CURRENT VIA NAVBAR: ' + state.currentStep + ' ' + (onDoneResult.value - 1))
                 let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
                 for (let reps = 0; reps < repetitions; reps++) {
                   dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
@@ -175,7 +189,7 @@ export const StepSlider = props => {
               }}
               className={classes.panel}
             >
-              <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>
+              {child && <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>}
             </div>
           ))}
       </div>

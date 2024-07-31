@@ -32,14 +32,13 @@ function createPrimarySteps() {
     name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
     title: `this is step ${i + 1}`,
     complete: false,
+    seen: false,
   }))
-  //primarySteps[0].complete = true
   primarySteps[1].name = 'Step 2: Rate'
 
   return primarySteps
 }
 const primarySteps = createPrimarySteps()
-const NavBar = React.forwardRef((props, ref) => <StepBar {...props} steps={primarySteps} />)
 
 const Template = args => {
   const [backgroundColor, setBackgroundColor] = useState('white')
@@ -94,7 +93,7 @@ WithNavBar.args = { steps: primarySteps, children: list }
 const list2 = [
   <Panel backGroundColor="yellow" />,
   <Panel backGroundColor="gray" />,
-  <StepSlider NavBar={NavBar} children={list} />,
+  <StepSlider steps={primarySteps} children={list} />,
   <Panel backGroundColor="aqua" />,
   <Panel backGroundColor="magenta" />,
 ]
