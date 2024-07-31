@@ -1,23 +1,27 @@
 const { deepEqual } = require('assert')
 const showDeepDiff = require('show-deep-diff')
 
-// List of valid options
-const INIT_OPTIONS = [
-  'group_size',
-  'gmajority',
-  'max_rounds',
-  'min_shown_count',
-  'min_rank',
-  'updateUInfo',
-  'getAllUInfo',
-]
-
 // clustering
 const GROUP_SIZE = 7 // this is the group size
 const GMAJORITY = 0.5 //Group Majority - minimum percentage of group that votes for it to be part of the group
 const MAX_ROUNDS = 10 // maximum number of rounds to search down when clustering children
 const MIN_SHOWN_COUNT = Math.floor(GROUP_SIZE / 2) + 1 // the minimum number of times a item pair is shown in order to decide if a majority have grouped it
 const MIN_RANK = 2 // when filterning statements for the next round, they must at least have this number of users voting for it
+
+function getDiscussionInitOptions() {
+  // List of valid options
+  const INIT_OPTIONS = [
+    'group_size',
+    'gmajority',
+    'max_rounds',
+    'min_shown_count',
+    'min_rank',
+    'updateUInfo',
+    'getAllUInfo',
+  ]
+  return INIT_OPTIONS
+}
+module.exports.getDiscussionInitOptions = getDiscussionInitOptions
 /**
  *  initDiscussion(discussionId,options) nothing returned
  *  insertStatementId(discussionId,round,userId,statementId) returns statementId
@@ -65,9 +69,11 @@ module.exports.Discussions = Discussions // exported for testing purpose do not 
 
 async function initDiscussion(discussionId, options = {}) {
   // Check if provided options are valid
+  const initOptions = getDiscussionInitOptions()
+
   Object.keys(options).forEach(key => {
-    if (!INIT_OPTIONS.includes(key)) {
-      throw new Error(`${key} is not an option for initDiscussion() - valid options are: ${INIT_OPTIONS}.`)
+    if (!initOptions.includes(key)) {
+      throw new Error(`'${key}' is not an option for initDiscussion() - valid options are: ${initOptions}.`)
     }
   })
 
