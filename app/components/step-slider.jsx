@@ -163,7 +163,7 @@ export const StepSlider = props => {
                 // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
                 let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
                 for (let reps = 0; reps < repetitions; reps++) {
-                  dispatch({ type: onDoneResult.value < state.currentStep ? 'decrement' : 'increment' })
+                  dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
                 }
               }
             }}
