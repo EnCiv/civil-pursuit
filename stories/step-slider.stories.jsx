@@ -93,6 +93,9 @@ function createPanels(panels = 4) {
   return panelList
 }
 
+export const WithNoSteps = Template.bind({})
+WithNoSteps.args = { children: createPanels(4) }
+
 export const WithFourSteps = Template.bind({})
 WithFourSteps.args = { steps: createPrimarySteps(4), children: createPanels(4) }
 

@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/sty
 const delayedSideEffect = setTimeout // basically put the side effect on the process queue and do it later
 
 export const StepSlider = props => {
-  const { children, onDone, steps = [], ...otherProps } = props
+  const { children, onDone, steps, ...otherProps } = props
   const classes = useStyles(props)
   const navRef = useRef() // didn't work right with ref= so navRef
   const footerRef = useRef()
@@ -27,7 +27,7 @@ export const StepSlider = props => {
 
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  steps[0].seen = true
+  if (steps) steps[0].seen = true
   const [stepStatuses, setStepStatuses] = useState(steps)
 
   const [transitions, setTransitions] = useState(false)
@@ -88,11 +88,14 @@ export const StepSlider = props => {
       case 'increment':
         // Set next navigated-to panel as seen so we can render it
         let currentStep = Math.min(state.currentStep + 1, children.length - 1)
-        let newStatuses = {
-          ...stepStatuses,
-          [currentStep]: { ...stepStatuses[currentStep], seen: true },
+
+        if (steps) {
+          let newStatuses = {
+            ...stepStatuses,
+            [currentStep]: { ...stepStatuses[currentStep], seen: true },
+          }
+          setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
         }
-        setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
 
         return {
           ...state,
@@ -118,27 +121,31 @@ export const StepSlider = props => {
       // Only render if component has been seen
       children.map(
         (child, index) =>
-          stepStatuses[index].seen &&
+          (!steps || (steps && stepStatuses[index].seen)) &&
           React.cloneElement(child, {
             ...otherProps,
             ...child.props,
             onDone: valid => {
               let newStatuses
 
-              if (valid) {
-                newStatuses = {
-                  ...stepStatuses,
-                  [index]: { ...stepStatuses[index], complete: true },
+              if (steps) {
+                if (valid) {
+                  newStatuses = {
+                    ...stepStatuses,
+                    [index]: { ...stepStatuses[index], complete: true },
+                  }
+                } else {
+                  // Disable navigation to all steps after if invalid
+                  newStatuses = stepStatuses.map((stepStatus, index) => {
+                    if (index >= state.currentStep) {
+                      return { ...stepStatus, complete: false }
+                    } else {
+                      return stepStatus
+                    }
+                  })
                 }
               } else {
-                // Disable navigation to all steps after if invalid
-                newStatuses = stepStatuses.map((stepStatus, index) => {
-                  if (index >= state.currentStep) {
-                    return { ...stepStatus, complete: false }
-                  } else {
-                    return stepStatus
-                  }
-                })
+                if (valid) dispatch({ type: 'increment' })
               }
 
               // Update statuses
@@ -163,7 +170,7 @@ export const StepSlider = props => {
   return (
     <div className={classes.outerWrapper} ref={outerRef}>
       <div ref={navRef} className={classes.wrapper}>
-        {stepStatuses.length > 0 && (
+        {steps && stepStatuses.length > 0 && (
           <StepBar
             steps={stepStatuses}
             current={state.currentStep + 1}
@@ -204,14 +211,16 @@ export const StepSlider = props => {
           ))}
       </div>
       <div ref={footerRef} className={classes.wrapper}>
-        <StepFooter
-          className={classes.stepFooter}
-          onDone={() => {
-            dispatch({ type: 'increment' })
-          }}
-          onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
-          active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['complete']}
-        />
+        {steps && (
+          <StepFooter
+            className={classes.stepFooter}
+            onDone={() => {
+              dispatch({ type: 'increment' })
+            }}
+            onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
+            active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['complete']}
+          />
+        )}
       </div>
     </div>
   )
