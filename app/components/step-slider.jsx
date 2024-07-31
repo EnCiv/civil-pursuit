@@ -149,7 +149,7 @@ export const StepSlider = props => {
               }
 
               // Update statuses
-              setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+              if (steps) setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
             },
           })
       ),

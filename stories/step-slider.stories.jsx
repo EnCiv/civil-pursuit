@@ -101,3 +101,8 @@ WithFourSteps.args = { steps: createPrimarySteps(4), children: createPanels(4) }
 
 export const WithSevenSteps = Template.bind({})
 WithSevenSteps.args = { steps: createPrimarySteps(7), children: createPanels(7) }
+
+const childrenWithNestedSlider = createPanels(5)
+childrenWithNestedSlider[2] = <StepSlider steps={createPrimarySteps(3)} children={createPanels(3)} />
+export const NestedSliders = Template.bind({})
+NestedSliders.args = { children: childrenWithNestedSlider }
