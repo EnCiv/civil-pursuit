@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/89
 
 'use strict'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
@@ -65,8 +65,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
-  const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, ...otherProps } = props
-  const { title } = otherProps
+  const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, title, ...otherProps } = props
   const [data, setData] = useState(details)
   const [isValid, setIsValid] = useState(false)
   const classes = useStyles(props)
@@ -78,25 +77,31 @@ const MoreDetails = props => {
     )
   }
 
+  // memorize the renderes (react components) so they don't get rebuild every time the user types a character
+  // this was really a problem with string input because focus went away from the input fields after each time the user typed a character
+  const memoedRenderers = useMemo(() => {
+    return customRenderers.map(renderer => ({
+      ...renderer,
+      renderer:
+        renderer.renderer === CustomInputRenderer
+          ? props => <CustomInputRenderer {...props} classes={classes} />
+          : renderer.renderer,
+    }))
+  }, [schema, uischema])
+
   useEffect(() => {
     setIsValid(handleIsValid())
   }, [data, schema])
 
   return (
-    <div className={cx(classes.formContainer, className)}>
+    <div className={cx(classes.formContainer, className)} {...otherProps}>
       {title && <p className={classes.formTitle}>{title}</p>}
       <div className={classes.jsonFormContainer}>
         <JsonForms
           schema={schema}
           uischema={uischema}
           data={data}
-          renderers={customRenderers.map(renderer => ({
-            ...renderer,
-            renderer:
-              renderer.renderer === CustomInputRenderer
-                ? props => <CustomInputRenderer {...props} classes={classes} />
-                : renderer.renderer,
-          }))}
+          renderers={memoedRenderers}
           cells={vanillaCells}
           onChange={({ data }) => setData(data)}
         />
