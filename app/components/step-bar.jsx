@@ -236,6 +236,7 @@ function StepBar(props) {
                 title={step.title}
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
+                unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : false}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
@@ -288,6 +289,7 @@ function StepBar(props) {
                     title={step.title}
                     complete={steps[index].complete}
                     active={current === step.id ? true : false}
+                    unlocked={index > 0 && steps[index - 1].complete}
                     onDone={() => onDone({ valid: true, value: step.id })}
                     index={index}
                     {...otherProps}
