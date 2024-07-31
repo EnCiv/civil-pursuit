@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal/lib'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title, complete, active, onDone = () => {}, index, className, ...otherProps } = props
+  const { name, title = '', complete, active, onDone = () => {}, index, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
