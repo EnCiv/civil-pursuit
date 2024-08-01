@@ -116,46 +116,43 @@ export const StepSlider = props => {
 
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
   // so it's done in a memo
-  console.log(children)
-  console.log(stepStatuses)
   const clonedChildren = useMemo(
     () =>
       // Only render if component has been seen
-      children.map(
-        (child, index) =>
-          (!steps || (steps && stepStatuses[index].seen)) &&
-          React.cloneElement(child, {
-            ...otherProps,
-            ...child.props,
-            onDone: valid => {
-              let newStatuses
+      children.map((child, index) =>
+        React.cloneElement(child, {
+          ...otherProps,
+          ...child.props,
+          key: [index],
+          onDone: valid => {
+            let newStatuses
 
-              if (steps) {
-                if (valid) {
-                  newStatuses = {
-                    ...stepStatuses,
-                    [index]: { ...stepStatuses[index], complete: true },
-                  }
-                } else {
-                  // Disable navigation to all steps after if invalid
-                  newStatuses = stepStatuses.map((stepStatus, index) => {
-                    if (index >= state.currentStep) {
-                      return { ...stepStatus, complete: false }
-                    } else {
-                      return stepStatus
-                    }
-                  })
+            if (steps) {
+              if (valid) {
+                newStatuses = {
+                  ...stepStatuses,
+                  [index]: { ...stepStatuses[index], complete: true },
                 }
               } else {
-                if (valid) dispatch({ type: 'increment' })
+                // Disable navigation to all steps after if invalid
+                newStatuses = stepStatuses.map((stepStatus, index) => {
+                  if (index >= state.currentStep) {
+                    return { ...stepStatus, complete: false }
+                  } else {
+                    return stepStatus
+                  }
+                })
               }
+            } else {
+              if (valid) dispatch({ type: 'increment' })
+            }
 
-              // Update statuses
-              if (steps) setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
-            },
-          })
+            // Update statuses
+            if (steps) setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+          },
+        })
       ),
-    [children, _this.otherProps, stepStatuses]
+    [children, _this.otherProps]
   )
   // don't enable transitions until after the children have been rendered or the initial render will be blurry
   // the delayedSideEffect is necessary to delay the transitions until after the initial render
@@ -194,25 +191,32 @@ export const StepSlider = props => {
       <div
         style={{
           left: -outerRect.width * state.currentStep + 'px',
-          width: outerRect.width * children.length + 'px',
+          width:
+            outerRect.width *
+              (steps ? Object.keys(stepStatuses).filter(key => stepStatuses[key].seen).length : children.length) +
+            'px',
         }}
         className={cx(classes.wrapper, transitions && classes.transitions)}
       >
         {outerRect.width &&
-          clonedChildren.map(child => (
-            <div
-              style={{
-                width: outerRect.width + 'px',
-                height:
-                  window.innerHeight -
-                  (footerRect.height ? footerRect.height : outerRect.top) -
-                  (navBarRect.height ? navBarRect.height : outerRect.top),
-              }}
-              className={classes.panel}
-            >
-              {child && <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>}
-            </div>
-          ))}
+          clonedChildren.map(
+            child =>
+              (!steps || (steps && stepStatuses[child.key].seen)) && (
+                <div
+                  style={{
+                    width: outerRect.width + 'px',
+                    height:
+                      window.innerHeight -
+                      (footerRect.height ? footerRect.height : outerRect.top) -
+                      (navBarRect.height ? navBarRect.height : outerRect.top),
+                  }}
+                  className={classes.panel}
+                >
+                  {console.log(steps && stepStatuses[child.key].seen)}
+                  {child && <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>}
+                </div>
+              )
+          )}
       </div>
       {steps && (
         <div ref={footerRef} className={classes.wrapper}>
