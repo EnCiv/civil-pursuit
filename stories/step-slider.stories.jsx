@@ -4,9 +4,10 @@ import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
 
 export default {
-  title: 'step-slider',
   component: StepSlider,
-  argTypes: {},
+  parameters: {
+    layout: 'fullscreen',
+  },
 }
 
 const storybookPadding = '2rem' // it padds the iframe with 1rem all around
