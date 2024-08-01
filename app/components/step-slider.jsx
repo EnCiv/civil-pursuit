@@ -116,6 +116,8 @@ export const StepSlider = props => {
 
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
   // so it's done in a memo
+  console.log(children)
+  console.log(stepStatuses)
   const clonedChildren = useMemo(
     () =>
       // Only render if component has been seen
@@ -169,24 +171,26 @@ export const StepSlider = props => {
   }, [state.sendDoneToParent])
   return (
     <div className={classes.outerWrapper} ref={outerRef}>
-      <div ref={navRef} className={classes.wrapper}>
-        {steps && stepStatuses.length > 0 && (
-          <StepBar
-            steps={stepStatuses}
-            current={state.currentStep + 1}
-            className={classes.navBar}
-            onDone={onDoneResult => {
-              if (onDoneResult.value) {
-                // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-                let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
-                for (let reps = 0; reps < repetitions; reps++) {
-                  dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
+      {steps && (
+        <div ref={navRef} className={classes.wrapper}>
+          {stepStatuses.length > 0 && (
+            <StepBar
+              steps={stepStatuses}
+              current={state.currentStep + 1}
+              className={classes.navBar}
+              onDone={onDoneResult => {
+                if (onDoneResult.value) {
+                  // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
+                  let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
+                  for (let reps = 0; reps < repetitions; reps++) {
+                    dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
+                  }
                 }
-              }
-            }}
-          />
-        )}
-      </div>
+              }}
+            />
+          )}
+        </div>
+      )}
       <div
         style={{
           left: -outerRect.width * state.currentStep + 'px',
@@ -210,8 +214,8 @@ export const StepSlider = props => {
             </div>
           ))}
       </div>
-      <div ref={footerRef} className={classes.wrapper}>
-        {steps && (
+      {steps && (
+        <div ref={footerRef} className={classes.wrapper}>
           <StepFooter
             className={classes.stepFooter}
             onDone={() => {
@@ -220,8 +224,8 @@ export const StepSlider = props => {
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
             active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['complete']}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
