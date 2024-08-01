@@ -191,32 +191,27 @@ export const StepSlider = props => {
       <div
         style={{
           left: -outerRect.width * state.currentStep + 'px',
-          width:
-            outerRect.width *
-              (steps ? Object.keys(stepStatuses).filter(key => stepStatuses[key].seen).length : children.length) +
-            'px',
+          width: outerRect.width * children.length + 'px',
         }}
         className={cx(classes.wrapper, transitions && classes.transitions)}
       >
         {outerRect.width &&
-          clonedChildren.map(
-            child =>
-              (!steps || (steps && stepStatuses[child.key].seen)) && (
-                <div
-                  style={{
-                    width: outerRect.width + 'px',
-                    height:
-                      window.innerHeight -
-                      (footerRect.height ? footerRect.height : outerRect.top) -
-                      (navBarRect.height ? navBarRect.height : outerRect.top),
-                  }}
-                  className={classes.panel}
-                >
-                  {console.log(steps && stepStatuses[child.key].seen)}
-                  {child && <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>}
-                </div>
-              )
-          )}
+          clonedChildren.map(child => (
+            <div
+              style={{
+                width: outerRect.width + 'px',
+                height:
+                  window.innerHeight -
+                  (footerRect.height ? footerRect.height : outerRect.top) -
+                  (navBarRect.height ? navBarRect.height : outerRect.top),
+              }}
+              className={classes.panel}
+            >
+              {(!steps || (steps && stepStatuses[child.key].seen)) && child && (
+                <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>
+              )}
+            </div>
+          ))}
       </div>
       {steps && (
         <div ref={footerRef} className={classes.wrapper}>
