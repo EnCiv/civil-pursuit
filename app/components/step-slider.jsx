@@ -24,12 +24,6 @@ export const StepSlider = props => {
   const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, top: 0 })
   const [footerRect, setFooterRect] = useState({ height: 0, width: 0, bottom: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
-
-  // Keep track of each step's seen/completion status
-  // Populate statuses with initial values
-  if (steps) steps[0].seen = true
-  const [stepStatuses, setStepStatuses] = useState(steps)
-
   const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
 
@@ -91,10 +85,10 @@ export const StepSlider = props => {
 
         if (steps) {
           let newStatuses = {
-            ...stepStatuses,
-            [currentStep]: { ...stepStatuses[currentStep], seen: true },
+            ...state.stepStatuses,
+            [currentStep]: { ...state.stepStatuses[currentStep], seen: true },
           }
-          setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+          state.stepStatuses = Object.keys(newStatuses).map(key => newStatuses[key])
         }
 
         return {
@@ -112,7 +106,10 @@ export const StepSlider = props => {
         return { ...state, sendDoneToParent: false }
     }
   }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false })
+  // Keep track of each step's seen/completion status
+  // Populate statuses with initial values
+  if (steps) steps[0].seen = true
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false, stepStatuses: steps })
 
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
   // so it's done in a memo
@@ -130,12 +127,12 @@ export const StepSlider = props => {
             if (steps) {
               if (valid) {
                 newStatuses = {
-                  ...stepStatuses,
-                  [index]: { ...stepStatuses[index], complete: true },
+                  ...state.stepStatuses,
+                  [index]: { ...state.stepStatuses[index], complete: true },
                 }
               } else {
                 // Disable navigation to all steps after if invalid
-                newStatuses = stepStatuses.map((stepStatus, index) => {
+                newStatuses = state.stepStatuses.map((stepStatus, index) => {
                   if (index >= state.currentStep) {
                     return { ...stepStatus, complete: false }
                   } else {
@@ -148,7 +145,7 @@ export const StepSlider = props => {
             }
 
             // Update statuses
-            if (steps) setStepStatuses(Object.keys(newStatuses).map(key => newStatuses[key]))
+            if (steps) state.stepStatuses = Object.keys(newStatuses).map(key => newStatuses[key])
           },
         })
       ),
@@ -170,9 +167,9 @@ export const StepSlider = props => {
     <div className={classes.outerWrapper} ref={outerRef}>
       {steps && (
         <div ref={navRef} className={classes.wrapper}>
-          {stepStatuses.length > 0 && (
+          {state.stepStatuses.length > 0 && (
             <StepBar
-              steps={stepStatuses}
+              steps={state.stepStatuses}
               current={state.currentStep + 1}
               className={classes.navBar}
               onDone={onDoneResult => {
@@ -207,7 +204,7 @@ export const StepSlider = props => {
               }}
               className={classes.panel}
             >
-              {(!steps || (steps && stepStatuses[child.key].seen)) && child && (
+              {(!steps || (steps && state.stepStatuses[child.key].seen)) && child && (
                 <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>
               )}
             </div>
@@ -221,7 +218,7 @@ export const StepSlider = props => {
               dispatch({ type: 'increment' })
             }}
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
-            active={stepStatuses[state.currentStep] && stepStatuses[state.currentStep]['complete']}
+            active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}
           />
         </div>
       )}
