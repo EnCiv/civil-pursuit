@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
+import { Button } from './button'
 import SvgAlertTriangle from '../svgr/alert-triangle'
 
 function SignUp(props, ref) {
@@ -78,17 +79,17 @@ function SignUp(props, ref) {
     <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
       <div className={classes.tabs}>
         <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
-          <button
-            onClick={e => setIsLogIn(false)}
+          <Button
+            onDone={e => setIsLogIn(false)}
             className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)}
           >
             Sign Up
-          </button>
+          </Button>
         </div>
         <div className={cx(classes.tab, isLogIn && classes.tabSelected)}>
-          <button onClick={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}>
+          <Button onDone={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}>
             Log In
-          </button>
+          </Button>
         </div>
       </div>
       <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
@@ -199,20 +200,20 @@ function SignUp(props, ref) {
           <span>{state.success}</span>
         </div>
         <div className={classes.btnContainer}>
-          <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => handleSubmit('signup')}>
+          <Button className={cx(classes.btn, isLogIn && classes.disabled)} onDone={e => handleSubmit('signup')}>
             Sign Up
-          </button>
-          <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => handleSubmit('login')}>
+          </Button>
+          <Button className={cx(classes.btn, !isLogIn && classes.disabled)} onDone={e => handleSubmit('login')}>
             Log In
-          </button>
-          <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.skip()}>
+          </Button>
+          <Button className={cx(classes.btn, isLogIn && classes.disabled)} onDone={e => methods.skip()}>
             Skip
-          </button>
+          </Button>
         </div>
         <div className={cx(classes.resetPasswordBtn, !isLogIn && classes.disabled)}>
-          <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
+          <Button onDone={e => methods.sendResetPassword()} className={classes.resetBtn}>
             Send Reset Password
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -235,16 +236,6 @@ const useStyles = createUseStyles(theme => ({
     // position: 'fixed',
     overflowY: 'auto',
   },
-  btnClick: {
-    color: theme.colors.primaryButtonBlue,
-    textDecoration: 'none',
-    background: 'none',
-    border: 'none',
-    '&:hover': {
-      color: theme.colors.mouseDownPrimeBlue,
-      cursor: 'pointer',
-    },
-  },
   aLinkTerm: {
     marginLeft: '0.3rem', // add space
     marginRight: '0.3rem', // add space
@@ -262,7 +253,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.2rem 0.2rem 0 0.2rem ',
+    padding: '0.45rem 0.4rem 0 0.4rem ',
     boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
   },
   tab: {
@@ -298,6 +289,9 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
       color: theme.colors.white,
     },
+    '&:focus': {
+      outline: 'none',
+    },
   },
   btnClick: {
     border: 'none',
@@ -307,6 +301,9 @@ const useStyles = createUseStyles(theme => ({
       background: 'none',
       borderColor: 'none',
       textDecoration: 'underline',
+    },
+    '&:focus': {
+      outline: 'none',
     },
   },
   btnClickSelected: {
