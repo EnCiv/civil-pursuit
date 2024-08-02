@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/178
 
 const Joi = require('joi')
-const { putGroupings } = require('./dturn')
+import { putGroupings } from '../dturn/dturn'
 
 const schema = Joi.object({
   discussionId: Joi.string().required(),
