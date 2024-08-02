@@ -9,6 +9,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 
 // Config
+process.env.JEST_TEST_ENV = true
 
 const userId = '6667d5a33da5d19ddc304a6b'
 const synuser = { synuser: { id: userId } }

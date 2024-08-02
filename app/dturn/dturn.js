@@ -125,6 +125,11 @@ module.exports.insertStatementId = insertStatementId
 */
 
 function getRandomUniqueList(max, count) {
+  // return list from 0 to (count - 1) if using jest test.
+  if (process.env.JEST_TEST_ENV) {
+    return [...Array(count).keys()]
+  }
+
   if (max < count) {
     console.error('getRandomCount impossible', max, 'less than', count)
     count = max
