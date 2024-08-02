@@ -8,7 +8,9 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(true)
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`) : false
+  )
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
