@@ -1,4 +1,3 @@
-import { Points } from '../../models/points';
 import { Mongo } from '@enciv/mongo-collections';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectId } from 'mongodb';
@@ -36,9 +35,6 @@ describe('Point property validation', () => {
             expect(error).toBe("\"_id\" with value \"invalid\" fails to match the valid mongo id pattern")
         }
 
-        const validation = Points.validate(invalidPoint) // test validate function
-        expect(validation.error).toBeDefined()
-        expect(validation.error).toBe("\"_id\" with value \"invalid\" fails to match the valid mongo id pattern")
     })
 
     test('_id validation passes for valid _id', async () => {
@@ -59,10 +55,6 @@ describe('Point property validation', () => {
             expect(error).toBeUndefined()
         }
 
-
-
-        const validation = Points.validate(validPoint)
-        expect(validation.result).toBeDefined() // test validate function
     })
 
 

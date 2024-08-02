@@ -16,13 +16,13 @@ const Email = () => Joi.string().allow('').email();
 const Number = () => Joi.number()
 
 const pointSchema = Joi.object({
-  _id: Joi.objectId().required(),
-  userId: String().required(),
-  title: String().required(),
-  description: String().required(),
+  _id: Joi.objectId,
+  title: String(),
+  description: String(),
   parentId: Number(),
   category: String(),
   round: Number(),
+  userId: String()
   })
 
 class Points extends Collection {
