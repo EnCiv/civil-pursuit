@@ -116,4 +116,33 @@ test('Success if all arguments are valid.', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(true)
+
+  expect(UInfoHistory).toMatchObject([
+    {
+      '6667d5a33da5d19ddc304a6b': {
+        '66a174b0c3f2051ad387d2a6': {
+          0: {
+            shownStatementIds: {
+              '6667d688b20d8e339ca50020': {
+                rank: 0,
+                author: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      '6667d5a33da5d19ddc304a6b': {
+        '66a174b0c3f2051ad387d2a6': {
+          0: {
+            groupings: [
+              [0, 1],
+              [2, 3],
+            ],
+          },
+        },
+      },
+    },
+  ])
 })
