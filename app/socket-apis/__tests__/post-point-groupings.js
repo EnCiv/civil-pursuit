@@ -82,11 +82,7 @@ test('Fail when groupings.length is > 99.', async () => {
 })
 
 test('Fail when groupings subarr length is > 99.', async () => {
-  const tooManyObjs = []
-  for (let item = 0, num = 0; item < 100; item++, num += 2) {
-    tooManyObjs.push([num, num + 1])
-  }
-
+  const tooManyObjs = [...Array(100).keys()]
   expect(tooManyObjs).toHaveLength(100)
 
   const cb = jest.fn()
