@@ -222,12 +222,10 @@ const useStyles = createUseStyles({
   },
   navBar: {
     width: 'inherit',
-    zIndex: 1,
     backgroundColor: 'white',
   },
   stepFooter: {
     width: 'inherit',
-    zIndex: 1,
     padding: 0,
     backgroundColor: 'white',
   },
