@@ -437,7 +437,7 @@ function putGroupings(discussionId, round, userId, groupings) {
   uitem.groupings = groupings
   const shownStatementIds = Object.keys(uitem.shownStatementIds)
   if (shownStatementIds.length <= 1) console.error('putGroupings', round, userId, shownStatementIds)
-  for (id of shownStatementIds) incrementShownItems(discussionId, round, id)
+  for (const id of shownStatementIds) incrementShownItems(discussionId, round, id)
   iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
   groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
   Discussions[discussionId].updateUInfo({
