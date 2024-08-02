@@ -37,12 +37,12 @@ export default function ShowDualPointList({
             return (
               <React.Fragment key={leftPoint?._id || rightPoint?._id}>
                 <PointGroup
-                  pointObj={leftPoint || {}}
+                  pointDoc={leftPoint || {}}
                   vState={isExpanded ? 'default' : 'collapsed'}
                   className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
                 />
                 <PointGroup
-                  pointObj={rightPoint || {}}
+                  pointDoc={rightPoint || {}}
                   vState={isExpanded ? 'default' : 'collapsed'}
                   className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
                 />
@@ -103,6 +103,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       backgroundColor: 'transparent',
       '& div': {
         padding: '0.1rem',
+      },
+      '&:hover': {
+        outline: 'none !important',
+      },
+      '&:hover $defaultSubject': {
+        color: 'inherit !important',
+      },
+      '&:hover $defaultDescription': {
+        color: 'inherit !important',
       },
     },
   },

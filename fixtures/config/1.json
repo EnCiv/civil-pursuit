@@ -1,8 +1,0 @@
-{
-  "config" : {
-    "name" : "top level type"
-  },
-  "type" : {
-    "name" : "Issue"
-  }
-}

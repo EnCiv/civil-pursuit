@@ -1,6 +1,9 @@
 'use strict'
 
 const Theme = {
+  zIndexes: {
+    menu: 10,
+  },
   focusOutline: 'solid .3rem #DCE8F2',
   // ui colors
   colors: {
@@ -37,6 +40,11 @@ const Theme = {
     statusBadgeErrorBorder: '#BF1300',
     statusBadgeErrorBackground: '#F9E7E5',
     roundTrackerBackground: '#FDFDF7',
+    inactiveGray: '#D9D9D9',
+    stepContainerActive: 'rgba(6, 51, 92, 0.10)',
+    svgArrow: 'rgb(206, 206, 206)',
+    transparent: 'transparent',
+    tabSelected: '#DCE8F2',
   },
   font: {
     fontFamily: 'Inter',
@@ -50,7 +58,12 @@ const Theme = {
     },
   },
   condensedWidthBreakPoint: '40rem',
-  maxPanelWidth: '90rem',
+  maxPanelWidth: '78rem',
+  boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+  enCivUnderline: {
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '0.26rem',
+  },
 }
 
 export default Theme
