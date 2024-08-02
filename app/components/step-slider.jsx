@@ -114,6 +114,8 @@ export const StepSlider = props => {
             currentStep,
             sendDoneToParent: state.currentStep >= children.length - 1,
           }
+        } else {
+          return state
         }
     }
   }
