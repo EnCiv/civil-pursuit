@@ -76,30 +76,19 @@ export const StepSlider = props => {
     }, [navRef.current, footerRef.current])
   }
   if (typeof window !== 'undefined') useLayoutEffect(resizeHandler, [outerRef.current])
-
   function reducer(state, action) {
-    const getIncrementedState = () => {
-      // Set next navigated-to panel as seen so we can render it
-      let currentStep = Math.min(state.currentStep + 1, children.length - 1)
-
-      if (steps) {
-        let newStatuses = {
-          ...state.stepStatuses,
-          [currentStep]: { ...state.stepStatuses[currentStep], seen: true },
-        }
-        state.stepStatuses = Object.keys(newStatuses).map(key => newStatuses[key])
-      }
-
-      return {
-        ...state,
-        currentStep: currentStep,
-        sendDoneToParent: state.currentStep >= children.length - 1,
-      }
-    }
-
     switch (action.type) {
       case 'increment':
-        return getIncrementedState()
+        const currentStep = Math.min(state.currentStep + 1, children.length - 1)
+        const stepStatuses = state.stepStatuses.map((stepStatus, i) =>
+          i === currentStep ? { ...stepStatus, seen: true } : stepStatus
+        )
+        return {
+          ...state,
+          stepStatuses,
+          currentStep,
+          sendDoneToParent: state.currentStep >= children.length - 1,
+        }
       case 'decrement':
         return {
           ...state,
@@ -110,27 +99,21 @@ export const StepSlider = props => {
         return { ...state, sendDoneToParent: false }
       case 'updateStatuses':
         let { valid, index } = action.payload
-        let newStatuses
-
         if (steps) {
-          if (valid) {
-            newStatuses = {
-              ...state.stepStatuses,
-              [index]: { ...state.stepStatuses[index], complete: true },
-            }
-          } else {
+          const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
+            if (valid) return i === index ? { ...stepStatus, complete: true } : stepStatus
             // Disable navigation to all steps after if invalid
-            newStatuses = state.stepStatuses.map((stepStatus, index) => {
-              if (index >= state.currentStep) {
-                return { ...stepStatus, complete: false }
-              } else {
-                return stepStatus
-              }
-            })
+            else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
+          })
+          return { ...state, stepStatuses: stepStatuses }
+        } else if (valid) {
+          // Just increment if no steps
+          const currentStep = Math.min(state.currentStep + 1, children.length - 1)
+          return {
+            ...state,
+            currentStep,
+            sendDoneToParent: state.currentStep >= children.length - 1,
           }
-          return { ...state, stepStatuses: Object.keys(newStatuses).map(key => newStatuses[key]) }
-        } else {
-          if (valid) return getIncrementedState()
         }
     }
   }
