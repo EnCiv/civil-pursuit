@@ -5,7 +5,7 @@ import cx from 'classnames'
 import Point from './point'
 import PointGroup from './point-group' // should be using PointGroup but it needs to support children
 
-import Ranking from './util/ranking'
+import Ranking from './ranking'
 
 function RankStep(props) {
   const classes = useStylesFromThemeFunction()
@@ -46,7 +46,7 @@ function RankStep(props) {
     <div className={cx(classes.rankStep, className)} {...otherProps}>
       <div className={classes.pointDiv}>
         {pointList.map((point, i) => (
-          <Point key={point._id} {...point} vState="default">
+          <Point key={point._id} point={point} vState="default">
             <Ranking
               className={classes.rank}
               defaultValue={(rankList.find(ro => ro.id === point._id) || {}).rank}

@@ -4,6 +4,7 @@ import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
+import DemInfo from '../app/components/dem-info'
 
 export default {
   component: PointGroup,
@@ -15,12 +16,12 @@ export default {
   },
 }
 
-const createPointObj = (
+const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
   groupedPoints = [],
-  user = {
+  demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
@@ -31,12 +32,12 @@ const createPointObj = (
     subject,
     description,
     groupedPoints,
-    user,
+    demInfo,
   }
 }
 
-const point1 = createPointObj('1', 'Point 1', 'Point 1 Description', [])
-const point2 = createPointObj(
+const pointDoc1 = createPointDoc('1', 'Point 1', 'Point 1 Description', [])
+const pointDoc2 = createPointDoc(
   '2',
   'Point 2',
   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
@@ -47,26 +48,26 @@ const point2 = createPointObj(
     party: 'Independent',
   }
 )
-const point3 = createPointObj('3', 'Point 3', 'Point 3 Description', [], {
+const pointDoc3 = createPointDoc('3', 'Point 3', 'Point 3 Description', [], {
   dob: '1995-10-20T00:00:00.000Z',
   state: 'CA',
   party: 'Independent',
 })
-const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
-const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
-const point5 = createPointObj('5', 'Point 5', 'Point 5 Description', [point2, point3, point4, point6])
+const pointDoc4 = createPointDoc('4', 'Point 4', 'Point 4 Description')
+const pointDoc6 = createPointDoc('6', 'Point 6', 'Point 6 Description')
+const pointDoc5 = createPointDoc('5', 'Point 5', 'Point 5 Description', [pointDoc2, pointDoc3, pointDoc4, pointDoc6])
 
-export const DefaultSinglePoint = { args: { pointObj: point1, vState: 'default' } }
-export const SelectedSinglePoint = { args: { pointObj: point1, vState: 'default', select: true } }
-export const EditSinglePoint = { args: { pointObj: point1, vState: 'edit' } }
+export const DefaultSinglePoint = { args: { pointDoc: pointDoc1, vState: 'default' } }
+export const SelectedSinglePoint = { args: { pointDoc: pointDoc1, vState: 'default', select: true } }
+export const EditSinglePoint = { args: { pointDoc: pointDoc1, vState: 'edit' } }
 
-export const defaultMultiplePoints = { args: { pointObj: point5, vState: 'default' } }
-export const selectedDefaultMultiplePoints = { args: { pointObj: point5, vState: 'default', select: true } }
-export const editMultiplePoints = { args: { pointObj: point5, vState: 'edit' } }
-export const selectedEditMultiplePoints = { args: { pointObj: point5, vState: 'edit', select: true } }
+export const defaultMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'default' } }
+export const selectedDefaultMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'default', select: true } }
+export const editMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'edit' } }
+export const selectedEditMultiplePoints = { args: { pointDoc: pointDoc5, vState: 'edit', select: true } }
 
-export const mobileSingePoint = {
-  args: { pointObj: point1, vState: 'default' },
+export const mobileSinglePoint = {
+  args: { pointDoc: pointDoc1, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -74,8 +75,17 @@ export const mobileSingePoint = {
   },
 }
 
+export const selectedEditMultiplePointsWithChildren = {
+  args: {
+    pointDoc: pointDoc5,
+    vState: 'edit',
+    select: true,
+    children: [<DemInfo dob="1995-10-20T00:00:00.000Z" state="CA" party="Independent" />],
+  },
+}
+
 export const mobileDefaultPoints = {
-  args: { pointObj: point5, vState: 'default' },
+  args: { pointDoc: pointDoc5, vState: 'default' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -84,15 +94,15 @@ export const mobileDefaultPoints = {
 }
 
 export const collapsedPoints = {
-  args: { pointObj: point5, vState: 'collapsed' },
+  args: { pointDoc: pointDoc5, vState: 'collapsed' },
 }
 
 export const selectLeadPoints = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
 }
 
 export const mobileSelectLeadPoints = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   parameters: {
     viewport: {
       defaultViewport: 'iphonex',
@@ -101,7 +111,7 @@ export const mobileSelectLeadPoints = {
 }
 
 export const selectLeadPoint3OnDone = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const SelectedPoint = canvas.getByTitle('Select as Lead: Point 3')
@@ -114,7 +124,7 @@ export const selectLeadPoint3OnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          pointObj: {
+          pointDoc: {
             _id: '3',
             subject: 'Point 3',
             description: 'Point 3 Description',
@@ -124,7 +134,7 @@ export const selectLeadPoint3OnDone = {
                 subject: 'Point 2',
                 description:
                   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-                user: {
+                demInfo: {
                   dob: '1980-10-20T00:00:00.000Z',
                   state: 'GA',
                   party: 'Independent',
@@ -134,7 +144,7 @@ export const selectLeadPoint3OnDone = {
                 _id: '4',
                 subject: 'Point 4',
                 description: 'Point 4 Description',
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -144,14 +154,14 @@ export const selectLeadPoint3OnDone = {
                 _id: '6',
                 subject: 'Point 6',
                 description: 'Point 6 Description',
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
                 },
               },
             ],
-            user: {
+            demInfo: {
               dob: '1995-10-20T00:00:00.000Z',
               state: 'CA',
               party: 'Independent',
@@ -164,7 +174,7 @@ export const selectLeadPoint3OnDone = {
 }
 
 export const selectLeadUngroupOnDone = {
-  args: { pointObj: point5, vState: 'selectLead' },
+  args: { pointDoc: pointDoc5, vState: 'selectLead' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Ungroup and close')
@@ -175,14 +185,14 @@ export const selectLeadUngroupOnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          removedPointObjs: [
+          removedPointDocs: [
             {
               _id: '2',
               subject: 'Point 2',
               description:
                 'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
               groupedPoints: [],
-              user: {
+              demInfo: {
                 dob: '1980-10-20T00:00:00.000Z',
                 state: 'GA',
                 party: 'Independent',
@@ -193,7 +203,7 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 3',
               description: 'Point 3 Description',
               groupedPoints: [],
-              user: {
+              demInfo: {
                 dob: '1995-10-20T00:00:00.000Z',
                 state: 'CA',
                 party: 'Independent',
@@ -204,7 +214,7 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 4',
               description: 'Point 4 Description',
               groupedPoints: [],
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -215,7 +225,7 @@ export const selectLeadUngroupOnDone = {
               subject: 'Point 6',
               description: 'Point 6 Description',
               groupedPoints: [],
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -229,7 +239,7 @@ export const selectLeadUngroupOnDone = {
 }
 
 export const editMultiplePointsRemovePoint3OnDone = {
-  args: { pointObj: point5, vState: 'edit' },
+  args: { pointDoc: pointDoc5, vState: 'edit' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Remove from Group: Point 3')
@@ -240,11 +250,11 @@ export const editMultiplePointsRemovePoint3OnDone = {
       onDoneResult: {
         valid: true,
         value: {
-          pointObj: {
+          pointDoc: {
             _id: '5',
             subject: 'Point 5',
             description: 'Point 5 Description',
-            user: {
+            demInfo: {
               dob: '1990-10-20T00:00:00.000Z',
               state: 'NY',
               party: 'Independent',
@@ -256,7 +266,7 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 description:
                   'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
                 groupedPoints: [],
-                user: {
+                demInfo: {
                   dob: '1980-10-20T00:00:00.000Z',
                   state: 'GA',
                   party: 'Independent',
@@ -267,7 +277,7 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 subject: 'Point 4',
                 description: 'Point 4 Description',
                 groupedPoints: [],
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -278,7 +288,7 @@ export const editMultiplePointsRemovePoint3OnDone = {
                 subject: 'Point 6',
                 description: 'Point 6 Description',
                 groupedPoints: [],
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -286,13 +296,13 @@ export const editMultiplePointsRemovePoint3OnDone = {
               },
             ],
           },
-          removedPointObjs: [
+          removedPointDocs: [
             {
               _id: '3',
               subject: 'Point 3',
               description: 'Point 3 Description',
               groupedPoints: [],
-              user: {
+              demInfo: {
                 dob: '1995-10-20T00:00:00.000Z',
                 state: 'CA',
                 party: 'Independent',
