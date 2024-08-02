@@ -63,7 +63,7 @@ test('Fail if user is not logged in.', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
-  expect(console.error.mock.calls[0][0]).toContain('user is not logged in')
+  expect(console.error.mock.calls[0][0]).toMatch(/user is not logged in/)
 })
 
 test('Fail when groupings.length is > 99.', async () => {
@@ -81,11 +81,27 @@ test('Fail when groupings.length is > 99.', async () => {
   expect(cb).toHaveBeenCalledWith(undefined)
 })
 
+test('Fail when groupings subarr length is > 99.', async () => {
+  const tooManyObjs = []
+  for (let item = 0, num = 0; item < 100; item++, num += 2) {
+    tooManyObjs.push([num, num + 1])
+  }
+
+  expect(tooManyObjs).toHaveLength(100)
+
+  const cb = jest.fn()
+  await postPointGroups.call(synuser, discussionId, 0, [[1, 2], tooManyObjs], cb)
+  expect(console.error.mock.calls[0][0]).toMatch(/must contain less than or equal to 99 items/)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(undefined)
+})
+
 test('Fail when groupings contains a 1-object subarray.', async () => {
   const cb = jest.fn()
   await postPointGroups.call(synuser, discussionId, 0, [[0, 1], [2]], cb)
 
-  expect(console.error.mock.calls[0][0]).toContain('Groupings contains a subarr with only 1 object')
+  expect(console.error.mock.calls[0][0]).toMatch(/Groupings contains a subarr with only 1 object/)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
@@ -96,9 +112,7 @@ test('Fail if arguments are invalid.', async () => {
 
   await postPointGroups.call(synuser, 0, [], cb)
 
-  expect(console.error.mock.calls[0][0]).toContain('Expected 4 arguments')
-
-  console.info(`Error: ${console.error.mock.calls[0][0]}`)
+  expect(console.error.mock.calls[0][0]).toMatch(/Expected 4 arguments/)
 })
 
 test('Success if all arguments are valid.', async () => {

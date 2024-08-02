@@ -5,7 +5,7 @@ import { putGroupings } from '../dturn/dturn'
 
 const schema = Joi.object({
   discussionId: Joi.string().required(),
-  groupings: Joi.array().max(99).required(),
+  groupings: Joi.array().max(99).items(Joi.array().max(99)).required(),
 })
 
 async function postPointGroups(discussionId, round, groupings, cb) {
@@ -32,7 +32,7 @@ async function postPointGroups(discussionId, round, groupings, cb) {
   try {
     await schema.validateAsync({ discussionId: discussionId, groupings: groupings })
   } catch (error) {
-    return cbFailure(error)
+    return cbFailure(error['details'][0]['message'])
   }
 
   // Ignore empty groupings, but call cb(true).
