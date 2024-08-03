@@ -52,7 +52,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         <input
           id={id}
           type={type}
-          checked={type === 'checkbox' ? data : undefined}
+          checked={type === 'checkbox' ? !!data : undefined}
           value={type === 'checkbox' ? undefined : data || ''}
           onChange={handleInputChange}
           className={classes.formInput}
@@ -77,8 +77,8 @@ const MoreDetails = props => {
     )
   }
 
-  // memorize the renderes (react components) so they don't get rebuild every time the user types a character
-  // this was really a problem with string input because focus went away from the input fields after each time the user typed a character
+  // useMemo renders (React components) so they don't get rebuilt every time the user types a character
+  // This was really a problem with string input because focus went away from the input fields after each time the user typed a character
   const memoedRenderers = useMemo(() => {
     return customRenderers.map(renderer => ({
       ...renderer,
@@ -105,14 +105,16 @@ const MoreDetails = props => {
           cells={vanillaCells}
           onChange={({ data }) => setData(data)}
         />
-        <PrimaryButton
-          tile={'Submit form'}
-          className={classes.submitButton}
-          onDone={() => onDone({ valid: isValid, value: data })}
-          disabled={!isValid}
-        >
-          Submit
-        </PrimaryButton>
+        {className && (
+          <PrimaryButton
+            title={className}
+            className={classes.actionButton}
+            onDone={() => onDone({ valid: isValid, value: data })}
+            disabled={!isValid}
+          >
+            {className}
+          </PrimaryButton>
+        )}
       </div>
     </div>
   )
@@ -126,10 +128,11 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
+    fontFamily: 'Inter',
   }),
   formTitle: props => ({
     textAlign: 'center',
-    color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
+    color: props.mode === 'dark' ? theme.colors.white : '#06335C',
     fontSize: '2rem',
   }),
   jsonFormContainer: {
@@ -137,16 +140,17 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '2.25rem',
   },
   formInput: props => ({
-    width: '100% !important',
-    padding: '0.5rem 0 !important',
+    width: '100%',
+    padding: '0.625rem !important',
     borderRadius: '0.25rem !important',
     border: `0.1rem solid ${theme.colors.borderGray} !important`,
     backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.cardOutline,
-    color: props.mode === 'dark' ? theme.colors.cardOutline : theme.colors.title,
+    color: props.mode === 'dark' ? theme.colors.cardOutline : '#1A1A1A',
+    boxSizing: 'border-box',
   }),
-  submitButton: {
+  actionButton: {
     width: '100%',
-    margin: '2rem 0',
+    margin: '1.5rem 0',
   },
 }))
 

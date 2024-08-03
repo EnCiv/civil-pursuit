@@ -229,7 +229,7 @@ const testAllInputsUISchema = {
       label: 'Object',
       elements: [
         {
-          type: 'HorizontalLayout',
+          type: 'VerticalLayout',
           elements: [
             {
               type: 'Control',
@@ -242,7 +242,7 @@ const testAllInputsUISchema = {
           ],
         },
         {
-          type: 'HorizontalLayout',
+          type: 'VerticalLayout',
           elements: [
             {
               type: 'Control',
@@ -267,7 +267,7 @@ export const Empty = {
 
 export const FigmaInputMatch = {
   args: {
-    className: 'Submit form',
+    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
     onDone: null,
@@ -277,7 +277,7 @@ export const FigmaInputMatch = {
 
 export const InitialTestSchemaDetailsInput = {
   args: {
-    className: 'Submit form',
+    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
@@ -288,7 +288,7 @@ export const InitialTestSchemaDetailsInput = {
 
 export const UserInputAndOnDoneCall = {
   args: {
-    className: 'Submit form',
+    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
@@ -315,7 +315,11 @@ export const UserInputAndOnDoneCall = {
 }
 
 export const StateOfResidenceSelection = {
-  args: { schema: testStateOfResidenceSchema, uischema: testStateOfResidenceUIschema, onDone: null },
+  args: {
+    schema: testStateOfResidenceSchema,
+    uischema: testStateOfResidenceUIschema,
+    onDone: null,
+  },
 }
 
 export const BirthDateInput = {
