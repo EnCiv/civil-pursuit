@@ -30,7 +30,6 @@ const menuArray = [
   createMenuItem('Blog'),
   [createMenuItem('About'), createMenuItem('Contact'), createMenuItem('FAQ')],
   [createMenuItem('Our Work'), createMenuItem('Work 1'), createMenuItem('Work 2')],
-  createMenuItem(<Donate />),
 ]
 
 export default {

@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/164
-import React, { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal'
+import { Button } from './button'
 import cx from 'classnames'
 
 function Donate(props) {
@@ -17,36 +17,46 @@ function Donate(props) {
   } = props
 
   const classes = buttonStyles()
-  // const goToDonate = () => navigate('https://www.pledge.to/organizations/82-5200967/enciv')
+
+  const handleKeyDown = e => {
+    if (e.keyCode === 32) {
+      e.stopPropagation()
+      onDone({ valid: true, value })
+    }
+  }
 
   return (
     <a
       href="https://www.pledge.to/organizations/82-5200967/enciv"
-      className={cx(classes.buttonBase)}
       tabIndex={tabIndex}
       title={title}
       disabled={disabled}
       type={type}
       value={value}
+      onKeyDown={handleKeyDown}
       {...otherProps}
     >
-      Donate
+      <Button className={cx(classes.buttonBase)} children="Donate" />
     </a>
   )
 }
 
 const buttonStyles = createUseStyles(theme => ({
   buttonBase: {
-    // These are common styles
     width: 'auto',
     height: 'auto',
-    borderRadius: '0.5rem',
+    backgroundColor: `${theme.colors.encivYellow}`,
+    borderRadius: '2rem',
     padding: '0.5rem 1.25rem',
     fontFamily: 'Inter, sans-serif',
     fontWeight: 600,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
+    '&:hover': {
+      textDecoration: 'underline',
+      cursor: 'pointer',
+    },
     '&:focus': {
       outline: `${theme.focusOutline}`,
     },
