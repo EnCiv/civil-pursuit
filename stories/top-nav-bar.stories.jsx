@@ -1,5 +1,6 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
+import Donate from '../app/components/donate'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import Common from './common'
 import { expect } from '@storybook/jest'
@@ -29,6 +30,7 @@ const menuArray = [
   createMenuItem('Blog'),
   [createMenuItem('About'), createMenuItem('Contact'), createMenuItem('FAQ')],
   [createMenuItem('Our Work'), createMenuItem('Work 1'), createMenuItem('Work 2')],
+  createMenuItem(<Donate />),
 ]
 
 export default {
