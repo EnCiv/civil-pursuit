@@ -349,7 +349,8 @@ const useStyles = createUseStyles(theme => ({
       textDecoration: 'underline',
     },
     '&:focus': {
-      outline: `${theme.focusOutline}`,
+      border: `${theme.colors.focusOutline} solid 0.1rem`,
+      borderRadius: '3rem',
     },
   },
   btnClickSelected: {
