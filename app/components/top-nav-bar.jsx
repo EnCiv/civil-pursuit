@@ -110,7 +110,9 @@ const TopNavBar = props => {
                   </li>
                 )
               )}
-            <Donate />
+            <div className={classes.donate}>
+              <Donate />
+            </div>
           </menu>
 
           {UserOrSignInUp && (
@@ -132,7 +134,7 @@ const TopNavBar = props => {
                 Array.isArray(item) ? (
                   <li className={classes.menuList}>
                     <div
-                      className={cx(classes.menuGroup, classes.colors, {
+                      className={cx(classes.mobileMenuGroup, classes.colors, {
                         [classes.selectedItem]: selectedItem === item[0].name,
                       })}
                       key={index}
@@ -144,7 +146,7 @@ const TopNavBar = props => {
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
-                              className={cx(classes.menuItem, classes.colors, {
+                              className={cx(classes.mobileMenuItem, classes.colors, {
                                 [classes.selectedItem]: selectedItem === subItem.name,
                               })}
                               onClick={event => {
@@ -163,7 +165,7 @@ const TopNavBar = props => {
                   <li className={classes.menuList}>
                     <div
                       key={item.name}
-                      className={cx(classes.menuItem, classes.colors, {
+                      className={cx(classes.mobileMenuItem, classes.colors, {
                         [classes.selectedItem]: selectedItem === item.name,
                       })}
                       onClick={() => handleMenuItemClick(item)}
@@ -173,7 +175,9 @@ const TopNavBar = props => {
                   </li>
                 )
               )}
-            <Donate />
+            <div className={classes.mobileDonate}>
+              <Donate />
+            </div>
           </menu>
         ) : null}
       </div>
@@ -203,6 +207,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     maxWidth: theme.maxPanelWidth,
   }),
+  donate: {
+    padding: '0 0 0 1rem',
+  },
+  mobileDonate: {
+    padding: '0 0 0.5rem 0',
+  },
   navBarContainer: {
     width: '80%',
     display: 'flex',
@@ -238,7 +248,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '80%',
     background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'left',
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
@@ -253,6 +263,28 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: 'none',
     padding: '0.5rem 1rem',
     margin: '0 0.25rem',
+    whiteSpace: 'nowrap',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      cursor: 'pointer',
+    },
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' ? 'black' : 'white',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+  }),
+  mobileMenuGroup: props => ({
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
+    cursor: 'default',
+    background: 'none',
+    border: 'none',
+    padding: '0 0 1rem 0',
+    margin: '0',
     whiteSpace: 'nowrap',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       cursor: 'pointer',
@@ -286,6 +318,26 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: 'none',
     padding: '0.5rem 1rem',
     margin: '0 0.25rem',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' ? 'black' : 'white',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+  }),
+  mobileMenuItem: props => ({
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    padding: '0 0 1rem 0',
+    margin: '0',
     whiteSpace: 'nowrap',
     textAlign: 'left',
     '&:hover': {
