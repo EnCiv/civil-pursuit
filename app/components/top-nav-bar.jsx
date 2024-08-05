@@ -225,6 +225,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'absolute',
     bottom: '10%',
     left: '50%',
+    gap: '0.4rem',
     transform: 'translateX(-50%)',
     alignItems: 'baseline',
     zIndex: theme.zIndexes.menu,

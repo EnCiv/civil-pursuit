@@ -47,7 +47,7 @@ const buttonStyles = createUseStyles(theme => ({
     height: 'auto',
     backgroundColor: `${theme.colors.encivYellow}`,
     borderRadius: '2rem',
-    padding: '0.5rem 1.25rem',
+    padding: '0.2rem 1.6rem',
     fontFamily: 'Inter, sans-serif',
     fontWeight: 600,
     fontSize: '1rem',
