@@ -435,7 +435,9 @@ function iteratePairs(discussionId, round, statementIds, func) {
 
 function putGroupings(discussionId, round, userId, groupings) {
   const dis = Discussions[discussionId]
+  if (!dis) return false
   const uitem = Discussions[discussionId].Uitems[userId][round]
+  if (!uitem) return false
 
   //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
   if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
@@ -451,7 +453,7 @@ function putGroupings(discussionId, round, userId, groupings) {
     },
   })
 
-  // Return false if either are undefined
+  // Return true only if both are defined
   return dis && uitem ? true : false
 }
 module.exports.putGroupings = putGroupings

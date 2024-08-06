@@ -111,6 +111,25 @@ test('Fail if arguments are invalid.', async () => {
   expect(console.error.mock.calls[0][0]).toMatch(/Expected 4 arguments/)
 })
 
+test("Fail when discussionId doesn't exist and putGroupings() returns false.", async () => {
+  const cb = jest.fn()
+  await postPointGroups.call(
+    synuser,
+    'doesntExist',
+    0,
+    [
+      [1, 2],
+      [3, 4],
+    ],
+    cb
+  )
+
+  expect(console.error.mock.calls[0][0]).toMatch(/did not complete successfully/)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(undefined)
+})
+
 test('Success if all arguments are valid.', async () => {
   const cb = jest.fn()
   await postPointGroups.call(
