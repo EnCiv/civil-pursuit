@@ -32,9 +32,10 @@ export default function WhyStep(props) {
   const updateWhyResponse = ({ valid, value }) => {
     const updatedAnswers = answeredPoints.map(answer => {
       if (answer._id === value.parentId) {
-        answer.answerSubject = value.subject
-        answer.answerDescription = value.description
+        answer.subject = value.subject
+        answer.description = value.description
         answer.valid = valid
+        answer.parentId = value.parentId
       }
       return answer
     })

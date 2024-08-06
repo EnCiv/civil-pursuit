@@ -184,64 +184,15 @@ export const onDoneTest = {
         value: [
           {
             _id: '1',
-            subject: 'Point 1',
-            description: 'Point 1 Description',
-            children: {
-              type: {
-                displayName: 'WithStyles(DemInfo)',
-                defaultProps: {},
-                __docgenInfo: {
-                  description: '',
-                  methods: [],
-                  displayName: 'DemInfo',
-                },
-              },
-              key: null,
-              ref: null,
-              props: {
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
-              },
-              _owner: null,
-              _store: {},
-            },
-            valid: true,
-            answerSubject: 'This is the first subject!',
-            answerDescription: 'This is the first description!',
+            subject: 'This is the first subject!',
+            description: 'This is the first description!',
+            parentId: '1',
           },
           {
             _id: '2',
-            subject: 'Point 2',
-            description:
-              'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-            children: {
-              type: {
-                displayName: 'WithStyles(DemInfo)',
-                defaultProps: {},
-                __docgenInfo: {
-                  description: '',
-                  methods: [],
-                  displayName: 'DemInfo',
-                },
-              },
-              key: null,
-              ref: null,
-              props: {
-                user: {
-                  dob: '1980-10-20T00:00:00.000Z',
-                  state: 'GA',
-                  party: 'Independent',
-                },
-              },
-              _owner: null,
-              _store: {},
-            },
-            valid: true,
-            answerSubject: 'This is the second subject!',
-            answerDescription: 'This is the second description!',
+            subject: 'This is the second subject!',
+            description: 'This is the second description!',
+            parentId: '2',
           },
         ],
       },
