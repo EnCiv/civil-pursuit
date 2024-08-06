@@ -132,7 +132,7 @@ const useStyles = createUseStyles(theme => ({
   }),
   formTitle: props => ({
     textAlign: 'center',
-    color: props.mode === 'dark' ? theme.colors.white : '#06335C',
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
   jsonFormContainer: {
@@ -145,7 +145,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '0.25rem !important',
     border: `0.1rem solid ${theme.colors.borderGray} !important`,
     backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.cardOutline,
-    color: props.mode === 'dark' ? theme.colors.cardOutline : '#1A1A1A',
+    color: props.mode === 'dark' ? theme.colors.cardOutline : theme.colors.title,
     boxSizing: 'border-box',
   }),
   actionButton: {
