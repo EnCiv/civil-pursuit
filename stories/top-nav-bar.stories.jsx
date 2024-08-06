@@ -1,6 +1,5 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
-import Donate from '../app/components/donate'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import Common from './common'
 import { expect } from '@storybook/jest'
