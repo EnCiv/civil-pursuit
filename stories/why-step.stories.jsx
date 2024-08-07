@@ -184,14 +184,14 @@ export const onDoneTest = {
         value: [
           {
             _id: '1',
-            subject: 'This is the first subject!',
-            description: 'This is the first description!',
+            answerSubject: 'This is the first subject!',
+            answerDescription: 'This is the first description!',
             parentId: '1',
           },
           {
             _id: '2',
-            subject: 'This is the second subject!',
-            description: 'This is the second description!',
+            answerSubject: 'This is the second subject!',
+            answerDescription: 'This is the second description!',
             parentId: '2',
           },
         ],
