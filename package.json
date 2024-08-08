@@ -35,6 +35,9 @@
   "dependencies": {
     "@codastic/react-positioning-portal": "^0.7.0",
     "@enciv/mongo-collections": "^0.0.3",
+    "@jsonforms/core": "^3.2.1",
+    "@jsonforms/react": "^3.2.1",
+    "@jsonforms/vanilla-renderers": "^3.2.1",
     "@shelf/jest-mongodb": "^4.3.2",
     "autosize": "^3.0.15",
     "bson-objectid": "^1.2.4",

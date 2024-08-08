@@ -50,9 +50,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
   },
   line: {
-    position: 'absolute',
     height: '0.5px',
-    margin: 0,
     width: '100%',
   },
   back: {

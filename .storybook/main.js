@@ -1,11 +1,11 @@
+/** @type { import('@storybook/react-webpack5').StorybookConfig } */
+
 import { merge } from 'webpack-merge'
 const webpack = require('webpack')
 const path = require('path')
 
 const config = {
-  stories: [
-    '../stories/**/*.stories.@(js|jsx|ts|tsx)', // Correct path to the stories folder
-  ],
+  stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
@@ -33,6 +33,11 @@ const config = {
           },
           {
             test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+          },
+          {
+            test: /\.jsx$/,
             exclude: /node_modules/,
             loader: 'babel-loader',
           },
