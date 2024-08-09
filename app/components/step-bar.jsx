@@ -48,7 +48,7 @@ function StepBar(props) {
   // State to map each 'page' of the steps carousel to its steps.
   const [pages, setPages] = useState(new Map())
   // State to hold the steps that should be rendered on each page.
-  const [visibleSteps, setVisibleSteps] = useState([...steps, dummyStep])
+  const [visibleSteps, setVisibleSteps] = useState([...steps, dummyStep].map((step, i) => ({ ...step, id: i + 1 })))
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
   // add a unique numerical identifier to each step
@@ -97,7 +97,8 @@ function StepBar(props) {
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < mobileBreakpoint * 16)
-    handleCarouselSetup()
+    setVisibleSteps([...steps, dummyStep])
+    setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
   }
 
   const rightClick = () => {
@@ -137,8 +138,7 @@ function StepBar(props) {
   */
   const handleCarouselSetup = () => {
     if (isMobile) return
-    // render all the steps so that all the widths can be measured
-    setVisibleSteps([...steps, dummyStep])
+    // before calling handleCarouselSetup render all the steps so that all the widths can be measured
 
     if (!stepContainerRef?.current) return
     let containerWidth = stepContainerRef?.current?.offsetWidth
@@ -199,7 +199,10 @@ function StepBar(props) {
    UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
   */
   useLayoutEffect(() => {
-    if (!isMobile) handleCarouselSetup()
+    if (!isMobile) {
+      setVisibleSteps([...steps, dummyStep])
+      setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
+    }
   }, [isMobile, current])
 
   /*
@@ -231,8 +234,9 @@ function StepBar(props) {
               <Step
                 name={step.name}
                 title={step.title}
-                complete={step.complete}
+                complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
+                unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : false}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
@@ -283,8 +287,9 @@ function StepBar(props) {
                     key={index}
                     name={step.name}
                     title={step.title}
-                    complete={step.complete}
+                    complete={steps[index].complete}
                     active={current === step.id ? true : false}
+                    unlocked={index > 0 && steps[index - 1].complete}
                     onDone={() => onDone({ valid: true, value: step.id })}
                     index={index}
                     {...otherProps}
@@ -297,7 +302,7 @@ function StepBar(props) {
         </div>
       )}
 
-      {!isOpen && <div className={classes.breakStyle} />}
+      <div className={classes.breakStyle} />
     </div>
   )
 }
@@ -357,9 +362,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   //mobile styles
   mobileContainer: {
-    height: '23.0625rem',
     display: 'flex',
     flexDirection: 'column',
+    background: theme.colors.white,
   },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
@@ -396,6 +401,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.white,
     margin: '0rem 1.56rem',
     overflowY: 'scroll',
+    position: 'absolute',
+    top: '100%',
+    left: '0',
+    width: '100%',
+    zIndex: '1000',
   },
   dropdownContent: {
     display: 'flex',

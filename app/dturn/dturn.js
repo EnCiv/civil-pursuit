@@ -136,6 +136,11 @@ module.exports.insertStatementId = insertStatementId
 */
 
 function getRandomUniqueList(max, count) {
+  // return list from 0 to (count - 1) if using jest test.
+  if (process.env.JEST_TEST_ENV) {
+    return [...Array(count).keys()]
+  }
+
   if (max < count) {
     console.error('getRandomCount impossible', max, 'less than', count)
     count = max
@@ -441,13 +446,16 @@ function iteratePairs(discussionId, round, statementIds, func) {
 
 function putGroupings(discussionId, round, userId, groupings) {
   const dis = Discussions[discussionId]
+  if (!dis) return false
   const uitem = Discussions[discussionId].Uitems[userId][round]
+  if (!uitem) return false
+
   //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
   if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
   uitem.groupings = groupings
   const shownStatementIds = Object.keys(uitem.shownStatementIds)
   if (shownStatementIds.length <= 1) console.error('putGroupings', round, userId, shownStatementIds)
-  for (id of shownStatementIds) incrementShownItems(discussionId, round, id)
+  for (const id of shownStatementIds) incrementShownItems(discussionId, round, id)
   iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
   groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
   Discussions[discussionId].updateUInfo({
@@ -455,6 +463,9 @@ function putGroupings(discussionId, round, userId, groupings) {
       [discussionId]: { [round]: { groupings } },
     },
   })
+
+  // Return true only if both are defined
+  return dis && uitem ? true : false
 }
 module.exports.putGroupings = putGroupings
 
