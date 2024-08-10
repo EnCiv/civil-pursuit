@@ -200,13 +200,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   }),
   topNavBar: props => ({
     width: '100%',
-    position: () => {
+    position: (() => {
       if (props.mode === 'transparent') {
         return 'absolute'
       } else {
         return ''
       }
-    },
+    })(),
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
