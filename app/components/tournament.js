@@ -17,10 +17,10 @@ const WebComponents = {
   StepBar: StepBar,
   RoundTracker: RoundTracker,
   StepSlider: StepSlider,
-  Answer: undefined, // TODO: Import answer step component here.,
+  Answer: undefined, // TODO: Import answer step component here.
   GroupingStep: GroupingStep,
   RankStep: RankStep,
-  Review: ReviewPointList,
+  ReviewPointList: ReviewPointList,
   WhyStep: WhyStep,
   CompareReasons: CompareReasons,
   Intermission: undefined, // TODO: Import Intermission component here.
