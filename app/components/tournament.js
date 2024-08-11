@@ -52,6 +52,7 @@ function Tournament(props) {
         const newRound = state.currentRound + 1
 
         return {
+          ...state,
           currentRound: newRound,
           stepComponents: buildChildren(steps, newRound),
         }
@@ -69,8 +70,9 @@ function Tournament(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <RoundTracker />
+      <RoundTracker roundsStatus={['pending', 'inProgress', 'pending', 'pending', 'pending']} />
       <StepSlider
+        key={state.currentRound}
         steps={stepInfo}
         children={state.stepComponents}
         onDone={valid => {
