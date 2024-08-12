@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import WhyInput from './why-input'
+import { cloneDeep } from 'lodash'
 
 export default function WhyStep(props) {
   const {
@@ -18,32 +19,38 @@ export default function WhyStep(props) {
   } = props
   const classes = useStylesFromThemeFunction()
 
-  const [points, setPoints] = useState(type === 'most' ? shared.mosts : shared.leasts)
-  const [answeredPoints, setAnsweredPoints] = useState(type === 'most' ? shared.whyMosts : shared.whyLeasts)
+  const points = type === 'most' ? shared.mosts : shared.leasts
+
+  // convert any existing whyMosts into an object where they are indexed by parentId
+  const [whyByParentId, setWhyByParentId] = useState(
+    (type === 'most' ? shared.mosts : shared.leasts).reduce((o, point) => {
+      const whys = type == 'most' ? shared.whyMosts : shared.whyLeasts
+      const whyPoint = whys.find(p => p.parentId === point._id) || { subject: '', description: '', parentId: point._id }
+      o[point._id] = { valid: false, value: whyPoint }
+      return o
+    }, {})
+  )
+
+  console.info({ whyByParentId })
 
   useEffect(() => {
-    if (!points.length || areAnswersComplete(answeredPoints)) {
-      onDone({ valid: true, value: answeredPoints })
-    } else {
-      onDone({ valid: false, value: answeredPoints })
+    if (!points.length) {
+      onDone({ valid: true, value: [] })
+      return
     }
-  }, [answeredPoints])
+    const value = Object.values(whyByParentId).map(aP => aP.value)
+    console.info('complete?', areAnswersComplete())
+    onDone({ valid: areAnswersComplete(), value })
+  }, [whyByParentId])
 
   const updateWhyResponse = ({ valid, value }) => {
-    const updatedAnswers = answeredPoints.map(answer => {
-      if (answer._id === value.parentId) {
-        answer.answerSubject = value.subject
-        answer.answerDescription = value.description
-        answer.valid = valid
-        answer.parentId = value.parentId
-      }
-      return answer
-    })
-    setAnsweredPoints(updatedAnswers)
+    console.info('update', { valid, value })
+    const newW = { ...whyByParentId, [value.parentId]: { valid, value } }
+    setWhyByParentId(newW)
   }
 
-  const areAnswersComplete = answeredPoints => {
-    return answeredPoints.every(answer => answer.valid)
+  const areAnswersComplete = () => {
+    return points.every(point => whyByParentId[point._id].valid)
   }
 
   return (
@@ -59,7 +66,7 @@ export default function WhyStep(props) {
           points.map(point => (
             <div key={point._id}>
               <hr className={classes.pointsHr}></hr>
-              <WhyInput point={point} defaultValue={{ subject: '', description: '' }} onDone={updateWhyResponse} />
+              <WhyInput point={point} defaultValue={whyByParentId[point._id].value} onDone={updateWhyResponse} />
             </div>
           ))
         ) : (
