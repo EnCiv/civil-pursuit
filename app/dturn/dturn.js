@@ -2,11 +2,17 @@ const { deepEqual } = require('assert')
 const showDeepDiff = require('show-deep-diff')
 
 // clustering
-const GROUP_SIZE = 7 // this is the group size
-const GMAJORITY = 0.5 //Group Majority - minimum percentage of group that votes for it to be part of the group
-const MAX_ROUNDS = 10 // maximum number of rounds to search down when clustering children
-const MIN_SHOWN_COUNT = Math.floor(GROUP_SIZE / 2) + 1 // the minimum number of times a item pair is shown in order to decide if a majority have grouped it
-const MIN_RANK = 2 // when filterning statements for the next round, they must at least have this number of users voting for it
+function getInitOptions(options) {
+  return {
+    group_size: options.group_size || 7, // this is the group size
+    gmajority: options.gmajority || 0.5, // Group Majority - minimum percentage of group that votes for it to be part of the group
+    max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
+    min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
+    min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
+    updateUInfo: options.updateUInfo || (() => {}),
+    getAllUInfo: options.getAllUInfo || (async () => []),
+  }
+}
 /**
  *  initDiscussion(discussionId,options) nothing returned
  *  insertStatementId(discussionId,round,userId,statementId) returns statementId
@@ -53,18 +59,23 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
 module.exports.Discussions = Discussions // exported for testing purpose do not use this in production.
 
 async function initDiscussion(discussionId, options = {}) {
+  // If option is not provided, use default values
+  const initOptions = getInitOptions(options)
+  const validOptionKeys = Object.keys(initOptions)
+
+  // Check if provided options are valid
+  Object.keys(options).forEach(key => {
+    if (!validOptionKeys.includes(key)) {
+      throw new Error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+    }
+  })
+
   Discussions[discussionId] = {
     ShownStatements: [],
     ShownGroups: [],
     Gitems: [],
     Uitems: {},
-    group_size: options.group_size || GROUP_SIZE,
-    gmajority: options.gmajority || GMAJORITY,
-    max_rounds: options.max_rounds || MAX_ROUNDS,
-    min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
-    min_rank: options.min_rank || MIN_RANK,
-    updateUInfo: options.updateUInfo || (() => {}),
-    getAllUInfo: options.getAllUInfo || (async () => []),
+    ...initOptions,
   }
   await reconstructDiscussionFromUInfo(discussionId)
 }
