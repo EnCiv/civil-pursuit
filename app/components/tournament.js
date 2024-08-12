@@ -70,7 +70,7 @@ function Tournament(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <RoundTracker roundsStatus={['pending', 'inProgress', 'pending', 'pending', 'pending']} />
+      <RoundTracker roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
       <StepSlider
         key={state.currentRound}
         steps={stepInfo}
