@@ -61,7 +61,10 @@ function PointInput(props) {
   }
 
   const handleOnBlur = () => {
-    onDone({ valid: isSubjValid(subject) && isDescValid(description), value: { subject, description } })
+    onDone({
+      valid: isSubjValid(subject) && isDescValid(description),
+      value: { ...defaultValue, subject, description },
+    })
   }
 
   return (
@@ -69,7 +72,7 @@ function PointInput(props) {
       <input
         type="text"
         placeholder="Type some thing here"
-        value={subject}
+        defaultValue={subject}
         onChange={e => handleSubjectChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
@@ -81,7 +84,7 @@ function PointInput(props) {
       <textarea
         ref={textareaRef}
         placeholder="Description"
-        value={description}
+        defaultValue={description}
         onChange={e => handleDescriptionChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(

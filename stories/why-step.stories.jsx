@@ -25,13 +25,15 @@ const createPointObj = (
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
-  }
+  },
+  parentId
 ) => {
   return {
     _id,
     subject,
     description,
     demInfo,
+    parentId,
   }
 }
 
@@ -47,25 +49,48 @@ const point2 = createPointObj(
     party: 'Independent',
   }
 )
-const point3 = createPointObj('3', 'Point 3', 'Point 3 Description', [], {
-  dob: '1995-10-20T00:00:00.000Z',
-  state: 'CA',
-  party: 'Independent',
-})
-const point4 = createPointObj('4', 'Point 4', 'Point 4 Description', [], {
-  dob: '1998-10-20T00:00:00.000Z',
-  state: 'CO',
-  party: 'Independent',
-})
+const point3 = createPointObj(
+  '3',
+  'Point 3',
+  'Point 3 Description',
+  [],
+  {
+    dob: '1995-10-20T00:00:00.000Z',
+    state: 'CA',
+    party: 'Independent',
+  },
+  '1'
+)
+const point4 = createPointObj(
+  '4',
+  'Point 4',
+  'Point 4 Description',
+  [],
+  {
+    dob: '1998-10-20T00:00:00.000Z',
+    state: 'CO',
+    party: 'Independent',
+  },
+  '2'
+)
 
 const defaultSharedPoints = {
   mosts: [point1, point2],
-  leasts: [point3, point4],
-  whyMosts: [point1, point2],
+  leasts: [point1, point2],
+  whyMosts: [point3, point4],
   whyLeasts: [point3, point4],
 }
 
 export const mostPoints = {
+  args: {
+    type: 'most',
+    intro:
+      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+    shared: { mosts: [point1, point2], whyMosts: [] },
+  },
+}
+
+export const mostPointsWithDefault = {
   args: {
     type: 'most',
     intro:
