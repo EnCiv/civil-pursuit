@@ -18,14 +18,29 @@ export default {
   },
 }
 
-const point = {
-  subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at bibendum sapien',
-  _id: 'ExampleId',
+const createPointObj = (_id, description = 'Point Description', groupedPoints = []) => {
+  return {
+    _id,
+    description,
+  }
 }
 
-export const ExamplePoint = {
+const point1 = createPointObj(
+  '1',
+  "What one issue should 'We the People' unite and solve first to make our country even better?",
+  []
+)
+const point2 = createPointObj('2', 'Why should everyone consider solving this issue?', [])
+
+const defaultPoints = { startingPoint: [point1], whyMosts: [point2] }
+
+export const Empty = {
+  args: {},
+}
+
+export const Default = {
   args: {
-    point,
+    question: "What one issue should 'We the People' unite and solve first to make our country even better?",
+    whyQuestion: 'Why should everyone consider solving this issue?',
   },
 }

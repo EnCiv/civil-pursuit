@@ -11,8 +11,8 @@ const AnswerStep = forwardRef((props, ref) => {
   const {
     className = '',
     intro = '',
-    whyQuestion = '',
     question = {},
+    whyQuestion = '',
     shared = {
       startingPoint: {},
       whyMosts: [],
@@ -49,21 +49,34 @@ const AnswerStep = forwardRef((props, ref) => {
     return answeredPoints.every(answer => answer.valid)
   }
 
+  console.log('question: ' + question)
+
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
       <div className={classes.pointsContainer}>
-        {points.length ? (
-          points.map(point => (
-            <div key={point._id}>
-              <hr className={classes.pointsHr}></hr>
-              <WhyInput point={point} defaultValue={{ subject: '', description: '' }} onDone={updateWhyResponse} />
-            </div>
-          ))
+        {question ? (
+          <WhyInput
+            point={{ subject: '', description: question, _id: '1' }}
+            defaultValue={{ subject: '', description: '' }}
+            onDone={updateWhyResponse}
+          />
         ) : (
           <div className={classes.noPointsContainer}>
             <hr className={classes.pointsHr}></hr>
-            There are no issues to respond to.
+            There are no questions to respond to.
+          </div>
+        )}
+        {whyQuestion ? (
+          <WhyInput
+            point={{ subject: '', description: whyQuestion, _id: '1' }}
+            defaultValue={{ subject: '', description: '' }}
+            onDone={updateWhyResponse}
+          />
+        ) : (
+          <div className={classes.noPointsContainer}>
+            <hr className={classes.pointsHr}></hr>
+            There are no whyPoints to respond to.
           </div>
         )}
       </div>
