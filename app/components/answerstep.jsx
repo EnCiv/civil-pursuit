@@ -1,11 +1,14 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 
+// most of this code was taken from why-step.jsx
 'use strict'
 import React, { forwardRef, useState, useEffect } from 'react'
 import StepIntro from './step-intro'
 import WhyInput from './why-input'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import ObjectId from 'bson-objectid'
+import _ from 'lodash'
 
 const AnswerStep = forwardRef((props, ref) => {
   const {
@@ -22,61 +25,86 @@ const AnswerStep = forwardRef((props, ref) => {
   } = props
   const classes = useStylesFromThemeFunction()
 
-  const [points, setPoints] = useState(shared.startingPoint)
-  const [answeredPoints, setAnsweredPoints] = useState(shared.whyMosts)
+  // user input to answer important issue
+  const [startingPoint, setStartingPoint] = useState(shared.startingPoint)
+
+  // user input to explain why issue is important
+  const [whyMosts, setWhyMosts] = useState(shared.whyMosts)
+  console.log(whyMosts)
+
+  // const objectID = ObjectId().toString()
 
   useEffect(() => {
-    if (!points.length || areAnswersComplete(answeredPoints)) {
-      onDone({ valid: true, value: answeredPoints })
+    if (!startingPoint.length || areAnswersComplete(whyMosts)) {
+      onDone({ valid: true, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
     } else {
-      onDone({ valid: false, value: answeredPoints })
+      onDone({ valid: false, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
     }
-  }, [answeredPoints])
+  }, [whyMosts])
+
+  const updateQuestionResponse = ({ valid, value }) => {
+    const updatedAnswers = {
+      answerSubject: value.subject,
+      answerDescription: value.description,
+      _id: value._id,
+    }
+    setStartingPoint(updatedAnswers)
+  }
 
   const updateWhyResponse = ({ valid, value }) => {
-    const updatedAnswers = answeredPoints.map(answer => {
+    const updatedAnswers = whyMosts.map(answer => {
+      console.log(answer._id + ' ' + value.parentId)
       if (answer._id === value.parentId) {
         answer.answerSubject = value.subject
         answer.answerDescription = value.description
-        answer.valid = valid
+        answer.parentId = value.parentId
       }
       return answer
     })
-    setAnsweredPoints(updatedAnswers)
+    setWhyMosts(updatedAnswers)
   }
 
-  const areAnswersComplete = answeredPoints => {
-    return answeredPoints.every(answer => answer.valid)
+  const areAnswersComplete = whyMosts => {
+    return whyMosts.every(answer => answer.valid)
   }
 
-  console.log('question: ' + question)
+  const assignID = () => {
+    return objectID
+  }
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
-      <div className={classes.pointsContainer}>
+      <div className={classes.answersContainer}>
         {question ? (
-          <WhyInput
-            point={{ subject: '', description: question, _id: '1' }}
-            defaultValue={{ subject: '', description: '' }}
-            onDone={updateWhyResponse}
-          />
+          <div key="1">
+            <WhyInput
+              point={{ subject: '', description: question, _id: question._id }}
+              defaultValue={{ subject: '', description: '' }}
+              onDone={updateQuestionResponse}
+            />
+          </div>
         ) : (
           <div className={classes.noPointsContainer}>
             <hr className={classes.pointsHr}></hr>
             There are no questions to respond to.
           </div>
         )}
-        {whyQuestion ? (
-          <WhyInput
-            point={{ subject: '', description: whyQuestion, _id: '1' }}
-            defaultValue={{ subject: '', description: '' }}
-            onDone={updateWhyResponse}
-          />
+        {whyMosts.length ? (
+          whyMosts.map(point => (
+            <div key={point._id}>
+              <hr className={classes.pointsHr}></hr>
+              <WhyInput
+                point={{ subject: '', description: whyQuestion, _id: question._id }}
+                defaultValue={{ subject: '', description: '' }}
+                onDone={updateWhyResponse}
+              />
+            </div>
+          ))
         ) : (
           <div className={classes.noPointsContainer}>
             <hr className={classes.pointsHr}></hr>
-            There are no whyPoints to respond to.
+            There are no whyQuestion to respond to.
           </div>
         )}
       </div>
@@ -108,8 +136,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       maxWidth: '33rem',
     },
   },
-  pointsContainer: {
+  answersContainer: {
     fontSize: '1.25rem',
+    paddingTop: '4.325rem',
   },
   pointsHr: {
     color: '#D9D9D9',
