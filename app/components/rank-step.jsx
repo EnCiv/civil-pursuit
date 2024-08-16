@@ -12,6 +12,7 @@ import StatusBadge from './status-badge'
 import Ranking from './ranking'
 
 const minSelectionsTable = {
+  0: { least: 0, most: 0 },
   1: { least: 0, most: 0 },
   // TODO: Figure out the rest of the values.
   10: { least: 1, most: 2 },
@@ -34,7 +35,8 @@ function RankStep(props) {
   const [updateCount, setUpdateCount] = useState(1)
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
 
-  const { least: targetLeast, most: targetMost } = minSelectionsTable[pointList.length]
+  const table = minSelectionsTable[pointList.length] ?? { least: 0, most: 0 }
+  const { least: targetLeast, most: targetMost } = table
   const mostCount = () => getRankCount('Most')
   const leastCount = () => getRankCount('Least')
 
@@ -47,6 +49,10 @@ function RankStep(props) {
 
   const getRankCount = rankName => {
     return rankList.filter(point => point.rank === rankName).length
+  }
+
+  const getPointRank = point => {
+    return rankList?.find(rank => rank.id === point._id)?.rank
   }
 
   // in useEffect so it's called after setRank updates have taken effect
@@ -65,7 +71,9 @@ function RankStep(props) {
     const mostDiscrepancy = mostCount() - targetMost
     const leastDiscrepancy = leastCount() - targetLeast
 
-    const valid = mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointList.length
+    const valid =
+      (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointList.length) ||
+      (doneCount === pointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
@@ -79,12 +87,24 @@ function RankStep(props) {
           <StatusBadge
             name={'Most Important'}
             number={`${mostCount()}/${targetMost}`}
-            status={mostCount() == targetMost ? 'complete' : mostCount() > targetMost ? 'error' : 'progress'}
+            status={
+              mostCount() == targetMost || (targetLeast == 0 && targetMost == 0)
+                ? 'complete'
+                : mostCount() > targetMost
+                ? 'error'
+                : 'progress'
+            }
           />
           <StatusBadge
             name={'Least Important'}
             number={`${leastCount()}/${targetLeast}`}
-            status={leastCount() == targetLeast ? 'complete' : leastCount() > targetLeast ? 'error' : 'progress'}
+            status={
+              leastCount() == targetLeast || (targetLeast == 0 && targetMost == 0)
+                ? 'complete'
+                : leastCount() > targetLeast
+                ? 'error'
+                : 'progress'
+            }
           />
         </div>
         <div className={classes.rightButtons}>
@@ -102,8 +122,10 @@ function RankStep(props) {
       <div className={cx(classes.pointDiv)}>
         {pointList.map((point, i) => {
           const rankInvalid =
-            (rankDiscrepancies.most > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Most') ||
-            (rankDiscrepancies.least > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Least')
+            ((rankDiscrepancies.most > 0 && getPointRank(point) == 'Most') ||
+              (rankDiscrepancies.least > 0 && getPointRank(point) == 'Least')) &&
+            targetLeast > 0 &&
+            targetMost > 0
           return (
             <Point
               key={point._id}

@@ -43,6 +43,7 @@ const point7 = createPointObj('7', 'Point 7', 'Point 7 Description')
 const point8 = createPointObj('8', 'Point 8', 'Point 8 Description')
 const point9 = createPointObj('9', 'Point 9', 'Point 9 Description')
 const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
+const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
 
 export const Empty = { args: {} }
 
@@ -53,21 +54,10 @@ export const emptyRank = {
   },
 }
 
-export const tenRanks = {
+export const oneRankNeutral = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Neutral' },
-      { id: point7._id, rank: 'Neutral' },
-      { id: point8._id, rank: 'Neutral' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-    ],
+    pointList: [point1],
+    rankList: [{ id: point1._id, rank: 'Neutral' }],
   },
 }
 
@@ -90,6 +80,97 @@ export const threePoints = {
       { id: point1._id, rank: 'Most' },
       { id: point2._id, rank: 'Most' },
       { id: point3._id, rank: 'Least' },
+    ],
+  },
+}
+
+export const tenRanksCorrect = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Most' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Neutral' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Neutral' },
+      { id: point7._id, rank: 'Neutral' },
+      { id: point8._id, rank: 'Neutral' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+    ],
+  },
+}
+
+export const tenRanksTooManyMost = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Most' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Most' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Neutral' },
+      { id: point7._id, rank: 'Neutral' },
+      { id: point8._id, rank: 'Neutral' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+    ],
+  },
+}
+
+export const tenRanksTooManyLeast = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Least' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Neutral' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Neutral' },
+      { id: point7._id, rank: 'Neutral' },
+      { id: point8._id, rank: 'Neutral' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+    ],
+  },
+}
+
+export const tenRanksTooManyMostAndLeast = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Least' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Neutral' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Most' },
+      { id: point7._id, rank: 'Most' },
+      { id: point8._id, rank: 'Least' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+    ],
+  },
+}
+
+export const numRanksNotInLookup = {
+  args: {
+    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10, point11],
+    rankList: [
+      { id: point1._id, rank: 'Most' },
+      { id: point2._id, rank: 'Least' },
+      { id: point3._id, rank: 'Least' },
+      { id: point4._id, rank: 'Neutral' },
+      { id: point5._id, rank: 'Neutral' },
+      { id: point6._id, rank: 'Most' },
+      { id: point7._id, rank: 'Most' },
+      { id: point8._id, rank: 'Least' },
+      { id: point9._id, rank: 'Neutral' },
+      { id: point10._id, rank: 'Neutral' },
+      { id: point11._id, rank: 'Neutral' },
     ],
   },
 }
