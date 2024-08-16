@@ -1,4 +1,6 @@
-//https://github.com/EnCiv/civil-pursuit/issues/65
+// https://github.com/EnCiv/civil-pursuit/issues/65
+// https://github.com/EnCiv/civil-pursuit/issues/191
+
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -6,6 +8,12 @@ import Point from './point'
 import PointGroup from './point-group' // should be using PointGroup but it needs to support children
 
 import Ranking from './ranking'
+
+const minSelectionsTable = {
+  1: { least: 0, most: 0 },
+  // TODO: Figure out the rest of the values.
+  10: { least: 1, most: 2 },
+}
 
 function RankStep(props) {
   const classes = useStylesFromThemeFunction()
@@ -22,6 +30,7 @@ function RankStep(props) {
   // rankList won't change except by parent, but ranks inside the list will change by setRank
   // so updateCount is used to determin when rank updates are made
   const [updateCount, setUpdateCount] = useState(1)
+  const [rankDiscrepancies, setRankDiscrepancies] = useState({})
   const setRank = (id, rank) => {
     const it = rankList.find(ro => ro.id === id)
     if (it) it.rank = rank
@@ -39,24 +48,46 @@ function RankStep(props) {
     for (const point of pointList) {
       if ((it = rankList.find(ro => ro.id === point._id)) && it.rank) doneCount++
     }
-    return [doneCount === pointList.length, pointList.length ? doneCount / pointList.length : 0] // value should be 0 if not points in list not null
+
+    // Check for difference in expected most/least counts
+    const mostDiscrepancy =
+      rankList.filter(point => point.rank === 'Most').length - minSelectionsTable[pointList.length]?.most
+    const leastDiscrepancy =
+      rankList.filter(point => point.rank === 'Least').length - minSelectionsTable[pointList.length]?.least
+
+    const valid = mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointList.length
+
+    setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
+
+    return [valid, pointList.length ? doneCount / pointList.length : 0] // value should be 0 if not points in list not null
   }
 
   return (
     <div className={cx(classes.rankStep, className)} {...otherProps}>
-      <div className={classes.pointDiv}>
-        {pointList.map((point, i) => (
-          <Point key={point._id} point={point} vState="default">
-            <Ranking
-              className={classes.rank}
-              defaultValue={(rankList.find(ro => ro.id === point._id) || {}).rank}
-              onDone={({ valid, value }) => {
-                if (valid) setRank(point._id, value)
-                else setRank(point._id, '')
-              }}
-            />
-          </Point>
-        ))}
+      <div className={cx(classes.pointDiv)}>
+        {pointList.map((point, i) => {
+          const rankInvalid =
+            (rankDiscrepancies.most > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Most') ||
+            (rankDiscrepancies.least > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Least')
+
+          return (
+            <Point
+              key={point._id}
+              point={point}
+              vState="default"
+              className={rankInvalid ? classes.invalidBackground : undefined}
+            >
+              <Ranking
+                className={classes.rank}
+                defaultValue={(rankList.find(ro => ro.id === point._id) || {}).rank}
+                onDone={({ valid, value }) => {
+                  if (valid) setRank(point._id, value)
+                  else setRank(point._id, '')
+                }}
+              />
+            </Point>
+          )
+        })}
       </div>
     </div>
   )
@@ -79,6 +110,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   rank: {
     paddingTop: '1rem',
+  },
+  invalidBackground: {
+    backgroundColor: '#f9e7e5',
+  },
+  invalidText: {
+    color: '#cc4233',
   },
 }))
 
