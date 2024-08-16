@@ -6,6 +6,8 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Point from './point'
 import PointGroup from './point-group' // should be using PointGroup but it needs to support children
+import { ModifierButton } from './button.jsx'
+import StatusBadge from './status-badge'
 
 import Ranking from './ranking'
 
@@ -31,12 +33,22 @@ function RankStep(props) {
   // so updateCount is used to determin when rank updates are made
   const [updateCount, setUpdateCount] = useState(1)
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
+
+  const { least: targetLeast, most: targetMost } = minSelectionsTable[pointList.length]
+  const mostCount = () => getRankCount('Most')
+  const leastCount = () => getRankCount('Least')
+
   const setRank = (id, rank) => {
     const it = rankList.find(ro => ro.id === id)
     if (it) it.rank = rank
     else rankList.push({ id, rank })
     setUpdateCount(updateCount + 1)
   }
+
+  const getRankCount = rankName => {
+    return rankList.filter(point => point.rank === rankName).length
+  }
+
   // in useEffect so it's called after setRank updates have taken effect
   useEffect(() => {
     onDone(validAndPercentDone())
@@ -50,10 +62,8 @@ function RankStep(props) {
     }
 
     // Check for difference in expected most/least counts
-    const mostDiscrepancy =
-      rankList.filter(point => point.rank === 'Most').length - minSelectionsTable[pointList.length]?.most
-    const leastDiscrepancy =
-      rankList.filter(point => point.rank === 'Least').length - minSelectionsTable[pointList.length]?.least
+    const mostDiscrepancy = mostCount() - targetMost
+    const leastDiscrepancy = leastCount() - targetLeast
 
     const valid = mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointList.length
 
@@ -64,12 +74,36 @@ function RankStep(props) {
 
   return (
     <div className={cx(classes.rankStep, className)} {...otherProps}>
+      <div className={classes.buttonDiv}>
+        <div className={classes.leftButtons}>
+          <StatusBadge
+            name={'Most Important'}
+            number={`${mostCount()}/${targetMost}`}
+            status={mostCount() == targetMost ? 'complete' : mostCount() > targetMost ? 'error' : 'progress'}
+          />
+          <StatusBadge
+            name={'Least Important'}
+            number={`${leastCount()}/${targetLeast}`}
+            status={leastCount() == targetLeast ? 'complete' : leastCount() > targetLeast ? 'error' : 'progress'}
+          />
+        </div>
+        <div className={classes.rightButtons}>
+          <ModifierButton
+            className={className.clearButton}
+            title="Clear All"
+            children={'Clear All'}
+            onDone={() => {
+              rankList.length = 0
+              setUpdateCount(updateCount + 1)
+            }}
+          />
+        </div>
+      </div>
       <div className={cx(classes.pointDiv)}>
         {pointList.map((point, i) => {
           const rankInvalid =
             (rankDiscrepancies.most > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Most') ||
             (rankDiscrepancies.least > 0 && rankList?.find(rank => rank.id === point._id)?.rank == 'Least')
-
           return (
             <Point
               key={point._id}
@@ -95,6 +129,13 @@ function RankStep(props) {
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   rankStep: {},
+  buttonDiv: {
+    padding: '2rem 0rem 3rem 0rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  leftButtons: { display: 'flex', alignItems: 'center', gap: '1rem' },
+  rightButtons: {},
   pointDiv: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
