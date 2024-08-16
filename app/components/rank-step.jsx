@@ -76,6 +76,7 @@ function RankStep(props) {
               point={point}
               vState="default"
               className={rankInvalid ? classes.invalidBackground : undefined}
+              isInvalid={rankInvalid}
             >
               <Ranking
                 className={classes.rank}
@@ -113,9 +114,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   invalidBackground: {
     backgroundColor: '#f9e7e5',
-  },
-  invalidText: {
-    color: '#cc4233',
   },
 }))
 
