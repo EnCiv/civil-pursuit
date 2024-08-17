@@ -10,26 +10,30 @@ export const statusUndefined = { args: { subject: "This isn't defined." } }
 export const statusError = {
   args: {
     status: 'error',
-    subject: 'You have an error!',
+    subject: 'Oops!',
+    description: 'You have an error!',
   },
 }
 
 export const statusDone = {
   args: {
     status: 'done',
-    subject: 'You are done!',
+    subject: 'Finished!',
+    description: 'You are done!',
   },
 }
 export const statusWarn = {
   args: {
     status: 'warn',
-    subject: 'You are being warned!',
+    subject: 'Please Review',
+    description: 'You are being warned!',
   },
 }
 
 export const statusNotice = {
   args: {
     status: 'notice',
-    subject: 'You are being notified!',
+    subject: 'Notice',
+    description: 'You are being notified!',
   },
 }

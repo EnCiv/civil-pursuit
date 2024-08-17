@@ -10,25 +10,21 @@ import SvgWarningTriangle from '../svgr/warning-triangle'
 import SvgNoticeCircle from '../svgr/notice-circle'
 
 function StatusBox(props) {
-  const { className, status = '', subject = '', ...otherProps } = props
+  const { className, status = '', subject = '', description = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
 
   let leadText
   let Icon
   if (status === 'error') {
-    leadText = 'Oops!'
     Icon = SvgAlertTriangle
   }
   if (status === 'done') {
-    leadText = 'Finished!'
     Icon = SvgCheckedCircle
   }
   if (status === 'warn') {
-    leadText = 'Please Review'
     Icon = SvgWarningTriangle
   }
   if (status === 'notice') {
-    leadText = 'Notice'
     Icon = SvgNoticeCircle
   } else {
     console.error(`${status} is not a valid status for StatusBox.`)
@@ -36,10 +32,10 @@ function StatusBox(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <div className={classes.subject}>
+      <div className={classes.message}>
         {Icon && <Icon className={classes.icon} />}
-        <span className={classes.leadText}>{leadText}</span>
-        {subject}
+        <span className={classes.subject}>{subject}</span>
+        {description}
       </div>
     </div>
   )
@@ -85,12 +81,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     })()}`,
   }),
 
-  subject: {
+  message: {
     ...theme.font,
     display: 'flex',
     alignItems: 'center',
   },
-  leadText: {
+  subject: {
     fontWeight: 'bold',
     padding: '0rem 1rem',
   },
