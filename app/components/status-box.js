@@ -50,6 +50,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '1rem',
     width: '100%',
     boxShadow: theme.boxShadow,
+    borderRadius: '0.5rem',
     backgroundColor: (() => {
       if (props.status === 'error') {
         return theme.colors.statusBoxErrorBackground
@@ -66,7 +67,24 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         return theme.colors.colorPrimary
       }
     })(),
+    border: `0.125rem solid ${(() => {
+      if (props.status === 'error') {
+        return theme.colors.statusBoxErrorBorder
+      }
+      if (props.status === 'done') {
+        return theme.colors.statusBoxDoneBorder
+      }
+      if (props.status === 'warn') {
+        return theme.colors.statusBoxWarnBorder
+      }
+      if (props.status === 'notice') {
+        return theme.colors.statusBoxNoticeBorder
+      } else {
+        return ''
+      }
+    })()}`,
   }),
+
   subject: {
     ...theme.font,
     display: 'flex',
