@@ -6,7 +6,25 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import WhyInput from './why-input'
-import { cloneDeep } from 'lodash'
+import { isEqual } from 'lodash'
+
+// create an object where the why-input results {valid, value) are indexed by their parentId
+// return [theObject, changed] where changed indicates if there were any changes if the previous object is supplied
+function byParentId(points, whys, whyByParenId) {
+  return points.reduce(
+    ([o, changed], point) => {
+      const whyPoint = whys.find(p => p.parentId === point._id) || { subject: '', description: '', parentId: point._id }
+      if (whyByParenId && isEqual(whyPoint, whyByParenId[point._id].value)) {
+        o[point._id] = whyByParenId[point._id]
+      } else {
+        changed = true
+        o[point._id] = { valid: false, value: whyPoint }
+      }
+      return [o, changed]
+    },
+    [{}, false]
+  )
+}
 
 export default function WhyStep(props) {
   const {
@@ -21,36 +39,42 @@ export default function WhyStep(props) {
 
   const points = type === 'most' ? shared.mosts : shared.leasts
 
-  // convert any existing whyMosts into an object where they are indexed by parentId
+  // track all the results in a single state, that is indexed by the point._id (which is the parentId of the why-input point)
+  // needs to be a single object because we may have multiple things changed at once and react doesn't rerender and recacluclate this everytime the set function is called
   const [whyByParentId, setWhyByParentId] = useState(
-    (type === 'most' ? shared.mosts : shared.leasts).reduce((o, point) => {
-      const whys = type == 'most' ? shared.whyMosts : shared.whyLeasts
-      const whyPoint = whys.find(p => p.parentId === point._id) || { subject: '', description: '', parentId: point._id }
-      o[point._id] = { valid: false, value: whyPoint }
-      return o
-    }, {})
+    byParentId(type === 'most' ? shared.mosts : shared.leasts, type == 'most' ? shared.whyMosts : shared.whyLeasts)[0]
   )
 
-  console.info({ whyByParentId })
+  // if something is changed from the top down, need to update the state
+  useEffect(() => {
+    const [newWhyByParentId, changed] = byParentId(
+      type === 'most' ? shared.mosts : shared.leasts,
+      type == 'most' ? shared.whyMosts : shared.whyLeasts,
+      whyByParentId
+    )
+    if (changed) {
+      setWhyByParentId(newWhyByParentId)
+    }
+  }, [type, type === 'most' ? shared.mosts : shared.leasts, type == 'most' ? shared.whyMosts : shared.whyLeasts])
 
+  // if there is a change to the state, call onDone to update the parent component
   useEffect(() => {
     if (!points.length) {
       onDone({ valid: true, value: [] })
       return
     }
     const value = Object.values(whyByParentId).map(aP => aP.value)
-    console.info('complete?', areAnswersComplete())
-    onDone({ valid: areAnswersComplete(), value })
+    const valid = Object.values(whyByParentId)
+      .map(aP => aP.valid)
+      .every(valid => valid === true)
+    onDone({ valid, value })
   }, [whyByParentId])
 
   const updateWhyResponse = ({ valid, value }) => {
-    console.info('update', { valid, value })
-    const newW = { ...whyByParentId, [value.parentId]: { valid, value } }
-    setWhyByParentId(newW)
-  }
-
-  const areAnswersComplete = () => {
-    return points.every(point => whyByParentId[point._id].valid)
+    // don't set it if it hasn't changed, that causes an loop
+    if (!isEqual(whyByParentId[value.parentId], { valid, value }))
+      // a function as prop because there are multiple WhyPoints that will call this before rerendering, like on initial render with data, or on a top down data update
+      setWhyByParentId(whyByParentId => ({ ...whyByParentId, [value.parentId]: { valid, value } }))
   }
 
   return (
@@ -66,7 +90,7 @@ export default function WhyStep(props) {
           points.map(point => (
             <div key={point._id}>
               <hr className={classes.pointsHr}></hr>
-              <WhyInput point={point} defaultValue={whyByParentId[point._id].value} onDone={updateWhyResponse} />
+              <WhyInput point={point} value={whyByParentId[point._id].value} onDone={updateWhyResponse} />
             </div>
           ))
         ) : (

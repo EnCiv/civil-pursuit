@@ -12,20 +12,35 @@ function PointInput(props) {
     className = '',
     maxWordCount = 30,
     maxCharCount = 100,
-    defaultValue = { description: '', subject: '' },
+    value = { description: '', subject: '' },
     onDone = () => {},
     ...otherProps
   } = props
   const classes = useStyles()
-  const [subject, setSubject] = useState(defaultValue?.subject ?? '')
-  const [description, setDescription] = useState(defaultValue?.description ?? '')
+  const [subject, setSubject] = useState(value?.subject ?? '')
+  const [description, setDescription] = useState(value?.description ?? '')
   const [descWordCount, setDescWordCount] = useState(getDescWordCount(description))
   const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(subject))
   const textareaRef = useRef(null)
 
+  // if valaue is changed from above, need to update state and then update the parent about validity
+  useEffect(() => {
+    if (subject !== value.subject || description !== value.description) {
+      if (subject !== value.subject) setSubject(value?.subject ?? '')
+      if (description !== value.description) setDescription(value?.description ?? '')
+      onDone({
+        valid: isSubjValid(value.subject) && isDescValid(value.description),
+        value: { ...value },
+      })
+    }
+  }, [value.subject, value.description])
+
   useEffect(() => {
     autosize(textareaRef.current)
-
+    // on initial render, if there are initial values, call onDone to update the parent about their validity
+    if (value.subject && value.description) {
+      setTimeout(handleOnBlur)
+    }
     return () => {
       autosize.destroy(textareaRef.current)
     }
@@ -63,7 +78,7 @@ function PointInput(props) {
   const handleOnBlur = () => {
     onDone({
       valid: isSubjValid(subject) && isDescValid(description),
-      value: { ...defaultValue, subject, description },
+      value: { ...value, subject, description },
     })
   }
 
@@ -72,7 +87,7 @@ function PointInput(props) {
       <input
         type="text"
         placeholder="Type some thing here"
-        defaultValue={subject}
+        value={subject}
         onChange={e => handleSubjectChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
@@ -84,7 +99,7 @@ function PointInput(props) {
       <textarea
         ref={textareaRef}
         placeholder="Description"
-        defaultValue={description}
+        value={description}
         onChange={e => handleDescriptionChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(
@@ -117,7 +132,6 @@ const useStyles = createUseStyles(theme => ({
   subject: {
     padding: '0.9375rem',
     height: '2.8125rem',
-    width: '100%',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
     },
@@ -133,7 +147,7 @@ const useStyles = createUseStyles(theme => ({
   },
   description: {
     resize: 'none',
-    width: '100%',
+    marginTop: '0.9375rem',
     padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
