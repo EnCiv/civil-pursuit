@@ -48,7 +48,7 @@ function StatusBox(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: props => ({
     padding: '1rem',
-    width: '100%',
+    width: 'auto',
     boxShadow: theme.boxShadow,
     borderRadius: '0.5rem',
     backgroundColor: (() => {
