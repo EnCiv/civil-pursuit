@@ -45,6 +45,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: props => ({
     padding: '1rem',
     width: 'auto',
+    display: 'inline-flex',
     boxShadow: theme.boxShadow,
     borderRadius: '0.5rem',
     backgroundColor: (() => {
@@ -80,7 +81,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       }
     })()}`,
   }),
-
   message: {
     ...theme.font,
     display: 'flex',
