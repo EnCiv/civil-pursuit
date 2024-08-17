@@ -176,7 +176,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingTop: '1rem',
   },
   invalidBackground: {
-    backgroundColor: '#f9e7e5',
+    backgroundColor: theme.colors.inputErrorContainer,
+    border: `0.125rem solid ${theme.colors.rankInvalidBorder}`,
   },
 }))
 

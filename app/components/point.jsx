@@ -217,7 +217,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
   },
   invalidText: {
-    color: '#cc4233',
+    color: theme.colors.rankInvalidText,
   },
 }))
 
