@@ -5,7 +5,7 @@ export default {
   args: {},
 }
 
-export const statusUndefined = { args: {} }
+export const statusUndefined = { args: { subject: "This isn't defined." } }
 
 export const statusError = {
   args: {
