@@ -1,6 +1,6 @@
 {
   "name": "civil-pursuit",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Civil Pursuit - so millions of people can deliberate productively online",
   "main": "dist/index.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "bson-objectid": "^1.2.4",
     "buffer": "^6.0.3",
     "classnames": "^2.2.6",
+    "joi": "^17.13.3",
     "lodash": "^4.17.11",
     "log4js": "git+https://github.com/ddfridley/log4js-node.git#onbrowser",
     "log4js-extend": "^0.2.1",
