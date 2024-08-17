@@ -9,12 +9,14 @@ import WhyInput from './why-input'
 import { isEqual } from 'lodash'
 import { cloneDeep } from 'lodash'
 
-// create an object where the why-input results {valid, value) are indexed by their parentId
-// return [theObject, changed] where changed indicates if there were any changes if the previous object is supplied
+// create an object where the why-input values are indexed by their parentId
+// return [theObject, changed] where changed indicates there were changes since the supplied whyByParentId
+// reset validBuyParentId if there were changes
 function byParentId(points, whys, whyByParenId, validByParentId) {
   return points.reduce(
     ([o, changed], point) => {
-      const whyPoint = whys.find(p => p.parentId === point._id) || { subject: '', description: '', parentId: point._id }
+      const whyPoint = whys.find(p => p.parentId === point._id)
+      if (!whyPoint) return [o, changed]
       if (whyByParenId && isEqual(whyPoint, whyByParenId[point._id])) {
         o[point._id] = whyByParenId[point._id]
       } else {
@@ -49,7 +51,8 @@ export default function WhyStep(props) {
     byParentId(points, whys)[0] // returns [whyByParentId, changed] but we only want to initialize the why
   )
 
-  // if something is changed from the top down, need to update the state
+  // if something is changed from the top down, need to update the state to force the rerender
+  // also invalidate changed whys so that they have to be validated from below before onDone is valid
   useEffect(() => {
     setWhyByParentId(whyByParentId => {
       const [newWhyByParentId, changed] = byParentId(points, whys, whyByParentId, validByParentId)
@@ -64,6 +67,7 @@ export default function WhyStep(props) {
     }
   }, [])
 
+  // if something is changed from below (by the user) mutate the state, rather than call the setter, so that we don't cause another rerender
   const updateWhyResponse = ({ valid, value }) => {
     validByParentId[value.parentId] = valid
     if (!isEqual(whyByParentId[value.parentId], value)) {
@@ -75,7 +79,7 @@ export default function WhyStep(props) {
     }
     onDone({
       valid: Object.values(validByParentId).every(valid => valid === true),
-      value: Object.values(whyByParentId),
+      value: Object.values(whyByParentId), // convert object by parentId  into array
     })
   }
 
@@ -92,7 +96,11 @@ export default function WhyStep(props) {
           points.map(point => (
             <div key={point._id}>
               <hr className={classes.pointsHr}></hr>
-              <WhyInput point={point} value={whyByParentId[point._id]} onDone={updateWhyResponse} />
+              <WhyInput
+                point={point}
+                value={whyByParentId[point._id] || { subject: '', description: '', parentId: point._id }}
+                onDone={updateWhyResponse}
+              />
             </div>
           ))
         ) : (
