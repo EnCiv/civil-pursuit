@@ -3,6 +3,7 @@
 import { Collection } from '@enciv/mongo-collections';
 import Joi from 'joi';
 import JoiObjectID from 'joi-objectid';
+import enforceRequiredFields from './lib/enforceRequiredFields';
 
 Joi.objectId = JoiObjectID(Joi)
 
@@ -34,16 +35,29 @@ class Points extends Collection {
   // Optional: indexes array as defined in db.collection.createIndexes
   static collectionIndexes = [{ key: { title: 1 }, name: 'title_index', unique: true }]
 
-  // Optional: Validation function
-  static validate(doc) {
-
-    const { error, value } = pointSchema.validate(doc)
+  static validateRequiredFields(requiredFields, doc) {
+    const schema = enforceRequiredFields(pointSchema, requiredFields)
+    const {error, value} = schema.validate(doc)
     if (error) {
       return { error: error.details[0].message}
     }
-    return { result: value}
+    return {result: value}
+
 
   }
+
+  // Optional: Validation function
+  // static validate(doc) {
+
+  //   const { error, value } = pointSchema.validate(doc)
+  //   if (error) {
+  //     return { error: error.details[0].message}
+  //   }
+  //   return { result: value}
+
+  // }
+
+
 }
 
 Points.setCollectionProps() // initialize the collection with the properties

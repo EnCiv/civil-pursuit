@@ -3,18 +3,6 @@
 const Joi = require('joi')
 const { Points, pointSchema } = require('../models/points')
 
-function enforceRequiredFields(schema, requiredFields) { // Add required fields to schema through Joi
-  const schemaDescription = schema.describe()
-  const newSchema = {}
-
-  Object.keys(schemaDescription.keys).forEach((key) => {
-    newSchema[key] = requiredFields.includes(key) ? schema.extract(key).required() : schema.extract(key)
-  })
-
-  return Joi.object(newSchema)
-
-}
-
 async function upsertWhy(pointObj, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('upsertWhy called but no user logged in')
@@ -25,8 +13,12 @@ async function upsertWhy(pointObj, cb) {
   pointObj.userId = userId // Add userId to the document
 
   const requiredFields = ['_id', 'title', 'description', 'userId']
-  const schema = enforceRequiredFields(pointSchema, requiredFields)
-  const validation = schema.validate(pointObj) // Validate pointObj
+
+  const validation = Points.enforceRequiredFields(requiredFields, pointObj) // Validate pointObj
+
+
+  // const schema = enforceRequiredFields(pointSchema, requiredFields)
+  // const validation = schema.validate(pointObj) // Validate pointObj
 
   if (validation.error) {
     console.error(validation.error)
