@@ -7,7 +7,6 @@ import StepIntro from './step-intro'
 import WhyInput from './why-input'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import ObjectId from 'bson-objectid'
 import _ from 'lodash'
 
 const AnswerStep = forwardRef((props, ref) => {
@@ -30,12 +29,9 @@ const AnswerStep = forwardRef((props, ref) => {
 
   // user input to explain why issue is important
   const [whyMosts, setWhyMosts] = useState(shared.whyMosts)
-  console.log(whyMosts)
-
-  // const objectID = ObjectId().toString()
 
   useEffect(() => {
-    if (!startingPoint.length || areAnswersComplete(whyMosts)) {
+    if (areStartingComplete() && areWhyAnswersComplete()) {
       onDone({ valid: true, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
     } else {
       onDone({ valid: false, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
@@ -46,30 +42,32 @@ const AnswerStep = forwardRef((props, ref) => {
     const updatedAnswers = {
       answerSubject: value.subject,
       answerDescription: value.description,
-      _id: value._id,
+      _id: startingPoint._id,
     }
     setStartingPoint(updatedAnswers)
   }
 
   const updateWhyResponse = ({ valid, value }) => {
     const updatedAnswers = whyMosts.map(answer => {
-      console.log(answer._id + ' ' + value.parentId)
+      // find which why response to update
       if (answer._id === value.parentId) {
         answer.answerSubject = value.subject
         answer.answerDescription = value.description
-        answer.parentId = value.parentId
+        answer.valid = valid
       }
       return answer
     })
     setWhyMosts(updatedAnswers)
   }
 
-  const areAnswersComplete = whyMosts => {
-    return whyMosts.every(answer => answer.valid)
+  // evaluates if both subject and description fields are filled out for starting point
+  const areStartingComplete = () => {
+    return startingPoint.answerSubject && startingPoint.answerDescription
   }
 
-  const assignID = () => {
-    return objectID
+  // evaluates if both subject and description fields are filled out for whyMosts
+  const areWhyAnswersComplete = () => {
+    return whyMosts.every(answer => answer.valid)
   }
 
   return (
@@ -77,9 +75,9 @@ const AnswerStep = forwardRef((props, ref) => {
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
       <div className={classes.answersContainer}>
         {question ? (
-          <div key="1">
+          <div key={startingPoint._id}>
             <WhyInput
-              point={{ subject: '', description: question, _id: question._id }}
+              point={{ subject: '', description: question, _id: startingPoint._id }}
               defaultValue={{ subject: '', description: '' }}
               onDone={updateQuestionResponse}
             />
@@ -95,7 +93,7 @@ const AnswerStep = forwardRef((props, ref) => {
             <div key={point._id}>
               <hr className={classes.pointsHr}></hr>
               <WhyInput
-                point={{ subject: '', description: whyQuestion, _id: question._id }}
+                point={{ subject: '', description: whyQuestion, _id: point._id }} // _id is parentId
                 defaultValue={{ subject: '', description: '' }}
                 onDone={updateWhyResponse}
               />
