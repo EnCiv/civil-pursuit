@@ -35,6 +35,7 @@ export default function WhyStep(props) {
         answer.answerSubject = value.subject
         answer.answerDescription = value.description
         answer.valid = valid
+        answer.parentId = value.parentId
       }
       return answer
     })
