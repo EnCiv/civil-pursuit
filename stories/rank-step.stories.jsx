@@ -45,6 +45,12 @@ const point9 = createPointObj('9', 'Point 9', 'Point 9 Description')
 const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
 const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
 
+async function clickSelections(points, selections) {
+  for (let index = 0; index < points.length; index++) {
+    await userEvent.click(within(points[index]).getByText(selections[index]))
+  }
+}
+
 export const Empty = { args: {} }
 
 export const emptyRank = {
@@ -105,54 +111,84 @@ export const tenRanksCorrect = {
 export const tenRanksTooManyMost = {
   args: {
     pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Most' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Neutral' },
-      { id: point7._id, rank: 'Neutral' },
-      { id: point8._id, rank: 'Neutral' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-    ],
+    rankList: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const points = await canvas.findAllByTestId('point')
+
+    await clickSelections(points, [
+      'Most',
+      'Neutral',
+      'Most',
+      'Most',
+      'Least',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+    ])
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: expect.any(Number),
+      onDoneResult: [false, 1],
+    })
   },
 }
 
 export const tenRanksTooManyLeast = {
   args: {
     pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Least' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Neutral' },
-      { id: point7._id, rank: 'Neutral' },
-      { id: point8._id, rank: 'Neutral' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-    ],
+    rankList: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const points = await canvas.findAllByTestId('point')
+
+    await clickSelections(points, [
+      'Most',
+      'Least',
+      'Least',
+      'Most',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+      'Neutral',
+    ])
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: expect.any(Number),
+      onDoneResult: [false, 1],
+    })
   },
 }
 
 export const tenRanksTooManyMostAndLeast = {
   args: {
     pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Least' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Most' },
-      { id: point7._id, rank: 'Most' },
-      { id: point8._id, rank: 'Least' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-    ],
+    rankList: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const points = await canvas.findAllByTestId('point')
+
+    await clickSelections(points, [
+      'Most',
+      'Least',
+      'Least',
+      'Most',
+      'Neutral',
+      'Neutral',
+      'Most',
+      'Least',
+      'Neutral',
+      'Neutral',
+    ])
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: expect.any(Number),
+      onDoneResult: [false, 1],
+    })
   },
 }
 

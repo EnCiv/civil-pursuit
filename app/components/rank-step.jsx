@@ -133,6 +133,7 @@ function RankStep(props) {
               vState="default"
               className={rankInvalid ? classes.invalidBackground : undefined}
               isInvalid={rankInvalid}
+              data-testid={`point`}
             >
               <Ranking
                 className={classes.rank}
