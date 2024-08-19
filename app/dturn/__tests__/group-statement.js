@@ -35,9 +35,6 @@ describe('Test grouping scenarios', () => {
   test('Can put groupings of 2 statements in one group, and 3 statements in the other', async () => {
     const statements = await getStatementIds(DISCUSSION_ID, 0, USER_ID)
 
-    // Log statements to diagnose if it's undefined
-    // console.log('Retrieved statements:', statements)
-
     // Ensure statements is defined before accessing its length
     expect(statements).toBeDefined()
     expect(statements.length).toBe(10)

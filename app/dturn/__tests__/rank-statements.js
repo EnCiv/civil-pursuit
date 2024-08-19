@@ -36,9 +36,6 @@ describe('Test ranking scenarios', () => {
   test('Can rank 2 statements as most important', async () => {
     const statements = await getStatementIds(DISCUSSION_ID, 0, USER_ID)
 
-    // Log statements to ensure they are correctly retrieved
-    // console.log('Retrieved statements for ranking:', statements)
-
     // Ensure statements is defined before proceeding
     expect(statements).toBeDefined()
     expect(statements.length).toBe(10)
