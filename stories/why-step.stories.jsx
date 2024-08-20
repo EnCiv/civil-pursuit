@@ -226,6 +226,9 @@ export const onDoneTest = {
         },
       })
     )
+    // reset values so tests will run again next time
+    onDoneTest.args.shared.whyMosts = [point1, point2]
+    onDoneTest.args.shared.whyLeasts = [point3]
   },
 }
 
