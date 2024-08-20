@@ -25,6 +25,7 @@ function PointInput(props) {
 
   // if valaue is changed from above, need to update state and then update the parent about validity
   useEffect(() => {
+    // but make sure the data really has changed before calling it - to reduce rerenders and stop loops
     if (subject !== value.subject || description !== value.description) {
       if (subject !== value.subject) setSubject(value?.subject ?? '')
       if (description !== value.description) setDescription(value?.description ?? '')
