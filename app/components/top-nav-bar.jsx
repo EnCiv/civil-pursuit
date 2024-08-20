@@ -9,6 +9,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
+import Donate from './donate'
 
 const TopNavBar = props => {
   const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
@@ -236,6 +237,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     left: '50%',
     gap: '0.4rem',
     transform: 'translateX(-50%)',
+    alignItems: 'baseline',
     zIndex: theme.zIndexes.menu,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
