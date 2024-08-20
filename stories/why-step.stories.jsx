@@ -242,23 +242,19 @@ export const asyncUpdate = {
         const subject1 = context.args.shared.whyMosts[1].subject
         const description1 = context.args.shared.whyMosts[1].description
         setTimeout(() => {
-          console.info('updating')
           context.args.shared.whyMosts[0].subject = 'This is the first subject!'
           context.args.shared.whyMosts[0].description = 'This is the first description!'
           context.args.shared.whyMosts[1].subject = 'This is the second subject!'
           context.args.shared.whyMosts[1].description = 'This is the second description!'
           setUpdated(true)
-          console.info('after updating')
         }, 1000)
         // resetting so the test will pass on retest
         setTimeout(() => {
-          console.info('updating')
           context.args.shared.whyMosts[0].subject = subject0
           context.args.shared.whyMosts[0].description = description0
           context.args.shared.whyMosts[1].subject = subject1
           context.args.shared.whyMosts[1].description = description1
           setUpdated(true)
-          console.info('after updating')
         }, 2000)
       }, [])
       return <Story thisTestIsDone={updated} />
