@@ -70,16 +70,23 @@ export default function WhyStep(props) {
   // if something is changed from below (by the user) mutate the state, rather than call the setter, so that we don't cause another rerender
   const updateWhyResponse = ({ valid, value }) => {
     validByParentId[value.parentId] = valid
-    if (!isEqual(whyByParentId[value.parentId], value)) {
-      const why = cloneDeep(value)
-      whyByParentId[value.parentId] = why
-      const whyIndex = whys.findIndex(point => point.parentId === value.parentId)
-      if (whyIndex < 0) whys.push(why)
-      else whys[whyIndex] = why
-    }
+    let latestWhyByParentId
+    setWhyByParentId(whyByParentId => {
+      latestWhyByParentId = whyByParentId
+      if (!isEqual(whyByParentId[value.parentId], value)) {
+        const why = cloneDeep(value)
+        whyByParentId[value.parentId] = why
+        const whyIndex = whys.findIndex(point => point.parentId === value.parentId)
+        if (whyIndex < 0) whys.push(why)
+        else whys[whyIndex] = why
+      }
+      return whyByParentId // returning what we got so we don't cause a rerender
+    })
+    // don't call this from inside the setter - onDone may cause other setters to run and React Hates that
+    // use latestWhyByParentId to get the result from above and use that
     onDone({
       valid: Object.values(validByParentId).every(valid => valid === true),
-      value: Object.values(whyByParentId), // convert object by parentId  into array
+      value: Object.values(latestWhyByParentId), // convert object by parentId  into array
     })
   }
 
