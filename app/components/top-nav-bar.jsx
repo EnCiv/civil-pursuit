@@ -200,6 +200,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   }),
   topNavBar: props => ({
     width: '100%',
+    zIndex: theme.zIndexes.menu, // The navbar appears below other blocks without zIndex
     position: (() => {
       if (props.mode === 'transparent') {
         return 'absolute'
@@ -247,7 +248,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
   },
   logo: {
-    zIndex: 1,
     width: '8.5rem',
     height: 'auto',
     paddingBottom: '1.5rem',
@@ -264,7 +264,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.4rem',
     transform: 'translateX(-50%)',
     alignItems: 'baseline',
-    zIndex: theme.zIndexes.menu,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
