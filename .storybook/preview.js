@@ -1,6 +1,7 @@
 import { ThemeProvider } from 'react-jss'
 import React from 'react'
 import Theme from '../app/components/theme'
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
 const theme = Theme
 
@@ -14,10 +15,13 @@ const preview = {
         date: /Date$/,
       },
     },
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+    },
   },
   decorators: [
     Story => {
-      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full with even through index.css has a media query keeping it at 982
+      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full width even through index.css has a media query keeping it at 982
       return (
         <ThemeProvider theme={theme}>
           <div>

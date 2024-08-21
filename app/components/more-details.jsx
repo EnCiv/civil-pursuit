@@ -72,9 +72,10 @@ const MoreDetails = props => {
 
   const handleIsValid = () => {
     const requiredData = schema.properties || {}
-    return Object.keys(requiredData).every(key =>
-      requiredData[key].enum ? data[key] !== undefined && data[key] !== '' : true
-    )
+    return Object.keys(requiredData).every(key => {
+      if (!requiredData[key].properties) return !!data[key]
+      else return Object.keys(requiredData[key].properties).every(prop => !!data[key][prop])
+    })
   }
 
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character
@@ -105,16 +106,14 @@ const MoreDetails = props => {
           cells={vanillaCells}
           onChange={({ data }) => setData(data)}
         />
-        {className && (
-          <PrimaryButton
-            title={className}
-            className={classes.actionButton}
-            onDone={() => onDone({ valid: isValid, value: data })}
-            disabled={!isValid}
-          >
-            {className}
-          </PrimaryButton>
-        )}
+        <PrimaryButton
+          title={'Submit'}
+          className={classes.actionButton}
+          onDone={() => onDone({ valid: isValid, value: data })}
+          disabled={!isValid}
+        >
+          Submit
+        </PrimaryButton>
       </div>
     </div>
   )
@@ -136,6 +135,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '2rem',
   }),
   jsonFormContainer: {
+    width: '100%',
     marginBottom: '1rem',
     lineHeight: '2.25rem',
   },

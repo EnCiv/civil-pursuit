@@ -267,32 +267,26 @@ export const Empty = {
 
 export const FigmaInputMatch = {
   args: {
-    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
-    onDone: null,
     title: 'We just need a few more details about you to get started.',
   },
 }
 
 export const InitialTestSchemaDetailsInput = {
   args: {
-    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    onDone: null,
     title: 'We just need a few more details about you to get started.',
   },
 }
 
 export const UserInputAndOnDoneCall = {
   args: {
-    className: 'Submit',
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    onDone: null,
     title: 'We just need a few more details about you to get started.',
   },
 
@@ -318,14 +312,13 @@ export const StateOfResidenceSelection = {
   args: {
     schema: testStateOfResidenceSchema,
     uischema: testStateOfResidenceUIschema,
-    onDone: null,
   },
 }
 
 export const BirthDateInput = {
-  args: { schema: testDobSchema, uischema: testDobUISchema, onDone: null },
+  args: { schema: testDobSchema, uischema: testDobUISchema },
 }
 
 export const AllInputTypes = {
-  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema, onDone: null },
+  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema },
 }
