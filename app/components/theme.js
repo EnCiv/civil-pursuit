@@ -39,6 +39,8 @@ const Theme = {
     statusBadgeInactiveBackground: '#FFFFFF',
     statusBadgeErrorBorder: '#BF1300',
     statusBadgeErrorBackground: '#F9E7E5',
+    rankInvalidBorder: ' #590900',
+    rankInvalidText: '#BF1300',
     statusBoxErrorBackground: '#F9E7E5',
     statusBoxErrorBorder: '#BF1300',
     statusBoxDoneBackground: '#E6F3EB',
