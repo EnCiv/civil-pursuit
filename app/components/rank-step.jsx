@@ -8,6 +8,7 @@ import Point from './point'
 import PointGroup from './point-group' // should be using PointGroup but it needs to support children
 import { ModifierButton } from './button.jsx'
 import StatusBadge from './status-badge'
+import StatusBox from './status-box'
 
 import Ranking from './ranking'
 
@@ -80,6 +81,18 @@ function RankStep(props) {
     return [valid, pointList.length ? doneCount / pointList.length : 0] // value should be 0 if not points in list not null
   }
 
+  // Set the status box error message
+  let errorMsg
+  if (targetLeast > 0 && targetMost > 0) {
+    if (rankDiscrepancies.most > 0 && rankDiscrepancies.least > 0) {
+      errorMsg = `You've rated too many responses as "Most Important" and "Least Important." Please edit.`
+    } else if (rankDiscrepancies.most > 0) {
+      errorMsg = `You've rated too many responses as "Most Important." Please edit.`
+    } else if (rankDiscrepancies.least > 0) {
+      errorMsg = `You've rated too many responses as "Least Important." Please edit.`
+    }
+  }
+
   return (
     <div className={cx(classes.rankStep, className)} {...otherProps}>
       <div className={classes.buttonDiv}>
@@ -147,6 +160,9 @@ function RankStep(props) {
           )
         })}
       </div>
+      <div className={classes.statusBoxDiv}>
+        {errorMsg && <StatusBox status="error" subject="Oops!" description={errorMsg}></StatusBox>}
+      </div>
     </div>
   )
 }
@@ -179,6 +195,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   invalidBackground: {
     backgroundColor: theme.colors.inputErrorContainer,
     border: `0.125rem solid ${theme.colors.rankInvalidBorder}`,
+  },
+  statusBoxDiv: {
+    paddingTop: '3rem',
+    textAlign: 'center',
   },
 }))
 
