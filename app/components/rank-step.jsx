@@ -15,8 +15,17 @@ import Ranking from './ranking'
 const minSelectionsTable = {
   0: { least: 0, most: 0 },
   1: { least: 0, most: 0 },
-  // TODO: Figure out the rest of the values.
+  2: { least: 0, most: 0 },
+  3: { least: 0, most: 1 },
+  4: { least: 1, most: 1 },
+  5: { least: 1, most: 1 },
+  6: { least: 1, most: 2 },
+  7: { least: 1, most: 2 },
+  8: { least: 1, most: 2 },
+  9: { least: 1, most: 2 },
   10: { least: 1, most: 2 },
+  11: { least: 1, most: 2 },
+  12: { least: 1, most: 2 },
 }
 
 function RankStep(props) {
