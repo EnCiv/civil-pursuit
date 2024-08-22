@@ -144,7 +144,7 @@ function RankStep(props) {
               key={point._id}
               point={point}
               vState="default"
-              className={rankInvalid ? classes.invalidBackground : undefined}
+              className={rankInvalid ? classes.invalidBackground : classes.validBackground}
               isInvalid={rankInvalid}
               data-testid={`point`}
             >
@@ -196,6 +196,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: theme.colors.inputErrorContainer,
     border: `0.125rem solid ${theme.colors.rankInvalidBorder}`,
   },
+  validBackground: {},
   statusBoxDiv: {
     paddingTop: '3rem',
     textAlign: 'center',
