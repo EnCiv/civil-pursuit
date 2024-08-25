@@ -10,7 +10,7 @@ import { createUseStyles } from 'react-jss'
 function WhyInput(props) {
   const {
     point = { subject: '', description: '', _id: '' },
-    defaultValue = { subject: '', description: '' },
+    value = { subject: '', description: '' },
     onDone = () => {},
     className,
     ...otherProps
@@ -21,11 +21,10 @@ function WhyInput(props) {
     value.parentId = `${point._id}`
     onDone({ valid, value })
   }
-
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       <Point className={classes.point} point={point} vState="secondary" />
-      <PointInput className={classes.pointInput} onDone={handleOnDone} defaultValue={defaultValue} />
+      <PointInput className={classes.pointInput} onDone={handleOnDone} value={value} />
     </div>
   )
 }
@@ -50,9 +49,12 @@ const useStyles = createUseStyles(theme => ({
   [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
     point: {
       width: '35%',
+      flexGrow: 1,
     },
     pointInput: {
       width: '60%',
+      flexGrow: 1,
+      padding: 0,
     },
   },
 }))

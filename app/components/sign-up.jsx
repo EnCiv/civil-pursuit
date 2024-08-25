@@ -4,10 +4,19 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
-import SvgAlertTriangle from '../svgr/alert-triangle'
+import { Button } from './button'
+import StatusBox from '../components/status-box'
 
 function SignUp(props, ref) {
-  const { className, style, onDone = () => {}, startTab = 'login', submitted = false, ...otherProps } = props
+  const {
+    className,
+    style,
+    onDone = () => {},
+    startTab = 'login',
+    submitted = false,
+    tabIndex = 0,
+    ...otherProps
+  } = props
 
   // checks if start tab requests login or sign up page
   const [isLogIn, setIsLogIn] = useState(
@@ -29,6 +38,19 @@ function SignUp(props, ref) {
   const { destination, userInfo = {} } = props
   const classes = useStyles()
   const [state, methods] = useAuth(destination, userInfo)
+
+  // taken from button.jsx
+  const handleKeyDown = (e, type, index) => {
+    e.stopPropagation()
+    // if space key is pressed
+    if (e.keyCode === 32) {
+      if (type === 'menu') {
+        handleMouseLeave() // closes any dropdowns still open
+      } else if (type === 'menuGroup') {
+        handleMouseEnter(index)
+      }
+    }
+  }
 
   // updates if the user has submitted the form and then calls the respective method
   function handleSubmit(page) {
@@ -78,17 +100,22 @@ function SignUp(props, ref) {
     <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
       <div className={classes.tabs}>
         <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
-          <button
-            onClick={e => setIsLogIn(false)}
+          <Button
+            onDone={e => setIsLogIn(false)}
             className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)}
+            tabIndex="1"
           >
             Sign Up
-          </button>
+          </Button>
         </div>
         <div className={cx(classes.tab, isLogIn && classes.tabSelected)}>
-          <button onClick={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}>
+          <Button
+            onDone={e => setIsLogIn(true)}
+            className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}
+            tabIndex="1"
+          >
             Log In
-          </button>
+          </Button>
         </div>
       </div>
       <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
@@ -108,6 +135,7 @@ function SignUp(props, ref) {
               isLogIn && classes.disabled
             )}
             onBlur={e => changeFirstName(e.target.value)}
+            tabIndex={tabIndex}
           />
         </div>
         <div
@@ -126,6 +154,7 @@ function SignUp(props, ref) {
               !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput
             )}
             onBlur={e => changeLastName(e.target.value)}
+            tabIndex={tabIndex}
           />
         </div>
         <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
@@ -134,6 +163,7 @@ function SignUp(props, ref) {
             name="email"
             className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)}
             onBlur={e => changeEmail(e.target.value)}
+            tabIndex={tabIndex}
           />
         </div>
         <div
@@ -145,6 +175,7 @@ function SignUp(props, ref) {
             type="password"
             className={cx(classes.input, !state.password && (clickedOnPassword || isSubmitted) && classes.invalidInput)}
             onChange={e => changePassword(e.target.value)}
+            tabIndex={tabIndex}
           />
         </div>
         <div
@@ -164,6 +195,7 @@ function SignUp(props, ref) {
               isLogIn && classes.disabled
             )}
             onChange={e => changeConfirm(e.target.value)}
+            tabIndex={tabIndex}
           />
         </div>
         <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
@@ -173,46 +205,59 @@ function SignUp(props, ref) {
               type="checkbox"
               name="agreed"
               onClick={e => methods.onChangeAgree(e.target.checked)}
+              tabIndex={tabIndex}
             />
             <label className={classes.agreeTermLabel}>
               Yes, I agree to the
-              <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm}>
+              <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
                 Terms of Service
               </a>
               and
-              <a href="https://enciv.org/privacy" target="_blank" className={classes.aLinkTerm}>
+              <a href="https://enciv.org/privacy" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
                 Privacy Policy.
               </a>
             </label>
           </div>
         </div>
-        <div className={cx(classes.error, !state.error && classes.disabled)}>
-          <span>
-            <SvgAlertTriangle width="3rem" />
-            Oops! {state.error}
-          </span>
-        </div>
-        <div className={cx(classes.info, !state.info && classes.disabled)}>
-          <span>{state.info}</span>
-        </div>
-        <div className={cx(classes.success, !state.success && classes.disabled)}>
-          <span>{state.success}</span>
-        </div>
+        <StatusBox
+          className={cx(classes.error, !state.error && classes.disabled)}
+          status="error"
+          subject={state.error}
+        />
+        <StatusBox className={cx(classes.info, !state.info && classes.disabled)} status="notice" subject={state.info} />
+        <StatusBox
+          className={cx(classes.success, !state.success && classes.disabled)}
+          status="done"
+          subject={state.success}
+        />
+
         <div className={classes.btnContainer}>
-          <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => handleSubmit('signup')}>
+          <Button
+            className={cx(classes.btn, isLogIn && classes.disabled)}
+            onDone={e => handleSubmit('signup')}
+            tabIndex={tabIndex}
+          >
             Sign Up
-          </button>
-          <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => handleSubmit('login')}>
+          </Button>
+          <Button
+            className={cx(classes.btn, !isLogIn && classes.disabled)}
+            onDone={e => handleSubmit('login')}
+            tabIndex={tabIndex}
+          >
             Log In
-          </button>
-          <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.skip()}>
+          </Button>
+          <Button
+            className={cx(classes.btn, isLogIn && classes.disabled)}
+            onDone={e => methods.skip()}
+            tabIndex={tabIndex}
+          >
             Skip
-          </button>
+          </Button>
         </div>
         <div className={cx(classes.resetPasswordBtn, !isLogIn && classes.disabled)}>
-          <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
+          <Button onDone={e => methods.sendResetPassword()} className={classes.resetBtn} tabIndex={tabIndex}>
             Send Reset Password
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -235,16 +280,6 @@ const useStyles = createUseStyles(theme => ({
     // position: 'fixed',
     overflowY: 'auto',
   },
-  btnClick: {
-    color: theme.colors.primaryButtonBlue,
-    textDecoration: 'none',
-    background: 'none',
-    border: 'none',
-    '&:hover': {
-      color: theme.colors.mouseDownPrimeBlue,
-      cursor: 'pointer',
-    },
-  },
   aLinkTerm: {
     marginLeft: '0.3rem', // add space
     marginRight: '0.3rem', // add space
@@ -262,7 +297,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.2rem 0.2rem 0 0.2rem ',
+    padding: '0.45rem 0.4rem 0 0.4rem ',
     boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
   },
   tab: {
@@ -298,15 +333,24 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
       color: theme.colors.white,
     },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
   },
   btnClick: {
     border: 'none',
     background: 'none',
     color: theme.colors.colorPrimary,
+    width: '100%',
+    borderRadius: '0.5rem',
     '&:hover': {
       background: 'none',
       borderColor: 'none',
       textDecoration: 'underline',
+    },
+    '&:focus': {
+      border: `${theme.colors.focusOutline} solid 0.1rem`,
+      borderRadius: '3rem',
     },
   },
   btnClickSelected: {

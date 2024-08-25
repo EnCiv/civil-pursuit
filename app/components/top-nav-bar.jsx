@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/52
-
 // https://github.com/EnCiv/civil-pursuit/issues/144
+// https://github.com/EnCiv/civil-pursuit/issues/182
 
 'use strict'
 
@@ -9,6 +9,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
+import Donate from './donate'
 
 const TopNavBar = props => {
   const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
@@ -109,6 +110,9 @@ const TopNavBar = props => {
                   </li>
                 )
               )}
+            <div className={classes.donate}>
+              <Donate />
+            </div>
           </menu>
 
           {UserOrSignInUp && (
@@ -130,7 +134,7 @@ const TopNavBar = props => {
                 Array.isArray(item) ? (
                   <li className={classes.menuList}>
                     <div
-                      className={cx(classes.menuGroup, classes.colors, {
+                      className={cx(classes.mobileMenuGroup, classes.colors, {
                         [classes.selectedItem]: selectedItem === item[0].name,
                       })}
                       key={index}
@@ -142,7 +146,7 @@ const TopNavBar = props => {
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
-                              className={cx(classes.menuItem, classes.colors, {
+                              className={cx(classes.mobileMenuItem, classes.colors, {
                                 [classes.selectedItem]: selectedItem === subItem.name,
                               })}
                               onClick={event => {
@@ -161,7 +165,7 @@ const TopNavBar = props => {
                   <li className={classes.menuList}>
                     <div
                       key={item.name}
-                      className={cx(classes.menuItem, classes.colors, {
+                      className={cx(classes.mobileMenuItem, classes.colors, {
                         [classes.selectedItem]: selectedItem === item.name,
                       })}
                       onClick={() => handleMenuItemClick(item)}
@@ -171,6 +175,9 @@ const TopNavBar = props => {
                   </li>
                 )
               )}
+            <div className={classes.mobileDonate}>
+              <Donate />
+            </div>
           </menu>
         ) : null}
       </div>
@@ -181,15 +188,41 @@ const TopNavBar = props => {
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   colors: props => ({
-    color: props.mode === 'dark' ? 'white' : theme.colors.darkModeGray,
+    color: (() => {
+      if (props.mode === 'dark' || props.mode === 'transparent') {
+        return 'white'
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else {
+        return theme.colors.darkModeGray
+      }
+    })(),
   }),
   topNavBar: props => ({
     width: '100%',
+    zIndex: theme.zIndexes.menu, // The navbar appears below other blocks without zIndex
+    position: (() => {
+      if (props.mode === 'transparent') {
+        return 'absolute'
+      } else {
+        return ''
+      }
+    })(),
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '1rem',
-    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+    backgroundColor: (() => {
+      if (props.mode === 'dark') {
+        return theme.colors.darkModeGray
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else if (props.mode === 'transparent') {
+        return 'transparent'
+      } else {
+        return 'white'
+      }
+    })(),
   }),
 
   columnAligner: props => ({
@@ -200,6 +233,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     maxWidth: theme.maxPanelWidth,
   }),
+  donate: {
+    padding: '0 0 0 1rem',
+  },
+  mobileDonate: {
+    padding: '0 0 0.5rem 0',
+  },
   navBarContainer: {
     width: '80%',
     display: 'flex',
@@ -222,18 +261,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'absolute',
     bottom: '10%',
     left: '50%',
+    gap: '0.4rem',
     transform: 'translateX(-50%)',
-    zIndex: theme.zIndexes.menu,
+    alignItems: 'baseline',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
   },
   mobileMenuContainer: props => ({
+    padding: '1.25rem 1.25rem',
     display: 'flex',
     width: '80%',
-    background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    background:
+      props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'left',
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
@@ -248,6 +290,28 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: 'none',
     padding: '0.5rem 1rem',
     margin: '0 0.25rem',
+    whiteSpace: 'nowrap',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      cursor: 'pointer',
+    },
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+  }),
+  mobileMenuGroup: props => ({
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
+    cursor: 'default',
+    background: 'none',
+    border: 'none',
+    padding: '0.5rem',
+    margin: '0',
     whiteSpace: 'nowrap',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       cursor: 'pointer',
@@ -285,7 +349,27 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'left',
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+  }),
+  mobileMenuItem: props => ({
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1rem', // forcing because unknown things are overriding it
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    padding: '0.5rem',
+    margin: '0',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
@@ -307,7 +391,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '15%',
     height: 'auto',
     fontSize: '1.5rem',
-    background: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+    background: (() => {
+      if (props.mode === 'dark') {
+        return theme.colors.darkModeGray
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else if (props.mode === 'transparent') {
+        return 'transparent'
+      } else {
+        return 'white'
+      }
+    })(),
     border: 'none',
     display: 'flex',
     justifyContent: 'center',
@@ -317,7 +411,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
   }),
   menuList: {
