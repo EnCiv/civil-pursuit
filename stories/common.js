@@ -122,7 +122,6 @@ export function onBackResult() {
 
 // Create the level adjustment decorator
 export const levelDecorator = (Story, context) => {
-  console.log('hello from levelDecorator')
   return (
     <Level>
       <Story {...context} />
