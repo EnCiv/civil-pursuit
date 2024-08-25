@@ -87,12 +87,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.lightSuccess,
+    fontSize: '1.8rem',
   },
   rightHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
+    fontSize: '1.8rem',
   },
   pointGrid: {
     display: 'grid',
