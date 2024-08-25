@@ -1,12 +1,12 @@
 import CompareReasons from '../app/components/compare-reasons'
-import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 import expect from 'expect'
 
 export default {
   component: CompareReasons,
   args: {},
-  decorators: [onDoneDecorator, levelDecorator],
+  decorators: [onDoneDecorator],
 }
 
 const pointOne = { subject: 'Point 1', description: 'This is the first point' }

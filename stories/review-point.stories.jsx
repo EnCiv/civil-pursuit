@@ -4,12 +4,12 @@ import React from 'react'
 import { expect } from '@storybook/jest'
 import ReviewPoint from '../app/components/review-point'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 
 export default {
   component: ReviewPoint,
-  decorators: [onDoneDecorator, levelDecorator],
+  decorators: [onDoneDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

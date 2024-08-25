@@ -3,13 +3,13 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import React from 'react'
 import WhyInput from '../app/components/why-input'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
 import DemInfo from '../app/components/dem-info'
 
 export default {
   component: WhyInput,
   args: {},
-  decorators: [onDoneDecorator, levelDecorator],
+  decorators: [onDoneDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

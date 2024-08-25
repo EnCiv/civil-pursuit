@@ -1,11 +1,9 @@
 import React from 'react'
 import StepIntro from '../app/components/step-intro'
-import { levelDecorator } from './common'
 
 export default {
   title: 'StepIntro',
   component: StepIntro,
-  decorators: [levelDecorator],
 }
 
 const Template = Component => args => <Component {...args} />

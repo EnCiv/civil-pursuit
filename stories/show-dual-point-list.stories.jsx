@@ -3,7 +3,6 @@
 import React from 'react'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import ShowDualPointList from '../app/components/show-dual-point-list'
-import { levelDecorator } from './common'
 
 export default {
   component: ShowDualPointList,
@@ -11,7 +10,6 @@ export default {
     leftHeader: "Why It's most Important",
     rightHeader: "Why It's least Important",
   },
-  decorators: [levelDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

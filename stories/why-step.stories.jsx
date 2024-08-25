@@ -1,17 +1,15 @@
-// https://github.com/EnCiv/civil-pursuit/issues/80
-
 import React from 'react'
 import { userEvent, within } from '@storybook/testing-library'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/why-step'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult, levelDecorator } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
 import DemInfo from '../app/components/dem-info'
 
 export default {
   component: WhyStep,
   args: {},
-  decorators: [onDoneDecorator, levelDecorator],
+  decorators: [onDoneDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

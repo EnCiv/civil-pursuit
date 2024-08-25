@@ -1,8 +1,11 @@
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import { ThemeProvider } from 'react-jss'
 import '../assets/css/index.css'
 import '../assets/css/normalize.css'
 import React from 'react'
 import Theme from '../app/components/theme'
+import { levelDecorator } from '../stories/common'
 
 const theme = Theme
 
@@ -29,6 +32,7 @@ const preview = {
         </ThemeProvider>
       )
     },
+    levelDecorator,
   ],
 }
 

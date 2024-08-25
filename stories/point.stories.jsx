@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
 import Theme from '../app/components/theme'
-import { levelDecorator } from './common'
 
 const DemInfoTestComponent = props => {
   const { vState } = props
@@ -34,7 +33,6 @@ export default {
       demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' },
     },
   },
-  decorators: [levelDecorator],
 }
 
 // Empty, in the case that the component data is loading:
