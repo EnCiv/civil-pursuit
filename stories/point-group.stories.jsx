@@ -98,7 +98,7 @@ export const collapsedPoints = {
 }
 
 export const selectLeadPoints = {
-  args: { pointDoc: pointDoc5, vState: 'selectLead' },
+  args: { pointDoc: { groupedPoints: [pointDoc1, pointDoc2, pointDoc3, pointDoc4, pointDoc6] }, vState: 'selectLead' },
 }
 
 export const mobileSelectLeadPoints = {
