@@ -17,7 +17,6 @@ function PointInput(props) {
     ...otherProps
   } = props
   const classes = useStyles()
-
   // biState is for bidirectional state - we will use setBiState to change state values, but sometimers we will just change the value
   // in the object, without returning a new object so we don't cause a rerender
   const [biState, setBiState] = useState({ subject: value?.subject ?? '', description: value?.description ?? '' })
