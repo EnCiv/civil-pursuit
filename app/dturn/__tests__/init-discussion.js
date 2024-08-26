@@ -1,5 +1,4 @@
 // https://github.com/EnCiv/civil-pursuit/issues/154
-const { Mongo } = require('@enciv/mongo-collections')
 const { initDiscussion, Discussions } = require('../dturn')
 
 const DISCUSSION_ID = 'testDiscussion'
@@ -12,14 +11,6 @@ const OPTIONS = {
   updateUInfo: () => {},
   getAllUInfo: async () => [],
 }
-
-beforeAll(async () => {
-  await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
-})
-
-afterAll(() => {
-  Mongo.disconnect()
-})
 
 describe('Initialize Discussion', () => {
   test('Can initialize an empty discussion', async () => {
