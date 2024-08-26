@@ -15,34 +15,34 @@ const Intermission = props => {
 
   const [validationError, setValidationError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [useremail, setUseremail] = useState(null)
+  const [email, setEmail] = useState('')
 
   const validateEmail = email => {
     var re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
   }
-  const handleEmail = () => {
-    let email = user.email
-    console.log(email)
-    console.log(user.tempid)
-    if (!validateEmail(email)) {
-      setValidationError('email address not valid')
-      setSuccessMessage(null)
-      setUseremail(false)
-    } else {
-      setValidationError(null)
-      setUseremail(true)
-    }
 
-    console.log(validationError)
-    console.log(successMessage)
-    console.log(useremail)
+  function setUserInfo(email, callback) {
+    window.socket.emit('set user info', { email: email }, callback)
   }
 
-  useEffect(() => {
-    handleEmail()
-  }, [user])
+  const handleEmail = () => {
+    setValidationError(null)
+    setSuccessMessage(null)
+    console.log('User email:', email)
+    if (!validateEmail(email)) {
+      setValidationError('email address not valid')
+    } else {
+      setUserInfo(email, response => {
+        if (response.error) {
+          setValidationError(response.error)
+        } else {
+          setSuccessMessage('Email sent successfully!')
+        }
+      })
+    }
+  }
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
@@ -50,13 +50,13 @@ const Intermission = props => {
         <Intermission_Icon className={classes.icon} />
       </div>
       <div className={classes.headline}>Awesome, you’ve completed Round {round}!</div>
-      {useremail ? (
+      {Object.keys(user).length !== 0 ? (
         <>
           {round === 1 ? (
             <>
               <div className={classes.headlinesmall}>We will notify you when the next round is available.</div>
               <div className={classes.buttonContainer}>
-                <PrimaryButton onClick={handleEmail} title="Continue" disabled={false} disableOnClick={false}>
+                <PrimaryButton title="Continue" disabled={false} disableOnClick={false}>
                   Continue
                 </PrimaryButton>
               </div>
@@ -65,7 +65,7 @@ const Intermission = props => {
             <>
               <div className={classes.headlinesmall}>Would you like to continue onto Round 2?</div>
               <div className={classes.buttonContainer}>
-                <PrimaryButton onClick={handleEmail} title="Yes, Continue" disabled={false} disableOnClick={false}>
+                <PrimaryButton title="Yes, Continue" disabled={false} disableOnClick={false}>
                   Yes, Continue
                 </PrimaryButton>
                 <SecondaryButton title="Remind Me Later" disabled={false} disableOnClick={false}>
@@ -80,27 +80,21 @@ const Intermission = props => {
           <div className={classes.headlinesmall}>
             When more people have gotten to this point we will invite you back to continue the deliberation.
           </div>
-          <input type="text" className={classes.input} placeholder="Please provide your email" />
-          <div className={classes.checkboxContainer}>
-            <div className={classes.checkboxWrapper}>
-              <input type="checkbox" id="checkbox1" name="checkbox1" />
-              <label htmlFor="checkbox1" className={classes.text}>
-                By signing up, you agree to our Terms, Privacy Policy and Cookie use.
-              </label>
-            </div>
-            <div className={classes.checkboxWrapper}>
-              <input type="checkbox" id="reviewTerms" />
-              <label htmlFor="reviewTerms" className={classes.text}>
-                I have reviewed the <span className={classes.underline}>Terms, Privacy Policy and Cookie</span> use.
-              </label>
-            </div>
-          </div>
+          <input
+            type="text"
+            className={classes.input}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Please provide your email"
+          />
           <div className={classes.buttonContainer}>
             <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={false} disableOnClick={false}>
               Invite me back
             </PrimaryButton>
             <div className={classes.accountText}>Already have an account?</div>
           </div>
+          {/* {successMessage && <div className={classes.successMessage}>{successMessage}</div>}{' '}
+          {validationError && <div className={classes.validationError}>{validationError}</div>}{' '} */}
         </>
       )}
     </div>
@@ -148,16 +142,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: 400,
     fontSize: '1.25rem',
     lineHeight: '1.875rem',
-    color: '#343433',
+    color: theme.colors.disableTextBlack,
     textAlign: 'left !important',
   },
   input: {
     width: '100%',
-    maxWidth: '400px',
+    maxWidth: theme.colors.condensedWidthBreakPoint,
     padding: '0.5rem',
     fontSize: '1rem',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
+    borderRadius: '0.25rem',
+    border: '0.0625rem solid #ccc',
     boxSizing: 'border-box',
   },
 
@@ -179,7 +173,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontFamily: 'Inter',
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    color: '#1A1A1A',
+    color: theme.colors.title,
   },
   underline: {
     textDecoration: 'underline',
@@ -194,7 +188,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '600',
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    color: '#343433',
+    color: theme.colors.disableTextBlack,
     textDecoration: 'underline',
   },
 }))
