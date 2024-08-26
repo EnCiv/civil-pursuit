@@ -17,28 +17,33 @@ function PointInput(props) {
     ...otherProps
   } = props
   const classes = useStyles()
-  const [subject, setSubject] = useState(value?.subject ?? '')
-  const [description, setDescription] = useState(value?.description ?? '')
-  const [descWordCount, setDescWordCount] = useState(getDescWordCount(description))
-  const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(subject))
+
+  // biState is for bidirectional state - we will use setBiState to change state values, but sometimers we will just change the value
+  // in the object, without returning a new object so we don't cause a rerender
+  const [biState, setBiState] = useState({ subject: value?.subject ?? '', description: value?.description ?? '' })
+  const [descWordCount, setDescWordCount] = useState(getDescWordCount(biState.description))
+  const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(biState.subject))
   const textareaRef = useRef(null)
 
   // if valaue is changed from above, need to update state and then update the parent about validity
   useEffect(() => {
-    if (subject !== value.subject || description !== value.description) {
-      if (subject !== value.subject) setSubject(value?.subject ?? '')
-      if (description !== value.description) setDescription(value?.description ?? '')
-      onDone({
-        valid: isSubjValid(value.subject) && isDescValid(value.description),
-        value: { ...value },
-      })
-    }
+    const subject = value.subject ?? ''
+    const description = value.description ?? ''
+    // if no change, don't do anything.  This happens on first render
+    if (subject === biState.subject && description === biState.description) return
+    // calling the setter with the new data, to cause a rerender
+    setBiState(biState => ({ subject, description })) // no ...biState because nothing else in there
+
+    onDone({
+      valid: isSubjValid(subject) && isDescValid(description),
+      value: { ...value },
+    })
   }, [value.subject, value.description])
 
   useEffect(() => {
     autosize(textareaRef.current)
     // on initial render, if there are initial values, call onDone to update the parent about their validity
-    if (value.subject && value.description) {
+    if (value.subject || value.description) {
       setTimeout(handleOnBlur)
     }
     return () => {
@@ -66,19 +71,21 @@ function PointInput(props) {
   }
 
   const handleSubjectChange = value => {
-    setSubject(value)
+    setBiState(biState => ((biState.subject = value), biState)) // use the setter but don't create a new object and cause a rerender
     setSubjCharCount(getSubjCharCount(value))
   }
 
   const handleDescriptionChange = value => {
-    setDescription(value)
+    // the biState pattern is not to call the setter onChange, because the input component will display value as soon as it's changed by the user,
+    // but with textArea, the calling the setter is required
+    setBiState(biState => ({ ...biState, description: value }))
     setDescWordCount(getDescWordCount(value))
   }
 
-  const handleOnBlur = () => {
+  const handleOnBlur = e => {
     onDone({
-      valid: isSubjValid(subject) && isDescValid(description),
-      value: { ...value, subject, description },
+      valid: isSubjValid(biState.subject) && isDescValid(biState.description),
+      value: { ...value, ...biState },
     })
   }
 
@@ -87,7 +94,7 @@ function PointInput(props) {
       <input
         type="text"
         placeholder="Type some thing here"
-        value={subject}
+        value={biState.subject}
         onChange={e => handleSubjectChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
@@ -99,7 +106,7 @@ function PointInput(props) {
       <textarea
         ref={textareaRef}
         placeholder="Description"
-        value={description}
+        value={biState.description}
         onChange={e => handleDescriptionChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(
