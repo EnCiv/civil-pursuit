@@ -28,10 +28,17 @@ const AnswerStep = forwardRef((props, ref) => {
   const [startingPoint, setStartingPoint] = useState(shared.startingPoint)
 
   // user input to explain why issue is important
-  const [whyMosts, setWhyMosts] = useState(shared.whyMosts)
+  const [whyMosts, setWhyMosts] = useState(shared.whyMosts.filter(p => p.parentId === startingPoint._id || {}))
+
+  const [pointByPart, setPointByPart] = useState({
+    answer: shared.startingPoint,
+    why: shared.whyMosts.filter(p => p.parentId === startingPoint._id || {}),
+  })
+
+  const [validByPart] = useState({ answer: false, why: false })
 
   useEffect(() => {
-    if (areStartingComplete() && areWhyAnswersComplete()) {
+    if (isStartingComplete() && areWhyAnswersComplete()) {
       onDone({ valid: true, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
     } else {
       onDone({ valid: false, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
@@ -39,35 +46,40 @@ const AnswerStep = forwardRef((props, ref) => {
   }, [whyMosts])
 
   const updateQuestionResponse = ({ valid, value }) => {
-    const updatedAnswers = {
-      answerSubject: value.subject,
-      answerDescription: value.description,
-      _id: startingPoint._id,
-    }
-    setStartingPoint(updatedAnswers)
+    setPointByPart(pointByPart => {
+      pointByPart['answer'] = value
+      validByPart['answer'] = valid
+      return pointByPart
+    })
+    setStartingPoint(value)
   }
 
   const updateWhyResponse = ({ valid, value }) => {
     const updatedAnswers = whyMosts.map(answer => {
       // find which why response to update
       if (answer._id === value.parentId) {
-        answer.answerSubject = value.subject
-        answer.answerDescription = value.description
+        answer.subject = value.subject
+        answer.description = value.description
         answer.valid = valid
       }
       return answer
     })
     setWhyMosts(updatedAnswers)
+    setPointByPart(pointByPart => {
+      pointByPart['why'] = value
+      validByPart['why'] = valid
+      return setPointByPart
+    })
   }
 
   // evaluates if both subject and description fields are filled out for starting point
-  const areStartingComplete = () => {
-    return startingPoint.answerSubject && startingPoint.answerDescription
+  const isStartingComplete = () => {
+    return validByPart['answer']
   }
 
   // evaluates if both subject and description fields are filled out for whyMosts
   const areWhyAnswersComplete = () => {
-    return whyMosts.every(answer => answer.valid)
+    return validByPart['why']
   }
 
   return (
@@ -78,7 +90,7 @@ const AnswerStep = forwardRef((props, ref) => {
           <div key={startingPoint._id}>
             <WhyInput
               point={{ subject: '', description: question, _id: startingPoint._id }}
-              defaultValue={{ subject: '', description: '' }}
+              value={startingPoint}
               onDone={updateQuestionResponse}
             />
           </div>
@@ -89,16 +101,14 @@ const AnswerStep = forwardRef((props, ref) => {
           </div>
         )}
         {whyMosts.length ? (
-          whyMosts.map(point => (
-            <div key={point._id}>
-              <hr className={classes.pointsHr}></hr>
-              <WhyInput
-                point={{ subject: '', description: whyQuestion, _id: point._id }} // _id is parentId
-                defaultValue={{ subject: '', description: '' }}
-                onDone={updateWhyResponse}
-              />
-            </div>
-          ))
+          <div key={whyMosts[0]._id}>
+            <hr className={classes.pointsHr}></hr>
+            <WhyInput
+              point={{ subject: '', description: whyQuestion, _id: whyMosts[0]._id }} // _id is parentId
+              value={{ subject: whyMosts[0].subject, description: whyMosts[0].description }}
+              onDone={updateWhyResponse}
+            />
+          </div>
         ) : (
           <div className={classes.noPointsContainer}>
             <hr className={classes.pointsHr}></hr>
@@ -139,7 +149,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingTop: '4.325rem',
   },
   pointsHr: {
-    color: '#D9D9D9',
+    color: theme.colors.secondaryDivider,
     margin: '4rem 0',
   },
   [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
