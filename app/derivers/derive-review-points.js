@@ -5,9 +5,9 @@
    is careful:
      not to change the array reference when nothing has changed
      to change the array refereance when something has changed, and to only chanage references to the things that have changed
-     relies on the context, and other function to only change only the references of things that have changed
+     relies on the context, and other functions to only change only the references of things that have changed
   
-  keeps a local state that is changed directly (not by a setter) to keep track of previous values in order to figure out what's changed
+  keeps a local state that is changed directly to keep track of previous values in order to figure out what's changed
   and only change what is different
 
 
@@ -19,12 +19,17 @@
             return <ReviewPointList reviewPoints={deriveReviewPoints()} {...props} />
         }
 */
-import React, { useState, useContext } from 'react'
-import DeliberationContext from './deliberation-context'
+import React, { useRef, useContext } from 'react'
+import DeliberationContext from '../components/deliberation-context'
 
-export function deriveReviewPoints() {
+export default function deriveReviewPoints() {
   const { data } = useContext(DeliberationContext)
-  const [local] = useState({ reviewPointsById: {} })
+  const local = useRef({ reviewPointsById: {} }).current
+  return updateReviewPoints(data, local)
+}
+
+// to make is possible to test with jest, calcReviewPoints is exported
+export function updateReviewPoints(data, local) {
   const { pointList, ranks } = data
   let updated = false
 
@@ -32,7 +37,7 @@ export function deriveReviewPoints() {
   if (local.pointList !== pointList) {
     for (const point of pointList) {
       if (!reviewPointsById[point._id]) {
-        reviewPointsById[point._id] = { point, whyMosts: [], rank: {} }
+        reviewPointsById[point._id] = { point, whyMosts: [], whyLeasts: [], rank: {} }
         updated = true
       } else if (reviewPointsById[point._id]?.point !== point) {
         reviewPointsById[point._id].point = point
