@@ -38,6 +38,10 @@ export default {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
     },
+    backgrounds: {
+      default: 'gray',
+      values: [{ name: 'gray', value: '#808080' }],
+    },
   },
 }
 
@@ -165,6 +169,25 @@ export const DarkModeMobile = {
   args: {
     menu: menuArray,
     mode: 'dark',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const TransparentMode = {
+  args: {
+    menu: menuArray,
+    mode: 'transparent',
+  },
+}
+
+export const TransparentMobileMode = {
+  args: {
+    menu: menuArray,
+    mode: 'transparent',
   },
   parameters: {
     viewport: {
