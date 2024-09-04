@@ -4,11 +4,15 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { PrimaryButton, SecondaryButton } from './button'
 import Intermission_Icon from '../svgr/intermission-icon'
+import StatusBox from '../components/status-box'
+
 const Intermission = props => {
   const {
     className = '',
     user = {},
     round = 1, // the round that the user has just completed
+    lastRound = 2,
+    onDone = () => {},
     ...otherProps
   } = props
   const classes = useStylesFromThemeFunction(props)
@@ -52,25 +56,35 @@ const Intermission = props => {
       <div className={classes.headline}>Awesome, you’ve completed Round {round}!</div>
       {Object.keys(user).length !== 0 ? (
         <>
-          {round === 1 ? (
+          {round < lastRound ? (
             <>
-              <div className={classes.headlinesmall}>We will notify you when the next round is available.</div>
+              <div className={classes.headlinesmall}>Would you like to continue onto Round {round + 1}?</div>
               <div className={classes.buttonContainer}>
-                <PrimaryButton title="Continue" disabled={false} disableOnClick={false}>
-                  Continue
+                <PrimaryButton
+                  title="Yes, Continue"
+                  disabled={false}
+                  disableOnClick={false}
+                  onClick={() => onDone({ valid: true, value: 'continue' })}
+                >
+                  Yes, Continue
                 </PrimaryButton>
+                <SecondaryButton
+                  title="Remind Me Later"
+                  disabled={false}
+                  disableOnClick={false}
+                  onClick={() => onDone({ valid: true, value: 'remind' })}
+                >
+                  Remind Me Later
+                </SecondaryButton>
               </div>
             </>
           ) : (
             <>
-              <div className={classes.headlinesmall}>Would you like to continue onto Round 2?</div>
+              <div className={classes.headlinesmall}>We will notify you when the next round is available.</div>
               <div className={classes.buttonContainer}>
-                <PrimaryButton title="Yes, Continue" disabled={false} disableOnClick={false}>
-                  Yes, Continue
+                <PrimaryButton title="Continue" disabled={true} disableOnClick={false}>
+                  Continue
                 </PrimaryButton>
-                <SecondaryButton title="Remind Me Later" disabled={false} disableOnClick={false}>
-                  Remind Me Later
-                </SecondaryButton>
               </div>
             </>
           )}
@@ -93,8 +107,8 @@ const Intermission = props => {
             </PrimaryButton>
             <div className={classes.accountText}>Already have an account?</div>
           </div>
-          {/* {successMessage && <div className={classes.successMessage}>{successMessage}</div>}{' '}
-          {validationError && <div className={classes.validationError}>{validationError}</div>}{' '} */}
+          {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
+          {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
         </>
       )}
     </div>
@@ -118,8 +132,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    width: '33.9375rem',
-
     gap: '2rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       gap: '6rem',
