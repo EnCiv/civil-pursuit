@@ -1,4 +1,4 @@
-const { Mongo } = require('@enciv/mongo-collections')
+// https://github.com/EnCiv/civil-pursuit/issues/154
 const { initDiscussion, insertStatementId, getStatementIds, Discussions } = require('../dturn')
 
 const DISCUSSION_ID = 'testDiscussion'
@@ -15,12 +15,7 @@ const OPTIONS = {
 }
 
 beforeAll(async () => {
-  await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
   await initDiscussion(DISCUSSION_ID, OPTIONS)
-})
-
-afterAll(() => {
-  Mongo.disconnect()
 })
 
 describe('Add and Retrieve 1 Statement', () => {
