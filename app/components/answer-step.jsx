@@ -2,12 +2,13 @@
 
 // most of this code was taken from why-step.jsx
 'use strict'
-import React, { forwardRef, useState, useEffect } from 'react'
+import React, { forwardRef, useState, useEffect, useRef } from 'react'
 import StepIntro from './step-intro'
 import WhyInput from './why-input'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import _ from 'lodash'
+import ObjectId from 'bson-objectid'
 
 const AnswerStep = forwardRef((props, ref) => {
   const {
@@ -15,35 +16,54 @@ const AnswerStep = forwardRef((props, ref) => {
     intro = '',
     question = {},
     whyQuestion = '',
-    shared = {
-      startingPoint: {},
-      whyMosts: [],
-    },
+    shared,
     onDone = () => {},
     ...otherProps
   } = props
   const classes = useStylesFromThemeFunction()
 
-  // user input to answer important issue
-  const [startingPoint, setStartingPoint] = useState(shared.startingPoint)
+  if (!shared) return null // can't function if shared not present - if we initialize it - we start from empty on every rerender
+  if (!shared.startingPoint)
+    //if not present, initialize it
+    shared.startingPoint = { _id: ObjectId().toString(), subject: '', description: '', parentId: question._id }
+  if (!shared.whyMosts)
+    //if not present, initialize it
+    shared.whyMosts = []
 
-  // user input to explain why issue is important
-  const [whyMosts, setWhyMosts] = useState(shared.whyMosts.filter(p => p.parentId === startingPoint._id || {}))
+  const { startingPoint, whyMosts } = shared
 
+  // if there's a why for the starting point, get it. If there isn't make a blank one and put it in the shared whyMosts
+  const whys = whyMosts.filter(p => p.parentId === startingPoint._id)
+  if (whys.length === 0) {
+    // this is not why, so make one
+    whyMosts.push({
+      subject: '',
+      description: '',
+      parentId: startingPoint._id,
+      _id: ObjectId().toString(),
+    })
+    whys.push(whyMosts[0])
+  }
+  // there should be more than one, if there is we are ignoring them
+  const why = whys[0]
+
+  // keep track of the previous values of these, but we will only call the set function if changed from above.
+  // If changed from user input, just mutate the object
   const [pointByPart, setPointByPart] = useState({
-    answer: shared.startingPoint,
-    why: shared.whyMosts.filter(p => p.parentId === startingPoint._id || {}),
+    answer: startingPoint,
+    why,
   })
 
-  const [validByPart] = useState({ answer: false, why: false })
+  // keep track of valid for both parts, no need to rerender if they change so not useState
+  const validByPart = useRef({ answer: false, why: false }).current
 
-  useEffect(() => {
-    if (isStartingComplete() && areWhyAnswersComplete()) {
-      onDone({ valid: true, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
-    } else {
-      onDone({ valid: false, value: { startingPoint: startingPoint, whyMosts: whyMosts } })
-    }
-  }, [whyMosts])
+  function isValid() {
+    return validByPart.answer && validByPart.why
+  }
+
+  function doOnDone() {
+    onDone({ valid: isValid(), value: { startingPoint: pointByPart.answer, whyMost: pointByPart.why } })
+  }
 
   const updateQuestionResponse = ({ valid, value }) => {
     setPointByPart(pointByPart => {
@@ -51,70 +71,47 @@ const AnswerStep = forwardRef((props, ref) => {
       validByPart['answer'] = valid
       return pointByPart
     })
-    setStartingPoint(value)
+    doOnDone()
   }
 
   const updateWhyResponse = ({ valid, value }) => {
-    const updatedAnswers = whyMosts.map(answer => {
-      // find which why response to update
-      if (answer._id === value.parentId) {
-        answer.subject = value.subject
-        answer.description = value.description
-        answer.valid = valid
-      }
-      return answer
-    })
-    setWhyMosts(updatedAnswers)
     setPointByPart(pointByPart => {
       pointByPart['why'] = value
       validByPart['why'] = valid
-      return setPointByPart
+      return pointByPart
     })
+    doOnDone()
   }
 
-  // evaluates if both subject and description fields are filled out for starting point
-  const isStartingComplete = () => {
-    return validByPart['answer']
-  }
+  useEffect(() => {
+    setPointByPart(pointByPart => {
+      if (pointByPart.answer === startingPoint) return pointByPart // abort the setState
+      return { ...pointByPart, answer: startingPoint }
+    })
+  }, [startingPoint])
 
-  // evaluates if both subject and description fields are filled out for whyMosts
-  const areWhyAnswersComplete = () => {
-    return validByPart['why']
-  }
+  useEffect(() => {
+    setPointByPart(pointByPart => {
+      if (pointByPart.why === why) return pointByPart
+      return { ...pointByPart, why }
+    })
+  }, [why])
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
       <div className={classes.answersContainer}>
-        {question ? (
-          <div key={startingPoint._id}>
-            <WhyInput
-              point={{ subject: '', description: question, _id: startingPoint._id }}
-              value={startingPoint}
-              onDone={updateQuestionResponse}
-            />
-          </div>
-        ) : (
-          <div className={classes.noPointsContainer}>
-            <hr className={classes.pointsHr}></hr>
-            There are no questions to respond to.
-          </div>
-        )}
-        {whyMosts.length ? (
-          <div key={whyMosts[0]._id}>
-            <hr className={classes.pointsHr}></hr>
-            <WhyInput
-              point={{ subject: '', description: whyQuestion, _id: whyMosts[0]._id }} // _id is parentId
-              value={{ subject: whyMosts[0].subject, description: whyMosts[0].description }}
-              onDone={updateWhyResponse}
-            />
-          </div>
-        ) : (
-          <div className={classes.noPointsContainer}>
-            <hr className={classes.pointsHr}></hr>
-            There are no whyQuestion to respond to.
-          </div>
-        )}
+        <div key="question">
+          <WhyInput point={question} value={pointByPart.answer} onDone={updateQuestionResponse} />
+        </div>
+        <div key="why">
+          <hr className={classes.pointsHr}></hr>
+          <WhyInput
+            point={{ description: '', subject: whyQuestion, _id: pointByPart.answer._id }} // whyInput assigns this _id to the parentId of the result
+            value={pointByPart.why}
+            onDone={updateWhyResponse}
+          />
+        </div>
       </div>
     </div>
   )
