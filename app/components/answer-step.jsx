@@ -44,7 +44,7 @@ const AnswerStep = forwardRef((props, ref) => {
     })
     whys.push(whyMosts[0])
   }
-  // there should be more than one, if there is we are ignoring them
+  // there should not be more than one, if there is we are ignoring them
   const why = whys[0]
 
   // keep track of the previous values of these, but we will only call the set function if changed from above.
