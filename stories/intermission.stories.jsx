@@ -3,9 +3,11 @@
 import React from 'react'
 import Intermission from '../app/components/intermission'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import {onDoneDecorator, onDoneResult } from './common'
 
 export default {
   component: Intermission,
+  decorators: [onDoneDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -58,13 +60,40 @@ NoEmailMobile.parameters = {
     defaultViewport: 'iphonex',
   },
 }
-export const HasEmailFirst = Template.bind({})
-HasEmailFirst.args = {
+export const LastRound1 = Template.bind({})
+LastRound1.args = {
   user: { email: 'example@gmail.com', tempid: '123456' },
 }
 
-export const HasEmailSecond = Template.bind({})
-HasEmailSecond.args = {
+
+export const LastRound2 = Template.bind({})
+LastRound2.args = {
   user: { email: 'example@gmail.com', tempid: '123456' },
-  round: 2,
+  lastRound: 2,
+}
+LastRound2.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  const continueButton = await canvas.getByText('Yes, Continue')
+  await userEvent.click(continueButton)
+  await waitFor(() =>
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: 1,
+      onDoneResult: {
+        valid: true,
+        value: 'continue',
+      },
+    })
+  )
+  const remindButton = await canvas.getByText('Remind Me Later')
+  await userEvent.click(remindButton)
+  await waitFor(() =>
+    expect(onDoneResult(canvas)).toMatchObject({
+      count: 2, 
+      onDoneResult: {
+        valid: true,
+        value: 'remind',
+      },
+    })
+  )
 }

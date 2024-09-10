@@ -11,7 +11,7 @@ const Intermission = props => {
     className = '',
     user = {},
     round = 1, // the round that the user has just completed
-    lastRound = 2,
+    lastRound = 1,
     onDone = () => {},
     ...otherProps
   } = props
@@ -105,7 +105,6 @@ const Intermission = props => {
             <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={false} disableOnClick={false}>
               Invite me back
             </PrimaryButton>
-            <div className={classes.accountText}>Already have an account?</div>
           </div>
           {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
           {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
