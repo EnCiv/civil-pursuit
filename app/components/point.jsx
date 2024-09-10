@@ -1,15 +1,19 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
+// https://github.com/EnCiv/civil-pursuit/issues/140
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
-  const { subject, description, vState, children, className, isLoading, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
+
+  const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -41,7 +45,11 @@ const Point = forwardRef((props, ref) => {
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+                  : cx(
+                      classes.sharedSubjectStyle,
+                      classes[vState + 'Subject'],
+                      isInvalid ? classes.invalidText : undefined
+                    )
               }
             >
               {isLoading ? '' : subject}
@@ -52,12 +60,17 @@ const Point = forwardRef((props, ref) => {
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
-                  : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])
+                  : cx(
+                      classes.sharedDescriptionStyle,
+                      classes[vState + 'Description'],
+                      isInvalid ? classes.invalidText : undefined
+                    )
               }
             >
               {isLoading ? '' : description}
             </div>
           )}
+          <DemInfo {...demInfo} />
           {childrenWithProps}
         </div>
       </div>
@@ -202,6 +215,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+  },
+  invalidText: {
+    color: theme.colors.rankInvalidText,
   },
 }))
 

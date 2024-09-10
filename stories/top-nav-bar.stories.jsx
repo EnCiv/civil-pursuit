@@ -1,5 +1,6 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
+import Donate from '../app/components/donate'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import Common from './common'
 import { expect } from '@storybook/jest'
@@ -36,6 +37,10 @@ export default {
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
+    },
+    backgrounds: {
+      default: 'gray',
+      values: [{ name: 'gray', value: '#808080' }],
     },
   },
 }
@@ -164,6 +169,25 @@ export const DarkModeMobile = {
   args: {
     menu: menuArray,
     mode: 'dark',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const TransparentMode = {
+  args: {
+    menu: menuArray,
+    mode: 'transparent',
+  },
+}
+
+export const TransparentMobileMode = {
+  args: {
+    menu: menuArray,
+    mode: 'transparent',
   },
   parameters: {
     viewport: {
