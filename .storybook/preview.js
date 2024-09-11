@@ -5,6 +5,7 @@ import React from 'react'
 import Theme from '../app/components/theme'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { levelDecorator } from '../stories/common'
+import GlobalStyles from '../app/components/global-styles'
 
 const theme = Theme
 
@@ -28,6 +29,7 @@ const preview = {
       return (
         <ThemeProvider theme={theme}>
           <div>
+            <GlobalStyles />
             <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
             <Story />
           </div>
