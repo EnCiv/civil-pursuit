@@ -7,39 +7,7 @@ import { ThemeProvider, createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
 import theme from './theme'
 import TopNavBar from './top-nav-bar'
-
-// Define global styles using react-jss
-const useStyles = createUseStyles({
-  '@global': {
-    'h1, h2, h3, h4, h5': {
-      fontFamily: 'Arial, sans-serif',
-      color: '#333',
-      fontWeight: 100,
-      lineHeight: '1.3em',
-    },
-    h1: {
-      fontSize: '2.5rem',
-    },
-    h2: {
-      fontSize: '2.1rem',
-    },
-    h3: {
-      fontSize: '1.8rem',
-    },
-    h4: {
-      fontSize: '1.4rem',
-    },
-    h5: {
-      fontSize: '0.9rem',
-    },
-  },
-})
-
-// Functional component to apply global styles
-const GlobalStyles = () => {
-  useStyles()
-  return null
-}
+import GlobalStyles from './global-styles'
 
 class App extends React.Component {
   render() {
@@ -49,7 +17,6 @@ class App extends React.Component {
       return (
         <ErrorBoundary>
           <ThemeProvider theme={theme}>
-            <GlobalStyles />
             <div style={{ position: 'relative' }}>
               <Helmet>
                 <title>{iota?.subject || 'EnCiv'}</title>
@@ -81,6 +48,7 @@ class App extends React.Component {
                   }`}
                 </script>
               </Helmet>
+              <GlobalStyles />
               <TopNavWrap />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
               <Footer mode="dark" key="footer" />
@@ -88,7 +56,7 @@ class App extends React.Component {
           </ThemeProvider>
         </ErrorBoundary>
       )
-    } else {
+    } else
       return (
         <ErrorBoundary>
           <div style={{ position: 'relative' }}>
@@ -97,7 +65,6 @@ class App extends React.Component {
           </div>
         </ErrorBoundary>
       )
-    }
   }
 }
 
