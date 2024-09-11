@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
 import { Button } from './button'
-import SvgAlertTriangle from '../svgr/alert-triangle'
+import StatusBox from '../components/status-box'
 
 function SignUp(props, ref) {
   const {
@@ -219,18 +219,18 @@ function SignUp(props, ref) {
             </label>
           </div>
         </div>
-        <div className={cx(classes.error, !state.error && classes.disabled)}>
-          <span>
-            <SvgAlertTriangle width="3rem" />
-            Oops! {state.error}
-          </span>
-        </div>
-        <div className={cx(classes.info, !state.info && classes.disabled)}>
-          <span>{state.info}</span>
-        </div>
-        <div className={cx(classes.success, !state.success && classes.disabled)}>
-          <span>{state.success}</span>
-        </div>
+        <StatusBox
+          className={cx(classes.error, !state.error && classes.disabled)}
+          status="error"
+          subject={state.error}
+        />
+        <StatusBox className={cx(classes.info, !state.info && classes.disabled)} status="notice" subject={state.info} />
+        <StatusBox
+          className={cx(classes.success, !state.success && classes.disabled)}
+          status="done"
+          subject={state.success}
+        />
+
         <div className={classes.btnContainer}>
           <Button
             className={cx(classes.btn, isLogIn && classes.disabled)}
