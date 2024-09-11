@@ -3,7 +3,9 @@
 import React from 'react'
 import Intermission from '../app/components/intermission'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import {onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
+import { within, userEvent, waitFor } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
 
 export default {
   component: Intermission,
@@ -21,7 +23,6 @@ const validateEmail = email => {
   return re.test(String(email).toLowerCase())
 }
 
-// const Template = args => <Intermission {...args} />
 const Template = args => {
   window.socket = {
     emit: (handle, data, cb) => {
@@ -31,15 +32,13 @@ const Template = args => {
       }
       if (validateEmail(data.email)) {
         setTimeout(() => cb({ error: '' }), 1000)
-        console.log("success!")
+        console.log('success!')
       } else {
         setTimeout(() => cb({ error: 'Something went wrong' }), 1000)
-        console.log("error")
+        console.log('error')
       }
     },
   }
-
-  console.log('window.socket.emit defined inside Template')
   return <Intermission {...args} />
 }
 
@@ -49,32 +48,39 @@ Empty.args = {}
 export const NoEmail = Template.bind({})
 NoEmail.args = {
   user: {},
+  round: 1,
+  lastRound: 1,
 }
 
 export const NoEmailMobile = Template.bind({})
 NoEmailMobile.args = {
   user: {},
+  round: 1,
+  lastRound: 1,
 }
 NoEmailMobile.parameters = {
   viewport: {
     defaultViewport: 'iphonex',
   },
 }
+
 export const LastRound1 = Template.bind({})
 LastRound1.args = {
   user: { email: 'example@gmail.com', tempid: '123456' },
+  round: 1,
+  lastRound: 1,
 }
-
 
 export const LastRound2 = Template.bind({})
 LastRound2.args = {
   user: { email: 'example@gmail.com', tempid: '123456' },
+  round: 1,
   lastRound: 2,
 }
 LastRound2.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
-  const continueButton = await canvas.getByText('Yes, Continue')
+  const continueButton = canvas.getByText('Yes, Continue')
   await userEvent.click(continueButton)
   await waitFor(() =>
     expect(onDoneResult(canvas)).toMatchObject({
@@ -85,11 +91,11 @@ LastRound2.play = async ({ canvasElement }) => {
       },
     })
   )
-  const remindButton = await canvas.getByText('Remind Me Later')
+  const remindButton = canvas.getByText('Remind Me Later')
   await userEvent.click(remindButton)
   await waitFor(() =>
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 2, 
+      count: 2,
       onDoneResult: {
         valid: true,
         value: 'remind',
