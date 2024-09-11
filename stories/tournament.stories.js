@@ -83,6 +83,14 @@ const compareReasonsPointList = [
   },
 ]
 
+const startingQuestionAnswerStep = {
+  _id: '5d0137260dacd06732a1d814',
+  subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
+  description: `This task is testing an application for large scale online discussion that is unbiased, thoughtful, doesn’t require reading millions of answers, and leads to awesome results. We are only asking about a concern - an issue or problem, not about any possible solutions. Think about it before answering, think outside the box, think big and think about everyone in the country uniting on this. At the end, your feedback will be welcomed.`,
+}
+
+const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
+
 const testSteps = [
   {
     webComponent: 'Answer',
@@ -91,6 +99,9 @@ const testSteps = [
       subject: 'Answer',
       description: 'Please provide a title and short description for your answer',
     },
+    question: startingQuestionAnswerStep,
+    whyQuestion: whyQuestionAnswerStep,
+    shared: {},
   },
   {
     webComponent: 'GroupingStep',
@@ -173,7 +184,7 @@ const testSteps = [
   },
   {
     webComponent: 'Intermission',
-    stepName: '',
+    stepName: 'Intermission',
     stepIntro: {
       subject: "Awesome, you've completed Round 1!",
       description: 'When more people have gotten to this point we will invite you back to continue the deliberation. ',

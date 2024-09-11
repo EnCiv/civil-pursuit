@@ -7,6 +7,7 @@ import cx from 'classnames'
 import StepBar from './step-bar'
 import RoundTracker from './round-tracker'
 import StepSlider from './step-slider'
+import AnswerStep from './answer-step'
 import GroupingStep from './grouping-step'
 import RankStep from './rank-step'
 import ReviewPointList from './review-point-list'
@@ -17,7 +18,7 @@ const WebComponents = {
   StepBar: StepBar,
   RoundTracker: RoundTracker,
   StepSlider: StepSlider,
-  Answer: undefined, // TODO: Import answer step component here.
+  Answer: AnswerStep,
   GroupingStep: GroupingStep,
   RankStep: RankStep,
   ReviewPointList: ReviewPointList,
