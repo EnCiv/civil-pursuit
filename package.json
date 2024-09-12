@@ -22,7 +22,8 @@
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
-    "chromatic": "bash ./node_modules/.bin/chromatic"
+    "chromatic": "bash ./node_modules/.bin/chromatic",
+    "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
   },
   "author": {
     "email": "davidfridley@enciv.org",

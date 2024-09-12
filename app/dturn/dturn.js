@@ -196,10 +196,14 @@ async function getStatementIds(discussionId, round, userId) {
     throw new Error(`Discussion ${discussionId} not initialized`)
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
+    console.error(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
   }
-  if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1)
+  if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1) {
+    console.error(`Insufficient ShownStatements length for discussion ${discussionId}`)
     return undefined
+  }
+
   const dis = Discussions[discussionId]
   const statementIds = []
   let authoredId // id of statment the user authored -- if the shownGroup is incomplete
@@ -223,7 +227,7 @@ async function getStatementIds(discussionId, round, userId) {
   } else if (round === 0) {
     // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
     const needToBeSeen = dis.ShownStatements[round].filter(
-      sItem => sItem.shownCount < Math.pow(dis.group_size, round + 1)
+      sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)
     ) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
     if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
@@ -241,7 +245,6 @@ async function getStatementIds(discussionId, round, userId) {
     }
     if (!dis.ShownGroups[round]) dis.ShownGroups[round] = [] // don't create the blank until theres somthing to put there so showdeepdiff works after reconstituting
     dis.ShownGroups[round].push(shownGroup)
-    if (authoredId && shownGroup.statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
     shownGroup.shownCount++
   } else {
     if (!dis.ShownStatements[round]) {
@@ -309,7 +312,7 @@ async function getStatementIds(discussionId, round, userId) {
   initUitems(discussionId, userId, round)
   const delta = { [userId]: { [discussionId]: { [round]: { shownStatementIds: {} } } } }
   // the user's own statement may be there, so check before writing
-  for (sId of statementIds) {
+  for (const sId of statementIds) {
     if (!dis.Uitems[userId][round].shownStatementIds[sId]) {
       dis.Uitems[userId][round].shownStatementIds[sId] = { rank: 0 }
       delta[userId][discussionId][round].shownStatementIds[sId] = { rank: 0 }

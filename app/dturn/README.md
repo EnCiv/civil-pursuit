@@ -52,6 +52,7 @@ const {
 -   **round** the round from which to get statements
 -   **userId** the globally unique id refering to the user, like a MongoDb ObjectId
 -   **returns** a promse that resolves to an array of group_size statement ids, or undefined if there was an error. For round 1, one less than statement ids is returned, and the user's statement should be added to the list. Future calls for the same user for the same round will return the same statement list.
+    In order to use the getStatementIds, it requires to add 2 * group size - 1 statements inserted first.
 
 ### putGroupings( discussionId, round, userId, groupings )
 
