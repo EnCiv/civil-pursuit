@@ -126,6 +126,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       backgroundColor: 'transparent',
       '& div': {
         padding: '0.1rem',
+        marginBottom: '1rem',
       },
       '&:hover': {
         outline: 'none !important',
