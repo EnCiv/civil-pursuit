@@ -87,14 +87,28 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.lightSuccess,
-    fontSize: '1.8rem',
+    fontFamily: 'sans-serif',
+    fontSize: '1.8rem', // Default font size
+    wordWrap: 'break-word',
+    overflow: 'hidden',
+    '@media (max-width: 480px)': {
+      // For small screens
+      fontSize: '1.7rem',
+    },
   },
   rightHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
-    fontSize: '1.8rem',
+    fontFamily: 'sans-serif',
+    fontSize: '1.8rem', // Default font size
+    wordWrap: 'break-word',
+    overflow: 'hidden',
+    '@media (max-width: 480px)': {
+      // For small screens
+      fontSize: '1.7rem',
+    },
   },
   pointGrid: {
     display: 'grid',
@@ -105,7 +119,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   point: {
     flex: 1,
     '& div': {
-      padding: '1rem',
+      paddingTop: '0.2rem',
+      paddingBottom: '0.2rem',
+      paddingLeft: '1rem',
+      paddingRight: '1rem',
       boxShadow: 'none',
       borderRadius: 0,
       backgroundColor: 'transparent',

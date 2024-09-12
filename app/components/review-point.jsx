@@ -141,6 +141,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.5rem',
     fontWeight: '400',
     lineHeight: '1.875rem',
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
   },
   descriptionStyle: {
     ...theme.font,
@@ -148,6 +150,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
   },
   contentContainer: {
     padding: '2rem 1.875rem',
