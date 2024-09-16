@@ -48,10 +48,10 @@ const TopNavBar = props => {
 
   return (
     <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
-      <div className={classes.columnAligner}>
-        <div className={`${classes.navBarContainer}`}>
+      <div className={classes.navBarContainer}>
+        <div className={classes.logo}>
           {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
-
+        </div>
           {/* This is the computer menu */}
           <menu className={classes.menuContainer}>
             {menu &&
@@ -105,7 +105,7 @@ const TopNavBar = props => {
           <button className={cx(classes.menuToggle, classes.colors)} onClick={toggleMenu}>
             &#8801;
           </button>
-        </div>
+        {/* </div> */}
 
         {/* This is the mobile menu */}
         {isExpanded ? (
@@ -197,6 +197,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '8.5rem',
     height: 'auto',
     paddingBottom: '1.5rem',
+    alignItems: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '4rem',
     },
@@ -204,21 +205,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   menuContainer: {
     display: 'flex',
     justifyContent: 'center',
-    position: 'absolute',
-    bottom: '10%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    zIndex: theme.zIndexes.menu,
+    alignItems: 'center', // Ensure the menu is vertically centered
+    flexGrow: 1, // Ensures the menu takes up available space between the logo and buttons
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
   },
   mobileMenuContainer: props => ({
     display: 'flex',
-    width: '80%',
-    background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    width: '100%',
+    background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow, // Dark background in mobile
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    padding: '1rem',
+    gap: '1rem',
+    color: props.mode === 'dark' ? 'white' : 'black', // Ensure text is white in dark mode
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
@@ -257,17 +258,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontFamily: 'Inter',
     fontStyle: 'normal',
     fontWeight: 500,
-    fontSize: '1rem', // forcing because unknown things are overriding it
+    fontSize: '1rem',
     cursor: 'pointer',
     background: 'none',
     border: 'none',
     padding: '0.5rem 1rem',
-    margin: '0 0.25rem',
+    margin: '0.25rem 0',
     whiteSpace: 'nowrap',
     textAlign: 'left',
+    color: props.mode === 'dark' ? 'white' : 'black', // White text in dark mode
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' ? 'black' : 'white', // Reverse colors on hover in dark mode
     },
   }),
   selectedItem: props => ({

@@ -6,8 +6,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import Step from './step'
-import SvgStepBarArrowDesktop from '../svgr/step-bar-arrow-desktop'
-import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
+// import SvgStepBarArrowDesktop from '../svgr/step-bar-arrow-desktop'
+// import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
