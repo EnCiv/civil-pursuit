@@ -90,7 +90,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.7rem', // Default font size
     wordWrap: 'break-word',
     overflow: 'hidden',
-    '@media (max-width: 480px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       // For small screens
       fontSize: '1.5rem',
     },
@@ -103,7 +103,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.7rem', // Default font size
     wordWrap: 'break-word',
     overflow: 'hidden',
-    '@media (max-width: 480px)': {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       // For small screens
       fontSize: '1.5rem',
     },
