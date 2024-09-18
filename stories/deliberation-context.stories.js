@@ -1,21 +1,13 @@
 import React, { useContext, useEffect } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
+import { DeliberationContextDecorator } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 import expect from 'expect'
 
 export default {
   component: DeliberationContext,
   args: {},
-  decorators: [
-    // the context needs to be wrapped outside of the story
-    Story => {
-      return (
-        <DeliberationContextProvider>
-          <Story />
-        </DeliberationContextProvider>
-      )
-    },
-  ],
+  decorators: [DeliberationContextDecorator],
 }
 
 const Template = props => {

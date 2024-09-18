@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { expect } from '@storybook/jest'
-import ReviewPointList from '../app/components/review-point-list'
+import { ReRank } from '../app/components/steps/re-rank'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 
 export default {
-  component: ReviewPointList,
+  component: ReRank,
   decorators: [onDoneDecorator],
   parameters: {
     viewport: {

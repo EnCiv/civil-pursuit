@@ -1,4 +1,13 @@
 import React, { useState, useCallback } from 'react'
+import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
+
+export const DeliberationContextDecorator = Story => {
+  return (
+    <DeliberationContextProvider>
+      <Story />
+    </DeliberationContextProvider>
+  )
+}
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }
 
