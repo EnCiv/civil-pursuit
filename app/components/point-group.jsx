@@ -207,60 +207,62 @@ const PointGroup = props => {
           {childrenWithProps}
           {vs === 'edit' && expanded && !singlePoint && (
             <div className={classes.defaultWidth}>
-              {!singlePoint && <p className={classes.titleGroup}>Edit the response you'd like to lead with</p>}
+              {!singlePoint && <H className={classes.titleGroup}>Edit the response you'd like to lead with</H>}
               <div className={classes.selectPointsContainer}>
-                {groupedPoints.map((pD, leadIndex) => {
-                  return (
-                    <div key={pD._id} className={classes.selectPoints}>
-                      <Point
-                        point={pD}
-                        vState={'default'}
-                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                      >
-                        <div className={classes.pointBottomButtons}>
-                          <div className={classes.pointWidthButton}>
-                            <ModifierButton
-                              className={classes.pointWidthButton}
-                              title={`Select as Lead: ${pD.subject}`}
-                              children="Select as Lead"
-                              onDone={() => {
-                                const newPointDoc = {
-                                  ...pD,
-                                  groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
-                                }
-                                setPointDoc(newPointDoc)
-                                onDone({
-                                  valid: true,
-                                  value: { pointObj: newPointDoc },
-                                })
-                              }}
-                              disabled={false}
-                              disableOnClick={false}
-                            />
+                <Level>
+                  {groupedPoints.map((pD, leadIndex) => {
+                    return (
+                      <div key={pD._id} className={classes.selectPoints}>
+                        <Point
+                          point={pD}
+                          vState={'default'}
+                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                        >
+                          <div className={classes.pointBottomButtons}>
+                            <div className={classes.pointWidthButton}>
+                              <ModifierButton
+                                className={classes.pointWidthButton}
+                                title={`Select as Lead: ${pD.subject}`}
+                                children="Select as Lead"
+                                onDone={() => {
+                                  const newPointDoc = {
+                                    ...pD,
+                                    groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                                  }
+                                  setPointDoc(newPointDoc)
+                                  onDone({
+                                    valid: true,
+                                    value: { pointObj: newPointDoc },
+                                  })
+                                }}
+                                disabled={false}
+                                disableOnClick={false}
+                              />
+                            </div>
+                            <div className={classes.pointWidthButton}>
+                              <TextButton
+                                className={classes.pointWidthButton}
+                                title={`Remove from Group: ${pD.subject}`}
+                                children="Remove from Group"
+                                onDone={() => {
+                                  const newPointDoc = {
+                                    ...soloPoint,
+                                    groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                                  }
+                                  setPointDoc(newPointDoc)
+                                  onDone({
+                                    valid: true,
+                                    value: { pointDoc: newPointDoc, removedPointDocs: [pD] },
+                                  })
+                                }}
+                              />
+                            </div>
                           </div>
-                          <div className={classes.pointWidthButton}>
-                            <TextButton
-                              className={classes.pointWidthButton}
-                              title={`Remove from Group: ${pD.subject}`}
-                              children="Remove from Group"
-                              onDone={() => {
-                                const newPointDoc = {
-                                  ...soloPoint,
-                                  groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
-                                }
-                                setPointDoc(newPointDoc)
-                                onDone({
-                                  valid: true,
-                                  value: { pointDoc: newPointDoc, removedPointDocs: [pD] },
-                                })
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </Point>
-                    </div>
-                  )
-                })}
+                        </Point>
+                      </div>
+                    )
+                  })}
+                </Level>
               </div>
             </div>
           )}
