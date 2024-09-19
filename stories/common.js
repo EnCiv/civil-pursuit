@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import React, { useState, useCallback } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
 
@@ -8,6 +10,7 @@ export const DeliberationContextDecorator = Story => {
     </DeliberationContextProvider>
   )
 }
+import { Level } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }
 
@@ -124,6 +127,15 @@ export function onBackDecorator(Story, context) {
 }
 export function onBackResult() {
   return JSON.parse(document.getElementById('onBackResult').innerHTML)
+}
+
+// Create the level adjustment decorator
+export const levelDecorator = (Story, context) => {
+  return (
+    <Level>
+      <Story {...context} />
+    </Level>
+  )
 }
 
 export default {

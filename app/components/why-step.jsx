@@ -8,6 +8,7 @@ import { createUseStyles } from 'react-jss'
 import WhyInput from './why-input'
 import { isEqual } from 'lodash'
 import { cloneDeep } from 'lodash'
+import { H, Level } from 'react-accessible-headings'
 
 // create an object where the why-input values are indexed by their parentId
 // return [theObject, changed] where changed indicates there were changes since the supplied whyByParentId
@@ -93,12 +94,13 @@ export default function WhyStep(props) {
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.introContainer}>
-        <div className={classes.introTitle}>
+        <H className={classes.introTitle}>
           {`Why it's ${type && type[0].toUpperCase() + type.slice(1)} Important`}
-        </div>
+        </H>
         <div className={classes.introText}>{intro}</div>
       </div>
-      <div className={classes.pointsContainer}>
+      <Level>
+        <div className={classes.pointsContainer}>
         {points.length ? (
           points.map(point => (
             <div key={point._id}>
@@ -117,6 +119,8 @@ export default function WhyStep(props) {
           </div>
         )}
       </div>
+      </Level>
+      
     </div>
   )
 }

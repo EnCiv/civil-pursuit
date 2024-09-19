@@ -51,6 +51,7 @@
     "mongodb": "^5.9.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-accessible-headings": "^4.2.0",
     "react-hot-loader": "^4.8.4",
     "react-jss": "^10.10.0",
     "react-perfect-scrollbar": "^1.5.8",
