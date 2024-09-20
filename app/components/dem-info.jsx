@@ -1,10 +1,11 @@
 'use strict'
 import React from 'react'
 import cx from 'classnames'
-import insertSheet from 'react-jss'
+import { createUseStyles } from 'react-jss'
 
-function DemInfo(props) {
-  const { state, dob, party, classes, className, ...otherProps } = props
+export default function DemInfo(props) {
+  const { state, dob, party, className, ...otherProps } = props
+  const classes = useStylesFromThemeFunction()
   if (!(state && dob && party)) return null // if no data, render not
 
   const userState = state || ''
@@ -49,7 +50,7 @@ function calculateAge(birthdayStr) {
   return age
 }
 
-const demInfoStyles = {
+const useStylesFromThemeFunction = createUseStyles(theme => ({
   infoText: {
     fontFamily: 'Inter',
     fontSize: '1rem',
@@ -59,6 +60,4 @@ const demInfoStyles = {
     textAlign: 'left',
     color: '#5D5D5C',
   },
-}
-
-export default insertSheet(demInfoStyles)(DemInfo)
+}))
