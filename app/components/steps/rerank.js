@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
+// https://github.com/EnCiv/civil-pursuit/issues/215
 
 'use strict'
 import React, { useState, useEffect, useRef } from 'react'
@@ -9,10 +10,10 @@ import DeliberationContext from '../deliberation-context'
 export default function ReRankStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
 
-  return <ReRank {...derivePointMostsLeastsRankList(data)} {...props} />
+  return <Rerank {...derivePointMostsLeastsRankList(data)} {...props} />
 }
 
-export function ReRank(props) {
+export function Rerank(props) {
   const { reviewPoints = [], onDone = () => {}, className, ...otherProps } = props
   const [rankedPoints, setRankedPoints] = useState(new Set())
   const [percentDone, setPercentDone] = useState(0)
@@ -90,8 +91,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   and only change what is different
 
 
-   Input pointList, whyMosts, whyLeasts, rankDocs
-   Output: reviewPoints=[{point, whyMosts, whyLeasts, rankDoc}]
+   Input pointList, mosts, whyLeasts, rankDocs
+   Output: reviewPoints=[{point, mosts, leasts, rankDoc}]
 
    usage 
         function ReviewStep(props) {
@@ -99,59 +100,64 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         }
 */
 
-// to make is possible to test with jest, calcReviewPoints is exported
+// to make is possible to test with jest, this is exported
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
-  const { pointList, ranks } = data
+  const { reducedPointList, postRankByParentId, topWhyByParentId } = data
   let updated = false
 
   const { reviewPointsById } = local
-  if (local.pointList !== pointList) {
-    for (const point of pointList) {
+  if (local.reducedPointList !== reducedPointList) {
+    for (const { point } of reducedPointList) {
       if (!reviewPointsById[point._id]) {
-        reviewPointsById[point._id] = { point, whyMosts: [], whyLeasts: [], rank: {} }
+        reviewPointsById[point._id] = { point }
         updated = true
       } else if (reviewPointsById[point._id]?.point !== point) {
         reviewPointsById[point._id].point = point
         updated = true
       }
     }
-    local.pointList = pointList
+    local.reducedPointList = reducedPointList
   }
-  for (const category of ['whyMosts', 'whyLeasts']) {
-    if (local[category] !== data[category]) {
-      let index
-      const parentIdsToUpdate = {}
-      for (const whyPoint of data[category]) {
-        if (!reviewPointsById[whyPoint.parentId]) continue // parent not in pointList
-        if ((index = reviewPointsById[whyPoint.parentId][category].findIndex(w => w._id === whyPoint._id)) >= 0) {
-          if (reviewPointsById[whyPoint.parentId][category][index] !== whyPoint) {
-            reviewPointsById[whyPoint.parentId][category][index] = whyPoint
-            parentIdsToUpdate[whyPoint.parentId] = true
-            updated = true
-          } // else no need to update
-        } else {
-          reviewPointsById[whyPoint.parentId][category].push(whyPoint)
-          parentIdsToUpdate[whyPoint.parentId] = true
+  if (local.topWhyByParentId !== topWhyByParentId) {
+    local.topWhyByParentId = topWhyByParentId
+    let index
+    const categoiesToUpdateByParentId = {}
+    for (const whyPoint of Object.values(topWhyByParentId)) {
+      if (!reviewPointsById[whyPoint.parentId]) continue // parent not in pointList
+      const category = whyPoint.category
+      if ((index = reviewPointsById[whyPoint.parentId][category + 's']?.findIndex(w => w._id === whyPoint._id)) >= 0) {
+        if (reviewPointsById[whyPoint.parentId][category + 's'][index] !== whyPoint) {
+          reviewPointsById[whyPoint.parentId][category + 's'][index] = whyPoint
+          if (!categoiesToUpdateByParentId[whyPoint.parentId]) categoiesToUpdateByParentId[whyPoint.parentId] = []
+          categoiesToUpdateByParentId[whyPoint.parentId].push(category)
           updated = true
-        }
+        } // else no need to update
+      } else {
+        if (!reviewPointsById[whyPoint.parentId][category + 's'])
+          reviewPointsById[whyPoint.parentId][category + 's'] = []
+        reviewPointsById[whyPoint.parentId][category + 's'].push(whyPoint)
+        if (!categoiesToUpdateByParentId[whyPoint.parentId]) categoiesToUpdateByParentId[whyPoint.parentId] = []
+        categoiesToUpdateByParentId[whyPoint.parentId].push(category)
+        updated = true
       }
-      Object.keys(parentIdsToUpdate).forEach(
-        parentId => (reviewPointsById[parentId][category] = { ...reviewPointsById[parentId][category] })
-      )
-      local[catgory] = data[category]
     }
+    Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) =>
+      categories.forEach(
+        category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])
+      )
+    )
   }
-  if (local.ranks !== ranks) {
-    for (const rank of ranks) {
+  if (local.postRankByParentId !== postRankByParentId) {
+    for (const rank of Object.values(postRankByParentId)) {
       if (reviewPointsById[rank.parentId]) {
         if (reviewPointsById[rank.parentId].rank !== rank) {
-          reviewPointsById[rank.parentId].rank === rank
+          reviewPointsById[rank.parentId].rank = rank
           updated = true
         }
       } // else some rankDoc's could relate to a whyPoint so do nothing in that case
     }
-    local.ranks = ranks
+    local.postRankByParentId = postRankByParentId
   }
   if (updated) local.reviewPoints = Object.values(local.reviewPointsById)
   return local.reviewPoints
