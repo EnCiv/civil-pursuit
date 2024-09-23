@@ -200,6 +200,9 @@ export default {
   args: {
     steps: testSteps,
   },
+  parameters: {
+    layout: 'fullscreen',
+  },
   decorators: [onDoneDecorator],
 }
 
