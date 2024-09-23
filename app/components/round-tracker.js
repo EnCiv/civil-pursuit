@@ -38,40 +38,40 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
       return <div className={classes.emptyMessage}>No rounds available</div>
     }
 
-    let visibleRounds
     const currentRoundIndex = roundsStatus.findIndex(status => status === 'inProgress')
 
-    if (isMobile) {
-      if (currentRoundIndex === 0) {
-        visibleRounds = roundsStatus.slice(0, 2) // Show the first two rounds
-      } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-1) // Show only the last round
-      } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex, currentRoundIndex + 2) // Show the current and next round
-      }
+    let lowerIndex, upperIndex
+
+    if (currentRoundIndex === 0) {
+      lowerIndex = 0
+      upperIndex = isMobile ? 2 : 3 // Show the first two rounds on mobile, first 3 on full-width
+    } else if (currentRoundIndex === roundsStatus.length - 1) {
+      lowerIndex = roundsStatus.length - (isMobile ? 1 : 3)
+      upperIndex = roundsStatus.length - 1 // Show only the last round on mobile, last 3 on full-width
     } else {
-      if (currentRoundIndex <= 0) {
-        visibleRounds = roundsStatus.slice(0, 3) // Show the first three rounds
-      } else if (currentRoundIndex === roundsStatus.length - 1) {
-        visibleRounds = roundsStatus.slice(-3) // Show the last three rounds
-      } else {
-        visibleRounds = roundsStatus.slice(currentRoundIndex - 1, currentRoundIndex + 2) // Show the previous, current, and next round
-      }
+      // Show the current and next round on mobile.
+      // Previous, current, and next round on full-width
+      lowerIndex = isMobile ? currentRoundIndex : currentRoundIndex - 1
+      upperIndex = currentRoundIndex + 2
     }
 
-    return visibleRounds.map((status, index) => (
-      <React.Fragment key={index}>
-        <div className={classes.roundContainer}>
-          <div className={classes.roundNumber}>Round {roundsStatus.length - visibleRounds.length + index + 1}</div>
-          <StatusBadge
-            name={status.charAt(0).toUpperCase() + status.slice(1)}
-            status={status.toLowerCase()}
-            className={classes.badge}
-          />
-        </div>
-        {index < visibleRounds.length - 1 && <div className={classes.dash} />}
-      </React.Fragment>
-    ))
+    return roundsStatus.map((status, index) => {
+      // Only render visible rounds
+      if (lowerIndex <= index && index < upperIndex)
+        return (
+          <React.Fragment key={index}>
+            <div className={classes.roundContainer}>
+              <div className={classes.roundNumber}>Round {index + 1}</div>
+              <StatusBadge
+                name={status.charAt(0).toUpperCase() + status.slice(1)}
+                status={status.toLowerCase()}
+                className={classes.badge}
+              />
+            </div>
+            {index < upperIndex - 1 && <div className={classes.dash} />}
+          </React.Fragment>
+        )
+    })
   }
 
   return (
