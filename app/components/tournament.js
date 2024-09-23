@@ -13,6 +13,7 @@ import RankStep from './rank-step'
 import ReviewPointList from './review-point-list'
 import WhyStep from './why-step'
 import CompareReasons from './compare-reasons'
+import Intermission from './intermission'
 
 const WebComponents = {
   StepBar: StepBar,
@@ -24,7 +25,7 @@ const WebComponents = {
   ReviewPointList: ReviewPointList,
   WhyStep: WhyStep,
   CompareReasons: CompareReasons,
-  Intermission: undefined, // TODO: Import Intermission component here.
+  Intermission: Intermission,
 }
 
 function buildChildren(steps, round) {

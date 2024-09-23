@@ -117,14 +117,13 @@ const testSteps = [
     },
   },
   {
-    webComponent: 'ReviewPointList',
+    webComponent: 'RankStep',
     stepName: 'Rank',
     stepIntro: {
       subject: 'Rank Responses',
       description:
         'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
     },
-    reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
   {
     webComponent: 'WhyStep',
@@ -174,21 +173,25 @@ const testSteps = [
     side: 'least',
   },
   {
-    webComponent: 'Review',
+    webComponent: 'ReviewPointList',
     stepName: 'Review',
     stepIntro: {
       subject: 'Review',
       description:
         'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
     },
+    reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
   {
     webComponent: 'Intermission',
     stepName: 'Intermission',
     stepIntro: {
-      subject: "Awesome, you've completed Round 1!",
-      description: 'When more people have gotten to this point we will invite you back to continue the deliberation. ',
+      subject: 'Intermission',
+      description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
     },
+    user: { email: 'example@gmail.com', tempid: '123456' },
+    round: 1,
+    lastRound: 2,
   },
 ]
 
