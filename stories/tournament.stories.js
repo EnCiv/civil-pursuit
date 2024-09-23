@@ -124,6 +124,8 @@ const testSteps = [
       description:
         'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
     },
+    pointList: pointItems,
+    rankList: [],
   },
   {
     webComponent: 'WhyStep',
