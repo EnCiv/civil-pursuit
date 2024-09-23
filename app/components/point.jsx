@@ -1,11 +1,13 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
+// https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
@@ -23,11 +25,14 @@ const Point = forwardRef((props, ref) => {
     setIsHovered(false)
   }
 
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      className: cx(child.props.className, { isHovered: isHovered }),
-      vState: vState,
-    })
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        className: cx(child.props.className, { isHovered: isHovered }),
+        vState: vState,
+      })
+    }
+    return child
   })
 
   return (
@@ -41,7 +46,7 @@ const Point = forwardRef((props, ref) => {
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <div
+            <H
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
@@ -53,10 +58,10 @@ const Point = forwardRef((props, ref) => {
               }
             >
               {isLoading ? '' : subject}
-            </div>
+            </H>
           )}
           {(isLoading || description) && (
-            <div
+            <p
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
@@ -68,10 +73,10 @@ const Point = forwardRef((props, ref) => {
               }
             >
               {isLoading ? '' : description}
-            </div>
+            </p>
           )}
           <DemInfo {...demInfo} />
-          {childrenWithProps}
+          <Level>{childrenWithProps}</Level>
         </div>
       </div>
     </div>

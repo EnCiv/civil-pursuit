@@ -7,6 +7,8 @@ import { ThemeProvider, createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
 import theme from './theme'
 import TopNavBar from './top-nav-bar'
+import GlobalStyles from './global-styles'
+
 class App extends React.Component {
   render() {
     if (this.props.iota) {
@@ -46,6 +48,7 @@ class App extends React.Component {
                   }`}
                 </script>
               </Helmet>
+              <GlobalStyles />
               <TopNavWrap />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
               <Footer mode="dark" key="footer" />
