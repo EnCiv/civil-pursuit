@@ -14,7 +14,7 @@ async function upsertWhy(pointObj, cb) {
 
   const requiredFields = ['_id', 'title', 'description', 'userId']
 
-  const validation = Points.enforceRequiredFields(requiredFields, pointObj) // Validate pointObj
+  const validation = Points.validateRequiredFields(requiredFields, pointObj) // Validate pointObj
 
 
   // const schema = enforceRequiredFields(pointSchema, requiredFields)

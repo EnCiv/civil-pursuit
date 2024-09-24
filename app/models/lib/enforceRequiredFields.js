@@ -1,3 +1,5 @@
+const Joi = require('joi')
+
 function enforceRequiredFields(schema, requiredFields) { // Add required fields to schema through Joi
   const schemaDescription = schema.describe()
   const newSchema = {}
@@ -10,4 +12,4 @@ function enforceRequiredFields(schema, requiredFields) { // Add required fields 
 
 }
 
-module.exports = enforceRequiredFields;git 
+module.exports = enforceRequiredFields;
