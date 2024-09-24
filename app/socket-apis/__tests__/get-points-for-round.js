@@ -63,12 +63,15 @@ test('Fail if discussionId not initialized.', async () => {
 
 test('Empty list if user inserted their answer but no others have.', async () => {
   const cb = jest.fn()
-  await getPointsForRound.call(synuser, discussionId, 1, cb)
 
   await initDiscussion(discussionId)
   await insertDturnStatement.call(synuser, discussionId, pointObj, null)
-  console.log('HIHI')
+
+  await getPointsForRound.call(synuser, discussionId, 1, cb)
+
   expect(cb).toHaveBeenCalledTimes(1)
-  // expect(cb).toHaveBeenCalledWith([])
-  expect(console.error.mock.calls[1][0]).toMatch(/user is not logged in/)
+  expect(cb).toHaveBeenCalledWith([])
+  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(
+    /Insufficient ShownStatements length/
+  )
 })

@@ -24,7 +24,7 @@ async function getPointsForRound(discussionId, round, cb) {
   }
 
   // If points is 0 or 1, return empty list
-  if (statementIds.length < 2) {
+  if (!statementIds) {
     cb([])
     return []
   }
