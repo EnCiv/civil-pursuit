@@ -92,7 +92,7 @@ const startingQuestionAnswerStep = {
 const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
 const testSteps = [
-  //{ webComponent: 'SignUp' },
+  { webComponent: 'SignUp' },
   {
     webComponent: 'Details',
     questions: [['What party are you with']],
