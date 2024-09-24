@@ -6,11 +6,13 @@ import cx from 'classnames'
 
 import StepSlider from '../components/step-slider'
 import SignUp from '../components/sign-up'
+import MoreDetails from '../components/more-details'
+import Tournament from '../components/tournament'
 
 const WebComponents = {
   SignUp: SignUp,
-  Details: undefined, // TODO: Import the MoreDetails component
-  Tournament: undefined, // TODO: Import the Tournament component
+  Details: MoreDetails,
+  Tournament: Tournament,
   Conclusion: undefined, // TODO: Import the Conclusion component
   Feedback: undefined, // TODO: Import the Feedback component
 }
