@@ -2,8 +2,9 @@
 
 const Joi = require('joi')
 const { Points, pointSchema } = require('../models/points')
+const { ObjectId } = require('mongodb')
 
-async function upsertWhy(pointObj, cb) {
+async function upsertWhy(pointObj, cb, DEBUG=false) {
   if (!this.synuser || !this.synuser.id) {
     console.error('upsertWhy called but no user logged in')
     return cb && cb(null) // No user logged in
@@ -16,6 +17,7 @@ async function upsertWhy(pointObj, cb) {
 
   const validation = Points.validateRequiredFields(requiredFields, pointObj) // Validate pointObj
 
+  pointObj._id = new ObjectId(pointObj._id) // Convert _id to an ObjectId object for mongo
 
   // const schema = enforceRequiredFields(pointSchema, requiredFields)
   // const validation = schema.validate(pointObj) // Validate pointObj
@@ -26,8 +28,14 @@ async function upsertWhy(pointObj, cb) {
   }
 
   try {
-    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
+    const updatedResult = await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
     const updatedDoc = await Points.findOne({ _id: pointObj._id });
+
+    if (DEBUG) {
+      console.log("UpdatedResult: ", updatedResult)
+      console.log("UpdatedDoc: ", updatedDoc)
+    }
+
     cb(updatedDoc);
   } catch (error) {
     console.error(error);

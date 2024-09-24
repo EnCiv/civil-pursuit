@@ -17,7 +17,7 @@ const Email = () => Joi.string().allow('').email();
 const Number = () => Joi.number()
 
 const pointSchema = Joi.object({
-  _id: Joi.objectId(),
+  _id: String(),
   title: String(),
   description: String(),
   parentId: Number(),
