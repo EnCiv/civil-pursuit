@@ -6,6 +6,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from './point-group'
 import { ModifierButton } from './button'
+import { H, Level } from 'react-accessible-headings'
 
 export default function ShowDualPointList({
   className,
@@ -26,29 +27,32 @@ export default function ShowDualPointList({
   return (
     <div className={cx(classes.sharedBorderStyle, className)} {...otherProps}>
       <div className={classes.contentContainer}>
-        <div className={classes.header}>
-          <div className={classes.leftHeader}>{leftHeader}</div>
-          <div className={classes.rightHeader}>{rightHeader}</div>
+        <div className={classes.headerContainer}>
+          <H className={classes.leftHeader}>{leftHeader}</H>
+          <H className={classes.rightHeader}>{rightHeader}</H>
         </div>
+
         <div className={classes.pointGrid}>
-          {[...Array(maxPoints)].map((_, index) => {
-            const leftPoint = leftPoints[index]
-            const rightPoint = rightPoints[index]
-            return (
-              <React.Fragment key={leftPoint?._id || rightPoint?._id}>
-                <PointGroup
-                  pointDoc={leftPoint || {}}
-                  vState={isExpanded ? 'default' : 'collapsed'}
-                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                />
-                <PointGroup
-                  pointDoc={rightPoint || {}}
-                  vState={isExpanded ? 'default' : 'collapsed'}
-                  className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                />
-              </React.Fragment>
-            )
-          })}
+          <Level>
+            {[...Array(maxPoints)].map((_, index) => {
+              const leftPoint = leftPoints[index]
+              const rightPoint = rightPoints[index]
+              return (
+                <React.Fragment key={leftPoint?._id || rightPoint?._id}>
+                  <PointGroup
+                    pointDoc={leftPoint || {}}
+                    vState={isExpanded ? 'default' : 'collapsed'}
+                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                  />
+                  <PointGroup
+                    pointDoc={rightPoint || {}}
+                    vState={isExpanded ? 'default' : 'collapsed'}
+                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
+                  />
+                </React.Fragment>
+              )
+            })}
+          </Level>
         </div>
       </div>
       <div className={classes.buttonContainer}>
@@ -71,7 +75,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     borderTopRightRadius: '0.9375rem',
     overflow: 'hidden',
   },
-  header: {
+  headerContainer: {
     fontSize: '1.5rem',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -81,12 +85,28 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   leftHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
+    margin: '0rem',
     backgroundColor: theme.colors.lightSuccess,
+    fontSize: '1.7rem', // Default font size
+    wordWrap: 'break-word',
+    overflow: 'hidden',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      // For small screens
+      fontSize: '1.5rem',
+    },
   },
   rightHeader: {
     padding: '1rem',
     paddingLeft: '1.75rem',
+    margin: '0rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
+    fontSize: '1.7rem', // Default font size
+    wordWrap: 'break-word',
+    overflow: 'hidden',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      // For small screens
+      fontSize: '1.5rem',
+    },
   },
   pointGrid: {
     display: 'grid',
@@ -97,12 +117,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   point: {
     flex: 1,
     '& div': {
-      padding: '1rem',
+      paddingTop: '0.2rem',
+      paddingBottom: '0.2rem',
+      paddingLeft: '1rem',
+      paddingRight: '1rem',
       boxShadow: 'none',
       borderRadius: 0,
       backgroundColor: 'transparent',
       '& div': {
         padding: '0.1rem',
+        marginBottom: '1rem',
       },
       '&:hover': {
         outline: 'none !important',
