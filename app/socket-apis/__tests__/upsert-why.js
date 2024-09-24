@@ -73,7 +73,7 @@ test('Upsert changes to an existing document with its id set', async () => {
   await upsertWhy.call({ synuser: user }, updatedPointObj, cb, true)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: POINT1 })
+  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT1) })
   expect(updatedDBPoint).toMatchObject({ ...updatedPointObj })
 })
 
