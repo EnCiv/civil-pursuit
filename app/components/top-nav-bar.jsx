@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/52
-
 // https://github.com/EnCiv/civil-pursuit/issues/144
+// https://github.com/EnCiv/civil-pursuit/issues/182
 
 'use strict'
 
@@ -188,15 +188,41 @@ const TopNavBar = props => {
 // Define the styles using the theme object
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   colors: props => ({
-    color: props.mode === 'dark' ? 'white' : theme.colors.darkModeGray,
+    color: (() => {
+      if (props.mode === 'dark' || props.mode === 'transparent') {
+        return 'white'
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else {
+        return theme.colors.darkModeGray
+      }
+    })(),
   }),
   topNavBar: props => ({
     width: '100%',
+    zIndex: theme.zIndexes.menu, // The navbar appears below other blocks without zIndex
+    position: (() => {
+      if (props.mode === 'transparent') {
+        return 'absolute'
+      } else {
+        return ''
+      }
+    })(),
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '1rem',
-    backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+    backgroundColor: (() => {
+      if (props.mode === 'dark') {
+        return theme.colors.darkModeGray
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else if (props.mode === 'transparent') {
+        return 'transparent'
+      } else {
+        return 'white'
+      }
+    })(),
   }),
 
   columnAligner: props => ({
@@ -238,15 +264,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.4rem',
     transform: 'translateX(-50%)',
     alignItems: 'baseline',
-    zIndex: theme.zIndexes.menu,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'none',
     },
   },
   mobileMenuContainer: props => ({
+    padding: '1.25rem 1.25rem',
     display: 'flex',
     width: '80%',
-    background: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    background:
+      props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
     flexDirection: 'column',
     justifyContent: 'left',
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -269,7 +296,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
@@ -283,7 +310,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'default',
     background: 'none',
     border: 'none',
-    padding: '0 0 1rem 0',
+    padding: '0.5rem',
     margin: '0',
     whiteSpace: 'nowrap',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -322,7 +349,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'left',
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
@@ -336,13 +363,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     cursor: 'pointer',
     background: 'none',
     border: 'none',
-    padding: '0 0 1rem 0',
+    padding: '0.5rem',
     margin: '0',
     whiteSpace: 'nowrap',
     textAlign: 'left',
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
@@ -364,7 +391,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '15%',
     height: 'auto',
     fontSize: '1.5rem',
-    background: props.mode === 'dark' ? theme.colors.darkModeGray : 'white',
+    background: (() => {
+      if (props.mode === 'dark') {
+        return theme.colors.darkModeGray
+      } else if (props.mode === 'light') {
+        return theme.colors.lightModeColor
+      } else if (props.mode === 'transparent') {
+        return 'transparent'
+      } else {
+        return 'white'
+      }
+    })(),
     border: 'none',
     display: 'flex',
     justifyContent: 'center',
@@ -374,7 +411,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
+      color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
   }),
   menuList: {

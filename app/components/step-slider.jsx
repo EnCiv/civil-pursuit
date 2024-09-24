@@ -98,15 +98,17 @@ export const StepSlider = props => {
       case 'clearSendDoneToParent':
         return { ...state, sendDoneToParent: false }
       case 'updateStatuses':
-        let { valid, index } = action.payload
+        let { result, index } = action.payload
         if (steps) {
           const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
-            if (valid) return i === index ? { ...stepStatus, complete: true } : stepStatus
+            if (result.valid || result.valid === undefined) {
+              return i === index ? { ...stepStatus, complete: true } : stepStatus
+            }
             // Disable navigation to all steps after if invalid
             else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
           })
           return { ...state, stepStatuses: stepStatuses }
-        } else if (valid) {
+        } else if (result) {
           // Just increment if no steps
           const currentStep = Math.min(state.currentStep + 1, children.length - 1)
           return {
@@ -121,7 +123,12 @@ export const StepSlider = props => {
   }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  if (steps) steps[0].seen = true
+  if (steps) {
+    steps[0].seen = true
+    steps.forEach((step, index) => {
+      steps[index].complete = false
+    })
+  }
   const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false, stepStatuses: steps })
 
   // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
@@ -135,7 +142,7 @@ export const StepSlider = props => {
           ...child.props,
           key: [index],
           onDone: valid => {
-            dispatch({ type: 'updateStatuses', payload: { valid: valid, index: index } })
+            dispatch({ type: 'updateStatuses', payload: { result: valid, index: index } })
           },
         })
       ),

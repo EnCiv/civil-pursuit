@@ -1,6 +1,6 @@
 {
   "name": "civil-pursuit",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Civil Pursuit - so millions of people can deliberate productively online",
   "main": "dist/index.js",
   "scripts": {
@@ -22,7 +22,8 @@
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
-    "chromatic": "bash ./node_modules/.bin/chromatic"
+    "chromatic": "bash ./node_modules/.bin/chromatic",
+    "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
   },
   "author": {
     "email": "davidfridley@enciv.org",
@@ -35,6 +36,9 @@
   "dependencies": {
     "@codastic/react-positioning-portal": "^0.7.0",
     "@enciv/mongo-collections": "^0.0.3",
+    "@jsonforms/core": "^3.2.1",
+    "@jsonforms/react": "^3.2.1",
+    "@jsonforms/vanilla-renderers": "^3.2.1",
     "@shelf/jest-mongodb": "^4.3.2",
     "autosize": "^3.0.15",
     "bson-objectid": "^1.2.4",
@@ -47,6 +51,7 @@
     "mongodb": "^5.9.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-accessible-headings": "^4.2.0",
     "react-hot-loader": "^4.8.4",
     "react-jss": "^10.10.0",
     "react-perfect-scrollbar": "^1.5.8",

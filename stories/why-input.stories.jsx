@@ -4,6 +4,7 @@ import React from 'react'
 import WhyInput from '../app/components/why-input'
 import expect from 'expect'
 import { onDoneDecorator, onDoneResult } from './common'
+import DemInfo from '../app/components/dem-info'
 
 export default {
   component: WhyInput,

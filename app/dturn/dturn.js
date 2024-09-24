@@ -2,11 +2,17 @@ const { deepEqual } = require('assert')
 const showDeepDiff = require('show-deep-diff')
 
 // clustering
-const GROUP_SIZE = 7 // this is the group size
-const GMAJORITY = 0.5 //Group Majority - minimum percentage of group that votes for it to be part of the group
-const MAX_ROUNDS = 10 // maximum number of rounds to search down when clustering children
-const MIN_SHOWN_COUNT = Math.floor(GROUP_SIZE / 2) + 1 // the minimum number of times a item pair is shown in order to decide if a majority have grouped it
-const MIN_RANK = 2 // when filterning statements for the next round, they must at least have this number of users voting for it
+function getInitOptions(options) {
+  return {
+    group_size: options.group_size || 7, // this is the group size
+    gmajority: options.gmajority || 0.5, // Group Majority - minimum percentage of group that votes for it to be part of the group
+    max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
+    min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
+    min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
+    updateUInfo: options.updateUInfo || (() => {}),
+    getAllUInfo: options.getAllUInfo || (async () => []),
+  }
+}
 /**
  *  initDiscussion(discussionId,options) nothing returned
  *  insertStatementId(discussionId,round,userId,statementId) returns statementId
@@ -53,18 +59,23 @@ const Discussions = {} // [discussionId]{ShownStatements, ShownGroups, Gitems, U
 module.exports.Discussions = Discussions // exported for testing purpose do not use this in production.
 
 async function initDiscussion(discussionId, options = {}) {
+  // If option is not provided, use default values
+  const initOptions = getInitOptions(options)
+  const validOptionKeys = Object.keys(initOptions)
+
+  // Check if provided options are valid
+  Object.keys(options).forEach(key => {
+    if (!validOptionKeys.includes(key)) {
+      throw new Error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+    }
+  })
+
   Discussions[discussionId] = {
     ShownStatements: [],
     ShownGroups: [],
     Gitems: [],
     Uitems: {},
-    group_size: options.group_size || GROUP_SIZE,
-    gmajority: options.gmajority || GMAJORITY,
-    max_rounds: options.max_rounds || MAX_ROUNDS,
-    min_shown_count: options.min_shown_count || MIN_SHOWN_COUNT,
-    min_rank: options.min_rank || MIN_RANK,
-    updateUInfo: options.updateUInfo || (() => {}),
-    getAllUInfo: options.getAllUInfo || (async () => []),
+    ...initOptions,
   }
   await reconstructDiscussionFromUInfo(discussionId)
 }
@@ -185,10 +196,14 @@ async function getStatementIds(discussionId, round, userId) {
     throw new Error(`Discussion ${discussionId} not initialized`)
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
+    console.error(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
   }
-  if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1)
+  if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1) {
+    console.error(`Insufficient ShownStatements length for discussion ${discussionId}`)
     return undefined
+  }
+
   const dis = Discussions[discussionId]
   const statementIds = []
   let authoredId // id of statment the user authored -- if the shownGroup is incomplete
@@ -212,7 +227,7 @@ async function getStatementIds(discussionId, round, userId) {
   } else if (round === 0) {
     // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
     const needToBeSeen = dis.ShownStatements[round].filter(
-      sItem => sItem.shownCount < Math.pow(dis.group_size, round + 1)
+      sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)
     ) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
     if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
@@ -230,7 +245,6 @@ async function getStatementIds(discussionId, round, userId) {
     }
     if (!dis.ShownGroups[round]) dis.ShownGroups[round] = [] // don't create the blank until theres somthing to put there so showdeepdiff works after reconstituting
     dis.ShownGroups[round].push(shownGroup)
-    if (authoredId && shownGroup.statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
     shownGroup.shownCount++
   } else {
     if (!dis.ShownStatements[round]) {
@@ -298,7 +312,7 @@ async function getStatementIds(discussionId, round, userId) {
   initUitems(discussionId, userId, round)
   const delta = { [userId]: { [discussionId]: { [round]: { shownStatementIds: {} } } } }
   // the user's own statement may be there, so check before writing
-  for (sId of statementIds) {
+  for (const sId of statementIds) {
     if (!dis.Uitems[userId][round].shownStatementIds[sId]) {
       dis.Uitems[userId][round].shownStatementIds[sId] = { rank: 0 }
       delta[userId][discussionId][round].shownStatementIds[sId] = { rank: 0 }

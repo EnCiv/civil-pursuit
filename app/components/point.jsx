@@ -1,15 +1,17 @@
 // https://github.com/EnCiv/civil-pursuit/issues/23
 // https://github.com/EnCiv/civil-pursuit/issues/76
+// https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
@@ -23,11 +25,14 @@ const Point = forwardRef((props, ref) => {
     setIsHovered(false)
   }
 
-  const childrenWithProps = React.Children.map(children?.props?.children ?? children, child => {
-    return React.cloneElement(child, {
-      className: cx(child.props.className, { isHovered: isHovered }),
-      vState: vState,
-    })
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        className: cx(child.props.className, { isHovered: isHovered }),
+        vState: vState,
+      })
+    }
+    return child
   })
 
   return (
@@ -41,29 +46,37 @@ const Point = forwardRef((props, ref) => {
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <div
+            <H
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                  : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'])
+                  : cx(
+                      classes.sharedSubjectStyle,
+                      classes[vState + 'Subject'],
+                      isInvalid ? classes.invalidText : undefined
+                    )
               }
             >
               {isLoading ? '' : subject}
-            </div>
+            </H>
           )}
           {(isLoading || description) && (
-            <div
+            <p
               className={
                 isLoading
                   ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
-                  : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'])
+                  : cx(
+                      classes.sharedDescriptionStyle,
+                      classes[vState + 'Description'],
+                      isInvalid ? classes.invalidText : undefined
+                    )
               }
             >
               {isLoading ? '' : description}
-            </div>
+            </p>
           )}
           <DemInfo {...demInfo} />
-          {childrenWithProps}
+          <Level>{childrenWithProps}</Level>
         </div>
       </div>
     </div>
@@ -207,6 +220,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+  },
+  invalidText: {
+    color: theme.colors.rankInvalidText,
   },
 }))
 
