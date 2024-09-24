@@ -9,7 +9,8 @@ import { ObjectId } from 'mongodb'
 const USER1 = '6667d5a33da5d19ddc304a6b'
 const POINT1 = '6667d688b20d8e339ca50020'
 const POINT2 = '6667e4eea414d31b20dffb2f'
-const PARENTID = 10
+const POINT3 = '6667d5a33da5d19ddc304a7c'
+const PARENTID = 'parent-id'
 let MemoryServer
 
 beforeAll(async () => {
@@ -45,7 +46,7 @@ test('Insert a new document', async () => {
 
 test('Upsert changes to an existing document with its id set', async () => {
   const existingPoint = {
-    _id: POINT1,
+    _id: new ObjectId(POINT2),
     title: 'Existing Subject',
     description: 'Existing Description',
     round: 1,
@@ -55,11 +56,11 @@ test('Upsert changes to an existing document with its id set', async () => {
   }
   await Mongo.db.collection('points').insertOne(existingPoint)
 
-  const existingDBPoint = await Mongo.db.collection('points').findOne({ _id: POINT1 })
+  const existingDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
   expect(existingDBPoint).toMatchObject({ ...existingPoint})
 
   const updatedPointObj = {
-    _id: POINT1,
+    _id: POINT2,
     title: 'Updated Subject',
     description: 'Updated Description',
     round: 1,
@@ -70,16 +71,16 @@ test('Upsert changes to an existing document with its id set', async () => {
 
   const cb = jest.fn()
 
-  await upsertWhy.call({ synuser: user }, updatedPointObj, cb, true)
+  await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT1) })
+  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
   expect(updatedDBPoint).toMatchObject({ ...updatedPointObj })
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
   const pointObj = {
-    _id: POINT2,
+    _id: POINT3,
     title: 'Test Subject',
     description: 'Test Description',
     round: 1,
@@ -92,7 +93,7 @@ test('User not logged in, not allowed to upsert a document', async () => {
   await upsertWhy.call({}, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT2})
+  const point = await Mongo.db.collection('points').findOne({ _id: new Object(POINT3)})
   expect(point).toBeNull()
 })
 

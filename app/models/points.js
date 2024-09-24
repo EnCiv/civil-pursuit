@@ -20,7 +20,7 @@ const pointSchema = Joi.object({
   _id: String(),
   title: String(),
   description: String(),
-  parentId: Number(),
+  parentId: String(),
   category: String(),
   round: Number(),
   userId: String()
@@ -45,17 +45,6 @@ class Points extends Collection {
 
 
   }
-
-  // Optional: Validation function
-  // static validate(doc) {
-
-  //   const { error, value } = pointSchema.validate(doc)
-  //   if (error) {
-  //     return { error: error.details[0].message}
-  //   }
-  //   return { result: value}
-
-  // }
 
 
 }
