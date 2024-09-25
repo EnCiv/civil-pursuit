@@ -25,14 +25,14 @@ async function getPointsForRound(discussionId, round, cb) {
 
   // If points is 0 or 1, return empty list
   if (!statementIds || statementIds.length < 2) {
-    cb([])
+    if (cb) cb([])
     return []
   }
 
   // Get the list and return if successful
   const pointsList = await Points.find({ _id: { $in: statementIds } }).toArray()
 
-  cb && cb(pointsList)
+  if (cb) cb(pointsList)
   return pointsList
 }
 
