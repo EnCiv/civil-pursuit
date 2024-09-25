@@ -10,6 +10,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 
 const Points = require('../../models/points')
+import upsertPoint from '../upsert-point'
 
 // Config
 const discussionId = '66a174b0c3f2051ad387d2a6'
@@ -79,9 +80,9 @@ test('Empty list if user inserted their answer but no others have.', async () =>
   await initDiscussion(discussionId)
 
   await insertDturnStatement.call(synuser, discussionId, pointObj1, insertCb)
-  expect(cb).toHaveBeenCalledWith(true)
+  expect(insertCb).toHaveBeenCalledWith(true)
 
-  await getPointsForRound.call(synuser, discussionId, 1, cb)
+  await getPointsForRound.call(synuser, discussionId, 0, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith([])
@@ -97,15 +98,33 @@ test('Populated list if other users have submitted their answers.', async () => 
   await initDiscussion(discussionId)
 
   await insertDturnStatement.call(synuser, discussionId, pointObj1, insertCb)
-  expect(cb).toHaveBeenCalledWith(true)
+  expect(insertCb).toHaveBeenCalledWith(true)
 
   for (let num = 0; num < 20; num++) {
-    await insertDturnStatement.call(otherSynuser, discussionId, pointObj2, insertCb)
-    expect(cb).toHaveBeenCalledWith(true)
+    await insertDturnStatement.call(
+      { synuser: { id: otherUserId } },
+      discussionId,
+      {
+        _id: new ObjectId(),
+        title: num,
+        description: num,
+      },
+      insertCb
+    )
+    expect(insertCb).toHaveBeenCalledWith(true)
+    expect(insertCb).toHaveBeenCalledTimes(num + 2)
   }
 
-  await getPointsForRound.call(synuser, discussionId, 1, cb)
-
+  let points = await getPointsForRound.call(synuser, discussionId, 0, cb)
+  expect(points.length).toBeGreaterThan(0)
   expect(cb).toHaveBeenCalledTimes(1)
+
+  // Test when users are removed from points
+  for (const point of points) {
+    await upsertPoint.call({ synuser: synuser }, { userId: null, ...point })
+  }
+
+  points = await getPointsForRound.call(synuser, discussionId, 0, cb)
+  expect(cb).toHaveBeenCalledTimes(2)
   expect(cb).toHaveBeenCalledWith([])
 })
