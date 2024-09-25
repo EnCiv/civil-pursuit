@@ -15,6 +15,13 @@ async function getPointsForRound(discussionId, round, cb) {
     return cbFailure('Cannot retrieve points for round - user is not logged in.')
   }
 
+  // Verify arguments
+  if (!discussionId || round === undefined || typeof round !== 'number') {
+    return cbFailure(
+      'Invalid arguments provided to getPointsForRound(discussionId: ObjectId, round: number, cb: Function).'
+    )
+  }
+
   // If getStatementIds errors, call callback to indicate error
   let statementIds
   try {

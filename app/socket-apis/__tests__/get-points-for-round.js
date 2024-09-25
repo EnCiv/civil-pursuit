@@ -19,18 +19,11 @@ const userId = '6667d5a33da5d19ddc304a6b'
 const otherUserId = 'otheruser'
 
 const synuser = { synuser: { id: userId } }
-const otherSynuser = { synuser: { id: otherUserId } }
 
 const pointObj1 = {
   _id: new ObjectId('6667d688b20d8e339ca50020'),
   title: 'Point1',
   description: 'Point1',
-}
-
-const pointObj2 = {
-  _id: new ObjectId(),
-  title: 'Point2',
-  description: 'Point2',
 }
 
 let MemoryServer
@@ -71,6 +64,13 @@ test('Fail if discussionId not initialized.', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
   expect(console.error.mock.calls[0][0]).toMatch(/getStatementIds failed/)
+})
+
+test('Fail if invalid arguments provided.', async () => {
+  await initDiscussion(discussionId)
+  await getPointsForRound.call(synuser, 0)
+
+  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(/Invalid arguments provided/)
 })
 
 test('Empty list if user inserted their answer but no others have.', async () => {
