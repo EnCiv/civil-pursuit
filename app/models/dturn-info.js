@@ -24,6 +24,16 @@ class DturnInfo extends Collection {
       },
     },
   }
+
+  static async getAllFromDiscussion(discussionId) {
+    return await this.find({ discussionId: discussionId })
+  }
+
+  static async upsert(discussionId, data) {
+    const dturnInfoObj = { discussionId: discussionId, data: data }
+    await this.updateOne({ discussionId: discussionId, data: data }, { $set: dturnInfoObj }, { upsert: true })
+    return await this.findOne({ discussionId: discussionId })
+  }
 }
 
 DturnInfo.setCollectionProps()
