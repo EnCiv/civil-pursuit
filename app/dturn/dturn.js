@@ -9,6 +9,7 @@ function getInitOptions(options) {
     max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
     min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
     min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
+    updates: options.updates || (async () => []),
     updateUInfo: options.updateUInfo || (() => {}),
     getAllUInfo: options.getAllUInfo || (async () => []),
   }
@@ -121,6 +122,9 @@ function insertStatementId(discussionId, userId, statementId) {
       },
     },
   })
+
+  Discussions[discussionId].updates({ participants: Object.keys(Discussions[discussionId].Uitems).length })
+
   return statementId
 }
 
