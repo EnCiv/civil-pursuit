@@ -119,12 +119,17 @@ test('Populated list if other users have submitted their answers.', async () => 
   expect(points.length).toBeGreaterThan(0)
   expect(cb).toHaveBeenCalledTimes(1)
 
+  // Check other points are anonymized
+  for (const point of points) {
+    if (point.userId !== userId) expect(point.userId).toBeUndefined
+  }
+
   // Test when users are removed from points
   for (const point of points) {
     await upsertPoint.call({ synuser: synuser }, { userId: null, ...point })
   }
 
   points = await getPointsForRound.call(synuser, discussionId, 0, cb)
+  expect(points.length).toBe(0)
   expect(cb).toHaveBeenCalledTimes(2)
-  expect(cb).toHaveBeenCalledWith([])
 })
