@@ -44,3 +44,45 @@ test('Fail if user is not logged in.', async () => {
   expect(cb).toHaveBeenCalledWith(undefined)
   expect(console.error.mock.calls[0][0]).toMatch(/not logged in/)
 })
+
+test('Returns empty list if no results.', async () => {
+  const cb = jest.fn()
+  await getUserRanks.call(synuser, discussionId, 1, 'pre', cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith([])
+})
+
+test('Returns 10 results when 10 matches exist.', async () => {
+  const cb = jest.fn()
+
+  for (let num = 0; num < 10; num++) {
+    const validDoc = {
+      parentId: 'parent1',
+      userId: userId,
+      discussionId: discussionId,
+      round: 1,
+      stage: 'pre',
+      category: 'category1',
+    }
+    const success = await Rankings.insertOne(validDoc)
+    expect(success.acknowledged).toBe(true)
+  }
+
+  const results = await getUserRanks.call(synuser, discussionId, 1, 'pre', cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(results).toHaveLength(10)
+
+  results.forEach(rank =>
+    expect(rank).toMatchObject({
+      _id: /./,
+      parentId: 'parent1',
+      userId: userId,
+      discussionId: discussionId,
+      round: 1,
+      stage: 'pre',
+      category: 'category1',
+    })
+  )
+})

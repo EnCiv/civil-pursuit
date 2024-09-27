@@ -17,10 +17,19 @@ async function getUserRanks(discussionId, round, stage, cb) {
   // Verify arguments
   if (!discussionId || !stage || round === undefined || typeof round !== 'number') {
     return cbFailure(
-      'Invalid arguments provided to getUserRanks(discussionId: string, round: number, stage, cb: Function).'
+      'Invalid arguments provided to getUserRanks(discussionId: string, round: number, stage: string, cb: Function).'
     )
   }
 
   // Get ranks for user
+  const results = await Rankings.find({
+    discussionId: discussionId,
+    round: round,
+    stage: stage,
+    userId: this.synuser.id,
+  }).toArray()
+
+  if (cb) cb(results)
+  return results
 }
 module.exports = getUserRanks
