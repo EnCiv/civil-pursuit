@@ -13,6 +13,13 @@ export default function ReRankStep(props) {
   return <Rerank {...derivePointMostsLeastsRankList(data)} {...props} />
 }
 
+const toRankString = {
+  undefined: '',
+  most: 'Most',
+  least: 'Least',
+  neutral: 'Neutral',
+}
+
 export function Rerank(props) {
   const { reviewPoints = [], onDone = () => {}, className, ...otherProps } = props
   const [rankedPoints, setRankedPoints] = useState(new Set())
@@ -24,8 +31,8 @@ export function Rerank(props) {
     if (reviewPoints.length === 0) {
       setPercentDone(100)
     } else {
-      const initialRankedPoints = reviewPoints.filter(point => point.rank !== '').length
-      setRankedPoints(new Set(reviewPoints.filter(point => point.rank !== '').map(point => point.point._id)))
+      const initialRankedPoints = reviewPoints.filter(point => point.rank).length
+      setRankedPoints(new Set(reviewPoints.filter(point => point.rank).map(point => point.point._id)))
       setPercentDone(Number(((initialRankedPoints / reviewPoints.length) * 100).toFixed(2)))
     }
   }, [reviewPoints])
@@ -59,9 +66,9 @@ export function Rerank(props) {
         <div key={idx} className={classes.reviewPoint}>
           <ReviewPoint
             point={reviewPoint.point}
-            leftPointList={reviewPoint.leftPoints}
-            rightPointList={reviewPoint.rightPoints}
-            rank={reviewPoint.rank}
+            leftPointList={reviewPoint.mosts}
+            rightPointList={reviewPoint.leasts}
+            rank={toRankString[reviewPoint.rank?.category]}
             onDone={selectedRank => handleReviewPoint(reviewPoint.point._id, selectedRank)}
           />
         </div>

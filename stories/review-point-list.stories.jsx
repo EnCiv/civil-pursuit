@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { expect } from '@storybook/jest'
-import { ReRank } from '../app/components/steps/re-rank'
+import { Rerank } from '../app/components/steps/rerank'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/testing-library'
 
 export default {
-  component: ReRank,
+  component: Rerank,
   decorators: [onDoneDecorator],
   parameters: {
     viewport: {
@@ -155,44 +155,44 @@ const point20 = {
 
 const reviewPoint1 = {
   point: point0,
-  leftPoints: [point1, point2, point3],
-  rightPoints: [point4, point5, point6],
-  rank: '',
+  mosts: [point1, point2, point3],
+  leasts: [point4, point5, point6],
+  rank: undefined,
 }
 
 const reviewPoint2 = {
   point: point7,
-  leftPoints: [point8, point9, point10],
-  rightPoints: [point11, point12, point13],
-  rank: '',
+  mosts: [point8, point9, point10],
+  leasts: [point11, point12, point13],
+  rank: undefined,
 }
 
 const reviewPoint3 = {
   point: point14,
-  leftPoints: [point15, point16, point17],
-  rightPoints: [point18, point19, point20],
-  rank: '',
+  mosts: [point15, point16, point17],
+  leasts: [point18, point19, point20],
+  rank: undefined,
 }
 
 const reviewPoint4 = {
   point: point0,
-  leftPoints: [point1, point2, point3],
-  rightPoints: [point4, point5, point6],
-  rank: 'Most',
+  mosts: [point1, point2, point3],
+  leasts: [point4, point5, point6],
+  rank: { id: '101', stage: 'post', category: 'most', parentId: point0._id, deliberationId: '1001' },
 }
 
 const reviewPoint5 = {
   point: point7,
-  leftPoints: [point8, point9, point10],
-  rightPoints: [point11, point12, point13],
-  rank: 'Least',
+  mosts: [point8, point9, point10],
+  leasts: [point11, point12, point13],
+  rank: { id: '102', stage: 'post', category: 'least', parentId: point7._id, deliberationId: '1001' },
 }
 
 const reviewPoint6 = {
   point: point14,
-  leftPoints: [point15, point16, point17],
-  rightPoints: [point18, point19, point20],
-  rank: 'Neutral',
+  mosts: [point15, point16, point17],
+  leasts: [point18, point19, point20],
+  rank: { id: '101', stage: 'post', category: 'neutral', parentId: point14._id, deliberationId: '1001' },
 }
 
 export const Empty = {
