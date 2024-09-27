@@ -45,6 +45,15 @@ test('Fail if user is not logged in.', async () => {
   expect(console.error.mock.calls[0][0]).toMatch(/not logged in/)
 })
 
+test('Fail when argyments are invalid.', async () => {
+  const cb = jest.fn()
+  await getUserRanks.call(synuser, 100, 'wrong', 'pre', cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(undefined)
+  expect(console.error.mock.calls[0][0]).toMatch(/Invalid arguments/)
+})
+
 test('Returns empty list if no results.', async () => {
   const cb = jest.fn()
   await getUserRanks.call(synuser, discussionId, 1, 'pre', cb)
