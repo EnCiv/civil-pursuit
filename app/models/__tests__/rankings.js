@@ -22,13 +22,16 @@ afterAll(async () => {
 
 describe('Rankings Model', () => {
   it('should be set up correctly', () => {
-    expect(Rankings.collectionName).toEqual('rankings')
+    expect(Rankings.collectionName).toEqual('ranks')
   })
 
   it('should insert a valid document', async () => {
     const validDoc = {
       parentId: 'parent1',
       userId: 'user1',
+      discussionId: 'discussion1',
+      stage: 'pre',
+      category: 'category1',
     }
     const result = await Rankings.insertOne(validDoc)
     expect(result.acknowledged).toBe(true)
@@ -45,10 +48,16 @@ describe('Rankings Model', () => {
     const doc1 = {
       parentId: 'parent2',
       userId: 'user2',
+      discussionId: 'discussion2',
+      stage: 'stage2',
+      category: 'category2',
     }
     const doc2 = {
       parentId: 'parent2',
       userId: 'user2',
+      discussionId: 'discussion2',
+      stage: 'stage2',
+      category: 'category2',
     }
     await Rankings.insertOne(doc1)
     await expect(Rankings.insertOne(doc2)).rejects.toThrow('duplicate key error')
