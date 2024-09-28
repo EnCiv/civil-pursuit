@@ -16,6 +16,9 @@ export default {
     },
   },
 }
+
+const round = 1
+const discussionId = '1001'
 const point0 = {
   _id: '0',
   subject: 'Inequality',
@@ -178,21 +181,21 @@ const reviewPoint4 = {
   point: point0,
   mosts: [point1, point2, point3],
   leasts: [point4, point5, point6],
-  rank: { id: '101', stage: 'post', category: 'most', parentId: point0._id, deliberationId: '1001' },
+  rank: { id: '101', stage: 'post', category: 'most', parentId: point0._id, discussionId, round },
 }
 
 const reviewPoint5 = {
   point: point7,
   mosts: [point8, point9, point10],
   leasts: [point11, point12, point13],
-  rank: { id: '102', stage: 'post', category: 'least', parentId: point7._id, deliberationId: '1001' },
+  rank: { id: '102', stage: 'post', category: 'least', parentId: point7._id, discussionId, round },
 }
 
 const reviewPoint6 = {
   point: point14,
   mosts: [point15, point16, point17],
   leasts: [point18, point19, point20],
-  rank: { id: '101', stage: 'post', category: 'neutral', parentId: point14._id, deliberationId: '1001' },
+  rank: { id: '101', stage: 'post', category: 'neutral', parentId: point14._id, discussionId, round },
 }
 
 export const Empty = {
@@ -202,12 +205,16 @@ export const Empty = {
 export const Desktop = {
   args: {
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
   },
 }
 
 export const Mobile = {
   args: {
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
   },
   parameters: {
     viewport: {
@@ -219,11 +226,15 @@ export const Mobile = {
 export const AllWithInitialRank = {
   args: {
     reviewPoints: [reviewPoint4, reviewPoint5, reviewPoint6],
+    discussionId,
+    round,
   },
 }
 
 export const PartialWithInitialRank = {
   args: {
     reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
   },
 }

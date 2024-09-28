@@ -6,6 +6,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import ReviewPoint from '../review-point'
 import DeliberationContext from '../deliberation-context'
+import { isEqual } from 'lodash'
+import ObjectId from 'bson-objectid'
 
 export default function ReRankStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
@@ -20,45 +22,96 @@ const toRankString = {
   neutral: 'Neutral',
 }
 
+const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, value]) => {
+  if (key === 'undefined') return rS2C // rankStringToCategory[''] will be undefined
+  rS2C[value] = key
+  return rS2C
+}, {})
+
 export function Rerank(props) {
-  const { reviewPoints = [], onDone = () => {}, className, ...otherProps } = props
-  const [rankedPoints, setRankedPoints] = useState(new Set())
-  const [percentDone, setPercentDone] = useState(0)
+  const { reviewPoints, onDone = () => {}, className, round, discussionId, ...otherProps } = props
+  // this componet manages the rank doc so we keep a local copy
+  // if it's changed from above, we use the setter to cause a rerender
+  // if it's chagned from below (by the user) we mutate the state so we don't cause a rerender
+  const [rankByParentId, setRankByParentId] = useState(
+    (reviewPoints || []).reduce((rankByParentId, reviewPoint) => {
+      if (reviewPoint.rank) rankByParentId[reviewPoint.point._id] = reviewPoint.rank
+      return rankByParentId
+    }, {})
+  )
 
   const classes = useStylesFromThemeFunction()
 
   useEffect(() => {
-    if (reviewPoints.length === 0) {
-      setPercentDone(100)
-    } else {
-      const initialRankedPoints = reviewPoints.filter(point => point.rank).length
-      setRankedPoints(new Set(reviewPoints.filter(point => point.rank).map(point => point.point._id)))
-      setPercentDone(Number(((initialRankedPoints / reviewPoints.length) * 100).toFixed(2)))
+    const newRankByParentId = (reviewPoints || []).reduce((rankByParentId, reviewPoint) => {
+      if (reviewPoint.rank) rankByParentId[reviewPoint.point._id] = reviewPoint.rank
+      return rankByParentId
+    }, {})
+    let updated = false
+    for (const rankDoc of Object.values(newRankByParentId)) {
+      if (isEqual(rankDoc, rankByParentId[rankDoc.parentId])) {
+        console.info('isEqual', rankDoc, rankByParentId[rankDoc.parentId])
+        newRankByParentId[rankDoc.parentId] = rankByParentId[rankDoc.parentId]
+      }
+      // don't change the ref if it hasn't changed in conotent
+      else updated = true
     }
+    if (updated) {
+      console.info('updated')
+      setRankByParentId(newRankByParentId)
+    }
+    // if an item in the updated reviewPoints does not have a rank doc where it previously did, the rank doc will remain.
+    // deleting a rank is not a use case
   }, [reviewPoints])
 
+  // first time through should call onDone if there are reviewPoints
   useEffect(() => {
-    if (rankedPoints.size === reviewPoints.length) {
-      onDone({ valid: true, value: percentDone })
-    } else {
-      onDone({ valid: false, value: percentDone })
+    if (reviewPoints) {
+      const percentDone = Object.keys(rankByParentId).length / reviewPoints.length
+      onDone({ valid: percentDone >= 1, value: percentDone })
     }
-  }, [rankedPoints, percentDone])
+  }, [])
 
-  const handleReviewPoint = (pointId, selectedRank) => {
-    setRankedPoints(prevPoints => {
-      const rankedPoints = new Set(prevPoints)
-      if (selectedRank !== '') {
-        rankedPoints.add(pointId)
+  const handleReviewPoint = (point, result) => {
+    const rankString = result.value
+    let rank
+    let percentDone
+    // the above vars are needed when calling onDone which must be done outside the set function
+    setRankByParentId(rankByParentId => {
+      // doin this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
+      if (rankByParentId[point._id]) {
+        if (rankByParentId[point._id].category !== rankStringToCategory[rankString]) {
+          rank = { ...rankByParentId[point._id], category: rankStringToCategory[rankString] }
+          console.info('handle', rankString, rank, rankStringToCategory)
+          const newRankByParentId = {
+            ...rankByParentId,
+            [point._id]: rank,
+          }
+          percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
+          return newRankByParentId
+        } else {
+          percentDone = Object.keys(rankByParentId).length / reviewPoints.length
+          rank = rankByParentId[point._id]
+          return rankByParentId // nothing has changed, so abort the setter and don't cause a rerender
+        }
       } else {
-        rankedPoints.delete(pointId)
+        rank = {
+          _id: ObjectId().toString(),
+          stage: 'post',
+          category: rankStringToCategory[rankString],
+          parentId: point._id,
+          round,
+          discussionId,
+        }
+        const newRankByParentId = { ...rankByParentId, [point._id]: rank }
+        percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
+        return newRankByParentId
       }
-
-      const newPercentDone = Number(((rankedPoints.size / reviewPoints.length) * 100).toFixed(2))
-      setPercentDone(newPercentDone)
-      return rankedPoints
     })
+    if (rank) onDone({ valid: percentDone === 1, value: percentDone, delta: rank })
   }
+
+  if (!reviewPoints) return null // nothing ready yet
 
   return (
     <div className={classes.reviewPointsContainer} {...otherProps}>
@@ -68,8 +121,15 @@ export function Rerank(props) {
             point={reviewPoint.point}
             leftPointList={reviewPoint.mosts}
             rightPointList={reviewPoint.leasts}
-            rank={toRankString[reviewPoint.rank?.category]}
-            onDone={selectedRank => handleReviewPoint(reviewPoint.point._id, selectedRank)}
+            rank={
+              (console.info(
+                'rank',
+                rankByParentId[reviewPoint.point._id],
+                toRankString[rankByParentId[reviewPoint.point._id]?.category]
+              ),
+              toRankString[rankByParentId[reviewPoint.point._id]?.category])
+            }
+            onDone={result => handleReviewPoint(reviewPoint.point, result)}
           />
         </div>
       ))}
