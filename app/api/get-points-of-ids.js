@@ -1,7 +1,7 @@
 const Points = require('../models/points')
 const { ObjectId } = require('mongodb')
 
-async function getPointsOfIds(ids, callback) {
+async function getPointsOfIds(ids, callback, currentUserId) {
   try {
     // Fetch points by _id
     const points = await Points.aggregate([{ $match: { _id: { $in: ids.map(id => new ObjectId(id)) } } }]).toArray()
@@ -13,7 +13,12 @@ async function getPointsOfIds(ids, callback) {
 
     // Reduce points into an object
     const pointById = points.reduce((acc, point) => {
-      acc[point._id.toHexString()] = point
+      const pointCopy = { ...point }
+      // Only remove userId if the point was not created by the current user
+      if (point.userId && point.userId !== currentUserId) {
+        delete pointCopy.userId
+      }
+      acc[point._id.toHexString()] = pointCopy
       return acc
     }, {})
 

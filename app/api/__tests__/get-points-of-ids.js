@@ -56,13 +56,11 @@ test('Points found, but no whypoints', async () => {
         _id: POINT_ID_1,
         title: 'Point 1',
         description: 'Description 1',
-        userId: 'user1',
       },
       [POINT_ID_2.toHexString()]: {
         _id: POINT_ID_2,
         title: 'Point 2',
         description: 'Description 2',
-        userId: 'user2',
       },
     },
     myWhys: {},
@@ -96,13 +94,11 @@ test('Points and whypoints found', async () => {
         _id: POINT_ID_1,
         title: 'Unique Point 1',
         description: 'Description 1',
-        userId: 'user1',
       },
       [POINT_ID_2.toHexString()]: {
         _id: POINT_ID_2,
         title: 'Unique Point 2',
         description: 'Description 2',
-        userId: 'user2',
       },
     },
     myWhys: {
@@ -116,5 +112,40 @@ test('Points and whypoints found', async () => {
         },
       ],
     },
+  })
+})
+
+test('Some points created by other users, userId removed', async () => {
+  const POINT_ID_1 = new ObjectId() // Created by current user (user1)
+  const POINT_ID_2 = new ObjectId() // Created by another user (user2)
+
+  // Insert sample points data
+  await db.collection('points').insertMany([
+    { _id: POINT_ID_1, title: 'Point A', description: 'Description A', userId: 'user1' },
+    { _id: POINT_ID_2, title: 'Point B', description: 'Description B', userId: 'user2' },
+  ])
+
+  const callback = jest.fn()
+
+  // Call the getPointsOfIds function, passing 'user1' as the currentUserId
+  await getPointsOfIds([POINT_ID_1, POINT_ID_2], callback, 'user1')
+
+  // Check the expected callback behavior
+  expect(callback).toHaveBeenCalledWith({
+    points: {
+      [POINT_ID_1.toHexString()]: {
+        _id: POINT_ID_1,
+        title: 'Point A',
+        description: 'Description A',
+        userId: 'user1', // Should keep the userId for points created by user1
+      },
+      [POINT_ID_2.toHexString()]: {
+        _id: POINT_ID_2,
+        title: 'Point B',
+        description: 'Description B',
+        // userId should be removed for points created by user2
+      },
+    },
+    myWhys: {},
   })
 })
