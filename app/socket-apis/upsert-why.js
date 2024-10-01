@@ -16,11 +16,9 @@ async function upsertWhy(pointObj, cb) {
   pointObj.userId = userId // Add userId to the document
 
   // Joi validation for the category
-  try {
-    await schema.validateAsync({category: pointObj.category});
-    console.log(`Category validation successful for: ${pointObj.category}`);
-  } catch (error) {
-    console.error('Validation error in upsertWhy:', error['details'][0]['message']);
+  const { error } = schema.validate({ category: pointObj.category });
+  if (error) {
+    console.error('Validation error in upsertWhy:', error.details[0].message);
     return cb && cb(null); // Return validation error
   }
 
