@@ -1,5 +1,5 @@
 const Points = require('../models/points')
-const Rankings = require('../models/rankings')
+const Ranks = require('../models/ranks')
 const { ObjectId } = require('mongodb')
 
 async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) {
@@ -18,13 +18,13 @@ async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) 
       { $match: { parentId: pointId, category: category } },
       {
         $lookup: {
-          from: 'rankings',
+          from: 'ranks',
           localField: '_id',
           foreignField: 'parentId',
-          as: 'rankings',
+          as: 'ranks',
         },
       },
-      { $unwind: { path: '$rankings', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$ranks', preserveNullAndEmptyArrays: true } },
       { $group: { _id: '$_id', count: { $sum: 1 }, doc: { $first: '$$ROOT' } } },
       { $sort: { count: -1 } },
       { $skip: start },

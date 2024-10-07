@@ -474,7 +474,7 @@ module.exports.putGroupings = putGroupings
 
 function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
   /* this is where we will write it to the database
-    Rankings.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
+    Ranks.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
     */
   deltaShownItemsRank(discussionId, round, statementId, rank)
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
