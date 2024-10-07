@@ -1,15 +1,16 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
 
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
+import DeliberationContext from '../app/components/deliberation-context'
 import { expect } from '@storybook/jest'
-import { Rerank } from '../app/components/steps/rerank'
+import RerankStep, { Rerank } from '../app/components/steps/rerank'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent } from '@storybook/testing-library'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData } from './common'
+import { within, userEvent, waitFor } from '@storybook/testing-library'
 
 export default {
   component: Rerank,
-  decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator, DeliberationContextDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -156,6 +157,86 @@ const point20 = {
   description: 'Lack of public awareness about biodiversity and its importance can hinder conservation efforts.',
 }
 
+const reviewPoints = [
+  {
+    point: { _id: '1', subject: 'subject 1', description: 'description 1', parentId: discussionId },
+    mosts: [
+      { _id: '11', subject: 'subject 1 most 1', description: 'description 1 most 1', category: 'most', parentId: '1' },
+      { _id: '12', subject: 'subject 1 most 2', description: 'description 1 most 2', category: 'most', parentId: '1' },
+    ],
+    leasts: [
+      {
+        _id: '13',
+        subject: 'subject 1 least 1',
+        description: 'description 1 least 1',
+        category: 'least',
+        parentId: '1',
+      },
+      {
+        _id: '14',
+        subject: 'subject 1 least 2',
+        description: 'description 1 least 2',
+        category: 'least',
+        parentId: '1',
+      },
+    ],
+    rank: {
+      id: '201',
+      stage: 'post',
+      category: 'post',
+      parentId: '1',
+      discussionId,
+      round: 0,
+    },
+  },
+  {
+    point: { _id: '2', subject: 'subject 2', description: 'description 2', parentId: discussionId },
+    mosts: [
+      { _id: '21', subject: 'subject 2 most 1', description: 'description 2 most 1', category: 'most', parentId: '2' },
+      { _id: '22', subject: 'subject 2 most 2', description: 'description 2 most 2', category: 'most', parentId: '2' },
+    ],
+    leasts: [
+      {
+        _id: '23',
+        subject: 'subject 2 least 1',
+        description: 'description 2 least 1',
+        category: 'least',
+        parentId: '2',
+      },
+      {
+        _id: '24',
+        subject: 'subject 1 least 2',
+        description: 'description 1 least 2',
+        category: 'least',
+        parentId: '2',
+      },
+    ],
+  },
+  {
+    point: { _id: '3', subject: 'subject 3', description: 'description 3', parentId: discussionId },
+    mosts: [
+      { _id: '31', subject: 'subject 3 most 1', description: 'description 3 most 1', category: 'most', parentId: '3' },
+      { _id: '32', subject: 'subject 3 most 2', description: 'description 3 most 2', category: 'most', parentId: '3' },
+    ],
+    leasts: [
+      {
+        _id: '33',
+        subject: 'subject 3 least 1',
+        description: 'description 3 least 1',
+        category: 'least',
+        parentId: '3',
+      },
+      {
+        _id: '34',
+        subject: 'subject 3 least 2',
+        description: 'description 3 least 2',
+        category: 'least',
+        parentId: '3',
+      },
+    ],
+  },
+]
+
 const reviewPoint1 = {
   point: point0,
   mosts: [point1, point2, point3],
@@ -181,21 +262,21 @@ const reviewPoint4 = {
   point: point0,
   mosts: [point1, point2, point3],
   leasts: [point4, point5, point6],
-  rank: { id: '101', stage: 'post', category: 'most', parentId: point0._id, discussionId, round },
+  rank: { _id: '101', stage: 'post', category: 'most', parentId: point0._id, discussionId, round },
 }
 
 const reviewPoint5 = {
   point: point7,
   mosts: [point8, point9, point10],
   leasts: [point11, point12, point13],
-  rank: { id: '102', stage: 'post', category: 'least', parentId: point7._id, discussionId, round },
+  rank: { _id: '102', stage: 'post', category: 'least', parentId: point7._id, discussionId, round },
 }
 
 const reviewPoint6 = {
   point: point14,
   mosts: [point15, point16, point17],
   leasts: [point18, point19, point20],
-  rank: { id: '101', stage: 'post', category: 'neutral', parentId: point14._id, discussionId, round },
+  rank: { _id: '101', stage: 'post', category: 'neutral', parentId: point14._id, discussionId, round },
 }
 
 export const Empty = {
@@ -236,5 +317,163 @@ export const PartialWithInitialRank = {
     reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
     discussionId,
     round,
+  },
+}
+
+export const onDoneIsCalledIfInitialData = {
+  args: {
+    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+        },
+      })
+    })
+    const categories = canvas.getAllByText('Neutral')
+    await userEvent.click(categories[0])
+
+    await waitFor(() =>
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+          delta: {
+            _id: '101',
+            stage: 'post',
+            category: 'neutral',
+            parentId: '0',
+            discussionId: '1001',
+            round: 1,
+          },
+        },
+      })
+    )
+  },
+}
+
+export const onDoneIsCalledAfterUserChangesRank = {
+  args: {
+    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const categories = canvas.getAllByText('Neutral')
+    await userEvent.click(categories[0])
+
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+          delta: {
+            _id: '101',
+            stage: 'post',
+            category: 'neutral',
+            parentId: '0',
+            discussionId: '1001',
+            round: 1,
+          },
+        },
+      })
+    })
+  },
+}
+
+export const rerankStepWithPartialInitialData = {
+  args: {
+    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    discussionId,
+    round,
+  },
+  render: args => <RerankStep {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const categories = canvas.getAllByText('Neutral')
+    await userEvent.click(categories[0])
+
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        postRankByParentId: {
+          0: { _id: '101', stage: 'post', category: 'neutral', parentId: '0', discussionId: '1001', round: 1 },
+        },
+      })
+    })
+  },
+}
+
+export const rerankStepWithTopDownUpdate = {
+  args: {
+    reviewPoints: reviewPoints,
+    discussionId,
+    round,
+  },
+  render: args => {
+    const { data = {}, upsert } = useContext(DeliberationContext)
+    const { reviewPoints, ...otherArgs } = args
+    useEffect(() => {
+      console.info('reviewPoints', reviewPoints)
+      setTimeout(() => {
+        const cn = {
+          ...reviewPoints.reduce(
+            (cn, rp) => {
+              console.info('cn, rp', cn, rp)
+              // context, reviewPoint
+              cn.pointById[rp.point._id] = rp.point
+              rp.mosts && rp.mosts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
+              rp.leasts && rp.leasts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
+              rp.rank && (cn.postRankByParentId[rp.rank.parentId] = rp.rank)
+              return cn
+            },
+            { pointById: {}, topWhyByParentId: {}, postRankByParentId: {} }
+          ),
+        }
+        console.info('cn', cn)
+        upsert(cn)
+      }, 2000)
+    })
+    return <RerankStep {...otherArgs} />
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const categories = canvas.getAllByText('Neutral')
+    await userEvent.click(categories[0])
+
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        postRankByParentId: {
+          7: { _id: '111', stage: 'post', category: 'least', parentId: '7', discussionId: '1001', round: 1 },
+        },
+      })
+    })
   },
 }

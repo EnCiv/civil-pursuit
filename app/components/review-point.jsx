@@ -55,6 +55,14 @@ function ReviewPoint(props) {
     }
   }
 
+  useEffect(() => {
+    if (rank) {
+      setIsRanked(true)
+    } else {
+      setIsRanked(false)
+    }
+  }, [rank])
+
   return (
     <div className={cx(classes.borderStyle)} {...otherProps}>
       <div className={cx(classes.contentContainer)}>

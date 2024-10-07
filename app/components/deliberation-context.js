@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useState, useRef } from 'react'
-export const DeliberationContext = createContext({})
 import { merge } from 'lodash'
+export const DeliberationContext = createContext({})
+export default DeliberationContext
 
 export function DeliberationContextProvider(props) {
   const [data, setData] = useState({})
@@ -31,6 +32,7 @@ function aEqual(a = [], b = []) {
   return a.length === b.length && a.every((e, i) => e === b[i])
 }
 
+// export to test by jest -- this shouldn't be called directly
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById || !groupIdsLists) return data

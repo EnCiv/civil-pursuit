@@ -1,15 +1,41 @@
 // https://github.com/EnCiv/civil-pursuit/issues/80
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
 
 export const DeliberationContextDecorator = Story => {
   return (
     <DeliberationContextProvider>
-      <Story />
+      <DeliberationData>
+        <Story />
+      </DeliberationData>
     </DeliberationContextProvider>
   )
 }
+const DeliberationData = props => {
+  const { data, upsert } = useContext(DeliberationContext)
+  return (
+    <>
+      {props.children}
+      {Object.keys(data).length > 0 ? (
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+          <div>
+            {' '}
+            DeliberationContext:{' '}
+            <span id="deliberation-context-data" style={{ whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(data, null, 4)}
+            </span>
+          </div>
+        </div>
+      ) : null}
+    </>
+  )
+}
+
+export function deliberationContextData() {
+  return JSON.parse(document.getElementById('deliberation-context-data').innerHTML)
+}
+
 import { Level } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }

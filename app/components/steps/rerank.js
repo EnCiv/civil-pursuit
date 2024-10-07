@@ -2,19 +2,25 @@
 // https://github.com/EnCiv/civil-pursuit/issues/215
 
 'use strict'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import ReviewPoint from '../review-point'
 import DeliberationContext from '../deliberation-context'
 import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
 
-export default function ReRankStep(props) {
+export default function RerankStep(props) {
+  const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
-
-  return <Rerank {...derivePointMostsLeastsRankList(data)} {...props} />
+  const args = { ...derivePointMostsLeastsRankList(data) }
+  const handleOnDone = ({ valid, value, delta }) => {
+    if (delta) upsert({ postRankByParentId: { [delta.parentId]: delta } })
+    onDone({ valid, value })
+  }
+  return <Rerank {...props} {...args} onDone={handleOnDone} />
 }
 
+// table to map from data model properties, to the Rank Strings shown in the UI
 const toRankString = {
   undefined: '',
   most: 'Most',
@@ -22,6 +28,7 @@ const toRankString = {
   neutral: 'Neutral',
 }
 
+// table to map from UI's Rank Strings to the data model prpoerty names
 const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, value]) => {
   if (key === 'undefined') return rS2C // rankStringToCategory[''] will be undefined
   rS2C[value] = key
@@ -42,6 +49,8 @@ export function Rerank(props) {
 
   const classes = useStylesFromThemeFunction()
 
+  // if reviewPoints are changed from above, we need to set the state and cause rerendering
+  // if they haven't changed - don't set state - on initial render they won't have changed don't set state
   useEffect(() => {
     const newRankByParentId = (reviewPoints || []).reduce((rankByParentId, reviewPoint) => {
       if (reviewPoint.rank) rankByParentId[reviewPoint.point._id] = reviewPoint.rank
@@ -50,21 +59,19 @@ export function Rerank(props) {
     let updated = false
     for (const rankDoc of Object.values(newRankByParentId)) {
       if (isEqual(rankDoc, rankByParentId[rankDoc.parentId])) {
-        console.info('isEqual', rankDoc, rankByParentId[rankDoc.parentId])
         newRankByParentId[rankDoc.parentId] = rankByParentId[rankDoc.parentId]
       }
       // don't change the ref if it hasn't changed in conotent
       else updated = true
     }
     if (updated) {
-      console.info('updated')
       setRankByParentId(newRankByParentId)
     }
     // if an item in the updated reviewPoints does not have a rank doc where it previously did, the rank doc will remain.
     // deleting a rank is not a use case
   }, [reviewPoints])
 
-  // first time through should call onDone if there are reviewPoints
+  // first time through should call onDone if there are reviewPoints to notify parent of valid status
   useEffect(() => {
     if (reviewPoints) {
       const percentDone = Object.keys(rankByParentId).length / reviewPoints.length
@@ -72,6 +79,8 @@ export function Rerank(props) {
     }
   }, [])
 
+  // handle user input from below, keep track of the new values by mutating state - without calling set state and causing a rerender
+  // call onDone to notify parent of new values, and add the delta prop to pass what's changed to the parent
   const handleReviewPoint = (point, result) => {
     const rankString = result.value
     let rank
@@ -82,13 +91,9 @@ export function Rerank(props) {
       if (rankByParentId[point._id]) {
         if (rankByParentId[point._id].category !== rankStringToCategory[rankString]) {
           rank = { ...rankByParentId[point._id], category: rankStringToCategory[rankString] }
-          console.info('handle', rankString, rank, rankStringToCategory)
-          const newRankByParentId = {
-            ...rankByParentId,
-            [point._id]: rank,
-          }
-          percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
-          return newRankByParentId
+          rankByParentId[point._id] = rank // mutate the state don't call the set function
+          percentDone = Object.keys(rankByParentId).length / reviewPoints.length
+          return rankByParentId
         } else {
           percentDone = Object.keys(rankByParentId).length / reviewPoints.length
           rank = rankByParentId[point._id]
@@ -103,9 +108,9 @@ export function Rerank(props) {
           round,
           discussionId,
         }
-        const newRankByParentId = { ...rankByParentId, [point._id]: rank }
-        percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
-        return newRankByParentId
+        rankByParentId[point._id] = rank
+        percentDone = Object.keys(rankByParentId).length / reviewPoints.length
+        return rankByParentId
       }
     })
     if (rank) onDone({ valid: percentDone === 1, value: percentDone, delta: rank })
@@ -116,19 +121,12 @@ export function Rerank(props) {
   return (
     <div className={classes.reviewPointsContainer} {...otherProps}>
       {reviewPoints.map((reviewPoint, idx) => (
-        <div key={idx} className={classes.reviewPoint}>
+        <div key={reviewPoint.point._id} className={classes.reviewPoint}>
           <ReviewPoint
             point={reviewPoint.point}
             leftPointList={reviewPoint.mosts}
             rightPointList={reviewPoint.leasts}
-            rank={
-              (console.info(
-                'rank',
-                rankByParentId[reviewPoint.point._id],
-                toRankString[rankByParentId[reviewPoint.point._id]?.category]
-              ),
-              toRankString[rankByParentId[reviewPoint.point._id]?.category])
-            }
+            rank={toRankString[rankByParentId[reviewPoint.point._id]?.category]}
             onDone={result => handleReviewPoint(reviewPoint.point, result)}
           />
         </div>
@@ -227,5 +225,6 @@ export function derivePointMostsLeastsRankList(data) {
     local.postRankByParentId = postRankByParentId
   }
   if (updated) local.reviewPoints = Object.values(local.reviewPointsById)
-  return local.reviewPoints
+  console.info('derive', JSON.stringify(local.reviewPoints, null, 2))
+  return { reviewPoints: local.reviewPoints }
 }
