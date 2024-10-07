@@ -21,29 +21,62 @@ beforeEach(async () => {
   for (let collection of collections) {
     await collection.deleteMany({})
   }
+
+  jest.spyOn(console, 'error').mockImplementation(() => {})
 })
+
+afterEach(async () => {
+  console.error.mockRestore()
+})
+
 afterAll(async () => {
   await Mongo.disconnect()
   await MemoryServer.stop()
 })
 
 test('Insert a new rank document', async () => {
-  const rankObj = { _id: RANK2, parentId: 'parent-id-1', round: 1, rank: 'most' }
+  const rankObj = {
+    _id: RANK2,
+    parentId: 'parent-id-1',
+    round: 1,
+    rank: 'most',
+    stage: 'pre',
+    category: 'category-1',
+    discussionId: 'discussion-1',
+  }
 
   const cb = jest.fn()
 
   await rankWhy.call({ synuser: { id: USER1 } }, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
+
   const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-1', userId: USER1 })
   expect(rank).toEqual({ ...rankObj, userId: USER1 })
 })
 
 test('Update an existing rank document with a different rank', async () => {
-  const existingRank = { _id: RANK1, parentId: 'parent-id-1', userId: USER1, round: 1, rank: 'most' }
+  const existingRank = {
+    _id: RANK1,
+    parentId: 'parent-id-1',
+    userId: USER1,
+    round: 1,
+    rank: 'most',
+    stage: 'pre',
+    category: 'category-1',
+    discussionId: 'discussion-1',
+  }
   await Mongo.db.collection('ranks').insertOne(existingRank)
 
-  const updatedRankObj = { _id: RANK1, parentId: 'parent-id-1', round: 1, rank: 'least' }
+  const updatedRankObj = {
+    _id: RANK1,
+    parentId: 'parent-id-1',
+    round: 1,
+    rank: 'least',
+    stage: 'pre',
+    category: 'category-1',
+    discussionId: 'discussion-1',
+  }
 
   const cb = jest.fn()
 

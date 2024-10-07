@@ -87,6 +87,10 @@ describe('getTopRankedWhysForPoint', () => {
           _id: new ObjectId(),
           parentId: why._id.toString(),
           userId: USER1,
+          round: why.round,
+          stage: 'pre',
+          category: why.category,
+          discussionId: 'discussion-1',
         })
       }
     })
@@ -117,6 +121,10 @@ describe('getTopRankedWhysForPoint', () => {
           _id: new ObjectId(),
           parentId: why._id.toString(),
           userId: USER1,
+          round: why.round,
+          stage: 'pre',
+          category: why.category,
+          discussionId: 'discussion-1',
         })
       }
     })
@@ -147,6 +155,10 @@ describe('getTopRankedWhysForPoint', () => {
           _id: new ObjectId(),
           parentId: why._id.toString(),
           userId: USER1,
+          round: why.round,
+          stage: 'pre',
+          category: why.category,
+          discussionId: 'discussion-1',
         })
       }
     })
@@ -177,6 +189,10 @@ describe('getTopRankedWhysForPoint', () => {
           _id: new ObjectId(),
           parentId: why._id.toString(),
           userId: USER1,
+          round: why.round,
+          stage: 'pre',
+          category: why.category,
+          discussionId: 'discussion-1',
         })
       }
     })
@@ -207,6 +223,10 @@ describe('getTopRankedWhysForPoint', () => {
           _id: new ObjectId(),
           parentId: why._id.toString(),
           userId: USER1,
+          round: why.round,
+          stage: 'pre',
+          category: why.category,
+          discussionId: 'discussion-1',
         })
       }
     })

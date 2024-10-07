@@ -4,7 +4,7 @@ const Ranks = require('../models/ranks')
 
 async function validateRankObj(rankObj) {
   // Basic validation to check required fields
-  if (!rankObj.parentId || !rankObj.round || !rankObj.rank) {
+  if (!rankObj.parentId || !rankObj.round || !rankObj.rank || !rankObj.discussionId || !rankObj.stage) {
     console.log('Validation result: not valid')
     return false
   }
