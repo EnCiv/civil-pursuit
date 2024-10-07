@@ -1,8 +1,11 @@
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import { ThemeProvider } from 'react-jss'
-import '../assets/css/index.css'
-import '../assets/css/normalize.css'
 import React from 'react'
 import Theme from '../app/components/theme'
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { levelDecorator } from '../stories/common'
+import GlobalStyles from '../app/components/global-styles'
 
 const theme = Theme
 
@@ -16,19 +19,24 @@ const preview = {
         date: /Date$/,
       },
     },
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+    },
   },
   decorators: [
     Story => {
-      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full with even through index.css has a media query keeping it at 982
+      document.getElementsByTagName('body')[0].style.width = '100%' // this is a hack to force full width even through index.css has a media query keeping it at 982
       return (
         <ThemeProvider theme={theme}>
           <div>
+            <GlobalStyles />
             <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
             <Story />
           </div>
         </ThemeProvider>
       )
     },
+    levelDecorator,
   ],
 }
 

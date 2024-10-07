@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/58
+// https://github.com/EnCiv/civil-pursuit/issues/80
 
 'use strict'
 import React, { useEffect, useState } from 'react'
@@ -6,9 +7,10 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { TextButton } from './button.jsx'
 import ShowDualPointList from './show-dual-point-list.jsx'
-import Ranking from './util/ranking.jsx'
+import Ranking from './ranking.jsx'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
+import { H, Level } from 'react-accessible-headings'
 
 function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
@@ -61,8 +63,8 @@ function ReviewPoint(props) {
             <span className={isRead ? classes.statusBadgeComplete : classes.statusBadge}>
               {isRead ? 'Read' : 'Unread'}
             </span>
-            {point.subject && <div className={cx(classes.subjectStyle)}>{point.subject}</div>}
-            {point.description && <div className={cx(classes.descriptionStyle)}>{point.description}</div>}
+            {point.subject && <H className={cx(classes.subjectStyle)}>{point.subject}</H>}
+            {point.description && <p className={cx(classes.descriptionStyle)}>{point.description}</p>}
           </div>
           <div className={classes.rankingColumn}>
             <Ranking
@@ -91,13 +93,15 @@ function ReviewPoint(props) {
       </div>
       {isRead && isOpened && (leftPointList.length > 0 || rightPointList.length > 0) && (
         <div className={classes.showDualPointListContainer}>
-          <ShowDualPointList
-            className={classes.showDualPointList}
-            leftHeader="Why It's Most Important"
-            rightHeader="Why It's Least Important"
-            leftPoints={leftPointList}
-            rightPoints={rightPointList}
-          />
+          <Level>
+            <ShowDualPointList
+              className={classes.showDualPointList}
+              leftHeader="Why It's Most Important"
+              rightHeader="Why It's Least Important"
+              leftPoints={leftPointList}
+              rightPoints={rightPointList}
+            />
+          </Level>
         </div>
       )}
     </div>
@@ -137,6 +141,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.5rem',
     fontWeight: '400',
     lineHeight: '1.875rem',
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
   },
   descriptionStyle: {
     ...theme.font,
@@ -144,6 +150,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
   },
   contentContainer: {
     padding: '2rem 1.875rem',
@@ -214,6 +222,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       border: 'none',
+      paddingBottom: '0.1rem',
       '& > div': {
         borderTopLeftRadius: '0rem',
         borderTopRightRadius: '0rem',

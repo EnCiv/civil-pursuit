@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/80
+
 import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
@@ -24,9 +26,12 @@ const DemInfoTestComponent = props => {
 export default {
   component: Point,
   args: {
-    subject: 'Phasellus diam sapien, placerat id sollicitudin eget',
-    description:
-      'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
+    point: {
+      subject: 'Phasellus diam sapien, placerat id sollicitudin eget',
+      description:
+        'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
+      demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' },
+    },
   },
 }
 
@@ -34,8 +39,12 @@ export default {
 export const Empty = () => {
   return <Point />
 }
-export const PrimaryDefault = { args: { vState: 'default', children: <DemInfoTestComponent /> } }
-export const PrimarySelected = { args: { vState: 'selected', children: <DemInfoTestComponent /> } }
+export const PrimaryDefault = {
+  args: { vState: 'default' },
+}
+export const PrimarySelected = {
+  args: { vState: 'selected' },
+}
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
 
 export const Lead = {
@@ -56,8 +65,11 @@ export const MultipleChildren = {
     vState: 'default',
     children: (
       <>
-        <DemInfoTestComponent />
         <PointLeadButton vState="default" />
+        <Point
+          point={{ _id: '42', subject: 'sub child', description: 'this is a point as a child of a point' }}
+          style={{ width: '100%' }}
+        />
       </>
     ),
   },
@@ -68,8 +80,9 @@ export const MultipleChildrenSelected = {
     vState: 'selected',
     children: (
       <>
-        <DemInfoTestComponent />
-        <PointLeadButton vState="selected" />
+        <PointLeadButton />
+        <PointLeadButton />
+        <PointLeadButton />
       </>
     ),
   },
@@ -83,7 +96,6 @@ export const ParentsWidth = args => {
         vState={'default'}
         children={
           <>
-            <DemInfoTestComponent />
             <PointLeadButton vState="default" />
           </>
         }
@@ -92,12 +104,12 @@ export const ParentsWidth = args => {
   )
 }
 
-export const Collapsed = args => {
-  return <Point vState={'collapsed'} subject={args.subject} />
+export const Collapsed = {
+  args: { vState: 'collapsed' },
 }
 
 export const Secondary = args => {
-  return <Point vState={'secondary'} subject={args.subject} children={<DemInfoTestComponent />} />
+  return <Point {...args} vState={'secondary'} />
 }
 
 export const LoadingLoop = () => {
@@ -118,4 +130,38 @@ export const LoadingThenLoads = args => {
   }, [])
 
   return <Point vState={isLoading ? 'loading' : 'default'} isLoading={isLoading} {...args} />
+}
+
+const createPoint = (subject, description = 'Point Description', children = null, vState = 'default') => (
+  <Point point={{ subject, description }} vState={vState} style={{ width: '100%' }}>
+    {children}
+  </Point>
+)
+
+const point6 = createPoint('Point 6', 'Point 6 Description')
+const point5 = createPoint('Point 5', 'Point 5 Description', point6)
+const point4 = createPoint('Point 4', 'Point 4 Description', point5)
+const point3 = createPoint('Point 3', 'Point 3 Description', point4)
+const point2 = createPoint('Point 2', 'Point 2 Description', point3)
+
+export const ChildrenPointsSixLayersDeep = {
+  args: {
+    point: {
+      subject: 'Point 2',
+      description: 'Point 2 Description',
+    },
+    vState: 'default',
+    children: point3,
+  },
+}
+
+export const ChildrenPointsSevenLayersDeep = {
+  args: {
+    point: {
+      subject: 'Point 1',
+      description: 'Point 1 Description',
+    },
+    vState: 'default',
+    children: point2,
+  },
 }
