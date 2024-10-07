@@ -1,5 +1,5 @@
 import rankWhy from '../rank-why'
-import Ranks from '../../models/rankings'
+import Ranks from '../../models/ranks'
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
@@ -35,13 +35,13 @@ test('Insert a new rank document', async () => {
   await rankWhy.call({ synuser: { id: USER1 } }, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('rankings').findOne({ parentId: 'parent-id-1', userId: USER1 })
+  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-1', userId: USER1 })
   expect(rank).toEqual({ ...rankObj, userId: USER1 })
 })
 
 test('Update an existing rank document with a different rank', async () => {
   const existingRank = { _id: RANK1, parentId: 'parent-id-1', userId: USER1, round: 1, rank: 'most' }
-  await Mongo.db.collection('rankings').insertOne(existingRank)
+  await Mongo.db.collection('ranks').insertOne(existingRank)
 
   const updatedRankObj = { _id: RANK1, parentId: 'parent-id-1', round: 1, rank: 'least' }
 
@@ -50,7 +50,7 @@ test('Update an existing rank document with a different rank', async () => {
   await rankWhy.call({ synuser: { id: USER1 } }, updatedRankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('rankings').findOne({ _id: RANK1, userId: USER1 })
+  const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
   expect(rank).toMatchObject({ ...updatedRankObj, userId: USER1 })
 })
 
@@ -61,7 +61,7 @@ test('Fail if the user is not logged in', async () => {
   await rankWhy.call({}, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('rankings').findOne({ parentId: 'parent-id-2' })
+  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-2' })
   expect(rank).toBeNull()
 })
 
@@ -76,6 +76,6 @@ test('Fail if one of the required parameters is missing', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
 
-  const rank = await Mongo.db.collection('rankings').findOne({ round: 1, rank: 'most' })
+  const rank = await Mongo.db.collection('ranks').findOne({ round: 1, rank: 'most' })
   expect(rank).toBeNull()
 })

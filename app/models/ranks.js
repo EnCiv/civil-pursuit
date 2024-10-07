@@ -3,14 +3,14 @@
 
 const { Mongo, Collection } = require('@enciv/mongo-collections')
 
-class Rankings extends Collection {
+class Ranks extends Collection {
   static collectionName = 'ranks'
 
   static collectionOptions = {
     validator: {
       $jsonSchema: {
         bsonType: 'object',
-        title: 'Rankings Object Validation',
+        title: 'Ranks Object Validation',
         required: ['parentId', 'stage', 'discussionId', 'category', 'userId'],
         properties: {
           parentId: {
@@ -44,6 +44,6 @@ class Rankings extends Collection {
   ]
 }
 
-Rankings.setCollectionProps()
+Ranks.setCollectionProps()
 
-module.exports = Rankings
+module.exports = Ranks

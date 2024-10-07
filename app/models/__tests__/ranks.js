@@ -1,28 +1,26 @@
 // https://github.com/EnCiv/civil-pursuit/issues/136
 
 const { Mongo, Collection } = require('@enciv/mongo-collections')
-const Rankings = require('../rankings')
+const Ranks = require('../ranks')
 
 beforeAll(async () => {
   await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
-  await Rankings.setCollectionProps()
+  await Ranks.setCollectionProps()
 })
 
 beforeEach(async () => {
-  await Rankings.drop()
-  await Rankings.setCollectionProps()
-  await Rankings.createIndexes([
-    { key: { parentId: 1, userId: 1 }, name: 'unique_parentId_userId_index', unique: true },
-  ])
+  await Ranks.drop()
+  await Ranks.setCollectionProps()
+  await Ranks.createIndexes([{ key: { parentId: 1, userId: 1 }, name: 'unique_parentId_userId_index', unique: true }])
 })
 
 afterAll(async () => {
   await Mongo.disconnect()
 })
 
-describe('Rankings Model', () => {
+describe('Ranks Model', () => {
   it('should be set up correctly', () => {
-    expect(Rankings.collectionName).toEqual('ranks')
+    expect(Ranks.collectionName).toEqual('ranks')
   })
 
   it('should insert a valid document', async () => {
@@ -33,7 +31,7 @@ describe('Rankings Model', () => {
       stage: 'pre',
       category: 'category1',
     }
-    const result = await Rankings.insertOne(validDoc)
+    const result = await Ranks.insertOne(validDoc)
     expect(result.acknowledged).toBe(true)
   })
 
@@ -41,7 +39,7 @@ describe('Rankings Model', () => {
     const invalidDoc = {
       userId: 'user1',
     }
-    await expect(Rankings.insertOne(invalidDoc)).rejects.toThrow('Document failed validation')
+    await expect(Ranks.insertOne(invalidDoc)).rejects.toThrow('Document failed validation')
   })
 
   it('should enforce unique indexes', async () => {
@@ -59,12 +57,12 @@ describe('Rankings Model', () => {
       stage: 'stage2',
       category: 'category2',
     }
-    await Rankings.insertOne(doc1)
-    await expect(Rankings.insertOne(doc2)).rejects.toThrow('duplicate key error')
+    await Ranks.insertOne(doc1)
+    await expect(Ranks.insertOne(doc2)).rejects.toThrow('duplicate key error')
   })
 
   it('should have the correct indexes', async () => {
-    const indexes = await Rankings.indexes()
+    const indexes = await Ranks.indexes()
     expect(indexes).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'unique_parentId_userId_index' })]))
   })
 })

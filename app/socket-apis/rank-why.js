@@ -1,6 +1,6 @@
 //https://github.com/EnCiv/civil-pursuit/issues/134
 
-const Ranks = require('../models/rankings')
+const Ranks = require('../models/ranks')
 
 async function validateRankObj(rankObj) {
   // Basic validation to check required fields

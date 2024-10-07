@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/205
 
-const Rankings = require('../models/rankings')
+const Ranks = require('../models/ranks')
 import { ObjectId } from 'mongodb'
 
 async function getUserRanks(discussionId, round, stage, cb) {
@@ -22,7 +22,7 @@ async function getUserRanks(discussionId, round, stage, cb) {
   }
 
   // Get ranks for user
-  const results = await Rankings.find({
+  const results = await Ranks.find({
     discussionId: discussionId,
     round: round,
     stage: stage,

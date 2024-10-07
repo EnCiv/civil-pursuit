@@ -6,7 +6,7 @@ import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 
-const Rankings = require('../../models/rankings')
+const Ranks = require('../../models/ranks')
 
 // Config
 const discussionId = '66a174b0c3f2051ad387d2a6'
@@ -74,7 +74,7 @@ test('Returns 10 results when 10 matches exist.', async () => {
       stage: 'pre',
       category: 'category1',
     }
-    const success = await Rankings.insertOne(validDoc)
+    const success = await Ranks.insertOne(validDoc)
     expect(success.acknowledged).toBe(true)
   }
 
