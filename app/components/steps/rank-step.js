@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/65
 // https://github.com/EnCiv/civil-pursuit/issues/191
+// https://github.com/EnCiv/civil-pursuit/issues/199
 
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -28,15 +29,24 @@ const minSelectionsTable = {
   12: { least: 1, most: 2 },
 }
 
-function RankStep(props) {
+export default function RankStep(props) {
+  const { data, upsert } = useContext(DeliberationContext)
+
+  useEffect(() => {
+    window.socket.emit('get-user-ranks', p1, p2, '...', results => upsert(results))
+  }, [])
+
+  function handleOnDone({ valid, value, delta }) {}
+
+  return <RankPoints {...deriver(data, local)} onDone={handleOnDone} {...props} />
+}
+
+export function RankPoints(props) {
   const classes = useStylesFromThemeFunction()
   const {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
-    children,
-    active = true,
-    pointList = [],
-    rankList = [],
+    pointRankGroupList,
     ...otherProps
   } = props
 
@@ -212,4 +222,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 }))
 
-export default RankStep
+export function deriver(data) {
+  const local = useRef({}).current
+  return {}
+}
