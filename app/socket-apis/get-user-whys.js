@@ -18,22 +18,25 @@ async function getUserWhys(ids, cb) {
   }
 
   // Fetch points from the Points collection where parentId matches any of the ids
-  let pointsList
-  try {
-    pointsList = await Points.find({ parentId: { $in: ids }, userId: this.synuser.id }).toArray()
-  } catch (error) {
-    return cbFailure('Failed to retrieve points - Points.find failed.')
-  }
+  // let pointsList
+  // try {
+  //   pointsList = await Points.find({ parentId: { $in: ids }, userId: this.synuser.id }).toArray()
+  // } catch (error) {
+  //   return cbFailure('Failed to retrieve points - Points.find failed.')
+  // }
+  const pointsList = await Points.find({ parentId: { $in: ids }, userId: this.synuser.id })
+    .toArray()
+    .catch(error => cbFailure(`Failed to retrieve points - Points.find failed: ${error.message}`))
 
   // If no points found, return an empty array
   if (!pointsList || pointsList.length === 0) {
     if (cb) cb([])
-    return []
+    return
   }
 
   // Return the points list
   if (cb) cb(pointsList)
-  return pointsList
+  return
 }
 
 module.exports = getUserWhys

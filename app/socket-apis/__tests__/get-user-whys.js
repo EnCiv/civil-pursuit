@@ -16,9 +16,7 @@ beforeAll(async () => {
   const uri = memoryServer.getUri()
   connection = await MongoClient.connect(uri, { useNewUrlParser: true })
   db = connection.db()
-  Points.find = jest.fn().mockImplementation(query => ({
-    toArray: jest.fn().mockResolvedValueOnce(db.collection('points').find(query).toArray()),
-  }))
+  Points.find = db.collection('points').find.bind(db.collection('points'))
 })
 
 afterAll(async () => {
@@ -26,8 +24,9 @@ afterAll(async () => {
   await memoryServer.stop()
 })
 
-beforeEach(() => {
+beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
+  await db.collection('points').deleteMany({})
 })
 
 afterEach(() => {
@@ -47,11 +46,6 @@ test('Return undefined if user is not logged in.', async () => {
 // Test 2: Return empty array if no data found
 test('Return empty array if no data found.', async () => {
   const cb = jest.fn()
-
-  // Mock the find function to return an empty array
-  Points.find.mockImplementationOnce(() => ({
-    toArray: jest.fn().mockResolvedValueOnce([]),
-  }))
 
   await getUserWhys.call(synuser, ['nonexistentId'], cb)
 
@@ -79,17 +73,13 @@ test('Return list of items matching parentId in ids.', async () => {
     { _id: '9', title: 'Point9', userId: userId + '0', parentId: 'id2' },
   ]
 
+  //Insert into the database
+  await db.collection('points').insertMany(mockPoints)
+
   // Filter only the points where parentId is 'id1' or 'id2' and userId matches
   const expectedPoints = mockPoints.filter(point => ['id1', 'id2'].includes(point.parentId) && point.userId === userId)
-
-  Points.find.mockImplementationOnce(() => ({
-    toArray: jest.fn().mockResolvedValueOnce(expectedPoints),
-  }))
-
-  const result = await getUserWhys.call(synuser, ['id1', 'id2'], cb)
+  await getUserWhys.call(synuser, ['id1', 'id2'], cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(expectedPoints)
-  expect(result).toEqual(expectedPoints)
-  expect(result.length).toBe(5) // This checks that the result contains 5 items
 })
