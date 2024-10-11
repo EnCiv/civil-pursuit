@@ -3,32 +3,48 @@
 import { initDiscussion, Discussions } from '../dturn/dturn'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
+const DturnInfo = require('../models/dturn-info')
 
 async function subscribeDeliberation(deliberationId) {
-  const cbFailure = errorMsg => {
-    if (errorMsg) console.error(errorMsg)
-    if (cb) cb(undefined)
-  }
-
   // Verify user is logged in.
   if (!this.synuser || !this.synuser.id) {
-    return cbFailure('Cannot subscribe to deliberation - user is not logged in.')
+    return console.error('Cannot subscribe to deliberation - user is not logged in.')
   }
 
   // Verify argument
   if (!deliberationId) {
-    return cbFailure('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
+    return console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
   }
 
   // Check if discussion is loaded in memory
-  if (Discussions[deliberationId]) {
-  } else {
-    const iota = Iota.findOne({ _id: deliberationId }) // Lookup in the iota collection
+  if (!Discussions[deliberationId]) {
+    const iota = await Iota.findOne({ _id: new ObjectId(deliberationId) }) // Lookup in the iota collection
     if (iota) {
-      initDiscussion(deliberationId, iota?.webcomponent?.dturn ?? {}) // Use webcomponent dturn to init discussion if iota exists
+      const options = {
+        ...(iota?.webComponent?.dturn ?? {}),
+        updateUInfo: async uInfoData => {
+          // First upsert the UInfo
+          await DturnInfo.upsert(this.synuser.id, deliberationId, 0, uInfoData)
+
+          // Then broadcast the update if changes were made
+          const eventName = subscribeEventName('subscribe-discussion', deliberationId)
+
+          window.socket.broadcast.to(deliberationId).emit(eventName, {
+            participants: Object.keys(Discussions[deliberationId].Uitems[userId]).length,
+            lastRound: Object.keys(Discussions[deliberationId].ShownStatement).length - 1,
+          })
+        },
+        getAllUInfo: async () => {
+          return await DturnInfo.getAllFromDiscussion()
+        },
+      }
+      await initDiscussion(deliberationId, options)
     } else {
-      return cbFailure(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
+      return console.error(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
     }
   }
+
+  // Add the client to the room
+  window.socket.join(deliberationId)
 }
 module.exports = subscribeDeliberation
