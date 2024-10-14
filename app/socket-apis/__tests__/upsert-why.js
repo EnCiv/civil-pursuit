@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
+// https://github.com/EnCiv/civil-pursuit/issues/210
 
 import upsertWhy from '../upsert-why'
 import Points from '../../models/points'
@@ -22,7 +23,7 @@ afterAll(async () => {
   await MemoryServer.stop()
 })
 
-test('Insert a new document with no id set', async () => {
+test('Insert a new document when valid request with no id set', async () => {
   const pointObj = {
     title: 'Test Subject',
     description: 'Test Description',
@@ -41,7 +42,7 @@ test('Insert a new document with no id set', async () => {
   expect(point).toMatchObject({ ...pointObj, userId: USER1 })
 })
 
-test('Upsert changes to an existing document with its id set', async () => {
+test('Upsert changes to an existing document when valid request with its id set', async () => {
   const existingPoint = {
     _id: POINT1,
     title: 'Existing Subject',
@@ -113,4 +114,43 @@ test('Validation error when upserting a document', async () => {
 
   const point = await Mongo.db.collection('points').findOne({ subject: 'Test Subject' })
   expect(point).toBeNull()
+})
+
+test('error when category in request is missing', async () => {
+  const pointObj = {
+    id: POINT1,
+    title: 'Test Subject',
+    description: '',
+    round: 1,
+    parentId: 'parent-id',
+    // category is missing
+  };
+  const user = { id: USER1 }
+  const cb = jest.fn()
+
+  await upsertWhy.call({ synuser: user }, pointObj, cb)
+
+  // validation error
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(null)
+});
+
+test('error when category in request is not valid', async () => {
+  const pointObj = {
+    id: POINT1,
+    title: 'Test Subject',
+    description: '',
+    round: 1,
+    parentId: 'parent-id',
+    category: 'Invalid'
+    // category invalid
+  };
+  const user = { id: USER1 }
+  const cb = jest.fn()
+
+  await upsertWhy.call({ synuser: user }, pointObj, cb)
+
+  // validation error
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(null)
 })
