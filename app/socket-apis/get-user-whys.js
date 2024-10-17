@@ -18,18 +18,18 @@ async function getUserWhys(ids, cb) {
   }
 
   // Fetch points from the Points collection where parentId matches any of the ids
-  // let pointsList
-  // try {
-  //   pointsList = await Points.find({ parentId: { $in: ids }, userId: this.synuser.id }).toArray()
-  // } catch (error) {
-  //   return cbFailure('Failed to retrieve points - Points.find failed.')
-  // }
   const pointsList = await Points.find({ parentId: { $in: ids }, userId: this.synuser.id })
     .toArray()
-    .catch(error => cbFailure(`Failed to retrieve points - Points.find failed: ${error.message}`))
-
+    .catch(error => {
+      return cbFailure(`Failed to retrieve points - Points.find failed: ${error.message}`)
+    })
+  // If pointsList is undefined, it means the catch block was triggered due to an error in the database query.
+  // In this case, we return early to avoid executing further logic.
+  if (!pointsList) {
+    return
+  }
   // If no points found, return an empty array
-  if (!pointsList || pointsList.length === 0) {
+  if (pointsList.length === 0) {
     if (cb) cb([])
     return
   }

@@ -83,3 +83,21 @@ test('Return list of items matching parentId in ids.', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(expectedPoints)
 })
+
+// Test 4: Ensure .catch() is triggered
+test('Should trigger catch when database connection is closed.', async () => {
+  const cb = jest.fn()
+
+  // Close the connection to simulate a failure
+  await connection.close()
+
+  await getUserWhys.call(synuser, ['id1'], cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(undefined)
+  expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve points - Points.find failed'))
+
+  // Reconnect for other tests
+  connection = await MongoClient.connect(memoryServer.getUri(), { useNewUrlParser: true })
+  Points.find = db.collection('points').find.bind(db.collection('points'))
+})
