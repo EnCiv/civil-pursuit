@@ -9,6 +9,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 import { Iota } from 'civil-server'
 
+import jestSocketApiSetup from '../../jest-socket-api-setup'
+
+const handle = 'subscribe-deliberation'
+const socketApiUnderTest = subscribeDeliberation
+
 const userId = '6667d5a33da5d19ddc304a6b'
 const synuser = { synuser: { id: userId } }
 
@@ -30,6 +35,8 @@ beforeAll(async () => {
   MemoryServer = await MongoMemoryServer.create()
   const uri = MemoryServer.getUri()
   await Mongo.connect(uri)
+
+  await jestSocketApiSetup(userId, [[handle, socketApiUnderTest]])
 })
 
 afterAll(async () => {

@@ -3,7 +3,8 @@
 import { initDiscussion, Discussions } from '../dturn/dturn'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
-const DturnInfo = require('../models/dturns')
+
+const Dturns = require('../models/dturns')
 
 async function subscribeDeliberation(deliberationId) {
   // Verify user is logged in.
@@ -22,12 +23,19 @@ async function subscribeDeliberation(deliberationId) {
     if (iota) {
       const options = {
         ...(iota?.webComponent?.dturn ?? {}),
-        updateUInfo: async uInfoData => {
+        updateUInfo: async UInfoData => {
           // First upsert the UInfo
-          const result = await DturnInfo.upsert(this.synuser.id, deliberationId, 0, uInfoData)
+          const [round, { shownStatementIds, groupings }] = Object.entries(UInfoData[userId][deliberationId])[0]
+          const participants = Object.keys(Discussions[deliberationId].Uitems[userId]).length
+
+          await Dturns.upsert(this.synuser.id, deliberationId, 0, round, shownStatementIds, groupings)
+          const result = await this.findOne({ discussionId: deliberationId })
 
           // Then broadcast the update if changes were made
-          if (result != Discussions[deliberationId].lastUInfo) {
+          if (
+            result.round != Discussions[deliberationId].lastRound ||
+            participants != Discussions[deliberationId].lastParticipants
+          ) {
             const eventName = subscribeEventName('subscribe-discussion', deliberationId)
 
             window.socket.broadcast.to(deliberationId).emit(eventName, {
@@ -35,11 +43,12 @@ async function subscribeDeliberation(deliberationId) {
               lastRound: Object.keys(Discussions[deliberationId].ShownStatement).length - 1,
             })
 
-            Discussions[deliberationId].lastUInfo = uInfoData
+            Discussions[deliberationId]['lastRound'] = round
+            Discussions[deliberationId]['lastParticipants'] = participants
           }
         },
         getAllUInfo: async () => {
-          return await DturnInfo.getAllFromDiscussion()
+          return await Dturns.getAllFromDiscussion()
         },
       }
       await initDiscussion(deliberationId, options)
@@ -49,6 +58,7 @@ async function subscribeDeliberation(deliberationId) {
   }
 
   // Add the client to the room
+  console.log(window.socket)
   window.socket.join(deliberationId)
 }
 module.exports = subscribeDeliberation

@@ -24,9 +24,13 @@ class Dturns extends Collection {
             bsonType: 'number',
             description: "'round' must be a number",
           },
-          data: {
+          shownStatementIds: {
             bsonType: 'object',
-            description: "'data' must be an object and is required",
+            description: "'shownStatementIds' must be an object and is required",
+          },
+          groupings: {
+            bsonType: 'object',
+            description: "'groupings' must be an array and is required",
           },
         },
       },
@@ -37,14 +41,19 @@ class Dturns extends Collection {
     return await this.find({ discussionId: discussionId })
   }
 
-  static async upsert(userId, discussionId, round, data) {
-    const dturnObj = { discussionId: discussionId, round: round, userId: userId, data: data }
+  static async upsert(userId, discussionId, round, shownStatementIds, groupings) {
+    const dturnObj = {
+      discussionId: discussionId,
+      round: round,
+      userId: userId,
+      shownStatementIds: shownStatementIds,
+      groupings: groupings,
+    }
     await this.updateOne(
       { discussionId: discussionId, round: round, userId: userId },
       { $set: dturnObj },
       { upsert: true }
     )
-    return await this.findOne({ discussionId: discussionId })
   }
 }
 
