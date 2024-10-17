@@ -3,7 +3,7 @@
 import { initDiscussion, Discussions } from '../dturn/dturn'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
-const DturnInfo = require('../models/dturn-info')
+const DturnInfo = require('../models/dturns')
 
 async function subscribeDeliberation(deliberationId) {
   // Verify user is logged in.
@@ -24,15 +24,19 @@ async function subscribeDeliberation(deliberationId) {
         ...(iota?.webComponent?.dturn ?? {}),
         updateUInfo: async uInfoData => {
           // First upsert the UInfo
-          await DturnInfo.upsert(this.synuser.id, deliberationId, 0, uInfoData)
+          const result = await DturnInfo.upsert(this.synuser.id, deliberationId, 0, uInfoData)
 
           // Then broadcast the update if changes were made
-          const eventName = subscribeEventName('subscribe-discussion', deliberationId)
+          if (result != Discussions[deliberationId].lastUInfo) {
+            const eventName = subscribeEventName('subscribe-discussion', deliberationId)
 
-          window.socket.broadcast.to(deliberationId).emit(eventName, {
-            participants: Object.keys(Discussions[deliberationId].Uitems[userId]).length,
-            lastRound: Object.keys(Discussions[deliberationId].ShownStatement).length - 1,
-          })
+            window.socket.broadcast.to(deliberationId).emit(eventName, {
+              participants: Object.keys(Discussions[deliberationId].Uitems[userId]).length,
+              lastRound: Object.keys(Discussions[deliberationId].ShownStatement).length - 1,
+            })
+
+            Discussions[deliberationId].lastUInfo = uInfoData
+          }
         },
         getAllUInfo: async () => {
           return await DturnInfo.getAllFromDiscussion()

@@ -2,14 +2,14 @@
 
 import { Collection } from '@enciv/mongo-collections'
 
-class DturnInfo extends Collection {
-  static collectionName = 'dturnInfo'
+class Dturns extends Collection {
+  static collectionName = 'dturns'
 
   static collectionOptions = {
     validator: {
       $jsonSchema: {
         bsonType: 'object',
-        title: 'DturnInfo Object Validation',
+        title: 'Dturn Object Validation',
         required: ['discussionId', 'data'],
         properties: {
           discussionId: {
@@ -38,16 +38,16 @@ class DturnInfo extends Collection {
   }
 
   static async upsert(userId, discussionId, round, data) {
-    const dturnInfoObj = { discussionId: discussionId, round: round, userId: userId, data: data }
+    const dturnObj = { discussionId: discussionId, round: round, userId: userId, data: data }
     await this.updateOne(
       { discussionId: discussionId, round: round, userId: userId },
-      { $set: dturnInfoObj },
+      { $set: dturnObj },
       { upsert: true }
     )
     return await this.findOne({ discussionId: discussionId })
   }
 }
 
-DturnInfo.setCollectionProps()
+Dturns.setCollectionProps()
 
-module.exports = DturnInfo
+module.exports = Dturns

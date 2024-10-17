@@ -1,5 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/196
 
+/**
+ * @jest-environment jsdom
+ */
+
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'

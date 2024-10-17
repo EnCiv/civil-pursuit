@@ -1,22 +1,22 @@
 // https://github.com/EnCiv/civil-pursuit/issues/196
 
 const { Mongo, Collection } = require('@enciv/mongo-collections')
-const DturnInfo = require('../dturn-info')
+const Dturns = require('../dturns')
 
 const userId = '6667d5a33da5d19ddc304a6b'
 
 beforeAll(async () => {
   await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
-  await DturnInfo.setCollectionProps()
+  await Dturns.setCollectionProps()
 })
 
 afterAll(async () => {
   await Mongo.disconnect()
 })
 
-describe('DturnInfo Model', () => {
+describe('Dturns Model', () => {
   it('should be set up correctly', () => {
-    expect(DturnInfo.collectionName).toEqual('dturnInfo')
+    expect(Dturns.collectionName).toEqual('dturns')
   })
 
   it('should insert a valid document', async () => {
@@ -26,7 +26,7 @@ describe('DturnInfo Model', () => {
       round: 0,
       data: { user: 'userId', points: { point1: 'point1', point2: 'point2' } },
     }
-    const result = await DturnInfo.insertOne(validDoc)
+    const result = await Dturns.insertOne(validDoc)
     expect(result.acknowledged).toBe(true)
   })
 
@@ -34,7 +34,7 @@ describe('DturnInfo Model', () => {
     const invalidDoc = {
       data: 'not real data',
     }
-    await expect(DturnInfo.insertOne(invalidDoc)).rejects.toThrow('Document failed validation')
+    await expect(Dturns.insertOne(invalidDoc)).rejects.toThrow('Document failed validation')
   })
 
   it('should upsert when the upsert function is called', async () => {
@@ -45,12 +45,12 @@ describe('DturnInfo Model', () => {
       data: { field1: 'this is data', field2: 'and this is too' },
     }
     // Create a new doc
-    const result = await DturnInfo.upsert(userId, doc.discussionId, 0, doc.data)
+    const result = await Dturns.upsert(userId, doc.discussionId, 0, doc.data)
     expect(result).toMatchObject(doc)
 
     // Try to update the doc
     const newData = { ...doc.data, field3: 'new field!' }
-    const updateResult = await DturnInfo.upsert(userId, doc.discussionId, 0, newData)
+    const updateResult = await Dturns.upsert(userId, doc.discussionId, 0, newData)
     expect(updateResult).toMatchObject({ ...doc, data: newData })
   })
 
@@ -58,10 +58,10 @@ describe('DturnInfo Model', () => {
     const discussionId = 'discussion'
 
     for (let num = 0; num < 5; num++) {
-      await DturnInfo.upsert(userId + num, discussionId, 0, { field1: `data ${num}` })
+      await Dturns.upsert(userId + num, discussionId, 0, { field1: `data ${num}` })
     }
 
-    const result = await DturnInfo.getAllFromDiscussion(discussionId)
+    const result = await Dturns.getAllFromDiscussion(discussionId)
     expect(await result.toArray()).toMatchObject([
       {
         _id: /./,
