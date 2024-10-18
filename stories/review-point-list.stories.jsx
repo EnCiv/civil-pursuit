@@ -2,11 +2,10 @@
 
 import React, { useEffect, useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
-import { expect } from '@storybook/jest'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData } from './common'
-import { within, userEvent, waitFor } from '@storybook/testing-library'
+import { within, userEvent, expect } from '@storybook/test'
 
 export default {
   component: Rerank,
