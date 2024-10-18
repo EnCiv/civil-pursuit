@@ -1,5 +1,5 @@
 import React from 'react'
-import { userEvent, within } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
 import { onDoneDecorator, onDoneResult } from './common'

@@ -1,11 +1,10 @@
 // https://github.com/EnCiv/civil-pursuit/issues/58
 
 import React from 'react'
-import { expect } from '@storybook/jest'
 import ReviewPoint from '../app/components/review-point'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent } from '@storybook/testing-library'
+import { within, userEvent, expect } from '@storybook/test'
 
 export default {
   component: ReviewPoint,

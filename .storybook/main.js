@@ -1,6 +1,5 @@
 import { merge } from 'webpack-merge'
 const webpack = require('webpack')
-const path = require('path')
 
 const config = {
   stories: [
@@ -9,20 +8,19 @@ const config = {
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
-    '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
     '@storybook/addon-viewport',
+    '@storybook/addon-webpack5-compiler-babel',
   ],
   framework: {
     name: '@storybook/react-webpack5',
     options: {},
   },
-  docs: {
-    autodocs: 'tag',
-  },
+  docs: {},
   webpackFinal: async config => {
     const newConfig = merge(config, {
+      devtool: 'source-map',
       module: {
         rules: [
           {
