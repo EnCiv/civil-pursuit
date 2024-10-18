@@ -31,7 +31,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
-    "node": "16.20.1"
+    "node": "18.13.0"
   },
   "dependencies": {
     "@codastic/react-positioning-portal": "^0.7.0",
@@ -99,7 +99,7 @@
     "expect": "^23.6.0",
     "jest": "^29.7.0",
     "jest-enzyme": "^7.1.2",
-    "mongodb-memory-server": "^9.3.0",
+    "mongodb-memory-server": "^10.1.2",
     "nodemon": "^2.0.15",
     "storybook": "^8.3.6",
     "webpack-dev-server": "^4.15.1"
