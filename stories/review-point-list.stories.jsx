@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
 
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import { expect } from '@storybook/jest'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
@@ -390,6 +390,23 @@ export const onDoneIsCalledAfterUserChangesRank = {
     })
   },
 }
+function reviewPointsToContext(reviewPoints) {
+  const cn = {
+    ...reviewPoints.reduce(
+      (cn, rp) => {
+        console.info('cn, rp', cn, rp)
+        // context, reviewPoint
+        cn.pointById[rp.point._id] = rp.point
+        rp.mosts && rp.mosts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
+        rp.leasts && rp.leasts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
+        rp.rank && (cn.postRankByParentId[rp.rank.parentId] = rp.rank)
+        return cn
+      },
+      { pointById: {}, topWhyByParentId: {}, postRankByParentId: {} }
+    ),
+  }
+  return cn
+}
 
 export const rerankStepWithPartialInitialData = {
   args: {
@@ -397,7 +414,16 @@ export const rerankStepWithPartialInitialData = {
     discussionId,
     round,
   },
-  render: args => <RerankStep {...args} />,
+  render: args => {
+    // brute force set/mutate the initial value of the context data
+    const { data = {}, upsert } = useContext(DeliberationContext)
+    useState(() => {
+      // execute this code once, before the component is initally rendered
+      const cn = reviewPointsToContext(args.reviewPoints)
+      setTimeout(() => upsert(cn))
+    })
+    return <RerankStep {...args} />
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const categories = canvas.getAllByText('Neutral')
@@ -434,20 +460,7 @@ export const rerankStepWithTopDownUpdate = {
     useEffect(() => {
       console.info('reviewPoints', reviewPoints)
       setTimeout(() => {
-        const cn = {
-          ...reviewPoints.reduce(
-            (cn, rp) => {
-              console.info('cn, rp', cn, rp)
-              // context, reviewPoint
-              cn.pointById[rp.point._id] = rp.point
-              rp.mosts && rp.mosts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
-              rp.leasts && rp.leasts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
-              rp.rank && (cn.postRankByParentId[rp.rank.parentId] = rp.rank)
-              return cn
-            },
-            { pointById: {}, topWhyByParentId: {}, postRankByParentId: {} }
-          ),
-        }
+        const cn = reviewPointsToContext(reviewPoints)
         console.info('cn', cn)
         upsert(cn)
       }, 2000)
