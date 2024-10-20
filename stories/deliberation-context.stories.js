@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
 import { DeliberationContextDecorator } from './common'
-import { within, userEvent } from '@storybook/testing-library'
-import expect from 'expect'
+import { within, userEvent, expect } from '@storybook/test'
 
 export default {
   component: DeliberationContext,

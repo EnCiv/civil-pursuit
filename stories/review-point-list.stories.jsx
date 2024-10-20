@@ -401,7 +401,7 @@ function reviewPointsToContext(reviewPoints) {
         rp.rank && (cn.postRankByParentId[rp.rank.parentId] = rp.rank)
         return cn
       },
-      { pointById: {}, topWhyByParentId: {}, postRankByParentId: {} }
+      { pointById: {}, topWhyByParentId: {}, postRankByParentId: {}, groupIdsLists: [] }
     ),
   }
   return cn
