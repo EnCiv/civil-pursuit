@@ -1,5 +1,6 @@
 import { merge } from 'webpack-merge'
 import webpackDevConfig from '../webpack-dev.config'
+import { web } from 'webpack'
 
 const config = {
   stories: [
@@ -19,7 +20,8 @@ const config = {
   },
   docs: {},
   webpackFinal: async config => {
-    const newConfig = merge(config, webpackDevConfig)
+    const storyDevConfig = { ...webpackDevConfig, entry: undefined, output: undefined } // to be set by storybook
+    const newConfig = merge(config, storyDevConfig)
     return newConfig
   },
 }
