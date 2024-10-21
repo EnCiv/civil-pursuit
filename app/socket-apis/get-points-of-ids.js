@@ -2,42 +2,60 @@
 const Points = require('../models/points')
 const { ObjectId } = require('mongodb')
 
-async function getPointsOfIds(ids, callback, currentUserId) {
+async function getPointsOfIds(ids, callback, currentUserId, synuser) {
+  const cbFailure = errorMsg => {
+    if (errorMsg) console.error(errorMsg)
+    if (callback) callback({ points: [], myWhys: [] }) // Return empty arrays on error
+  }
+
+  // Verify user is logged in.
+  if (!synuser || !synuser.id) {
+    console.log('User not logged in:', synuser)
+    return cbFailure('Cannot retrieve points - user is not logged in.')
+  }
+
+  // Verify arguments
+  if (!Array.isArray(ids) || ids.length === 0 || !currentUserId) {
+    console.log('Invalid arguments:', { ids, currentUserId })
+    return cbFailure(
+      'Invalid arguments provided to getPointsOfIds(ids: Array, callback: Function, currentUserId: ObjectId).'
+    )
+  }
+
   try {
+    console.log('Fetching points for ids:', ids)
+
     // Fetch points by _id
     const points = await Points.aggregate([{ $match: { _id: { $in: ids.map(id => new ObjectId(id)) } } }]).toArray()
 
-    // Fetch why points where parentId is in the ids
+    // For points, only keep userId if the point was created by the current user
+    const filteredPoints = points.map(point => {
+      const pointCopy = { ...point }
+      if (pointCopy.userId !== currentUserId) {
+        delete pointCopy.userId // Remove userId for points not created by the current user
+      }
+      return pointCopy
+    })
+
+    console.log('Filtered points:', filteredPoints)
+
+    // Fetch why points where parentId is in the ids as string, and match by userId
     const whypoints = await Points.aggregate([
-      { $match: { parentId: { $in: ids.map(id => new ObjectId(id)) } } },
+      {
+        $match: {
+          parentId: { $in: ids.map(id => id.toString()) }, // Convert parentId to string version of ObjectId
+          userId: synuser.id // Match only the why points created by the current user
+        }
+      }
     ]).toArray()
 
-    // Reduce points into an object
-    const pointById = points.reduce((acc, point) => {
-      const pointCopy = { ...point }
-      // Only remove userId if the point was not created by the current user
-      if (point.userId && point.userId !== currentUserId) {
-        delete pointCopy.userId
-      }
-      acc[point._id.toHexString()] = pointCopy
-      return acc
-    }, {})
+    console.log('Fetched whypoints:', whypoints) // Log why points after fetching
 
-    // Reduce whypoints into an object with parentId as keys
-    const myWhysByParentId = whypoints.reduce((acc, whyPoint) => {
-      const parentId = whyPoint.parentId.toHexString()
-      if (!acc[parentId]) {
-        acc[parentId] = []
-      }
-      acc[parentId].push(whyPoint)
-      return acc
-    }, {})
-
-    // Return points and whypoints
-    callback({ points: pointById, myWhys: myWhysByParentId })
+    // Return points and whypoints as arrays
+    callback({ points: filteredPoints, myWhys: whypoints })
   } catch (error) {
     console.error('Error fetching points or whypoints:', error)
-    callback({ points: {}, myWhys: {} }) // Return empty objects on error
+    cbFailure('Error fetching points or whypoints.')
   }
 }
 
