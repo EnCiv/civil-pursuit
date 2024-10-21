@@ -28,11 +28,6 @@ async function getUserWhys(ids, cb) {
   if (!pointsList) {
     return
   }
-  // If no points found, return an empty array
-  if (pointsList.length === 0) {
-    if (cb) cb([])
-    return
-  }
 
   // Return the points list
   if (cb) cb(pointsList)
