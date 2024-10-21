@@ -7,9 +7,12 @@
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
-import { Iota } from 'civil-server'
-
+import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup from '../../jest-socket-api-setup'
+import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
+import { Discussions, initDiscussion } from '../../dturn/dturn'
+
+import clientIo from 'socket.io-client'
 
 const handle = 'subscribe-deliberation'
 const socketApiUnderTest = subscribeDeliberation
@@ -73,7 +76,31 @@ test('Succeed if deliberation exists.', async () => {
   const iota = await Iota.create(anIota)
   expect(iota).toMatchObject(anIota)
 
-  await subscribeDeliberation.call(synuser, discussionId)
+  async function requestHandler(participants) {
+    // Init the discussion if thisni s the first subscription
+    if (participants > 0 && !Discussions[deliberationId]) {
+      initDiscussion(deliberationId)
+    }
 
-  expect(console.error.mock.calls[0][0]).toMatch(/DeliberationId was not provided/)
+    const point = {
+      _id: new ObjectId('testPoint1'),
+      title: 'Point 1',
+      description: 'Description 1',
+    }
+
+    await Iota.create(point)
+    serverEvents.emit(subscribeEventName('subscribe-discussion', deliberationId), point)
+
+    console.log("You've subscribed!")
+  }
+  function updateHandler(participants) {
+    // Remove from memory if no subscribers remain
+    if (participants === 0) {
+      delete Discussions[deliberationId]
+    }
+
+    console.log('You have an update!')
+  }
+
+  socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
 })

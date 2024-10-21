@@ -58,7 +58,6 @@ async function subscribeDeliberation(deliberationId) {
   }
 
   // Add the client to the room
-  console.log(window.socket)
-  window.socket.join(deliberationId)
+  await window.socket.join(deliberationId)
 }
 module.exports = subscribeDeliberation

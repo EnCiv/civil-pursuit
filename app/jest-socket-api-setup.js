@@ -21,6 +21,7 @@ export default async function jestSocketApiSetup(userId, handleApiPairs) {
       },
     })
   }
+
   // setup socket.io server
   const httpServer = createServer()
   const io = new Server(httpServer)
