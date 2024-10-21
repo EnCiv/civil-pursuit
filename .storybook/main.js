@@ -19,7 +19,8 @@ const config = {
   },
   docs: {},
   webpackFinal: async config => {
-    const newConfig = merge(config, webpackDevConfig)
+    const storyDevConfig = { ...webpackDevConfig, entry: undefined, output: undefined } // to be set by storybook
+    const newConfig = merge(config, storyDevConfig)
     return newConfig
   },
 }
