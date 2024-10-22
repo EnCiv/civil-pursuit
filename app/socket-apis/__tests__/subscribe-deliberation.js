@@ -10,7 +10,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup from '../../jest-socket-api-setup'
 import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
-import { Discussions, initDiscussion } from '../../dturn/dturn'
+import { Discussions, initDiscussion, insertStatementId } from '../../dturn/dturn'
 
 import clientIo from 'socket.io-client'
 
@@ -35,16 +35,11 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
-
   await jestSocketApiSetup(userId, [[handle, socketApiUnderTest]])
 })
 
 afterAll(async () => {
   Mongo.disconnect()
-  MemoryServer.stop()
 })
 
 // Tests
@@ -77,7 +72,7 @@ test('Succeed if deliberation exists.', async () => {
   expect(iota).toMatchObject(anIota)
 
   async function requestHandler(participants) {
-    // Init the discussion if thisni s the first subscription
+    // Init the discussion if this is the first subscription
     if (participants > 0 && !Discussions[deliberationId]) {
       initDiscussion(deliberationId)
     }
@@ -91,7 +86,7 @@ test('Succeed if deliberation exists.', async () => {
     await Iota.create(point)
     serverEvents.emit(subscribeEventName('subscribe-discussion', deliberationId), point)
 
-    console.log("You've subscribed!")
+    console.log('Request was called')
   }
   function updateHandler(participants) {
     // Remove from memory if no subscribers remain
@@ -99,8 +94,10 @@ test('Succeed if deliberation exists.', async () => {
       delete Discussions[deliberationId]
     }
 
-    console.log('You have an update!')
+    console.log('Update was called')
   }
 
   socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
+
+  insertStatementId(discussionId, userId, 'testPoint1')
 })
