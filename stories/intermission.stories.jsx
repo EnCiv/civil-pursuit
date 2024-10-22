@@ -4,8 +4,7 @@ import React from 'react'
 import Intermission from '../app/components/intermission'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent, waitFor } from '@storybook/testing-library'
-import { expect } from '@storybook/jest'
+import { within, userEvent, waitFor, expect } from '@storybook/test'
 
 export default {
   component: Intermission,

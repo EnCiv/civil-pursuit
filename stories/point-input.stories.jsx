@@ -1,7 +1,7 @@
 import PointInput from '../app/components/point-input'
 import { onDoneDecorator, onDoneResult } from './common'
 import expect from 'expect'
-import { userEvent, within, waitFor } from '@storybook/testing-library'
+import { userEvent, within, waitFor } from '@storybook/test'
 
 export default {
   component: PointInput,
