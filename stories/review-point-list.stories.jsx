@@ -1,11 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
+// https://github.com/EnCiv/civil-pursuit/issues/215
 
 import React, { useEffect, useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from '@storybook/test'
 
 export default {
   component: Rerank,
@@ -124,36 +125,43 @@ const point15 = {
   subject: 'Habitat Destruction',
   description:
     'The destruction of natural habitats due to urbanization and deforestation leads to a loss of biodiversity.',
+  parentId: '0',
 }
 
 const point16 = {
   _id: '16',
   subject: 'Species Extinction',
   description: 'Numerous species face extinction due to environmental changes and human activities.',
+  parentId: '0',
 }
 
 const point17 = {
   _id: '17',
   subject: 'Disrupted Food Chains',
   description: 'Loss of key species can disrupt food chains and lead to broader ecosystem instability.',
+  parentId: '0',
 }
 
 const point18 = {
   _id: '18',
   subject: 'Economic Costs of Conservation',
   description: 'Conservation efforts can be expensive and divert resources from other critical areas.',
+  parentId: '0',
+  category: 'least',
 }
 
 const point19 = {
   _id: '19',
   subject: 'Conflicting Land Use',
   description: 'Balancing conservation with land use for agriculture and development can be challenging.',
+  parentId: '0',
 }
 
 const point20 = {
   _id: '20',
   subject: 'Public Awareness and Education',
   description: 'Lack of public awareness about biodiversity and its importance can hinder conservation efforts.',
+  parentId: '0',
 }
 
 const reviewPoints = [
@@ -180,9 +188,9 @@ const reviewPoints = [
       },
     ],
     rank: {
-      id: '201',
+      _id: '201',
       stage: 'post',
-      category: 'post',
+      category: 'most',
       parentId: '1',
       discussionId,
       round: 0,
@@ -313,7 +321,7 @@ export const AllWithInitialRank = {
 
 export const PartialWithInitialRank = {
   args: {
-    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    reviewPoints,
     discussionId,
     round,
   },
@@ -396,12 +404,12 @@ function reviewPointsToContext(reviewPoints) {
         console.info('cn, rp', cn, rp)
         // context, reviewPoint
         cn.pointById[rp.point._id] = rp.point
-        rp.mosts && rp.mosts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
-        rp.leasts && rp.leasts.forEach(p => (cn.topWhyByParentId[p.parentId] = p))
+        rp.mosts && rp.mosts.forEach(p => (cn.topWhyById[p._id] = p))
+        rp.leasts && rp.leasts.forEach(p => (cn.topWhyById[p._id] = p))
         rp.rank && (cn.postRankByParentId[rp.rank.parentId] = rp.rank)
         return cn
       },
-      { pointById: {}, topWhyByParentId: {}, postRankByParentId: {}, groupIdsLists: [] }
+      { pointById: {}, topWhyById: {}, postRankByParentId: {}, groupIdsLists: [] }
     ),
   }
   return cn
@@ -409,7 +417,7 @@ function reviewPointsToContext(reviewPoints) {
 
 export const rerankStepWithPartialInitialData = {
   args: {
-    reviewPoints: [reviewPoint4, reviewPoint2, reviewPoint3],
+    reviewPoints,
     discussionId,
     round,
   },
@@ -419,28 +427,28 @@ export const rerankStepWithPartialInitialData = {
     useState(() => {
       // execute this code once, before the component is initally rendered
       const cn = reviewPointsToContext(args.reviewPoints)
-      setTimeout(() => upsert(cn))
+      upsert(cn)
     })
     return <RerankStep {...args} />
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const categories = canvas.getAllByText('Neutral')
-    await userEvent.click(categories[0])
 
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
+        count: 1,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
         },
       })
     })
+    await userEvent.click(categories[0])
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         postRankByParentId: {
-          0: { _id: '101', stage: 'post', category: 'neutral', parentId: '0', discussionId: '1001', round: 1 },
+          1: { _id: '201', stage: 'post', category: 'neutral', parentId: '1', discussionId: '1001', round: 0 },
         },
       })
     })
@@ -456,24 +464,25 @@ export const rerankStepWithTopDownUpdate = {
   render: args => {
     const { data = {}, upsert } = useContext(DeliberationContext)
     const { reviewPoints, ...otherArgs } = args
-    useEffect(() => {
-      console.info('reviewPoints', reviewPoints)
+    useState(() => {
+      // execute this once before the component renders
+      const cn = reviewPointsToContext(reviewPoints)
+      upsert(cn)
       setTimeout(() => {
-        const cn = reviewPointsToContext(reviewPoints)
-        console.info('cn', cn)
-        upsert(cn)
-      }, 2000)
-    })
+        upsert({
+          postRankByParentId: {
+            2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+          },
+        })
+      }, 1000)
+    }, [])
     return <RerankStep {...otherArgs} />
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const categories = canvas.getAllByText('Neutral')
-    await userEvent.click(categories[0])
-
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
+        count: 1,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
@@ -481,9 +490,18 @@ export const rerankStepWithTopDownUpdate = {
       })
     })
     await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: 0.6666666666666666,
+        },
+      })
+    })
+    await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         postRankByParentId: {
-          7: { _id: '111', stage: 'post', category: 'least', parentId: '7', discussionId: '1001', round: 1 },
+          2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
         },
       })
     })

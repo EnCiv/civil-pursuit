@@ -83,21 +83,19 @@ export function Rerank(props) {
   // call onDone to notify parent of new values, and add the delta prop to pass what's changed to the parent
   const handleReviewPoint = (point, result) => {
     const rankString = result.value
-    let rank
-    let percentDone
     // the above vars are needed when calling onDone which must be done outside the set function
     setRankByParentId(rankByParentId => {
-      // doin this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
+      // doing this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
+      let rank
+      let percentDone
       if (rankByParentId[point._id]) {
         if (rankByParentId[point._id].category !== rankStringToCategory[rankString]) {
           rank = { ...rankByParentId[point._id], category: rankStringToCategory[rankString] }
           rankByParentId[point._id] = rank // mutate the state don't call the set function
           percentDone = Object.keys(rankByParentId).length / reviewPoints.length
-          return rankByParentId
         } else {
           percentDone = Object.keys(rankByParentId).length / reviewPoints.length
           rank = rankByParentId[point._id]
-          return rankByParentId // nothing has changed, so abort the setter and don't cause a rerender
         }
       } else {
         rank = {
@@ -110,10 +108,10 @@ export function Rerank(props) {
         }
         rankByParentId[point._id] = rank
         percentDone = Object.keys(rankByParentId).length / reviewPoints.length
-        return rankByParentId
       }
+      if (rank) setTimeout(() => onDone({ valid: percentDone === 1, value: percentDone, delta: rank })) // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
+      return rankByParentId // about the setter
     })
-    if (rank) onDone({ valid: percentDone === 1, value: percentDone, delta: rank })
   }
 
   if (!reviewPoints) return null // nothing ready yet
@@ -168,7 +166,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 // to make is possible to test with jest, this is exported
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
-  const { reducedPointList, postRankByParentId, topWhyByParentId } = data
+  const { reducedPointList, postRankByParentId, topWhyById } = data
   let updated = false
 
   const { reviewPointsById } = local
@@ -184,11 +182,11 @@ export function derivePointMostsLeastsRankList(data) {
     }
     local.reducedPointList = reducedPointList
   }
-  if (local.topWhyByParentId !== topWhyByParentId) {
-    local.topWhyByParentId = topWhyByParentId
+  if (local.topWhyById !== topWhyById) {
+    local.topWhyById = topWhyById
     let index
     const categoiesToUpdateByParentId = {}
-    for (const whyPoint of Object.values(topWhyByParentId)) {
+    for (const whyPoint of Object.values(topWhyById)) {
       if (!reviewPointsById[whyPoint.parentId]) continue // parent not in pointList
       const category = whyPoint.category
       if ((index = reviewPointsById[whyPoint.parentId][category + 's']?.findIndex(w => w._id === whyPoint._id)) >= 0) {
@@ -225,6 +223,5 @@ export function derivePointMostsLeastsRankList(data) {
     local.postRankByParentId = postRankByParentId
   }
   if (updated) local.reviewPoints = Object.values(local.reviewPointsById)
-  console.info('derive', JSON.stringify(local.reviewPoints, null, 2))
   return { reviewPoints: local.reviewPoints }
 }

@@ -24,6 +24,7 @@ export default function Ranking(props) {
         onDone && onDone({ valid: false, value: '' })
       } else {
         setResponse(defaultValue)
+        onDone && onDone({ valid: true, value: defaultValue })
       }
     }
   }, [defaultValue])
