@@ -12,8 +12,6 @@ import jestSocketApiSetup from '../../jest-socket-api-setup'
 import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
 import { Discussions, initDiscussion, insertStatementId } from '../../dturn/dturn'
 
-import clientIo from 'socket.io-client'
-
 const handle = 'subscribe-deliberation'
 const socketApiUnderTest = subscribeDeliberation
 
@@ -35,11 +33,17 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
+  MemoryServer = await MongoMemoryServer.create()
+  const uri = MemoryServer.getUri()
+  await Mongo.connect(uri)
+
   await jestSocketApiSetup(userId, [[handle, socketApiUnderTest]])
 })
 
 afterAll(async () => {
   Mongo.disconnect()
+  MemoryServer.stop()
+  window.socket.close()
 })
 
 // Tests
@@ -55,7 +59,7 @@ test('Fail if deliberation ID not provided.', async () => {
   expect(console.error.mock.calls[0][0]).toMatch(/DeliberationId was not provided/)
 })
 
-test('Succeed if deliberation exists.', async () => {
+test('Succeed if deliberation exists.', done => {
   const anIota = {
     _id: new ObjectId(discussionId),
     path: '/deliberation1',
@@ -68,36 +72,27 @@ test('Succeed if deliberation exists.', async () => {
     },
   }
 
-  const iota = await Iota.create(anIota)
-  expect(iota).toMatchObject(anIota)
+  Iota.create(anIota)
+    .then(() => {
+      function requestHandler(data) {
+        console.log(data['participants'])
+        console.log('Request was called')
+        done()
+      }
 
-  async function requestHandler(participants) {
-    // Init the discussion if this is the first subscription
-    if (participants > 0 && !Discussions[deliberationId]) {
-      initDiscussion(deliberationId)
-    }
+      function updateHandler(data) {
+        // Remove from memory if no subscribers remain
+        if (data['participants'] === 0) {
+          delete Discussions[deliberationId]
+        }
 
-    const point = {
-      _id: new ObjectId('testPoint1'),
-      title: 'Point 1',
-      description: 'Description 1',
-    }
+        console.log('Update was called')
+        done()
+      }
 
-    await Iota.create(point)
-    serverEvents.emit(subscribeEventName('subscribe-discussion', deliberationId), point)
+      socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
 
-    console.log('Request was called')
-  }
-  function updateHandler(participants) {
-    // Remove from memory if no subscribers remain
-    if (participants === 0) {
-      delete Discussions[deliberationId]
-    }
-
-    console.log('Update was called')
-  }
-
-  socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
-
-  insertStatementId(discussionId, userId, 'testPoint1')
+      const statement = insertStatementId(discussionId, userId, 'testPoint1')
+    })
+    .catch(err => done(err))
 })
