@@ -4,12 +4,20 @@ export const DeliberationContext = createContext({})
 export default DeliberationContext
 
 export function DeliberationContextProvider(props) {
-  const [data, setData] = useState({})
+  const [data, setData] = useState({ reducedPointList: [] })
   const local = useRef({}).current // can't be in deriver becasue "Error: Rendered more hooks than during the previous render."
   const upsert = useCallback(
     obj => {
       setData(data => {
-        return { ...deriveReducedPointList(merge(data, obj), local) } // spread because we need to return a new reference
+        // if something changes in a top level prop, the top level ref has to be changed so it will cause a rerender
+        const newData = { ...data }
+        Object.keys(obj).forEach(key => {
+          const newProp = Array.isArray(obj[key]) ? [] : {}
+          merge(newProp, data[key], obj[key])
+          newData[key] = newProp
+        })
+        deriveReducedPointList(newData, local)
+        return newData // spread because we need to return a new reference
       })
     },
     [setData]
@@ -31,13 +39,17 @@ The order of the list is not relevant. If the contents compared the same, but th
 function aEqual(a = [], b = []) {
   return a.length === b.length && a.every((e, i) => e === b[i])
 }
+// reducedPointTable: { _id: {point, group}}
 
 // export to test by jest -- this shouldn't be called directly
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById || !groupIdsLists) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
-  const reducedPointTable = { ...pointById } // make own copy of it
+  const reducedPointTable = Object.entries(pointById).reduce(
+    (reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable),
+    {}
+  )
   let updated = false
   for (const [firstId, ...groupIds] of groupIdsLists) {
     reducedPointTable[firstId].group = groupIds.map(id => reducedPointTable[id].point)
@@ -57,7 +69,7 @@ export function deriveReducedPointList(data, local) {
   const newReducedPointList = Object.values(reducedPointTable)
   local.pointById = pointById
   local.groupIdsList = groupIdsLists
-  if (!(newReducedPointList.length === reducedPointTable.length && !updated))
+  if (!(newReducedPointList.length === data.reducedPointList.length && !updated))
     data.reducedPointList = newReducedPointList
   return data
 }
