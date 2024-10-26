@@ -42,16 +42,24 @@ describe('Dturns Model', () => {
       discussionId: '1',
       userId: userId,
       round: 0,
-      data: { field1: 'this is data', field2: 'and this is too' },
+      shownStatementIds: { points: ['id1', 'id2'] },
+      groupings: {},
     }
     // Create a new doc
-    const result = await Dturns.upsert(userId, doc.discussionId, 0, doc.data)
+    const result = await Dturns.upsert(userId, doc.discussionId, 0, {}, {})
     expect(result).toMatchObject(doc)
 
     // Try to update the doc
-    const newData = { ...doc.data, field3: 'new field!' }
-    const updateResult = await Dturns.upsert(userId, doc.discussionId, 0, newData)
-    expect(updateResult).toMatchObject({ ...doc, data: newData })
+    const newData = {
+      discussionId: '1',
+      userId: userId,
+      round: 0,
+      shownStatementIds: { points: ['id1', 'id2', 'id3', 'id4'] },
+      groupings: {},
+    }
+    const updateResult = await Dturns.upsert(...newData)
+
+    expect(updateResult).toMatchObject(newData)
   })
 
   it('should retrieve all data when get function is called', async () => {

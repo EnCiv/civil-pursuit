@@ -11,6 +11,7 @@ import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup from '../../jest-socket-api-setup'
 import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
 import { Discussions, initDiscussion, insertStatementId } from '../../dturn/dturn'
+import upsertPoint from '../upsert-point'
 
 const handle = 'subscribe-deliberation'
 const socketApiUnderTest = subscribeDeliberation
@@ -59,7 +60,7 @@ test('Fail if deliberation ID not provided.', async () => {
   expect(console.error.mock.calls[0][0]).toMatch(/DeliberationId was not provided/)
 })
 
-test('Succeed if deliberation exists.', done => {
+test('Successful request if deliberation exists.', done => {
   const anIota = {
     _id: new ObjectId(discussionId),
     path: '/deliberation1',
@@ -91,8 +92,16 @@ test('Succeed if deliberation exists.', done => {
       }
 
       socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
-
-      const statement = insertStatementId(discussionId, userId, 'testPoint1')
     })
     .catch(err => done(err))
+})
+
+test('Check updateHandler is called.', async done => {
+  const pointId = new ObjectId()
+  const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
+
+  await upsertPoint.call(synuser, pointObj, () => {})
+
+  const insertResult = insertStatementId(discussionId, userId, pointId)
+  expect(insertResult).toBe(pointId)
 })

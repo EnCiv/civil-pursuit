@@ -126,8 +126,8 @@ function insertStatementId(discussionId, userId, statementId) {
   // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
 
-  if (round != Discussions[deliberationId].lastRound || participants != Discussions[deliberationId].lastParticipants) {
-    Discussions[discussionId].updates({ participants: participants })
+  if (round != Discussions[discussionId].lastRound || participants != Discussions[discussionId].lastParticipants) {
+    Discussions[discussionId].updates({ participants: participants, lastRound: round })
   }
 
   return statementId

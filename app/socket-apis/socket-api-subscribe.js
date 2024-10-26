@@ -13,8 +13,10 @@ export default function socketApiSubscribe(handle, id, ...args) {
   if (typeof updateHandler !== 'function')
     throw new Error('socketApiSubscribe updateHandler not a function, got:', typeof updateHandler)
   const eventName = subscribeEventName(handle, id)
+
   window.socket.on(eventName, updateHandler)
   window.socket.emit(handle, id, ...args, resultHandler)
+
   return () => {
     window.socket.emit('unsubscribe', eventName)
   }

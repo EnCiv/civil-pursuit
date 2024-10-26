@@ -26,11 +26,11 @@ class Dturns extends Collection {
           },
           shownStatementIds: {
             bsonType: 'object',
-            description: "'shownStatementIds' must be an object and is required",
+            description: "'shownStatementIds' must be an object",
           },
           groupings: {
             bsonType: 'object',
-            description: "'groupings' must be an array and is required",
+            description: "'groupings' must be an object",
           },
         },
       },
@@ -49,6 +49,7 @@ class Dturns extends Collection {
       shownStatementIds: shownStatementIds,
       groupings: groupings,
     }
+
     await this.updateOne(
       { discussionId: discussionId, round: round, userId: userId },
       { $set: dturnObj },
