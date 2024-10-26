@@ -96,12 +96,15 @@ test('Successful request if deliberation exists.', done => {
     .catch(err => done(err))
 })
 
-test('Check updateHandler is called.', async done => {
+test('Check updateHandler is called.', done => {
   const pointId = new ObjectId()
   const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
 
-  await upsertPoint.call(synuser, pointObj, () => {})
-
-  const insertResult = insertStatementId(discussionId, userId, pointId)
-  expect(insertResult).toBe(pointId)
+  upsertPoint
+    .call(synuser, pointObj, () => {})
+    .then(() => {
+      const insertResult = insertStatementId(discussionId, userId, pointId)
+      expect(insertResult).toBe(pointId)
+      done()
+    })
 })
