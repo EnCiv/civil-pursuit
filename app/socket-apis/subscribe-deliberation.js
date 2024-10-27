@@ -8,7 +8,7 @@ import { subscribeEventName } from './socket-api-subscribe'
 const Dturns = require('../models/dturns')
 
 async function subscribeDeliberation(deliberationId, requestHandler) {
-  const socket = this // making it clear
+  const socket = this // making it clear this is a socket
   const server = this.server // don't reference "this" in the UInfoUpdate handler.
 
   // Verify user is logged in.
@@ -45,7 +45,7 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
           ) {
             const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
             const updateData = {
-              participants: Object.keys(Discussions[deliberationId].Uitems[this.synuser.id]).length,
+              participants: Object.keys(Discussions[deliberationId].Uitems).length,
               lastRound: Object.keys(Discussions[deliberationId].ShownStatements).length - 1,
             }
 
