@@ -6,8 +6,16 @@ import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 
+// [{point: {}, whys:[{}], ranks:[{}]}]
 function CompareReasons(props) {
-  const { pointList = [], side = '', onDone = () => {}, className, ...otherProps } = props
+  const {
+    pointWithWhyRankListList = [],
+    pointList = [],
+    side = '',
+    onDone = () => {},
+    className,
+    ...otherProps
+  } = props
   const classes = useStyles()
   const [completedPoints, setCompletedPoints] = useState(new Set())
   const [percentDone, setPercentDone] = useState(0)
@@ -41,14 +49,15 @@ function CompareReasons(props) {
 
   return (
     <div className={classes.container} {...otherProps}>
-      {pointList.map((headlinePoint, idx) => (
+      {pointWithWhyRankListList.map(({ point, whys, ranks }, idx) => (
         <div key={idx} className={classes.headlinePoint}>
           <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
-          <H className={classes.headlineSubject}>{headlinePoint.subject}</H>
+          <H className={classes.headlineSubject}>{point.subject}</H>
           <Level>
             <PairCompare
               className={classes.pairCompare}
-              pointList={side === 'most' ? headlinePoint.reasonPoints?.most : headlinePoint.reasonPoints?.least}
+              pointList={whys}
+              ranks={ranks}
               onDone={value => handlePairCompare(value, idx)}
             />
           </Level>
