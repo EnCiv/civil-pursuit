@@ -8,6 +8,7 @@ import { subscribeEventName } from './socket-api-subscribe'
 const Dturns = require('../models/dturns')
 
 async function subscribeDeliberation(deliberationId, requestHandler) {
+  const socket = this // making it clear
   const server = this.server // don't reference "this" in the UInfoUpdate handler.
 
   // Verify user is logged in.
@@ -27,12 +28,13 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
       const options = {
         ...(iota?.webComponent?.dturn ?? {}),
         updateUInfo: async UInfoData => {
+          console.info('updateUinfo', UInfoData)
           // First upsert the UInfo
           const [round, { shownStatementIds, groupings }] = Object.entries(
             UInfoData[this.synuser.id][deliberationId]
           )[0]
 
-          const participants = Object.keys(Discussions[deliberationId].Uitems[this.synuser.id]).length
+          const participants = Object.keys(Discussions[deliberationId].Uitems).length
           // TODO: Fix tests then uncomment this.
           //await Dturns.upsert(this.synuser.id, deliberationId, 0, round, shownStatementIds, groupings || {})
 
@@ -47,7 +49,7 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
               lastRound: Object.keys(Discussions[deliberationId].ShownStatements).length - 1,
             }
 
-            server.to(eventName).emit(updateData)
+            server.to(deliberationId).emit(eventName, updateData)
 
             Discussions[deliberationId]['lastRound'] = round
             Discussions[deliberationId]['lastParticipants'] = participants
@@ -59,10 +61,15 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
       }
       await initDiscussion(deliberationId, options)
     } else {
+      requestHandler() // let the client know there was an error
       return console.error(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
     }
   }
-
+  socket.join(deliberationId) // subsribe this user to the room for this deliberation
+  /* if we need to do anything when the user disconnects
+  socket.on('disconnecting',()=>{
+    // remove the user 
+  })*/
   requestHandler({ participants: Object.keys(Discussions[deliberationId].Uitems[this.synuser.id] || []).length })
 }
 module.exports = subscribeDeliberation

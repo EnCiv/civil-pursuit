@@ -59,6 +59,13 @@ test('Fail if deliberation ID not provided.', async () => {
 
   expect(console.error.mock.calls[0][0]).toMatch(/DeliberationId was not provided/)
 })
+// this needs to be outside of any tests because it needs to be passed in through one test, and will get executed later when other tests trigger it
+let updateHandlerDone
+function updateHandler(data) {
+  console.log('Update was called')
+  if (updateHandlerDone) updateHandlerDone(data)
+  else console.error('updatehandler called, but updateHandlerDone was not set')
+}
 
 test('Successful request if deliberation exists.', done => {
   const anIota = {
@@ -81,30 +88,24 @@ test('Successful request if deliberation exists.', done => {
         done()
       }
 
-      function updateHandler(data) {
-        // Remove from memory if no subscribers remain
-        if (data['participants'] === 0) {
-          delete Discussions[deliberationId]
-        }
-
-        console.log('Update was called')
-        done()
-      }
-
       socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
     })
     .catch(err => done(err))
 })
 
 test('Check updateHandler is called.', done => {
+  updateHandlerDone = data => {
+    expect(data).toEqual({ participants: 1, lastRound: 0 })
+    done()
+  }
   const pointId = new ObjectId()
   const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
 
+  // this will trigger the update handler above
   upsertPoint
     .call(synuser, pointObj, () => {})
     .then(() => {
       const insertResult = insertStatementId(discussionId, userId, pointId)
       expect(insertResult).toBe(pointId)
-      done()
     })
 })
