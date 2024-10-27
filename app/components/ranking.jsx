@@ -18,14 +18,12 @@ export default function Ranking(props) {
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
   let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
   useEffect(() => {
-    if (defaultValue) {
-      if (!responseOptions.includes(defaultValue)) {
-        setResponse(undefined)
-        onDone && onDone({ valid: false, value: '' })
-      } else {
-        setResponse(defaultValue)
-        onDone && onDone({ valid: true, value: defaultValue })
-      }
+    if (defaultValue && responseOptions.includes(defaultValue)) {
+      setResponse(defaultValue)
+      onDone && onDone({ valid: true, value: defaultValue })
+    } else {
+      setResponse(undefined)
+      onDone && onDone({ valid: false, value: '' })
     }
   }, [defaultValue])
 

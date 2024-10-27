@@ -33,10 +33,6 @@ const minSelectionsTable = {
 export default function RankStep(props) {
   const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
-  console.log(data)
-  useEffect(() => {
-    //window.socket.emit('get-user-ranks', p1, p2, '...', results => upsert(results))
-  }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) upsert({ preRankByParentId: { [delta.parentId]: delta } })
@@ -68,8 +64,9 @@ export function RankPoints(props) {
   const leastCount = () => getRankCount('Least')
 
   const setRank = (id, rank) => {
-    const it = pointRankGroupList.find(ro => ro.id === id)
+    const it = pointRankGroupList.find(ro => ro._id === id)
     if (it) it.rank = rank
+
     setUpdateCount(updateCount + 1)
   }
 
@@ -78,7 +75,7 @@ export function RankPoints(props) {
   }
 
   const getPointRank = point => {
-    return pointRankGroupList?.find(rank => rank.id === point._id)?.rank
+    return pointRankGroupList?.find(rank => rank._id === point._id)?.rank
   }
 
   // in useEffect so it's called after setRank updates have taken effect
@@ -90,7 +87,7 @@ export function RankPoints(props) {
     let doneCount = 0
     let it
     for (const point of pointRankGroupList) {
-      if ((it = pointRankGroupList.find(ro => ro.id === point._id)) && it.rank) doneCount++
+      if ((it = pointRankGroupList.find(ro => ro._id === point._id)) && it.rank) doneCount++
     }
 
     // Check for difference in expected most/least counts
@@ -151,8 +148,8 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              pointRankGroupList.forEach(obj => {
-                obj.rank = undefined
+              pointRankGroupList.forEach(point => {
+                setRank(point._id, null)
               })
               setUpdateCount(updateCount + 1)
             }}
@@ -177,7 +174,7 @@ export function RankPoints(props) {
             >
               <Ranking
                 className={classes.rank}
-                defaultValue={(pointRankGroupList.find(ro => ro.id === point._id) || {}).rank}
+                defaultValue={pointRankGroupList.find(ro => ro._id === point._id)?.rank}
                 onDone={({ valid, value }) => {
                   if (valid) setRank(point._id, value)
                   else setRank(point._id, '')
@@ -265,7 +262,7 @@ export function derivePointRankGroupList(data) {
     }
     local.preRankByParentId = preRankByParentId
   }
-  console.log(local.rankPointsById)
+
   if (updated) local.pointRankGroupList = Object.values(local.rankPointsById)
   return { pointRankGroupList: local.pointRankGroupList }
 }
