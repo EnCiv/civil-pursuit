@@ -1,5 +1,5 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
-import RankStep from '../app/components/rank-step'
+import RankStep from '../app/components/steps/rank-step'
 import React from 'react'
 import expect from 'expect'
 import { onDoneDecorator, onDoneResult } from './common'

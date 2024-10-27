@@ -2,16 +2,17 @@
 // https://github.com/EnCiv/civil-pursuit/issues/191
 // https://github.com/EnCiv/civil-pursuit/issues/199
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Point from './point'
-import PointGroup from './point-group' // should be using PointGroup but it needs to support children
-import { ModifierButton } from './button.jsx'
-import StatusBadge from './status-badge'
-import StatusBox from './status-box'
+import DeliberationContext from '../deliberation-context'
+import Point from '../point'
+import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
+import { ModifierButton } from '../button.jsx'
+import StatusBadge from '../status-badge'
+import StatusBox from '../status-box'
 
-import Ranking from './ranking'
+import Ranking from '../ranking'
 
 const minSelectionsTable = {
   0: { least: 0, most: 0 },
@@ -30,15 +31,19 @@ const minSelectionsTable = {
 }
 
 export default function RankStep(props) {
+  const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
 
   useEffect(() => {
     window.socket.emit('get-user-ranks', p1, p2, '...', results => upsert(results))
   }, [])
 
-  function handleOnDone({ valid, value, delta }) {}
+  function handleOnDone({ valid, value, delta }) {
+    if (delta) upsert({ preRankByParentId: { [delta.parentId]: delta } })
+    onDone({ valid, value })
+  }
 
-  return <RankPoints {...deriver(data, local)} onDone={handleOnDone} {...props} />
+  return <RankPoints {...derivePointRankGroupList(data)} onDone={handleOnDone} {...props} />
 }
 
 export function RankPoints(props) {
@@ -222,7 +227,38 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 }))
 
-export function deriver(data) {
-  const local = useRef({}).current
-  return {}
+export function derivePointRankGroupList(data) {
+  const local = useRef({ rankPointsById: {} }).current
+
+  const { reducedPointList, preRankByParentId } = data
+  let updated = false
+
+  const { rankPointsById } = local
+  if (local.reducedPointList !== reducedPointList) {
+    for (const { point } of reducedPointList) {
+      if (!rankPointsById[point._id]) {
+        rankPointsById[point._id] = { point }
+        updated = true
+      } else if (rankPointsById[point._id]?.point !== point) {
+        rankPointsById[point._id].point = point
+        updated = true
+      }
+    }
+    local.reducedPointList = reducedPointList
+  }
+
+  if (local.preRankByParentId !== preRankByParentId) {
+    for (const rank of Object.values(preRankByParentId)) {
+      if (rankPointsById[rank.parentId]) {
+        if (rankPointsById[rank.parentId].rank !== rank) {
+          rankPointsById[rank.parentId].rank = rank
+          updated = true
+        }
+      }
+    }
+    local.preRankByParentId = preRankByParentId
+  }
+
+  if (updated) local.pointRankGroupList = Object.values(local.rankPointsBById)
+  return { pointRankGroupList: local.pointRankGroupList }
 }
