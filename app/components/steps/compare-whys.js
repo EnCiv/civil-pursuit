@@ -3,7 +3,7 @@
 'use strict'
 import React, { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
-import PairCompare from './pair-compare'
+import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 
 function CompareReasons(props) {

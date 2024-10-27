@@ -1,4 +1,4 @@
-import CompareReasons from '../app/components/compare-reasons'
+import CompareReasons from '../app/components/steps/compare-whys'
 import { onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent } from '@storybook/test'
 import expect from 'expect'
