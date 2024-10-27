@@ -2,14 +2,14 @@
 import RankStep from '../app/components/steps/rank-step'
 import React from 'react'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData } from './common'
 import { userEvent, within } from '@storybook/test'
 export default {
   component: RankStep,
+  decorators: [onDoneDecorator, DeliberationContextDecorator],
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator],
 }
 
 const createPointObj = (
@@ -56,25 +56,26 @@ export const Empty = { args: {} }
 
 export const emptyRank = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
   },
 }
 
 export const oneRankNeutral = {
   args: {
-    pointList: [point1],
-    rankList: [{ id: point1._id, rank: 'Neutral' }],
+    pointRankGroupList: [{ ...point1, rank: 'Neutral' }],
   },
 }
 
 export const sevenPointsWith3Ranked = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
+    pointRankGroupList: [
+      { ...point1, rank: 'Most' },
+      { ...point2, rank: 'Most' },
+      { ...point3, rank: 'Least' },
+      point4,
+      point5,
+      point6,
+      point7,
     ],
   },
 }
@@ -82,37 +83,34 @@ export const sevenPointsWith3Ranked = {
 export const threePoints = {
   args: {
     style: {},
-    pointList: [point1, point2, point3],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
+    pointRankGroupList: [
+      { ...point1, rank: 'Most' },
+      { ...point2, rank: 'Most' },
+      { ...point3, rank: 'Least' },
     ],
   },
 }
 
 export const tenRanksCorrect = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Neutral' },
-      { id: point7._id, rank: 'Neutral' },
-      { id: point8._id, rank: 'Neutral' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
+    pointRankGroupList: [
+      { ...point1, rank: 'Most' },
+      { ...point2, rank: 'Most' },
+      { ...point3, rank: 'Least' },
+      { ...point4, rank: 'Neutral' },
+      { ...point5, rank: 'Neutral' },
+      { ...point6, rank: 'Neutral' },
+      { ...point7, rank: 'Neutral' },
+      { ...point8, rank: 'Neutral' },
+      { ...point9, rank: 'Neutral' },
+      { ...point10, rank: 'Neutral' },
     ],
   },
 }
 
 export const tenRanksTooManyMost = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -139,8 +137,7 @@ export const tenRanksTooManyMost = {
 
 export const tenRanksTooManyLeast = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -167,8 +164,7 @@ export const tenRanksTooManyLeast = {
 
 export const tenRanksTooManyMostAndLeast = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -195,35 +191,20 @@ export const tenRanksTooManyMostAndLeast = {
 
 export const numRanksNotInLookup = {
   args: {
-    pointList: [
-      point1,
-      point2,
-      point3,
-      point4,
-      point5,
-      point6,
-      point7,
-      point8,
-      point9,
-      point10,
-      point11,
-      point12,
-      point13,
-    ],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Least' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Most' },
-      { id: point7._id, rank: 'Most' },
-      { id: point8._id, rank: 'Least' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-      { id: point11._id, rank: 'Neutral' },
-      { id: point12._id, rank: 'Neutral' },
-      { id: point13._id, rank: 'Neutral' },
+    pointRankGroupList: [
+      { ...point1, rank: 'Most' },
+      { ...point2, rank: 'Least' },
+      { ...point3, rank: 'Least' },
+      { ...point4, rank: 'Neutral' },
+      { ...point5, rank: 'Neutral' },
+      { ...point6, rank: 'Most' },
+      { ...point7, rank: 'Most' },
+      { ...point8, rank: 'Least' },
+      { ...point9, rank: 'Neutral' },
+      { ...point10, rank: 'Neutral' },
+      { ...point11, rank: 'Neutral' },
+      { ...point12, rank: 'Neutral' },
+      { ...point13, rank: 'Neutral' },
     ],
   },
 }

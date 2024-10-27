@@ -33,9 +33,9 @@ const minSelectionsTable = {
 export default function RankStep(props) {
   const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
-
+  console.log(data)
   useEffect(() => {
-    window.socket.emit('get-user-ranks', p1, p2, '...', results => upsert(results))
+    //window.socket.emit('get-user-ranks', p1, p2, '...', results => upsert(results))
   }, [])
 
   function handleOnDone({ valid, value, delta }) {
@@ -55,29 +55,30 @@ export function RankPoints(props) {
     ...otherProps
   } = props
 
+  if (!pointRankGroupList) return null
+
   // rankList won't change except by parent, but ranks inside the list will change by setRank
   // so updateCount is used to determin when rank updates are made
   const [updateCount, setUpdateCount] = useState(1)
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
 
-  const table = minSelectionsTable[pointList.length] ?? { least: 0, most: 0 }
+  const table = minSelectionsTable[pointRankGroupList.length] ?? { least: 0, most: 0 }
   const { least: targetLeast, most: targetMost } = table
   const mostCount = () => getRankCount('Most')
   const leastCount = () => getRankCount('Least')
 
   const setRank = (id, rank) => {
-    const it = rankList.find(ro => ro.id === id)
+    const it = pointRankGroupList.find(ro => ro.id === id)
     if (it) it.rank = rank
-    else rankList.push({ id, rank })
     setUpdateCount(updateCount + 1)
   }
 
   const getRankCount = rankName => {
-    return rankList.filter(point => point.rank === rankName).length
+    return pointRankGroupList.filter(point => point.rank === rankName).length
   }
 
   const getPointRank = point => {
-    return rankList?.find(rank => rank.id === point._id)?.rank
+    return pointRankGroupList?.find(rank => rank.id === point._id)?.rank
   }
 
   // in useEffect so it's called after setRank updates have taken effect
@@ -88,8 +89,8 @@ export function RankPoints(props) {
   const validAndPercentDone = () => {
     let doneCount = 0
     let it
-    for (const point of pointList) {
-      if ((it = rankList.find(ro => ro.id === point._id)) && it.rank) doneCount++
+    for (const point of pointRankGroupList) {
+      if ((it = pointRankGroupList.find(ro => ro.id === point._id)) && it.rank) doneCount++
     }
 
     // Check for difference in expected most/least counts
@@ -97,12 +98,12 @@ export function RankPoints(props) {
     const leastDiscrepancy = leastCount() - targetLeast
 
     const valid =
-      (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointList.length) ||
-      (doneCount === pointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+      (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointRankGroupList.length) ||
+      (doneCount === pointRankGroupList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
-    return [valid, pointList.length ? doneCount / pointList.length : 0] // value should be 0 if not points in list not null
+    return [valid, pointRankGroupList.length ? doneCount / pointRankGroupList.length : 0] // value should be 0 if not points in list not null
   }
 
   // Set the status box error message
@@ -150,14 +151,16 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              rankList.length = 0
+              pointRankGroupList.forEach(obj => {
+                obj.rank = undefined
+              })
               setUpdateCount(updateCount + 1)
             }}
           />
         </div>
       </div>
       <div className={cx(classes.pointDiv)}>
-        {pointList.map((point, i) => {
+        {pointRankGroupList.map((point, i) => {
           const rankInvalid =
             ((rankDiscrepancies.most > 0 && getPointRank(point) == 'Most') ||
               (rankDiscrepancies.least > 0 && getPointRank(point) == 'Least')) &&
@@ -174,7 +177,7 @@ export function RankPoints(props) {
             >
               <Ranking
                 className={classes.rank}
-                defaultValue={(rankList.find(ro => ro.id === point._id) || {}).rank}
+                defaultValue={(pointRankGroupList.find(ro => ro.id === point._id) || {}).rank}
                 onDone={({ valid, value }) => {
                   if (valid) setRank(point._id, value)
                   else setRank(point._id, '')
@@ -254,11 +257,15 @@ export function derivePointRankGroupList(data) {
           rankPointsById[rank.parentId].rank = rank
           updated = true
         }
+        if (rankPointsById[rank.parentId].groupedPoints !== groupedPoints) {
+          rankPointsById[rank.parentId].groupedPoints = groupedPoints
+          updated = true
+        }
       }
     }
     local.preRankByParentId = preRankByParentId
   }
-
-  if (updated) local.pointRankGroupList = Object.values(local.rankPointsBById)
+  console.log(local.rankPointsById)
+  if (updated) local.pointRankGroupList = Object.values(local.rankPointsById)
   return { pointRankGroupList: local.pointRankGroupList }
 }
