@@ -2,36 +2,38 @@
 const Points = require('../models/points')
 const { ObjectId } = require('mongodb')
 
-async function getPointsOfIds(ids, callback, currentUserId, synuser) {
+async function getPointsOfIds(ids, callback) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (callback) callback({ points: [], myWhys: [] }) // Return empty arrays on error
   }
 
-  // Verify user is logged in.
-  if (!synuser || !synuser.id) {
+  // Verify user is logged in by checking synuser in ids
+  const synuser = ids.find(id => typeof id === 'object' && id.synuser)
+  if (!synuser || !synuser.synuser || !synuser.synuser.id) {
     console.log('User not logged in:', synuser)
     return cbFailure('Cannot retrieve points - user is not logged in.')
   }
 
+  // Remove synuser object from ids array
+  const filteredIds = ids.filter(id => !(typeof id === 'object' && id.synuser))
+
   // Verify arguments
-  if (!Array.isArray(ids) || ids.length === 0 || !currentUserId) {
-    console.log('Invalid arguments:', { ids, currentUserId })
-    return cbFailure(
-      'Invalid arguments provided to getPointsOfIds(ids: Array, callback: Function, currentUserId: ObjectId).'
-    )
+  if (!Array.isArray(filteredIds) || filteredIds.length === 0) {
+    console.log('Invalid arguments:', { ids })
+    return cbFailure('Invalid arguments provided to getPointsOfIds(ids: Array, callback: Function).')
   }
 
   try {
-    console.log('Fetching points for ids:', ids)
+    console.log('Fetching points for ids:', filteredIds)
 
     // Fetch points by _id
-    const points = await Points.aggregate([{ $match: { _id: { $in: ids.map(id => new ObjectId(id)) } } }]).toArray()
+    const points = await Points.aggregate([{ $match: { _id: { $in: filteredIds.map(id => new ObjectId(id)) } } }]).toArray()
 
     // For points, only keep userId if the point was created by the current user
     const filteredPoints = points.map(point => {
       const pointCopy = { ...point }
-      if (pointCopy.userId !== currentUserId) {
+      if (pointCopy.userId !== synuser.synuser.id) {
         delete pointCopy.userId // Remove userId for points not created by the current user
       }
       return pointCopy
@@ -43,8 +45,8 @@ async function getPointsOfIds(ids, callback, currentUserId, synuser) {
     const whypoints = await Points.aggregate([
       {
         $match: {
-          parentId: { $in: ids.map(id => id.toString()) }, // Convert parentId to string version of ObjectId
-          userId: synuser.id // Match only the why points created by the current user
+          parentId: { $in: filteredIds.map(id => id.toString()) }, // Convert parentId to string version of ObjectId
+          userId: synuser.synuser.id // Match only the why points created by the current user
         }
       }
     ]).toArray()

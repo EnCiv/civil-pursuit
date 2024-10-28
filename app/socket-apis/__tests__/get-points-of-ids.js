@@ -31,10 +31,12 @@ afterEach(async () => {
   console.error.mockRestore()
 })
 
+// Test case 1: Nothing found
 test('Nothing found', async () => {
   const callback = jest.fn()
 
-  await getPointsOfIds.call(synuser, [new ObjectId(), new ObjectId()], callback, 'user1')
+  // Pass synuser inside ids array
+  await getPointsOfIds([{ synuser: { id: 'user1' } }, new ObjectId(), new ObjectId()], callback)
 
   expect(callback).toHaveBeenCalledWith({
     points: [],
@@ -42,6 +44,7 @@ test('Nothing found', async () => {
   })
 })
 
+// Test case 2: Points found, but no whypoints
 test('Points found, but no whypoints', async () => {
   const POINT_ID_1 = new ObjectId()
   const POINT_ID_2 = new ObjectId()
@@ -54,9 +57,9 @@ test('Points found, but no whypoints', async () => {
 
   const callback = jest.fn()
 
-  // Call the API and pass the correct context and synuser
+  // Call the API and pass synuser inside ids array
   console.log('Calling getPointsOfIds API with synuser...')
-  await getPointsOfIds([POINT_ID_1, POINT_ID_2], callback, 'user1', { id: 'user1' })
+  await getPointsOfIds([{ synuser: { id: 'user1' } }, POINT_ID_1, POINT_ID_2], callback)
 
   console.log('API returned:', callback.mock.calls[0][0]) // Log the API response
 
@@ -70,7 +73,7 @@ test('Points found, but no whypoints', async () => {
   })
 })
 
-
+// Test case 3: Points and whypoints found
 test('Points and whypoints found', async () => {
   const POINT_ID_1 = new ObjectId() // Created by current user (user1)
   const POINT_ID_2 = new ObjectId() // Created by another user (user2)
@@ -91,8 +94,8 @@ test('Points and whypoints found', async () => {
 
   const callback = jest.fn()
 
-  // Call the API
-  await getPointsOfIds([POINT_ID_1, POINT_ID_2], callback, 'user1', { id: 'user1' })
+  // Call the API, passing synuser inside ids array
+  await getPointsOfIds([{ synuser: { id: 'user1' } }, POINT_ID_1, POINT_ID_2], callback)
 
   // Check if the callback was called with the correct points and whypoints
   expect(callback).toHaveBeenCalledWith({
@@ -106,7 +109,7 @@ test('Points and whypoints found', async () => {
   })
 })
 
-
+// Test case 4: Some points created by other users, userId removed
 test('Some points created by other users, userId removed', async () => {
   const POINT_ID_1 = new ObjectId() // Created by current user (user1)
   const POINT_ID_2 = new ObjectId() // Created by another user (user2)
@@ -119,9 +122,9 @@ test('Some points created by other users, userId removed', async () => {
 
   const callback = jest.fn()
 
-  // Call the API, passing 'user1' as the currentUserId
+  // Call the API, passing synuser inside ids array
   console.log('Calling getPointsOfIds API with synuser...')
-  await getPointsOfIds([POINT_ID_1, POINT_ID_2], callback, 'user1', { id: 'user1' })
+  await getPointsOfIds([{ synuser: { id: 'user1' } }, POINT_ID_1, POINT_ID_2], callback)
 
   console.log('API returned:', callback.mock.calls[0][0]) // Log the API response
 
