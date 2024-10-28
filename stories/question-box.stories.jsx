@@ -46,3 +46,11 @@ Mobile.parameters = {
   },
 }
 
+export const Left = Template.bind({})
+Left.args = {
+  subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
+  description:
+    'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.',
+  participants: 1009,
+  contentAlign: 'left',
+}
