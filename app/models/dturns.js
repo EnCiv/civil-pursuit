@@ -10,26 +10,21 @@ class Dturns extends Collection {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Dturn Object Validation',
-        required: ['discussionId', 'data'],
+        required: ['discussionId', 'userId'],
         properties: {
           discussionId: {
-            bsonType: 'string',
             description: "'discussionId' must be an ObjectId and is required",
           },
           userId: {
-            bsonType: 'string',
             description: "'userId' must be an ObjectId",
           },
           round: {
-            bsonType: 'number',
             description: "'round' must be a number",
           },
           shownStatementIds: {
-            bsonType: 'object',
             description: "'shownStatementIds' must be an object",
           },
           groupings: {
-            bsonType: 'object',
             description: "'groupings' must be an object",
           },
         },
@@ -51,7 +46,7 @@ class Dturns extends Collection {
     }
 
     await this.updateOne(
-      { discussionId: discussionId, round: round, userId: userId },
+      { discussionId: discussionId, userId: userId, round: round },
       { $set: dturnObj },
       { upsert: true }
     )

@@ -2,8 +2,13 @@
 
 const { Mongo, Collection } = require('@enciv/mongo-collections')
 const Dturns = require('../dturns')
+const { beforeEach } = require('@jest/globals')
 
 const userId = '6667d5a33da5d19ddc304a6b'
+
+beforeEach(async () => {
+  await Dturns.deleteMany({})
+})
 
 beforeAll(async () => {
   await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
@@ -39,14 +44,16 @@ describe('Dturns Model', () => {
 
   it('should upsert when the upsert function is called', async () => {
     const doc = {
-      discussionId: '1',
       userId: userId,
+      discussionId: '1',
       round: 0,
       shownStatementIds: { points: ['id1', 'id2'] },
       groupings: {},
     }
     // Create a new doc
-    const result = await Dturns.upsert(userId, doc.discussionId, 0, {}, {})
+    await Dturns.upsert(doc.userId, doc.discussionId, doc.round, doc.shownStatementIds, doc.groupings)
+    const result = await Dturns.findOne()
+
     expect(result).toMatchObject(doc)
 
     // Try to update the doc
@@ -57,8 +64,16 @@ describe('Dturns Model', () => {
       shownStatementIds: { points: ['id1', 'id2', 'id3', 'id4'] },
       groupings: {},
     }
-    const updateResult = await Dturns.upsert(...newData)
 
+    await Dturns.upsert(
+      newData.userId,
+      newData.discussionId,
+      newData.round,
+      newData.shownStatementIds,
+      newData.groupings
+    )
+
+    const updateResult = await Dturns.findOne()
     expect(updateResult).toMatchObject(newData)
   })
 
@@ -66,35 +81,51 @@ describe('Dturns Model', () => {
     const discussionId = 'discussion'
 
     for (let num = 0; num < 5; num++) {
-      await Dturns.upsert(userId + num, discussionId, 0, { field1: `data ${num}` })
+      await Dturns.upsert(userId + num, discussionId, 0, { points: [num] }, {})
     }
 
     const result = await Dturns.getAllFromDiscussion(discussionId)
+
     expect(await result.toArray()).toMatchObject([
       {
         _id: /./,
-        data: { field1: 'data 0' },
         discussionId: 'discussion',
+        round: 0,
+        userId: userId + '0',
+        groupings: {},
+        shownStatementIds: { points: [0] },
       },
       {
         _id: /./,
-        data: { field1: 'data 1' },
         discussionId: 'discussion',
+        round: 0,
+        userId: userId + '1',
+        groupings: {},
+        shownStatementIds: { points: [1] },
       },
       {
         _id: /./,
-        data: { field1: 'data 2' },
         discussionId: 'discussion',
+        round: 0,
+        userId: userId + '2',
+        groupings: {},
+        shownStatementIds: { points: [2] },
       },
       {
         _id: /./,
-        data: { field1: 'data 3' },
         discussionId: 'discussion',
+        round: 0,
+        userId: userId + '3',
+        groupings: {},
+        shownStatementIds: { points: [3] },
       },
       {
         _id: /./,
-        data: { field1: 'data 4' },
         discussionId: 'discussion',
+        round: 0,
+        userId: userId + '4',
+        groupings: {},
+        shownStatementIds: { points: [4] },
       },
     ])
   })
