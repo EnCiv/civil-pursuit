@@ -6,7 +6,6 @@ import Theme from '../app/components/theme'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { levelDecorator } from '../stories/common'
 import GlobalStyles from '../app/components/global-styles'
-
 const theme = Theme
 
 /** @type { import('@storybook/react').Preview } */
@@ -20,7 +19,15 @@ const preview = {
       },
     },
     viewport: {
-      viewports: INITIAL_VIEWPORTS,
+      viewports: {
+        ...INITIAL_VIEWPORTS,
+        // if a story sets defaultViewport to sommething, it stickes to all other stories. So we create the responsive default for all stories
+        responsive: {
+          name: 'responsive',
+          styles: { height: '100%', width: '100%' },
+        },
+      },
+      defaultViewport: 'responsive',
     },
   },
   decorators: [
