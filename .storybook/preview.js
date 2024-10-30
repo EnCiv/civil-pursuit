@@ -19,15 +19,9 @@ const preview = {
       },
     },
     viewport: {
-      viewports: {
-        ...INITIAL_VIEWPORTS,
-        // if a story sets defaultViewport to sommething, it stickes to all other stories. So we create the responsive default for all stories
-        responsive: {
-          name: 'responsive',
-          styles: { height: '100%', width: '100%' },
-        },
-      },
-      defaultViewport: 'responsive',
+      viewports: INITIAL_VIEWPORTS,
+      // if a story sets defaultViewport to sommething, it stickes to all other stories. So we set it to reset https://github.com/storybookjs/storybook/issues/27073#issuecomment-2225329662
+      defaultViewport: 'reset',
     },
   },
   decorators: [
