@@ -14,10 +14,36 @@ export default function RerankStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
   const handleOnDone = ({ valid, value, delta }) => {
-    if (delta) upsert({ postRankByParentId: { [delta.parentId]: delta } })
+    if (delta) {
+      upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      window.socket.emit('upsert-rank', delta)
+    }
     onDone({ valid, value })
   }
-  return <Rerank {...props} {...args} onDone={handleOnDone} />
+  // fetch previous data
+  if (typeof window !== 'undefined')
+    useState(() => {
+      // on the browser, do this once and only once when this component is first rendered
+      const { discussionId, round, reducedPointList } = data
+      window.socket.emit(
+        'get-user-post-ranks-and-top-ranked-whys',
+        discussionId,
+        round,
+        reducedPointList.map(point_group => point_group.point._id),
+        result => {
+          if (!result) return // there was an error
+          const [ranks, whys] = result
+          //if (!ranks.length && !whys.length) return // nothing to do
+          const postRankByParentId = ranks.reduce(
+            (postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId),
+            {}
+          )
+          const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
+          upsert({ postRankByParentId, topWhyById })
+        }
+      )
+    })
+  return <Rerank {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // table to map from data model properties, to the Rank Strings shown in the UI
