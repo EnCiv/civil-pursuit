@@ -12,6 +12,8 @@ import { ModifierButton } from '../button.jsx'
 import StatusBadge from '../status-badge'
 import StatusBox from '../status-box'
 
+import getUserRanks from '../../socket-apis/get-user-ranks'
+
 import Ranking from '../ranking'
 
 const minSelectionsTable = {
@@ -34,6 +36,10 @@ export default function RankStep(props) {
   const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
 
+  useEffect(() => {
+    window.socket.emit('get-user-ranks', discussionId, round, stage, results => upsert(results))
+  }, [])
+
   function handleOnDone({ valid, value, delta }) {
     if (delta) upsert({ preRankByParentId: { [delta.parentId]: delta } })
     onDone({ valid, value })
@@ -41,6 +47,21 @@ export default function RankStep(props) {
 
   return <RankPoints {...derivePointRankGroupList(data)} onDone={handleOnDone} {...props} />
 }
+
+// table to map from data model properties, to the Rank Strings shown in the UI
+const toRankString = {
+  undefined: '',
+  most: 'Most',
+  least: 'Least',
+  neutral: 'Neutral',
+}
+
+// table to map from UI's Rank Strings to the data model prpoerty names
+const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, value]) => {
+  if (key === 'undefined') return rS2C // rankStringToCategory[''] will be undefined
+  rS2C[value] = key
+  return rS2C
+}, {})
 
 export function RankPoints(props) {
   const classes = useStylesFromThemeFunction()
@@ -252,10 +273,6 @@ export function derivePointRankGroupList(data) {
       if (rankPointsById[rank.parentId]) {
         if (rankPointsById[rank.parentId].rank !== rank) {
           rankPointsById[rank.parentId].rank = rank
-          updated = true
-        }
-        if (rankPointsById[rank.parentId].groupedPoints !== groupedPoints) {
-          rankPointsById[rank.parentId].groupedPoints = groupedPoints
           updated = true
         }
       }
