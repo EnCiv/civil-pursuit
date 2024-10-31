@@ -3,11 +3,25 @@
 import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
 
-export const DeliberationContextDecorator = Story => {
+export const socketEmitDecorator = Story => {
+  useState(() => {
+    if (!window.socket) window.socket = {}
+    if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
+    if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = []
+    window.socket.emit = (handle, ...args) => {
+      if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
+      else console.error('socketEmitDecorator: no handle found', handle, ...args)
+    }
+  })
+  return <Story />
+}
+
+export const DeliberationContextDecorator = (Story, context) => {
+  const { defaultValue, ...otherArgs } = context.args
   return (
-    <DeliberationContextProvider>
+    <DeliberationContextProvider defaultValue={defaultValue}>
       <DeliberationData>
-        <Story />
+        <Story {...otherArgs} />
       </DeliberationData>
     </DeliberationContextProvider>
   )
