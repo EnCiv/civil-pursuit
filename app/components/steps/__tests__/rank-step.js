@@ -87,7 +87,7 @@ describe('Test derivePointRankGroupList()', () => {
     const calculatedRankPoints = data.reducedPointList.map(({ point }) => {
       const result = { point }
 
-      if (data.preRankByParentId[point._id]) result.point = data.preRankByParentId[point._id]
+      if (data.preRankByParentId[point._id]) result.rank = data.preRankByParentId[point._id]
 
       return result
     })
