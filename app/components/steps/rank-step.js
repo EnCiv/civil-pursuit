@@ -36,19 +36,32 @@ export default function RankStep(props) {
   const { onDone } = props
   const { data, upsert } = useContext(DeliberationContext)
 
-  useEffect(() => {
-    window.socket.emit('get-user-ranks', discussionId, round, stage, results => upsert(results))
-  }, [])
+  const args = derivePointRankGroupList(data)
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) upsert({ preRankByParentId: { [delta.parentId]: delta } })
+    window.socket.emit('upsert-rank', delta)
     onDone({ valid, value })
   }
 
-  return <RankPoints {...derivePointRankGroupList(data)} onDone={handleOnDone} {...props} />
+  // fetch previous data
+  if (typeof window !== 'undefined')
+    useState(() => {
+      const { discussionId, round, stage } = data
+      window.socket.emit('get-user-ranks', discussionId, round, stage, result => {
+        if (!result) return // there was an error
+        const [ranks] = result
+        const preRankByParentId = ranks.reduce(
+          (preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId),
+          {}
+        )
+        upsert({ preRankByParentId })
+      })
+    })
+
+  return <RankPoints {...args} onDone={handleOnDone} {...props} />
 }
 
-// table to map from data model properties, to the Rank Strings shown in the UI
 const toRankString = {
   undefined: '',
   most: 'Most',
@@ -56,9 +69,8 @@ const toRankString = {
   neutral: 'Neutral',
 }
 
-// table to map from UI's Rank Strings to the data model prpoerty names
 const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, value]) => {
-  if (key === 'undefined') return rS2C // rankStringToCategory[''] will be undefined
+  if (key === 'undefined') return rS2C
   rS2C[value] = key
   return rS2C
 }, {})
@@ -73,6 +85,35 @@ export function RankPoints(props) {
   } = props
 
   if (!pointRankGroupList) return null
+
+  const [rankByParentId, setRankByParentId] = useState(
+    (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
+      if (rankPoint.rank) rankByParentId[pointRankGroupList.point._id] = rankPoint.rank
+      return rankByParentId
+    }, {})
+  )
+
+  useEffect(() => {
+    const newRankByParentId = (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
+      if (rankPoint.rank) rankByParentId[rankPoint.point._id] = rankPoint.rank
+      return rankByParentId
+    }, {})
+    let updated = false
+    for (const rankDoc of Object.values(newRankByParentId)) {
+      if (isEqual(rankDoc, rankByParentId[rankDoc.parentId])) {
+        newRankByParentId[rankDoc.parentId] = rankByParentId[rankDoc.parentId]
+      } else updated = true
+    }
+    if (updated) {
+      setRankByParentId(newRankByParentId)
+    }
+  }, [pointRankGroupList])
+
+  useEffect(() => {
+    if (pointRankGroupList) {
+      onDone(validAndPercentDone())
+    }
+  }, [])
 
   // rankList won't change except by parent, but ranks inside the list will change by setRank
   // so updateCount is used to determin when rank updates are made
