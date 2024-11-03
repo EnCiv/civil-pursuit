@@ -4,17 +4,24 @@ export const DeliberationContext = createContext({})
 export default DeliberationContext
 
 export function DeliberationContextProvider(props) {
-  const [data, setData] = useState({ reducedPointList: [] })
   const local = useRef({}).current // can't be in deriver becasue "Error: Rendered more hooks than during the previous render."
+  const [data, setData] = useState(() => {
+    const { defaultValue = {} } = props
+    return deriveReducedPointList({ reducedPointList: [], ...defaultValue }, local)
+  })
   const upsert = useCallback(
     obj => {
       setData(data => {
         // if something changes in a top level prop, the top level ref has to be changed so it will cause a rerender
         const newData = { ...data }
         Object.keys(obj).forEach(key => {
-          const newProp = Array.isArray(obj[key]) ? [] : {}
-          merge(newProp, data[key], obj[key])
-          newData[key] = newProp
+          if (typeof obj[key] !== 'object') {
+            newData[key] = obj[key]
+          } else {
+            const newProp = Array.isArray(obj[key]) ? [] : {}
+            merge(newProp, data[key], obj[key])
+            newData[key] = newProp
+          }
         })
         deriveReducedPointList(newData, local)
         return newData // spread because we need to return a new reference
