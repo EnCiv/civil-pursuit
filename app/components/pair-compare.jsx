@@ -1,13 +1,26 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
+// https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
 import Point from './point'
 import { createUseStyles } from 'react-jss'
 import { SecondaryButton } from './button.jsx'
+import ObjectId from 'bson-objectid'
 
 function PairCompare(props) {
-  const { pointList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, ...otherProps } = props
+  const {
+    whyRankList = [],
+    onDone = () => {},
+    mainPoint = { subject: '', description: '' },
+    discussionId,
+    round,
+    ...otherProps
+  } = props
+
+  // if all points are ranked, show the (first) one ranked most important, go to start over state
+  // otherwise compare the list
+  //
 
   // idxLeft and idxRight can swap places at any point - they are simply pointers to the current two <Point/> elements
   const [idxLeft, setIdxLeft] = useState(0)
@@ -28,7 +41,7 @@ function PairCompare(props) {
 
   useEffect(() => {
     if (isSelectionComplete()) {
-      setSelectedPoint(pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight])
+      setSelectedPoint(whyRankList[idxLeft] ? whyRankList[idxLeft] : whyRankList[idxRight])
     }
   }, [pointsIdxCounter])
 
@@ -45,9 +58,27 @@ function PairCompare(props) {
     }
   }, [selectedPoint])
 
+  function rankItNeutral() {
+    // this one gets a neutral vote
+    if (whyRankList[pointsIdxCounter].rank) {
+      const value = { ...whyRankList[pointsIdxCounter].rank, category: 'neutral' }
+      setTimeout(() => onDone({ valid: false, value }))
+    } else {
+      const value = {
+        _id: ObjectId(),
+        category: 'neutral',
+        parentId: whyRankList[pointsIdxCounter].why._id,
+        stage: 'why',
+        discussionId,
+        round,
+      }
+    }
+  }
+
   const handleLeftPointClick = () => {
+    rankItNeutral()
     // prevent transitions from firing on last comparison
-    if (idxRight >= pointList.length - 1 || idxLeft >= pointList.length - 1) {
+    if (idxRight >= whyRankList.length - 1 || idxLeft >= whyRankList.length - 1) {
       if (idxLeft >= idxRight) {
         setIdxRight(idxLeft + 1)
       } else {
@@ -89,7 +120,7 @@ function PairCompare(props) {
 
   const handleRightPointClick = () => {
     // prevent transitions from firing on last comparison
-    if (idxRight >= pointList.length - 1 || idxLeft >= pointList.length - 1) {
+    if (idxRight >= whyRankList.length - 1 || idxLeft >= whyRankList.length - 1) {
       if (idxLeft >= idxRight) {
         setIdxLeft(idxLeft + 1)
       } else {
@@ -152,17 +183,17 @@ function PairCompare(props) {
   }
 
   const isSelectionComplete = () => {
-    return pointsIdxCounter >= pointList.length
+    return pointsIdxCounter >= whyRankList.length
   }
 
   const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
   const hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
   const hiddenTransitioningLeftPoint = (
-    <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
+    <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} point={whyRankList[nextIndex]} />
   )
   const hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
   const hiddenTransitioningRightPoint = (
-    <Point ref={hiddenRightPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
+    <Point ref={hiddenRightPointRef} className={classes.emptyPoint} point={whyRankList[nextIndex]} />
   )
 
   return (
@@ -173,17 +204,17 @@ function PairCompare(props) {
       </div>
 
       <span className={isSelectionComplete() ? classes.statusBadgeComplete : classes.statusBadge}>{`${
-        pointsIdxCounter <= pointList.length ? pointsIdxCounter : pointList.length
-      } out of ${pointList.length}`}</span>
+        pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length
+      } out of ${whyRankList.length}`}</span>
 
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
-          {pointsIdxCounter < pointList.length && (
+          {pointsIdxCounter < whyRankList.length && (
             <div className={classes.hiddenPoint}>
               {isRightTransitioning ? hiddenTransitioningLeftPoint : hiddenEmptyLeftPoint}
             </div>
           )}
-          {pointsIdxCounter < pointList.length && (
+          {pointsIdxCounter < whyRankList.length && (
             <div className={classes.hiddenPoint}>
               {isLeftTransitioning ? hiddenTransitioningRightPoint : hiddenEmptyRightPoint}
             </div>
@@ -191,26 +222,26 @@ function PairCompare(props) {
         </div>
 
         <div className={classes.visiblePointsContainer}>
-          {idxLeft < pointList.length && (
+          {idxLeft < whyRankList.length && (
             <button
               className={classes.visiblePoint}
               ref={visibleLeftPointRef}
               onClick={handleLeftPointClick}
               tabIndex={0}
-              title={`Choose as more important: ${pointList[idxLeft]?.subject}`}
+              title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}
             >
-              {<Point point={pointList[idxLeft]} />}
+              {<Point point={whyRankList[idxLeft].why} />}
             </button>
           )}
-          {idxRight < pointList.length && (
+          {idxRight < whyRankList.length && (
             <button
               className={classes.visiblePoint}
               ref={visibleRightPointRef}
               onClick={handleRightPointClick}
               tabIndex={0}
-              title={`Choose as more important: ${pointList[idxRight]?.subject}`}
+              title={`Choose as more important: ${whyRankList[idxRight]?.why.subject}`}
             >
-              {<Point point={pointList[idxRight]} />}
+              {<Point point={whyRankList[idxRight].why} />}
             </button>
           )}
         </div>

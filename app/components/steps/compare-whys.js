@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/77
+// https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
 import React, { useEffect, useState } from 'react'
@@ -6,7 +7,7 @@ import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 
-// [{point: {}, whys:[{}], ranks:[{}]}]
+// pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 function CompareReasons(props) {
   const {
     pointWithWhyRankListList = [],
@@ -49,15 +50,14 @@ function CompareReasons(props) {
 
   return (
     <div className={classes.container} {...otherProps}>
-      {pointWithWhyRankListList.map(({ point, whys, ranks }, idx) => (
+      {pointWithWhyRankListList.map(({ point, whyRankList }, idx) => (
         <div key={idx} className={classes.headlinePoint}>
           <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
           <H className={classes.headlineSubject}>{point.subject}</H>
           <Level>
             <PairCompare
               className={classes.pairCompare}
-              pointList={whys}
-              ranks={ranks}
+              whyRankList={whyRankList}
               onDone={value => handlePairCompare(value, idx)}
             />
           </Level>
