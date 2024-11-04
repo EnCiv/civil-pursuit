@@ -1,12 +1,11 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
-import RankStep from '../app/components/steps/rank-step'
+import { RankPoints } from '../app/components/steps/rank-step'
 import React from 'react'
-import expect from 'expect'
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData } from './common'
+import { onDoneDecorator, onDoneResult } from './common'
 import { userEvent, within } from '@storybook/test'
 export default {
-  component: RankStep,
-  decorators: [onDoneDecorator, DeliberationContextDecorator],
+  component: RankPoints,
+  decorators: [onDoneDecorator],
   parameters: {
     layout: 'fullscreen',
   },
@@ -24,11 +23,13 @@ const createPointObj = (
   }
 ) => {
   return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
+    point: {
+      _id,
+      subject,
+      description,
+      groupedPoints,
+      user,
+    },
   }
 }
 

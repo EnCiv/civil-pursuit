@@ -5,14 +5,15 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { isEqual } from 'lodash'
+import ObjectId from 'bson-objectid'
+
 import DeliberationContext from '../deliberation-context'
 import Point from '../point'
 import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
 import { ModifierButton } from '../button.jsx'
 import StatusBadge from '../status-badge'
 import StatusBox from '../status-box'
-
-import getUserRanks from '../../socket-apis/get-user-ranks'
 
 import Ranking from '../ranking'
 
@@ -47,8 +48,8 @@ export default function RankStep(props) {
   // fetch previous data
   if (typeof window !== 'undefined')
     useState(() => {
-      const { discussionId, round, stage } = data
-      window.socket.emit('get-user-ranks', discussionId, round, stage, result => {
+      const { discussionId, round } = data
+      window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
         if (!result) return // there was an error
         const [ranks] = result
         const preRankByParentId = ranks.reduce(
@@ -59,7 +60,7 @@ export default function RankStep(props) {
       })
     })
 
-  return <RankPoints {...args} onDone={handleOnDone} {...props} />
+  return <RankPoints {...args} onDone={handleOnDone} discussionId={discussionId} round={round} {...props} />
 }
 
 const toRankString = {
@@ -81,6 +82,8 @@ export function RankPoints(props) {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
     pointRankGroupList,
+    round,
+    discussionId,
     ...otherProps
   } = props
 
@@ -88,7 +91,7 @@ export function RankPoints(props) {
 
   const [rankByParentId, setRankByParentId] = useState(
     (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
-      if (rankPoint.rank) rankByParentId[pointRankGroupList.point._id] = rankPoint.rank
+      if (rankPoint.rank) rankByParentId[rankPoint.point._id] = rankPoint.rank
       return rankByParentId
     }, {})
   )
@@ -115,6 +118,38 @@ export function RankPoints(props) {
     }
   }, [])
 
+  const handleRankPoint = (point, result) => {
+    const rankString = result.value
+    // the above vars are needed when calling onDone which must be done outside the set function
+    setRankByParentId(rankByParentId => {
+      // doing this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
+      let rank
+      if (rankByParentId[point._id]) {
+        if (rankByParentId[point._id].category !== rankStringToCategory[rankString]) {
+          rank = { ...rankByParentId[point._id], category: rankStringToCategory[rankString] }
+          rankByParentId[point._id] = rank
+        } else {
+          rank = rankByParentId[point._id]
+        }
+      } else {
+        rank = {
+          _id: ObjectId().toString(),
+          stage: 'pre',
+          category: rankStringToCategory[rankString],
+          parentId: point._id,
+          round,
+          discussionId,
+        }
+        rankByParentId[point._id] = rank
+      }
+      if (rank) {
+        const { valid, percentDone } = validAndPercentDone()
+        setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
+      } // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
+      return rankByParentId // about the setter
+    })
+  }
+
   // rankList won't change except by parent, but ranks inside the list will change by setRank
   // so updateCount is used to determin when rank updates are made
   const [updateCount, setUpdateCount] = useState(1)
@@ -126,7 +161,8 @@ export function RankPoints(props) {
   const leastCount = () => getRankCount('Least')
 
   const setRank = (id, rank) => {
-    const it = pointRankGroupList.find(ro => ro._id === id)
+    const it = pointRankGroupList.find(ro => ro.point._id === id)
+
     if (it) it.rank = rank
 
     setUpdateCount(updateCount + 1)
@@ -136,10 +172,6 @@ export function RankPoints(props) {
     return pointRankGroupList.filter(point => point.rank === rankName).length
   }
 
-  const getPointRank = point => {
-    return pointRankGroupList?.find(rank => rank._id === point._id)?.rank
-  }
-
   // in useEffect so it's called after setRank updates have taken effect
   useEffect(() => {
     onDone(validAndPercentDone())
@@ -147,9 +179,9 @@ export function RankPoints(props) {
 
   const validAndPercentDone = () => {
     let doneCount = 0
-    let it
-    for (const point of pointRankGroupList) {
-      if ((it = pointRankGroupList.find(ro => ro._id === point._id)) && it.rank) doneCount++
+
+    for (const rankedPoint of pointRankGroupList) {
+      if (rankedPoint.rank) doneCount++
     }
 
     // Check for difference in expected most/least counts
@@ -162,7 +194,7 @@ export function RankPoints(props) {
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
-    return [valid, pointRankGroupList.length ? doneCount / pointRankGroupList.length : 0] // value should be 0 if not points in list not null
+    return { valid: valid, percentDone: pointRankGroupList.length ? doneCount / pointRankGroupList.length : 0 } // value should be 0 if not points in list not null
   }
 
   // Set the status box error message
@@ -210,8 +242,9 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              pointRankGroupList.forEach(point => {
-                setRank(point._id, null)
+              pointRankGroupList.forEach(rankedPoint => {
+                const { point } = rankedPoint
+                setRank(point._id, '')
               })
               setUpdateCount(updateCount + 1)
             }}
@@ -219,12 +252,13 @@ export function RankPoints(props) {
         </div>
       </div>
       <div className={cx(classes.pointDiv)}>
-        {pointRankGroupList.map((point, i) => {
+        {pointRankGroupList.map((rankedPoint, i) => {
+          const { point } = rankedPoint
+
           const rankInvalid =
-            ((rankDiscrepancies.most > 0 && getPointRank(point) == 'Most') ||
-              (rankDiscrepancies.least > 0 && getPointRank(point) == 'Least')) &&
-            targetLeast > 0 &&
-            targetMost > 0
+            (rankDiscrepancies.most > 0 && rankedPoint.rank == 'Most' && targetMost > 0) ||
+            (rankDiscrepancies.least > 0 && rankedPoint.rank == 'Least' && targetLeast > 0)
+
           return (
             <Point
               key={point._id}
@@ -236,8 +270,9 @@ export function RankPoints(props) {
             >
               <Ranking
                 className={classes.rank}
-                defaultValue={pointRankGroupList.find(ro => ro._id === point._id)?.rank}
+                defaultValue={pointRankGroupList.find(ro => ro.point._id === point._id)?.rank}
                 onDone={({ valid, value }) => {
+                  handleRankPoint(point, { valid: valid, value: value })
                   if (valid) setRank(point._id, value)
                   else setRank(point._id, '')
                 }}
