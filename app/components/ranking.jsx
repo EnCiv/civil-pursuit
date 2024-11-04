@@ -42,6 +42,8 @@ export default function Ranking(props) {
         `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`
       )
     } else onDone({ valid: true, value: e.target.value })
+    console.log(onDone);
+
   }
   return (
     <div
@@ -52,7 +54,7 @@ export default function Ranking(props) {
     >
       {responseOptions.map(option => {
         return (
-          <label>
+          <label key={option}>
             <input
               disabled={disabled || false}
               checked={response === option}
@@ -60,6 +62,7 @@ export default function Ranking(props) {
               value={option}
               name={`importance-${option}`}
               className={cx(styleClasses.hideDefaultRadio, `ranking${option}`)}
+              onChange={() =>onSelectionChange(option)}
             ></input>
             <span className={cx(styleClasses.option)}>
               <svg
