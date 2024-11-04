@@ -6,17 +6,11 @@ const { Discussions, insertStatementId, getStatementIds } = dturn
 const userId = '12345678abcdefgh'
 const synuser = { synuser: { id: userId } }
 
+const UInfoHistory = []
+
 beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
-
-  Discussions['discussion1'] = {
-    ShownStatements: [],
-    ShownGroups: [],
-    Gitems: [],
-    Uitems: {},
-    group_size: 10,
-    updateUInfo: jest.fn(),
-  }
+  UInfoHistory.length = 0
 })
 
 afterEach(() => {
@@ -26,6 +20,12 @@ afterEach(() => {
 
 // Test 1: User not logged in
 test('Return undefined if user is not logged in.', async () => {
+  await dturn.initDiscussion('discussion1', {
+    group_size: 10,
+    updateUInfo: obj => {
+      UInfoHistory.push(obj)
+    },
+  })
   const cb = jest.fn()
   await completeRound.call({}, 'discussion1', 1, [{ id1: 1 }], cb)
 
@@ -34,23 +34,32 @@ test('Return undefined if user is not logged in.', async () => {
   expect(console.error).toHaveBeenCalledWith('Cannot complete round - user is not logged in.')
 })
 
-// Test 2: Discussion not loaded (getStatementIds throws an error)
+// Test 2: Discussion not loaded
 test('Return undefined if discussion is not loaded (getStatementIds fails).', async () => {
+  // Do not call initDiscussion, so discussion1 is not initialized
   const cb = jest.fn()
 
-  // Use jest.spyOn to mock getStatementIds function, making it return a rejected Promise
-  jest.spyOn(dturn, 'getStatementIds').mockRejectedValue(new Error('getStatementIds failed'))
+  // Call completeRound with an uninitialized discussionId
+  await completeRound.call(synuser, 'discussion1', 1, [{ id1: 1 }], cb)
 
-  // Call completeRound, using .call to bind this to synuser
-  await completeRound.call(synuser, 'discussion1', 1, [{ 1: 1 }], cb)
-
+  // Verify that callback function cb was called once and returned undefined
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
-  expect(console.error).toHaveBeenCalledWith('Failed to retrieve statementIds for completeRound.')
+
+  // Verify console.error calls and their messages
+  expect(console.error).toHaveBeenCalledTimes(2)
+  expect(console.error).toHaveBeenNthCalledWith(1, 'No ShownStatements found for discussion discussion1')
+  expect(console.error).toHaveBeenNthCalledWith(2, 'No statements found to rank.')
 })
 
 // Test 3: Success case
 test('Success: Insert statements and rank them.', async () => {
+  await dturn.initDiscussion('discussion1', {
+    group_size: 10,
+    updateUInfo: obj => {
+      UInfoHistory.push(obj)
+    },
+  })
   const cb = jest.fn()
 
   // Insert statements
@@ -64,18 +73,40 @@ test('Success: Insert statements and rank them.', async () => {
   const userIdForGetStatementIds = 'user1'
   const statementIds = await getStatementIds('discussion1', 0, userIdForGetStatementIds)
 
-  // Use jest.spyOn to monitor rankMostImportant function
-  const mockRankMostImportant = jest.spyOn(dturn, 'rankMostImportant').mockResolvedValue()
-
   // Rank the statements
-  const idRanks = [{ statement1: 1 }, { statement2: 2 }]
-
+  const idRanks = [{ [statementIds[1]]: 1 }, { [statementIds[2]]: 1 }]
   await completeRound.call(synuser, 'discussion1', 0, idRanks, cb)
-
-  // Verify that mockRankMostImportant was called correctly
-  expect(mockRankMostImportant).toHaveBeenCalledWith('discussion1', 0, userId, 'statement1', 1)
-  expect(mockRankMostImportant).toHaveBeenCalledWith('discussion1', 0, userId, 'statement2', 2)
 
   // Verify that callback function cb was called correctly
   expect(cb).toHaveBeenCalledWith(true)
+
+  const expectedEntries = [
+    {
+      [userId]: {
+        discussion1: {
+          0: {
+            shownStatementIds: {
+              [statementIds[1]]: { rank: 1 },
+            },
+          },
+        },
+      },
+    },
+    {
+      [userId]: {
+        discussion1: {
+          0: {
+            shownStatementIds: {
+              [statementIds[2]]: { rank: 1 },
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  // Check if UInfoHistory contains each expected entry
+  expectedEntries.forEach(expectedEntry => {
+    expect(UInfoHistory).toContainEqual(expectedEntry)
+  })
 })

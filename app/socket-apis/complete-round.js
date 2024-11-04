@@ -20,21 +20,13 @@ async function completeRound(discussionId, round, idRanks, cb) {
   }
 
   let statementIds
-  const errorOccurred = await dturn
-    .getStatementIds(discussionId, round, userId)
-    .then(ids => {
-      statementIds = ids
-      return false // No error
-    })
-    .catch(err => {
-      cbFailure('Failed to retrieve statementIds for completeRound.')
-      return true // Error occurred
-    })
 
-  if (errorOccurred) {
-    return // Exit the function to prevent multiple cbFailure calls
-  }
+  statementIds = await dturn.getStatementIds(discussionId, round, userId).catch(err => {
+    cbFailure('Failed to retrieve statementIds for completeRound.')
+    return null // Return null to indicate an error occurred
+  })
 
+  // Check if statementIds is valid
   if (!statementIds || statementIds.length === 0) {
     return cbFailure('No statements found to rank.')
   }
@@ -43,15 +35,15 @@ async function completeRound(discussionId, round, idRanks, cb) {
   for (const item of idRanks) {
     const id = Object.keys(item)[0]
     const rank = item[id]
-    const rankError = await dturn
-      .rankMostImportant(discussionId, round, userId, id, rank)
-      .then(() => false) // No error
-      .catch(error => {
+
+    // Check if `id` is in `statementIds`
+    if (statementIds.some(sId => sId === id)) {
+      try {
+        dturn.rankMostImportant(discussionId, round, userId, id, rank)
+      } catch (error) {
         cbFailure(`Error ranking statements in completeRound: ${error}`)
-        return true // Error occurred
-      })
-    if (rankError) {
-      return // Exit the function to prevent further execution
+        return // Exit the function if there’s an error
+      }
     }
   }
 
