@@ -49,6 +49,7 @@ export default function RankStep(props) {
   if (typeof window !== 'undefined')
     useState(() => {
       const { discussionId, round } = data
+
       window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
         if (!result) return // there was an error
         const [ranks] = result
@@ -60,7 +61,7 @@ export default function RankStep(props) {
       })
     })
 
-  return <RankPoints {...args} onDone={handleOnDone} discussionId={discussionId} round={round} {...props} />
+  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...props} />
 }
 
 const toRankString = {

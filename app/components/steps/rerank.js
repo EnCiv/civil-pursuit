@@ -249,6 +249,5 @@ export function derivePointMostsLeastsRankList(data) {
     local.postRankByParentId = postRankByParentId
   }
   if (updated) local.reviewPoints = Object.values(local.reviewPointsById)
-  console.log(local.reviewPoints)
   return { reviewPoints: local.reviewPoints }
 }
