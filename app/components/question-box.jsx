@@ -6,8 +6,15 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', participants = 0, ...otherProps } = props
-  const classes = useStylesFromThemeFunction(props)
+  const {
+    className = '',
+    subject = '',
+    description = '',
+    participants = 0,
+    contentAlign = 'center',
+    ...otherProps
+  } = props
+  const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const badgeName = `${participants} participants`
 
   return (
@@ -33,9 +40,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: 'rgba(235, 235, 235, 0.4)',
     boxSizing: 'border-box',
     display: 'flex',
-    justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: props =>
+      props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end',
     padding: '3.625rem 9.875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '3.1875rem 1.5625rem',
@@ -44,11 +51,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   topic: {
-    textAlign: 'center',
+    textAlign: props => props.contentAlign,
     display: 'flex',
-    justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center',
     gap: '1.5rem',
   },
 
@@ -59,7 +64,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5625rem',
     letterSpacing: '0.01em',
     color: theme.colors.primaryButtonBlue,
-    textAlign: 'center',
+    textAlign: props => props.contentAlign,
     whiteSpace: 'nowrap',
   },
 
@@ -70,7 +75,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '4.125rem',
     letterSpacing: '-0.03em',
     color: theme.colors.primaryButtonBlue,
-    textAlign: 'center',
+    textAlign: props => props.contentAlign,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       fontSize: '3rem',
       lineHeight: '3.3rem',
@@ -83,9 +88,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.colors.primaryButtonBlue,
-    textAlign: 'center',
+    textAlign: props => props.contentAlign,
   },
-  
+
   participants: {
     display: 'flex',
     alignItems: 'center',
