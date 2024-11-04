@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/212
 const dturn = require('../../dturn/dturn')
 const completeRound = require('../complete-round')
-const { Discussions, insertStatementId, getStatementIds } = dturn
+const { insertStatementId, getStatementIds } = dturn
 
 const userId = '12345678abcdefgh'
 const synuser = { synuser: { id: userId } }
