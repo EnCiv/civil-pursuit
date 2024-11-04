@@ -48,7 +48,7 @@ describe('Dturns Model', () => {
       discussionId: '1',
       round: 0,
       shownStatementIds: { points: ['id1', 'id2'] },
-      groupings: {},
+      groupings: [],
     }
     // Create a new doc
     await Dturns.upsert(doc.userId, doc.discussionId, doc.round, doc.shownStatementIds, doc.groupings)
@@ -62,7 +62,7 @@ describe('Dturns Model', () => {
       userId: userId,
       round: 0,
       shownStatementIds: { points: ['id1', 'id2', 'id3', 'id4'] },
-      groupings: {},
+      groupings: [],
     }
 
     await Dturns.upsert(
@@ -81,7 +81,7 @@ describe('Dturns Model', () => {
     const discussionId = 'discussion'
 
     for (let num = 0; num < 5; num++) {
-      await Dturns.upsert(userId + num, discussionId, 0, { points: [num] }, {})
+      await Dturns.upsert(userId + num, discussionId, 0, { points: [num] }, [])
     }
 
     const result = await Dturns.getAllFromDiscussion(discussionId)
@@ -92,7 +92,7 @@ describe('Dturns Model', () => {
         discussionId: 'discussion',
         round: 0,
         userId: userId + '0',
-        groupings: {},
+        groupings: [],
         shownStatementIds: { points: [0] },
       },
       {
@@ -100,7 +100,7 @@ describe('Dturns Model', () => {
         discussionId: 'discussion',
         round: 0,
         userId: userId + '1',
-        groupings: {},
+        groupings: [],
         shownStatementIds: { points: [1] },
       },
       {
@@ -108,7 +108,7 @@ describe('Dturns Model', () => {
         discussionId: 'discussion',
         round: 0,
         userId: userId + '2',
-        groupings: {},
+        groupings: [],
         shownStatementIds: { points: [2] },
       },
       {
@@ -116,7 +116,7 @@ describe('Dturns Model', () => {
         discussionId: 'discussion',
         round: 0,
         userId: userId + '3',
-        groupings: {},
+        groupings: [],
         shownStatementIds: { points: [3] },
       },
       {
@@ -124,7 +124,7 @@ describe('Dturns Model', () => {
         discussionId: 'discussion',
         round: 0,
         userId: userId + '4',
-        groupings: {},
+        groupings: [],
         shownStatementIds: { points: [4] },
       },
     ])

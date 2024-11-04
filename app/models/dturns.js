@@ -25,7 +25,7 @@ class Dturns extends Collection {
             description: "'shownStatementIds' must be an object",
           },
           groupings: {
-            description: "'groupings' must be an object",
+            description: "'groupings' must be an array",
           },
         },
       },
