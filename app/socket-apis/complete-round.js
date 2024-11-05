@@ -23,7 +23,7 @@ async function completeRound(discussionId, round, idRanks, cb) {
 
   statementIds = await dturn.getStatementIds(discussionId, round, userId).catch(err => {
     cbFailure('Failed to retrieve statementIds for completeRound.')
-    return null // Return null to indicate an error occurred
+    return
   })
 
   // Check if statementIds is valid
@@ -38,12 +38,7 @@ async function completeRound(discussionId, round, idRanks, cb) {
 
     // Check if `id` is in `statementIds`
     if (statementIds.some(sId => sId === id)) {
-      try {
-        dturn.rankMostImportant(discussionId, round, userId, id, rank)
-      } catch (error) {
-        cbFailure(`Error ranking statements in completeRound: ${error}`)
-        return // Exit the function if there’s an error
-      }
+      dturn.rankMostImportant(discussionId, round, userId, id, rank)
     }
   }
 
