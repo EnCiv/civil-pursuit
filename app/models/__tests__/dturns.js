@@ -26,7 +26,7 @@ describe('Dturns Model', () => {
 
   it('should insert a valid document', async () => {
     const validDoc = {
-      discussionId: 'discussionId',
+      discussionId: '2024',
       userId: userId,
       round: 0,
       data: { user: '11111', points: { point1: 'point1', point2: 'point2' } },
@@ -78,7 +78,7 @@ describe('Dturns Model', () => {
   })
 
   it('should retrieve all data when get function is called', async () => {
-    const discussionId = 'discussion'
+    const discussionId = '2024'
 
     for (let num = 0; num < 5; num++) {
       await Dturns.upsert(userId + num, discussionId, 0, { points: [num] }, [])
@@ -89,7 +89,7 @@ describe('Dturns Model', () => {
     expect(await result.toArray()).toMatchObject([
       {
         _id: /./,
-        discussionId: 'discussion',
+        discussionId: discussionId,
         round: 0,
         userId: userId + '0',
         groupings: [],
@@ -97,7 +97,7 @@ describe('Dturns Model', () => {
       },
       {
         _id: /./,
-        discussionId: 'discussion',
+        discussionId: discussionId,
         round: 0,
         userId: userId + '1',
         groupings: [],
@@ -105,7 +105,7 @@ describe('Dturns Model', () => {
       },
       {
         _id: /./,
-        discussionId: 'discussion',
+        discussionId: discussionId,
         round: 0,
         userId: userId + '2',
         groupings: [],
@@ -113,7 +113,7 @@ describe('Dturns Model', () => {
       },
       {
         _id: /./,
-        discussionId: 'discussion',
+        discussionId: discussionId,
         round: 0,
         userId: userId + '3',
         groupings: [],
@@ -121,7 +121,7 @@ describe('Dturns Model', () => {
       },
       {
         _id: /./,
-        discussionId: 'discussion',
+        discussionId: discussionId,
         round: 0,
         userId: userId + '4',
         groupings: [],
