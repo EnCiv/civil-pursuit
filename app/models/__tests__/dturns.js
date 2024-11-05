@@ -29,7 +29,7 @@ describe('Dturns Model', () => {
       discussionId: 'discussionId',
       userId: userId,
       round: 0,
-      data: { user: 'userId', points: { point1: 'point1', point2: 'point2' } },
+      data: { user: '11111', points: { point1: 'point1', point2: 'point2' } },
     }
     const result = await Dturns.insertOne(validDoc)
     expect(result.acknowledged).toBe(true)
@@ -45,9 +45,9 @@ describe('Dturns Model', () => {
   it('should upsert when the upsert function is called', async () => {
     const doc = {
       userId: userId,
-      discussionId: '1',
+      discussionId: '1111',
       round: 0,
-      shownStatementIds: { points: ['id1', 'id2'] },
+      shownStatementIds: { points: ['101', '111'] },
       groupings: [],
     }
     // Create a new doc
@@ -58,10 +58,10 @@ describe('Dturns Model', () => {
 
     // Try to update the doc
     const newData = {
-      discussionId: '1',
+      discussionId: '1111',
       userId: userId,
       round: 0,
-      shownStatementIds: { points: ['id1', 'id2', 'id3', 'id4'] },
+      shownStatementIds: { points: ['100', '101', '110', '111'] },
       groupings: [],
     }
 

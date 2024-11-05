@@ -126,8 +126,8 @@ function insertStatementId(discussionId, userId, statementId) {
   // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
 
-  if (round != Discussions[discussionId].lastRound || participants != Discussions[discussionId].lastParticipants) {
-    Discussions[discussionId].updates({ participants: participants, lastRound: round })
+  if (lastRound != Discussions[deliberationId].lastRound || participants != Discussions[discussionId].participants) {
+    Discussions[discussionId].updates({ participants: participants, lastRound: Discussions[discussionId].lastRound })
   }
 
   return statementId
@@ -258,6 +258,8 @@ async function getStatementIds(discussionId, round, userId) {
   } else {
     if (!dis.ShownStatements[round]) {
       // first time for this round, need to setup
+      dis['lastRound'] = round
+      Discussions[discussionId].updates({ participants: dis['participants'], lastRound: dis['lastRound'] })
       // make sure there are enough ranked items in the previous round to start
       if (dis.ShownStatements[round - 1].length < dis.group_size * dis.group_size) return
       const cutoff = Math.ceil(dis.ShownStatements[round - 1].length / dis.group_size)
@@ -641,4 +643,7 @@ async function reconstructDiscussionFromUInfo(discussionId) {
     if (shownGroupsArray.length > 0) Discussions[discussionId].ShownGroups[round] = shownGroupsArray
     round++
   }
+
+  // Set lastRound but don't send updates
+  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
 }

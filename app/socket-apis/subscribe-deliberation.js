@@ -28,31 +28,31 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
       const options = {
         ...(iota?.webComponent?.dturn ?? {}),
         updateUInfo: async UInfoData => {
-          console.info('updateUinfo', UInfoData)
           // First upsert the UInfo
           const [round, { shownStatementIds, groupings }] = Object.entries(
             UInfoData[this.synuser.id][deliberationId]
           )[0]
 
-          const participants = Object.keys(Discussions[deliberationId].Uitems).length
-          // TODO: Fix tests then uncomment this.
-          //await Dturns.upsert(this.synuser.id, deliberationId, 0, round, shownStatementIds, groupings || {})
+          await Dturns.upsert(this.synuser.id, deliberationId, 0, round, shownStatementIds, groupings || {})
 
           // Then broadcast the update if changes were made
+          const participants = Object.keys(Discussions[deliberationId].Uitems).length
+          const lastRound = Object.keys(Discussions[deliberationId].ShownStatements).length - 1
+
           if (
-            round != Discussions[deliberationId].lastRound ||
-            participants != Discussions[deliberationId].lastParticipants
+            lastRound != Discussions[deliberationId].lastRound ||
+            participants != Discussions[deliberationId].participants
           ) {
             const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
             const updateData = {
               participants: Object.keys(Discussions[deliberationId].Uitems).length,
-              lastRound: Object.keys(Discussions[deliberationId].ShownStatements).length - 1,
+              lastRound: lastRound,
             }
 
             server.to(deliberationId).emit(eventName, updateData)
 
-            Discussions[deliberationId]['lastRound'] = round
-            Discussions[deliberationId]['lastParticipants'] = participants
+            Discussions[deliberationId]['lastRound'] = lastRound
+            Discussions[deliberationId]['participants'] = participants
           }
         },
         getAllUInfo: async () => {
