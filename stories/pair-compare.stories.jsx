@@ -10,20 +10,47 @@ export default {
   decorators: [onDoneDecorator],
 }
 
-const pointOne = { subject: 'Point 1', description: 'This is the first point' }
-const pointTwo = { subject: 'Point 2', description: 'This is the second point' }
-const pointThree = { subject: 'Point 3', description: 'This is the third point' }
-const pointFour = { subject: 'Point 4', description: 'This is the fourth point' }
-const pointFive = { subject: 'Point 5', description: 'This is the fifth point' }
-const pointSix = { subject: 'Point 6', description: 'This is the sixth point' }
+const pointOne = { _id: '1', subject: 'Point 1', description: 'This is the first point' }
+const pointTwo = { _id: '2', subject: 'Point 2', description: 'This is the second point' }
+const pointThree = { _id: '3', subject: 'Point 3', description: 'This is the third point' }
+const pointFour = { _id: '4', subject: 'Point 4', description: 'This is the fourth point' }
+const pointFive = { _id: '5', subject: 'Point 5', description: 'This is the fifth point' }
+const pointSix = { _id: '6', subject: 'Point 6', description: 'This is the sixth point' }
 
+const whyRankList = [
+  { why: { _id: '1', subject: 'Point 1', description: 'This is the first point' } },
+  { why: { _id: '2', subject: 'Point 2', description: 'This is the second point' } },
+  { why: { _id: '3', subject: 'Point 3', description: 'This is the third point' } },
+  { why: { _id: '4', subject: 'Point 4', description: 'This is the fourth point' } },
+  { why: { _id: '5', subject: 'Point 5', description: 'This is the fifth point' } },
+  { why: { _id: '6', subject: 'Point 6', description: 'This is the sixth point' } },
+]
+
+const rankedWhyRankList = [
+  { why: { _id: '1', subject: 'Point 1', description: 'This is the first point' }, rank: { _id: '11', parentId: '1', stage: 'why', category: 'most' } },
+  { why: { _id: '2', subject: 'Point 2', description: 'This is the second point' }, rank: { _id: '12', parentId: '2', stage: 'why', category: 'neutral' } },
+  { why: { _id: '3', subject: 'Point 3', description: 'This is the third point' }, rank: { _id: '13', parentId: '3', stage: 'why', category: 'neutral' } },
+  { why: { _id: '4', subject: 'Point 4', description: 'This is the fourth point' }, rank: { _id: '14', parentId: '4', stage: 'why', category: 'neutral' } },
+  { why: { _id: '5', subject: 'Point 5', description: 'This is the fifth point' }, rank: { _id: '15', parentId: '5', stage: 'why', category: 'neutral' } },
+  { why: { _id: '6', subject: 'Point 6', description: 'This is the sixth point' }, rank: { _id: '16', parentId: '6', stage: 'why', category: 'neutral' } },
+]
 export const sixPoints = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
       description: 'Climate change and global warming',
     },
-    pointList: [pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix],
+    whyRankList,
+  },
+}
+
+export const sixPointsRanked = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: rankedWhyRankList,
   },
 }
 
