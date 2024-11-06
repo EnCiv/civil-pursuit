@@ -1,6 +1,6 @@
 import PairCompare from '../app/components/pair-compare'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent } from '@storybook/test'
+import { onDoneDecorator, onDoneResult, asyncSleep } from './common'
+import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
 import React from 'react'
 
@@ -9,13 +9,6 @@ export default {
   args: {},
   decorators: [onDoneDecorator],
 }
-
-const pointOne = { _id: '1', subject: 'Point 1', description: 'This is the first point' }
-const pointTwo = { _id: '2', subject: 'Point 2', description: 'This is the second point' }
-const pointThree = { _id: '3', subject: 'Point 3', description: 'This is the third point' }
-const pointFour = { _id: '4', subject: 'Point 4', description: 'This is the fourth point' }
-const pointFive = { _id: '5', subject: 'Point 5', description: 'This is the fifth point' }
-const pointSix = { _id: '6', subject: 'Point 6', description: 'This is the sixth point' }
 
 const whyRankList = [
   { why: { _id: '1', subject: 'Point 1', description: 'This is the first point' } },
@@ -70,55 +63,69 @@ export const onePoint = {
       subject: 'Global Warming',
       description: 'Climate change and global warming',
     },
-    pointList: [pointOne],
+    whyRankList: [whyRankList[0]],
   },
 }
 
+export const onePointRanked = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: [rankedWhyRankList[0]],
+  },
+}
 export const twoPoints = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
       description: 'Climate change and global warming',
     },
-    pointList: [pointOne, pointTwo],
+    whyRankList: [whyRankList[0], whyRankList[1]],
   },
 }
 
+export const threePoints = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2]],
+  },
+}
 export const onDoneTest = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
       description: 'Climate change and global warming',
     },
-    pointList: [pointOne, pointTwo, pointThree, pointFour],
+    whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2], whyRankList[3]],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const Point1 = canvas.getByText('Point 1')
     await userEvent.click(Point1)
-
-    setTimeout(() => {
-      // wait for transition to occur
-      const Point3 = canvas.getByText('Point 3')
-      userEvent.click(Point3)
-    }, 500)
-
-    setTimeout(() => {
-      const Point4 = canvas.getByText('Point 4')
-      userEvent.click(Point4)
-    }, 1300)
-
-    setTimeout(() => {
+    await asyncSleep(500)
+    const Point3 = canvas.getByText('Point 3')
+    await userEvent.click(Point3)
+    await asyncSleep(500)
+    const Point4 = canvas.getByText('Point 4')
+    await userEvent.click(Point4)
+    waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
+        count: 3,
         onDoneResult: {
           valid: true,
           value: {
-            description: 'This is the fourth point',
-            subject: 'Point 4',
+            // _id will be auto generated
+            category: 'most',
+            parentId: '4',
+            stage: 'why',
           },
         },
       })
-    }, 1500)
+    })
   },
 }
