@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 
-import { userEvent, within, waitFor } from '@storybook/testing-library'
+import { userEvent, within, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import React, { useState, useEffect } from 'react'
 import AnswerStep from '../app/components/answer-step'

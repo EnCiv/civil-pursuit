@@ -1,6 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
+// https://github.com/EnCiv/civil-pursuit/issues/210
 
+const Joi = require('joi')
 const Points = require('../models/points')
+
+const schema= Joi.object({
+  category: Joi.string().valid('most', 'least', 'neutral').required(),
+})
 
 async function upsertWhy(pointObj, cb) {
   if (!this.synuser || !this.synuser.id) {
@@ -9,6 +15,13 @@ async function upsertWhy(pointObj, cb) {
   }
   const userId = this.synuser.id
   pointObj.userId = userId // Add userId to the document
+
+  // Joi validation for the category
+  const { error } = schema.validate({ category: pointObj.category });
+  if (error) {
+    console.error('Validation error in upsertWhy:', error.details[0].message);
+    return cb && cb(null); // Return validation error
+  }
 
   const validation = Points.validate(pointObj)
   if (validation.error) {

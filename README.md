@@ -10,6 +10,7 @@ This is a tool to enable large scale deliberation online. It leads people throug
 This work is licensed under the terms described in [LICENSE.txt](https://github.com/EnCiv/civil-pursuit/blob/master/LICENSE.txt) which is an MIT license with a Public Good License Condition.
 
 # [Getting Started](https://github.com/EnCiv/.github/wiki/Getting-Started-%E2%80%90-Repo-Setup)
+See the [Getting Started](https://github.com/EnCiv/.github/wiki/Getting-Started-%E2%80%90-Repo-Setup) guide one the EnCiv Wiki. 
 
 # Contributing
 
