@@ -57,7 +57,7 @@ export const empty = {
   pointList: [],
 }
 
-export const onePoint = {
+export const onePointCanBeYesStartOverNo = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
@@ -65,15 +65,72 @@ export const onePoint = {
     },
     whyRankList: [whyRankList[0]],
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const Yes = canvas.getByText('Yes')
+    await userEvent.click(Yes)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: true,
+          value: {
+            // _id will be auto generated
+            category: 'most',
+            parentId: '1',
+            stage: 'why',
+          },
+        },
+      })
+    })
+    const StartOver = canvas.getByText('Start Over')
+    await userEvent.click(StartOver)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: null,
+        },
+      })
+    })
+    const No = canvas.getByText('No')
+    await userEvent.click(No)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 3,
+        onDoneResult: {
+          valid: true,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '1',
+            stage: 'why',
+          },
+        },
+      })
+    })
+  },
 }
 
-export const onePointRanked = {
+export const onePointRankedGetsOnDone = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
       description: 'Climate change and global warming',
     },
     whyRankList: [rankedWhyRankList[0]],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: true,
+        },
+      })
+    })
   },
 }
 export const twoPoints = {
@@ -86,7 +143,7 @@ export const twoPoints = {
   },
 }
 
-export const threePoints = {
+export const UserChoosesNoPoint = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
@@ -94,7 +151,58 @@ export const threePoints = {
     },
     whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2]],
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const Neither = canvas.getByText('Neither')
+    // don't await users event so not to miss the onDone calls from the same event
+    userEvent.click(Neither)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: false,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '1',
+            stage: 'why',
+          },
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '2',
+            stage: 'why',
+          },
+        },
+      })
+    })
+    const No = canvas.getByText('No')
+    await userEvent.click(No)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 3,
+        onDoneResult: {
+          valid: true,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '3',
+            stage: 'why',
+          },
+        },
+      })
+    })
+  },
 }
+
 export const onDoneTest = {
   args: {
     mainPoint: {
@@ -107,15 +215,58 @@ export const onDoneTest = {
     const canvas = within(canvasElement)
     const Point1 = canvas.getByText('Point 1')
     await userEvent.click(Point1)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: false,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '2',
+            stage: 'why',
+          },
+        },
+      })
+    })
     await asyncSleep(500)
     const Point3 = canvas.getByText('Point 3')
     await userEvent.click(Point3)
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: false,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '1',
+            stage: 'why',
+          },
+        },
+      })
+    })
     await asyncSleep(500)
     const Point4 = canvas.getByText('Point 4')
-    await userEvent.click(Point4)
-    waitFor(() => {
+    /* don't await - there are two onDone updates in succession and if we await the user event we miss the first one */
+    userEvent.click(Point4)
+    await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 3,
+        onDoneResult: {
+          valid: false,
+          value: {
+            // _id will be auto generated
+            category: 'neutral',
+            parentId: '3',
+            stage: 'why',
+          },
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 4,
         onDoneResult: {
           valid: true,
           value: {

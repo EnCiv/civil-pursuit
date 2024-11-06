@@ -17,11 +17,10 @@ function PairCompare(props) {
   const [idxRight, setIdxRight] = useState(1)
   const [nextLeftPoint, setNextLeftPoint] = useState(null)
   const [nextRightPoint, setNextRightPoint] = useState(null)
-  const [pointsIdxCounter, setPointsIdxCounter] = useState(1)
   const [isRightTransitioning, setIsRightTransitioning] = useState(false)
   const [isLeftTransitioning, setIsLeftTransitioning] = useState(false)
   const classes = useStyles()
-  const [ranksByParentId, setRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
+  const [ranksByParentId, neverSetRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
   // if all points are ranked, show the (first) one ranked most important, go to start over state
   // otherwise compare the list
   useEffect(() => {
@@ -32,23 +31,14 @@ function PairCompare(props) {
         if (whyRank.rank.category === 'most') selectedIdx = i
       }
     })
-    if (whyRankList.length == 1) {
-      if (whyRankList[0].rank) {
-        setPointsIdxCounter(2)
-        setTimeout(() => onDone({ valid: true, value: whyRankList[0].rank }))
-      }
-    } else if (Object.keys(ranksByParentId).length === whyRankList.length) {
-      if (pointsIdxCounter !== whyRankList.length) {
-        let selectedRank = null
-        // skip if an update from above after the user has completed ranking - likely thisis the initial render
-        setPointsIdxCounter(whyRankList.length)
-        if (typeof selectedIdx === 'number') {
-          setIdxLeft(selectedIdx) // idx could be 0
-          selectedRank = whyRankList[selectedIdx].rank
-        } else setIdxLeft(whyRankList.length + 1)
-        setIdxRight(whyRankList.length)
-        setTimeout(() => onDone({ valid: true, value: selectedRank }))
-      }
+    const ranks = Object.values(ranksByParentId)
+    if (ranks.length === whyRankList.length && ranks.length > 0 && ranks.every(rank => rank.category)) {
+      // skip if an update from above after the user has completed ranking - likely this is the initial render
+      if (typeof selectedIdx === 'number') {
+        setIdxLeft(selectedIdx) // idx could be 0
+      } else setIdxLeft(whyRankList.length)
+      setIdxRight(whyRankList.length)
+      setTimeout(() => onDone({ valid: true, value: undefined }))
     }
   }, [whyRankList])
 
@@ -71,80 +61,41 @@ function PairCompare(props) {
     setTimeout(() => onDone({ valid, value }))
   }
 
-  function incrementPointsIdxCounter(increment) {
-    setPointsIdxCounter(pointsIdxCounter => {
-      pointsIdxCounter += increment
-      if (pointsIdxCounter >= whyRankList.length + 1) {
-        // neither and no other choices
-        setTimeout(() => onDone({ valid: true, value: null })) //done but no winner
-        return pointsIdxCounter
-      } else if (pointsIdxCounter >= whyRankList.length) {
-        // selectionComplete ?
-        const selectedIdx = whyRankList[idxLeft] ? idxLeft : idxRight
-        rankIdxCategory(selectedIdx, 'most')
-      }
-      return pointsIdxCounter
-    })
-  }
-
   const handleLeftPointClick = () => {
     rankIdxCategory(idxRight, 'neutral')
-    // prevent transitions from firing on last comparison
-    if (idxRight >= whyRankList.length - 1 || idxLeft >= whyRankList.length - 1) {
-      if (idxLeft >= idxRight) {
-        setIdxRight(idxLeft + 1)
-      } else {
-        setIdxRight(idxRight + 1)
-      }
-      incrementPointsIdxCounter(1)
+    if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
+      // they've all been ranked
+      rankIdxCategory(idxLeft, 'most')
+      setIdxRight(whyRankList.length)
       return
     }
-
+    const nextRightIdx = Math.min(idxLeft >= idxRight ? idxLeft + 1 : idxRight + 1, whyRankList.length)
     setIsLeftTransitioning(true)
-    if (pointsIdxCounter + 1 < whyRankList.length) {
-      setNextRightPoint(whyRankList[pointsIdxCounter + 1].why)
-    }
+    setNextRightPoint(whyRankList[nextRightIdx].why)
 
     setTimeout(() => {
       setIsLeftTransitioning(false)
-      if (idxLeft >= idxRight) {
-        setIdxRight(idxLeft + 1)
-      } else {
-        setIdxRight(idxRight + 1)
-      }
-      incrementPointsIdxCounter(1)
       setNextRightPoint(null)
+      setIdxRight(nextRightIdx)
     }, 500)
   }
 
   const handleRightPointClick = () => {
     rankIdxCategory(idxLeft, 'neutral')
-    // prevent transitions from firing on last comparison
-    if (idxRight >= whyRankList.length - 1 || idxLeft >= whyRankList.length - 1) {
-      if (idxLeft >= idxRight) {
-        setIdxLeft(idxLeft + 1)
-      } else {
-        setIdxLeft(idxRight + 1)
-      }
-      incrementPointsIdxCounter(1)
+    if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
+      // they've all been ranked
+      rankIdxCategory(idxRight, 'most')
+      setIdxLeft(whyRankList.length)
       return
     }
-
-    if (pointsIdxCounter + 1 < whyRankList.length) {
-      setNextLeftPoint(whyRankList[pointsIdxCounter + 1].why)
-    }
+    const nextLeftIdx = Math.min(idxLeft >= idxRight ? idxLeft + 1 : idxRight + 1, whyRankList.length)
+    setNextLeftPoint(whyRankList[nextLeftIdx].why)
     setIsRightTransitioning(true)
 
     setTimeout(() => {
       setIsRightTransitioning(false)
       setNextLeftPoint(null)
-      if (nextLeftPoint) setNextLeftPoint(null)
-      if (idxLeft >= idxRight) {
-        setIdxLeft(idxLeft + 1)
-      } else {
-        setIdxLeft(idxRight + 1)
-      }
-      incrementPointsIdxCounter(1)
+      setIdxLeft(nextLeftIdx)
     }, 500)
   }
 
@@ -153,13 +104,12 @@ function PairCompare(props) {
     rankIdxCategory(idxRight, 'neutral')
 
     if (idxLeft >= idxRight) {
-      setIdxRight(idxLeft + 1)
-      setIdxLeft(idxLeft + 2)
+      setIdxRight(Math.min(idxLeft + 1, whyRankList.length))
+      setIdxLeft(Math.min(idxLeft + 2, whyRankList.length))
     } else {
-      setIdxLeft(idxRight + 1)
-      setIdxRight(idxRight + 2)
+      setIdxLeft(Math.min(idxRight + 1, whyRankList.length))
+      setIdxRight(Math.min(idxRight + 2, whyRankList.length))
     }
-    incrementPointsIdxCounter(2)
   }
 
   const handleStartOverButton = () => {
@@ -167,22 +117,27 @@ function PairCompare(props) {
     onDone({ valid: false, value: null })
     setIdxRight(1)
     setIdxLeft(0)
-    setPointsIdxCounter(1)
   }
 
   const handleYes = () => {
-    rankIdxCategory(Math.min(idxLeft, idxRight), 'most')
-    setPointsIdxCounter(Math.max(idxLeft, idxRight) + 1)
+    if (idxLeft < whyRankList.length) {
+      rankIdxCategory(idxLeft, 'most')
+    } else if (idxRight < whyRankList.length) {
+      rankIdxCategory(idxRight, 'most')
+    }
   }
   const handleNo = () => {
-    rankIdxCategory(Math.min(idxLeft, idxRight), 'neutral')
-    setPointsIdxCounter(Math.max(idxLeft, idxRight) + 1)
+    if (idxLeft < whyRankList.length) {
+      rankIdxCategory(idxLeft, 'neutral')
+    } else if (idxRight < whyRankList.length) {
+      rankIdxCategory(idxRight, 'neutral')
+    }
   }
 
-  const isSelectionComplete = () => {
-    return pointsIdxCounter >= whyRankList.length
-  }
-
+  const pointsIdxCounter = Math.max(idxLeft, idxRight)
+  const isSelectionComplete = pointsIdxCounter >= whyRankList.length
+  const ranks = isSelectionComplete && Object.values(ranksByParentId) // isSelectionComple here so we don't do work if not needed
+  const allRanked = isSelectionComplete && ranks.length === whyRankList.length && ranks.every(rank => rank.category) // isSelectionComple here so we don't do work if not needed
   return (
     <div className={classes.container} {...otherProps}>
       <div className={classes.mainPointContainer}>
@@ -190,7 +145,7 @@ function PairCompare(props) {
         <div className={classes.mainPointDescription}>{mainPoint.description}</div>
       </div>
 
-      <span className={isSelectionComplete() ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
+      <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
 
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
@@ -201,7 +156,6 @@ function PairCompare(props) {
             <Point className={cx(classes.emptyPoint, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
           </div>
         </div>
-
         <div className={classes.visiblePointsContainer}>
           {idxLeft < whyRankList.length && (
             <button className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft)} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}>
@@ -214,8 +168,8 @@ function PairCompare(props) {
             </button>
           )}
         </div>
-        {(idxLeft < whyRankList.length && idxRight < whyRankList.length) || ranksByParentId[whyRankList[Math.min(idxLeft, idxRight)]?.why._id]?.category ? (
-          <div className={classes.buttonsContainer}>{!isSelectionComplete() ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
+        {!isSelectionComplete || allRanked ? (
+          <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
         ) : (
           <div className={classes.buttonsContainer}>
             <SecondaryButton onDone={handleYes}>Yes</SecondaryButton>

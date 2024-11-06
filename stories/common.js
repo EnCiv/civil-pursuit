@@ -116,7 +116,8 @@ export function RenderStory(props) {
 export function onDoneDecorator(Story, context) {
   const [result, setResult] = useState({ count: 0 })
   const onDone = useCallback(res => {
-    setResult({ count: result.count + 1, onDoneResult: res })
+    // two succesive calls to onDone from the same user event will not increment the count twice, unless we use the set function approach
+    setResult(result => ({ count: result.count + 1, onDoneResult: res }))
   })
   context.args.onDone = onDone
   return (
