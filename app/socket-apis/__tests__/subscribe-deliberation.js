@@ -121,14 +121,14 @@ test('Check lastRound update.', async done => {
   let num
 
   updateHandlerDone = data => {
-    if (num === 100) {
-      //expect(data).toEqual({ participants: 100, lastRound: 1 })
+    if (num === 101) {
+      expect(data).toEqual({ participants: 101, lastRound: 1 })
       done()
     }
   }
 
-  for (num = 0; num < 99; num++) {
-    const otherUserId = num === 0 ? userId : new ObjectId()
+  for (num = 0; num < 100; num++) {
+    const otherUserId = new ObjectId()
     const pointId = new ObjectId()
     const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
 
@@ -146,5 +146,5 @@ test('Check lastRound update.', async done => {
   rankMostImportant(discussionId, 0, userId, statements[0], 1)
 
   const roundOneStatements = await getStatementIds(discussionId, 1, userId)
-  console.log('ROUND !', roundOneStatements)
+  console.log('ROUND 1', roundOneStatements)
 })

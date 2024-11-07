@@ -270,7 +270,7 @@ async function getStatementIds(discussionId, round, userId) {
       if (minRank < dis.min_rank) minRank = dis.min_rank
       console.info('starting round', round, 'minRank is', minRank)
       let highestRankedItems = []
-      for (sItem of dis.ShownStatements[round - 1]) {
+      for (const sItem of dis.ShownStatements[round - 1]) {
         if (sItem.rank < minRank) break // no need to go further
         highestRankedItems.push({
           statementId: sItem.statementId,
