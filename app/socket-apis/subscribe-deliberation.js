@@ -34,29 +34,13 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
           )[0]
 
           await Dturns.upsert(this.synuser.id, deliberationId, 0, round, shownStatementIds, groupings || {})
-
-          // Then broadcast the update if changes were made
-          const participants = Object.keys(Discussions[deliberationId].Uitems).length
-          const lastRound = Object.keys(Discussions[deliberationId].ShownStatements).length - 1
-
-          if (
-            lastRound != Discussions[deliberationId].lastRound ||
-            participants != Discussions[deliberationId].participants
-          ) {
-            const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
-            const updateData = {
-              participants: Object.keys(Discussions[deliberationId].Uitems).length,
-              lastRound: lastRound,
-            }
-
-            server.to(deliberationId).emit(eventName, updateData)
-
-            Discussions[deliberationId]['lastRound'] = lastRound
-            Discussions[deliberationId]['participants'] = participants
-          }
         },
         getAllUInfo: async () => {
           return await Dturns.getAllFromDiscussion()
+        },
+        updates: async updateData => {
+          const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
+          server.to(deliberationId).emit(eventName, updateData)
         },
       }
       await initDiscussion(deliberationId, options)
