@@ -10,7 +10,14 @@ import { MongoClient, ObjectId } from 'mongodb'
 import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup from '../../jest-socket-api-setup'
 import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
-import { Discussions, initDiscussion, insertStatementId } from '../../dturn/dturn'
+import {
+  Discussions,
+  getStatementIds,
+  initDiscussion,
+  insertStatementId,
+  putGroupings,
+  rankMostImportant,
+} from '../../dturn/dturn'
 import upsertPoint from '../upsert-point'
 
 const handle = 'subscribe-deliberation'
@@ -62,7 +69,7 @@ test('Fail if deliberation ID not provided.', async () => {
 // this needs to be outside of any tests because it needs to be passed in through one test, and will get executed later when other tests trigger it
 let updateHandlerDone
 function updateHandler(data) {
-  console.log('Update was called')
+  //console.log('Update was called')
   if (updateHandlerDone) updateHandlerDone(data)
   else console.error('updatehandler called, but updateHandlerDone was not set')
 }
@@ -108,4 +115,36 @@ test('Check updateHandler is called.', done => {
       const insertResult = insertStatementId(discussionId, userId, pointId)
       expect(insertResult).toBe(pointId)
     })
+})
+
+test('Check lastRound update.', async done => {
+  let num
+
+  updateHandlerDone = data => {
+    if (num === 100) {
+      //expect(data).toEqual({ participants: 100, lastRound: 1 })
+      done()
+    }
+  }
+
+  for (num = 0; num < 99; num++) {
+    const otherUserId = num === 0 ? userId : new ObjectId()
+    const pointId = new ObjectId()
+    const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
+
+    // this will trigger the update handler above
+    await upsertPoint
+      .call({ synuser: { id: otherUserId } }, pointObj, () => {})
+      .then(() => {
+        const insertResult = insertStatementId(discussionId, otherUserId, pointId)
+        expect(insertResult).toBe(pointId)
+      })
+  }
+
+  const statements = await getStatementIds(discussionId, 0, userId)
+  putGroupings(discussionId, 0, userId, [])
+  rankMostImportant(discussionId, 0, userId, statements[0], 1)
+
+  const roundOneStatements = await getStatementIds(discussionId, 1, userId)
+  console.log('ROUND !', roundOneStatements)
 })
