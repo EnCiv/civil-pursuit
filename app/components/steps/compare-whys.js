@@ -9,20 +9,13 @@ import { H, Level } from 'react-accessible-headings'
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 function CompareReasons(props) {
-  const {
-    pointWithWhyRankListList = [],
-    pointList = [],
-    side = '',
-    onDone = () => {},
-    className,
-    ...otherProps
-  } = props
+  const { pointWithWhyRankListList = [], side = '', onDone = () => {}, className, ...otherProps } = props
   const classes = useStyles()
   const [completedPoints, setCompletedPoints] = useState(new Set())
   const [percentDone, setPercentDone] = useState(0)
 
   useEffect(() => {
-    if (completedPoints.size === pointList.length) {
+    if (completedPoints.size === pointWithWhyRankListList.length) {
       onDone({ valid: true, value: percentDone })
     } else {
       onDone({ valid: false, value: percentDone })
@@ -30,11 +23,11 @@ function CompareReasons(props) {
   }, [completedPoints, percentDone])
 
   useEffect(() => {
-    if (pointList.length === 0) setPercentDone(100)
+    if (pointWithWhyRankListList.length === 0) setPercentDone(100)
     else {
-      setPercentDone(Number(((completedPoints.size / pointList.length) * 100).toFixed(2)))
+      setPercentDone(Number(((completedPoints.size / pointWithWhyRankListList.length) * 100).toFixed(2)))
     }
-  }, [completedPoints, pointList])
+  }, [completedPoints, pointWithWhyRankListList])
 
   const handlePairCompare = ({ valid, value }, idx) => {
     setCompletedPoints(prevPoints => {
@@ -55,11 +48,7 @@ function CompareReasons(props) {
           <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
           <H className={classes.headlineSubject}>{point.subject}</H>
           <Level>
-            <PairCompare
-              className={classes.pairCompare}
-              whyRankList={whyRankList}
-              onDone={value => handlePairCompare(value, idx)}
-            />
+            <PairCompare className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, idx)} />
           </Level>
         </div>
       ))}
