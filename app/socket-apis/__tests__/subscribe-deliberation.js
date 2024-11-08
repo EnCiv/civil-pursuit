@@ -69,7 +69,7 @@ test('Fail if deliberation ID not provided.', async () => {
 // this needs to be outside of any tests because it needs to be passed in through one test, and will get executed later when other tests trigger it
 let updateHandlerDone
 function updateHandler(data) {
-  //console.log('Update was called')
+  console.log('Update was called')
   if (updateHandlerDone) updateHandlerDone(data)
   else console.error('updatehandler called, but updateHandlerDone was not set')
 }
@@ -121,24 +121,23 @@ test('Check lastRound update.', async done => {
   let num
 
   updateHandlerDone = data => {
-    if (num === 101) {
-      expect(data).toEqual({ participants: 101, lastRound: 1 })
+    if (num === 99) {
+      console.log(data)
+      expect(data).toEqual({ participants: 100, lastRound: 1 })
       done()
     }
   }
 
-  for (num = 0; num < 100; num++) {
+  for (num = 0; num < 99; num++) {
     const otherUserId = new ObjectId()
     const pointId = new ObjectId()
     const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
 
     // this will trigger the update handler above
-    await upsertPoint
-      .call({ synuser: { id: otherUserId } }, pointObj, () => {})
-      .then(() => {
-        const insertResult = insertStatementId(discussionId, otherUserId, pointId)
-        expect(insertResult).toBe(pointId)
-      })
+    await upsertPoint.call({ synuser: { id: otherUserId } }, pointObj, () => {})
+
+    const insertResult = insertStatementId(discussionId, otherUserId, pointId)
+    expect(insertResult).toBe(pointId)
   }
 
   const statements = await getStatementIds(discussionId, 0, userId)
@@ -146,5 +145,4 @@ test('Check lastRound update.', async done => {
   rankMostImportant(discussionId, 0, userId, statements[0], 1)
 
   const roundOneStatements = await getStatementIds(discussionId, 1, userId)
-  console.log('ROUND 1', roundOneStatements)
 })

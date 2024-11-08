@@ -261,6 +261,8 @@ async function getStatementIds(discussionId, round, userId) {
     if (!dis.ShownStatements[round]) {
       // first time for this round, need to setup
       dis['lastRound'] = round
+      dis['participants'] = Object.keys(dis.Uitems).length
+
       Discussions[discussionId].updates({ participants: dis['participants'], lastRound: dis['lastRound'] })
       // make sure there are enough ranked items in the previous round to start
       if (dis.ShownStatements[round - 1].length < dis.group_size * dis.group_size) return
