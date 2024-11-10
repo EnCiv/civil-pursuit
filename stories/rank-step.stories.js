@@ -62,7 +62,7 @@ function rankPointsToContext(pointRankGroupList) {
         rp.rank && (cn.preRankByParentId[rp.rank.parentId] = rp.rank)
         return cn
       },
-      { preRankByParentId: {}, groupIdsLists: [] }
+      { pointById: {}, preRankByParentId: {}, groupIdsLists: [] }
     ),
   }
   console.log(cn)
