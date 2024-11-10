@@ -10,6 +10,7 @@ const Dturns = require('../models/dturns')
 async function subscribeDeliberation(deliberationId, requestHandler) {
   const socket = this // making it clear this is a socket
   const server = this.server // don't reference "this" in the UInfoUpdate handler.
+  const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
 
   // Verify user is logged in.
   if (!this.synuser || !this.synuser.id) {
@@ -39,7 +40,6 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
           return await Dturns.getAllFromDiscussion()
         },
         updates: async updateData => {
-          const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
           server.to(deliberationId).emit(eventName, updateData)
         },
       }

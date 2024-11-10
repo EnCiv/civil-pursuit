@@ -36,7 +36,7 @@ const {
   - **min_rank**: when filterning statements for the next round, they must at least have this number of users voting for it
   - **updateUInfo**: function to call to write out incremental changes to a database for later rehydration
   - **getAllUInfo**: funtion to get all the incremental changes from a database to rehydrate the deliberation
-  - **updates**: function to send updates to all connected clients. Not to be confused with updateUInfo.
+  - **updates**: function to send updates to all connected clients. Not to be confused with updateUInfo. {participants: number, lastRound: number}
 - **returns** a promse that is fulfilled when the initialition is complete, includeing the call to getAllUinfo
 
 ### insertStatementId( discussionId, userId, statementId )
