@@ -8,7 +8,8 @@ import getPointsOfIds from '../get-points-of-ids'
 let memoryServer
 let db
 
-const synuser = { synuser: { id: 'user1' } }
+// Use a valid hex-like ObjectId string for synuser
+const synuser = { synuser: { id: '1234567890abcdef12345678' } }
 
 beforeAll(async () => {
   memoryServer = await MongoMemoryServer.create()
@@ -35,80 +36,89 @@ afterEach(async () => {
 test('Nothing found', async () => {
   const callback = jest.fn()
 
-  // Call getPointsOfIds with `this` bound to `synuser`
-  await getPointsOfIds.call(synuser, [new ObjectId(), new ObjectId()], callback)
+  // Call getPointsOfIds with stringified ObjectIds
+  await getPointsOfIds.call(synuser, [new ObjectId().toString(), new ObjectId().toString()], callback)
 
-  expect(callback).toHaveBeenCalledWith([], [])
+  expect(callback).toHaveBeenCalledWith({ points: [], myWhys: [] })
 })
 
 // Test case 2: Points found, but no whypoints (expect only points)
 test('Points found, but no whypoints', async () => {
-  const POINT_ID_1 = new ObjectId()
-  const POINT_ID_2 = new ObjectId()
+  const POINT_ID_1 = new ObjectId().toString()
+  const POINT_ID_2 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: POINT_ID_1, title: 'Point 1', description: 'Description 1', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Point 2', description: 'Description 2', userId: 'user2' },
+    { _id: new ObjectId(POINT_ID_1), title: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
+    { _id: new ObjectId(POINT_ID_2), title: 'Point 2', description: 'Description 2', userId: 'abcdefabcdefabcdefabcdef' }, // Different user
   ])
 
   const callback = jest.fn()
 
-  await getPointsOfIds.call(synuser, [POINT_ID_1, POINT_ID_2], callback)
+  await getPointsOfIds.call(synuser, [POINT_ID_1.toString(), POINT_ID_2.toString()], callback)
 
-  expect(callback).toHaveBeenCalledWith([
-    { _id: POINT_ID_1, title: 'Point 1', description: 'Description 1', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Point 2', description: 'Description 2' } // userId removed
-  ], [])
+  expect(callback).toHaveBeenCalledWith({
+    points: [
+      { _id: new ObjectId(POINT_ID_1), title: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
+      { _id: new ObjectId(POINT_ID_2), title: 'Point 2', description: 'Description 2' } // userId removed for different user
+    ],
+    myWhys: []
+  })
 })
 
 // Test case 3: Points and whypoints found (expect points and whypoints)
 test('Points and whypoints found', async () => {
-  const POINT_ID_1 = new ObjectId()
-  const POINT_ID_2 = new ObjectId()
-  const WHYPOINT_ID_1 = new ObjectId()
+  const POINT_ID_1 = new ObjectId().toString()
+  const POINT_ID_2 = new ObjectId().toString()
+  const WHYPOINT_ID_1 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: POINT_ID_1, title: 'Unique Point 1', description: 'Description 1', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Unique Point 2', description: 'Description 2', userId: 'user2' },
+    { _id: new ObjectId(POINT_ID_1), title: 'Unique Point 1', description: 'Description 1', userId: synuser.synuser.id },
+    { _id: new ObjectId(POINT_ID_2), title: 'Unique Point 2', description: 'Description 2', userId: 'abcdefabcdefabcdefabcdef' }, // Different user
     {
-      _id: WHYPOINT_ID_1,
-      parentId: POINT_ID_1.toString(),
+      _id: new ObjectId(WHYPOINT_ID_1),
+      parentId: POINT_ID_1,
       title: 'Why Point 1',
       description: 'Why Description 1',
-      userId: 'user1',
+      userId: synuser.synuser.id, // Created by the current user
     },
   ])
 
   const callback = jest.fn()
 
-  await getPointsOfIds.call(synuser, [POINT_ID_1, POINT_ID_2], callback)
+  await getPointsOfIds.call(synuser, [POINT_ID_1.toString(), POINT_ID_2.toString()], callback)
 
-  expect(callback).toHaveBeenCalledWith([
-    { _id: POINT_ID_1, title: 'Unique Point 1', description: 'Description 1', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Unique Point 2', description: 'Description 2' }
-  ], [
-    { _id: WHYPOINT_ID_1, parentId: POINT_ID_1.toString(), title: 'Why Point 1', description: 'Why Description 1', userId: 'user1' }
-  ])
+  expect(callback).toHaveBeenCalledWith({
+    points: [
+      { _id: new ObjectId(POINT_ID_1), title: 'Unique Point 1', description: 'Description 1', userId: synuser.synuser.id },
+      { _id: new ObjectId(POINT_ID_2), title: 'Unique Point 2', description: 'Description 2' }
+    ],
+    myWhys: [
+      { _id: new ObjectId(WHYPOINT_ID_1), parentId: POINT_ID_1, title: 'Why Point 1', description: 'Why Description 1', userId: synuser.synuser.id }
+    ]
+  })
 })
 
 // Test case 4: Some points created by other users, userId removed (expect filtered points)
 test('Some points created by other users, userId removed', async () => {
-  const POINT_ID_1 = new ObjectId()
-  const POINT_ID_2 = new ObjectId()
+  const POINT_ID_1 = new ObjectId().toString()
+  const POINT_ID_2 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: POINT_ID_1, title: 'Point A by user1', description: 'Description A', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Point B by user2', description: 'Description B', userId: 'user2' }
+    { _id: new ObjectId(POINT_ID_1), title: 'Point A by user1', description: 'Description A', userId: synuser.synuser.id },
+    { _id: new ObjectId(POINT_ID_2), title: 'Point B by user2', description: 'Description B', userId: 'abcdefabcdefabcdefabcdef' }
   ])
 
   const callback = jest.fn()
 
-  await getPointsOfIds.call(synuser, [POINT_ID_1, POINT_ID_2], callback)
+  await getPointsOfIds.call(synuser, [POINT_ID_1.toString(), POINT_ID_2.toString()], callback)
 
-  expect(callback).toHaveBeenCalledWith([
-    { _id: POINT_ID_1, title: 'Point A by user1', description: 'Description A', userId: 'user1' },
-    { _id: POINT_ID_2, title: 'Point B by user2', description: 'Description B' } // userId removed
-  ], [])
+  expect(callback).toHaveBeenCalledWith({
+    points: [
+      { _id: new ObjectId(POINT_ID_1), title: 'Point A by user1', description: 'Description A', userId: synuser.synuser.id },
+      { _id: new ObjectId(POINT_ID_2), title: 'Point B by user2', description: 'Description B' } // userId removed for points created by another user
+    ],
+    myWhys: []
+  })
 })
 
 // Test case 5: Error handling (expect callback with undefined)

@@ -49,7 +49,7 @@ async function getPointsOfIds(ids, callback) {
     console.log('Fetched whypoints:', whypoints)
 
     // Return points and whypoints directly as arrays
-    callback(filteredPoints, whypoints)
+    callback({points: filteredPoints, myWhys: whypoints})
   } catch (error) {
     console.error('Error fetching points or whypoints:', error)
     cbFailure('Error fetching points or whypoints.')
