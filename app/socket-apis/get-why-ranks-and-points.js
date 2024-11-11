@@ -2,65 +2,59 @@
 
 const Points = require('../models/points')
 const Ranks = require('../models/ranks')
-import randomWhys from './randomWhys'
+import getRandomWhys from './get-random-whys'
+
+const WHY_FETCH_COUNT = 5 // Number of "whys" to fetch when an ID has none
 
 async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) {
-  // Verify that the user is logged in
-  if (!this.synuser || !this.synuser.id) {
-    console.error('User not logged in')
-    return cb && cb({ ranks: [], points: [] })
+  const cbFailure = errorMsg => {
+    if (errorMsg) console.error(errorMsg)
+    if (cb) cb(undefined)
   }
 
-  // Check that all required parameters are provided
+  if (!this.synuser || !this.synuser.id) {
+    return cbFailure('Cannot retrieve whys - user is not logged in.')
+  }
+
   if (!discussionId || !round || !mostIds || !leastIds) {
-    console.error('Missing or invalid parameters')
-    return cb && cb({ ranks: [], points: [] })
+    return cbFailure('Invalid argument provided to getWhyRanksAndPoints(discussionId: String, round: Number, mostIds: Array, leastIds: Array, cb: Function).')
   }
 
   try {
     const userId = this.synuser.id
-
-    // Fetch ranks based on discussionId, round, userId, and stage
     const ranks = await Ranks.find({ discussionId, round, userId, stage: 'why' }).toArray()
+    if (ranks.length == 0) return cb({ ranks: [], points: [] })
 
-    // If no ranks are found, return early with empty arrays
-    if (!ranks.length) return cb({ ranks: [], points: [] })
+    // Fetch points and track the IDs that already have "whys"
+    const points = await Points.find({ parentId: { $in: mostIds.concat(leastIds) }, userId: userId }).toArray()
+    const pointsWithWhys = new Set(points.map(point => point.parentId))
 
-    // Fetch points based on whether their parentId matches any of the mostIds or leastIds
-    const points = await Points.find({ parentId: { $in: mostIds.concat(leastIds) } }).toArray()
+    // Filter IDs that have no "whys"
+    const missingMostIds = mostIds.filter(id => !pointsWithWhys.has(id))
+    const missingLeastIds = leastIds.filter(id => !pointsWithWhys.has(id))
 
-    // Check if all mostIds and leastIds have corresponding points
-    if (hasAllRequiredPoints(mostIds, leastIds, points)) {
-      // If all required points are found, return ranks and points
+    // If all IDs already have "whys," return the existing points and ranks
+    if (!missingMostIds.length && !missingLeastIds.length) {
       return cb({ ranks, points })
     }
 
-    // If some points are missing, fetch random Whys for each mostId and leastId in parallel
-    const [mostWhys, leastWhys] = await Promise.all([randomWhys(mostIds, 'most', 5), randomWhys(leastIds, 'least', 5)])
+    // Fetch "whys" for each missing ID in parallel
+    const mostWhysPromises = missingMostIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'most', WHY_FETCH_COUNT, resolve)))
+    const leastWhysPromises = missingLeastIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'least', WHY_FETCH_COUNT, resolve)))
 
-    // Combine random whys for both mostIds and leastIds
+    // Wait for all random whys to be fetched
+    const mostWhys = (await Promise.all(mostWhysPromises)).flat()
+    const leastWhys = (await Promise.all(leastWhysPromises)).flat()
+
     const allWhys = [...mostWhys, ...leastWhys]
     const allWhysIds = allWhys.map(why => why._id)
-
-    // Fetch points based on the random whys fetched
     const allWhysPoints = await Points.find({ parentId: { $in: allWhysIds } }).toArray()
 
-    // Return ranks and points fetched from random whys
-    return cb({ ranks, points: allWhysPoints })
+    // Combine existing points and new points from random "whys"
+    return cb({ ranks, points: points.concat(allWhysPoints) })
   } catch (error) {
-    // Catch any error and log it
-    console.error('Error in getWhyRanksAndPoints:', error.message)
-    cb({ ranks: [], points: [] })
+    return cbFailure('Failed to retrieve ranks and points.')
   }
-}
-
-// Helper function to check if all provided IDs have corresponding points.
-function hasAllRequiredPoints(mostIds, leastIds, points) {
-  // Create a Set of parentIds from points for fast lookup
-  const pointsMap = new Set(points.map(point => point.parentId))
-
-  // Check if every mostId and leastId has a corresponding entry in pointsMap
-  return mostIds.every(id => pointsMap.has(id)) && leastIds.every(id => pointsMap.has(id))
 }
 
 module.exports = getWhyRanksAndPoints
