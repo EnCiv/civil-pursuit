@@ -14,18 +14,6 @@ const rankSchema = Joi.object({
   round: Joi.number().integer().min(1).required(), // round must be an integer >= 1
 })
 
-async function validateRankObj(rankObj) {
-  try {
-    // Use Joi to validate the rankObj against the schema
-    await rankSchema.validateAsync(rankObj)
-    console.log('Validation result: valid')
-    return true
-  } catch (error) {
-    console.log('Validation result: not valid: ', error.details[0].message)
-    return false
-  }
-}
-
 async function upsertRank(rankObj, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('upsertRank called but no user logged in')
@@ -34,9 +22,11 @@ async function upsertRank(rankObj, cb) {
   const userId = this.synuser.id
   rankObj.userId = userId // Add userId to the document
 
-  const isValid = await validateRankObj(rankObj)
-  if (!isValid) {
-    return cb && cb(undefined)
+  // Direct validation
+  const { error } = rankSchema.validate(rankObj)
+  if (error) {
+    console.error('Validation error in upsertRank:', error.details[0].message)
+    return cb && cb(null) // Return null to indicate validation error
   }
 
   try {
@@ -44,7 +34,7 @@ async function upsertRank(rankObj, cb) {
     const updatedDoc = await Ranks.findOne({ _id: rankObj._id })
     if (updatedDoc) {
       // Remove userId before returning the document if the request is not from the user themselves
-      let result = updatedDoc.toObject()
+      let result = updatedDoc
       if (result.userId !== userId) {
         delete result.userId
       }

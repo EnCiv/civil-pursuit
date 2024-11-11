@@ -1,6 +1,6 @@
 import CompareReasons from '../app/components/compare-reasons'
 import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent } from '@storybook/testing-library'
+import { within, userEvent } from '@storybook/test'
 import expect from 'expect'
 
 export default {

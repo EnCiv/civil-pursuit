@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { userEvent, within, waitFor } from '@storybook/testing-library'
+import { userEvent, within, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/why-step'
 import expect from 'expect'

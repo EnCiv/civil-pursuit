@@ -105,7 +105,7 @@ test('Fail if one of the required parameters is missing', async () => {
   await upsertRank.call({ synuser: user }, invalidRankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(undefined)
+  expect(cb).toHaveBeenCalledWith(null)
 
   const rank = await Mongo.db.collection('ranks').findOne({ round: 1, category: 'most' })
   expect(rank).toBeNull()
