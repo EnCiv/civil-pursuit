@@ -8,7 +8,7 @@ export default {
 
 export const PrimaryAllFieldsIncluded = {
   args: {
-    dob: '1990-10-20',
+    dob: new Date('1990-10-20T00:00:00.000Z').toISOString(),
     state: 'NY',
     party: 'Independent',
   },
@@ -18,7 +18,7 @@ export const UserNotFound = { args: {} }
 
 export const AgeAndStateOnly = {
   args: {
-    dob: '1990-10-20',
+    dob: new Date('1990-10-20T00:00:00.000Z').toISOString(),
     state: 'NY',
   },
 }
@@ -32,7 +32,7 @@ export const StateAndPartyOnly = {
 
 export const AgeAndPartyOnly = {
   args: {
-    dob: '1990-10-20',
+    dob: new Date('1990-10-20T00:00:00.000Z').toISOString(),
     party: 'Independent',
   },
 }
@@ -45,7 +45,7 @@ export const PartyOnly = {
 
 export const AgeOnly = {
   args: {
-    dob: '1990-10-20',
+    dob: new Date('1990-10-20T00:00:00.000Z').toISOString(),
   },
 }
 

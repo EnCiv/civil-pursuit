@@ -5,11 +5,12 @@ import insertSheet from 'react-jss'
 
 function DemInfo(props) {
   const { state, dob, party, classes, className, ...otherProps } = props
-  console.log('Received dob prop:', dob)
+
   if (!(state || dob || party)) return null // if no data, render not
 
   const userState = state || ''
   const userAge = dob ? calculateAge(dob) : ''
+
   const userPoliticalParty = party || ''
 
   let contentText = ''
@@ -24,7 +25,7 @@ function DemInfo(props) {
   } else if (userAge || userState) {
     contentText += userAge || userState
   }
-  console.log('Final Content Text:', contentText)
+
   return (
     <span className={cx(classes.infoText, className)} {...otherProps}>
       {contentText}
@@ -38,7 +39,6 @@ function DemInfo(props) {
  * @return {Number} age (in years)
  */
 function calculateAge(birthdayStr) {
-  console.log('Date of Birth:', birthdayStr)
   const birthday = new Date(birthdayStr)
   if (isNaN(birthday)) {
     console.warn('Invalid date format for dob:', birthdayStr)
