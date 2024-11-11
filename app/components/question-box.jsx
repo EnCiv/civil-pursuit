@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/100
+// https://github.com/EnCiv/civil-pursuit/issues/221
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -6,14 +6,14 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', participants = 0, ...otherProps } = props
+  const { className = '', subject = '', description = '', participants = 0, tagline = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const badgeName = `${participants} participants`
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       <div className={classes.topic}>
-        <div className={classes.fixedText}>Civil Pursuit</div>
+        {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <div className={classes.subject}>{subject}</div>
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
@@ -85,7 +85,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: 'center',
   },
-  
+
   participants: {
     display: 'flex',
     alignItems: 'center',
