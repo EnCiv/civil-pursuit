@@ -10,18 +10,18 @@ async function getPointsOfIds(ids, callback) {
 
   // Verify user is logged in
   if (!this.synuser || !this.synuser.id) {
-    console.log('User not logged in')
+    // console.log('User not logged in')
     return cbFailure('Cannot retrieve points - user is not logged in.')
   }
 
   // Verify arguments
   if (!Array.isArray(ids) || ids.length === 0) {
-    console.log('Invalid arguments:', { ids })
+    // console.log('Invalid arguments:', { ids })
     return cbFailure('Invalid arguments provided to getPointsOfIds(ids: Array, callback: Function).')
   }
 
   try {
-    console.log('Fetching points for ids:', ids)
+    // console.log('Fetching points for ids:', ids)
 
     // Fetch points by _id
     const points = await Points.aggregate([{ $match: { _id: { $in: ids.map(id => new ObjectId(id)) } } }]).toArray()
@@ -34,7 +34,7 @@ async function getPointsOfIds(ids, callback) {
       return point
     })
 
-    console.log('Filtered points:', filteredPoints)
+    // console.log('Filtered points:', filteredPoints)
 
     // Fetch why points where parentId is in the ids and match by userId
     const whypoints = await Points.aggregate([
@@ -46,7 +46,7 @@ async function getPointsOfIds(ids, callback) {
       }
     ]).toArray()
 
-    console.log('Fetched whypoints:', whypoints)
+    // console.log('Fetched whypoints:', whypoints)
 
     // Return points and whypoints directly as arrays
     callback({points: filteredPoints, myWhys: whypoints})
