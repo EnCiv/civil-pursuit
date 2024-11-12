@@ -84,3 +84,56 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 export default CompareReasons
+
+// pointWithWhyRankByWhyIdByPointId={id: {point, whyRankByWhyId: {id: {why, rank}}}}
+
+export function derivePointWithWhyRankListLisyByCategory(data, category) {
+  const local = useRef({ pointWithWhyRankListList: {}, pointWithWhyRankByWhyIdByPointId: {} }).current
+  const { reducedPointList, randomWhyById, whyRankByParentId } = data
+  const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
+  let updatedPoints = {}
+  if (local.reducedPointList !== reducedPointList) {
+    for (const pointGroup of reducedPointList) {
+      if (!pointWithWhyRankByWhyIdByPointId[pointGroup.point._id]?.point !== pointGroup.point) {
+        if (!pointWithWhyRankByWhyIdByPointId[pointGroup.point._id]) pointWithWhyRankByWhyIdByPointId[pointGroup.point._id] = { whyRankByWhyId: {} }
+        pointWithWhyRankByWhyIdByPointId[pointGroup.point._id].point = pointGroup.point
+        updatedPoints[pointGroup.point._id] = true
+      }
+    }
+    local.reducedPointList = reducedPointList
+  }
+  if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
+    for (const why of Object.values(randomWhyById)) {
+      if (!pointWithWhyRankByWhyIdByPointId[why.parentId]) continue // a why's parent not here
+      if (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].why !== why) {
+        pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id] = {
+          why,
+          rank: (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank = whyRankByParentId[why._id]),
+        }
+        updatedPoints[why.parentId] = true
+      } else if (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank !== whyRankByParentId[why._id]) {
+        pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank = { why, rank: whyRankByParentId[why._id] }
+        updatedPoints[why.parentId] = true
+      }
+    }
+    local.randomWhyById = randomWhyById
+    local.whyRankByParentId = whyRankByParentId
+  }
+  //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRanks: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
+  const newPointWithWhyRankListList = []
+  const updated = false
+  for (const pointWithWhyRankList of pointWithWhyRankListList) {
+    const pointId = pointWithWhyRankList.point._id
+    if (updatedPoints[pointId]) {
+      newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
+      updated = true
+    } else newPointWithWhyRankListList.push(pointWithWhyRankList)
+    delete updatedPoints[pointWithWhyRankList.point._id]
+  }
+  for (const pointId of Object.keys(updatedPoints)) {
+    newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
+    updated = true
+  }
+  if (updated) local.pointWithWhyRankListList = newPointWithWhyRankListList
+  return local.pointWithWhyRankListList
+}
