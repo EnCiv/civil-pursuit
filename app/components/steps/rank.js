@@ -16,6 +16,7 @@ import StatusBadge from '../status-badge.jsx'
 import StatusBox from '../status-box.js'
 
 import Ranking from '../ranking.jsx'
+import { set } from 'lodash'
 
 const minSelectionsTable = {
   0: { least: 0, most: 0 },
@@ -141,7 +142,9 @@ export function RankPoints(props) {
           round,
           discussionId,
         }
-        rankByParentId[point._id] = rank
+
+        let newRankByParentId = { ...rankByParentId, [point._id]: rank }
+        setRankByParentId(newRankByParentId)
       }
       if (rank) {
         const { valid, percentDone } = validAndPercentDone()
@@ -151,32 +154,20 @@ export function RankPoints(props) {
     })
   }
 
-  // rankList won't change except by parent, but ranks inside the list will change by setRank
-  // so updateCount is used to determin when rank updates are made
-  const [updateCount, setUpdateCount] = useState(1)
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
 
   const table = minSelectionsTable[pointRankGroupList.length] ?? { least: 0, most: 0 }
   const { least: targetLeast, most: targetMost } = table
-  const mostCount = () => getRankCount('Most')
-  const leastCount = () => getRankCount('Least')
-
-  const setRank = (id, rank) => {
-    const it = pointRankGroupList.find(ro => ro.point._id === id)
-
-    if (it) it.rank = rank
-
-    setUpdateCount(updateCount + 1)
-  }
+  const mostCount = () => getRankCount('most')
+  const leastCount = () => getRankCount('least')
 
   const getRankCount = rankName => {
-    return pointRankGroupList.filter(point => point.rank === rankName).length
+    return Object.values(rankByParentId).filter(rankedPoint => rankedPoint.category === rankName).length
   }
 
-  // in useEffect so it's called after setRank updates have taken effect
   useEffect(() => {
     onDone(validAndPercentDone())
-  }, [updateCount])
+  }, [rankByParentId])
 
   const validAndPercentDone = () => {
     let doneCount = 0
@@ -243,11 +234,7 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              pointRankGroupList.forEach(rankedPoint => {
-                const { point } = rankedPoint
-                setRank(point._id, '')
-              })
-              setUpdateCount(updateCount + 1)
+              setRankByParentId({})
             }}
           />
         </div>
@@ -269,13 +256,12 @@ export function RankPoints(props) {
               isInvalid={rankInvalid}
               data-testid={`point`}
             >
+              {console.log(rankByParentId[point._id])}
               <Ranking
                 className={classes.rank}
-                defaultValue={pointRankGroupList.find(ro => ro.point._id === point._id)?.rank}
+                defaultValue={rankByParentId[point._id]?.rank}
                 onDone={({ valid, value }) => {
                   handleRankPoint(point, { valid: valid, value: value })
-                  if (valid) setRank(point._id, value)
-                  else setRank(point._id, '')
                 }}
               />
             </Point>
