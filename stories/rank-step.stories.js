@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
-import RankStep from '../app/components/steps/rank-step'
+import RankStep from '../app/components/steps/rank'
 
 import {
   onDoneDecorator,

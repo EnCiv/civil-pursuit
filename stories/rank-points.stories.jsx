@@ -1,5 +1,5 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
-import { RankPoints } from '../app/components/steps/rank-step'
+import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator, onDoneResult } from './common'
 import { userEvent, within } from '@storybook/test'

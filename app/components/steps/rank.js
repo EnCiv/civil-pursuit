@@ -8,14 +8,14 @@ import cx from 'classnames'
 import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
 
-import DeliberationContext from '../deliberation-context'
-import Point from '../point'
-import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
+import DeliberationContext from '../deliberation-context.js'
+import Point from '../point.jsx'
+import PointGroup from '../point-group.jsx' // should be using PointGroup but it needs to support children
 import { ModifierButton } from '../button.jsx'
-import StatusBadge from '../status-badge'
-import StatusBox from '../status-box'
+import StatusBadge from '../status-badge.jsx'
+import StatusBox from '../status-box.js'
 
-import Ranking from '../ranking'
+import Ranking from '../ranking.jsx'
 
 const minSelectionsTable = {
   0: { least: 0, most: 0 },

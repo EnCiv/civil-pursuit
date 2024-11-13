@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/199
 
-import { derivePointRankGroupList } from '../rank-step'
+import { derivePointRankGroupList } from '../rank'
 
 jest.mock('react', () => {
   const obj = {}
