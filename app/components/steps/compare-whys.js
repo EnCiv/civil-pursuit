@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
@@ -88,7 +88,8 @@ export default CompareReasons
 // pointWithWhyRankByWhyIdByPointId={id: {point, whyRankByWhyId: {id: {why, rank}}}}
 
 export function derivePointWithWhyRankListLisyByCategory(data, category) {
-  const local = useRef({ pointWithWhyRankListList: {}, pointWithWhyRankByWhyIdByPointId: {} }).current
+  // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
+  const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
   const { reducedPointList, randomWhyById, whyRankByParentId } = data
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
@@ -104,15 +105,16 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
   }
   if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
     for (const why of Object.values(randomWhyById)) {
+      if (why.category !== category) continue
       if (!pointWithWhyRankByWhyIdByPointId[why.parentId]) continue // a why's parent not here
-      if (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].why !== why) {
+      if (pointWithWhyRankByWhyIdByPointId[why.parentId]?.whyRankByWhyId[why._id]?.why !== why) {
         pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id] = {
           why,
-          rank: (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank = whyRankByParentId[why._id]),
+          rank: whyRankByParentId?.[why._id],
         }
         updatedPoints[why.parentId] = true
-      } else if (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank !== whyRankByParentId[why._id]) {
-        pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank = { why, rank: whyRankByParentId[why._id] }
+      } else if (pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank !== whyRankByParentId?.[why._id]) {
+        pointWithWhyRankByWhyIdByPointId[why.parentId].whyRankByWhyId[why._id].rank = whyRankByParentId[why._id]
         updatedPoints[why.parentId] = true
       }
     }
@@ -121,19 +123,19 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
   }
   //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRanks: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
   const newPointWithWhyRankListList = []
-  const updated = false
-  for (const pointWithWhyRankList of pointWithWhyRankListList) {
+  let updated = false
+  for (const pointWithWhyRankList of pointWithWhyRankListList ?? []) {
     const pointId = pointWithWhyRankList.point._id
     if (updatedPoints[pointId]) {
       newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
       updated = true
     } else newPointWithWhyRankListList.push(pointWithWhyRankList)
-    delete updatedPoints[pointWithWhyRankList.point._id]
+    delete updatedPoints[pointId]
   }
   for (const pointId of Object.keys(updatedPoints)) {
     newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
     updated = true
   }
   if (updated) local.pointWithWhyRankListList = newPointWithWhyRankListList
-  return local.pointWithWhyRankListList
+  return { pointWithWhyRankListList: local.pointWithWhyRankListList }
 }
