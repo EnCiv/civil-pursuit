@@ -63,7 +63,7 @@ export const emptyRank = {
 
 export const oneRankNeutral = {
   args: {
-    pointRankGroupList: [{ ...point1, rank: 'Neutral' }],
+    pointRankGroupList: [{ ...point1, rank: { category: 'Neutral' } }],
   },
 }
 

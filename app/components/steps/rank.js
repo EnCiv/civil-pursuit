@@ -256,7 +256,6 @@ export function RankPoints(props) {
               isInvalid={rankInvalid}
               data-testid={`point`}
             >
-              {console.log(rankByParentId[point._id])}
               <Ranking
                 className={classes.rank}
                 defaultValue={rankByParentId[point._id]?.rank}
@@ -313,8 +312,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
 export function derivePointRankGroupList(data) {
   const local = useRef({ rankPointsById: {} }).current
-
   const { reducedPointList, preRankByParentId } = data
+
   let updated = false
 
   const { rankPointsById } = local
