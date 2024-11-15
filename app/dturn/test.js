@@ -23,7 +23,7 @@ const {
 } = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
-const NUMBER_OF_PARTICIPANTS = 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
+const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
 // const NUMBER_OF_PARTICIPANTS = 17000
 //const NUMBER_OF_PARTICIPANTS = 17000 * 7
 
