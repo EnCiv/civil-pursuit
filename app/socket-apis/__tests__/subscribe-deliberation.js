@@ -114,28 +114,36 @@ test('Check updateHandler is called.', done => {
     })
 })
 
-test('Check lastRound update.', async done => {
-  updateHandlerDone = () => {}
-
-  for (let num = 0; num < 99; num++) {
-    const otherUserId = new ObjectId()
-    const pointId = new ObjectId()
-    const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
-
-    await upsertPoint.call({ synuser: { id: otherUserId } }, pointObj, () => {})
-
-    const insertResult = await insertStatementId(discussionId, otherUserId, pointId)
-    expect(insertResult).toBe(pointId)
+test('Check lastRound update.', done => {
+  updateHandlerDone = data => {
+    expect(data.lastRound).toBe(0)
   }
 
-  const statements = await getStatementIds(discussionId, 0, userId)
-  await putGroupings(discussionId, 0, userId, [])
-  await rankMostImportant(discussionId, 0, userId, statements[0], 1)
+  // because jest erors on async (done)=>{}
+  async function testAsync() {
+    for (let num = 0; num < 99; num++) {
+      const otherUserId = new ObjectId()
+      const pointId = new ObjectId()
+      const pointObj = { _id: pointId, title: 'Point 1', description: 'Description 1' }
 
-  const roundOneStatements = await getStatementIds(discussionId, 1, userId)
+      await upsertPoint.call({ synuser: { id: otherUserId } }, pointObj, () => {})
 
-  updateHandlerDone = async data => {
-    expect(data).toEqual({ participants: 100, lastRound: 1 })
-    done()
+      const insertResult = await insertStatementId(discussionId, otherUserId, pointId)
+      expect(insertResult).toBe(pointId)
+    }
+
+    const statements = await getStatementIds(discussionId, 0, userId)
+    await putGroupings(discussionId, 0, userId, [])
+    await rankMostImportant(discussionId, 0, userId, statements[0], 1)
+
+    // change before the next getStatementIds which will cause the trigger
+    updateHandlerDone = async data => {
+      expect(data).toEqual({ participants: 100, lastRound: 1 })
+      done()
+    }
+
+    // trigger the update with lastRound 1
+    const roundOneStatements = await getStatementIds(discussionId, 1, userId)
   }
+  testAsync()
 })
