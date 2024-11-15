@@ -3,6 +3,9 @@ import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator, onDoneResult } from './common'
 import { userEvent, within } from '@storybook/test'
+
+const discussionId = '1101'
+
 export default {
   component: RankPoints,
   decorators: [onDoneDecorator],
@@ -47,6 +50,17 @@ const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
 const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
 const point13 = createPointObj('13', 'Point 13', 'Point 13 Description')
 
+function createRank(category) {
+  return {
+    _id: '100',
+    stage: 'pre',
+    category: category,
+    parentId: '200',
+    discussionId,
+    round: 0,
+  }
+}
+
 async function clickSelections(points, selections) {
   for (let index = 0; index < points.length; index++) {
     await userEvent.click(within(points[index]).getByText(selections[index]))
@@ -63,16 +77,16 @@ export const emptyRank = {
 
 export const oneRankNeutral = {
   args: {
-    pointRankGroupList: [{ ...point1, rank: { category: 'Neutral' } }],
+    pointRankGroupList: [{ ...point1, rank: createRank('neutral') }],
   },
 }
 
 export const sevenPointsWith3Ranked = {
   args: {
     pointRankGroupList: [
-      { ...point1, rank: 'Most' },
-      { ...point2, rank: 'Most' },
-      { ...point3, rank: 'Least' },
+      { ...point1, rank: createRank('most') },
+      { ...point2, rank: createRank('most') },
+      { ...point3, rank: createRank('least') },
       point4,
       point5,
       point6,
@@ -85,33 +99,35 @@ export const threePoints = {
   args: {
     style: {},
     pointRankGroupList: [
-      { ...point1, rank: 'Most' },
-      { ...point2, rank: 'Most' },
-      { ...point3, rank: 'Least' },
+      { ...point1, rank: createRank('most') },
+      { ...point2, rank: createRank('neutral') },
+      { ...point3, rank: createRank('least') },
     ],
   },
 }
 
+const tenRankPoints = [
+  { ...point1, rank: createRank('most') },
+  { ...point2, rank: createRank('most') },
+  { ...point3, rank: createRank('least') },
+  { ...point4, rank: createRank('neutral') },
+  { ...point5, rank: createRank('neutral') },
+  { ...point6, rank: createRank('neutral') },
+  { ...point7, rank: createRank('neutral') },
+  { ...point8, rank: createRank('neutral') },
+  { ...point9, rank: createRank('neutral') },
+  { ...point10, rank: createRank('neutral') },
+]
+
 export const tenRanksCorrect = {
   args: {
-    pointRankGroupList: [
-      { ...point1, rank: 'Most' },
-      { ...point2, rank: 'Most' },
-      { ...point3, rank: 'Least' },
-      { ...point4, rank: 'Neutral' },
-      { ...point5, rank: 'Neutral' },
-      { ...point6, rank: 'Neutral' },
-      { ...point7, rank: 'Neutral' },
-      { ...point8, rank: 'Neutral' },
-      { ...point9, rank: 'Neutral' },
-      { ...point10, rank: 'Neutral' },
-    ],
+    pointRankGroupList: tenRankPoints,
   },
 }
 
 export const tenRanksTooManyMost = {
   args: {
-    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -138,7 +154,7 @@ export const tenRanksTooManyMost = {
 
 export const tenRanksTooManyLeast = {
   args: {
-    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -165,7 +181,7 @@ export const tenRanksTooManyLeast = {
 
 export const tenRanksTooManyMostAndLeast = {
   args: {
-    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -193,19 +209,19 @@ export const tenRanksTooManyMostAndLeast = {
 export const numRanksNotInLookup = {
   args: {
     pointRankGroupList: [
-      { ...point1, rank: 'Most' },
-      { ...point2, rank: 'Least' },
-      { ...point3, rank: 'Least' },
-      { ...point4, rank: 'Neutral' },
-      { ...point5, rank: 'Neutral' },
-      { ...point6, rank: 'Most' },
-      { ...point7, rank: 'Most' },
-      { ...point8, rank: 'Least' },
-      { ...point9, rank: 'Neutral' },
-      { ...point10, rank: 'Neutral' },
-      { ...point11, rank: 'Neutral' },
-      { ...point12, rank: 'Neutral' },
-      { ...point13, rank: 'Neutral' },
+      { ...point1, rank: createRank('most') },
+      { ...point2, rank: createRank('least') },
+      { ...point3, rank: createRank('least') },
+      { ...point4, rank: createRank('neutral') },
+      { ...point5, rank: createRank('neutral') },
+      { ...point6, rank: createRank('most') },
+      { ...point7, rank: createRank('most') },
+      { ...point8, rank: createRank('least') },
+      { ...point9, rank: createRank('neutral') },
+      { ...point10, rank: createRank('neutral') },
+      { ...point11, rank: createRank('neutral') },
+      { ...point12, rank: createRank('neutral') },
+      { ...point13, rank: createRank('neutral') },
     ],
   },
 }
