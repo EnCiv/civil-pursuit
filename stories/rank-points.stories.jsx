@@ -147,16 +147,19 @@ export const tenRanksTooManyMost = {
       'Neutral',
     ])
     expect(onDoneResult(canvas)).toMatchObject({
-      delta: {
-        _id: '100',
-        category: 'least',
-        discussionId: discussionId,
-        parentId: '200',
-        round: 0,
-        stage: 'pre',
+      count: 5,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'least',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
       },
-      valid: false,
-      count: expect.any(Number),
     })
   },
 }
@@ -181,9 +184,21 @@ export const tenRanksTooManyLeast = {
       'Neutral',
       'Neutral',
     ])
+
     expect(onDoneResult(canvas)).toMatchObject({
-      count: expect.any(Number),
-      onDoneResult: [false, 1],
+      count: 3,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'most',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
+      },
     })
   },
 }
@@ -208,9 +223,21 @@ export const tenRanksTooManyMostAndLeast = {
       'Neutral',
       'Neutral',
     ])
+
     expect(onDoneResult(canvas)).toMatchObject({
-      count: expect.any(Number),
-      onDoneResult: [false, 1],
+      count: 5,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'least',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
+      },
     })
   },
 }
