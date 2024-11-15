@@ -114,8 +114,8 @@ test('Check updateHandler is called.', done => {
   // this will trigger the update handler above
   upsertPoint
     .call(synuser, pointObj, () => {})
-    .then(() => {
-      const insertResult = insertStatementId(discussionId, userId, pointId)
+    .then(async () => {
+      const insertResult = await insertStatementId(discussionId, userId, pointId)
       expect(insertResult).toBe(pointId)
     })
 })
@@ -135,13 +135,13 @@ test('Check lastRound update.', async done => {
 
     await upsertPoint.call({ synuser: { id: otherUserId } }, pointObj, () => {})
 
-    const insertResult = insertStatementId(discussionId, otherUserId, pointId)
+    const insertResult = await insertStatementId(discussionId, otherUserId, pointId)
     expect(insertResult).toBe(pointId)
   }
 
   const statements = await getStatementIds(discussionId, 0, userId)
-  putGroupings(discussionId, 0, userId, [])
-  rankMostImportant(discussionId, 0, userId, statements[0], 1)
+  await putGroupings(discussionId, 0, userId, [])
+  await rankMostImportant(discussionId, 0, userId, statements[0], 1)
 
   const roundOneStatements = await getStatementIds(discussionId, 1, userId)
 

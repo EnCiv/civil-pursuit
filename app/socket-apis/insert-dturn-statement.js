@@ -36,7 +36,7 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
   pointObj._id = statementId
 
   // Insert ID into dturn
-  const insertStatementResult = insertStatementId(dTurnId, userId, statementId)
+  const insertStatementResult = await insertStatementId(dTurnId, userId, statementId)
 
   // If insert to dturn failed - discussion isn't initialized, and don't need to try to insert into Points.
   if (!insertStatementResult) {
