@@ -35,7 +35,7 @@ const minSelectionsTable = {
 }
 
 export default function RankStep(props) {
-  const { onDone } = props
+  const { onDone, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
   const args = derivePointRankGroupList(data)
@@ -62,7 +62,9 @@ export default function RankStep(props) {
       })
     })
 
-  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...props} />
+  return (
+    <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...otherProps} />
+  )
 }
 
 const toRankString = {

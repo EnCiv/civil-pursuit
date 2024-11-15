@@ -36,7 +36,7 @@ const rankPoints = [
 const rank1preMost = {
   _id: '201',
   stage: 'pre',
-  category: 'most',
+  category: 'Most',
   parentId: '1',
   discussionId,
   round: 0,
@@ -45,7 +45,7 @@ const rank1preMost = {
 const rank2preNeutral = {
   _id: '202',
   stage: 'pre',
-  category: 'neutral',
+  category: 'Neutral',
   parentId: '2',
   discussionId,
   round: 0,
@@ -53,7 +53,7 @@ const rank2preNeutral = {
 const rank3preLeast = {
   _id: '203',
   stage: 'pre',
-  category: 'least',
+  category: 'Least',
   parentId: '3',
   discussionId,
   round: 0,
