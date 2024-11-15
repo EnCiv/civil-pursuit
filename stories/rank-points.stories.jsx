@@ -1,8 +1,9 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
+
 import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator, onDoneResult } from './common'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within, expect } from '@storybook/test'
 
 const discussionId = '1101'
 
@@ -77,16 +78,16 @@ export const emptyRank = {
 
 export const oneRankNeutral = {
   args: {
-    pointRankGroupList: [{ ...point1, rank: createRank('neutral') }],
+    pointRankGroupList: [{ ...point1, rank: createRank('Neutral') }],
   },
 }
 
 export const sevenPointsWith3Ranked = {
   args: {
     pointRankGroupList: [
-      { ...point1, rank: createRank('most') },
-      { ...point2, rank: createRank('most') },
-      { ...point3, rank: createRank('least') },
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Most') },
+      { ...point3, rank: createRank('Least') },
       point4,
       point5,
       point6,
@@ -99,24 +100,24 @@ export const threePoints = {
   args: {
     style: {},
     pointRankGroupList: [
-      { ...point1, rank: createRank('most') },
-      { ...point2, rank: createRank('neutral') },
-      { ...point3, rank: createRank('least') },
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Neutral') },
+      { ...point3, rank: createRank('Least') },
     ],
   },
 }
 
 const tenRankPoints = [
-  { ...point1, rank: createRank('most') },
-  { ...point2, rank: createRank('most') },
-  { ...point3, rank: createRank('least') },
-  { ...point4, rank: createRank('neutral') },
-  { ...point5, rank: createRank('neutral') },
-  { ...point6, rank: createRank('neutral') },
-  { ...point7, rank: createRank('neutral') },
-  { ...point8, rank: createRank('neutral') },
-  { ...point9, rank: createRank('neutral') },
-  { ...point10, rank: createRank('neutral') },
+  { ...point1, rank: createRank('Most') },
+  { ...point2, rank: createRank('Most') },
+  { ...point3, rank: createRank('Least') },
+  { ...point4, rank: createRank('Neutral') },
+  { ...point5, rank: createRank('Neutral') },
+  { ...point6, rank: createRank('Neutral') },
+  { ...point7, rank: createRank('Neutral') },
+  { ...point8, rank: createRank('Neutral') },
+  { ...point9, rank: createRank('Neutral') },
+  { ...point10, rank: createRank('Neutral') },
 ]
 
 export const tenRanksCorrect = {
@@ -146,8 +147,16 @@ export const tenRanksTooManyMost = {
       'Neutral',
     ])
     expect(onDoneResult(canvas)).toMatchObject({
+      delta: {
+        _id: '100',
+        category: 'least',
+        discussionId: discussionId,
+        parentId: '200',
+        round: 0,
+        stage: 'pre',
+      },
+      valid: false,
       count: expect.any(Number),
-      onDoneResult: [false, 1],
     })
   },
 }
@@ -209,19 +218,19 @@ export const tenRanksTooManyMostAndLeast = {
 export const numRanksNotInLookup = {
   args: {
     pointRankGroupList: [
-      { ...point1, rank: createRank('most') },
-      { ...point2, rank: createRank('least') },
-      { ...point3, rank: createRank('least') },
-      { ...point4, rank: createRank('neutral') },
-      { ...point5, rank: createRank('neutral') },
-      { ...point6, rank: createRank('most') },
-      { ...point7, rank: createRank('most') },
-      { ...point8, rank: createRank('least') },
-      { ...point9, rank: createRank('neutral') },
-      { ...point10, rank: createRank('neutral') },
-      { ...point11, rank: createRank('neutral') },
-      { ...point12, rank: createRank('neutral') },
-      { ...point13, rank: createRank('neutral') },
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Least') },
+      { ...point3, rank: createRank('Least') },
+      { ...point4, rank: createRank('Neutral') },
+      { ...point5, rank: createRank('Neutral') },
+      { ...point6, rank: createRank('Most') },
+      { ...point7, rank: createRank('Most') },
+      { ...point8, rank: createRank('Least') },
+      { ...point9, rank: createRank('Neutral') },
+      { ...point10, rank: createRank('Neutral') },
+      { ...point11, rank: createRank('Neutral') },
+      { ...point12, rank: createRank('Neutral') },
+      { ...point13, rank: createRank('Neutral') },
     ],
   },
 }

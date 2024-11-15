@@ -162,7 +162,9 @@ export function RankPoints(props) {
   const leastCount = () => getRankCount('least')
 
   const getRankCount = rankName => {
-    return Object.values(rankByParentId).filter(rankedPoint => rankedPoint.category === rankName).length
+    return Object.values(rankByParentId).filter(
+      rankedPoint => rankedPoint.category?.toLowerCase() === rankName?.toLowerCase()
+    ).length
   }
 
   useEffect(() => {
@@ -241,7 +243,7 @@ export function RankPoints(props) {
       </div>
       <div className={cx(classes.pointDiv)}>
         {pointRankGroupList.map((rankedPoint, i) => {
-          const { point } = rankedPoint
+          const { point, rank } = rankedPoint
 
           const rankInvalid =
             (rankDiscrepancies.most > 0 && rankedPoint.rank == 'Most' && targetMost > 0) ||
@@ -258,7 +260,7 @@ export function RankPoints(props) {
             >
               <Ranking
                 className={classes.rank}
-                defaultValue={rankByParentId[point._id]?.rank}
+                defaultValue={rankByParentId[point._id]?.rank || rank?.category}
                 onDone={({ valid, value }) => {
                   handleRankPoint(point, { valid: valid, value: value })
                 }}
