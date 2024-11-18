@@ -24,9 +24,7 @@ const createPointDoc = (
   }
 }
 
-const pointItems = Array.from({ length: 30 }, (_, index) =>
-  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
-)
+const pointItems = Array.from({ length: 30 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
 
 const defaultSharedPointsWhyStep = {
   mosts: [pointItems[1], pointItems[2]],
@@ -108,8 +106,7 @@ const testSteps = [
     stepName: 'Group',
     stepIntro: {
       subject: 'Group Responses',
-      description:
-        'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
+      description: 'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
     },
     shared: {
       pointList: pointItems,
@@ -121,8 +118,7 @@ const testSteps = [
     stepName: 'Rank',
     stepIntro: {
       subject: 'Rank Responses',
-      description:
-        'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
+      description: 'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
     },
     pointList: pointItems,
     rankList: [],
@@ -133,11 +129,9 @@ const testSteps = [
     stepName: 'Why Most',
     stepIntro: {
       subject: "Why it's Most Important",
-      description:
-        "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     shared: defaultSharedPointsWhyStep,
   },
   {
@@ -146,11 +140,9 @@ const testSteps = [
     stepName: 'Why Least',
     stepIntro: {
       subject: "Why it's Least Important",
-      description:
-        "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
+    intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
     shared: defaultSharedPointsWhyStep,
   },
   {
@@ -179,8 +171,7 @@ const testSteps = [
     stepName: 'Review',
     stepIntro: {
       subject: 'Review',
-      description:
-        'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
+      description: 'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
     },
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },

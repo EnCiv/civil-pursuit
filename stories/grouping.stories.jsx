@@ -1,11 +1,19 @@
-import React from 'react'
-import GroupingStep from '../app/components/grouping-step'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+// https://github.com/EnCiv/civil-pursuit/issues/198
+
+import React, { useContext, useState } from 'react'
+import GroupPoints from '../app/components/steps/grouping'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
+import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
+import DeliberationContext from '../app/components/deliberation-context'
+
+import { cloneDeep } from 'lodash'
+
+const discussionId = '1101'
+
 export default {
-  component: GroupingStep,
+  component: GroupPoints,
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -33,9 +41,21 @@ const createPointDoc = (
   }
 }
 
-const pointItems = Array.from({ length: 10 }, (_, index) =>
-  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
-)
+const pointItems = Array.from({ length: 10 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
+
+function groupingPointsToContext(groupingPoints) {
+  const cn = {
+    ...groupingPoints.reduce(
+      (cn, gp) => {
+        // context, reviewPoint
+        cn.pointById[gp._id] = gp
+        return cn
+      },
+      { pointById: {} }
+    ),
+  }
+  return cn
+}
 
 export const Empty = {
   args: {},
@@ -47,8 +67,8 @@ export const SharedEmpty = {
 
 export const Desktop = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -56,8 +76,8 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
     onDone: () => {},
@@ -71,8 +91,8 @@ export const Mobile = {
 
 export const canCreateGroup = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -217,8 +237,8 @@ export const canCreateGroup = {
 }
 export const canUnGroup = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -353,8 +373,8 @@ export const canUnGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
 export const canCreateGroupWithAGroup = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: [...pointItems],
       groupedPointList: [],
     },
   },
@@ -492,11 +512,11 @@ export const canCreateGroupWithAGroup = {
   },
 }
 
-// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
+// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the groupPoints doesn't go back to it's initial state
 export const canRemoveOnePointFromAGroup = {
   args: {
+    groupingPoints: pointItems,
     shared: {
-      pointList: [...pointItems],
       groupedPointList: [],
     },
   },

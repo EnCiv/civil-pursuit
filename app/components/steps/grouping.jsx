@@ -1,30 +1,85 @@
 // https://github.com/EnCiv/civil-pursuit/issues/49
+// https://github.com/EnCiv/civil-pursuit/issues/198
 
 // groupedPoints and pointList are both a list of pointObj
 // groupedPoints is shared across states (user may move back and forth between states)
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useState } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
+import DeliberationContext from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import PointGroup from './point-group'
-import { PrimaryButton, SecondaryButton } from './button'
-import StatusBadge from './status-badge'
-import { cloneDeep } from 'lodash'
+import PointGroup from '../point-group'
+import { PrimaryButton, SecondaryButton } from '../button'
+import StatusBadge from '../status-badge'
+import { cloneDeep, isEqual } from 'lodash'
 
-export default function GroupingStep(props) {
-  const { onDone = () => {}, shared = {}, className, ...otherProps } = props
+export function GroupingStep(props) {
+  const { onDone, ...otherProps } = props
+  const { data, upsert } = useContext(DeliberationContext)
+
+  const args = { ...deriveReducedPointGroupList(data) }
+
+  const handleOnDone = ({ valid, value, delta }) => {
+    if (delta) {
+      upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      window.socket.emit('upsert-rank', delta)
+    }
+    onDone({ valid, value })
+  }
+  // fetch previous data
+  if (typeof window !== 'undefined')
+    useState(() => {
+      // on the browser, do this once and only once when this component is first rendered
+      const { discussionId, round, reducedPointList } = data
+      window.socket.emit('get-points-for-round', discussionId, round, result => {
+        if (!result) return // there was an error
+        const [points] = result
+        const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
+        const groupings = undefined
+
+        upsert({ pointById, uInfoByRound: { [round]: { groupings: groupings } } })
+      })
+    })
+  return <GroupPoints {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
+}
+
+export default function GroupPoints(props) {
+  const { groupingPoints = [], onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
+
+  if (!groupingPoints) return null
+
+  const [pointById, setPointById] = useState(
+    (groupingPoints || []).reduce((pointById, groupingPoint) => {
+      pointById[groupingPoint._id] = groupingPoint
+      return pointById
+    }, {})
+  )
+
+  useEffect(() => {
+    const newPointById = (groupingPoints || []).reduce((pointById, groupingPoint) => {
+      pointById[groupingPoint._id] = groupingPoint
+      return pointById
+    }, {})
+    let updated = false
+    for (const pointDoc of Object.values(newPointById)) {
+      if (isEqual(pointDoc, pointById[pointDoc._id])) {
+        newPointById[pointDoc._id] = pointById[pointDoc._id]
+      } else updated = true
+    }
+    if (updated) {
+      setPointById(newPointById)
+    }
+  }, [pointById])
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
-    pointsToGroup: cloneDeep(
-      groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointList || []
-    ), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    pointsToGroup: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : groupingPoints || pointList || []), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
     yourGroups: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => p.groupedPoints?.length) : []), // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
@@ -143,19 +198,11 @@ export default function GroupingStep(props) {
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={'progress'} number={gs.yourGroups.length} />
-          <StatusBadge
-            name="Responses Selected"
-            status={gs.selectedPoints.length === 0 ? '' : 'complete'}
-            number={gs.selectedPoints.length}
-          />
+          <StatusBadge name="Responses Selected" status={gs.selectedPoints.length === 0 ? '' : 'complete'} number={gs.selectedPoints.length} />
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton
-              disabled={gs.selectedPoints.length < 2}
-              className={classes.primaryButton}
-              onClick={handleCreateGroupClick}
-            >
+            <PrimaryButton disabled={gs.selectedPoints.length < 2} className={classes.primaryButton} onClick={handleCreateGroupClick}>
               Create Group
             </PrimaryButton>
           </div>
@@ -176,13 +223,7 @@ export default function GroupingStep(props) {
       ) : null}
       <div className={classes.groupsContainer}>
         {gs.pointsToGroup.map(point => (
-          <PointGroup
-            key={point._id}
-            pointDoc={point}
-            vState="default"
-            select={gs.selectedPoints.some(id => id === point._id)}
-            onClick={() => togglePointSelection(point._id)}
-          />
+          <PointGroup key={point._id} pointDoc={point} vState="default" select={gs.selectedPoints.some(id => id === point._id)} onClick={() => togglePointSelection(point._id)} />
         ))}
       </div>
       {!!gs.yourGroups.length && (
@@ -297,3 +338,34 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: 'white',
   },
 }))
+
+export function deriveReducedPointGroupList(data) {
+  const local = useRef({ groupingPointsById: {} }).current
+
+  const { reducedPointList, pointById } = data
+
+  let updated = false
+
+  const { groupingPointsById } = local
+  if (local.reducedPointList !== reducedPointList) {
+    for (const { point } of reducedPointList) {
+      if (!groupingPointsById[point._id]) {
+        groupingPointsById[point._id] = { point }
+        updated = true
+      }
+    }
+    local.reducedPointList = reducedPointList
+  }
+
+  if (local.pointById !== pointById) {
+    for (const { point } of pointById) {
+      if (!groupingPointsById[point._id]) {
+        groupingPointsById[point._id] = { point }
+        updated = true
+      }
+    }
+    local.pointById = pointById
+  }
+  if (updated) local.groupingPoints = Object.values(local.groupingPointsById)
+  return { groupingPoints: local.groupingPointsById }
+}
