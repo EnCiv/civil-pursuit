@@ -81,7 +81,7 @@ test('Update an existing rank document with a different category', async () => {
   await upsertRank.call({ synuser: { id: USER1 } }, updatedRankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1.toString(), userId: USER1 })
+  const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
   expect(rank).toMatchObject({ ...updatedRankObj, userId: USER1 })
 })
 
@@ -105,7 +105,7 @@ test('Fail if one of the required parameters is missing', async () => {
   await upsertRank.call({ synuser: user }, invalidRankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(null)
+  expect(cb).toHaveBeenCalledWith()
 
   const rank = await Mongo.db.collection('ranks').findOne({ round: 1, category: 'most' })
   expect(rank).toBeNull()

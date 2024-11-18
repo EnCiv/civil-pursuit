@@ -1,4 +1,5 @@
 //https://github.com/EnCiv/civil-pursuit/issues/211
+import { ObjectId } from 'mongodb'
 
 const Joi = require('joi')
 const Ranks = require('../models/ranks')
@@ -26,12 +27,15 @@ async function upsertRank(rankObj, cb) {
   const { error } = rankSchema.validate(rankObj)
   if (error) {
     console.error('Validation error in upsertRank:', error.details[0].message)
-    return cb && cb(null) // Return null to indicate validation error
+    return cb && cb()
   }
 
   try {
+    rankObj._id = new ObjectId(rankObj._id)
     await Ranks.updateOne({ _id: rankObj._id }, { $set: rankObj }, { upsert: true })
-    const updatedDoc = await Ranks.findOne({ _id: rankObj._id })
+    if (!cb) return
+
+    const updatedDoc = await Ranks.findOne({ _id: rankObjId })
     if (updatedDoc) {
       // Remove userId before returning the document if the request is not from the user themselves
       let result = updatedDoc
@@ -40,11 +44,11 @@ async function upsertRank(rankObj, cb) {
       }
       cb(result)
     } else {
-      cb(undefined) // Return undefined if the document wasn't found
+      cb()
     }
   } catch (error) {
     console.error(error)
-    cb(undefined) // Return undefined indicating an error
+    cb()
   }
 }
 
