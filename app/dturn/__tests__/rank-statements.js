@@ -44,8 +44,8 @@ describe('Test ranking scenarios', () => {
     const statement2 = statements[1]
 
     // Rank both statements as most important
-    rankMostImportant(DISCUSSION_ID, 0, USER_ID, statement1, 1)
-    rankMostImportant(DISCUSSION_ID, 0, USER_ID, statement2, 1)
+    await rankMostImportant(DISCUSSION_ID, 0, USER_ID, statement1, 1)
+    await rankMostImportant(DISCUSSION_ID, 0, USER_ID, statement2, 1)
 
     const userRecord = getUserRecord(DISCUSSION_ID, USER_ID)
 
