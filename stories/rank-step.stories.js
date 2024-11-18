@@ -36,7 +36,7 @@ const rankPoints = [
 const rank1preMost = {
   _id: '201',
   stage: 'pre',
-  category: 'Most',
+  category: 'most',
   parentId: '1',
   discussionId,
   round: 0,
@@ -45,7 +45,7 @@ const rank1preMost = {
 const rank2preNeutral = {
   _id: '202',
   stage: 'pre',
-  category: 'Neutral',
+  category: 'neutral',
   parentId: '2',
   discussionId,
   round: 0,
@@ -53,7 +53,7 @@ const rank2preNeutral = {
 const rank3preLeast = {
   _id: '203',
   stage: 'pre',
-  category: 'Least',
+  category: 'least',
   parentId: '3',
   discussionId,
   round: 0,
@@ -87,7 +87,7 @@ export const Empty = {
 
 export const Desktop = {
   args: {
-    rankPoints,
+    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, []),
     discussionId,
     round,
   },
@@ -95,7 +95,7 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
-    rankPoints,
+    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, []),
     discussionId,
     round,
   },
@@ -184,7 +184,7 @@ const rankStepTemplate = args => {
     window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
       window.socket._socketEmitHandlerResults['get-user-ranks'] = [discussionId, round, ids]
       setTimeout(() => {
-        const ranks = Object.values(pprRankByParentId) // back to array
+        const ranks = Object.values(preRankByParentId) // back to array
         cb([ranks])
       })
     }

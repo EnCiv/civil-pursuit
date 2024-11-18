@@ -22,7 +22,7 @@ export default function Ranking(props) {
       setResponse(defaultValue)
       onDone && onDone({ valid: true, value: defaultValue })
     } else {
-      setResponse(undefined)
+      setResponse('')
       onDone && onDone({ valid: false, value: '' })
     }
   }, [defaultValue])

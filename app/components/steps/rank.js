@@ -145,8 +145,7 @@ export function RankPoints(props) {
           discussionId,
         }
 
-        let newRankByParentId = { ...rankByParentId, [point._id]: rank }
-        setRankByParentId(newRankByParentId)
+        rankByParentId[point._id] = rank
       }
       if (rank) {
         const { valid, percentDone } = validAndPercentDone()
@@ -176,8 +175,8 @@ export function RankPoints(props) {
   const validAndPercentDone = () => {
     let doneCount = 0
 
-    for (const rankedPoint of pointRankGroupList) {
-      if (rankedPoint.rank) doneCount++
+    for (const rankedPoint of Object.values(rankByParentId)) {
+      if (rankedPoint.category) doneCount++
     }
 
     // Check for difference in expected most/least counts
@@ -238,6 +237,9 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
+              pointRankGroupList.forEach(element => {
+                delete element['rank']
+              })
               setRankByParentId({})
             }}
           />
@@ -262,7 +264,7 @@ export function RankPoints(props) {
             >
               <Ranking
                 className={classes.rank}
-                defaultValue={rankByParentId[point._id]?.rank || rank?.category}
+                defaultValue={toRankString[rankByParentId[point._id]?.category]}
                 onDone={({ valid, value }) => {
                   handleRankPoint(point, { valid: valid, value: value })
                 }}
