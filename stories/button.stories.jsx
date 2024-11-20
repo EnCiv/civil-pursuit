@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } from '../app/components/button'
 import expect from 'expect'
-import { userEvent, within } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/test'
 import { onDoneDecorator, onDoneResult } from './common'
 
 export default {
@@ -121,7 +121,7 @@ export const SecondaryFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const ModifierFocus = {
   args: {
@@ -135,7 +135,7 @@ export const ModifierFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const PrimaryFocus = {
   args: {
@@ -149,7 +149,7 @@ export const PrimaryFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const TextFocus = {
   args: {
@@ -163,7 +163,7 @@ export const TextFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const HoverTestFocus = {
   args: {
@@ -178,4 +178,4 @@ export const HoverTestFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}

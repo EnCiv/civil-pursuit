@@ -1,6 +1,55 @@
 // https://github.com/EnCiv/civil-pursuit/issues/80
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
+import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
+
+export const socketEmitDecorator = Story => {
+  useState(() => {
+    if (!window.socket) window.socket = {}
+    if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
+    if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = []
+    window.socket.emit = (handle, ...args) => {
+      if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
+      else console.error('socketEmitDecorator: no handle found', handle, ...args)
+    }
+  })
+  return <Story />
+}
+
+export const DeliberationContextDecorator = (Story, context) => {
+  const { defaultValue, ...otherArgs } = context.args
+  return (
+    <DeliberationContextProvider defaultValue={defaultValue}>
+      <DeliberationData>
+        <Story {...otherArgs} />
+      </DeliberationData>
+    </DeliberationContextProvider>
+  )
+}
+const DeliberationData = props => {
+  const { data, upsert } = useContext(DeliberationContext)
+  return (
+    <>
+      {props.children}
+      {Object.keys(data).length > 0 ? (
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+          <div>
+            {' '}
+            DeliberationContext:{' '}
+            <span id="deliberation-context-data" style={{ whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(data, null, 4)}
+            </span>
+          </div>
+        </div>
+      ) : null}
+    </>
+  )
+}
+
+export function deliberationContextData() {
+  return JSON.parse(document.getElementById('deliberation-context-data').innerHTML)
+}
+
 import { Level } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }

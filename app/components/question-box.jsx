@@ -13,7 +13,10 @@ const QuestionBox = props => {
     description = '',
     participants = 0,
     contentAlign = 'center',
+<<<<<<< HEAD
     tagline = '',
+=======
+>>>>>>> origin/master
     ...otherProps
   } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
