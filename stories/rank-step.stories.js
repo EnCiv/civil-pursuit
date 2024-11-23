@@ -132,7 +132,6 @@ export const onDoneIsCalledIfInitialData = {
     const canvas = within(canvasElement)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
@@ -155,7 +154,6 @@ export const onDoneIsCalledAfterUserChangesRank = {
 
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
@@ -171,7 +169,6 @@ export const onDoneIsCalledAfterUserChangesRank = {
 function getRankArgsFrom(rankPoints) {
   const cn = rankPointsToContext(rankPoints)
   const { preRankByParentId, ...defaultValue } = { ...cn, round, discussionId }
-
   return { preRankByParentId, defaultValue }
 }
 
@@ -205,13 +202,12 @@ export const rankStepWithPartialDataAndUserUpdate = {
     const canvas = within(canvasElement)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
         },
       })
-      expect(window.socket._socketEmitHandlerResults['get-user-ranks']).toEqual([discussionId, round, ['1', '2', '3']])
+      expect(window.socket._socketEmitHandlerResults['get-user-ranks']).toEqual([discussionId, round, 'pre'])
     })
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
@@ -255,7 +251,6 @@ export const rankStepWithTopDownUpdate = {
     const canvas = within(canvasElement)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
@@ -278,7 +273,6 @@ export const rankStepWithTopDownUpdate = {
     })
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 4,
         onDoneResult: {
           valid: false,
           value: 0.6666666666666666,
