@@ -117,12 +117,12 @@ export function RankPoints(props) {
     }
     if (updated) {
       setRankByParentId(newRankByParentId)
-    }
 
-    // Ranks loaded from context won't display because they're not in rankByParentId,
-    // so track the initial render to make an exception and add them to data
-    if (isInitialRender) {
-      setIsInitialRender(false)
+      // Ranks loaded from context won't display because they're not in rankByParentId at first,
+      // so track the initial render to make an exception and add them to data
+      if (isInitialRender) {
+        setIsInitialRender(false)
+      }
     }
   }, [pointRankGroupList])
 
@@ -140,7 +140,6 @@ export function RankPoints(props) {
     setRankByParentId(rankByParentId => {
       // doing this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
       let rank
-
       if (rankByParentId[point._id]) {
         if (rankByParentId[point._id].category !== newCategory) {
           rank = { ...rankByParentId[point._id], category: newCategory }

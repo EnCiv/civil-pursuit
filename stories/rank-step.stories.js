@@ -171,6 +171,7 @@ export const onDoneIsCalledAfterUserChangesRank = {
 function getRankArgsFrom(rankPoints) {
   const cn = rankPointsToContext(rankPoints)
   const { preRankByParentId, ...defaultValue } = { ...cn, round, discussionId }
+
   return { preRankByParentId, defaultValue }
 }
 
