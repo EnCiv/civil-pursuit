@@ -204,7 +204,7 @@ export const rankStepWithPartialDataAndUserUpdate = {
     const canvas = within(canvasElement)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
+        count: 3,
         onDoneResult: {
           valid: false,
           value: 0.3333333333333333,
@@ -277,7 +277,7 @@ export const rankStepWithTopDownUpdate = {
     })
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
+        count: 4,
         onDoneResult: {
           valid: false,
           value: 0.6666666666666666,

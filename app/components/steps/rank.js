@@ -95,16 +95,20 @@ export function RankPoints(props) {
 
   const [rankByParentId, setRankByParentId] = useState(
     (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
-      if (rankPoint.rank) rankByParentId[rankPoint.point._id] = rankPoint.rank
+      if (rankPoint.rank && rankByParentId[rankPoint.point._id]) rankByParentId[rankPoint.point._id] = rankPoint.rank
       return rankByParentId
     }, {})
   )
 
+  const [isInitialRender, setIsInitialRender] = useState(true)
+
   useEffect(() => {
     const newRankByParentId = (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
-      if (rankPoint.rank) rankByParentId[rankPoint.point._id] = rankPoint.rank
+      if (rankPoint.rank && (isInitialRender || rankByParentId[rankPoint.point._id]))
+        rankByParentId[rankPoint.point._id] = rankPoint.rank
       return rankByParentId
     }, {})
+
     let updated = false
     for (const rankDoc of Object.values(newRankByParentId)) {
       if (isEqual(rankDoc, rankByParentId[rankDoc.parentId])) {
@@ -113,6 +117,12 @@ export function RankPoints(props) {
     }
     if (updated) {
       setRankByParentId(newRankByParentId)
+    }
+
+    // Ranks loaded from context won't display because they're not in rankByParentId,
+    // so track the initial render to make an exception and add them to data
+    if (isInitialRender) {
+      setIsInitialRender(false)
     }
   }, [pointRankGroupList])
 
@@ -124,13 +134,16 @@ export function RankPoints(props) {
 
   const handleRankPoint = (point, result) => {
     const rankString = result.value
+    const newCategory = rankStringToCategory[rankString]
+
     // the above vars are needed when calling onDone which must be done outside the set function
     setRankByParentId(rankByParentId => {
       // doing this within the set function because handleReviewPoint could get called multiple time before the next rerender which updates the state value returned by useState
       let rank
+
       if (rankByParentId[point._id]) {
-        if (rankByParentId[point._id].category !== rankStringToCategory[rankString]) {
-          rank = { ...rankByParentId[point._id], category: rankStringToCategory[rankString] }
+        if (rankByParentId[point._id].category !== newCategory) {
+          rank = { ...rankByParentId[point._id], category: newCategory }
           rankByParentId[point._id] = rank
         } else {
           rank = rankByParentId[point._id]
@@ -139,7 +152,7 @@ export function RankPoints(props) {
         rank = {
           _id: ObjectId().toString(),
           stage: 'pre',
-          category: rankStringToCategory[rankString],
+          category: newCategory,
           parentId: point._id,
           round,
           discussionId,
@@ -149,6 +162,7 @@ export function RankPoints(props) {
       }
       if (rank) {
         const { valid, percentDone } = validAndPercentDone()
+
         setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
       } // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
       return rankByParentId // about the setter
@@ -237,9 +251,6 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              pointRankGroupList.forEach(element => {
-                delete element['rank']
-              })
               setRankByParentId({})
             }}
           />
