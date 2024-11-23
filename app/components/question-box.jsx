@@ -7,18 +7,7 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const {
-    className = '',
-    subject = '',
-    description = '',
-    participants = 0,
-    contentAlign = 'center',
-<<<<<<< HEAD
-    tagline = '',
-=======
->>>>>>> origin/master
-    ...otherProps
-  } = props
+  const { className = '', subject = '', description = '', participants = 0, contentAlign = 'center', tagline = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const badgeName = `${participants} participants`
 
@@ -46,8 +35,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: props =>
-      props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end',
+    alignItems: props => (props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end'),
     padding: '3.625rem 9.875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '3.1875rem 1.5625rem',
