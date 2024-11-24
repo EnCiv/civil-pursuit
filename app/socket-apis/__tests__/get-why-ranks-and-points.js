@@ -96,7 +96,6 @@ test('Case where there are 5 rankings for each mostId and leastId', async () => 
         _id: new ObjectId(),
         parentId: parentId.toString(),
         round,
-        rank: i,
         stage: 'why',
         category: 'most',
         discussionId,

@@ -35,7 +35,7 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
     const parentIds = ranks.map(rank => rank.parentId)
 
     // Step 3: Fetch points based on parentIds
-    const points = await Points.find({ parentId: { $in: parentIds } }).toArray()
+    const points = await Points.find({ _id: { $in: parentIds } }).toArray()
 
     // Step 4: Check if all mostIds and leastIds have corresponding why-points
     const pointsWithWhys = new Set(points.map(point => point.parentId))
@@ -64,6 +64,7 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
 
     // Step 6: Fetch points for newly fetched whys
     const newWhysPoints = await Points.find({ parentId: { $in: allWhysIds } }).toArray()
+    console.log('newWhysPoints:', newWhysPoints)
 
     // Combine existing and new points
     return cb({ ranks, whys: points.concat(newWhysPoints) })
