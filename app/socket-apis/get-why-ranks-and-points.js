@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/207
 
+// https://github.com/EnCiv/civil-pursuit/issues/207
+
 const Points = require('../models/points')
 const Ranks = require('../models/ranks')
 const getRandomWhys = require('./get-random-whys')
@@ -30,6 +32,18 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
       userId,
       stage: 'why',
     }).toArray()
+
+    // Fetch random whys directly if no ranks exist
+    if (ranks.length === 0) {
+      console.log('Ranks are empty. Fetching random whys directly.')
+      const mostWhysPromises = mostIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'most', WHY_FETCH_COUNT, resolve)))
+      const leastWhysPromises = leastIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'least', WHY_FETCH_COUNT, resolve)))
+
+      const mostWhys = (await Promise.all(mostWhysPromises)).flat()
+      const leastWhys = (await Promise.all(leastWhysPromises)).flat()
+
+      return cb({ ranks: [], whys: [...mostWhys, ...leastWhys] })
+    }
 
     // Step 2: Extract parentIds from ranks
     const parentIds = ranks.map(rank => rank.parentId)
