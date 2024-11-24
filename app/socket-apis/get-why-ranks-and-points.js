@@ -59,15 +59,9 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
     const leastWhys = (await Promise.all(leastWhysPromises)).flat()
 
     const allWhys = [...mostWhys, ...leastWhys]
-    console.log('allWhys:', allWhys)
-    const allWhysIds = allWhys.map(why => why._id)
-
-    // Step 6: Fetch points for newly fetched whys
-    const newWhysPoints = await Points.find({ parentId: { $in: allWhysIds } }).toArray()
-    console.log('newWhysPoints:', newWhysPoints)
 
     // Combine existing and new points
-    return cb({ ranks, whys: points.concat(newWhysPoints) })
+    return cb({ ranks, whys: allWhys })
   } catch (error) {
     return cbFailure('Failed to retrieve ranks and points.')
   }
