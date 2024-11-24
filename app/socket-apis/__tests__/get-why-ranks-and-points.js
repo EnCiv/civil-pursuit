@@ -57,40 +57,41 @@ test('Return empty ranks and points if nothing found', async () => {
 })
 
 // Test 3: Case where there are 5 why-points for each mostId and leastId
-test('Case where there are 5 why-points for each mostId and leastId', async () => {
+test('Return why-points if they exist for mostIds and leastIds', async () => {
   const cb = jest.fn()
 
+  // Insert 5 why-points for each ID
   const whys = []
-  mostIds.concat(leastIds).forEach((parentId, index) => {
+  mostIds.concat(leastIds).forEach(parentId => {
     for (let i = 0; i < 5; i++) {
       whys.push({
         _id: new ObjectId(),
         parentId: parentId.toString(),
         userId,
         round,
-        title: `Why ${parentId}-${i}`, // Unique title
+        title: `Why ${parentId}-${i}`,
         description: `Description ${i}`,
       })
     }
   })
 
-  console.log('Inserting whys:', whys)
   await Points.insertMany(whys)
 
-  const insertedWhys = await Points.find({}).toArray()
-  console.log('Inserted whys:', insertedWhys)
+  // Fetch ranks and points
   await getWhyRanksAndPoints.call(synuser, discussionId, round, mostIds, leastIds, cb)
 
+  const expectedWhys = await Points.find({}).toArray()
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith({ ranks: [], whys: [] })
+  expect(cb).toHaveBeenCalledWith({ ranks: [], whys: expectedWhys })
 })
 
-// Test 4: 5 rankings for each mostId and leastId
-test('Case where there are 5 rankings for each mostId and leastId', async () => {
+// Test 4: Rankings exist for each mostId and leastId
+test('Return ranks and points when rankings exist for each ID', async () => {
   const cb = jest.fn()
 
+  // Insert ranks for each mostId and leastId
   const ranks = []
-  mostIds.concat(leastIds).forEach((parentId, index) => {
+  mostIds.concat(leastIds).forEach(parentId => {
     for (let i = 0; i < 5; i++) {
       ranks.push({
         _id: new ObjectId(),
@@ -104,38 +105,40 @@ test('Case where there are 5 rankings for each mostId and leastId', async () => 
     }
   })
 
+  // Insert corresponding why-points
   const whys = []
-  mostIds.concat(leastIds).forEach((parentId, index) => {
+  mostIds.concat(leastIds).forEach(parentId => {
     for (let i = 0; i < 5; i++) {
       whys.push({
         _id: new ObjectId(),
         parentId: parentId.toString(),
         userId,
         round,
-        title: `Why ${parentId}-${i}`, // Unique title
+        title: `Why ${parentId}-${i}`,
         description: `Description ${i}`,
       })
     }
   })
 
+  await Ranks.insertMany(ranks)
   await Points.insertMany(whys)
 
-  await Ranks.insertMany(ranks)
-
-  const insertedRanks = await Ranks.find({}).toArray()
-  console.log('Inserted ranks:', insertedRanks)
+  // Fetch ranks and points
   await getWhyRanksAndPoints.call(synuser, discussionId, round, mostIds, leastIds, cb)
 
+  const expectedRanks = await Ranks.find({}).toArray()
+  const expectedWhys = await Points.find({}).toArray()
+
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith({ ranks, whys })
+  expect(cb).toHaveBeenCalledWith({ ranks: expectedRanks, whys: expectedWhys })
 })
 
-// Test 5: Rankings for one mostId but not the other or leastId
-test('Case where there are 5 rankings for one mostId but not the other or leastId', async () => {
+// Test 5: Rankings exist for one ID but not all
+test('Handle partial rankings and return appropriate data', async () => {
   const cb = jest.fn()
 
+  // Insert ranks for only one mostId
   const ranks = []
-
   for (let i = 0; i < 5; i++) {
     ranks.push({
       _id: new ObjectId(),
@@ -149,25 +152,30 @@ test('Case where there are 5 rankings for one mostId but not the other or leastI
     })
   }
 
+  // Insert why-points for all IDs
   const whys = []
-  mostIds.concat(leastIds).forEach((parentId, index) => {
+  mostIds.concat(leastIds).forEach(parentId => {
     for (let i = 0; i < 5; i++) {
       whys.push({
         _id: new ObjectId(),
         parentId: parentId.toString(),
         userId,
         round,
-        title: `Why ${parentId}-${i}`, // Unique title
+        title: `Why ${parentId}-${i}`,
         description: `Description ${i}`,
       })
     }
   })
 
-  await Points.insertMany(whys)
   await Ranks.insertMany(ranks)
+  await Points.insertMany(whys)
 
+  // Fetch ranks and points
   await getWhyRanksAndPoints.call(synuser, discussionId, round, mostIds, leastIds, cb)
 
+  const expectedRanks = await Ranks.find({}).toArray()
+  const expectedWhys = await Points.find({}).toArray()
+
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith({ ranks, whys })
+  expect(cb).toHaveBeenCalledWith({ ranks: expectedRanks, whys: expectedWhys })
 })

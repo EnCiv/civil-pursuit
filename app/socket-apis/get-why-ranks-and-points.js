@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/207
 
-// https://github.com/EnCiv/civil-pursuit/issues/207
-
 const Points = require('../models/points')
 const Ranks = require('../models/ranks')
 const getRandomWhys = require('./get-random-whys')
@@ -33,7 +31,7 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
       stage: 'why',
     }).toArray()
 
-    // Fetch random whys directly if no ranks exist
+    // If no ranks exist, fetch random whys directly
     if (ranks.length === 0) {
       console.log('Ranks are empty. Fetching random whys directly.')
       const mostWhysPromises = mostIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'most', WHY_FETCH_COUNT, resolve)))
@@ -46,17 +44,17 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
     }
 
     // Step 2: Extract parentIds from ranks
-    const parentIds = ranks.map(rank => rank.parentId)
+    const parentIds = ranks.map(rank => rank.parentId.toString())
 
     // Step 3: Fetch points based on parentIds
     const points = await Points.find({ _id: { $in: parentIds } }).toArray()
 
     // Step 4: Check if all mostIds and leastIds have corresponding why-points
-    const pointsWithWhys = new Set(points.map(point => point.parentId))
+    const pointsWithWhys = new Set(points.map(point => point.parentId.toString()))
 
-    const missingMostIds = mostIds.filter(id => !pointsWithWhys.has(id))
+    const missingMostIds = mostIds.filter(id => !pointsWithWhys.has(id.toString()))
     console.log('missingMostIds:', missingMostIds)
-    const missingLeastIds = leastIds.filter(id => !pointsWithWhys.has(id))
+    const missingLeastIds = leastIds.filter(id => !pointsWithWhys.has(id.toString()))
     console.log('missingLeastIds:', missingLeastIds)
 
     if (!missingMostIds.length && !missingLeastIds.length) {
