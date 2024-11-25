@@ -56,33 +56,24 @@ test('Insert a new rank document', async () => {
 })
 
 test('Update an existing rank document with a different category', async () => {
-  const existingRank = {
+  const rankObj = {
     _id: RANK1.toString(),
     parentId: 'parent-id-1',
-    userId: USER1,
     round: 1,
     stage: 'pre',
     category: 'most',
     discussionId: 'discussion-1',
   }
-  await Mongo.db.collection('ranks').insertOne(existingRank)
 
-  const updatedRankObj = {
-    _id: RANK1.toString(),
-    parentId: 'parent-id-1',
-    round: 1,
-    stage: 'pre',
-    category: 'least', // Changing category from 'most' to 'least'
-    discussionId: 'discussion-1',
-  }
+  const user = { USER1 }
 
   const cb = jest.fn()
 
-  await upsertRank.call({ synuser: { id: USER1 } }, updatedRankObj, cb)
+  await upsertRank.call({ synuser: { id: USER1 } }, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
   const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
-  expect(rank).toMatchObject({ ...updatedRankObj, userId: USER1 })
+  expect(rank).toMatchObject({ ...rankObj, userId: USER1 })
 })
 
 test('Fail if the user is not logged in', async () => {

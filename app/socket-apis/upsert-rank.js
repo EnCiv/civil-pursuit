@@ -35,7 +35,7 @@ async function upsertRank(rankObj, cb) {
     await Ranks.updateOne({ _id: rankObj._id }, { $set: rankObj }, { upsert: true })
     if (!cb) return
 
-    const updatedDoc = await Ranks.findOne({ _id: rankObjId })
+    const updatedDoc = await Ranks.findOne({ _id: rankObj._id })
     if (updatedDoc) {
       // Remove userId before returning the document if the request is not from the user themselves
       let result = updatedDoc
