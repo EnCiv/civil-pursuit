@@ -7,8 +7,46 @@ import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 
+import DeliberationContext from '../deliberation-context'
+import { isEqual } from 'lodash'
+import ObjectId from 'bson-objectid'
+
+export default function CompareWhysStep(props) {
+  const { onDone, category } = props
+  const { data, upsert } = useContext(DeliberationContext)
+  const args = { ...derivePointWithWhyRankListLisyByCategory(data, category) }
+  const handleOnDone = ({ valid, value, delta }) => {
+    if (delta) {
+      upsert({ whyRankByParentId: { [delta.parentId]: delta } })
+      window.socket.emit('upsert-rank', delta)
+    }
+    onDone({ valid, value })
+  }
+  // fetch previous data
+  if (typeof window !== 'undefined')
+    useState(() => {
+      // on the browser, do this once and only once when this component is first rendered
+      const { discussionId, round, reducedPointList } = data
+      window.socket.emit(
+        'get-user-post-ranks-and-top-ranked-whys',
+        discussionId,
+        round,
+        reducedPointList.map(point_group => point_group.point._id),
+        result => {
+          if (!result) return // there was an error
+          const [ranks, whys] = result
+          //if (!ranks.length && !whys.length) return // nothing to do
+          const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
+          const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
+          upsert({ postRankByParentId, topWhyById })
+        }
+      )
+    })
+  return <CompareWhys {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
+}
+
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
-function CompareReasons(props) {
+export function CompareWhys(props) {
   const { pointWithWhyRankListList = [], side = '', onDone = () => {}, className, ...otherProps } = props
   const classes = useStyles()
   const [completedPoints, setCompletedPoints] = useState(new Set())
@@ -82,8 +120,6 @@ const useStyles = createUseStyles(theme => ({
     marginTop: '1rem',
   },
 }))
-
-export default CompareReasons
 
 // pointWithWhyRankByWhyIdByPointId={id: {point, whyRankByWhyId: {id: {why, rank}}}}
 

@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
-import CompareReasons from '../app/components/steps/compare-whys'
+import CompareWhysStep, { CompareReasons as CompareWhys } from '../app/components/steps/compare-whys'
 import { asyncSleep, onDoneDecorator, onDoneResult } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
 
-export default { component: CompareReasons, args: {}, decorators: [onDoneDecorator] }
+export default { component: CompareWhys, args: {}, decorators: [onDoneDecorator] }
 
 const pointWithWhyRankListList = [
   {
