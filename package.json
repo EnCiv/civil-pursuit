@@ -45,6 +45,7 @@
     "buffer": "^6.0.3",
     "classnames": "^2.2.6",
     "joi": "^17.13.3",
+    "joi-objectid": "^4.0.2",
     "lodash": "^4.17.11",
     "log4js": "git+https://github.com/ddfridley/log4js-node.git#onbrowser",
     "log4js-extend": "^0.2.1",
