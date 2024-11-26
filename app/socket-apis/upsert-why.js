@@ -1,8 +1,13 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
+// https://github.com/EnCiv/civil-pursuit/issues/210
 
 const Joi = require('joi')
 const { Points, pointSchema } = require('../models/points')
 const { ObjectId } = require('mongodb')
+
+const schema = Joi.object({
+  category: Joi.string().valid('most', 'least', 'neutral').required(),
+})
 
 async function upsertWhy(pointObj, cb) {
   if (!this.synuser || !this.synuser.id) {
@@ -19,20 +24,19 @@ async function upsertWhy(pointObj, cb) {
 
   pointObj._id = new ObjectId(pointObj._id) // Convert _id to an ObjectId object for mongo
 
-
   if (validation.error) {
     console.error(validation.error)
     return cb && cb(null) // Return validation error
   }
 
   try {
-    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
-    const updatedDoc = await Points.findOne({ _id: pointObj._id });
+    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true })
+    const updatedDoc = await Points.findOne({ _id: pointObj._id })
 
-    cb(updatedDoc);
+    cb(updatedDoc)
   } catch (error) {
-    console.error(error);
-    cb(null); // Return null indicating an error
+    console.error(error)
+    cb(null) // Return null indicating an error
   }
 }
 

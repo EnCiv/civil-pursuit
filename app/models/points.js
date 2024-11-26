@@ -1,19 +1,19 @@
 // https://github.com/EnCiv/civil-pursuit/issues/129
 
-import { Collection } from '@enciv/mongo-collections';
-import Joi from 'joi';
-import JoiObjectID from 'joi-objectid';
-import enforceRequiredFields from './lib/enforceRequiredFields';
+import { Collection } from '@enciv/mongo-collections'
+import Joi from 'joi'
+import JoiObjectID from 'joi-objectid'
+import enforceRequiredFields from './lib/enforceRequiredFields'
 
 Joi.objectId = JoiObjectID(Joi)
 
-const SANE = 4096;
+const SANE = 4096
 const Integer = /^[0-9]+$/
 const ObjectID = /^[0-9a-fA-F]{24}$/
 
-const String = () => Joi.string().allow('').max(SANE);
-const IsoDate = () => Joi.string().allow('').isoDate();
-const Email = () => Joi.string().allow('').email();
+const String = () => Joi.string().allow('').max(SANE)
+const IsoDate = () => Joi.string().allow('').isoDate()
+const Email = () => Joi.string().allow('').email()
 const Number = () => Joi.number()
 
 const pointSchema = Joi.object({
@@ -23,8 +23,8 @@ const pointSchema = Joi.object({
   parentId: String(),
   category: String(),
   round: Number(),
-  userId: String()
-  })
+  userId: String(),
+})
 
 class Points extends Collection {
   static collectionName = 'points' // name of the collection in MongoDB
@@ -37,18 +37,14 @@ class Points extends Collection {
 
   static validateRequiredFields(requiredFields, doc) {
     const schema = enforceRequiredFields(pointSchema, requiredFields)
-    const {error, value} = schema.validate(doc)
+    const { error, value } = schema.validate(doc)
     if (error) {
-      return { error: error.details[0].message}
+      return { error: error.details[0].message }
     }
-    return {result: value}
-
-
+    return { result: value }
   }
-
-
 }
 
 Points.setCollectionProps() // initialize the collection with the properties
 
-module.exports = { Points, pointSchema}
+module.exports = { Points, pointSchema }

@@ -1,6 +1,6 @@
 {
   "name": "civil-pursuit",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "description": "Civil Pursuit - so millions of people can deliberate productively online",
   "main": "dist/index.js",
   "scripts": {
@@ -31,7 +31,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
-    "node": "16.20.1"
+    "node": "18.13.0"
   },
   "dependencies": {
     "@codastic/react-positioning-portal": "^0.7.0",
@@ -78,20 +78,20 @@
   },
   "optionalDependencies": {
     "@jest/globals": "^29.7.0",
-    "@storybook/addon-a11y": "^7.6.17",
-    "@storybook/addon-actions": "^7.6.17",
-    "@storybook/addon-essentials": "^7.6.17",
-    "@storybook/addon-interactions": "^7.6.17",
-    "@storybook/addon-links": "^7.6.17",
-    "@storybook/addon-viewport": "^7.6.19",
+    "@storybook/addon-a11y": "^8.3.6",
+    "@storybook/addon-actions": "^8.3.6",
+    "@storybook/addon-essentials": "^8.3.6",
+    "@storybook/addon-interactions": "^8.3.6",
+    "@storybook/addon-links": "^8.3.6",
+    "@storybook/addon-viewport": "^8.3.6",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
     "@storybook/addons": "^7.6.17",
-    "@storybook/blocks": "^7.6.17",
-    "@storybook/cli": "^7.6.17",
-    "@storybook/jest": "^0.2.3",
-    "@storybook/react": "^7.6.17",
-    "@storybook/react-webpack5": "^7.6.17",
-    "@storybook/test-runner": "^0.14.1",
-    "@storybook/testing-library": "^0.2.2",
+    "@storybook/blocks": "^8.3.6",
+    "@storybook/cli": "^8.3.6",
+    "@storybook/react": "^8.3.6",
+    "@storybook/react-webpack5": "^8.3.6",
+    "@storybook/test": "^8.3.6",
+    "@storybook/test-runner": "^0.19.1",
     "axe-playwright": "^1.2.3",
     "chromatic": "^11.3.0",
     "concurrently": "3.6.1",
@@ -100,9 +100,9 @@
     "expect": "^23.6.0",
     "jest": "^29.7.0",
     "jest-enzyme": "^7.1.2",
-    "mongodb-memory-server": "^9.3.0",
+    "mongodb-memory-server": "^10.1.2",
     "nodemon": "^2.0.15",
-    "storybook": "^7.5.3",
+    "storybook": "^8.3.6",
     "webpack-dev-server": "^4.15.1"
   },
   "peerDependencies": {
