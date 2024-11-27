@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
-import CompareWhysStep, { CompareReasons as CompareWhys } from '../app/components/steps/compare-whys'
-import { asyncSleep, onDoneDecorator, onDoneResult } from './common'
+import CompareWhysStep, { CompareWhys } from '../app/components/steps/compare-whys'
+import { asyncSleep, onDoneDecorator } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
 
@@ -58,21 +58,30 @@ export const emptyArgs = { args: {} }
 
 export const twoPointListsPlayThrough = {
   args: { pointWithWhyRankListList: [pointWithWhyRankListList[0], pointWithWhyRankListList[1]], side: 'least' },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
+    const { onDone } = args
     const canvas = within(canvasElement)
-    await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({ count: 1, onDoneResult: { valid: false, value: 0 } })
-    })
     const one = canvas.getByText('1 is less than 2')
     await userEvent.click(one)
-    await asyncSleep(500)
-    await userEvent.click(one)
-    await asyncSleep(500)
-    await userEvent.click(one)
-    await asyncSleep(500)
-    await userEvent.click(one)
+    await asyncSleep(500) // allow transitions on the component to complete
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({ count: 7, onDoneResult: { valid: false, value: 50 } })
+      expect(onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '3' } })
+    })
+    await userEvent.click(one)
+    await asyncSleep(500)
+    await waitFor(() => {
+      expect(onDone.mock.calls[1][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '4' } })
+    })
+    await userEvent.click(one)
+    await asyncSleep(500)
+    await waitFor(() => {
+      expect(onDone.mock.calls[2][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '5' } })
+    })
+    userEvent.click(one)
+    await asyncSleep(500)
+    await waitFor(() => {
+      expect(onDone.mock.calls[3][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '6' } })
+      expect(onDone.mock.calls[4][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'most', stage: 'why', parentId: '2' } })
     })
     const two = canvas.getByText('21 is less than 2')
     await userEvent.click(two)
@@ -83,7 +92,11 @@ export const twoPointListsPlayThrough = {
     await asyncSleep(500)
     await userEvent.click(two)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({ count: 13, onDoneResult: { valid: true, value: 100 } })
+      expect(onDone.mock.calls[5][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '23' } })
+      expect(onDone.mock.calls[6][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '24' } })
+      expect(onDone.mock.calls[7][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '25' } })
+      expect(onDone.mock.calls[8][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '26' } })
+      expect(onDone.mock.calls[9][0]).toMatchObject({ valid: true, value: 1, delta: { category: 'most', stage: 'why', parentId: '22' } })
     })
   },
 }
