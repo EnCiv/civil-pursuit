@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
+import { fn } from '@storybook/test'
 
 export const socketEmitDecorator = Story => {
   useState(() => {
@@ -114,23 +115,31 @@ export function RenderStory(props) {
 }
 
 export function onDoneDecorator(Story, context) {
-  const [result, setResult] = useState({ count: 0 })
-  const onDone = useCallback(res => {
-    // two succesive calls to onDone from the same user event will not increment the count twice, unless we use the set function approach
-    setResult(result => ({ count: result.count + 1, onDoneResult: res }))
+  // attach an onDone argument that functions like mock.fn but also set's state to cause a rerender
+  const [count, setCount] = useState(0)
+  useState(() => {
+    // do this once, immediately
+    const mockFn = fn()
+    const onDone = (...args) => {
+      const result = mockFn(...args)
+      setCount(count => count + 1)
+      return result
+    }
+    Object.assign(onDone, mockFn)
+    onDone.mock = mockFn.mock // most important part wasn't picked up by assign
+    onDone.mockFn = mockFn // might be handy someday
+    context.args.onDone = onDone
   })
-  context.args.onDone = onDone
   return (
     <>
       <Story />
-
-      {result.count ? (
+      {count ? (
         <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
           <div>
             {' '}
             onDone:{' '}
             <span title="onDoneResult" id="onDoneResult" style={{ whiteSpace: 'pre-wrap' }}>
-              {JSON.stringify(result, null, 4)}
+              {JSON.stringify({ count, onDoneResult: context.args.onDone.mock.calls.at(-1)[0] }, null, 4)}
             </span>
           </div>
         </div>
