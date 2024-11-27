@@ -8,8 +8,6 @@ import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 
 import DeliberationContext from '../deliberation-context'
-import { isEqual } from 'lodash'
-import ObjectId from 'bson-objectid'
 
 export default function CompareWhysStep(props) {
   const { onDone, category } = props
@@ -49,44 +47,44 @@ export default function CompareWhysStep(props) {
 export function CompareWhys(props) {
   const { pointWithWhyRankListList = [], side = '', onDone = () => {}, className, ...otherProps } = props
   const classes = useStyles()
-  const [completedPoints, setCompletedPoints] = useState(new Set())
-  const [percentDone, setPercentDone] = useState(0)
+  // completedByPointId does not effect rendering, so no need to set state, just mutate.
+  const [completedByPointId] = useState(
+    pointWithWhyRankListList.reduce((completedByPointId, pointWithWhyRankList) => {
+      completedByPointId[pointWithWhyRankList.point._id] = false
+      return completedByPointId
+    }, {})
+  )
 
   useEffect(() => {
-    if (completedPoints.size === pointWithWhyRankListList.length) {
-      onDone({ valid: true, value: percentDone })
-    } else {
-      onDone({ valid: false, value: percentDone })
+    // if new points get added, mark them as incomplete
+    for (const pointWithWhyRankList of pointWithWhyRankListList) {
+      if (typeof completedByPointId[pointWithWhyRankList.point._id] === 'undefined') completedByPointId[pointWithWhyRankList.point._id] = false
     }
-  }, [completedPoints, percentDone])
+  }, [pointWithWhyRankListList])
 
-  useEffect(() => {
-    if (pointWithWhyRankListList.length === 0) setPercentDone(100)
-    else {
-      setPercentDone(Number(((completedPoints.size / pointWithWhyRankListList.length) * 100).toFixed(2)))
-    }
-  }, [completedPoints, pointWithWhyRankListList])
-
-  const handlePairCompare = ({ valid, value }, idx) => {
-    setCompletedPoints(prevPoints => {
-      const updatedPoints = new Set(prevPoints)
-      if (valid) {
-        updatedPoints.add(idx)
-      } else {
-        updatedPoints.delete(idx)
-      }
-      return updatedPoints
-    })
+  const handlePairCompare = ({ valid, value }, _id) => {
+    if (valid) completedByPointId[_id] = true
+    else completedByPointId[_id] = false
+    const [done, total] = Object.values(completedByPointId).reduce(
+      ([done, total], completed) => {
+        if (completed) done++
+        total++
+        return [done, total]
+      },
+      [0, 0]
+    )
+    const percentDone = done / total
+    onDone({ valid: percentDone >= 1, value: percentDone, delta: value })
   }
 
   return (
     <div className={classes.container} {...otherProps}>
-      {pointWithWhyRankListList.map(({ point, whyRankList }, idx) => (
-        <div key={idx} className={classes.headlinePoint}>
+      {pointWithWhyRankListList.map(({ point, whyRankList }) => (
+        <div key={point._id} className={classes.headlinePoint}>
           <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
           <H className={classes.headlineSubject}>{point.subject}</H>
           <Level>
-            <PairCompare className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, idx)} />
+            <PairCompare className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
           </Level>
         </div>
       ))}
