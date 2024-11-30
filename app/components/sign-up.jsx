@@ -95,6 +95,11 @@ function SignUp(props, ref) {
     })
   }
 
+  // Call onDone after successful action
+  if (state.success) {
+    onDone({ valid: true })
+  }
+
   // otherwise, continue showing login/sign up page
   return (
     <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
