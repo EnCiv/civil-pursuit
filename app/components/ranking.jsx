@@ -28,7 +28,7 @@ const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, va
   return rS2C
 }, {})
 
-function Rank(props) {
+export function RankByCategory(props) {
   const { onDone, rank, ...otherProps } = props
   const handleOnDone = result => ({ valid: result.valid, value: rankStringToCategory[result.value] })
   return <Ranking onDone={handleOnDone} rank={toRankString[rank]} {...otherProps}></Ranking>

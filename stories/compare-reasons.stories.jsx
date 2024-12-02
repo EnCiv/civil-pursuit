@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
-
+import React, { useState } from 'react'
 import CompareWhysStep, { CompareWhys } from '../app/components/steps/compare-whys'
-import { asyncSleep, onDoneDecorator } from './common'
+import { asyncSleep, onDoneDecorator, socketEmitDecorator, DeliberationContextDecorator, deliberationContextData } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
 
@@ -99,4 +99,53 @@ export const twoPointListsPlayThrough = {
       expect(onDone.mock.calls[9][0]).toMatchObject({ valid: true, value: 1, delta: { category: 'most', stage: 'why', parentId: '22' } })
     })
   },
+}
+
+// rip pointWithWhyRankListList into the separate objects that go into the context
+function getStepArgsFrom(pointWithWhyRankListList) {
+  const cn = {
+    ...pointWithWhyRankListList.reduce(
+      (cn, rp) => {
+        cn.defaultValue.reducedPointList.push({ point: rp.point })
+        for (const whyRank of rp.whyRankList) {
+          cn.whys.push(whyRank.why)
+          cn.ranks.push(whyRank.rank)
+        }
+        return cn
+      },
+      { defaultValue: { reducedPointList: [] }, whys: [], ranks: [] }
+    ),
+  }
+  return { ...cn }
+}
+
+// sets up the socket api mocks and renders the component
+const StepTemplate = args => {
+  // topWhyById and postRankByParentId are taken from args to uses by the api call
+  const { pointWithWhyRankListList, ...otherArgs } = args
+  const stepArgs = getStepArgsFrom(pointWithWhyRankListList)
+  useState(() => {
+    // execute this code once, before the component is initally rendered
+    // the api call will provide the new data for this step
+    window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
+      window.socket._socketEmitHandlerResults['get-why-ranks-and-points'].push([discussionId, round, mostIds, leastIds])
+      setTimeout(() => {
+        const whys = stepArgs.whys // back to array
+        const ranks = stepArgs.ranks // back to array
+        cb([ranks, whys])
+      })
+    }
+    window.socket._socketEmitHandlerResults['get-why-ranks-and-points'] = []
+    window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
+      window.socket._socketEmitHandlerResults['upsert-rank'].push(rank)
+      cb && cb()
+    }
+    window.socket._socketEmitHandlerResults['upsert-rank'] = []
+  })
+  return <CompareWhysStep {...otherArgs} />
+}
+export const NomalStep = {
+  args: { pointWithWhyRankListList },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: props => <StepTemplate {...props} />,
 }

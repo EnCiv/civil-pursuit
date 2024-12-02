@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
@@ -24,11 +24,21 @@ export default function CompareWhysStep(props) {
   if (typeof window !== 'undefined')
     useState(() => {
       // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList } = data
+      const { discussionId, round, reducedPointList, preRankByParentId } = data
+      const { mostIds, leastIds } = Object.values(preRankByParentId).reduce(
+        ({ mostIds, leastIds }, rank) => {
+          if (rank.category === 'most') mostIds.push(rank.parentId)
+          else if (rank.category === 'least') leastIds.push(rank.parentId)
+          return { mostIds, leastIds }
+        },
+        { mostIds: [], leastIds: [] }
+      )
       window.socket.emit(
-        'get-user-post-ranks-and-top-ranked-whys',
+        'get-why-ranks-and-points',
         discussionId,
         round,
+        mostIds,
+        leastIds,
         reducedPointList.map(point_group => point_group.point._id),
         result => {
           if (!result) return // there was an error
