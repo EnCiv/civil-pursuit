@@ -128,7 +128,7 @@ function SignUp(props, ref) {
         >
           <p id="text">First Name</p>
           <input
-            name="first-name"
+            name="first-name" placeholder="John"
             className={cx(
               classes.input,
               !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput,
@@ -147,7 +147,7 @@ function SignUp(props, ref) {
         >
           <p id="text">Last Name</p>
           <input
-            name="last-name"
+            name="last-name" placeholder="Doe"
             className={cx(
               classes.input,
               isLogIn && classes.disabled,
@@ -160,7 +160,7 @@ function SignUp(props, ref) {
         <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
           <p id="text">E-mail</p>
           <input
-            name="email"
+            name="email" placeholder="Johndoe@gmail.com"
             className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)}
             onBlur={e => changeEmail(e.target.value)}
             tabIndex={tabIndex}
@@ -173,6 +173,7 @@ function SignUp(props, ref) {
           <input
             name="password"
             type="password"
+            placeholder='******'
             className={cx(classes.input, !state.password && (clickedOnPassword || isSubmitted) && classes.invalidInput)}
             onChange={e => changePassword(e.target.value)}
             tabIndex={tabIndex}
@@ -189,6 +190,7 @@ function SignUp(props, ref) {
           <input
             name="confirm"
             type="password"
+            placeholder="******"
             className={cx(
               classes.input,
               !state.confirm && (clickedOnConfirm || isSubmitted) && classes.invalidInput,
@@ -384,6 +386,17 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '2rem',
     borderRadius: '0.5rem !important',
     boxSizing: 'border-box !important',
+    '&::placeholder': {
+    color: theme.colors.title, 
+    fontSize: '1rem', 
+    fontFamily: 'Inter',
+    },
+    '&[type="password"]::placeholder': {
+      color: '#0A0A0A',
+      fontSize: '1rem', 
+      fontFamily: 'Inter',
+    },
+    
   },
   invalid: {
     color: theme.colors.inputErrorBorder,
