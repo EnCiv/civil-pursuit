@@ -100,14 +100,19 @@ export function RankPoints(props) {
     }, {})
   )
 
-  const [isInitialRender, setIsInitialRender] = useState(true)
+  const [clearRanksBlocked, setClearRanksBlocked] = useState(true)
 
   useEffect(() => {
-    const newRankByParentId = (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
-      if (rankPoint.rank && (isInitialRender || rankByParentId[rankPoint.point._id]))
-        rankByParentId[rankPoint.point._id] = rankPoint.rank
-      return rankByParentId
-    }, {})
+    const newRankByParentId = {}
+    pointRankGroupList?.forEach(rankPoint => {
+      if (rankPoint.rank) {
+        if (clearRanksBlocked) {
+          newRankByParentId[rankPoint.point._id] = rankPoint.rank
+        } else if (newRankByParentId[rankPoint.point._id]) {
+          newRankByParentId[rankPoint.point._id] = { ...rankPoint.rank, category: '' }
+        }
+      }
+    })
 
     let updated = false
     for (const rankDoc of Object.values(newRankByParentId)) {
@@ -115,14 +120,10 @@ export function RankPoints(props) {
         newRankByParentId[rankDoc.parentId] = rankByParentId[rankDoc.parentId]
       } else updated = true
     }
+
     if (updated) {
       setRankByParentId(newRankByParentId)
-
-      // Ranks loaded from context won't display because they're not in rankByParentId at first,
-      // so track the initial render to make an exception and add them to data
-      if (isInitialRender) {
-        setIsInitialRender(false)
-      }
+      setClearRanksBlocked(true)
     }
   }, [pointRankGroupList])
 
@@ -250,7 +251,15 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              setRankByParentId({})
+              setClearRanksBlocked(false)
+              setRankByParentId(rankByParentId =>
+                Object.values(rankByParentId).reduce(
+                  (rankByParentId, rank) => (
+                    (rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId
+                  ),
+                  {}
+                )
+              )
             }}
           />
         </div>
