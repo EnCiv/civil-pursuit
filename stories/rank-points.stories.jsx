@@ -1,15 +1,18 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
-import RankStep from '../app/components/rank-step'
+
+import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
-import expect from 'expect'
 import { onDoneDecorator, onDoneResult } from './common'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within, expect } from '@storybook/test'
+
+const discussionId = '1101'
+
 export default {
-  component: RankStep,
+  component: RankPoints,
+  decorators: [onDoneDecorator],
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator],
 }
 
 const createPointObj = (
@@ -24,11 +27,13 @@ const createPointObj = (
   }
 ) => {
   return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
+    point: {
+      _id,
+      subject,
+      description,
+      groupedPoints,
+      user,
+    },
   }
 }
 
@@ -46,6 +51,17 @@ const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
 const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
 const point13 = createPointObj('13', 'Point 13', 'Point 13 Description')
 
+function createRank(category) {
+  return {
+    _id: '100',
+    stage: 'pre',
+    category: category,
+    parentId: '200',
+    discussionId,
+    round: 0,
+  }
+}
+
 async function clickSelections(points, selections) {
   for (let index = 0; index < points.length; index++) {
     await userEvent.click(within(points[index]).getByText(selections[index]))
@@ -56,25 +72,26 @@ export const Empty = { args: {} }
 
 export const emptyRank = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
   },
 }
 
 export const oneRankNeutral = {
   args: {
-    pointList: [point1],
-    rankList: [{ id: point1._id, rank: 'Neutral' }],
+    pointRankGroupList: [{ ...point1, rank: createRank('Neutral') }],
   },
 }
 
 export const sevenPointsWith3Ranked = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
+    pointRankGroupList: [
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Most') },
+      { ...point3, rank: createRank('Least') },
+      point4,
+      point5,
+      point6,
+      point7,
     ],
   },
 }
@@ -82,37 +99,36 @@ export const sevenPointsWith3Ranked = {
 export const threePoints = {
   args: {
     style: {},
-    pointList: [point1, point2, point3],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
+    pointRankGroupList: [
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Neutral') },
+      { ...point3, rank: createRank('Least') },
     ],
   },
 }
 
+const tenRankPoints = [
+  { ...point1, rank: createRank('Most') },
+  { ...point2, rank: createRank('Most') },
+  { ...point3, rank: createRank('Least') },
+  { ...point4, rank: createRank('Neutral') },
+  { ...point5, rank: createRank('Neutral') },
+  { ...point6, rank: createRank('Neutral') },
+  { ...point7, rank: createRank('Neutral') },
+  { ...point8, rank: createRank('Neutral') },
+  { ...point9, rank: createRank('Neutral') },
+  { ...point10, rank: createRank('Neutral') },
+]
+
 export const tenRanksCorrect = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Most' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Neutral' },
-      { id: point7._id, rank: 'Neutral' },
-      { id: point8._id, rank: 'Neutral' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-    ],
+    pointRankGroupList: tenRankPoints,
   },
 }
 
 export const tenRanksTooManyMost = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -131,16 +147,26 @@ export const tenRanksTooManyMost = {
       'Neutral',
     ])
     expect(onDoneResult(canvas)).toMatchObject({
-      count: expect.any(Number),
-      onDoneResult: [false, 1],
+      count: 5,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'least',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
+      },
     })
   },
 }
 
 export const tenRanksTooManyLeast = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -158,17 +184,28 @@ export const tenRanksTooManyLeast = {
       'Neutral',
       'Neutral',
     ])
+
     expect(onDoneResult(canvas)).toMatchObject({
-      count: expect.any(Number),
-      onDoneResult: [false, 1],
+      count: 3,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'most',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
+      },
     })
   },
 }
 
 export const tenRanksTooManyMostAndLeast = {
   args: {
-    pointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
-    rankList: [],
+    pointRankGroupList: tenRankPoints,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -186,44 +223,41 @@ export const tenRanksTooManyMostAndLeast = {
       'Neutral',
       'Neutral',
     ])
+
     expect(onDoneResult(canvas)).toMatchObject({
-      count: expect.any(Number),
-      onDoneResult: [false, 1],
+      count: 5,
+      onDoneResult: {
+        valid: false,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'least',
+          parentId: '200',
+          discussionId: '1101',
+          round: 0,
+        },
+      },
     })
   },
 }
 
 export const numRanksNotInLookup = {
   args: {
-    pointList: [
-      point1,
-      point2,
-      point3,
-      point4,
-      point5,
-      point6,
-      point7,
-      point8,
-      point9,
-      point10,
-      point11,
-      point12,
-      point13,
-    ],
-    rankList: [
-      { id: point1._id, rank: 'Most' },
-      { id: point2._id, rank: 'Least' },
-      { id: point3._id, rank: 'Least' },
-      { id: point4._id, rank: 'Neutral' },
-      { id: point5._id, rank: 'Neutral' },
-      { id: point6._id, rank: 'Most' },
-      { id: point7._id, rank: 'Most' },
-      { id: point8._id, rank: 'Least' },
-      { id: point9._id, rank: 'Neutral' },
-      { id: point10._id, rank: 'Neutral' },
-      { id: point11._id, rank: 'Neutral' },
-      { id: point12._id, rank: 'Neutral' },
-      { id: point13._id, rank: 'Neutral' },
+    pointRankGroupList: [
+      { ...point1, rank: createRank('Most') },
+      { ...point2, rank: createRank('Least') },
+      { ...point3, rank: createRank('Least') },
+      { ...point4, rank: createRank('Neutral') },
+      { ...point5, rank: createRank('Neutral') },
+      { ...point6, rank: createRank('Most') },
+      { ...point7, rank: createRank('Most') },
+      { ...point8, rank: createRank('Least') },
+      { ...point9, rank: createRank('Neutral') },
+      { ...point10, rank: createRank('Neutral') },
+      { ...point11, rank: createRank('Neutral') },
+      { ...point12, rank: createRank('Neutral') },
+      { ...point13, rank: createRank('Neutral') },
     ],
   },
 }
