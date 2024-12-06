@@ -42,8 +42,13 @@ describe('test derivePoinMostsLeastsRankList', () => {
   })
   test('can insert initial data', () => {
     data.reducedPointList = [{ point: { _id: '1', subject: '1', description: '1' } }, { point: { _id: '2', subject: '2', description: '2' } }, { point: { _id: '3', subject: '3', description: '3' } }]
+    data.preRankByParentId = { 1: { _id: 51, stage: 'pre', category: 'most', parentId: '1' }, 2: { _id: 53, stage: 'pre', category: 'most', parentId: '2' }, 3: { _id: 53, stage: 'pre', category: 'most', parentId: '3' } }
     const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
-    expect(pointWithWhyRankListList).toMatchObject(data.reducedPointList)
+    expect(pointWithWhyRankListList).toMatchObject([
+      { point: { _id: '1', subject: '1', description: '1' }, whyRankList: [] },
+      { point: { _id: '2', subject: '2', description: '2' }, whyRankList: [] },
+      { point: { _id: '3', subject: '3', description: '3' }, whyRankList: [] },
+    ])
   })
   test("ref doesn't change if data doesn't change", () => {
     const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
@@ -71,7 +76,7 @@ describe('test derivePoinMostsLeastsRankList', () => {
       const mosts = Object.values(data.randomWhyById).filter(why => why.parentId === point._id && why.category === 'most')
       const result = { point }
       if (mosts.length)
-        result.whyRanks = mosts.map(why => ({
+        result.whyRankList = mosts.map(why => ({
           why,
         }))
       return result
@@ -108,11 +113,10 @@ describe('test derivePoinMostsLeastsRankList', () => {
       6: { _id: '10', category: 'neutral', parentId: '6', stage: 'why' },
     }
     const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
-    console.info(JSON.stringify(pointWithWhyRankListList, null, 2))
     expect(pointWithWhyRankListList).toMatchObject([
       {
         point: { _id: '1', subject: '1', description: '1' },
-        whyRanks: [
+        whyRankList: [
           {
             why: { _id: '4', subject: '1.4 random most', description: '1.4 random most', parentId: '1', category: 'most' },
             rank: { _id: '8', category: 'most', parentId: '4', stage: 'why' },
@@ -129,7 +133,7 @@ describe('test derivePoinMostsLeastsRankList', () => {
           subject: '2',
           description: '2',
         },
-        whyRanks: [
+        whyRankList: [
           {
             why: { _id: '6', subject: '2.6 random most', description: '2.6 random most', parentId: '2', category: 'most' },
             rank: { _id: '10', category: 'neutral', parentId: '6', stage: 'why' },
@@ -141,7 +145,7 @@ describe('test derivePoinMostsLeastsRankList', () => {
       },
       {
         point: { _id: '3', subject: '3', description: '3' },
-        whyRanks: [],
+        whyRankList: [],
       },
     ])
   })

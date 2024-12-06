@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React, { useEffect, useState, useRef, useContext, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
@@ -25,7 +25,7 @@ export default function CompareWhysStep(props) {
     useState(() => {
       // on the browser, do this once and only once when this component is first rendered
       const { discussionId, round, reducedPointList, preRankByParentId } = data
-      const { mostIds, leastIds } = Object.values(preRankByParentId).reduce(
+      const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
         ({ mostIds, leastIds }, rank) => {
           if (rank.category === 'most') mostIds.push(rank.parentId)
           else if (rank.category === 'least') leastIds.push(rank.parentId)
@@ -33,22 +33,14 @@ export default function CompareWhysStep(props) {
         },
         { mostIds: [], leastIds: [] }
       )
-      window.socket.emit(
-        'get-why-ranks-and-points',
-        discussionId,
-        round,
-        mostIds,
-        leastIds,
-        reducedPointList.map(point_group => point_group.point._id),
-        result => {
-          if (!result) return // there was an error
-          const [ranks, whys] = result
-          //if (!ranks.length && !whys.length) return // nothing to do
-          const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
-          const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
-          upsert({ postRankByParentId, topWhyById })
-        }
-      )
+      window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
+        if (!result) return // there was an error
+        const { ranks, whys } = result
+        //if (!ranks.length && !whys.length) return // nothing to do
+        const whyRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
+        const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
+        upsert({ preRankByParentId, whyRankByParentId, randomWhyById })
+      })
     })
   return <CompareWhys {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
@@ -86,7 +78,6 @@ export function CompareWhys(props) {
     const percentDone = done / total
     onDone({ valid: percentDone >= 1, value: percentDone, delta: value })
   }
-
   return (
     <div className={classes.container} {...otherProps}>
       {pointWithWhyRankListList.map(({ point, whyRankList }) => (
@@ -94,7 +85,7 @@ export function CompareWhys(props) {
           <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
           <H className={classes.headlineSubject}>{point.subject}</H>
           <Level>
-            <PairCompare className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
+            <PairCompare key={point._id} className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
           </Level>
         </div>
       ))}
@@ -134,11 +125,12 @@ const useStyles = createUseStyles(theme => ({
 export function derivePointWithWhyRankListLisyByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
-  const { reducedPointList, randomWhyById, whyRankByParentId } = data
+  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId } = data
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
   if (local.reducedPointList !== reducedPointList) {
     for (const pointGroup of reducedPointList) {
+      if (preRankByParentId[pointGroup.point._id]?.category !== category) continue
       if (!pointWithWhyRankByWhyIdByPointId[pointGroup.point._id]?.point !== pointGroup.point) {
         if (!pointWithWhyRankByWhyIdByPointId[pointGroup.point._id]) pointWithWhyRankByWhyIdByPointId[pointGroup.point._id] = { whyRankByWhyId: {} }
         pointWithWhyRankByWhyIdByPointId[pointGroup.point._id].point = pointGroup.point
@@ -165,19 +157,19 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
     local.randomWhyById = randomWhyById
     local.whyRankByParentId = whyRankByParentId
   }
-  //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRanks: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
+  //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRankList: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
   const newPointWithWhyRankListList = []
   let updated = false
   for (const pointWithWhyRankList of pointWithWhyRankListList ?? []) {
     const pointId = pointWithWhyRankList.point._id
     if (updatedPoints[pointId]) {
-      newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
+      newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRankList: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
       updated = true
     } else newPointWithWhyRankListList.push(pointWithWhyRankList)
     delete updatedPoints[pointId]
   }
   for (const pointId of Object.keys(updatedPoints)) {
-    newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRanks: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
+    newPointWithWhyRankListList.push({ point: pointWithWhyRankByWhyIdByPointId[pointId].point, whyRankList: Object.values(pointWithWhyRankByWhyIdByPointId[pointId].whyRankByWhyId) })
     updated = true
   }
   if (updated) local.pointWithWhyRankListList = newPointWithWhyRankListList
