@@ -105,12 +105,8 @@ export function RankPoints(props) {
   useEffect(() => {
     const newRankByParentId = {}
     pointRankGroupList?.forEach(rankPoint => {
-      if (rankPoint.rank) {
-        if (clearRanksBlocked) {
-          newRankByParentId[rankPoint.point._id] = rankPoint.rank
-        } else if (newRankByParentId[rankPoint.point._id]) {
-          newRankByParentId[rankPoint.point._id] = { ...rankPoint.rank, category: '' }
-        }
+      if (rankPoint.rank && clearRanksBlocked) {
+        newRankByParentId[rankPoint.point._id] = rankPoint.rank
       }
     })
 

@@ -154,7 +154,7 @@ export const tenRanksTooManyMost = {
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'least',
+          category: 'neutral',
           parentId: '200',
           discussionId: '1101',
           round: 0,
@@ -186,14 +186,14 @@ export const tenRanksTooManyLeast = {
     ])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 3,
+      count: 13,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'most',
+          category: 'neutral',
           parentId: '200',
           discussionId: '1101',
           round: 0,
@@ -225,14 +225,14 @@ export const tenRanksTooManyMostAndLeast = {
     ])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 5,
+      count: 13,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'least',
+          category: 'neutral',
           parentId: '200',
           discussionId: '1101',
           round: 0,
