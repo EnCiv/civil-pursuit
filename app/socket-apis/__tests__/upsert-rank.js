@@ -1,5 +1,3 @@
-import rankWhy from '../rank-why'
-import Ranks from '../../models/ranks'
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
@@ -8,6 +6,7 @@ import upsertRank from '../upsert-rank'
 const USER1 = '6667d5a33da5d19ddc304a6b'
 const RANK1 = new ObjectId('6667d688b20d8e339ca50020')
 const RANK2 = new ObjectId('6667e4eea414d31b20dffb2f')
+const discussion1 = '674e15d08074148b508f8a45'
 let MemoryServer
 
 beforeAll(async () => {
@@ -42,7 +41,7 @@ test('Insert a new rank document', async () => {
     round: 1,
     stage: 'pre',
     category: 'most',
-    discussionId: 'discussion-1',
+    discussionId: discussion1,
   }
 
   const cb = jest.fn()
@@ -62,10 +61,8 @@ test('Update an existing rank document with a different category', async () => {
     round: 1,
     stage: 'pre',
     category: 'most',
-    discussionId: 'discussion-1',
+    discussionId: discussion1,
   }
-
-  const user = { USER1 }
 
   const cb = jest.fn()
 
