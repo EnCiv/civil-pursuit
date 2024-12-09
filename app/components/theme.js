@@ -26,6 +26,8 @@ const Theme = {
     disableSecBorderGray: '#5D5D5C',
     disableTextBlack: '#343433',
     primaryButtonBlue: '#06335C',
+    inputFieldPlaceholder:'#1A1A1A4D',
+    passwordInputPlaceholder: '#0A0A0AB3',
     mouseDownPrimeBlue: '#01172C',
     hoverGray: '#B3B3B3',
     darkModeGray: '#343433',
