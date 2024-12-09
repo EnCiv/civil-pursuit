@@ -311,12 +311,10 @@ const useStyles = createUseStyles(theme => ({
     fontFamily: 'Inter',
     fontSize: '1rem',
     '&::placeholder': {
-      color: theme.colors.title,
-      opacity: 0.3,
+      color: theme.colors.inputFieldPlaceholder,
     },
     '&[type="password"]::placeholder': {
       color: theme.colors.passwordInputPlaceholder,
-      opacity: 0.7,
     },
   },
   invalid: {
