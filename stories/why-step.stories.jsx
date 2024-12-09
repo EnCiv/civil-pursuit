@@ -1,14 +1,17 @@
+//https://github.com/EnCiv/civil-pursuit/issues/103
+//https://github.com/EnCiv/civil-pursuit/issues/214
+
 import React, { useState, useEffect } from 'react'
-import { userEvent, within, waitFor } from '@storybook/test'
+import { userEvent, within, waitFor } from '@storybook/testing-library'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import WhyStep from '../app/components/why-step'
-import expect from 'expect'
-import { asyncSleep, onDoneDecorator, onDoneResult } from './common'
+import WhyStep from '../app/components/steps/why'
+import { expect } from '@storybook/jest'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, socketEmitDecorator } from './common'
+import DeliberationContext from '../app/components/deliberation-context'
 
 export default {
   component: WhyStep,
-  args: {},
-  decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator, socketEmitDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -16,303 +19,216 @@ export default {
   },
 }
 
-const createPointObj = (
-  _id,
-  subject,
-  description = 'Point Description',
-  groupedPoints = [],
-  demInfo = {
-    dob: '1990-10-20T00:00:00.000Z',
-    state: 'NY',
-    party: 'Independent',
+const discussionId = '1001'
+
+const reducedPointList = [
+  { _id: 'point1', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: discussionId },
+  { _id: 'point2', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: discussionId },
+]
+
+const myWhyByParentId = {
+  point1: {
+    _id: 'why1',
+    parentId: 'point1',
+    subject: 'Existing Subject 1',
+    description: 'Existing Description 1',
+    category: 'most',
   },
-  parentId
-) => {
-  return {
-    _id,
-    subject,
-    description,
-    demInfo,
-    parentId,
+}
+
+const whyStepTemplate = args => {
+  const { defaultValue } = args
+
+  const [data, setData] = useState({}) // Data is initially an empty object
+
+  useEffect(() => {
+    setData(prevData => ({ ...prevData, ...defaultValue }))
+  }, [defaultValue])
+
+  const handleUpsert = newData => {
+    setData(prevData => ({ ...prevData, ...newData }))
   }
+
+  useEffect(() => {
+    window.socket._socketEmitHandlers = window.socket._socketEmitHandlers || {}
+
+    window.socket._socketEmitHandlers['getUserWhys'] = (ids, cb) => {
+      window.socket._socketEmitHandlerResults['getUserWhys'] = ids
+      setTimeout(() => {
+        const whys = Object.values(myWhyByParentId || {})
+        cb(whys)
+      }, 1000)
+    }
+
+    window.socket._socketEmitHandlers['upsertWhy'] = (delta, cb) => {
+      // Retrieve the existing _id
+      const existingWhy = myWhyByParentId[delta.parentId]
+      const updatedDoc = {
+        ...delta,
+        _id: existingWhy ? existingWhy._id : 'new_id', // Keep the _id if it exists; otherwise, generate a new one
+      }
+      window.socket._socketEmitHandlerResults['upsertWhy'] = updatedDoc
+      cb && cb(updatedDoc)
+    }
+  }, [myWhyByParentId])
+
+  return (
+    <DeliberationContext.Provider value={{ data, upsert: handleUpsert }}>
+      <WhyStep {...args} />
+    </DeliberationContext.Provider>
+  )
 }
 
-const point1 = createPointObj('1', 'Point 1', 'Point 1 Description', [])
-const point2 = createPointObj(
-  '2',
-  'Point 2',
-  'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-  [],
-  {
-    dob: '1980-10-20T00:00:00.000Z',
-    state: 'GA',
-    party: 'Independent',
-  }
-)
-const point3 = createPointObj(
-  '3',
-  'Point 3',
-  'Point 3 Description',
-  [],
-  {
-    dob: '1995-10-20T00:00:00.000Z',
-    state: 'CA',
-    party: 'Independent',
-  },
-  '1'
-)
-const point4 = createPointObj(
-  '4',
-  'Point 4',
-  'Point 4 Description',
-  [],
-  {
-    dob: '1998-10-20T00:00:00.000Z',
-    state: 'CO',
-    party: 'Independent',
-  },
-  '2'
-)
+const emptyTemplate = args => <WhyStep {...args} />
 
-const defaultSharedPoints = {
-  mosts: [point1, point2],
-  leasts: [point1, point2],
-  whyMosts: [point3, point4],
-  whyLeasts: [point3, point4],
-}
-
-export const mostPoints = {
+export const Empty = {
   args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: { mosts: [point1, point2], whyMosts: [] },
+    defaultValue: {}, // Data is initially an empty object
+    myWhyByParentId: {}, // Simulate server returning no data
   },
+  render: emptyTemplate,
+  decorators: [],
 }
 
-export const mostPointsWithDefault = {
+export const InitialNoData = {
   args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPoints,
-  },
-}
-
-export const leastPoints = {
-  args: {
-    type: 'least',
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPoints,
-  },
-}
-
-export const mobileMostPoints = {
-  args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPoints,
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: 'iphonex',
+    defaultValue: {
+      reducedPointList,
+      myWhyByParentId: {},
+      category: 'most',
+      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
+    myWhyByParentId: {},
   },
+  render: whyStepTemplate,
+  decorators: [DeliberationContextDecorator],
 }
 
-export const mobileLeastPoints = {
+export const ReturningUser = {
   args: {
-    type: 'least',
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPoints,
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: 'iphonex',
+    defaultValue: {
+      reducedPointList,
+      myWhyByParentId, // Includes the user's previous `why` data
+      category: 'most',
+      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
+    myWhyByParentId,
   },
+  render: whyStepTemplate,
+  decorators: [DeliberationContextDecorator],
 }
 
-export const zeroPoints = {
+export const UserEntersInitialData = {
   args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: { mosts: [], leasts: [], whyMosts: [], whyLeasts: [] },
+    defaultValue: {
+      reducedPointList,
+      myWhyByParentId: {}, // Initially no data
+      category: 'most',
+      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+    },
+    myWhyByParentId: {}, // Simulate server returning no data
+    decorators: [DeliberationContextDecorator],
   },
-
+  render: whyStepTemplate,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-          value: [],
-        },
+    // Wait for two input boxes to render
+    await waitFor(() => {
+      const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
+      const descriptionInputs = canvas.getAllByPlaceholderText('Description')
+      expect(subjectInputs.length).toBe(2)
+      expect(descriptionInputs.length).toBe(2)
+    })
+
+    const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
+    const descriptionInputs = canvas.getAllByPlaceholderText('Description')
+
+    // Enter the first why
+    await userEvent.type(subjectInputs[0], 'User Subject 1')
+    await userEvent.type(descriptionInputs[0], 'User Description 1')
+    await userEvent.tab()
+
+    // Enter the second why
+    await userEvent.type(subjectInputs[1], 'User Subject 2')
+    await userEvent.type(descriptionInputs[1], 'User Description 2')
+    await userEvent.tab()
+
+    // Wait for onDoneDecorator to show the result
+    await waitFor(() => {
+      const result = onDoneResult()
+      expect(result.count).toBe(4)
+      expect(result.onDoneResult).toMatchObject({
+        valid: true,
+        value: [
+          {
+            subject: 'User Subject 1',
+            description: 'User Description 1',
+            parentId: 'point1',
+            category: 'most',
+          },
+          {
+            subject: 'User Subject 2',
+            description: 'User Description 2',
+            parentId: 'point2',
+            category: 'most',
+          },
+        ],
       })
-    )
+    })
   },
 }
 
-export const empty = {
-  args: {},
-
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-
-    await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-          value: [],
-        },
-      })
-    )
-  },
-}
-
-export const onDoneTest = {
+export const UserUpdatesExistingData = {
   args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: {
-      mosts: [point1, point2],
-      leasts: [point3],
-      whyMosts: [point1, point2],
-      whyLeasts: [point3],
+    defaultValue: {
+      reducedPointList,
+      myWhyByParentId,
+      category: 'most',
+      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
+    myWhyByParentId,
   },
+  render: whyStepTemplate,
+  decorators: [DeliberationContextDecorator],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const subjectEle = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionEle = canvas.getAllByPlaceholderText(/description/i)
 
-    // fill in the first point subject and description
-    await userEvent.type(subjectEle[0], 'This is the first subject!')
-    await userEvent.tab()
-    await userEvent.type(descriptionEle[0], 'This is the first description!')
+    await waitFor(() => {
+      expect(canvas.getByText("Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it")).toBeInTheDocument()
+    })
+
+    const subjectInputs = canvas.getAllByDisplayValue('Existing Subject 1')
+    const descriptionInputs = canvas.getAllByDisplayValue('Existing Description 1')
+
+    await userEvent.clear(subjectInputs[0])
+    await userEvent.type(subjectInputs[0], 'Updated Subject 1')
+    await userEvent.clear(descriptionInputs[0])
+    await userEvent.type(descriptionInputs[0], 'Updated Description 1')
+
     await userEvent.tab()
 
-    // fill in the second point subject and description
-    await userEvent.type(subjectEle[1], 'This is the second subject!')
-    await userEvent.tab()
-    await userEvent.type(descriptionEle[1], 'This is the second description!')
-    await userEvent.tab()
+    await waitFor(() => {
+      expect(window.socket._socketEmitHandlerResults['upsertWhy']).toMatchObject({
+        _id: 'why1',
+        subject: 'Updated Subject 1',
+        description: 'Updated Description 1',
+        parentId: 'point1',
+        category: 'most',
+      })
+    })
 
-    await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 4,
-        onDoneResult: {
-          valid: true,
-          value: [
-            {
-              subject: 'This is the first subject!',
-              description: 'This is the first description!',
-              parentId: '1',
-            },
-            {
-              subject: 'This is the second subject!',
-              description: 'This is the second description!',
-              parentId: '2',
-            },
-          ],
+    await waitFor(() => {
+      const result = onDoneResult()
+      expect(result.onDoneResult).toMatchObject({
+        valid: false,
+        value: {
+          subject: 'Updated Subject 1',
+          description: 'Updated Description 1',
+          parentId: 'point1',
+          category: 'most',
         },
       })
-    )
-    // reset values so tests will run again next time
-    onDoneTest.args.shared.whyMosts = [point1, point2]
-    onDoneTest.args.shared.whyLeasts = [point3]
-  },
-}
-
-export const asyncUpdate = {
-  decorators: [
-    (Story, context) => {
-      const [updated, setUpdated] = useState(false)
-      useEffect(() => {
-        const subject0 = context.args.shared.whyMosts[0].subject
-        const description0 = context.args.shared.whyMosts[0].description
-        const subject1 = context.args.shared.whyMosts[1].subject
-        const description1 = context.args.shared.whyMosts[1].description
-        setTimeout(() => {
-          context.args.shared.whyMosts[0].subject = 'This is the first subject!'
-          context.args.shared.whyMosts[0].description = 'This is the first description!'
-          context.args.shared.whyMosts[1].subject = 'This is the second subject!'
-          context.args.shared.whyMosts[1].description = 'This is the second description!'
-          setUpdated(true)
-        }, 1000)
-        // resetting so the test will pass on retest
-        setTimeout(() => {
-          context.args.shared.whyMosts[0].subject = subject0
-          context.args.shared.whyMosts[0].description = description0
-          context.args.shared.whyMosts[1].subject = subject1
-          context.args.shared.whyMosts[1].description = description1
-          setUpdated(true)
-        }, 2000)
-      }, [])
-      return <Story thisTestIsDone={updated} />
-    },
-  ],
-  args: {
-    type: 'most',
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPoints,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-          value: [
-            {
-              _id: '3',
-              demInfo: { dob: '1995-10-20T00:00:00.000Z', party: 'Independent', state: 'CA' },
-              description: 'Point 3 Description',
-              parentId: '1',
-              subject: 'Point 3',
-            },
-            {
-              _id: '4',
-              demInfo: { dob: '1998-10-20T00:00:00.000Z', party: 'Independent', state: 'CO' },
-              description: 'Point 4 Description',
-              parentId: '2',
-              subject: 'Point 4',
-            },
-          ],
-        },
-      })
-    )
-    await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: true,
-          value: [
-            {
-              _id: '3',
-              subject: 'This is the first subject!',
-              description: 'This is the first description!',
-              parentId: '1',
-            },
-            {
-              _id: '4',
-              subject: 'This is the second subject!',
-              description: 'This is the second description!',
-              parentId: '2',
-            },
-          ],
-        },
-      })
-    )
+    })
   },
 }
