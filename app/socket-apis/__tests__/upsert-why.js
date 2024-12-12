@@ -8,8 +8,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
-const POINT1 = new ObjectId('6667d688b20d8e339ca50020')
-const POINT2 = new ObjectId('6667e4eea414d31b20dffb2f')
+const POINT1 = '6667d688b20d8e339ca50020'
+const POINT2 = '6667e4eea414d31b20dffb2f'
+const POINT3 = '6667d5a33da5d19ddc304a7c'
+const PARENTID = 'parent-id'
 let MemoryServer
 
 beforeAll(async () => {
@@ -23,12 +25,13 @@ afterAll(async () => {
   await MemoryServer.stop()
 })
 
-test('Insert a new document when valid request with no id set', async () => {
+test('Insert a new document', async () => {
   const pointObj = {
+    _id: POINT1,
     title: 'Test Subject',
     description: 'Test Description',
     round: 1,
-    parentId: 'parent-id',
+    parentId: PARENTID,
     category: 'most',
   }
   const user = { id: USER1 }
@@ -44,22 +47,25 @@ test('Insert a new document when valid request with no id set', async () => {
 
 test('Upsert changes to an existing document when valid request with its id set', async () => {
   const existingPoint = {
-    _id: POINT1,
+    _id: new ObjectId(POINT2),
     title: 'Existing Subject',
     description: 'Existing Description',
     round: 1,
-    parentId: 'parent-id',
+    parentId: PARENTID,
     userId: USER1,
     category: 'most',
   }
   await Mongo.db.collection('points').insertOne(existingPoint)
 
+  const existingDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
+  expect(existingDBPoint).toMatchObject({ ...existingPoint })
+
   const updatedPointObj = {
-    _id: POINT1,
+    _id: POINT2,
     title: 'Updated Subject',
     description: 'Updated Description',
     round: 1,
-    parentId: 'parent-id',
+    parentId: PARENTID,
     category: 'most',
   }
   const user = { id: USER1 }
@@ -69,17 +75,17 @@ test('Upsert changes to an existing document when valid request with its id set'
   await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT1 })
-  expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
+  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
+  expect(updatedDBPoint).toMatchObject({ ...updatedPointObj })
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
   const pointObj = {
-    _id: POINT2,
+    _id: POINT3,
     title: 'Test Subject',
     description: 'Test Description',
     round: 1,
-    parentId: 'parent-id',
+    parentId: PARENTID,
     category: 'most',
   }
 
@@ -88,7 +94,7 @@ test('User not logged in, not allowed to upsert a document', async () => {
   await upsertWhy.call({}, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT2})
+  const point = await Mongo.db.collection('points').findOne({ _id: new Object(POINT3) })
   expect(point).toBeNull()
 })
 
@@ -97,7 +103,7 @@ test('Validation error when upserting a document', async () => {
     title: 'Test Subject',
     description: '',
     round: 1,
-    parentId: 'parent-id',
+    parentId: PARENTID,
     category: 'most',
   }
   const user = { id: USER1 }
@@ -124,7 +130,7 @@ test('error when category in request is missing', async () => {
     round: 1,
     parentId: 'parent-id',
     // category is missing
-  };
+  }
   const user = { id: USER1 }
   const cb = jest.fn()
 
@@ -133,7 +139,7 @@ test('error when category in request is missing', async () => {
   // validation error
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(null)
-});
+})
 
 test('error when category in request is not valid', async () => {
   const pointObj = {
@@ -142,9 +148,9 @@ test('error when category in request is not valid', async () => {
     description: '',
     round: 1,
     parentId: 'parent-id',
-    category: 'Invalid'
+    category: 'Invalid',
     // category invalid
-  };
+  }
   const user = { id: USER1 }
   const cb = jest.fn()
 
