@@ -25,18 +25,18 @@ function PairCompare(props) {
   // otherwise compare the list
   useEffect(() => {
     let selectedIdx
+    let updated = 0
     whyRankList.forEach((whyRank, i) => {
-      if (whyRank.rank) {
+      if (whyRank.rank && ranksByParentId[whyRank.rank.parentId] !== whyRank.rank) {
+        updated++
         ranksByParentId[whyRank.rank.parentId] = whyRank.rank
         if (whyRank.rank.category === 'most') selectedIdx = i
       }
     })
     const ranks = Object.values(ranksByParentId)
-    if (ranks.length === whyRankList.length && ranks.length > 0 && ranks.every(rank => rank.category)) {
+    if (updated && ranks.length === whyRankList.length && ranks.length > 0 && ranks.every(rank => rank.category)) {
       // skip if an update from above after the user has completed ranking - likely this is the initial render
-      if (typeof selectedIdx === 'number') {
-        setIdxLeft(selectedIdx) // idx could be 0
-      } else setIdxLeft(whyRankList.length)
+      setIdxLeft(selectedIdx ?? whyRankList.length) // idx could be 0
       setIdxRight(whyRankList.length)
       setTimeout(() => onDone({ valid: true, value: undefined }))
     }

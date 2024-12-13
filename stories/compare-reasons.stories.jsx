@@ -7,6 +7,9 @@ import expect from 'expect'
 
 export default { component: CompareWhys, args: {}, decorators: [onDoneDecorator] }
 
+const round = 1
+const discussionId = '1001'
+
 const pointWithWhyRankListList = [
   {
     point: { _id: '1', subject: 'subject 1', description: 'describe 1' },
@@ -165,7 +168,7 @@ function getStepArgsFrom(pointWithWhyRankListList) {
         }
         return cn
       },
-      { defaultValue: { reducedPointList: [], preRankByParentId }, apiResult: { whys: [], ranks: [] } }
+      { defaultValue: { reducedPointList: [], preRankByParentId, round, discussionId }, apiResult: { whys: [], ranks: [] } }
     ),
   }
   return cn
@@ -205,13 +208,20 @@ export const BeginStepLeast = {
   render: props => <StepTemplate {...props} />,
 }
 
-export const CompletedStepMost = {
+export const FirstMostFetchFromApi = {
   args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most' },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
+  play: async ({ canvasElement, args }) => {
+    const { onDone } = args
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: 1 / 3 })
+    })
+  },
 }
 
-export const CompletedStepMostToFinish = {
+export const FirstMostFetchFromApiTheUserCompletes = {
   args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most' },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
@@ -243,7 +253,8 @@ export const CompletedStepMostToFinish = {
     await waitFor(() => {
       expect(onDone.mock.calls[4][0]).toMatchObject({ valid: false, value: 1 / 3 })
       expect(onDone.mock.calls[5][0]).toMatchObject({ valid: false, value: 2 / 3 })
-    }) /*
+      expect(onDone.mock.calls.length).toBe(6)
+    })
     const two = canvas.getByText('30 is greater than 2')
     await userEvent.click(two)
     await asyncSleep(500)
@@ -253,11 +264,37 @@ export const CompletedStepMostToFinish = {
     await asyncSleep(500)
     await userEvent.click(two)
     await waitFor(() => {
-      expect(onDone.mock.calls[5][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '23' } })
-      expect(onDone.mock.calls[6][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '24' } })
-      expect(onDone.mock.calls[7][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '25' } })
-      expect(onDone.mock.calls[8][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '26' } })
-      expect(onDone.mock.calls[9][0]).toMatchObject({ valid: true, value: 1, delta: { category: 'most', stage: 'why', parentId: '22' } })
-    })*/
+      expect(window.socket._socketEmitHandlerResults['upsert-rank'][5]).toMatchObject({
+        // id will be random so ignored
+        category: 'neutral',
+        parentId: '33',
+        stage: 'why',
+        discussionId: '1001',
+        round: 1,
+      })
+      expect(onDone.mock.calls[7][0]).toMatchObject({ valid: false, value: 2 / 3 })
+      expect(onDone.mock.calls[8][0]).toMatchObject({ valid: false, value: 2 / 3 })
+      expect(onDone.mock.calls[9][0]).toMatchObject({ valid: false, value: 2 / 3 })
+      expect(onDone.mock.calls[10][0]).toMatchObject({ valid: true, value: 1 })
+      expect(deliberationContextData(canvas)).toMatchObject({
+        whyRankByParentId: {
+          2: { _id: '60', stage: 'why', category: 'most', parentId: '2' },
+          3: { _id: '61', stage: 'why', category: 'neutral', parentId: '3' },
+          4: { _id: '62', stage: 'why', category: 'neutral', parentId: '4' },
+          5: { _id: '63', stage: 'why', category: 'neutral', parentId: '5' },
+          6: { _id: '64', stage: 'why', category: 'neutral', parentId: '6' },
+          22: { category: 'most', parentId: '22', stage: 'why', discussionId: '1001', round: 1 },
+          23: { category: 'neutral', parentId: '23', stage: 'why', discussionId: '1001', round: 1 },
+          24: { category: 'neutral', parentId: '24', stage: 'why', discussionId: '1001', round: 1 },
+          25: { category: 'neutral', parentId: '25', stage: 'why', discussionId: '1001', round: 1 },
+          26: { category: 'neutral', parentId: '26', stage: 'why', round: 1 },
+          32: { category: 'most', parentId: '32', stage: 'why', discussionId: '1001', round: 1 },
+          33: { category: 'neutral', parentId: '33', stage: 'why', discussionId: '1001', round: 1 },
+          34: { category: 'neutral', parentId: '34', stage: 'why', discussionId: '1001', round: 1 },
+          35: { category: 'neutral', parentId: '35', stage: 'why', discussionId: '1001', round: 1 },
+          36: { category: 'neutral', parentId: '36', stage: 'why', discussionId: '1001', round: 1 },
+        },
+      })
+    })
   },
 }
