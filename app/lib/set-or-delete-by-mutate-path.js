@@ -59,7 +59,7 @@ function setOrDeleteKeyWithMessages(dst, src, messages, keyPath, key) {
   } else {
     if (typeof src[key] === 'object' && src[key] !== null) {
       if (messages) messages.push(`${keyPath}: changing ${stringify(dst, key)} to ${stringify(src, key)}`)
-      return cloneDeep(src[key])
+      return src[key]
     } else if (dst[key] !== src[key]) {
       if (messages) messages.push(`${keyPath}: changing ${stringify(dst, key)} to ${stringify(src, key)}`)
       return src[key]
