@@ -13,27 +13,6 @@ const selectedOption = (
 
 const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke="#06335C" strokeWidth="2" />
 
-// table to map from data model properties, to the Rank Strings shown in the UI
-const toRankString = {
-  undefined: '',
-  most: 'Most',
-  least: 'Least',
-  neutral: 'Neutral',
-}
-
-// table to map from UI's Rank Strings to the data model prpoerty names
-const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, value]) => {
-  if (key === 'undefined') return rS2C // rankStringToCategory[''] will be undefined
-  rS2C[value] = key
-  return rS2C
-}, {})
-
-export function RankByCategory(props) {
-  const { onDone, rank, ...otherProps } = props
-  const handleOnDone = result => ({ valid: result.valid, value: rankStringToCategory[result.value] })
-  return <Ranking onDone={handleOnDone} rank={toRankString[rank]} {...otherProps}></Ranking>
-}
-
 export default function Ranking(props) {
   //Isolate props and set initial state
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
@@ -59,17 +38,37 @@ export default function Ranking(props) {
     }
     setResponse(e.target.value)
     if (!onDone) {
-      return console.warn(`Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`)
+      return console.warn(
+        `Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`
+      )
     } else onDone({ valid: true, value: e.target.value })
+   
   }
   return (
-    <div data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} onChange={onSelectionChange} {...otherProps}>
+    <div
+      data-value={response}
+      className={cx(className, styleClasses.group, disabled && styleClasses.disabled)}
+      {...otherProps}
+    >
       {responseOptions.map(option => {
         return (
-          <label>
-            <input disabled={disabled || false} checked={response === option} type="radio" value={option} name={`importance-${option}`} className={cx(styleClasses.hideDefaultRadio, `ranking${option}`)}></input>
+          <label key={option}>
+            <input
+              disabled={disabled || false}
+              checked={response === option}
+              type="radio"
+              value={option}
+              name={`importance-${option}`}
+              className={cx(styleClasses.hideDefaultRadio, `ranking${option}`)}
+              onChange={onSelectionChange}
+            ></input>
             <span className={cx(styleClasses.option)}>
-              <svg className={cx(styleClasses.optionIcon)} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                className={cx(styleClasses.optionIcon)}
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 {response === option ? selectedOption : unselectedOption}
               </svg>
               {option}
