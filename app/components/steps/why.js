@@ -12,7 +12,7 @@ import { isEqual, cloneDeep } from 'lodash'
 export default function WhyStep(props) {
   const { myWhyByParentId, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
-  const derivedProps = userDeriver(data)
+  const derivedProps = derivePointWhyListByCategory(data)
 
   useEffect(() => {
     if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
@@ -156,64 +156,82 @@ export function Why(props) {
   )
 }
 
-export function userDeriver(data) {
-  const local = useRef({}).current
+export function derivePointWhyListByCategory(data) {
+  const local = useRef({
+    pointWhyById: {},
+    pointWhyList: [],
+    reducedPointList: null,
+    myWhyByParentId: null,
+    category: null,
+    intro: null,
+    prevResult: {
+      pointWhyList: [],
+      category: undefined,
+      intro: undefined,
+    },
+  }).current
+
   const reducedPointList = data?.reducedPointList || []
   const myWhyByParentId = data?.myWhyByParentId || {}
   const category = data?.category
   const intro = data?.intro
 
-  const dataChanged = !isEqual(data, local.prevData)
+  let updated = false
 
-  if (!local.prevResult) {
-    // First calculation
-    const pointWhyList = reducedPointList.map(point => ({
-      point,
-      why: myWhyByParentId[point._id],
-    }))
-    local.prevData = cloneDeep(data)
-    local.prevResult = { pointWhyList, category, intro }
-  } else if (dataChanged) {
-    // Partial update logic:
-    // 1. Create a new object based on the old prevResult
-    // 2. For each point, update reference only if the why data for that point has changed; otherwise, retain the old reference
-    const oldPointWhyList = local.prevResult.pointWhyList
-    const newPointWhyList = []
-    let changed = false
+  if (local.reducedPointList !== reducedPointList) {
+    const oldIds = new Set(Object.keys(local.pointWhyById))
 
-    for (let i = 0; i < reducedPointList.length; i++) {
-      const point = reducedPointList[i]
-      const oldItem = oldPointWhyList.find(item => item.point._id === point._id)
-      const newWhy = myWhyByParentId[point._id]
-
-      if (!oldItem) {
-        // New point data
-        changed = true
-        newPointWhyList.push({ point, why: newWhy })
+    for (const p of reducedPointList) {
+      if (!local.pointWhyById[p._id]) {
+        local.pointWhyById[p._id] = { point: p, why: myWhyByParentId[p._id] }
+        updated = true
       } else {
-        const oldWhy = oldItem.why
-        const whyChanged = !isEqual(oldWhy, newWhy)
-        const pointChanged = !isEqual(oldItem.point, point)
-        if (whyChanged || pointChanged) {
-          changed = true
-          newPointWhyList.push({ point, why: newWhy })
-        } else {
-          // Keep unchanged items with the original reference
-          newPointWhyList.push(oldItem)
+        if (local.pointWhyById[p._id].point !== p) {
+          local.pointWhyById[p._id] = { ...local.pointWhyById[p._id], point: p }
+          updated = true
         }
+      }
+      oldIds.delete(p._id)
+    }
+
+    for (const oldId of oldIds) {
+      delete local.pointWhyById[oldId]
+      updated = true
+    }
+
+    local.reducedPointList = reducedPointList
+  }
+
+  if (local.myWhyByParentId !== myWhyByParentId) {
+    for (const pId of Object.keys(local.pointWhyById)) {
+      const oldWhy = local.pointWhyById[pId].why
+      const newWhy = myWhyByParentId[pId]
+
+      if (oldWhy !== newWhy) {
+        local.pointWhyById[pId] = { ...local.pointWhyById[pId], why: newWhy }
+        updated = true
       }
     }
 
-    // If the list length changes or the number of points changes, also consider it as changed
-    if (newPointWhyList.length !== oldPointWhyList.length) {
-      changed = true
-    }
+    local.myWhyByParentId = myWhyByParentId
+  }
 
-    if (changed) {
-      local.prevData = cloneDeep(data)
-      local.prevResult = { pointWhyList: newPointWhyList, category, intro }
+  if (local.category !== category) {
+    local.category = category
+    updated = true
+  }
+  if (local.intro !== intro) {
+    local.intro = intro
+    updated = true
+  }
+
+  if (updated) {
+    local.pointWhyList = Object.values(local.pointWhyById)
+    local.prevResult = {
+      pointWhyList: local.pointWhyList,
+      category: local.category,
+      intro: local.intro,
     }
-    // Do not update prevResult if there are no substantial changes
   }
 
   return local.prevResult

@@ -1,7 +1,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/103
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
-import { userDeriver } from '../why'
+import { derivePointWhyListByCategory } from '../why'
 
 jest.mock('react', () => {
   const actualReact = jest.requireActual('react')
@@ -30,7 +30,7 @@ describe('deriver function tests', () => {
   })
 
   test('input data undefined', () => {
-    const result = userDeriver(undefined)
+    const result = derivePointWhyListByCategory(undefined)
     expect(result).toEqual({
       pointWhyList: [],
       category: undefined,
@@ -39,7 +39,7 @@ describe('deriver function tests', () => {
   })
 
   test('input data empty', () => {
-    const result = userDeriver({})
+    const result = derivePointWhyListByCategory({})
     expect(result).toEqual({
       pointWhyList: [],
       category: undefined,
@@ -55,7 +55,7 @@ describe('deriver function tests', () => {
       intro: 'This is the intro text.',
     }
 
-    const result = userDeriver(data)
+    const result = derivePointWhyListByCategory(data)
     expect(result).toEqual({
       pointWhyList: [
         {
@@ -78,8 +78,8 @@ describe('deriver function tests', () => {
       intro: 'This is the intro text.',
     }
 
-    const result1 = userDeriver(data)
-    const result2 = userDeriver(data)
+    const result1 = derivePointWhyListByCategory(data)
+    const result2 = derivePointWhyListByCategory(data)
 
     expect(result2).toBe(result1)
   })
@@ -98,7 +98,7 @@ describe('deriver function tests', () => {
       intro: 'This is the intro text.',
     }
 
-    const result1 = userDeriver(data)
+    const result1 = derivePointWhyListByCategory(data)
 
     data = {
       ...data,
@@ -113,7 +113,7 @@ describe('deriver function tests', () => {
       },
     }
 
-    const result2 = userDeriver(data)
+    const result2 = derivePointWhyListByCategory(data)
 
     expect(result2).not.toBe(result1)
     expect(result2.pointWhyList[0]).not.toBe(result1.pointWhyList[0])

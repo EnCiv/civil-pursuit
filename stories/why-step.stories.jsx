@@ -2,10 +2,9 @@
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
 import React, { useState, useEffect } from 'react'
-import { userEvent, within, waitFor } from '@storybook/testing-library'
+import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/steps/why'
-import { expect } from '@storybook/jest'
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, socketEmitDecorator } from './common'
 import DeliberationContext from '../app/components/deliberation-context'
 
