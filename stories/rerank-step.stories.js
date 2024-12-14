@@ -5,13 +5,7 @@ import React, { useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
 
-import {
-  onDoneDecorator,
-  onDoneResult,
-  DeliberationContextDecorator,
-  deliberationContextData,
-  socketEmitDecorator,
-} from './common'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { cloneDeep } from 'lodash'
 
@@ -211,19 +205,21 @@ export const onDoneIsCalledAfterUserChangesRank = {
     discussionId,
     round,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { onDone } = args
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      valid: false,
+      value: 1 / 3,
+    })
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
 
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-          delta: { ...rank1postMost, category: 'neutral' },
-        },
+      expect(onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 1 / 3,
+        delta: { ...rank1postMost, category: 'neutral' },
       })
     })
   },
@@ -264,25 +260,23 @@ export const rerankStepWithPartialDataAndUserUpdate = {
   args: { ...getRerankArgsFrom(mergeRanksIntoReviewPoints(reviewPoints, [rank1postMost])) },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: rerankStepTemplate,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { onDone } = args
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 0,
       })
-      expect(window.socket._socketEmitHandlerResults['get-user-post-ranks-and-top-ranked-whys']).toEqual([
-        discussionId,
-        round,
-        ['1', '2', '3'],
-      ])
+      expect(window.socket._socketEmitHandlerResults['get-user-post-ranks-and-top-ranked-whys']).toEqual([discussionId, round, ['1', '2', '3']])
     })
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
     await waitFor(() => {
+      expect(onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 1 / 3,
+      })
       expect(window.socket._socketEmitHandlerResults['upsert-rank']).toEqual({
         _id: '201',
         stage: 'post',
@@ -318,15 +312,13 @@ export const rerankStepWithTopDownUpdate = {
     })
     return rerankStepTemplate(args)
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { onDone } = args
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 0,
       })
     })
     await waitFor(() => {
@@ -342,14 +334,16 @@ export const rerankStepWithTopDownUpdate = {
           },
         },
       })
+      expect(onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 1 / 3,
+      })
     })
+    await asyncSleep(1000)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
-        onDoneResult: {
-          valid: false,
-          value: 0.6666666666666666,
-        },
+      expect(onDone.mock.calls[2][0]).toMatchObject({
+        valid: false,
+        value: 0.6666666666666666,
       })
     })
     await waitFor(() => {
