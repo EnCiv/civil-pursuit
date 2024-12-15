@@ -1,170 +1,143 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
+// https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Point from './point'
 import { createUseStyles } from 'react-jss'
 import { SecondaryButton } from './button.jsx'
+import ObjectId from 'bson-objectid'
+import cx from 'classnames'
 
 function PairCompare(props) {
-  const { pointList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, ...otherProps } = props
+  const { whyRankList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, discussionId, round, ...otherProps } = props
 
   // idxLeft and idxRight can swap places at any point - they are simply pointers to the current two <Point/> elements
   const [idxLeft, setIdxLeft] = useState(0)
   const [idxRight, setIdxRight] = useState(1)
-
-  const isInitialRender = useRef(true)
-
-  const visibleRightPointRef = useRef(null)
-  const visibleLeftPointRef = useRef(null)
-  const hiddenLeftPointRef = useRef(null)
-  const hiddenRightPointRef = useRef(null)
-
-  const [pointsIdxCounter, setPointsIdxCounter] = useState(1)
-  const [selectedPoint, setSelectedPoint] = useState(null)
+  const [nextLeftPoint, setNextLeftPoint] = useState(null)
+  const [nextRightPoint, setNextRightPoint] = useState(null)
   const [isRightTransitioning, setIsRightTransitioning] = useState(false)
   const [isLeftTransitioning, setIsLeftTransitioning] = useState(false)
   const classes = useStyles()
-
+  const [ranksByParentId, neverSetRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
+  // if all points are ranked, show the (first) one ranked most important, go to start over state
+  // otherwise compare the list
   useEffect(() => {
-    if (isSelectionComplete()) {
-      setSelectedPoint(pointList[idxLeft] ? pointList[idxLeft] : pointList[idxRight])
+    let selectedIdx
+    let updated = 0
+    whyRankList.forEach((whyRank, i) => {
+      if (whyRank.rank && ranksByParentId[whyRank.rank.parentId] !== whyRank.rank) {
+        updated++
+        ranksByParentId[whyRank.rank.parentId] = whyRank.rank
+        if (whyRank.rank.category === 'most') selectedIdx = i
+      }
+    })
+    const ranks = Object.values(ranksByParentId)
+    if (updated && ranks.length === whyRankList.length && ranks.length > 0 && ranks.every(rank => rank.category)) {
+      // skip if an update from above after the user has completed ranking - likely this is the initial render
+      setIdxLeft(selectedIdx ?? whyRankList.length) // idx could be 0
+      setIdxRight(whyRankList.length)
+      setTimeout(() => onDone({ valid: true, value: undefined }))
     }
-  }, [pointsIdxCounter])
+  }, [whyRankList])
 
-  useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false
-      return
-    }
-
-    if (selectedPoint) {
-      onDone({ valid: true, value: selectedPoint })
-    } else {
-      onDone({ valid: false, value: null })
-    }
-  }, [selectedPoint])
+  // send up the rank, and track it locally
+  function rankIdxCategory(idx, category) {
+    if (idx >= whyRankList.length) return // if only one to rank, this could be out of bounds
+    const value = ranksByParentId[whyRankList[idx]._id]
+      ? { ...ranksByParentId[whyRankList[idx]._id], category }
+      : {
+          _id: ObjectId().toString(),
+          category,
+          parentId: whyRankList[idx].why._id,
+          stage: 'why',
+          discussionId,
+          round,
+        }
+    ranksByParentId[value.parentId] = value
+    const ranks = Object.values(ranksByParentId)
+    const valid = ranks.length === whyRankList.length && ranks.every(rank => rank.category)
+    setTimeout(() => onDone({ valid, value }))
+  }
 
   const handleLeftPointClick = () => {
-    // prevent transitions from firing on last comparison
-    if (idxRight >= pointList.length - 1 || idxLeft >= pointList.length - 1) {
-      if (idxLeft >= idxRight) {
-        setIdxRight(idxLeft + 1)
-      } else {
-        setIdxRight(idxRight + 1)
-      }
-      setPointsIdxCounter(pointsIdxCounter + 1)
+    rankIdxCategory(idxRight, 'neutral')
+    if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
+      // they've all been ranked
+      rankIdxCategory(idxLeft, 'most')
+      setIdxRight(whyRankList.length)
       return
     }
-
+    const nextRightIdx = Math.min(idxLeft >= idxRight ? idxLeft + 1 : idxRight + 1, whyRankList.length)
     setIsLeftTransitioning(true)
-    const visiblePointRight = visibleRightPointRef.current
-    const hiddenPointRight = hiddenRightPointRef.current
-
-    Object.assign(visiblePointRight.style, {
-      position: 'relative',
-      transform: 'translateX(200%)',
-      transition: 'transform 0.5s linear',
-    })
-    Object.assign(hiddenPointRight.style, {
-      position: 'absolute',
-      transform: 'translateY(8.25rem)',
-      transition: 'transform 0.5s linear',
-    })
+    setNextRightPoint(whyRankList[nextRightIdx].why)
 
     setTimeout(() => {
       setIsLeftTransitioning(false)
-      if (idxLeft >= idxRight) {
-        setIdxRight(idxLeft + 1)
-      } else {
-        setIdxRight(idxRight + 1)
-      }
-
-      setPointsIdxCounter(pointsIdxCounter + 1)
-
-      Object.assign(visiblePointRight.style, { position: '', transition: 'none', transform: '' })
-      Object.assign(hiddenPointRight.style, { position: '', transition: 'none', transform: '' })
+      setNextRightPoint(null)
+      setIdxRight(nextRightIdx)
     }, 500)
   }
 
   const handleRightPointClick = () => {
-    // prevent transitions from firing on last comparison
-    if (idxRight >= pointList.length - 1 || idxLeft >= pointList.length - 1) {
-      if (idxLeft >= idxRight) {
-        setIdxLeft(idxLeft + 1)
-      } else {
-        setIdxLeft(idxRight + 1)
-      }
-      setPointsIdxCounter(pointsIdxCounter + 1)
+    rankIdxCategory(idxLeft, 'neutral')
+    if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
+      // they've all been ranked
+      rankIdxCategory(idxRight, 'most')
+      setIdxLeft(whyRankList.length)
       return
     }
-
+    const nextLeftIdx = Math.min(idxLeft >= idxRight ? idxLeft + 1 : idxRight + 1, whyRankList.length)
+    setNextLeftPoint(whyRankList[nextLeftIdx].why)
     setIsRightTransitioning(true)
-    const visiblePointLeft = visibleLeftPointRef.current
-    const hiddenPointLeft = hiddenLeftPointRef.current
-
-    Object.assign(visiblePointLeft.style, {
-      position: 'relative',
-      transform: 'translateX(-200%)',
-      transition: 'transform 0.5s linear',
-    })
-    Object.assign(hiddenPointLeft.style, {
-      position: 'absolute',
-      transform: 'translateY(8.25rem)',
-      transition: 'transform 0.5s linear',
-    })
 
     setTimeout(() => {
       setIsRightTransitioning(false)
-      if (idxLeft >= idxRight) {
-        setIdxLeft(idxLeft + 1)
-      } else {
-        setIdxLeft(idxRight + 1)
-      }
-
-      setPointsIdxCounter(pointsIdxCounter + 1)
-
-      Object.assign(visiblePointLeft.style, { position: '', transition: 'none', transform: '' })
-      Object.assign(hiddenPointLeft.style, { position: '', transition: 'none', transform: '' })
+      setNextLeftPoint(null)
+      setIdxLeft(nextLeftIdx)
     }, 500)
   }
 
   const handleNeitherButton = () => {
-    if (selectedPoint) return
+    rankIdxCategory(idxLeft, 'neutral')
+    rankIdxCategory(idxRight, 'neutral')
 
     if (idxLeft >= idxRight) {
-      setIdxRight(idxLeft + 1)
-      setIdxLeft(idxLeft + 2)
+      setIdxRight(Math.min(idxLeft + 1, whyRankList.length))
+      setIdxLeft(Math.min(idxLeft + 2, whyRankList.length))
     } else {
-      setIdxLeft(idxRight + 1)
-      setIdxRight(idxRight + 2)
+      setIdxLeft(Math.min(idxRight + 1, whyRankList.length))
+      setIdxRight(Math.min(idxRight + 2, whyRankList.length))
     }
-
-    setPointsIdxCounter(pointsIdxCounter + 2)
   }
 
   const handleStartOverButton = () => {
+    Object.values(ranksByParentId).forEach(rank => (rank.category = undefined)) // reset the categories so we can start again
     onDone({ valid: false, value: null })
     setIdxRight(1)
     setIdxLeft(0)
-    setPointsIdxCounter(1)
-    setSelectedPoint(null)
   }
 
-  const isSelectionComplete = () => {
-    return pointsIdxCounter >= pointList.length
+  const handleYes = () => {
+    if (idxLeft < whyRankList.length) {
+      rankIdxCategory(idxLeft, 'most')
+    } else if (idxRight < whyRankList.length) {
+      rankIdxCategory(idxRight, 'most')
+    }
+  }
+  const handleNo = () => {
+    if (idxLeft < whyRankList.length) {
+      rankIdxCategory(idxLeft, 'neutral')
+    } else if (idxRight < whyRankList.length) {
+      rankIdxCategory(idxRight, 'neutral')
+    }
   }
 
-  const nextIndex = idxLeft > idxRight ? idxLeft + 1 : idxRight + 1
-  const hiddenEmptyLeftPoint = <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} />
-  const hiddenTransitioningLeftPoint = (
-    <Point ref={hiddenLeftPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
-  )
-  const hiddenEmptyRightPoint = <Point ref={hiddenRightPointRef} className={classes.emptyPoint} />
-  const hiddenTransitioningRightPoint = (
-    <Point ref={hiddenRightPointRef} className={classes.emptyPoint} point={pointList[nextIndex]} />
-  )
-
+  const pointsIdxCounter = Math.max(idxLeft, idxRight)
+  const isSelectionComplete = pointsIdxCounter >= whyRankList.length
+  const ranks = isSelectionComplete && Object.values(ranksByParentId) // isSelectionComple here so we don't do work if not needed
+  const allRanked = isSelectionComplete && ranks.length === whyRankList.length && ranks.every(rank => rank.category) // isSelectionComple here so we don't do work if not needed
   return (
     <div className={classes.container} {...otherProps}>
       <div className={classes.mainPointContainer}>
@@ -172,55 +145,38 @@ function PairCompare(props) {
         <div className={classes.mainPointDescription}>{mainPoint.description}</div>
       </div>
 
-      <span className={isSelectionComplete() ? classes.statusBadgeComplete : classes.statusBadge}>{`${
-        pointsIdxCounter <= pointList.length ? pointsIdxCounter : pointList.length
-      } out of ${pointList.length}`}</span>
+      <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
 
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
-          {pointsIdxCounter < pointList.length && (
-            <div className={classes.hiddenPoint}>
-              {isRightTransitioning ? hiddenTransitioningLeftPoint : hiddenEmptyLeftPoint}
-            </div>
-          )}
-          {pointsIdxCounter < pointList.length && (
-            <div className={classes.hiddenPoint}>
-              {isLeftTransitioning ? hiddenTransitioningRightPoint : hiddenEmptyRightPoint}
-            </div>
-          )}
+          <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
+            <Point className={cx(classes.emptyPoint, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
+          </div>
+          <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
+            <Point className={cx(classes.emptyPoint, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
+          </div>
         </div>
-
         <div className={classes.visiblePointsContainer}>
-          {idxLeft < pointList.length && (
-            <button
-              className={classes.visiblePoint}
-              ref={visibleLeftPointRef}
-              onClick={handleLeftPointClick}
-              tabIndex={0}
-              title={`Choose as more important: ${pointList[idxLeft]?.subject}`}
-            >
-              {<Point point={pointList[idxLeft]} />}
+          {idxLeft < whyRankList.length && (
+            <button className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft)} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}>
+              {<Point point={whyRankList[idxLeft].why} />}
             </button>
           )}
-          {idxRight < pointList.length && (
-            <button
-              className={classes.visiblePoint}
-              ref={visibleRightPointRef}
-              onClick={handleRightPointClick}
-              tabIndex={0}
-              title={`Choose as more important: ${pointList[idxRight]?.subject}`}
-            >
-              {<Point point={pointList[idxRight]} />}
+          {idxRight < whyRankList.length && (
+            <button className={cx(classes.visiblePoint, isLeftTransitioning && classes.transitioningRight)} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxRight]?.why.subject}`}>
+              {<Point point={whyRankList[idxRight].why} />}
             </button>
           )}
         </div>
-        <div className={classes.buttonsContainer}>
-          {!isSelectionComplete() ? (
-            <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton>
-          ) : (
-            <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>
-          )}
-        </div>
+        {!isSelectionComplete || allRanked ? (
+          <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
+        ) : (
+          <div className={classes.buttonsContainer}>
+            <SecondaryButton onDone={handleYes}>Yes</SecondaryButton>
+            <div style={{ width: '1rem', display: 'inline' }} />
+            <SecondaryButton onDone={handleNo}>No</SecondaryButton>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -261,6 +217,9 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '1rem',
     clipPath: 'xywh(0 0 100% 500%)',
   },
+  hidden: {
+    display: 'none',
+  },
   hiddenPoint: {
     width: '30%',
   },
@@ -293,6 +252,21 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     margin: '2rem auto',
+  },
+  transitioningDown: {
+    position: 'absolute',
+    transform: 'translateY(8.25rem)',
+    transition: 'transform 0.5s linear',
+  },
+  transitioningLeft: {
+    position: 'relative',
+    transform: 'translateX(-200%)',
+    transition: 'transform 0.5s linear',
+  },
+  transitioningRight: {
+    position: 'relative',
+    transform: 'translateX(200%)',
+    transition: 'transform 0.5s linear',
   },
 }))
 
