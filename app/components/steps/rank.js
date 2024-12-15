@@ -100,12 +100,10 @@ export function RankPoints(props) {
     }, {})
   )
 
-  const [clearRanksBlocked, setClearRanksBlocked] = useState(true)
-
   useEffect(() => {
     const newRankByParentId = {}
     pointRankGroupList?.forEach(rankPoint => {
-      if (rankPoint.rank && clearRanksBlocked) {
+      if (rankPoint.rank) {
         newRankByParentId[rankPoint.point._id] = rankPoint.rank
       }
     })
@@ -119,7 +117,6 @@ export function RankPoints(props) {
 
     if (updated) {
       setRankByParentId(newRankByParentId)
-      setClearRanksBlocked(true)
     }
   }, [pointRankGroupList])
 
@@ -156,9 +153,9 @@ export function RankPoints(props) {
 
         rankByParentId[point._id] = rank
       }
+
       if (rank) {
         const { valid, percentDone } = validAndPercentDone()
-
         setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
       } // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
       return rankByParentId // about the setter
@@ -247,15 +244,11 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              setClearRanksBlocked(false)
-              setRankByParentId(rankByParentId =>
-                Object.values(rankByParentId).reduce(
-                  (rankByParentId, rank) => (
-                    (rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId
-                  ),
-                  {}
-                )
+              const clearedRanks = Object.values(rankByParentId).reduce(
+                (rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId),
+                {}
               )
+              setRankByParentId(clearedRanks)
             }}
           />
         </div>

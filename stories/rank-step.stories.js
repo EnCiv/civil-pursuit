@@ -211,6 +211,7 @@ export const rankStepWithPartialDataAndUserUpdate = {
     })
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
+
     await waitFor(() => {
       expect(window.socket._socketEmitHandlerResults['upsert-rank']).toEqual({
         _id: '201',
