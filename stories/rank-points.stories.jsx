@@ -84,15 +84,7 @@ export const oneRankNeutral = {
 
 export const sevenPointsWith3Ranked = {
   args: {
-    pointRankGroupList: [
-      { ...point1, rank: createRank('Most') },
-      { ...point2, rank: createRank('Most') },
-      { ...point3, rank: createRank('Least') },
-      point4,
-      point5,
-      point6,
-      point7,
-    ],
+    pointRankGroupList: [{ ...point1, rank: createRank('Most') }, { ...point2, rank: createRank('Most') }, { ...point3, rank: createRank('Least') }, point4, point5, point6, point7],
   },
 }
 
@@ -134,20 +126,9 @@ export const tenRanksTooManyMost = {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
-    await clickSelections(points, [
-      'Most',
-      'Neutral',
-      'Most',
-      'Most',
-      'Least',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-    ])
+    await clickSelections(points, ['Most', 'Neutral', 'Most', 'Most', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 5,
+      count: 23,
       onDoneResult: {
         valid: false,
         value: 1,
@@ -172,21 +153,10 @@ export const tenRanksTooManyLeast = {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
-    await clickSelections(points, [
-      'Most',
-      'Least',
-      'Least',
-      'Most',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-      'Neutral',
-    ])
+    await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 13,
+      count: 23,
       onDoneResult: {
         valid: false,
         value: 1,
@@ -211,21 +181,10 @@ export const tenRanksTooManyMostAndLeast = {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
-    await clickSelections(points, [
-      'Most',
-      'Least',
-      'Least',
-      'Most',
-      'Neutral',
-      'Neutral',
-      'Most',
-      'Least',
-      'Neutral',
-      'Neutral',
-    ])
+    await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Most', 'Least', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 13,
+      count: 23,
       onDoneResult: {
         valid: false,
         value: 1,

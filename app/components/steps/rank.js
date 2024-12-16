@@ -54,17 +54,12 @@ export default function RankStep(props) {
       window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
         if (!result) return // there was an error
         const [ranks] = result
-        const preRankByParentId = ranks.reduce(
-          (preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId),
-          {}
-        )
+        const preRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
         upsert({ preRankByParentId })
       })
     })
 
-  return (
-    <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...otherProps} />
-  )
+  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...otherProps} />
 }
 
 const toRankString = {
@@ -170,9 +165,7 @@ export function RankPoints(props) {
   const leastCount = () => getRankCount('least')
 
   const getRankCount = rankName => {
-    return Object.values(rankByParentId).filter(
-      rankedPoint => rankedPoint.category?.toLowerCase() === rankName?.toLowerCase()
-    ).length
+    return Object.values(rankByParentId).filter(rankedPoint => rankedPoint.category?.toLowerCase() === rankName?.toLowerCase()).length
   }
 
   useEffect(() => {
@@ -190,9 +183,7 @@ export function RankPoints(props) {
     const mostDiscrepancy = mostCount() - targetMost
     const leastDiscrepancy = leastCount() - targetLeast
 
-    const valid =
-      (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointRankGroupList.length) ||
-      (doneCount === pointRankGroupList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointRankGroupList.length) || (doneCount === pointRankGroupList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
@@ -215,28 +206,8 @@ export function RankPoints(props) {
     <div className={cx(classes.rankStep, className)} {...otherProps}>
       <div className={classes.buttonDiv}>
         <div className={classes.leftButtons}>
-          <StatusBadge
-            name={'Most Important'}
-            number={`${mostCount()}/${targetMost}`}
-            status={
-              mostCount() == targetMost || (targetLeast == 0 && targetMost == 0)
-                ? 'complete'
-                : mostCount() > targetMost
-                ? 'error'
-                : 'progress'
-            }
-          />
-          <StatusBadge
-            name={'Least Important'}
-            number={`${leastCount()}/${targetLeast}`}
-            status={
-              leastCount() == targetLeast || (targetLeast == 0 && targetMost == 0)
-                ? 'complete'
-                : leastCount() > targetLeast
-                ? 'error'
-                : 'progress'
-            }
-          />
+          <StatusBadge name={'Most Important'} number={`${mostCount()}/${targetMost}`} status={mostCount() == targetMost || (targetLeast == 0 && targetMost == 0) ? 'complete' : mostCount() > targetMost ? 'error' : 'progress'} />
+          <StatusBadge name={'Least Important'} number={`${leastCount()}/${targetLeast}`} status={leastCount() == targetLeast || (targetLeast == 0 && targetMost == 0) ? 'complete' : leastCount() > targetLeast ? 'error' : 'progress'} />
         </div>
         <div className={classes.rightButtons}>
           <ModifierButton
@@ -244,11 +215,12 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              const clearedRanks = Object.values(rankByParentId).reduce(
-                (rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId),
-                {}
-              )
-              setRankByParentId(clearedRanks)
+              const clearedRanks = Object.values(rankByParentId).reduce((rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId), {})
+
+              for (let rank of Object.values(clearedRanks)) {
+                const { valid, percentDone } = validAndPercentDone()
+                setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
+              }
             }}
           />
         </div>
@@ -257,19 +229,10 @@ export function RankPoints(props) {
         {pointRankGroupList.map((rankedPoint, i) => {
           const { point, rank } = rankedPoint
 
-          const rankInvalid =
-            (rankDiscrepancies.most > 0 && rankedPoint.rank == 'Most' && targetMost > 0) ||
-            (rankDiscrepancies.least > 0 && rankedPoint.rank == 'Least' && targetLeast > 0)
+          const rankInvalid = (rankDiscrepancies.most > 0 && rankedPoint.rank == 'Most' && targetMost > 0) || (rankDiscrepancies.least > 0 && rankedPoint.rank == 'Least' && targetLeast > 0)
 
           return (
-            <Point
-              key={point._id}
-              point={point}
-              vState="default"
-              className={rankInvalid ? classes.invalidBackground : classes.validBackground}
-              isInvalid={rankInvalid}
-              data-testid={`point`}
-            >
+            <Point key={point._id} point={point} vState="default" className={rankInvalid ? classes.invalidBackground : classes.validBackground} isInvalid={rankInvalid} data-testid={`point`}>
               <Ranking
                 className={classes.rank}
                 defaultValue={toRankString[rankByParentId[point._id]?.category]}
@@ -281,9 +244,7 @@ export function RankPoints(props) {
           )
         })}
       </div>
-      <div className={classes.statusBoxDiv}>
-        {errorMsg && <StatusBox status="error" subject="Oops!" description={errorMsg}></StatusBox>}
-      </div>
+      <div className={classes.statusBoxDiv}>{errorMsg && <StatusBox status="error" subject="Oops!" description={errorMsg}></StatusBox>}</div>
     </div>
   )
 }
