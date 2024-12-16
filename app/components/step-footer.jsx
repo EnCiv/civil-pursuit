@@ -1,4 +1,6 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
+//https://github.com/EnCiv/civil-pursuit/issues/259
+
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { TextButton, PrimaryButton } from './button.jsx'
@@ -60,6 +62,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   next: {
     margin: '1rem 2rem',
+    width: '100%',                 // Flexible width based on parent
+    maxWidth: '13.8125rem',        // Ensures it doesn't exceed the design width
+    height: '3.125rem',
+    padding: '0.5rem 1.25rem',
+    borderRadius: '0.5rem',
+    border: `2px solid ${theme.colorPrimary}`,
+    textAlign: 'center',            
   },
 }))
 export default StepFooter
