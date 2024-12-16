@@ -4,13 +4,7 @@ import React, { useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import RankStep, { RankPoints } from '../app/components/steps/rank'
 
-import {
-  onDoneDecorator,
-  onDoneResult,
-  DeliberationContextDecorator,
-  deliberationContextData,
-  socketEmitDecorator,
-} from './common'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { cloneDeep } from 'lodash'
 
@@ -285,6 +279,80 @@ export const rankStepWithTopDownUpdate = {
         preRankByParentId: {
           1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 0 },
           2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+        },
+      })
+    })
+  },
+}
+
+export const rankStepWithClearRanks = {
+  args: { ...getRankArgsFrom(mergeRanksIntoReviewPoints(rankPoints, [rank1preMost])) },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: args => {
+    // simulate a top down update after the component initially renders
+    const { data = {}, upsert } = useContext(DeliberationContext)
+    useState(() => {
+      // execute this code once, before the component is initally rendered
+      setTimeout(() => {
+        upsert({
+          preRankByParentId: {
+            2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+          },
+        })
+      }, 1000)
+    })
+    return rankStepTemplate(args)
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const clearButton = canvas.getAllByText('Clear All')
+
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        onDoneResult: {
+          valid: false,
+          value: 0.3333333333333333,
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        preRankByParentId: {
+          1: {
+            _id: '201',
+            stage: 'pre',
+            category: 'most',
+            parentId: '1',
+            discussionId: '1001',
+            round: 0,
+          },
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(onDoneResult(canvas)).toMatchObject({
+        onDoneResult: {
+          valid: false,
+          value: 0.6666666666666666,
+        },
+      })
+    })
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        preRankByParentId: {
+          1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 0 },
+          2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+        },
+      })
+    })
+
+    await userEvent.click(clearButton[0])
+
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        preRankByParentId: {
+          1: { _id: '201', stage: 'pre', category: '', parentId: '1', discussionId: '1001', round: 0 },
+          2: { _id: '211', stage: 'pre', category: '', parentId: '2', discussionId: '1001', round: 0 },
         },
       })
     })
