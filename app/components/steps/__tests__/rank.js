@@ -39,22 +39,21 @@ jest.mock('react-accessible-headings', () => {
 
 const data = {}
 describe('Test derivePointRankGroupList()', () => {
-  test('Input data empty.', () => {
+  test('If the input data is empty, object is not created', () => {
     const { pointRankGroupList } = derivePointRankGroupList(data)
     expect(pointRankGroupList).toBe(undefined)
   })
 
   test("No change to ref if data doesn't change", () => {
     data.reducedPointList = [
-      { point: { _id: '1', groupedPoints: [], subject: '1', description: '1' } },
-      { point: { _id: '2', groupedPoints: [], subject: '2', description: '2' } },
+      { point: { _id: '1', subject: '1', description: '1' }, group: [] },
+      { point: { _id: '2', subject: '2', description: '2' }, group: [] },
       {
-        point: {
-          _id: '3',
-          groupedPoints: [{ _id: '4', groupedPoints: [], subject: '4', description: '4' }],
-          subject: '3',
-          description: '3',
-        },
+        point: { _id: '3', subject: '3', description: '3' },
+        group: [
+          { _id: '4', subject: '4', description: '4' },
+          { _id: '5', subject: '5', description: '5' },
+        ],
       },
     ]
 
@@ -65,33 +64,79 @@ describe('Test derivePointRankGroupList()', () => {
     expect(newRankGroupList).toBe(pointRankGroupList)
   })
 
-  test('Change to ref if point changes.', () => {
-    const pointRankGroupList = derivePointRankGroupList(data)
+  test("If a point changes, the ref changes and it's parent ref, but other refs not changed.", () => {
+    const { pointRankGroupList } = derivePointRankGroupList(data)
+    const savedPointRankGroupList = [...pointRankGroupList]
+    const savedPoints = pointRankGroupList.map(pRGL => pRGL.point)
 
     data.reducedPointList[1] = { point: { ...data.reducedPointList[1].point } }
     data.reducedPointList = [...data.reducedPointList]
 
-    const newRankGroupList = derivePointRankGroupList(data)
+    const newRankGroupList = derivePointRankGroupList(data).pointRankGroupList
     expect(newRankGroupList).not.toBe(pointRankGroupList)
     expect(newRankGroupList).toEqual(pointRankGroupList)
+    expect(newRankGroupList[0]).toBe(savedPointRankGroupList[0])
+    expect(newRankGroupList[1]).not.toBe(savedPointRankGroupList[1])
+    expect(newRankGroupList[2]).toBe(savedPointRankGroupList[2])
+    // the points should be the same
+    newPointRankGroupList.forEach((pRGL, i) => {
+      expect(pRGL.point).toBe(savedPoints[i])
+    })
   })
 
-  test('Test works with pre ranks.', () => {
+  test('pre ranks can be added, and parent refs are updated', () => {
+    const { pointRankGroupList } = derivePointRankGroupList(data)
+    const savedPointRankGroupList = { ...pointRankGroupList }
     data.preRankByParentId = {
       1: { _id: '4', category: 'most', parentId: '1', stage: 'pre' },
       2: { _id: '5', category: 'neutral', parentId: '2', stage: 'pre' },
       3: { _id: '6', category: 'least', parentId: '3', stage: 'pre' },
     }
+    const newPointRankGroupList = derivePointRankGroupList(data).pointRankGroupList
+    expect(newPointRankGroupList).toMatchObject([
+      { point: { _id: '1', subject: '1', description: '1' }, group: [], rank: { _id: '4', category: 'most', parentId: '1', stage: 'pre' } },
+      { point: { _id: '2', subject: '2', description: '2' }, group: [], rank: { _id: '5', category: 'neutral', parentId: '2', stage: 'pre' } },
+      {
+        point: { _id: '3', subject: '3', description: '3' },
+        group: [
+          { _id: '4', subject: '4', description: '4' },
+          { _id: '5', subject: '5', description: '5' },
+        ],
+        rank: { _id: '6', category: 'least', parentId: '3', stage: 'pre' },
+      },
+    ])
+    expect(newPointRankGroupList[0]).not.toBe(savedPointRankGroupList[0])
+    expect(newPointRankGroupList[1]).not.toBe(savedPointRankGroupList[1])
+    expect(newPointRankGroupList[2]).not.toBe(savedPointRankGroupList[2])
+  })
 
+  test("If a rank changes, it's ref and it's parent ref change, but other refs stay the same", () => {
     const { pointRankGroupList } = derivePointRankGroupList(data)
-    const calculatedRankPoints = data.reducedPointList.map(({ point }) => {
-      const result = { point }
-
-      if (data.preRankByParentId[point._id]) result.rank = data.preRankByParentId[point._id]
-
-      return result
+    const savedPointRankGroupList = { ...pointRankGroupList }
+    const savedPoints = pointRankGroupList.map(pRGL => pRGL.point)
+    const savedRanks = pointRankGroupList.map(pRGL => pRGL.rank)
+    data.preRankByParentId[1].rank = { _id: '4', category: 'neutral', parentId: '1', stage: 'pre' }
+    const newPointRankGroupList = derivePointRankGroupList(data).pointRankGroupList
+    expect(newPointRankGroupList).toMatchObject([
+      { point: { _id: '1', subject: '1', description: '1' }, group: [], rank: { _id: '4', category: 'neutral', parentId: '1', stage: 'pre' } },
+      { point: { _id: '2', subject: '2', description: '2' }, group: [], rank: { _id: '5', category: 'neutral', parentId: '2', stage: 'pre' } },
+      {
+        point: { _id: '3', subject: '3', description: '3' },
+        group: [
+          { _id: '4', subject: '4', description: '4' },
+          { _id: '5', subject: '5', description: '5' },
+        ],
+        rank: { _id: '6', category: 'least', parentId: '3', stage: 'pre' },
+      },
+    ])
+    expect(newPointRankGroupList[0]).not.toBe(savedPointRankGroupList[0])
+    expect(newPointRankGroupList[1]).toBe(savedPointRankGroupList[1])
+    expect(newPointRankGroupList[2]).toBe(savedPointRankGroupList[2])
+    newPointRankGroupList.forEach((pRGL, i) => {
+      expect(pRGL.point).toBe(savedPoints[i])
     })
-
-    expect(pointRankGroupList).toMatchObject(calculatedRankPoints)
+    expect(newPointRankGroupList[0].rank).not.toBe(savedRanks[0])
+    expect(newPointRankGroupList[1].rank).toBe(savedRanks[1])
+    expect(newPointRankGroupList[2].rank).toBe(savedRanks[2])
   })
 })
