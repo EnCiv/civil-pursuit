@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
+// https://github.com/EnCiv/civil-pursuit/issue/247
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
@@ -149,6 +150,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    width: '25rem', // make CTA longer
 
     '&:disabled': {
       backgroundColor: theme.colors.white,
