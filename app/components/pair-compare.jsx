@@ -146,7 +146,7 @@ function PairCompare(props) {
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
-
+      <div style={{ marginBottom: '2.5rem'/*increase margin at the bottom of n out of 6 label*/ }}></div>
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
@@ -273,6 +273,7 @@ const useStyles = createUseStyles(theme => ({
 const sharedStatusBadgeStyle = () => ({
   borderRadius: '1rem',
   padding: '0.375rem 0.625rem',
+  marginBottom: '20rem',
 })
 
 const sharedButtonStyle = () => ({
