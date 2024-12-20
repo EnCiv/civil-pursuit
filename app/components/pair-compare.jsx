@@ -146,13 +146,15 @@ function PairCompare(props) {
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
-      <div style={{ marginBottom: '2.5rem'/*increase margin at the bottom of n out of 6 label*/ }}></div>
+      <div style={{ marginBottom: '2.5rem' /*increase margin at the bottom of n out of 6 label*/ }}></div>
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
             <Point className={cx(classes.emptyPoint, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
+            
           </div>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
+            
             <Point className={cx(classes.emptyPoint, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
           </div>
         </div>
@@ -213,8 +215,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-evenly',
     overflow: 'visible',
-    paddingTop: '5rem',
-    marginBottom: '1rem',
+    paddingTop: '4rem',
     clipPath: 'xywh(0 0 100% 500%)',
   },
   hidden: {
