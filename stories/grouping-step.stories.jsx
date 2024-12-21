@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/198
 
 import React, { useContext, useState } from 'react'
-import GroupPoints from '../app/components/steps/grouping'
+import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
@@ -11,6 +11,7 @@ import DeliberationContext from '../app/components/deliberation-context'
 import { cloneDeep } from 'lodash'
 
 const discussionId = '1101'
+const round = 1
 
 export default {
   component: GroupPoints,
@@ -664,4 +665,73 @@ export const canRemoveOnePointFromAGroup = {
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
     await userEvent.click(canvas.getByTitle('Ungroup'))
   },
+}
+
+function getGroupingArgsFrom(groupingPoints) {
+  const cn = groupingPointsToContext(groupingPoints)
+  console.log(cn)
+  const { pointById, ...defaultValue } = { ...cn, round, discussionId }
+  return { pointById, defaultValue }
+}
+
+const groupingPoints = [
+  {
+    _id: 0,
+    subject: 'Point 0',
+    description: 'Point Description 0',
+    groupedPoints: [],
+    user: {
+      dob: '1990-10-20T00:00:00.000Z',
+      state: 'NY',
+      party: 'Independent',
+    },
+  },
+  {
+    _id: 4,
+    subject: 'Point 4',
+    description: 'Point Description 4',
+    groupedPoints: [],
+    user: {
+      dob: '1990-10-20T00:00:00.000Z',
+      state: 'NY',
+      party: 'Independent',
+    },
+  },
+  {
+    _id: 5,
+    subject: 'Point 5',
+    description: 'Point Description 5',
+    groupedPoints: [],
+    user: {
+      dob: '1990-10-20T00:00:00.000Z',
+      state: 'NY',
+      party: 'Independent',
+    },
+  },
+]
+
+const groupingStepTemplate = args => {
+  const { preRankByParentId, ...otherArgs } = args
+  useState(() => {
+    // execute this code once, before the component is initally rendered
+    // the api call will provide the new data for this step
+    window.socket._socketEmitHandlers['get-points-for-round'] = (discussionId, round, ids, cb) => {
+      window.socket._socketEmitHandlerResults['get-points-for-round'] = [discussionId, round, ids]
+      setTimeout(() => {
+        const ranks = Object.values(preRankByParentId)
+        cb([ranks])
+      })
+    }
+    window.socket._socketEmitHandlers['put-groupings'] = (rank, cb) => {
+      window.socket._socketEmitHandlerResults['put-groupings'] = rank
+      cb && cb()
+    }
+  })
+  return <GroupingStep {...otherArgs} />
+}
+
+export const groupingStepWithPartialDataAndUserUpdate = {
+  args: { ...getGroupingArgsFrom(groupingPoints) },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: groupingStepTemplate,
 }

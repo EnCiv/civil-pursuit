@@ -14,7 +14,7 @@ import { PrimaryButton, SecondaryButton } from '../button'
 import StatusBadge from '../status-badge'
 import { cloneDeep, isEqual } from 'lodash'
 
-export function GroupingStep(props) {
+export default function GroupingStep(props) {
   const { onDone, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
@@ -23,7 +23,7 @@ export function GroupingStep(props) {
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
-      window.socket.emit('upsert-rank', delta)
+      window.socket.emit('put-groupings', discussionId, round, delta)
     }
     onDone({ valid, value })
   }
@@ -32,19 +32,24 @@ export function GroupingStep(props) {
     useState(() => {
       // on the browser, do this once and only once when this component is first rendered
       const { discussionId, round, reducedPointList } = data
+
       window.socket.emit('get-points-for-round', discussionId, round, result => {
         if (!result) return // there was an error
         const [points] = result
         const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
-        const groupings = undefined
+        const groupings = points.map(pt => [pt._id, ...pt.groupedPoints.map(gp => gp._id)])
 
-        upsert({ pointById, uInfoByRound: { [round]: { groupings: groupings } } })
+        upsert({ pointById, uInfoByRounds: { [round]: { groupings: groupings } } })
+
+        if (points.length <= 1) {
+          onDone({ valid: false, value: 'intermission' })
+        }
       })
     })
   return <GroupPoints {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
 }
 
-export default function GroupPoints(props) {
+export function GroupPoints(props) {
   const { groupingPoints = [], onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
