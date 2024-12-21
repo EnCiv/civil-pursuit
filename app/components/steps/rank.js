@@ -16,7 +16,6 @@ import StatusBadge from '../status-badge.jsx'
 import StatusBox from '../status-box.js'
 
 import Ranking from '../ranking.jsx'
-import { set } from 'lodash'
 
 const minSelectionsTable = {
   0: { least: 0, most: 0 },
@@ -41,8 +40,10 @@ export default function RankStep(props) {
   const args = derivePointRankGroupList(data)
 
   function handleOnDone({ valid, value, delta }) {
-    if (delta) upsert({ preRankByParentId: { [delta.parentId]: delta } })
-    window.socket.emit('upsert-rank', delta)
+    if (delta) {
+      upsert({ preRankByParentId: { [delta.parentId]: delta } })
+      window.socket.emit('upsert-rank', delta)
+    }
     onDone({ valid, value })
   }
 
