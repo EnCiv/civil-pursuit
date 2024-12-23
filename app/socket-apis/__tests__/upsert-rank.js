@@ -2,6 +2,7 @@ import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import upsertRank from '../upsert-rank'
+import Ranks from '../../models/ranks'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
 const RANK1 = new ObjectId('6667d688b20d8e339ca50020')
@@ -50,7 +51,7 @@ test('Insert a new rank document', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
 
-  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-1', userId: USER1 })
+  const rank = await Ranks.findOne({ parentId: 'parent-id-1', userId: USER1 })
   expect(rank).toEqual({ ...rankObj, userId: USER1 })
 })
 
@@ -82,7 +83,7 @@ test('Update an existing rank document with a different category', async () => {
   await upsertRank.call({ synuser: { id: USER1 } }, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(2)
-  const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
+  const rank = await Ranks.findOne({ _id: RANK1, userId: USER1 })
   // console.log('Updated document:', rank) // check the doc is updated
   expect(rank).toMatchObject({ ...rankObj, userId: USER1 })
 })
@@ -94,7 +95,7 @@ test('Fail if the user is not logged in', async () => {
   await upsertRank.call({}, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-2' })
+  const rank = await Ranks.findOne({ parentId: 'parent-id-2' })
   expect(rank).toBeNull()
 })
 
@@ -109,6 +110,6 @@ test('Fail if one of the required parameters is missing', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith()
 
-  const rank = await Mongo.db.collection('ranks').findOne({ round: 1, category: 'most' })
+  const rank = await Ranks.findOne({ round: 1, category: 'most' })
   expect(rank).toBeNull()
 })
