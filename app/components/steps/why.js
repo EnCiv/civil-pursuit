@@ -10,9 +10,9 @@ import { createUseStyles } from 'react-jss'
 import { isEqual, cloneDeep } from 'lodash'
 
 export default function WhyStep(props) {
-  const { myWhyByParentId, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
-  const derivedProps = derivePointWhyListByCategory(data)
+  const { category, intro, ...otherProps } = props
+  const derivedPointWhyList = derivePointWhyListByCategory(data, category)
 
   useEffect(() => {
     if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
@@ -29,7 +29,7 @@ export default function WhyStep(props) {
 
   function handleOnDone({ valid, value, delta }) {
     if (!delta.category) {
-      delta.category = data.category
+      delta.category = category
     }
 
     const updatedMyWhyByParentId = {
@@ -58,9 +58,13 @@ export default function WhyStep(props) {
     return null
   }
 
+  if (!derivedPointWhyList?.pointWhyList || !Array.isArray(derivedPointWhyList.pointWhyList)) {
+    return null
+  }
+
   return (
     <div>
-      <Why {...derivedProps} {...otherProps} onDone={handleOnDone} />
+      <Why pointWhyList={derivedPointWhyList.pointWhyList} {...otherProps} category={category} intro={intro} onDone={handleOnDone} />
     </div>
   )
 }
@@ -142,7 +146,6 @@ export function Why(props) {
                       subject: value.subject || '',
                       description: value.description || '',
                       parentId: point._id,
-                      category,
                     }
                     handleOnDone({ valid, value: delta, delta })
                   }}
@@ -156,32 +159,33 @@ export function Why(props) {
   )
 }
 
-export function derivePointWhyListByCategory(data) {
+export function derivePointWhyListByCategory(data, category) {
   const local = useRef({
-    pointWhyById: {},
-    pointWhyList: [],
-    reducedPointList: null,
-    myWhyByParentId: null,
-    category: null,
-    intro: null,
-    prevResult: {
-      pointWhyList: [],
-      category: undefined,
-      intro: undefined,
-    },
+    pointWhyById: undefined,
+    reducedPointList: undefined,
+    myWhyByParentId: undefined,
+    result: undefined,
   }).current
 
-  const reducedPointList = data?.reducedPointList || []
-  const myWhyByParentId = data?.myWhyByParentId || {}
-  const category = data?.category
-  const intro = data?.intro
+  if (!local.pointWhyById) {
+    local.pointWhyById = {}
+  }
+
+  if (!local.reducedPointList) {
+    local.reducedPointList = []
+  }
+
+  const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
+
+  //filter
+  const filteredPoints = reducedPointList.filter(point => preRankByParentId[point._id]?.category === category)
 
   let updated = false
 
-  if (local.reducedPointList !== reducedPointList) {
+  if (local.reducedPointList !== filteredPoints) {
     const oldIds = new Set(Object.keys(local.pointWhyById))
 
-    for (const p of reducedPointList) {
+    for (const p of filteredPoints) {
       if (!local.pointWhyById[p._id]) {
         local.pointWhyById[p._id] = { point: p, why: myWhyByParentId[p._id] }
         updated = true
@@ -199,7 +203,7 @@ export function derivePointWhyListByCategory(data) {
       updated = true
     }
 
-    local.reducedPointList = reducedPointList
+    local.reducedPointList = filteredPoints
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {
@@ -216,25 +220,13 @@ export function derivePointWhyListByCategory(data) {
     local.myWhyByParentId = myWhyByParentId
   }
 
-  if (local.category !== category) {
-    local.category = category
-    updated = true
-  }
-  if (local.intro !== intro) {
-    local.intro = intro
-    updated = true
-  }
-
   if (updated) {
-    local.pointWhyList = Object.values(local.pointWhyById)
-    local.prevResult = {
-      pointWhyList: local.pointWhyList,
-      category: local.category,
-      intro: local.intro,
+    local.result = {
+      pointWhyList: Object.values(local.pointWhyById),
     }
   }
 
-  return local.prevResult
+  return local.result
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({

@@ -31,48 +31,60 @@ describe('deriver function tests', () => {
 
   test('input data undefined', () => {
     const result = derivePointWhyListByCategory(undefined)
-    expect(result).toEqual({
-      pointWhyList: [],
-      category: undefined,
-      intro: undefined,
-    })
+    expect(result).toBeUndefined()
   })
 
   test('input data empty', () => {
     const result = derivePointWhyListByCategory({})
-    expect(result).toEqual({
-      pointWhyList: [],
-      category: undefined,
-      intro: undefined,
-    })
+    expect(result).toBeUndefined()
   })
 
   test('input data present - output data not there yet', () => {
     data = {
-      reducedPointList: [{ _id: '1', subject: 'Subject 1', description: 'Description 1' }],
+      reducedPointList: [
+        {
+          _id: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Subject 1',
+          description: 'Description 1',
+        },
+      ],
       myWhyByParentId: {},
       category: 'most',
       intro: 'This is the intro text.',
     }
 
     const result = derivePointWhyListByCategory(data)
+
     expect(result).toEqual({
       pointWhyList: [
         {
-          point: { _id: '1', subject: 'Subject 1', description: 'Description 1' },
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Subject 1',
+            description: 'Description 1',
+          },
           why: undefined,
         },
       ],
-      category: 'most',
-      intro: 'This is the intro text.',
     })
   })
 
   test('input data unchanged', () => {
     data = {
-      reducedPointList: [{ _id: '1', subject: 'Subject 1', description: 'Description 1' }],
+      reducedPointList: [
+        {
+          _id: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Subject 1',
+          description: 'Description 1',
+        },
+      ],
       myWhyByParentId: {
-        1: { _id: 'why1', parentId: '1', subject: 'Why Subject 1', description: 'Why Description 1' },
+        '64a81ca0cbad4414b3dc8d75': {
+          _id: '641f9b3dfb8ce2f3a42ed816',
+          parentId: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Why Subject 1',
+          description: 'Why Description 1',
+        },
       },
       category: 'most',
       intro: 'This is the intro text.',
@@ -82,17 +94,53 @@ describe('deriver function tests', () => {
     const result2 = derivePointWhyListByCategory(data)
 
     expect(result2).toBe(result1)
+
+    expect(result2).toMatchObject({
+      pointWhyList: [
+        {
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Subject 1',
+            description: 'Description 1',
+          },
+          why: {
+            _id: '641f9b3dfb8ce2f3a42ed816',
+            parentId: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Why Subject 1',
+            description: 'Why Description 1',
+          },
+        },
+      ],
+    })
   })
 
   test('subset of input data changes - only affected part of output changes', () => {
     data = {
       reducedPointList: [
-        { _id: '1', subject: 'Subject 1', description: 'Description 1' },
-        { _id: '2', subject: 'Subject 2', description: 'Description 2' },
+        {
+          _id: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Subject 1',
+          description: 'Description 1',
+        },
+        {
+          _id: '64a81ca0cbad4414b3dc8d76',
+          subject: 'Subject 2',
+          description: 'Description 2',
+        },
       ],
       myWhyByParentId: {
-        1: { _id: 'why1', parentId: '1', subject: 'Why Subject 1', description: 'Why Description 1' },
-        2: { _id: 'why2', parentId: '2', subject: 'Why Subject 2', description: 'Why Description 2' },
+        '64a81ca0cbad4414b3dc8d75': {
+          _id: '641f9b3dfb8ce2f3a42ed816',
+          parentId: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Why Subject 1',
+          description: 'Why Description 1',
+        },
+        '64a81ca0cbad4414b3dc8d76': {
+          _id: '641f9b3dfb8ce2f3a42ed817',
+          parentId: '64a81ca0cbad4414b3dc8d76',
+          subject: 'Why Subject 2',
+          description: 'Why Description 2',
+        },
       },
       category: 'most',
       intro: 'This is the intro text.',
@@ -104,19 +152,58 @@ describe('deriver function tests', () => {
       ...data,
       myWhyByParentId: {
         ...data.myWhyByParentId,
-        1: {
-          _id: 'why1',
-          parentId: '1',
+        '64a81ca0cbad4414b3dc8d75': {
+          _id: '641f9b3dfb8ce2f3a42ed816',
+          parentId: '64a81ca0cbad4414b3dc8d75',
           subject: 'Updated Why Subject 1',
           description: 'Updated Why Description 1',
         },
       },
     }
 
+    const savedPoints = result1.pointWhyList.map(pw => pw.point)
+    const savedWhys = result1.pointWhyList.map(pw => pw.why)
+
     const result2 = derivePointWhyListByCategory(data)
 
     expect(result2).not.toBe(result1)
     expect(result2.pointWhyList[0]).not.toBe(result1.pointWhyList[0])
     expect(result2.pointWhyList[1]).toBe(result1.pointWhyList[1])
+
+    expect(result2.pointWhyList[0].point).toBe(savedPoints[0])
+    expect(result2.pointWhyList[0].why).not.toBe(savedWhys[0])
+    expect(result2.pointWhyList[1].point).toBe(savedPoints[1])
+    expect(result2.pointWhyList[1].why).toBe(savedWhys[1])
+
+    expect(result2).toMatchObject({
+      pointWhyList: [
+        {
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Subject 1',
+            description: 'Description 1',
+          },
+          why: {
+            _id: '641f9b3dfb8ce2f3a42ed816',
+            parentId: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Updated Why Subject 1',
+            description: 'Updated Why Description 1',
+          },
+        },
+        {
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d76',
+            subject: 'Subject 2',
+            description: 'Description 2',
+          },
+          why: {
+            _id: '641f9b3dfb8ce2f3a42ed817',
+            parentId: '64a81ca0cbad4414b3dc8d76',
+            subject: 'Why Subject 2',
+            description: 'Why Description 2',
+          },
+        },
+      ],
+    })
   })
 })

@@ -18,17 +18,15 @@ export default {
   },
 }
 
-const discussionId = '1001'
-
 const reducedPointList = [
-  { _id: 'point1', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: discussionId },
-  { _id: 'point2', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: discussionId },
+  { _id: '60b8d295f1c8ab1d2f4a1c01', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' },
+  { _id: '60b8d295f1c8ab1d2f4a1c02', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' },
 ]
 
 const myWhyByParentId = {
-  point1: {
-    _id: 'why1',
-    parentId: 'point1',
+  '60b8d295f1c8ab1d2f4a1c01': {
+    _id: '60b8d295f1c8ab1d2f4a1c03',
+    parentId: '60b8d295f1c8ab1d2f4a1c01',
     subject: 'Existing Subject 1',
     description: 'Existing Description 1',
     category: 'most',
@@ -50,26 +48,29 @@ const whyStepTemplate = args => {
 
   useEffect(() => {
     window.socket._socketEmitHandlers = window.socket._socketEmitHandlers || {}
-
     window.socket._socketEmitHandlers['getUserWhys'] = (ids, cb) => {
       window.socket._socketEmitHandlerResults['getUserWhys'] = ids
       setTimeout(() => {
-        const whys = Object.values(myWhyByParentId || {})
+        const whys = Object.values(args.myWhyByParentId || {})
         cb(whys)
       }, 1000)
     }
 
+    function generateObjectId() {
+      return Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+    }
+
     window.socket._socketEmitHandlers['upsertWhy'] = (delta, cb) => {
       // Retrieve the existing _id
-      const existingWhy = myWhyByParentId[delta.parentId]
+      const existingWhy = args.myWhyByParentId[delta.parentId]
       const updatedDoc = {
         ...delta,
-        _id: existingWhy ? existingWhy._id : 'new_id', // Keep the _id if it exists; otherwise, generate a new one
+        _id: existingWhy ? existingWhy._id : generateObjectId(), // Keep the _id if it exists; otherwise, generate a new one
       }
       window.socket._socketEmitHandlerResults['upsertWhy'] = updatedDoc
       cb && cb(updatedDoc)
     }
-  }, [myWhyByParentId])
+  }, [args.myWhyByParentId])
 
   return (
     <DeliberationContext.Provider value={{ data, upsert: handleUpsert }}>
@@ -82,8 +83,8 @@ const emptyTemplate = args => <WhyStep {...args} />
 
 export const Empty = {
   args: {
-    defaultValue: {}, // Data is initially an empty object
-    myWhyByParentId: {}, // Simulate server returning no data
+    defaultValue: {},
+    myWhyByParentId: {},
   },
   render: emptyTemplate,
   decorators: [],
@@ -107,7 +108,7 @@ export const ReturningUser = {
   args: {
     defaultValue: {
       reducedPointList,
-      myWhyByParentId, // Includes the user's previous `why` data
+      myWhyByParentId,
       category: 'most',
       intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
@@ -121,18 +122,17 @@ export const UserEntersInitialData = {
   args: {
     defaultValue: {
       reducedPointList,
-      myWhyByParentId: {}, // Initially no data
+      myWhyByParentId: {},
       category: 'most',
       intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
-    myWhyByParentId: {}, // Simulate server returning no data
+    myWhyByParentId: {},
     decorators: [DeliberationContextDecorator],
   },
   render: whyStepTemplate,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    // Wait for two input boxes to render
     await waitFor(() => {
       const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
       const descriptionInputs = canvas.getAllByPlaceholderText('Description')
@@ -143,17 +143,14 @@ export const UserEntersInitialData = {
     const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
     const descriptionInputs = canvas.getAllByPlaceholderText('Description')
 
-    // Enter the first why
     await userEvent.type(subjectInputs[0], 'User Subject 1')
     await userEvent.type(descriptionInputs[0], 'User Description 1')
     await userEvent.tab()
 
-    // Enter the second why
     await userEvent.type(subjectInputs[1], 'User Subject 2')
     await userEvent.type(descriptionInputs[1], 'User Description 2')
     await userEvent.tab()
 
-    // Wait for onDoneDecorator to show the result
     await waitFor(() => {
       const result = onDoneResult()
       expect(result.count).toBe(4)
@@ -163,14 +160,12 @@ export const UserEntersInitialData = {
           {
             subject: 'User Subject 1',
             description: 'User Description 1',
-            parentId: 'point1',
-            category: 'most',
+            parentId: '60b8d295f1c8ab1d2f4a1c01',
           },
           {
             subject: 'User Subject 2',
             description: 'User Description 2',
-            parentId: 'point2',
-            category: 'most',
+            parentId: '60b8d295f1c8ab1d2f4a1c02',
           },
         ],
       })
@@ -194,7 +189,12 @@ export const UserUpdatesExistingData = {
     const canvas = within(canvasElement)
 
     await waitFor(() => {
-      expect(canvas.getByText("Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it")).toBeInTheDocument()
+      expect(canvas.getByText(/Of the issues you thought were Most important/i)).toBeInTheDocument()
+    })
+
+    await waitFor(() => {
+      const subjectInputs = canvas.getAllByRole('textbox')
+      expect(subjectInputs.length).toBeGreaterThan(0)
     })
 
     const subjectInputs = canvas.getAllByDisplayValue('Existing Subject 1')
@@ -209,11 +209,10 @@ export const UserUpdatesExistingData = {
 
     await waitFor(() => {
       expect(window.socket._socketEmitHandlerResults['upsertWhy']).toMatchObject({
-        _id: 'why1',
+        _id: '60b8d295f1c8ab1d2f4a1c03',
         subject: 'Updated Subject 1',
         description: 'Updated Description 1',
-        parentId: 'point1',
-        category: 'most',
+        parentId: '60b8d295f1c8ab1d2f4a1c01',
       })
     })
 
@@ -224,8 +223,7 @@ export const UserUpdatesExistingData = {
         value: {
           subject: 'Updated Subject 1',
           description: 'Updated Description 1',
-          parentId: 'point1',
-          category: 'most',
+          parentId: '60b8d295f1c8ab1d2f4a1c01',
         },
       })
     })
