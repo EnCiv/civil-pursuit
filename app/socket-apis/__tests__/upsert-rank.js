@@ -55,6 +55,21 @@ test('Insert a new rank document', async () => {
 })
 
 test('Update an existing rank document with a different category', async () => {
+  const initialRankObj = {
+    _id: RANK1.toString(),
+    parentId: 'parent-id-1',
+    round: 1,
+    stage: 'pre',
+    category: 'least', // different initial category
+    discussionId: discussion1,
+  }
+
+  const cb = jest.fn()
+  await upsertRank.call({ synuser: { id: USER1 } }, initialRankObj, cb)
+
+  // const inserted = await Mongo.db.collection('ranks').findOne({ _id: RANK1 }) // make sure the insertion is sucessful
+  // console.log('Inserted document:', inserted)
+
   const rankObj = {
     _id: RANK1.toString(),
     parentId: 'parent-id-1',
@@ -64,12 +79,11 @@ test('Update an existing rank document with a different category', async () => {
     discussionId: discussion1,
   }
 
-  const cb = jest.fn()
-
   await upsertRank.call({ synuser: { id: USER1 } }, rankObj, cb)
 
-  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledTimes(2)
   const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
+  // console.log('Updated document:', rank) // check the doc is updated
   expect(rank).toMatchObject({ ...rankObj, userId: USER1 })
 })
 
