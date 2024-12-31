@@ -8,9 +8,7 @@ import cx from 'classnames'
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`) : false
-  )
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`) : false)
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
@@ -61,14 +59,12 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
         return (
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
-              <div className={classes.roundNumber}>Round {index + 1}</div>
-              <StatusBadge
-                name={status.charAt(0).toUpperCase() + status.slice(1)}
-                status={status.toLowerCase()}
-                className={classes.badge}
-              />
+              <div className={classes.roundHeader}>
+                <div className={classes.roundNumber}>Round {index + 1}</div>
+                {status.toLowerCase() !== 'pending' && <div className={cx(classes.lineBase, status.toLowerCase() === 'complete' && classes.lineComplete, status.toLowerCase() === 'inprogress' && classes.lineInProgress)} />}{' '}
+              </div>
+              <StatusBadge name={status.charAt(0).toUpperCase() + status.slice(1)} status={status.toLowerCase()} className={classes.badge} />
             </div>
-            {index < upperIndex - 1 && <div className={classes.dash} />}
           </React.Fragment>
         )
     })
@@ -102,49 +98,64 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row',
+    gap: '3.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'row',
       flexWrap: 'nowrap',
+      gap: '2rem',
     },
   },
   roundContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     margin: '0 0.5rem',
+    gap: '0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       marginBottom: '0.5rem',
     },
   },
+  roundHeader: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   roundNumber: {
-    marginBottom: '0.25rem',
     fontWeight: 'bold',
     textAlign: 'center',
+    marginRight: '1rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginBottom: '0.25rem',
-      marginRight: '0',
+      marginRight: '0.75rem',
     },
   },
+  lineBase: {
+    width: '3.375rem',
+    height: '0rem',
+    borderBottomWidth: '0.125rem',
+    borderBottomColor: '#5D5D5C',
+    borderBottomStyle: 'solid',
+  },
+
+  lineComplete: {
+    borderBottomStyle: 'solid',
+  },
+
+  lineInProgress: {
+    borderBottomStyle: 'dashed',
+  },
+
+  linePending: {
+    borderBottomWidth: 0,
+  },
+
   badge: {
-    margin: '0 0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: '0 0.25rem',
     },
   },
-  dash: {
-    width: '1.5rem',
-    height: '0.125rem',
-    backgroundColor: theme.colors.borderGray,
-    alignSelf: 'center',
-    transform: 'translateY(0.65rem)',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '0.75rem',
-      height: '0.0625rem',
-      marginBottom: '0.5rem',
-    },
-  },
+
   emptyMessage: {
     fontSize: '1rem',
     color: theme.colors.textPrimary,
