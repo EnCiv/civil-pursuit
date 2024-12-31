@@ -32,20 +32,13 @@ export default function WhyStep(props) {
       delta.category = category
     }
 
-    const updatedMyWhyByParentId = {
-      ...data.myWhyByParentId,
-      [delta.parentId]: delta,
-    }
-
-    upsert({ myWhyByParentId: updatedMyWhyByParentId })
+    upsert({ myWhyByParentId: { [delta.parentId]: delta } })
 
     window.socket.emit('upsertWhy', delta, updatedDoc => {
       if (updatedDoc) {
-        const updatedContext = {
-          ...data.myWhyByParentId,
-          [delta.parentId]: updatedDoc,
+        if (!isEqual(updatedDoc, delta)) {
+          upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
         }
-        upsert({ myWhyByParentId: updatedContext })
       } else {
         console.error('Failed to upsert why')
       }
@@ -106,7 +99,9 @@ export function Why(props) {
     pointWhyList.forEach(({ point, why }) => {
       updatedWhys[point._id] = {
         ...allWhys[point._id],
-        ...(why || { subject: '', description: '', parentId: point._id, category }),
+        ...(why || {}),
+        parentId: point._id,
+        category,
       }
     })
     if (!isEqual(allWhys, updatedWhys)) {
@@ -164,7 +159,7 @@ export function derivePointWhyListByCategory(data, category) {
     pointWhyById: undefined,
     reducedPointList: undefined,
     myWhyByParentId: undefined,
-    result: undefined,
+    result: { pointWhyListByCategory: undefined },
   }).current
 
   if (!local.pointWhyById) {
@@ -176,26 +171,29 @@ export function derivePointWhyListByCategory(data, category) {
   }
 
   const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
-
   //filter
-  const filteredPoints = reducedPointList.filter(point => preRankByParentId[point._id]?.category === category)
+  const filteredPoints = reducedPointList.filter(item => {
+    const pId = item.point?._id
+    return pId && preRankByParentId[pId]?.category === category
+  })
 
   let updated = false
 
   if (local.reducedPointList !== filteredPoints) {
     const oldIds = new Set(Object.keys(local.pointWhyById))
 
-    for (const p of filteredPoints) {
-      if (!local.pointWhyById[p._id]) {
-        local.pointWhyById[p._id] = { point: p, why: myWhyByParentId[p._id] }
+    for (const item of filteredPoints) {
+      const pId = item.point._id
+      if (!local.pointWhyById[pId]) {
+        local.pointWhyById[pId] = { point: item.point, why: myWhyByParentId[pId] }
         updated = true
       } else {
-        if (local.pointWhyById[p._id].point !== p) {
-          local.pointWhyById[p._id] = { ...local.pointWhyById[p._id], point: p }
+        if (local.pointWhyById[pId].point !== item.point) {
+          local.pointWhyById[pId] = { ...local.pointWhyById[pId], point: item.point }
           updated = true
         }
       }
-      oldIds.delete(p._id)
+      oldIds.delete(pId)
     }
 
     for (const oldId of oldIds) {

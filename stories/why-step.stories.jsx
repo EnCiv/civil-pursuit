@@ -19,9 +19,14 @@ export default {
 }
 
 const reducedPointList = [
-  { _id: '60b8d295f1c8ab1d2f4a1c01', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' },
-  { _id: '60b8d295f1c8ab1d2f4a1c02', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' },
+  { point: { _id: '60b8d295f1c8ab1d2f4a1c01', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
+  { point: { _id: '60b8d295f1c8ab1d2f4a1c02', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
 ]
+
+const preRankByParentId = {
+  '60b8d295f1c8ab1d2f4a1c01': { category: 'most' },
+  '60b8d295f1c8ab1d2f4a1c02': { category: 'most' },
+}
 
 const myWhyByParentId = {
   '60b8d295f1c8ab1d2f4a1c01': {
@@ -95,10 +100,11 @@ export const InitialNoData = {
     defaultValue: {
       reducedPointList,
       myWhyByParentId: {},
-      category: 'most',
-      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+      preRankByParentId: preRankByParentId,
     },
+    category: 'most',
     myWhyByParentId: {},
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
   render: whyStepTemplate,
   decorators: [DeliberationContextDecorator],
@@ -109,9 +115,11 @@ export const ReturningUser = {
     defaultValue: {
       reducedPointList,
       myWhyByParentId,
-      category: 'most',
-      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+      preRankByParentId: preRankByParentId,
     },
+    category: 'most',
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+
     myWhyByParentId,
   },
   render: whyStepTemplate,
@@ -122,11 +130,12 @@ export const UserEntersInitialData = {
   args: {
     defaultValue: {
       reducedPointList,
+      preRankByParentId: preRankByParentId,
       myWhyByParentId: {},
-      category: 'most',
-      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     },
+    category: 'most',
     myWhyByParentId: {},
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
     decorators: [DeliberationContextDecorator],
   },
   render: whyStepTemplate,
@@ -176,12 +185,13 @@ export const UserEntersInitialData = {
 export const UserUpdatesExistingData = {
   args: {
     defaultValue: {
-      reducedPointList,
-      myWhyByParentId,
-      category: 'most',
-      intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
+      reducedPointList: reducedPointList,
+      myWhyByParentId: myWhyByParentId,
+      preRankByParentId: preRankByParentId,
     },
-    myWhyByParentId,
+    myWhyByParentId: myWhyByParentId,
+    category: 'most',
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
   render: whyStepTemplate,
   decorators: [DeliberationContextDecorator],

@@ -31,23 +31,18 @@ describe('deriver function tests', () => {
 
   test('input data undefined', () => {
     const result = derivePointWhyListByCategory(undefined)
-    expect(result).toBeUndefined()
+    expect(result).toHaveProperty('pointWhyListByCategory')
+    expect(result.pointWhyListByCategory).toBe(undefined)
   })
 
   test('input data empty', () => {
     const result = derivePointWhyListByCategory({})
-    expect(result).toBeUndefined()
+    expect(result).toEqual({ pointWhyListByCategory: undefined })
   })
 
   test('input data present - output data not there yet', () => {
     data = {
-      reducedPointList: [
-        {
-          _id: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Subject 1',
-          description: 'Description 1',
-        },
-      ],
+      reducedPointList: [{ point: { _id: '64a81ca0cbad4414b3dc8d75', subject: 'Subject 1', description: 'Description 1' } }],
       myWhyByParentId: {},
       category: 'most',
       intro: 'This is the intro text.',
@@ -73,9 +68,11 @@ describe('deriver function tests', () => {
     data = {
       reducedPointList: [
         {
-          _id: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Subject 1',
-          description: 'Description 1',
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Subject 1',
+            description: 'Description 1',
+          },
         },
       ],
       myWhyByParentId: {
@@ -118,14 +115,18 @@ describe('deriver function tests', () => {
     data = {
       reducedPointList: [
         {
-          _id: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Subject 1',
-          description: 'Description 1',
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Subject 1',
+            description: 'Description 1',
+          },
         },
         {
-          _id: '64a81ca0cbad4414b3dc8d76',
-          subject: 'Subject 2',
-          description: 'Description 2',
+          point: {
+            _id: '64a81ca0cbad4414b3dc8d76',
+            subject: 'Subject 2',
+            description: 'Description 2',
+          },
         },
       ],
       myWhyByParentId: {
