@@ -214,7 +214,8 @@ const useStyles = createUseStyles(theme => ({
   hiddenPointContainer: {
     position: 'relative',
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+    gap: '5rem',
     overflow: 'visible',
     paddingTop: '4rem',
     clipPath: 'xywh(0 0 100% 500%)',
@@ -232,8 +233,8 @@ const useStyles = createUseStyles(theme => ({
   },
   visiblePointsContainer: {
     display: 'flex',
-    justifyContent: 'space-evenly',
-    gap: '1rem',
+    justifyContent: 'center',
+    gap: '5rem',
   },
   visiblePoint: {
     width: '30%',
