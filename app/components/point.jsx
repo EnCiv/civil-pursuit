@@ -2,6 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
+// https://github.com/EnCiv/civil-pursuit/issues/251
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
@@ -85,7 +86,7 @@ const Point = forwardRef((props, ref) => {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
-    padding: '2.1875rem 1.875rem',
+    padding: '1.5rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -96,7 +97,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.9375rem',
+    gap: '0rem',
     alignSelf: 'stretch',
   },
 
@@ -206,13 +207,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   // shared styling
   sharedBorderStyle: {
     borderRadius: '0.9375rem',
-    boxShadow: theme.boxShadow,
+    boxShadow: theme.none,
   },
   sharedSubjectStyle: {
     ...theme.font,
     fontSize: '1.25rem',
     fontWeight: '400',
-    lineHeight: '1.875rem',
+    lineHeight: '1rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,
