@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/150
+//https://github.com/EnCiv/civil-pursuit/issues/257
 
 import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
@@ -292,13 +293,13 @@ const useStyles = createUseStyles(theme => ({
   },
   tabs: {
     width: '80%',
-    height: '3rem',
+    height: '2.8rem',
     margin: 'auto',
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.45rem 0.4rem 0 0.4rem ',
-    boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
+    padding: '0.28rem 0.4rem 0 0.4rem ',
+    // boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
   },
   tab: {
     display: 'inline-block',
