@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/47
+// https://github.com/EnCiv/civil-pursuit/issues/261
 
-'use strict'
+https: 'use strict'
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -30,17 +31,21 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '1.375rem',
   },
   number: {
-    fontWeight: '600',
+    fontWeight: '800',
     lineHeight: '1.125rem',
     marginLeft: '1rem',
   },
   progress: {
     borderColor: theme.colors.statusBadgeProgressBorder,
     backgroundColor: theme.colors.statusBadgeProgressBackground,
+    color: '#342A00',
+    fontWeight: '100',
   },
   complete: {
     borderColor: theme.colors.statusBadgeCompletedBorder,
     backgroundColor: theme.colors.statusBadgeCompletedBackground,
+    color: '#005621',
+    fontWeight: '100',
   },
   inactive: {
     borderColor: theme.colors.statusBadgeInactiveBorder,
@@ -49,6 +54,8 @@ const useStyles = createUseStyles(theme => ({
   error: {
     borderColor: theme.colors.statusBadgeErrorBorder,
     backgroundColor: theme.colors.statusBadgeErrorBackground,
+    color: '#BF1300',
+    fontWeight: '100',
   },
 }))
 
