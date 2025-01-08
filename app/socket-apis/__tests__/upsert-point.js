@@ -30,7 +30,7 @@ test('Upsert a new document', async () => {
   await upsertPoint.call({ synuser: user }, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT1 })
+  const point = await Points.findOne({ _id: POINT1 })
   expect(point).toEqual({ ...pointObj, userId: USER1 })
 })
 
@@ -43,7 +43,7 @@ test('Upsert changes to an existing document', async () => {
   await upsertPoint.call({ synuser: user }, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT1 })
+  const point = await Points.findOne({ _id: POINT1 })
   expect(point).toEqual({ ...pointObj, userId: USER1 })
 })
 
@@ -54,7 +54,7 @@ test('User not logged in, not allowed to upsert a document', async () => {
   await upsertPoint.call({}, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT2 })
+  const point = await Points.findOne({ _id: POINT2 })
   expect(point).toBeNull()
 })
 
@@ -72,6 +72,6 @@ test('Validation error when upserting a document', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(null)
 
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT2 })
+  const point = await Points.findOne({ _id: POINT2 })
   expect(point).toBeNull()
 })

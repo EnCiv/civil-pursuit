@@ -220,7 +220,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
       category: 'most',
     },
   ]
-  await Mongo.db.collection('points').insertMany(whys)
+  await Points.insertMany(whys)
 
   const user = { id: USER1 }
   const cb = jest.fn()
