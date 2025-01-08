@@ -16,12 +16,8 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  const collections = await Mongo.db.collections()
-  // Clear all collections
-  for (let collection of collections) {
-    await collection.deleteMany({})
-  }
-
+  // Clear the collection
+  await Ranks.deleteMany({})
   jest.spyOn(console, 'error').mockImplementation(() => {})
 })
 
@@ -51,7 +47,7 @@ test('Insert a new rank document', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
 
-  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-1', userId: USER1 })
+  const rank = await Ranks.findOne({ parentId: 'parent-id-1', userId: USER1 })
   expect(rank).toEqual({ ...rankObj, userId: USER1 })
 })
 
@@ -66,7 +62,7 @@ test('Update an existing rank document with a different rank', async () => {
     category: 'category-1',
     discussionId: 'discussion-1',
   }
-  await Mongo.db.collection('ranks').insertOne(existingRank)
+  await Ranks.insertOne(existingRank)
 
   const updatedRankObj = {
     _id: RANK1,
@@ -83,7 +79,7 @@ test('Update an existing rank document with a different rank', async () => {
   await rankWhy.call({ synuser: { id: USER1 } }, updatedRankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('ranks').findOne({ _id: RANK1, userId: USER1 })
+  const rank = await Ranks.findOne({ _id: RANK1, userId: USER1 })
   expect(rank).toMatchObject({ ...updatedRankObj, userId: USER1 })
 })
 
@@ -94,7 +90,7 @@ test('Fail if the user is not logged in', async () => {
   await rankWhy.call({}, rankObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const rank = await Mongo.db.collection('ranks').findOne({ parentId: 'parent-id-2' })
+  const rank = await Ranks.findOne({ parentId: 'parent-id-2' })
   expect(rank).toBeNull()
 })
 
@@ -109,6 +105,6 @@ test('Fail if one of the required parameters is missing', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
 
-  const rank = await Mongo.db.collection('ranks').findOne({ round: 1, rank: 'most' })
+  const rank = await Ranks.findOne({ round: 1, rank: 'most' })
   expect(rank).toBeNull()
 })
