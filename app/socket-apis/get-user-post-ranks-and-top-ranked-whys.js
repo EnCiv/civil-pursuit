@@ -1,17 +1,16 @@
 // https://github.com/EnCiv/civil-pursuit/issues/208
-const Rankings = require('../models/rankings');
-const getTopRankedWhysForPoint = require('./get-top-ranked-whys-for-point');
-const { ObjectId } = require('mongodb');
+const Rankings = require('../models/rankings')
+const getTopRankedWhysForPoint = require('./get-top-ranked-whys-for-point')
 
 async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
   if (!this.synuser || !this.synuser.id) {
-    console.error('getUserPostRanksAndTopRankedWhys called but no user logged in');
-    return cb && cb(undefined);
+    console.error('getUserPostRanksAndTopRankedWhys called but no user logged in')
+    return cb && cb(undefined)
   }
 
   if (!discussionId || typeof round !== 'number' || !Array.isArray(ids) || ids.length === 0) {
-    console.error('getUserPostRanksAndTopRankedWhys called with invalid parameters');
-    return cb && cb(undefined);
+    console.error('getUserPostRanksAndTopRankedWhys called with invalid parameters')
+    return cb && cb(undefined)
   }
 
   try {
@@ -25,12 +24,10 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
           parentId: { $in: ids.map(id => id.toString()) },
         },
       },
-    ]).toArray();
+    ]).toArray()
 
     // Remove userId for ranks not created by the current user
-    const filteredRanks = ranks.map(({ userId, ...rest }) =>
-      userId === this.synuser.id ? { userId, ...rest } : rest
-    );
+    const filteredRanks = ranks.map(({ userId, ...rest }) => (userId === this.synuser.id ? { userId, ...rest } : rest))
 
     // Fetch top-ranked whys for each point in ids
     const topWhys = await Promise.all(
@@ -44,18 +41,18 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
             1,
             whys => resolve(whys[0] || null) // Get the top-ranked why point
           )
-        );
+        )
       })
-    );
+    )
 
     // Filter out nulls from topWhys
-    const filteredWhys = topWhys.filter(Boolean);
+    const filteredWhys = topWhys.filter(Boolean)
 
-    cb({ ranks: filteredRanks, whys: filteredWhys });
+    cb({ ranks: filteredRanks, whys: filteredWhys })
   } catch (error) {
-    console.error('Error in getUserPostRanksAndTopRankedWhys:', error);
-    cb(undefined);
+    console.error('Error in getUserPostRanksAndTopRankedWhys:', error)
+    cb(undefined)
   }
 }
 
-module.exports = getUserPostRanksAndTopRankedWhys;
+module.exports = getUserPostRanksAndTopRankedWhys
