@@ -68,7 +68,7 @@ test('Update an existing rank document with a different category', async () => {
   const cb = jest.fn()
   await upsertRank.call({ synuser: { id: USER1 } }, initialRankObj, cb)
 
-  // const inserted = await Mongo.db.collection('ranks').findOne({ _id: RANK1 }) // make sure the insertion is sucessful
+  // const inserted = await Ranks.findOne({ _id: RANK1 }) // make sure the insertion is sucessful
   // console.log('Inserted document:', inserted)
 
   const rankObj = {
