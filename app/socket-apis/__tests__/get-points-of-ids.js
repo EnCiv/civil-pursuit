@@ -48,8 +48,13 @@ test('Points found, but no whypoints', async () => {
   const POINT_ID_2 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: new ObjectId(POINT_ID_1), title: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
-    { _id: new ObjectId(POINT_ID_2), title: 'Point 2', description: 'Description 2', userId: 'abcdefabcdefabcdefabcdef' }, // Different user
+    { _id: new ObjectId(POINT_ID_1), subject: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
+    {
+      _id: new ObjectId(POINT_ID_2),
+      subject: 'Point 2',
+      description: 'Description 2',
+      userId: 'abcdefabcdefabcdefabcdef',
+    }, // Different user
   ])
 
   const callback = jest.fn()
@@ -58,10 +63,10 @@ test('Points found, but no whypoints', async () => {
 
   expect(callback).toHaveBeenCalledWith({
     points: [
-      { _id: new ObjectId(POINT_ID_1), title: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
-      { _id: new ObjectId(POINT_ID_2), title: 'Point 2', description: 'Description 2' } // userId removed for different user
+      { _id: new ObjectId(POINT_ID_1), subject: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
+      { _id: new ObjectId(POINT_ID_2), subject: 'Point 2', description: 'Description 2' }, // userId removed for different user
     ],
-    myWhys: []
+    myWhys: [],
   })
 })
 
@@ -72,12 +77,22 @@ test('Points and whypoints found', async () => {
   const WHYPOINT_ID_1 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: new ObjectId(POINT_ID_1), title: 'Unique Point 1', description: 'Description 1', userId: synuser.synuser.id },
-    { _id: new ObjectId(POINT_ID_2), title: 'Unique Point 2', description: 'Description 2', userId: 'abcdefabcdefabcdefabcdef' }, // Different user
+    {
+      _id: new ObjectId(POINT_ID_1),
+      subject: 'Unique Point 1',
+      description: 'Description 1',
+      userId: synuser.synuser.id,
+    },
+    {
+      _id: new ObjectId(POINT_ID_2),
+      subject: 'Unique Point 2',
+      description: 'Description 2',
+      userId: 'abcdefabcdefabcdefabcdef',
+    }, // Different user
     {
       _id: new ObjectId(WHYPOINT_ID_1),
       parentId: POINT_ID_1,
-      title: 'Why Point 1',
+      subject: 'Why Point 1',
       description: 'Why Description 1',
       userId: synuser.synuser.id, // Created by the current user
     },
@@ -89,12 +104,23 @@ test('Points and whypoints found', async () => {
 
   expect(callback).toHaveBeenCalledWith({
     points: [
-      { _id: new ObjectId(POINT_ID_1), title: 'Unique Point 1', description: 'Description 1', userId: synuser.synuser.id },
-      { _id: new ObjectId(POINT_ID_2), title: 'Unique Point 2', description: 'Description 2' }
+      {
+        _id: new ObjectId(POINT_ID_1),
+        subject: 'Unique Point 1',
+        description: 'Description 1',
+        userId: synuser.synuser.id,
+      },
+      { _id: new ObjectId(POINT_ID_2), subject: 'Unique Point 2', description: 'Description 2' },
     ],
     myWhys: [
-      { _id: new ObjectId(WHYPOINT_ID_1), parentId: POINT_ID_1, title: 'Why Point 1', description: 'Why Description 1', userId: synuser.synuser.id }
-    ]
+      {
+        _id: new ObjectId(WHYPOINT_ID_1),
+        parentId: POINT_ID_1,
+        subject: 'Why Point 1',
+        description: 'Why Description 1',
+        userId: synuser.synuser.id,
+      },
+    ],
   })
 })
 
@@ -104,8 +130,18 @@ test('Some points created by other users, userId removed', async () => {
   const POINT_ID_2 = new ObjectId().toString()
 
   await db.collection('points').insertMany([
-    { _id: new ObjectId(POINT_ID_1), title: 'Point A by user1', description: 'Description A', userId: synuser.synuser.id },
-    { _id: new ObjectId(POINT_ID_2), title: 'Point B by user2', description: 'Description B', userId: 'abcdefabcdefabcdefabcdef' }
+    {
+      _id: new ObjectId(POINT_ID_1),
+      subject: 'Point A by user1',
+      description: 'Description A',
+      userId: synuser.synuser.id,
+    },
+    {
+      _id: new ObjectId(POINT_ID_2),
+      subject: 'Point B by user2',
+      description: 'Description B',
+      userId: 'abcdefabcdefabcdefabcdef',
+    },
   ])
 
   const callback = jest.fn()
@@ -114,10 +150,15 @@ test('Some points created by other users, userId removed', async () => {
 
   expect(callback).toHaveBeenCalledWith({
     points: [
-      { _id: new ObjectId(POINT_ID_1), title: 'Point A by user1', description: 'Description A', userId: synuser.synuser.id },
-      { _id: new ObjectId(POINT_ID_2), title: 'Point B by user2', description: 'Description B' } // userId removed for points created by another user
+      {
+        _id: new ObjectId(POINT_ID_1),
+        subject: 'Point A by user1',
+        description: 'Description A',
+        userId: synuser.synuser.id,
+      },
+      { _id: new ObjectId(POINT_ID_2), subject: 'Point B by user2', description: 'Description B' }, // userId removed for points created by another user
     ],
-    myWhys: []
+    myWhys: [],
   })
 })
 

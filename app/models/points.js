@@ -8,13 +8,10 @@ class Points extends Collection {
   // Optional: Collection options objectt as defined in MongoDB createCollection
   static collectionOptions = {}
 
-  // Optional: indexes array as defined in db.collection.createIndexes
-  static collectionIndexes = [{ key: { title: 1 }, name: 'title_index', unique: true }]
-
   // Optional: Validation function
   static validate(doc) {
-    if (!doc.title || !doc.description) {
-      return { error: 'Title and description are required' }
+    if (!doc.subject || !doc.description) {
+      return { error: 'subject and description are required' }
     }
     return { result: doc }
   }
