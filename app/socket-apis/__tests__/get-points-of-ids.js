@@ -6,7 +6,6 @@ import Points from '../../models/points'
 import getPointsOfIds from '../get-points-of-ids'
 
 let memoryServer
-let db
 
 // Use a valid hex-like ObjectId string for synuser
 const synuser = { synuser: { id: '1234567890abcdef12345678' } }
@@ -15,7 +14,6 @@ beforeAll(async () => {
   memoryServer = await MongoMemoryServer.create()
   const uri = memoryServer.getUri()
   await Mongo.connect(uri)
-  db = Mongo.db
   Points.setCollectionProps()
 })
 
@@ -47,7 +45,7 @@ test('Points found, but no whypoints', async () => {
   const POINT_ID_1 = new ObjectId().toString()
   const POINT_ID_2 = new ObjectId().toString()
 
-  await db.collection('points').insertMany([
+  await Points.insertMany([
     { _id: new ObjectId(POINT_ID_1), subject: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
     {
       _id: new ObjectId(POINT_ID_2),
@@ -76,7 +74,7 @@ test('Points and whypoints found', async () => {
   const POINT_ID_2 = new ObjectId().toString()
   const WHYPOINT_ID_1 = new ObjectId().toString()
 
-  await db.collection('points').insertMany([
+  await Points.insertMany([
     {
       _id: new ObjectId(POINT_ID_1),
       subject: 'Unique Point 1',
@@ -129,7 +127,7 @@ test('Some points created by other users, userId removed', async () => {
   const POINT_ID_1 = new ObjectId().toString()
   const POINT_ID_2 = new ObjectId().toString()
 
-  await db.collection('points').insertMany([
+  await Points.insertMany([
     {
       _id: new ObjectId(POINT_ID_1),
       subject: 'Point A by user1',

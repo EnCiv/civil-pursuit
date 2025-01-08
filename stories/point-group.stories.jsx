@@ -1,9 +1,8 @@
 import React from 'react'
-import { expect } from '@storybook/jest'
 import PointGroup from '../app/components/point-group'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent } from '@storybook/testing-library'
+import { within, userEvent, expect } from '@storybook/test'
 import DemInfo from '../app/components/dem-info'
 
 export default {
@@ -98,7 +97,7 @@ export const collapsedPoints = {
 }
 
 export const selectLeadPoints = {
-  args: { pointDoc: pointDoc5, vState: 'selectLead' },
+  args: { pointDoc: { groupedPoints: [pointDoc1, pointDoc2, pointDoc3, pointDoc4, pointDoc6] }, vState: 'selectLead' },
 }
 
 export const mobileSelectLeadPoints = {

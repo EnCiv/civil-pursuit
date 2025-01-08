@@ -10,9 +10,9 @@ import StepSlider from './step-slider'
 import AnswerStep from './answer-step'
 import GroupingStep from './grouping-step'
 import RankStep from './rank-step'
-import ReviewPointList from './review-point-list'
+import ReviewPointList from './steps/rerank'
 import WhyStep from './why-step'
-import CompareReasons from './compare-reasons'
+import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 
 const WebComponents = {

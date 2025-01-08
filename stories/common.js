@@ -1,6 +1,56 @@
 // https://github.com/EnCiv/civil-pursuit/issues/80
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
+import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
+import { fn } from '@storybook/test'
+
+export const socketEmitDecorator = Story => {
+  useState(() => {
+    if (!window.socket) window.socket = {}
+    if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
+    if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = []
+    window.socket.emit = (handle, ...args) => {
+      if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
+      else console.error('socketEmitDecorator: no handle found', handle, ...args)
+    }
+  })
+  return <Story />
+}
+
+export const DeliberationContextDecorator = (Story, context) => {
+  const { defaultValue, ...otherArgs } = context.args
+  return (
+    <DeliberationContextProvider defaultValue={defaultValue}>
+      <DeliberationData>
+        <Story {...otherArgs} />
+      </DeliberationData>
+    </DeliberationContextProvider>
+  )
+}
+const DeliberationData = props => {
+  const { data, upsert } = useContext(DeliberationContext)
+  return (
+    <>
+      {props.children}
+      {Object.keys(data).length > 0 ? (
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+          <div>
+            {' '}
+            DeliberationContext:{' '}
+            <span id="deliberation-context-data" style={{ whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(data, null, 4)}
+            </span>
+          </div>
+        </div>
+      ) : null}
+    </>
+  )
+}
+
+export function deliberationContextData() {
+  return JSON.parse(document.getElementById('deliberation-context-data').innerHTML)
+}
+
 import { Level } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }
@@ -65,22 +115,31 @@ export function RenderStory(props) {
 }
 
 export function onDoneDecorator(Story, context) {
-  const [result, setResult] = useState({ count: 0 })
-  const onDone = useCallback(res => {
-    setResult({ count: result.count + 1, onDoneResult: res })
+  // attach an onDone argument that functions like mock.fn but also set's state to cause a rerender
+  const [count, setCount] = useState(0)
+  useState(() => {
+    // do this once, immediately
+    const mockFn = fn()
+    const onDone = (...args) => {
+      const result = mockFn(...args)
+      setCount(count => count + 1)
+      return result
+    }
+    Object.assign(onDone, mockFn)
+    onDone.mock = mockFn.mock // most important part wasn't picked up by assign
+    onDone.mockFn = mockFn // might be handy someday
+    context.args.onDone = onDone
   })
-  context.args.onDone = onDone
   return (
     <>
       <Story />
-
-      {result.count ? (
+      {count ? (
         <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
           <div>
             {' '}
             onDone:{' '}
             <span title="onDoneResult" id="onDoneResult" style={{ whiteSpace: 'pre-wrap' }}>
-              {JSON.stringify(result, null, 4)}
+              {JSON.stringify({ count, onDoneResult: context.args.onDone.mock.calls.at(-1)[0] }, null, 4)}
             </span>
           </div>
         </div>

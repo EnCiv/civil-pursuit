@@ -1,7 +1,7 @@
 import StepBar from '../app/components/step-bar'
 import React from 'react'
 import { onDoneDecorator } from './common'
-import { userEvent, within } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/test'
 
 let primarySteps = Array.from({ length: 9 }, (_, i) => ({
   name: `Step ${i + 1}: The ${stepLengthGenerator()}`,

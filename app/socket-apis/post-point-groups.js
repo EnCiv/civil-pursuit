@@ -47,7 +47,7 @@ async function postPointGroups(discussionId, round, groupings, cb) {
   }
 
   // Call putGroupings() and check for success
-  let putSuccess = putGroupings(discussionId, round, this.synuser.id, groupings)
+  let putSuccess = await putGroupings(discussionId, round, this.synuser.id, groupings)
   return putSuccess ? cbSuccess() : cbFailure('The call to putGroupings() did not complete successfully.')
 }
 module.exports = postPointGroups

@@ -1,7 +1,7 @@
 import React from 'react'
 import Step from '../app/components/step'
 import { onDoneDecorator } from './common'
-import { userEvent, within } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/test'
 
 export default {
   component: Step,
