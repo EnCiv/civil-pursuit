@@ -16,12 +16,8 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  const collections = await Mongo.db.collections()
-  // Clear all collections
-  for (let collection of collections) {
-    await collection.deleteMany({})
-  }
-
+  // Clear the collection
+  await Ranks.deleteMany({})
   jest.spyOn(console, 'error').mockImplementation(() => {})
 })
 
