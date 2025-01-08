@@ -22,7 +22,7 @@ afterAll(async () => {
 })
 
 test('Upsert a new document', async () => {
-  const pointObj = { _id: POINT1, title: 'Point 1', description: 'Description 1' }
+  const pointObj = { _id: POINT1, subject: 'Point 1', description: 'Description 1' }
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -35,7 +35,7 @@ test('Upsert a new document', async () => {
 })
 
 test('Upsert changes to an existing document', async () => {
-  const pointObj = { _id: POINT1, title: 'Updated Point 1', description: 'Updated Description 1' }
+  const pointObj = { _id: POINT1, subject: 'Updated Point 1', description: 'Updated Description 1' }
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -48,7 +48,7 @@ test('Upsert changes to an existing document', async () => {
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
-  const pointObj = { _id: POINT2, title: 'Point 2', description: 'Description 2' }
+  const pointObj = { _id: POINT2, subject: 'Point 2', description: 'Description 2' }
   const cb = jest.fn()
 
   await upsertPoint.call({}, pointObj, cb)
@@ -59,19 +59,19 @@ test('User not logged in, not allowed to upsert a document', async () => {
 })
 
 test('Validation error when upserting a document', async () => {
-  const invalidPointObj = { _id: POINT2, title: '', description: 'Description 2' }; // Assuming title is a required field
-  const user = { id: USER1 };
+  const invalidPointObj = { _id: POINT2, subject: '', description: 'Description 2' } // Assuming subject is a required field
+  const user = { id: USER1 }
 
   // Mock the validate method to return an error
-  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' });
+  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' })
 
-  const cb = jest.fn();
+  const cb = jest.fn()
 
-  await upsertPoint.call({ synuser: user }, invalidPointObj, cb);
+  await upsertPoint.call({ synuser: user }, invalidPointObj, cb)
 
-  expect(cb).toHaveBeenCalledTimes(1);
-  expect(cb).toHaveBeenCalledWith(null);
+  expect(cb).toHaveBeenCalledTimes(1)
+  expect(cb).toHaveBeenCalledWith(null)
 
-  const point = await Mongo.db.collection('points').findOne({ _id: POINT2 });
-  expect(point).toBeNull();
+  const point = await Mongo.db.collection('points').findOne({ _id: POINT2 })
+  expect(point).toBeNull()
 })
