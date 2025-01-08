@@ -141,11 +141,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.white,
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
+      color: theme.colors.success,
     },
     '&:hover $defaultSubject': {
       color: theme.colors.success,
     },
     '&:hover $defaultDescription': {
+      color: theme.colors.success,
+    },
+    '&:hover $informationGrid *': {
       color: theme.colors.success,
     },
   },
