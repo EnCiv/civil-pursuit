@@ -69,8 +69,8 @@ describe('Test derivePointRankGroupList()', () => {
     const savedPointRankGroupList = [...pointRankGroupList]
     const savedPoints = pointRankGroupList.map(pRGL => pRGL.point)
 
+    data.reducedPointList = [...data.reducedPointList] // copy first because the ref (not a copy) is saved in local in the deriver
     data.reducedPointList[1] = { point: { ...data.reducedPointList[1].point }, group: data.reducedPointList[1].group }
-    data.reducedPointList = [...data.reducedPointList]
 
     const newRankGroupList = derivePointRankGroupList(data).pointRankGroupList
 
@@ -79,10 +79,10 @@ describe('Test derivePointRankGroupList()', () => {
     expect(newRankGroupList[0]).toBe(savedPointRankGroupList[0])
     expect(newRankGroupList[1]).not.toBe(savedPointRankGroupList[1])
     expect(newRankGroupList[2]).toBe(savedPointRankGroupList[2])
-    // the points should be the same
-    newRankGroupList.forEach((pRGL, i) => {
-      expect(pRGL.point).toBe(savedPoints[i])
-    })
+
+    expect(newRankGroupList[0].point).toBe(savedPoints[0])
+    expect(newRankGroupList[1].point).not.toBe(savedPoints[1]) // this point's ref was changed
+    expect(newRankGroupList[2].point).toBe(savedPoints[2])
   })
 
   test('pre ranks can be added, and parent refs are updated', () => {
@@ -117,7 +117,8 @@ describe('Test derivePointRankGroupList()', () => {
     const savedPointRankGroupList = { ...pointRankGroupList }
     const savedPoints = pointRankGroupList.map(pRGL => pRGL.point)
     const savedRanks = pointRankGroupList.map(pRGL => pRGL.rank)
-    data.preRankByParentId[1].rank = { _id: '4', category: 'neutral', parentId: '1', stage: 'pre' }
+    data.preRankByParentId = { ...data.preRankByParentId } // copy first because the ref (not a copy) is saved in local in the deriver
+    data.preRankByParentId[1] = { _id: '4', category: 'neutral', parentId: '1', stage: 'pre' }
 
     const newPointRankGroupList = derivePointRankGroupList(data).pointRankGroupList
 

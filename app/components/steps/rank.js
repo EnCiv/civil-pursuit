@@ -299,7 +299,7 @@ export function derivePointRankGroupList(data) {
         rankPointsById[point._id] = { point, group }
         updated = true
       } else if (rankPointsById[point._id].point != point) {
-        rankPointsById[point._id] = { point: point, ...rankPointsById[point._id] }
+        rankPointsById[point._id] = { ...rankPointsById[point._id], point }
         updated = true
       }
     }
@@ -311,7 +311,7 @@ export function derivePointRankGroupList(data) {
     for (const rank of Object.values(preRankByParentId)) {
       if (rankPointsById[rank.parentId]) {
         if (rankPointsById[rank.parentId].rank !== rank) {
-          rankPointsById[rank.parentId] = { rank: rank, ...rankPointsById[rank.parentId] }
+          rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
           updated = true
         }
       }
