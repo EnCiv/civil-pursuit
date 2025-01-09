@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/208
-const Rankings = require('../models/rankings')
+const Ranks = require('../models/ranks')
 const getTopRankedWhysForPoint = require('./get-top-ranked-whys-for-point')
 
 async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
@@ -14,8 +14,8 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
   }
 
   try {
-    // Fetch rankings for discussionId, round, and stage 'post'
-    const ranks = await Rankings.aggregate([
+    // Fetch ranks for discussionId, round, and stage 'post'
+    const ranks = await Ranks.aggregate([
       {
         $match: {
           discussionId: discussionId.toString(),

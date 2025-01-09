@@ -3,7 +3,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongo } from '@enciv/mongo-collections'
 import { ObjectId } from 'mongodb'
-import Rankings from '../../models/rankings'
 import Points from '../../models/points'
 import getUserPostRanksAndTopRankedWhys from '../get-user-post-ranks-and-top-ranked-whys'
 
