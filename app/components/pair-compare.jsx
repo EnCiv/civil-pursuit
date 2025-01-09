@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
 // https://github.com/EnCiv/civil-pursuit/issues/200
-// https://github.com/EnCiv/civil-pursuit/issue/247
+// https://github.com/EnCiv/civil-pursuit/issues/247
 
 'use strict'
 import React, { useEffect, useState } from 'react'
