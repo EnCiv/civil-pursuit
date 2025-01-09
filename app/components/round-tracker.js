@@ -1,9 +1,18 @@
+// https://github.com/EnCiv/civil-pursuit/issues/101
+// https://github.com/EnCiv/civil-pursuit/issues/243
+
 'use strict'
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import StatusBadge from './status-badge'
 import Theme from './theme'
 import cx from 'classnames'
+
+const statusToBadge = {
+  complete: { name: 'Complete', status: 'Complete' },
+  inprogress: { name: 'In Progress', status: 'Progress' },
+  pending: { name: 'Pending', status: 'Pending' },
+}
 
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
@@ -55,7 +64,8 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
 
     return roundsStatus.map((status, index) => {
       // Only render visible rounds
-      if (lowerIndex <= index && index < upperIndex)
+      if (lowerIndex <= index && index < upperIndex) {
+        const badgeInfo = statusToBadge[status.toLowerCase()]
         return (
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
@@ -63,10 +73,11 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
                 <div className={classes.roundNumber}>Round {index + 1}</div>
                 {status.toLowerCase() !== 'pending' && <div className={cx(classes.lineBase, status.toLowerCase() === 'complete' && classes.lineComplete, status.toLowerCase() === 'inprogress' && classes.lineInProgress)} />}{' '}
               </div>
-              <StatusBadge name={status.charAt(0).toUpperCase() + status.slice(1)} status={status.toLowerCase()} className={classes.badge} />
+              <StatusBadge name={badgeInfo.name} status={badgeInfo.status} className={classes.badge} />
             </div>
           </React.Fragment>
         )
+      }
     })
   }
 
@@ -90,7 +101,7 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.roundTrackerBackground,
     borderRadius: '0.5rem',
     padding: '1rem',
-    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)',
+    border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
   },
   roundTracker: {
     display: 'flex',
@@ -134,7 +145,7 @@ const useStyles = createUseStyles(theme => ({
     width: '3.375rem',
     height: '0rem',
     borderBottomWidth: '0.125rem',
-    borderBottomColor: '#5D5D5C',
+    borderBottomColor: theme.colors.encivGray,
     borderBottomStyle: 'solid',
   },
 
