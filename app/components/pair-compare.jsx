@@ -152,10 +152,8 @@ function PairCompare(props) {
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
             <Point className={cx(classes.emptyPoint, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
-            
           </div>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
-            
             <Point className={cx(classes.emptyPoint, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
           </div>
         </div>
@@ -172,12 +170,26 @@ function PairCompare(props) {
           )}
         </div>
         {!isSelectionComplete || allRanked ? (
-          <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
+          <div className={classes.buttonsContainer}>
+            {!isSelectionComplete ? (
+              <SecondaryButton className={classes.customButton} onDone={handleNeitherButton}>
+                Neither
+              </SecondaryButton>
+            ) : (
+              <SecondaryButton className={classes.customButton} onDone={handleStartOverButton}>
+                Start Over
+              </SecondaryButton>
+            )}
+          </div>
         ) : (
           <div className={classes.buttonsContainer}>
-            <SecondaryButton onDone={handleYes}>Yes</SecondaryButton>
+            <SecondaryButton className={classes.customButton} onDone={handleYes}>
+              Yes
+            </SecondaryButton>
             <div style={{ width: '1rem', display: 'inline' }} />
-            <SecondaryButton onDone={handleNo}>No</SecondaryButton>
+            <SecondaryButton className={classes.customButton} onDone={handleNo}>
+              No
+            </SecondaryButton>
           </div>
         )}
       </div>
@@ -270,6 +282,12 @@ const useStyles = createUseStyles(theme => ({
     position: 'relative',
     transform: 'translateX(200%)',
     transition: 'transform 0.5s linear',
+  },
+  customButton: {
+    width: '25rem',
+    '@media (max-width: 600px)': {
+      width: '80%',
+    },
   },
 }))
 
