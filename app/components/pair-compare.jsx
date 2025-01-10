@@ -143,7 +143,9 @@ function PairCompare(props) {
     <div className={classes.container} {...otherProps}>
       <div className={classes.mainPointContainer}>
         <div className={classes.mainPointSubject}>{mainPoint.subject}</div>
+        <div style={{ marginBottom: '1rem'}}></div>
         <div className={classes.mainPointDescription}>{mainPoint.description}</div>
+        <div style={{ marginBottom: '2rem'}}></div>
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
