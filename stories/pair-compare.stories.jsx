@@ -33,12 +33,7 @@ export const sixPoints = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList,
   },
@@ -48,12 +43,7 @@ export const sixPointsRanked = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: rankedWhyRankList,
   },
