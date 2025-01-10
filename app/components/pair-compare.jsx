@@ -288,7 +288,7 @@ const useStyles = createUseStyles(theme => ({
   customButton: {
     width: '25rem',
     '@media (max-width: 600px)': {
-      width: '80%',
+      width: '75%',
     },
   },
 }))
