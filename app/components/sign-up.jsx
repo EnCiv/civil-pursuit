@@ -223,7 +223,7 @@ const useStyles = createUseStyles(theme => ({
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
     padding: '0.28rem 0.4rem 0 0.4rem ',
-    // boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
+
   },
   tab: {
     display: 'inline-block',
@@ -276,6 +276,7 @@ const useStyles = createUseStyles(theme => ({
     '&:focus': {
       border: `${theme.colors.focusOutline} solid 0.1rem`,
       borderRadius: '3rem',
+      outline: 'none',
     },
   },
   btnClickSelected: {

@@ -140,7 +140,7 @@ const buttonStyles = createUseStyles(theme => ({
     lineHeight: '1.5rem',
     textAlign: 'center',
     '&:focus': {
-     // outline: `${theme.focusOutline}`,
+    outline: `${theme.focusOutline}`,
     },
     // Add any other common styles here
   },
