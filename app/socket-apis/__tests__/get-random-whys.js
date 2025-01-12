@@ -66,7 +66,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
   const whys = [
     {
       _id: new ObjectId(),
-      title: 'Why 1',
+      subject: 'Why 1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1.toString(),
@@ -75,7 +75,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why 2',
+      subject: 'Why 2',
       description: 'Description 2',
       round: 1,
       parentId: POINT1.toString(),
@@ -84,7 +84,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why 3',
+      subject: 'Why 3',
       description: 'Description 3',
       round: 1,
       parentId: POINT1.toString(),
@@ -93,7 +93,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why 4',
+      subject: 'Why 4',
       description: 'Description 4',
       round: 1,
       parentId: POINT1.toString(),
@@ -102,7 +102,7 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why 5',
+      subject: 'Why 5',
       description: 'Description 5',
       round: 1,
       parentId: POINT1.toString(),
@@ -131,7 +131,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
   const whys = [
     {
       _id: new ObjectId(),
-      title: 'Why1',
+      subject: 'Why1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1.toString(),
@@ -140,7 +140,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why2',
+      subject: 'Why2',
       description: 'Description 2',
       round: 1,
       parentId: POINT1.toString(),
@@ -149,7 +149,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why3',
+      subject: 'Why3',
       description: 'Description 3',
       round: 1,
       parentId: POINT1.toString(),
@@ -158,7 +158,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why4',
+      subject: 'Why4',
       description: 'Description 4',
       round: 1,
       parentId: POINT1.toString(),
@@ -167,7 +167,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why5',
+      subject: 'Why5',
       description: 'Description 5',
       round: 1,
       parentId: POINT1.toString(),
@@ -176,7 +176,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why6',
+      subject: 'Why6',
       description: 'Description 6',
       round: 1,
       parentId: POINT1.toString(),
@@ -185,7 +185,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why7',
+      subject: 'Why7',
       description: 'Description 7',
       round: 1,
       parentId: POINT1.toString(),
@@ -194,7 +194,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why8',
+      subject: 'Why8',
       description: 'Description 8',
       round: 1,
       parentId: POINT1.toString(),
@@ -203,7 +203,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why9',
+      subject: 'Why9',
       description: 'Description 9',
       round: 1,
       parentId: POINT1.toString(),
@@ -212,7 +212,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why10',
+      subject: 'Why10',
       description: 'Description 10',
       round: 1,
       parentId: POINT1.toString(),
@@ -220,7 +220,7 @@ test('Case where there are 10 matching whys and qty is 5', async () => {
       category: 'most',
     },
   ]
-  await Mongo.db.collection('points').insertMany(whys)
+  await Points.insertMany(whys)
 
   const user = { id: USER1 }
   const cb = jest.fn()
@@ -241,7 +241,7 @@ test('Case where the results are randomized', async () => {
   const whys = [
     {
       _id: new ObjectId(),
-      title: 'Why_1',
+      subject: 'Why_1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1.toString(),
@@ -250,7 +250,7 @@ test('Case where the results are randomized', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why_2',
+      subject: 'Why_2',
       description: 'Description 2',
       round: 1,
       parentId: POINT1.toString(),
@@ -259,7 +259,7 @@ test('Case where the results are randomized', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why_3',
+      subject: 'Why_3',
       description: 'Description 3',
       round: 1,
       parentId: POINT1.toString(),
@@ -268,7 +268,7 @@ test('Case where the results are randomized', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why_4',
+      subject: 'Why_4',
       description: 'Description 4',
       round: 1,
       parentId: POINT1.toString(),
@@ -277,7 +277,7 @@ test('Case where the results are randomized', async () => {
     },
     {
       _id: new ObjectId(),
-      title: 'Why_5',
+      subject: 'Why_5',
       description: 'Description 5',
       round: 1,
       parentId: POINT1.toString(),
@@ -309,4 +309,3 @@ test('Case where the results are randomized', async () => {
   const areResultsDifferent = result1.some((item, index) => item._id !== result2[index]._id)
   expect(areResultsDifferent).toBe(true)
 })
-

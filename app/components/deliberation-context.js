@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useState, useRef } from 'react'
-import { merge } from 'lodash'
+import setOrDeleteByMutatePath from '../lib/set-or-delete-by-mutate-path'
+
 export const DeliberationContext = createContext({})
 export default DeliberationContext
 
@@ -12,19 +13,9 @@ export function DeliberationContextProvider(props) {
   const upsert = useCallback(
     obj => {
       setData(data => {
-        // if something changes in a top level prop, the top level ref has to be changed so it will cause a rerender
-        const newData = { ...data }
-        Object.keys(obj).forEach(key => {
-          if (typeof obj[key] !== 'object') {
-            newData[key] = obj[key]
-          } else {
-            const newProp = Array.isArray(obj[key]) ? [] : {}
-            merge(newProp, data[key], obj[key])
-            newData[key] = newProp
-          }
-        })
-        deriveReducedPointList(newData, local)
-        return newData // spread because we need to return a new reference
+        let newData = setOrDeleteByMutatePath(data, obj)
+        newData = deriveReducedPointList(newData, local)
+        return newData // is a new ref is there were changes above, or may be the original ref if no changes
       })
     },
     [setData]
@@ -53,10 +44,7 @@ export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById || !groupIdsLists) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
-  const reducedPointTable = Object.entries(pointById).reduce(
-    (reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable),
-    {}
-  )
+  const reducedPointTable = Object.entries(pointById).reduce((reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable), {})
   let updated = false
   for (const [firstId, ...groupIds] of groupIdsLists) {
     reducedPointTable[firstId].group = groupIds.map(id => reducedPointTable[id].point)
@@ -66,17 +54,15 @@ export function deriveReducedPointList(data, local) {
   // then copy them over so they are unchanged
   for (const pointWithGroup of data.reducedPointList) {
     const ptid = pointWithGroup.point._id
-    if (
-      reducedPointTable[ptid]?.point === pointWithGroup.point &&
-      aEqual(reducedPointTable[ptid]?.group, pointWithGroup.group)
-    )
-      reducedPointTable[ptid] = pointWithGroup // if contentss are unchanged - unchange the ref
+    if (reducedPointTable[ptid]?.point === pointWithGroup.point && aEqual(reducedPointTable[ptid]?.group, pointWithGroup.group)) reducedPointTable[ptid] = pointWithGroup // if contentss are unchanged - unchange the ref
     else updated = true
   }
   const newReducedPointList = Object.values(reducedPointTable)
   local.pointById = pointById
   local.groupIdsList = groupIdsLists
-  if (!(newReducedPointList.length === data.reducedPointList.length && !updated))
+  if (!(newReducedPointList.length === data.reducedPointList.length && !updated)) {
     data.reducedPointList = newReducedPointList
+    return { ...data }
+  }
   return data
 }
