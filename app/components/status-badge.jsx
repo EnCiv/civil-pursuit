@@ -30,7 +30,7 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '1.375rem',
   },
   number: {
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: '1.125rem',
     marginLeft: '1rem',
   },
