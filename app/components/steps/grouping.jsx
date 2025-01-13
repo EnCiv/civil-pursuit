@@ -18,7 +18,7 @@ export default function GroupingStep(props) {
   const { onDone, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
-  const args = { ...deriveReducedPointGroupList(data) }
+  const args = deriveReducedPointGroupList(data)
 
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
@@ -31,10 +31,11 @@ export default function GroupingStep(props) {
   if (typeof window !== 'undefined')
     useState(() => {
       // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList } = data
+      const { discussionId, round, pointById } = data
 
       window.socket.emit('get-points-for-round', discussionId, round, result => {
         if (!result) return // there was an error
+
         const [points] = result
         const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
         const groupings = points.map(pt => [pt._id, ...pt.groupedPoints.map(gp => gp._id)])
@@ -50,12 +51,12 @@ export default function GroupingStep(props) {
 }
 
 export function GroupPoints(props) {
-  const { groupingPoints = [], onDone = () => {}, shared = {}, className, ...otherProps } = props
+  const { pointGroupList, onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
 
-  if (!groupingPoints) return null
+  if (!pointGroupList) return null
 
   const [pointById, setPointById] = useState(
     (groupingPoints || []).reduce((pointById, groupingPoint) => {
@@ -347,20 +348,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 export function deriveReducedPointGroupList(data) {
   const local = useRef({ groupingPointsById: {} }).current
 
-  const { reducedPointList, pointById } = data
+  const { pointById } = data
 
   let updated = false
 
   const { groupingPointsById } = local
-  if (local.reducedPointList !== reducedPointList) {
-    for (const { point } of reducedPointList) {
-      if (!groupingPointsById[point._id]) {
-        groupingPointsById[point._id] = { point }
-        updated = true
-      }
-    }
-    local.reducedPointList = reducedPointList
-  }
 
   if (local.pointById !== pointById) {
     for (const { point } of pointById) {
@@ -369,8 +361,8 @@ export function deriveReducedPointGroupList(data) {
         updated = true
       }
     }
-    local.pointById = pointById
+    local.groupingPointsById = groupingPointsById
   }
   if (updated) local.groupingPoints = Object.values(local.groupingPointsById)
-  return { groupingPoints: local.groupingPointsById }
+  return { groupingPoints: local.groupingPoints }
 }

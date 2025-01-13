@@ -6,10 +6,6 @@ import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberati
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
-import DeliberationContext from '../app/components/deliberation-context'
-
-import { cloneDeep } from 'lodash'
-
 const discussionId = '1101'
 const round = 1
 
@@ -669,8 +665,8 @@ export const canRemoveOnePointFromAGroup = {
 
 function getGroupingArgsFrom(groupingPoints) {
   const cn = groupingPointsToContext(groupingPoints)
-  console.log(cn)
   const { pointById, ...defaultValue } = { ...cn, round, discussionId }
+
   return { pointById, defaultValue }
 }
 
@@ -711,15 +707,16 @@ const groupingPoints = [
 ]
 
 const groupingStepTemplate = args => {
-  const { preRankByParentId, ...otherArgs } = args
+  const { pointById, ...otherArgs } = args
+
   useState(() => {
     // execute this code once, before the component is initally rendered
     // the api call will provide the new data for this step
-    window.socket._socketEmitHandlers['get-points-for-round'] = (discussionId, round, ids, cb) => {
-      window.socket._socketEmitHandlerResults['get-points-for-round'] = [discussionId, round, ids]
+    window.socket._socketEmitHandlers['get-points-for-round'] = (discussionId, round, cb) => {
+      window.socket._socketEmitHandlerResults['get-points-for-round'] = [discussionId, round]
       setTimeout(() => {
-        const ranks = Object.values(preRankByParentId)
-        cb([ranks])
+        const points = Object.values(pointById)
+        cb([points])
       })
     }
     window.socket._socketEmitHandlers['put-groupings'] = (rank, cb) => {
@@ -729,7 +726,6 @@ const groupingStepTemplate = args => {
   })
   return <GroupingStep {...otherArgs} />
 }
-
 export const groupingStepWithPartialDataAndUserUpdate = {
   args: { ...getGroupingArgsFrom(groupingPoints) },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
