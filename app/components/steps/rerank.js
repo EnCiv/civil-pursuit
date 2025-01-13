@@ -90,6 +90,8 @@ export function Rerank(props) {
     }
     if (updated) {
       setRankByParentId(newRankByParentId)
+      const percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
+      onDone({ valid: percentDone >= 1, value: percentDone })
     }
     // if an item in the updated reviewPoints does not have a rank doc where it previously did, the rank doc will remain.
     // deleting a rank is not a use case
@@ -118,8 +120,7 @@ export function Rerank(props) {
           rankByParentId[point._id] = rank // mutate the state don't call the set function
           percentDone = Object.keys(rankByParentId).length / reviewPoints.length
         } else {
-          percentDone = Object.keys(rankByParentId).length / reviewPoints.length
-          rank = rankByParentId[point._id]
+          // don't call onDone, the data is already there
         }
       } else {
         rank = {

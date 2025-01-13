@@ -12,7 +12,7 @@ import GroupingStep from './steps/grouping'
 import RankStep from './rank-step'
 import ReviewPointList from './steps/rerank'
 import WhyStep from './why-step'
-import CompareReasons from './compare-reasons'
+import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 
 const WebComponents = {

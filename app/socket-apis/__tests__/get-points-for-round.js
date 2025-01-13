@@ -22,7 +22,7 @@ const synuser = { synuser: { id: userId } }
 
 const pointObj1 = {
   _id: new ObjectId('6667d688b20d8e339ca50020'),
-  title: 'Point1',
+  subject: 'Point1',
   description: 'Point1',
 }
 
@@ -106,7 +106,7 @@ test('Populated list if other users have submitted their answers.', async () => 
       discussionId,
       {
         _id: new ObjectId(),
-        title: num,
+        subject: num,
         description: num,
       },
       insertCb
