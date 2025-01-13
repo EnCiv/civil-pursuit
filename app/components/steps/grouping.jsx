@@ -56,17 +56,15 @@ export function GroupPoints(props) {
 
   const classes = useStylesFromThemeFunction(props)
 
-  if (!pointGroupList) return null
-
   const [pointById, setPointById] = useState(
-    (groupingPoints || []).reduce((pointById, groupingPoint) => {
+    (pointGroupList || []).reduce((pointById, groupingPoint) => {
       pointById[groupingPoint._id] = groupingPoint
       return pointById
     }, {})
   )
 
   useEffect(() => {
-    const newPointById = (groupingPoints || []).reduce((pointById, groupingPoint) => {
+    const newPointById = (pointGroupList || []).reduce((pointById, groupingPoint) => {
       pointById[groupingPoint._id] = groupingPoint
       return pointById
     }, {})
@@ -85,11 +83,14 @@ export function GroupPoints(props) {
   // also reduces the number of different set-somethings that have to be called each time.
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
-    pointsToGroup: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : groupingPoints || pointList || []), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    pointsToGroup: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointGroupList || pointList || []), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
     yourGroups: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => p.groupedPoints?.length) : []), // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
   })
+
+  // Don't render if list is missing
+  if (!pointGroupList) return null
 
   const togglePointSelection = _id => {
     setGs(oldGs => {
@@ -349,13 +350,14 @@ export function deriveReducedPointGroupList(data) {
   const local = useRef({ groupingPointsById: {} }).current
 
   const { pointById } = data
-
+  console.log(data)
   let updated = false
 
   const { groupingPointsById } = local
 
   if (local.pointById !== pointById) {
-    for (const { point } of pointById) {
+    for (const point of Object.values(pointById)) {
+      console.log(point)
       if (!groupingPointsById[point._id]) {
         groupingPointsById[point._id] = { point }
         updated = true
@@ -363,6 +365,6 @@ export function deriveReducedPointGroupList(data) {
     }
     local.groupingPointsById = groupingPointsById
   }
-  if (updated) local.groupingPoints = Object.values(local.groupingPointsById)
-  return { groupingPoints: local.groupingPoints }
+  if (updated) local.pointGroupList = Object.values(local.groupingPointsById)
+  return { pointGroupList: local.pointGroupList }
 }

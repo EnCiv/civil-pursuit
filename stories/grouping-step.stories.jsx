@@ -64,7 +64,7 @@ export const SharedEmpty = {
 
 export const Desktop = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -73,7 +73,7 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -88,7 +88,7 @@ export const Mobile = {
 
 export const canCreateGroup = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -234,7 +234,7 @@ export const canCreateGroup = {
 }
 export const canUnGroup = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -370,7 +370,7 @@ export const canUnGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
 export const canCreateGroupWithAGroup = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -512,7 +512,7 @@ export const canCreateGroupWithAGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the groupPoints doesn't go back to it's initial state
 export const canRemoveOnePointFromAGroup = {
   args: {
-    groupingPoints: pointItems,
+    pointGroupList: pointItems,
     shared: {
       groupedPointList: [],
     },
