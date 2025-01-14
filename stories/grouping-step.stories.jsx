@@ -48,7 +48,7 @@ function groupingPointsToContext(groupingPoints) {
         cn.pointById[gp._id] = gp
         return cn
       },
-      { pointById: {} }
+      { pointById: {}, groupIdsLists: [] }
     ),
   }
   return cn

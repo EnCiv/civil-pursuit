@@ -6,7 +6,7 @@
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import DeliberationContext from '../deliberation-context'
+import DeliberationContext, { deriveReducedPointList } from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from '../point-group'
@@ -14,15 +14,18 @@ import { PrimaryButton, SecondaryButton } from '../button'
 import StatusBadge from '../status-badge'
 import { cloneDeep, isEqual } from 'lodash'
 
+const { putGroupings } = require('../../dturn/dturn')
+
 export default function GroupingStep(props) {
   const { onDone, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
-  const args = deriveReducedPointGroupList(data)
+  const { discussionId, round } = data
+  const args = deriveReducedPointList(data, useRef({}).current)
 
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      putGroupings(discussionId, round, userId, delta)
       window.socket.emit('put-groupings', discussionId, round, delta)
     }
     onDone({ valid, value })
@@ -53,7 +56,7 @@ export default function GroupingStep(props) {
 export function GroupPoints(props) {
   const { pointGroupList, onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
-
+  console.log('ARGS', props)
   const classes = useStylesFromThemeFunction(props)
 
   const [pointById, setPointById] = useState(
@@ -345,26 +348,3 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: 'white',
   },
 }))
-
-export function deriveReducedPointGroupList(data) {
-  const local = useRef({ groupingPointsById: {} }).current
-
-  const { pointById } = data
-  console.log(data)
-  let updated = false
-
-  const { groupingPointsById } = local
-
-  if (local.pointById !== pointById) {
-    for (const point of Object.values(pointById)) {
-      console.log(point)
-      if (!groupingPointsById[point._id]) {
-        groupingPointsById[point._id] = { point }
-        updated = true
-      }
-    }
-    local.groupingPointsById = groupingPointsById
-  }
-  if (updated) local.pointGroupList = Object.values(local.groupingPointsById)
-  return { pointGroupList: local.pointGroupList }
-}
