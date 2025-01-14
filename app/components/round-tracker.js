@@ -61,17 +61,23 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
       lowerIndex = isMobile ? currentRoundIndex : currentRoundIndex - 1
       upperIndex = currentRoundIndex + 2
     }
-
+    let visibleRoundCounter = 0
     return roundsStatus.map((status, index) => {
       // Only render visible rounds
       if (lowerIndex <= index && index < upperIndex) {
         const badgeInfo = statusToBadge[status.toLowerCase()]
+        const thisVisibleRound = visibleRoundCounter
+        visibleRoundCounter++
         return (
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
               <div className={classes.roundHeader}>
                 <div className={classes.roundNumber}>Round {index + 1}</div>
-                {status.toLowerCase() !== 'pending' && <div className={cx(classes.lineBase, status.toLowerCase() === 'complete' && classes.lineComplete, status.toLowerCase() === 'inprogress' && classes.lineInProgress)} />}{' '}
+                {!(thisVisibleRound === 2 && status.toLowerCase() === 'pending') && (
+                  <div
+                    className={cx(classes.lineBase, status.toLowerCase() === 'complete' && classes.lineComplete, status.toLowerCase() === 'inprogress' && classes.lineInProgress, status.toLowerCase() === 'pending' && classes.linePending)}
+                  />
+                )}
               </div>
               <StatusBadge name={badgeInfo.name} status={badgeInfo.status} className={classes.badge} />
             </div>
@@ -100,7 +106,6 @@ const useStyles = createUseStyles(theme => ({
   roundTrackerWrapper: {
     backgroundColor: theme.colors.roundTrackerBackground,
     borderRadius: '0.5rem',
-    padding: '1rem',
     border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
   },
   roundTracker: {
@@ -109,10 +114,12 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    gap: '3.5rem',
+    margin: '1.625rem 6.0625rem 1.625rem 4.1875rem',
+    gap: '5.1875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'row',
       flexWrap: 'nowrap',
+      margin: '1.625rem 1rem  1.625rem 1rem ',
       gap: '2rem',
     },
   },
@@ -120,12 +127,10 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    margin: '0 0.5rem',
     gap: '0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       alignItems: 'flex-start',
-      marginBottom: '0.5rem',
     },
   },
   roundHeader: {
@@ -158,7 +163,7 @@ const useStyles = createUseStyles(theme => ({
   },
 
   linePending: {
-    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
   },
 
   badge: {
