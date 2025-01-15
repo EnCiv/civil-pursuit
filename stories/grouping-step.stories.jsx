@@ -22,7 +22,6 @@ const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
-  groupedPoints = [],
   user = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
@@ -30,11 +29,13 @@ const createPointDoc = (
   }
 ) => {
   return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
+    point: {
+      _id,
+      subject,
+      description,
+      user,
+    },
+    group: [],
   }
 }
 
@@ -64,7 +65,7 @@ export const SharedEmpty = {
 
 export const Desktop = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -73,7 +74,7 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -88,7 +89,7 @@ export const Mobile = {
 
 export const canCreateGroup = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -234,7 +235,7 @@ export const canCreateGroup = {
 }
 export const canUnGroup = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -370,7 +371,7 @@ export const canUnGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
 export const canCreateGroupWithAGroup = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -512,7 +513,7 @@ export const canCreateGroupWithAGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the groupPoints doesn't go back to it's initial state
 export const canRemoveOnePointFromAGroup = {
   args: {
-    pointGroupList: pointItems,
+    reducedPointList: pointItems,
     shared: {
       groupedPointList: [],
     },
@@ -672,37 +673,44 @@ function getGroupingArgsFrom(groupingPoints) {
 
 const groupingPoints = [
   {
-    _id: 0,
-    subject: 'Point 0',
-    description: 'Point Description 0',
-    groupedPoints: [],
-    user: {
-      dob: '1990-10-20T00:00:00.000Z',
-      state: 'NY',
-      party: 'Independent',
+    point: {
+      _id: 0,
+      subject: 'Point 0',
+      description: 'Point Description 0',
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
     },
+    group: [],
   },
   {
-    _id: 4,
-    subject: 'Point 4',
-    description: 'Point Description 4',
-    groupedPoints: [],
-    user: {
-      dob: '1990-10-20T00:00:00.000Z',
-      state: 'NY',
-      party: 'Independent',
+    point: {
+      _id: 4,
+      subject: 'Point 4',
+      description: 'Point Description 4',
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
     },
+    group: [],
   },
   {
-    _id: 5,
-    subject: 'Point 5',
-    description: 'Point Description 5',
-    groupedPoints: [],
-    user: {
-      dob: '1990-10-20T00:00:00.000Z',
-      state: 'NY',
-      party: 'Independent',
+    point: {
+      _id: 5,
+      subject: 'Point 5',
+      description: 'Point Description 5',
+
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
     },
+    group: [],
   },
 ]
 

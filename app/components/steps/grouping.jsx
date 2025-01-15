@@ -23,12 +23,12 @@ export default function GroupingStep(props) {
   const { discussionId, round } = data
   const args = deriveReducedPointList(data, useRef({}).current)
 
-  const handleOnDone = ({ valid, value, delta }) => {
+  const handleOnDone = ({ valid, delta }) => {
     if (delta) {
       putGroupings(discussionId, round, userId, delta)
       window.socket.emit('put-groupings', discussionId, round, delta)
     }
-    onDone({ valid, value })
+    onDone({ valid })
   }
   // fetch previous data
   if (typeof window !== 'undefined')
@@ -54,38 +54,55 @@ export default function GroupingStep(props) {
 }
 
 export function GroupPoints(props) {
-  const { pointGroupList, reducedPointList, onDone = () => {}, shared = {}, className, ...otherProps } = props
+  const { reducedPointList, onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
 
   // Don't render if list is missing
-  if (!pointGroupList && !reducedPointList) return null
+  if (!reducedPointList) return null
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
-    pointsToGroup: pointGroupList || reducedPointList?.filter(pO => !pO.group).map(pO => pO.point) || [], // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
-    yourGroups: reducedPointList?.filter(pO => pO.group).map(pO => pO.group) || [], // points that have been grouped
+    pointsToGroup: reducedPointList?.filter(pO => pO.group?.length === 0).map(pO => pO.point) || [], // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    yourGroups: reducedPointList?.filter(pO => pO.group?.length > 0).map(pO => pO.group) || [], // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
   })
 
-  useEffect(() => {
-    const newPointsToGroup = reducedPointList?.filter(pO => !pO.group).map(pO => pO.point)
+  if (reducedPointList) {
+    useEffect(() => {
+      const newPointsToGroup = reducedPointList.filter(pO => !pO.group).map(pO => pO.point)
 
-    let updated = false
-    for (const point of newPointsToGroup) {
-      if (gs.pointsToGroup.some(pt => pt === point)) {
-        newPointsToGroup.push(point)
-      } else updated = true
+      let updated = false
+      for (const point of newPointsToGroup) {
+        if (gs.pointsToGroup.some(pt => pt === point)) {
+          newPointsToGroup.push(point)
+        } else updated = true
+      }
+
+      if (updated) {
+        setGs({ ...gs, pointsToGroup: newPointsToGroup })
+      }
+    }, [reducedPointList])
+  }
+
+  const handleGrouping = grouping => {
+    let groupings
+
+    const uniqueSet = new Set([grouping, ...gs.yourGroups].map(subArray => subArray.sort()))
+    const uniqueArrayOfArrays = Array.from(uniqueSet).map(str => JSON.parse(JSON.stringify(str)))
+
+    setGs({ ...gs, yourGroups: uniqueArrayOfArrays })
+
+    if (groupings) {
+      setTimeout(() => onDone({ valid: false, delta: groupings }))
     }
 
-    if (updated) {
-      setGs({ ...gs, pointsToGroup: newPointsToGroup })
-    }
-  }, [reducedPointList])
+    return gs
+  }
 
   const togglePointSelection = _id => {
     setGs(oldGs => {
@@ -148,7 +165,7 @@ export function GroupPoints(props) {
         // we have to change it because the new one may have different children
       }
       shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
-      onDone({ valid: true, value: shared.groupedPointList })
+      handleGrouping(yourGroups)
       return { ...oldGs, pointsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null }
     })
   }
