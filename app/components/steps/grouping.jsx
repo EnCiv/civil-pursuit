@@ -54,46 +54,38 @@ export default function GroupingStep(props) {
 }
 
 export function GroupPoints(props) {
-  const { pointGroupList, onDone = () => {}, shared = {}, className, ...otherProps } = props
+  const { pointGroupList, reducedPointList, onDone = () => {}, shared = {}, className, ...otherProps } = props
   const { pointList, groupedPointList } = shared
-  console.log('ARGS', props)
+
   const classes = useStylesFromThemeFunction(props)
 
-  const [pointById, setPointById] = useState(
-    (pointGroupList || []).reduce((pointById, groupingPoint) => {
-      pointById[groupingPoint._id] = groupingPoint
-      return pointById
-    }, {})
-  )
-
-  useEffect(() => {
-    const newPointById = (pointGroupList || []).reduce((pointById, groupingPoint) => {
-      pointById[groupingPoint._id] = groupingPoint
-      return pointById
-    }, {})
-    let updated = false
-    for (const pointDoc of Object.values(newPointById)) {
-      if (isEqual(pointDoc, pointById[pointDoc._id])) {
-        newPointById[pointDoc._id] = pointById[pointDoc._id]
-      } else updated = true
-    }
-    if (updated) {
-      setPointById(newPointById)
-    }
-  }, [pointById])
+  // Don't render if list is missing
+  if (!pointGroupList && !reducedPointList) return null
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
   const [gs, setGs] = useState({
     selectedPoints: [], // points the user has clicked on, for combining into a group
-    pointsToGroup: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => !p.groupedPoints?.length) : pointGroupList || pointList || []), // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
-    yourGroups: cloneDeep(groupedPointList?.length ? groupedPointList.filter(p => p.groupedPoints?.length) : []), // points that have been grouped
+    pointsToGroup: pointGroupList || reducedPointList?.filter(pO => !pO.group).map(pO => pO.point) || [], // points from the pointList input that have not been added to a group - cloneDeep because this will mutate the points
+    yourGroups: reducedPointList?.filter(pO => pO.group).map(pO => pO.group) || [], // points that have been grouped
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point, with no subject/description but with goupedPoints for selecting the Lead
   })
 
-  // Don't render if list is missing
-  if (!pointGroupList) return null
+  useEffect(() => {
+    const newPointsToGroup = reducedPointList?.filter(pO => !pO.group).map(pO => pO.point)
+
+    let updated = false
+    for (const point of newPointsToGroup) {
+      if (gs.pointsToGroup.some(pt => pt === point)) {
+        newPointsToGroup.push(point)
+      } else updated = true
+    }
+
+    if (updated) {
+      setGs({ ...gs, pointsToGroup: newPointsToGroup })
+    }
+  }, [reducedPointList])
 
   const togglePointSelection = _id => {
     setGs(oldGs => {

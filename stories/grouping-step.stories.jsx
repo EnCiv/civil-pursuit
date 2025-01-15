@@ -728,6 +728,6 @@ const groupingStepTemplate = args => {
 }
 export const groupingStepWithPartialDataAndUserUpdate = {
   args: { ...getGroupingArgsFrom(groupingPoints) },
-  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  decorators: [DeliberationContextDecorator, socketEmitDecorator, onDoneDecorator],
   render: groupingStepTemplate,
 }
