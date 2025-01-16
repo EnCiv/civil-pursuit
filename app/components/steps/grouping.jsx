@@ -74,6 +74,7 @@ export function GroupPoints(props) {
 
   if (reducedPointList) {
     useEffect(() => {
+      console.log(gs)
       const newPointsToGroup = reducedPointList.filter(pO => !pO.group).map(pO => pO.point)
 
       let updated = false
@@ -136,6 +137,7 @@ export function GroupPoints(props) {
         } else yourGroups.push(point)
       }
       onDone({ valid: false, value: {} })
+
       return {
         ...oldGs,
         pointsToGroup,
@@ -249,15 +251,16 @@ export function GroupPoints(props) {
         <div className={classes.yourGroupsWrapper}>
           <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
           <div className={classes.groupsContainer}>
-            {gs.yourGroups.map(point => {
+            {gs.yourGroups.map(pointGroup => {
+              console.log('GROUP', pointGroup)
               return (
                 <PointGroup
                   className={classes.yourGroupsPoint}
-                  key={point._id}
-                  pointDoc={point}
+                  key={pointGroup.point?._id}
+                  pointGroupDoc={pointGroup}
                   vState="editable"
-                  select={gs.selectedPoints.some(id => id === point._id)}
-                  onClick={() => togglePointSelection(point._id)}
+                  select={gs.selectedPoints.some(id => id === pointGroup.point._id)}
+                  onClick={() => togglePointSelection(pointGroup.point._id)}
                   onDone={onYourPointEdited}
                 />
               )

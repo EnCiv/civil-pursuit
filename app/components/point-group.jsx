@@ -16,15 +16,18 @@ import { H, Level } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
-  const { pointDoc, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
+  const { pointGroupDoc, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
-  const [pD, setPointDoc] = useState(pointDoc)
+  const [pGD, setPointGroupDoc] = useState(pointGroupDoc)
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
-  const { groupedPoints, ...soloPoint } = pD // solopoint contains everything but groupedPoint, and "everything" can change so we use a spread
-  const { subject, description, demInfo } = pD
-  const singlePoint = !groupedPoints || groupedPoints.length === 0
+
+  const { group, point: soloPoint } = pGD // solopoint contains everything but groupedPoint, and "everything" can change so we use a spread
+
+  const { subject, description, demInfo } = soloPoint
+
+  const singlePoint = !group || group.length === 0
   const [selected, setSelected] = useState('')
   const [isHovered, setIsHovered] = useState(false)
 
@@ -48,22 +51,13 @@ const PointGroup = props => {
     setExpanded(vState === 'selectLead' || vState === 'edit')
   }, [vState]) // could be changed by parent component, or within this component
   useEffect(() => {
-    setPointDoc(pointDoc)
-  }, [pointDoc]) // could be changed by parent component, or within this component
+    setPointGroupDoc(pointGroupDoc)
+  }, [pointGroupDoc]) // could be changed by parent component, or within this component
 
   return (
     <div className={cx(className)} {...otherProps}>
       {vs === 'collapsed' && (
-        <div
-          className={cx(
-            classes.borderStyle,
-            classes.collapsedBorder,
-            classes.contentContainer,
-            classes.informationGrid
-          )}
-        >
-          {subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}
-        </div>
+        <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.contentContainer, classes.informationGrid)}>{subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}</div>
       )}
       {vs === 'selectLead' && (
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
@@ -72,10 +66,10 @@ const PointGroup = props => {
             <TextButton
               title="Ungroup and close"
               onClick={() => {
-                setPointDoc({})
+                setPointGroupDoc({})
                 onDone({
                   valid: true,
-                  value: { pointDoc: undefined, removedPointDocs: groupedPoints },
+                  value: { pointGroupDoc: undefined, removedPointDocs: group },
                 })
               }}
             >
@@ -87,14 +81,10 @@ const PointGroup = props => {
           {expanded && (
             <Level>
               <div className={classes.selectPointsContainer}>
-                {groupedPoints?.map(pD => {
+                {group?.map(pD => {
                   return (
                     <div key={pD._id} className={classes.selectPoints}>
-                      <Point
-                        point={pD}
-                        vState={pD._id === selected ? 'selected' : 'default'}
-                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                      >
+                      <Point point={pD} vState={pD._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -127,20 +117,20 @@ const PointGroup = props => {
                 title="Done"
                 children="Done"
                 onDone={() => {
-                  const [p, g] = groupedPoints.reduce(
+                  const [p, g] = group.reduce(
                     ([p, g], pD) => {
                       if (pD._id === selected) {
                         p = pD
                         // need to flatten groupedPoints so children to not have children
-                        if (pD.groupedPoints) {
-                          g.push(...pD.groupedPoints)
+                        if (pD.group) {
+                          g.push(...pD.group)
                         }
                       } else {
                         g.push(pD)
                         // need to flatten groupedPoints so children to not have children
-                        if (pD.groupedPoints) {
-                          g.push(...pD.groupedPoints)
-                          delete pD.groupedPoints
+                        if (pD.group) {
+                          g.push(...pD.group)
+                          delete pD.group
                         }
                       }
                       return [p, g]
@@ -148,13 +138,13 @@ const PointGroup = props => {
                     [undefined, []]
                   )
                   const newPointDoc = {
-                    ...p,
-                    groupedPoints: g,
+                    point: { ...p },
+                    group: g,
                   } // This is a point object, not a component
-                  setPointDoc(newPointDoc)
+                  setPointGroupDoc(newPointDoc)
                   onDone({
                     valid: true,
-                    value: { pointDoc: newPointDoc, groupedPoints: [] },
+                    value: { pointGroupDoc: newPointDoc },
                   })
                   setVState('edit')
                   setExpanded(false)
@@ -210,14 +200,10 @@ const PointGroup = props => {
               {!singlePoint && <H className={classes.titleGroup}>Edit the response you'd like to lead with</H>}
               <div className={classes.selectPointsContainer}>
                 <Level>
-                  {groupedPoints.map((pD, leadIndex) => {
+                  {group.map((pD, leadIndex) => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point
-                          point={pD}
-                          vState={'default'}
-                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                        >
+                        <Point point={pD} vState={'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
                           <div className={classes.pointBottomButtons}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton
@@ -226,10 +212,10 @@ const PointGroup = props => {
                                 children="Select as Lead"
                                 onDone={() => {
                                   const newPointDoc = {
-                                    ...pD,
-                                    groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                                    point: { ...pD },
+                                    group: [soloPoint, ...group.filter((e, i) => i !== leadIndex)],
                                   }
-                                  setPointDoc(newPointDoc)
+                                  setPointGroupDoc(newPointDoc)
                                   onDone({
                                     valid: true,
                                     value: { pointObj: newPointDoc },
@@ -246,13 +232,13 @@ const PointGroup = props => {
                                 children="Remove from Group"
                                 onDone={() => {
                                   const newPointDoc = {
-                                    ...soloPoint,
-                                    groupedPoints: groupedPoints.filter((e, i) => i !== leadIndex),
+                                    point: { ...soloPoint },
+                                    group: group.filter((e, i) => i !== leadIndex),
                                   }
-                                  setPointDoc(newPointDoc)
+                                  setPointGroupDoc(newPointDoc)
                                   onDone({
                                     valid: true,
-                                    value: { pointDoc: newPointDoc, removedPointDocs: [pD] },
+                                    value: { pointGroupDoc: newPointDoc, removedPointDocs: [pD] },
                                   })
                                 }}
                               />
@@ -271,7 +257,7 @@ const PointGroup = props => {
               {!singlePoint && <H className={classes.titleGroup}>Other Responses</H>}
               <Level>
                 <div className={classes.selectPointsContainer}>
-                  {groupedPoints.map(pD => {
+                  {group.map(pD => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
                         <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />
@@ -317,13 +303,13 @@ const PointGroup = props => {
                   children="Ungroup"
                   onDone={() => {
                     const newPointDoc = {
-                      ...soloPoint,
-                      groupedPoints: [],
+                      point: { ...soloPoint },
+                      group: [],
                     } // This is a point object, not a component
-                    setPointDoc(newPointDoc)
+                    setPointGroupDoc(newPointDoc)
                     onDone({
                       valid: true,
-                      value: { pointDoc: newPointDoc, removedPointDocs: groupedPoints },
+                      value: { pointGroupDoc: newPointDoc, removedPointDocs: group },
                     })
                   }}
                 />
