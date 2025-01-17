@@ -250,7 +250,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   logo: {
     width: '8.5rem',
     height: 'auto',
-    paddingBottom: '1.5rem',
+    paddingBottom: '0rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '4rem',
     },
