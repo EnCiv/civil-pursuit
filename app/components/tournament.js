@@ -90,7 +90,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '100%',
   },
   roundTracker: {
-    marginBottom: '59px',
+    marginBottom: '3.6875rem',
   },
 }))
 
