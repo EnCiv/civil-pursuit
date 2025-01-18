@@ -128,57 +128,59 @@ const TopNavBar = props => {
 
         {/* This is the mobile menu */}
         {isExpanded ? (
-          <menu className={cx(classes.mobileMenuContainer)}>
-            {menu &&
-              menu.map((item, index) =>
-                Array.isArray(item) ? (
-                  <li className={classes.menuList}>
-                    <div
-                      className={cx(classes.mobileMenuGroup, classes.colors, {
-                        [classes.selectedItem]: selectedItem === item[0].name,
-                      })}
-                      key={index}
-                      onClick={() => handleMobileMenuGroupClick(item, index)}
-                    >
-                      {item[0].name} {'\u25BE'}
-                      {openDropdown === index && (
-                        <div className={classes.mobileDropdownMenu}>
-                          {item.slice(1).map((subItem, subIndex) => (
-                            <button
-                              key={subIndex}
-                              className={cx(classes.mobileMenuItem, classes.colors, {
-                                [classes.selectedItem]: selectedItem === subItem.name,
-                              })}
-                              onClick={event => {
-                                event.stopPropagation()
-                                handleMenuItemClick(subItem)
-                              }}
-                            >
-                              {subItem.name}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ) : (
-                  <li className={classes.menuList}>
-                    <div
-                      key={item.name}
-                      className={cx(classes.mobileMenuItem, classes.colors, {
-                        [classes.selectedItem]: selectedItem === item.name,
-                      })}
-                      onClick={() => handleMenuItemClick(item)}
-                    >
-                      {item.name}
-                    </div>
-                  </li>
-                )
-              )}
+          <div className={cx(classes.mobileContainers)}>
+            <menu className={cx(classes.mobileMenuContainer)}>
+              {menu &&
+                menu.map((item, index) =>
+                  Array.isArray(item) ? (
+                    <li className={classes.menuList}>
+                      <div
+                        className={cx(classes.mobileMenuGroup, classes.colors, {
+                          [classes.selectedItem]: selectedItem === item[0].name,
+                        })}
+                        key={index}
+                        onClick={() => handleMobileMenuGroupClick(item, index)}
+                      >
+                        {item[0].name} {'\u25BE'}
+                        {openDropdown === index && (
+                          <div className={classes.mobileDropdownMenu}>
+                            {item.slice(1).map((subItem, subIndex) => (
+                              <button
+                                key={subIndex}
+                                className={cx(classes.mobileMenuItem, classes.colors, {
+                                  [classes.selectedItem]: selectedItem === subItem.name,
+                                })}
+                                onClick={event => {
+                                  event.stopPropagation()
+                                  handleMenuItemClick(subItem)
+                                }}
+                              >
+                                {subItem.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  ) : (
+                    <li className={classes.menuList}>
+                      <div
+                        key={item.name}
+                        className={cx(classes.mobileMenuItem, classes.colors, {
+                          [classes.selectedItem]: selectedItem === item.name,
+                        })}
+                        onClick={() => handleMenuItemClick(item)}
+                      >
+                        {item.name}
+                      </div>
+                    </li>
+                  )
+                )}
+            </menu>
             <div className={classes.mobileDonate}>
-              <Donate />
+                <Donate />
             </div>
-          </menu>
+          </div>
         ) : null}
       </div>
     </div>
@@ -237,7 +239,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0 0 0 1rem',
   },
   mobileDonate: {
-    padding: '0 0 0.5rem 0',
+    padding: '2.5rem 1.25rem',
+    marginLeft: 'auto', // Push the Donate button to the right
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexShrink: 0, // Prevent shrinking of the Donate button
   },
   navBarContainer: {
     width: '80%',
@@ -268,6 +274,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
   },
+  mobileContainers: props => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '90%',
+    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+      display: 'none',
+    },
+  }),
   mobileMenuContainer: props => ({
     padding: '1.25rem 1.25rem',
     display: 'flex',
