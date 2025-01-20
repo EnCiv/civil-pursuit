@@ -53,7 +53,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const why = {
       _id: new ObjectId(),
-      title: 'Why 1',
+      subject: 'Why 1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1,
@@ -71,7 +71,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 5 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -105,7 +105,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -139,7 +139,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -173,7 +173,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -207,7 +207,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
