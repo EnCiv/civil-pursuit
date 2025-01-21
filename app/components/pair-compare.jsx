@@ -289,6 +289,7 @@ const useStyles = createUseStyles(theme => ({
     width: '25rem',
     '@media (max-width: 600px)': {
       width: '75%',
+      maxWidth: '17rem',
     },
   },
 }))
