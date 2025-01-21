@@ -1,4 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issue/247
 import PairCompare from '../app/components/pair-compare'
 import { onDoneDecorator, onDoneResult, asyncSleep } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
@@ -28,7 +27,6 @@ const rankedWhyRankList = [
   { why: { _id: '5', subject: 'Point 5', description: 'This is the fifth point' }, rank: { _id: '15', parentId: '5', stage: 'why', category: 'neutral' } },
   { why: { _id: '6', subject: 'Point 6', description: 'This is the sixth point' }, rank: { _id: '16', parentId: '6', stage: 'why', category: 'neutral' } },
 ]
-
 export const sixPoints = {
   args: {
     mainPoint: {
@@ -53,12 +51,7 @@ export const empty = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
   },
   pointList: [],
@@ -68,12 +61,7 @@ export const onePointCanBeYesStartOverNo = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: [whyRankList[0]],
   },
@@ -129,12 +117,7 @@ export const onePointRankedGetsOnDone = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: [rankedWhyRankList[0]],
   },
@@ -154,12 +137,7 @@ export const twoPoints = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: [whyRankList[0], whyRankList[1]],
   },
@@ -169,12 +147,7 @@ export const UserChoosesNoPoint = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2]],
   },
@@ -234,12 +207,7 @@ export const onDoneTest = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
-      description: (
-        <div style={{ lineHeight: '3em' }}>
-          Climate change and global warming
-          <div style={{ height: '2em' }}></div>
-        </div>
-      ),
+      description: 'Climate change and global warming',
     },
     whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2], whyRankList[3]],
   },
