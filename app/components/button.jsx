@@ -1,5 +1,4 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
-// https://github.com/EnCiv/civil-pursuit/issues/247
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
