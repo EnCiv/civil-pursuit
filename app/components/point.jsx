@@ -211,7 +211,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   // shared styling
   sharedBorderStyle: {
     borderRadius: '0.9375rem',
-    boxShadow: 'none',
+    boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.05)',
   },
   sharedSubjectStyle: {
     ...theme.font,
