@@ -20,6 +20,7 @@ export default function RerankStep(props) {
     }
     onDone({ valid, value })
   }
+
   // fetch previous data
   if (typeof window !== 'undefined')
     useState(() => {
@@ -191,6 +192,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
   const { reducedPointList, postRankByParentId, topWhyById } = data
+  console.log('AHHHH', data)
   let updated = false
 
   const { reviewPointsById } = local

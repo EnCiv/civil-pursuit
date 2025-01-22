@@ -1,11 +1,16 @@
-import React from 'react'
-import GroupingStep from '../app/components/grouping-step'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+// https://github.com/EnCiv/civil-pursuit/issues/198
+
+import React, { useContext, useState } from 'react'
+import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
+import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
+const discussionId = '1101'
+const round = 1
+
 export default {
-  component: GroupingStep,
+  component: GroupPoints,
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -17,7 +22,6 @@ const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
-  groupedPoints = [],
   user = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
@@ -25,17 +29,34 @@ const createPointDoc = (
   }
 ) => {
   return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
+    point: {
+      _id,
+      subject,
+      description,
+      user,
+    },
+    group: [],
   }
 }
 
-const pointItems = Array.from({ length: 10 }, (_, index) =>
-  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
-)
+const pointItems = Array.from({ length: 10 }, (_, index) => ({
+  point: createPointDoc(index, 'Point ' + index, 'Point Description ' + index),
+  group: [],
+}))
+
+function groupingPointsToContext(groupingPoints) {
+  const cn = {
+    ...groupingPoints.reduce(
+      (cn, gp) => {
+        // context, reviewPoint
+        cn.pointById[gp._id] = gp
+        return cn
+      },
+      { pointById: {}, groupIdsLists: [] }
+    ),
+  }
+  return cn
+}
 
 export const Empty = {
   args: {},
@@ -47,8 +68,8 @@ export const SharedEmpty = {
 
 export const Desktop = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -56,8 +77,8 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
     onDone: () => {},
@@ -71,8 +92,8 @@ export const Mobile = {
 
 export const canCreateGroup = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -217,8 +238,8 @@ export const canCreateGroup = {
 }
 export const canUnGroup = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: pointItems,
       groupedPointList: [],
     },
   },
@@ -353,8 +374,8 @@ export const canUnGroup = {
 // Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
 export const canCreateGroupWithAGroup = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: [...pointItems],
       groupedPointList: [],
     },
   },
@@ -492,11 +513,11 @@ export const canCreateGroupWithAGroup = {
   },
 }
 
-// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
+// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the groupPoints doesn't go back to it's initial state
 export const canRemoveOnePointFromAGroup = {
   args: {
+    reducedPointList: pointItems,
     shared: {
-      pointList: [...pointItems],
       groupedPointList: [],
     },
   },
@@ -644,4 +665,80 @@ export const canRemoveOnePointFromAGroup = {
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
     await userEvent.click(canvas.getByTitle('Ungroup'))
   },
+}
+
+function getGroupingArgsFrom(groupingPoints) {
+  const cn = groupingPointsToContext(groupingPoints)
+  const { pointById, ...defaultValue } = { ...cn, round, discussionId }
+
+  return { pointById, defaultValue }
+}
+
+const groupingPoints = [
+  {
+    point: {
+      _id: 0,
+      subject: 'Point 0',
+      description: 'Point Description 0',
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
+    },
+    group: [],
+  },
+  {
+    point: {
+      _id: 4,
+      subject: 'Point 4',
+      description: 'Point Description 4',
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
+    },
+    group: [],
+  },
+  {
+    point: {
+      _id: 5,
+      subject: 'Point 5',
+      description: 'Point Description 5',
+
+      user: {
+        dob: '1990-10-20T00:00:00.000Z',
+        state: 'NY',
+        party: 'Independent',
+      },
+    },
+    group: [],
+  },
+]
+
+const groupingStepTemplate = args => {
+  const { pointById, ...otherArgs } = args
+
+  useState(() => {
+    // execute this code once, before the component is initally rendered
+    // the api call will provide the new data for this step
+    window.socket._socketEmitHandlers['get-points-for-round'] = (discussionId, round, cb) => {
+      window.socket._socketEmitHandlerResults['get-points-for-round'] = [discussionId, round]
+      setTimeout(() => {
+        const points = Object.values(pointById)
+        cb([points])
+      })
+    }
+    window.socket._socketEmitHandlers['put-groupings'] = (rank, cb) => {
+      window.socket._socketEmitHandlerResults['put-groupings'] = rank
+      cb && cb()
+    }
+  })
+  return <GroupingStep {...otherArgs} />
+}
+export const groupingStepWithPartialDataAndUserUpdate = {
+  args: { ...getGroupingArgsFrom(groupingPoints) },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator, onDoneDecorator],
+  render: groupingStepTemplate,
 }
