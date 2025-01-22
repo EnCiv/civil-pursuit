@@ -18,10 +18,10 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
     const ranks = await Ranks.aggregate([
       {
         $match: {
-          discussionId: discussionId.toString(),
+          discussionId: discussionId,
           round,
           stage: 'post',
-          parentId: { $in: ids.map(id => id.toString()) },
+          parentId: { $in: ids },
         },
       },
     ]).toArray()
@@ -31,22 +31,22 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
 
     // Fetch top-ranked whys for each point in ids
     const topWhys = await Promise.all(
-      ids.map(async id => {
+      ids.map(id => {
         return new Promise(resolve =>
           getTopRankedWhysForPoint.call(
             this,
-            id.toString(),
+            id,
             'most',
             0,
-            1,
-            whys => resolve(whys[0] || null) // Get the top-ranked why point
+            5,
+            whys => resolve(whys || null) // Get the top-ranked why point
           )
         )
       })
     )
 
     // Filter out nulls from topWhys
-    const filteredWhys = topWhys.filter(Boolean)
+    const filteredWhys = topWhys.filter(Boolean).flat()
 
     cb({ ranks: filteredRanks, whys: filteredWhys })
   } catch (error) {
