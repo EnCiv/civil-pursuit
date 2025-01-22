@@ -15,7 +15,7 @@ const Point = forwardRef((props, ref) => {
   const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
-
+  const [isClicked, setIsClicked] = useState(false)
   const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
@@ -24,6 +24,10 @@ const Point = forwardRef((props, ref) => {
 
   const onMouseOut = () => {
     setIsHovered(false)
+  }
+
+  const handleClick = () => {
+    setIsClicked(!isClicked)
   }
 
   const childrenWithProps = React.Children.map(children, child => {
@@ -38,39 +42,45 @@ const Point = forwardRef((props, ref) => {
 
   return (
     <div
-      className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)}
+      className={cx(
+        classes.sharedBorderStyle,
+        classes[vState + 'Border'],
+        isClicked && classes[vState + 'Clicked'],
+        className
+      )}
       {...otherProps}
       onMouseEnter={onMouseIn}
       onMouseLeave={onMouseOut}
+      onClick={handleClick}
       ref={ref}
     >
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <H
+            <H 
               className={
-                isLoading
-                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                  : cx(
-                      classes.sharedSubjectStyle,
-                      classes[vState + 'Subject'],
-                      isInvalid ? classes.invalidText : undefined
-                    )
+                isLoading 
+                ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) 
+                : cx(
+                  classes.sharedSubjectStyle, 
+                  classes[vState + 'Subject'], 
+                  isInvalid ? classes.invalidText : undefined
+                )
               }
             >
               {isLoading ? '' : subject}
-            </H>
+              </H>
           )}
           {(isLoading || description) && (
-            <p
-              className={
-                isLoading
-                  ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
-                  : cx(
-                      classes.sharedDescriptionStyle,
-                      classes[vState + 'Description'],
-                      isInvalid ? classes.invalidText : undefined
-                    )
+            <p 
+            className={
+              isLoading 
+              ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) 
+              : cx(
+                classes.sharedDescriptionStyle, 
+                classes[vState + 'Description'], 
+                isInvalid ? classes.invalidText : undefined
+                )
               }
             >
               {isLoading ? '' : description}
@@ -206,6 +216,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   disabledDescription: {
     color: theme.colors.title,
+  },
+
+  // clicked states
+  defaultClicked: {
+    background: theme.colors.lightSuccess,
+    color: theme.colors.success,
+    outline: `0.1875rem solid ${theme.colors.success}`,
+    '& *': {
+      color: theme.colors.success,
+    },
   },
 
   // shared styling
