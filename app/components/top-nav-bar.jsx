@@ -128,7 +128,6 @@ const TopNavBar = props => {
 
         {/* This is the mobile menu */}
         {isExpanded ? (
-          <div className={cx(classes.mobileContainers)}>
             <menu className={cx(classes.mobileMenuContainer)}>
               {menu &&
                 menu.map((item, index) =>
@@ -176,11 +175,10 @@ const TopNavBar = props => {
                     </li>
                   )
                 )}
-            </menu>
             <div className={classes.mobileDonate}>
                 <Donate />
             </div>
-          </div>
+            </menu> 
         ) : null}
       </div>
     </div>
@@ -239,11 +237,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0 0 0 1rem',
   },
   mobileDonate: {
-    padding: '2.5rem 1.25rem',
-    marginLeft: 'auto', // Push the Donate button to the right
-    display: 'flex',
-    justifyContent: 'flex-end',
-    flexShrink: 0, // Prevent shrinking of the Donate button
+    padding: '0.5rem',
   },
   navBarContainer: {
     width: '80%',
@@ -274,14 +268,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
   },
-  mobileContainers: props => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '90%',
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
-      display: 'none',
-    },
-  }),
+  // mobileContainers: props => ({
+  //   display: 'flex',
+  //   justifyContent: 'space-between',
+  //   width: '90%',
+  //   [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+  //     display: 'none',
+  //   },
+  // }),
   mobileMenuContainer: props => ({
     padding: '1.25rem 1.25rem',
     display: 'flex',
