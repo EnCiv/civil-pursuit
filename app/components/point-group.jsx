@@ -25,7 +25,7 @@ const PointGroup = props => {
 
   const { group, point: soloPoint } = pGD // solopoint contains everything but groupedPoint, and "everything" can change so we use a spread
 
-  const { subject, description, demInfo } = soloPoint
+  const { subject, description, demInfo } = soloPoint ?? {}
 
   const singlePoint = !group || group.length === 0
   const [selected, setSelected] = useState('')
