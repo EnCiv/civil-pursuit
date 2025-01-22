@@ -117,8 +117,8 @@ export function RenderStory(props) {
 export function onDoneDecorator(Story, context) {
   // attach an onDone argument that functions like mock.fn but also set's state to cause a rerender
   const [count, setCount] = useState(0)
-  useState(() => {
-    // do this once, immediately
+  useCallback(() => {
+    // do this immediately
     const mockFn = fn()
     const onDone = (...args) => {
       const result = mockFn(...args)
@@ -129,7 +129,7 @@ export function onDoneDecorator(Story, context) {
     onDone.mock = mockFn.mock // most important part wasn't picked up by assign
     onDone.mockFn = mockFn // might be handy someday
     context.args.onDone = onDone
-  })
+  }, [context]) // context may change, like if react is trying to reuse a component for the next story
   return (
     <>
       <Story />
