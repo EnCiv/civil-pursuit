@@ -12,10 +12,11 @@ import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
+  const { point, vState: initialVState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
-  const [isClicked, setIsClicked] = useState(false)
+  const [vState, setVState] = useState(initialVState) // Track vState
+
   const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
@@ -27,7 +28,11 @@ const Point = forwardRef((props, ref) => {
   }
 
   const handleClick = () => {
-    setIsClicked(!isClicked)
+    if (vState === 'default') {
+      setVState('selected') // Change state to selected
+    } else if (vState === 'selected') {
+      setVState('default') // Change state to selected
+    }
   }
 
   const childrenWithProps = React.Children.map(children, child => {
@@ -43,9 +48,8 @@ const Point = forwardRef((props, ref) => {
   return (
     <div
       className={cx(
-        classes.sharedBorderStyle,
-        classes[vState + 'Border'],
-        isClicked && classes[vState + 'Clicked'],
+        classes.sharedBorderStyle, 
+        classes[vState + 'Border'], 
         className
       )}
       {...otherProps}
@@ -216,16 +220,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   disabledDescription: {
     color: theme.colors.title,
-  },
-
-  // clicked states
-  defaultClicked: {
-    background: theme.colors.lightSuccess,
-    color: theme.colors.success,
-    outline: `0.1875rem solid ${theme.colors.success}`,
-    '& *': {
-      color: theme.colors.success,
-    },
   },
 
   // shared styling
