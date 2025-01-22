@@ -97,7 +97,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0rem',
+    gap: '0',
     alignSelf: 'stretch',
   },
 
