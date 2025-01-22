@@ -39,7 +39,10 @@ const createPointDoc = (
   }
 }
 
-const pointItems = Array.from({ length: 10 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
+const pointItems = Array.from({ length: 10 }, (_, index) => ({
+  point: createPointDoc(index, 'Point ' + index, 'Point Description ' + index),
+  group: [],
+}))
 
 function groupingPointsToContext(groupingPoints) {
   const cn = {

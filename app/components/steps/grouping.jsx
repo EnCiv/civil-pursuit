@@ -39,13 +39,12 @@ export default function GroupingStep(props) {
       window.socket.emit('get-points-for-round', discussionId, round, result => {
         if (!result) return // there was an error
 
-        const [points] = result
-        const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
-        const groupings = points.map(pt => [pt._id, ...pt.groupedPoints.map(gp => gp._id)])
-
+        const [pointGroupDocs] = result
+        const pointById = pointGroupDocs.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
+        const groupings = pointGroupDocs.map(pGD => [pGD.point._id, ...pGD.group.map(gp => gp._id)])
         upsert({ pointById, uInfoByRounds: { [round]: { groupings: groupings } } })
 
-        if (points.length <= 1) {
+        if (pointGroupDocs.length <= 1) {
           onDone({ valid: false, value: 'intermission' })
         }
       })
@@ -124,9 +123,9 @@ export function GroupPoints(props) {
       let yourGroups = []
       let groupedPoints = []
       let yourGroupsSelected = []
-      for (const point of oldGs.pointsToGroup) {
-        if (oldGs.selectedPoints.some(_id => _id === point._id)) groupedPoints.push(point)
-        else pointsToGroup.push(point)
+      for (const pointGroupDoc of oldGs.pointsToGroup) {
+        if (oldGs.selectedPoints.some(_id => _id === pointGroupDoc.point._id)) groupedPoints.push(pointGroupDoc)
+        else pointsToGroup.push(pointGroupDoc)
       }
       // do not add yourGroups to the notSelected if they are not selected
       for (const point of oldGs.yourGroups) {
@@ -143,7 +142,7 @@ export function GroupPoints(props) {
         yourGroups,
         yourGroupsSelected,
         selectedPoints: [],
-        selectLead: { groupedPoints },
+        selectLead: { point: groupedPoints[0].point, group: groupedPoints },
       }
     })
   }
@@ -153,6 +152,7 @@ export function GroupPoints(props) {
     setGs(oldGs => {
       let pointsToGroup = [...oldGs.pointsToGroup]
       let yourGroups = [...oldGs.yourGroups]
+      console.log('VAL', value)
       for (const point of value.removedPointDocs || []) {
         // leave it in the yourGroups
         if (oldGs.yourGroupsSelected.some(p => p._id === point._id)) {
@@ -238,12 +238,12 @@ export function GroupPoints(props) {
       </div>
       {gs.selectLead != null ? (
         <div className={classes.selectLead}>
-          <PointGroup pointDoc={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
+          <PointGroup pointGroupDoc={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
       ) : null}
       <div className={classes.groupsContainer}>
-        {gs.pointsToGroup.map(point => (
-          <PointGroup key={point._id} pointDoc={point} vState="default" select={gs.selectedPoints.some(id => id === point._id)} onClick={() => togglePointSelection(point._id)} />
+        {gs.pointsToGroup.map(pGD => (
+          <PointGroup key={pGD.point._id} pointGroupDoc={pGD} vState="default" select={gs.selectedPoints.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
         ))}
       </div>
       {!!gs.yourGroups.length && (

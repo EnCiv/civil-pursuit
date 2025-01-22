@@ -81,10 +81,10 @@ const PointGroup = props => {
           {expanded && (
             <Level>
               <div className={classes.selectPointsContainer}>
-                {group?.map(pD => {
+                {group?.map(pGD => {
                   return (
-                    <div key={pD._id} className={classes.selectPoints}>
-                      <Point point={pD} vState={pD._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
+                    <div key={pGD.point._id} className={classes.selectPoints}>
+                      <Point point={pGD.point} vState={pGD.point._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -93,13 +93,13 @@ const PointGroup = props => {
                           {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
-                            className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${pD.subject}`}
+                            className={cx(classes.selectSelectButton, pGD.point._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${pGD.point.subject}`}
                             children="Select as Lead"
                             disabled={false}
                             disableOnClick={false}
                             onDone={() => {
-                              setSelected(pD._id)
+                              setSelected(pGD.point._id)
                             }}
                           />
                         </div>
