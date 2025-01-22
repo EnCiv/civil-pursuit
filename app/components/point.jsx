@@ -166,7 +166,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
     background: theme.colors.lightSuccess,
-    '& $informationGrid': {
+    '& $informationGrid *': {
       color: theme.colors.success,
     },
   },
