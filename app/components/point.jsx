@@ -31,7 +31,7 @@ const Point = forwardRef((props, ref) => {
     if (vState === 'default') {
       setVState('selected') // Change state to selected
     } else if (vState === 'selected') {
-      setVState('default') // Change state to selected
+      setVState('default') // Change state to default
     }
   }
 
