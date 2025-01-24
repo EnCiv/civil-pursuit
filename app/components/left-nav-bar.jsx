@@ -67,7 +67,7 @@ const LeftNavBar = ({ menu }) => {
 
 const useStyles = createUseStyles(theme => ({
   leftNavBar: {
-    width: '25%',
+    width: '15%',
     background: '#f9f9f9', // Slightly grey background
     display: 'flex',
     flexDirection: 'column',
