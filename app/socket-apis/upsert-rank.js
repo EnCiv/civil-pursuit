@@ -12,7 +12,7 @@ const rankSchema = Joi.object({
   parentId: Joi.string().required(), // parentId is required
   userId: Joi.string().optional(), // userId is optional and will be deleted later if needed
   discussionId: Joi.string().required(), // discussionId is required
-  round: Joi.number().integer().min(1).required(), // round must be an integer >= 1
+  round: Joi.number().integer().min(0).required(), // round must be an integer >= 1
 })
 
 async function upsertRank(rankObj, cb) {

@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/100
+// https://github.com/EnCiv/civil-pursuit/issues/221
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -6,21 +7,14 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const {
-    className = '',
-    subject = '',
-    description = '',
-    participants = 0,
-    contentAlign = 'center',
-    ...otherProps
-  } = props
+  const { className = '', subject = '', description = '', participants = 0, contentAlign = 'center', tagline = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const badgeName = `${participants} participants`
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       <div className={classes.topic}>
-        <div className={classes.fixedText}>Civil Pursuit</div>
+        {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <div className={classes.subject}>{subject}</div>
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
@@ -41,8 +35,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: props =>
-      props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end',
+    alignItems: props => (props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end'),
     padding: '3.625rem 9.875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '3.1875rem 1.5625rem',

@@ -34,10 +34,7 @@ export default function RerankStep(props) {
           if (!result) return // there was an error
           const [ranks, whys] = result
           //if (!ranks.length && !whys.length) return // nothing to do
-          const postRankByParentId = ranks.reduce(
-            (postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId),
-            {}
-          )
+          const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
           const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
           upsert({ postRankByParentId, topWhyById })
         }
@@ -92,6 +89,8 @@ export function Rerank(props) {
     }
     if (updated) {
       setRankByParentId(newRankByParentId)
+      const percentDone = Object.keys(newRankByParentId).length / reviewPoints.length
+      onDone({ valid: percentDone >= 1, value: percentDone })
     }
     // if an item in the updated reviewPoints does not have a rank doc where it previously did, the rank doc will remain.
     // deleting a rank is not a use case
@@ -120,8 +119,7 @@ export function Rerank(props) {
           rankByParentId[point._id] = rank // mutate the state don't call the set function
           percentDone = Object.keys(rankByParentId).length / reviewPoints.length
         } else {
-          percentDone = Object.keys(rankByParentId).length / reviewPoints.length
-          rank = rankByParentId[point._id]
+          // don't call onDone, the data is already there
         }
       } else {
         rank = {
@@ -223,19 +221,14 @@ export function derivePointMostsLeastsRankList(data) {
           updated = true
         } // else no need to update
       } else {
-        if (!reviewPointsById[whyPoint.parentId][category + 's'])
-          reviewPointsById[whyPoint.parentId][category + 's'] = []
+        if (!reviewPointsById[whyPoint.parentId][category + 's']) reviewPointsById[whyPoint.parentId][category + 's'] = []
         reviewPointsById[whyPoint.parentId][category + 's'].push(whyPoint)
         if (!categoiesToUpdateByParentId[whyPoint.parentId]) categoiesToUpdateByParentId[whyPoint.parentId] = []
         categoiesToUpdateByParentId[whyPoint.parentId].push(category)
         updated = true
       }
     }
-    Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) =>
-      categories.forEach(
-        category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])
-      )
-    )
+    Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) => categories.forEach(category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])))
   }
   if (local.postRankByParentId !== postRankByParentId) {
     for (const rank of Object.values(postRankByParentId)) {
