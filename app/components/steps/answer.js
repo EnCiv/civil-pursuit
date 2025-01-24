@@ -6,8 +6,9 @@ import cx from 'classnames'
 import StepIntro from '../step-intro'
 import WhyInput from '../why-input'
 import { createUseStyles } from 'react-jss'
-import { DeliberationContext } from '../../context/deliberation-context'
+import { DeliberationContext } from '../deliberation-context'
 import ObjectId from 'bson-objectid'
+import _ from 'lodash'
 
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
@@ -28,11 +29,11 @@ export default function AnswerStep(props) {
   const derivedProps = deriver(data, props)
   if (!derivedProps) return null // Wait for data to load before rendering
 
-  return <AnswerComponent {...derivedProps} onDone={handleOnDone} />
+  return <Answer {...derivedProps} onDone={handleOnDone} />
 }
 
 // Presentation component: only renders UI and handles local user interactions
-export function AnswerComponent({ className = '', intro = '', question = {}, whyQuestion = '', pointByPart = {}, onDone = () => {}, ...otherProps }) {
+export function Answer({ className = '', intro = '', question = {}, whyQuestion = '', pointByPart = {}, onDone = () => {}, ...otherProps }) {
   const classes = useStylesFromThemeFunction()
 
   const updateResponse =
@@ -62,11 +63,12 @@ export function AnswerComponent({ className = '', intro = '', question = {}, why
 
 // Logic for deriving props from data
 export function deriver(data, localProps) {
-  const local = useRef({}).current
+  const local = useRef({ pointByPart: null }).current // Initialize pointByPart to null
 
   if (!data?.shared) return null
 
   const { shared } = data
+
   if (!shared.startingPoint) {
     shared.startingPoint = {
       _id: ObjectId().toString(),
@@ -82,9 +84,10 @@ export function deriver(data, localProps) {
   const startingPoint = shared.startingPoint
   let why = shared.whyMosts.find(p => p.parentId === startingPoint._id)
 
+  // If 'why' doesn't exist, create it but preserve its _id if it was previously created
   if (!why) {
     why = {
-      _id: ObjectId().toString(),
+      _id: startingPoint._id || ObjectId().toString(), // Ensure _id remains the same if already exists
       subject: '',
       description: '',
       parentId: startingPoint._id,
@@ -98,7 +101,11 @@ export function deriver(data, localProps) {
   }
 
   // Avoid re-rendering if no changes in references
-  if (_.isEqual(local.pointByPart, derivedPointByPart)) return local.pointByPart
+  if (_.isEqual(local.pointByPart, derivedPointByPart)) {
+    return local.pointByPart
+  }
+
+  // Ensure pointByPart is set before returning
   local.pointByPart = derivedPointByPart
   return { ...localProps, pointByPart: derivedPointByPart }
 }
