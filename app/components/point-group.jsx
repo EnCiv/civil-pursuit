@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/256
 
 'use strict'
 
@@ -94,6 +95,9 @@ const PointGroup = props => {
                         point={pD}
                         vState={pD._id === selected ? 'selected' : 'default'}
                         className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                        onClick={() => {
+                          setSelected(pD._id)
+                        }}
                       >
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
@@ -123,6 +127,7 @@ const PointGroup = props => {
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <span>
               <SecondaryButton
+                className={classes.secondaryButton}
                 disabled={selected === ''}
                 title="Done"
                 children="Done"
@@ -340,9 +345,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,
-    '&:hover': {
-      outline: `0.1875rem solid ${theme.colors.success}`,
-    },
     '&:hover $defaultSubject': {
       color: theme.colors.success,
     },
@@ -388,7 +390,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.625rem',
+    gap: '1rem',
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
@@ -432,7 +434,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   bottomButtonsTwo: {},
   bottomButtonsOne: {},
+  secondaryButton: {
 
+    width: '40%',
+
+    '&:disabled': {
+
+      opacity: '30%',
+
+    },
+
+  },
   bottomButtons: {
     boxSizing: 'border-box',
     width: '100%',
@@ -484,6 +496,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   selectPointsPassDown: {
     height: '100%',
+    paddingBottom: '0.683rem',
   },
 
   pointWidthButton: {
@@ -504,13 +517,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectSelectButton: {
-    width: '75%',
+  width: '85%',
+
+    '&:focus': {
+
+      outline: 'none',
+
+    },
   },
 
   selectedButton: {
     backgroundColor: theme.colors.encivYellow,
     '&:hover, &.hover': {
       backgroundColor: theme.colors.encivYellow,
+        outline: 'none',
     },
   },
 
@@ -530,7 +550,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   noBoxShadow: {
-    boxShadow: 'none',
     border: '1px solid rgba(217, 217, 217, 0.40)',
   },
   selectedSubject: {

@@ -2,6 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
+// https://github.com/EnCiv/civil-pursuit/issues/256
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
@@ -85,7 +86,7 @@ const Point = forwardRef((props, ref) => {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
-    padding: '2.1875rem 1.875rem',
+    padding: '1rem 1.875rem 2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
