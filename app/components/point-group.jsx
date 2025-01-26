@@ -95,6 +95,9 @@ const PointGroup = props => {
                         point={pD}
                         vState={pD._id === selected ? 'selected' : 'default'}
                         className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                        onClick={() => {
+                          setSelected(pD._id)
+                        }}
                       >
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
