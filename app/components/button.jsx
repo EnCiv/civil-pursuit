@@ -166,7 +166,7 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
-      textUnderlineOffset: '0.2rem',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.primaryButtonBlue,
     },
