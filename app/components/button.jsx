@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
 import cx from 'classnames'
+import SvgPlusSign from '../svgr/plus-sign'
 
 /**
  * Button component(without stretch goal version) that is styled using react-jss.
@@ -96,6 +97,11 @@ function Button(props) {
         onKeyDown={handleKeyDown}
         {...otherProps}
       >
+        {value === 'create' && (
+          <span>
+            <SvgPlusSign width="2rem" height="1.1rem" />
+          </span>
+        )}
         {children}
       </button>
     </PositioningPortal>
@@ -161,6 +167,11 @@ const buttonStyles = createUseStyles(theme => ({
     '&:hover, &.hover': {
       textDecoration: 'underline',
       textUnderlineOffset: '0.2rem',
+      backgroundColor: theme.colors.white,
+      borderColor: theme.colors.primaryButtonBlue,
+    },
+
+    '&.createhover': {
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.primaryButtonBlue,
     },
