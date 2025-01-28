@@ -116,8 +116,12 @@ export function RenderStory(props) {
 
 export function onDoneDecorator(Story, context) {
   // attach an onDone argument that functions like mock.fn but also set's state to cause a rerender
+  // do not use the format  function Answer({ className = '', intro = '', question = {}, whyQuestion = '', onDone=()=>{}, myAnswer, myWhy, ...otherProps })
+  // instead use function Answer(props) {const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, ...otherProps } = props
+  // because storybook initializes context.args in unexpected ways
   const [count, setCount] = useState(0)
-  if (!context.args.onDone) {
+  // can't useMemo because it will get cleared when you change the file and reload
+  const [onDone] = useState(() => {
     const mockFn = fn()
     const onDone = (...args) => {
       const result = mockFn(...args)
@@ -127,6 +131,10 @@ export function onDoneDecorator(Story, context) {
     Object.assign(onDone, mockFn)
     onDone.mock = mockFn.mock // most important part wasn't picked up by assign
     onDone.mockFn = mockFn // might be handy someday
+    return onDone
+  })
+  // context.args might get recreated if react reuses the component
+  if (context.args.onDone !== onDone) {
     context.args.onDone = onDone
   }
   return (
