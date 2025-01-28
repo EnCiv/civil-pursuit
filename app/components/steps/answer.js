@@ -1,14 +1,14 @@
 //https://github.com/EnCiv/civil-pursuit/issues/213
 
 'use strict'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import StepIntro from '../step-intro'
 import WhyInput from '../why-input'
 import { createUseStyles } from 'react-jss'
 import { DeliberationContext } from '../deliberation-context'
 import ObjectId from 'bson-objectid'
-import _ from 'lodash'
+import { isEqual } from 'lodash'
 
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
@@ -33,28 +33,43 @@ export default function AnswerStep(props) {
 }
 
 // Presentation component: only renders UI and handles local user interactions
-export function Answer({ className = '', intro = '', question = {}, whyQuestion = '', pointByPart = {}, onDone = () => {}, ...otherProps }) {
+export function Answer(props) {
+  const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
+  const [validByType, setValidByType] = useState({ myAnswer: false, myWhy: false })
+  // myAnswer could be undefined initally, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
+  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: question._id })
+  useEffect(() => {
+    if (myAnswer && !isEqual(myAnswer, _myAnswer)) setMyAnswer(myAnswer)
+  }, [myAnswer])
+
+  // myWhy could be undefined initally if so it needs to be initialized with an _id and parentId
+  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id })
+  useEffect(() => {
+    if (myWhy && !isEqual(myWhy, _myWhy)) setMyWhy(myWhy)
+  }, [myWhy])
+
+  function percentDone() {
+    return (validByType.myAnswer + validByType.myWhy) / 2
+  }
 
   const updateResponse =
     type =>
     ({ valid, value }) => {
       const delta = { [type]: value }
-      onDone({ valid, value: { ...pointByPart, ...delta }, delta })
+      setValidByType(validByType => ((validByType[type] = valid), validByType))
+      onDone({ valid: validByType.myAnswer && validByType.myWhy, value: percentDone(), delta })
     }
-
-  if (!pointByPart.answer || !pointByPart.why) return null // Render nothing if props are undefined
-
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
       <div className={classes.answersContainer}>
         <div key="question">
-          <WhyInput point={question} value={pointByPart.answer} onDone={updateResponse('answer')} />
+          <WhyInput point={question} value={_myAnswer} onDone={updateResponse('myAnswer')} />
         </div>
         <div key="why">
           <hr className={classes.pointsHr} />
-          <WhyInput point={{ description: '', subject: whyQuestion, _id: pointByPart.answer._id }} value={pointByPart.why} onDone={updateResponse('why')} />
+          <WhyInput point={{ description: '', subject: whyQuestion, _id: _myAnswer?._id }} value={_myWhy} onDone={updateResponse('myWhy')} />
         </div>
       </div>
     </div>
