@@ -68,7 +68,7 @@ export default function Ranking(props) {
 
 const rankingStyleClasses = createUseStyles({
   optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.5rem' },
-  option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', color: 'inherit' },
+  option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', fontWeight: '300', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' },
   group: { display: 'flex', gap: '1.4375rem' },
   disabled: { opacity: '30%' },
   hideDefaultRadio: { display: 'none !important' },
