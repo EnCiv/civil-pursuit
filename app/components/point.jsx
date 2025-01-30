@@ -17,6 +17,7 @@ const Point = forwardRef((props, ref) => {
   const [isHovered, setIsHovered] = useState(false)
   const [vState, setVState] = useState(initialVState) // Track vState
 
+  //
   const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
