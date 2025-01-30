@@ -54,7 +54,7 @@ const Theme = {
     statusBoxWarnBorder: '#EBDCB3',
     statusBoxNoticeBackground: '#DCE8F2',
     statusBoxNoticeBorder: '#ACC2E2',
-    roundTrackerBackground: '#FDFDF7',
+    roundTrackerBackground: '#FDFDFD',
     inactiveGray: '#D9D9D9',
     stepContainerActive: 'rgba(6, 51, 92, 0.10)',
     svgArrow: 'rgb(206, 206, 206)',

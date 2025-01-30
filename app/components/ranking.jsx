@@ -37,7 +37,6 @@ export default function Ranking(props) {
     if (!onDone) {
       return console.warn(`Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`)
     } else onDone({ valid: true, value: e.target.value })
-   
   }
   return (
     <div data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
