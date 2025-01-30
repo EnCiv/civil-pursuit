@@ -12,7 +12,7 @@ const selectedOption = (
   </>
 )
 
-const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke="#06335C" strokeWidth="2" />
+const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke="#5D5D5C" strokeWidth="2" />
 
 export default function Ranking(props) {
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
