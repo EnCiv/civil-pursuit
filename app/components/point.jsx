@@ -16,6 +16,7 @@ const Point = forwardRef((props, ref) => {
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
+  //
   const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
