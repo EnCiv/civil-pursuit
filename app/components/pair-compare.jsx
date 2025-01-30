@@ -267,7 +267,9 @@ const useStyles = createUseStyles(theme => ({
   buttonsContainer: {
     display: 'flex',
     justifyContent: 'center',
+    maxWidth: '25rem',
     margin: '2rem auto',
+    gap: '3rem',
   },
   transitioningDown: {
     position: 'absolute',
