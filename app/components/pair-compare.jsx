@@ -297,7 +297,6 @@ const useStyles = createUseStyles(theme => ({
 const sharedStatusBadgeStyle = () => ({
   borderRadius: '1rem',
   padding: '0.375rem 0.625rem',
-  marginBottom: '20rem',
 })
 
 const sharedButtonStyle = () => ({
