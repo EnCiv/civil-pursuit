@@ -12,12 +12,10 @@ import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info.jsx'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState: initialVState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
-  const [vState, setVState] = useState(initialVState) // Track vState
 
-  //
   const { subject = '', description = '', demInfo = {} } = point || {}
 
   const onMouseIn = () => {
@@ -26,14 +24,6 @@ const Point = forwardRef((props, ref) => {
 
   const onMouseOut = () => {
     setIsHovered(false)
-  }
-
-  const handleClick = () => {
-    if (vState === 'default') {
-      setVState('selected') // Change state to selected
-    } else if (vState === 'selected') {
-      setVState('default') // Change state to default
-    }
   }
 
   const childrenWithProps = React.Children.map(children, child => {
@@ -47,47 +37,14 @@ const Point = forwardRef((props, ref) => {
   })
 
   return (
-    <div
-      className={cx(
-        classes.sharedBorderStyle, 
-        classes[vState + 'Border'], 
-        className
-      )}
-      {...otherProps}
-      onMouseEnter={onMouseIn}
-      onMouseLeave={onMouseOut}
-      onClick={handleClick}
-      ref={ref}
-    >
+    <div className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)} {...otherProps} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} ref={ref}>
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <H 
-              className={
-                isLoading 
-                ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) 
-                : cx(
-                  classes.sharedSubjectStyle, 
-                  classes[vState + 'Subject'], 
-                  isInvalid ? classes.invalidText : undefined
-                )
-              }
-            >
-              {isLoading ? '' : subject}
-              </H>
+            <H className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
           )}
           {(isLoading || description) && (
-            <p 
-            className={
-              isLoading 
-              ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) 
-              : cx(
-                classes.sharedDescriptionStyle, 
-                classes[vState + 'Description'], 
-                isInvalid ? classes.invalidText : undefined
-                )
-              }
-            >
+            <p className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'], isInvalid ? classes.invalidText : undefined)}>
               {isLoading ? '' : description}
             </p>
           )}
@@ -171,7 +128,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
     background: theme.colors.lightSuccess,
-    '& $informationGrid *': {
+    '& $informationGrid': {
       color: theme.colors.success,
     },
   },
