@@ -1,3 +1,4 @@
+// https://github.com/EnCiv/civil-pursuit/issue/255
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -66,7 +67,7 @@ export default function Ranking(props) {
 }
 
 const rankingStyleClasses = createUseStyles({
-  optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.125rem' },
+  optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.5rem' },
   option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', color: 'inherit' },
   group: { display: 'flex', gap: '1.4375rem' },
   disabled: { opacity: '30%' },
