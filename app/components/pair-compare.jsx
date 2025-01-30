@@ -143,13 +143,10 @@ function PairCompare(props) {
     <div className={classes.container} {...otherProps}>
       <div className={classes.mainPointContainer}>
         <div className={classes.mainPointSubject}>{mainPoint.subject}</div>
-        <div style={{ marginBottom: '1rem'}}></div>
         <div className={classes.mainPointDescription}>{mainPoint.description}</div>
-        <div style={{ marginBottom: '2rem'}}></div>
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
-      <div style={{ marginBottom: '2.5rem' /*increase margin at the bottom of n out of 6 label*/ }}></div>
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
@@ -221,9 +218,11 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: '600',
     fontSize: '1.5rem',
     lineHeight: '2rem',
+    marginBottom: '1rem',
   },
   mainPointDescription: {
     fontWeight: '400',
+    marginBottom: '2rem',
   },
   hiddenPointContainer: {
     position: 'relative',
@@ -260,7 +259,7 @@ const useStyles = createUseStyles(theme => ({
     ...sharedButtonStyle(),
   },
   lowerContainer: {
-    marginTop: '1rem',
+    marginTop: '2rem',
     backgroundColor: theme.colors.cardOutline,
     borderRadius: '1rem',
     border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
