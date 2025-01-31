@@ -59,6 +59,7 @@ const Point = forwardRef((props, ref) => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
     padding: '1.5rem 1.875rem',
+    paddingBottom: '2.5rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
