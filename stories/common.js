@@ -6,9 +6,11 @@ import { fn } from '@storybook/test'
 
 export const socketEmitDecorator = Story => {
   useState(() => {
-    if (!window.socket) window.socket = {}
-    if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
-    if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = []
+    // caution! every story that runs with this decorator will rewrite the socket variable
+    // you'd think each story is separate but they all run in the same window
+    window.socket = {}
+    window.socket._socketEmitHandlers = {}
+    window.socket._socketEmitHandlerResults = []
     window.socket.emit = (handle, ...args) => {
       if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
       else console.error('socketEmitDecorator: no handle found', handle, ...args)
