@@ -12,44 +12,53 @@ import { isEqual } from 'lodash'
 
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
+  const { onDone = () => {}, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
   // Fetch initial data and update context
   useEffect(() => {
-    window.socket.emit('fetch-answer-step', { questionId: props.question?._id }, results => upsert(results))
-  }, [props.question, upsert])
+    if (data?.uInfo?.[data?.round]?.statementIds?.length > 0) {
+      window.socket.emit('get-points-of-ids', data.uInfo[data.round].statementIds, ({ points, myWhys }) => {
+        upsert({ ['pointById']: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}), ['myWhyByParentId']: myWhys.reduce((wById, why) => ((wById[why.parentId] = why), wById), {}) })
+      })
+    }
+  }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
-      upsert(delta) // Update context with delta changes
-      window.socket.emit('update-answer-step', delta) // Push changes to server
+      if (delta.myAnswer) {
+        upsert({ pointById: { [delta.myAnswer._id]: delta.myAnswer } }) // Update context with delta changes
+        window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer) // Push changes to server
+      }
+      if (delta.myWhy) {
+        upsert({ myWhyByParentId: { [delta.myWhy.parentId]: delta.myWhy } }) // Update context with delta changes
+        window.socket.emit('upsert-why', delta.myWhy) // Push changes to server
+      }
     }
+    onDone({ valid, value })
   }
 
-  const derivedProps = deriver(data, props)
-  if (!derivedProps) return null // Wait for data to load before rendering
-
-  return <Answer {...derivedProps} onDone={handleOnDone} />
+  return <Answer {...deriveMyAnswerAndMyWhy(data)} round={data.round} userId={data.userId} discussionId={data.discussionId} {...otherProps} onDone={handleOnDone} />
 }
 
 // Presentation component: only renders UI and handles local user interactions
 export function Answer(props) {
-  const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, ...otherProps } = props
+  const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, userId, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [validByType, setValidByType] = useState({ myAnswer: false, myWhy: false })
   // myAnswer could be undefined initally, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
-  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: question._id })
+  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: question._id, userId })
   useEffect(() => {
     if (myAnswer && !isEqual(myAnswer, _myAnswer)) setMyAnswer(myAnswer)
   }, [myAnswer])
 
   // myWhy could be undefined initally if so it needs to be initialized with an _id and parentId
-  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id })
+  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId })
   useEffect(() => {
     if (myWhy && !isEqual(myWhy, _myWhy)) setMyWhy(myWhy)
   }, [myWhy])
 
-  function percentDone() {
+  function percentDone(validByType) {
     return (validByType.myAnswer + validByType.myWhy) / 2
   }
 
@@ -57,8 +66,14 @@ export function Answer(props) {
     type =>
     ({ valid, value }) => {
       const delta = { [type]: value }
-      setValidByType(validByType => ((validByType[type] = valid), validByType))
-      onDone({ valid: validByType.myAnswer && validByType.myWhy, value: percentDone(), delta })
+      setValidByType(validByType => {
+        validByType[type] = valid
+        if (valid)
+          setTimeout(() => {
+            onDone({ valid: validByType.myAnswer && validByType.myWhy, value: percentDone(validByType), delta })
+          })
+        return validByType // abort the rerender
+      })
     }
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
@@ -77,52 +92,19 @@ export function Answer(props) {
 }
 
 // Logic for deriving props from data
-export function deriver(data, localProps) {
-  const local = useRef({ pointByPart: null }).current // Initialize pointByPart to null
-
-  if (!data?.shared) return null
-
-  const { shared } = data
-
-  if (!shared.startingPoint) {
-    shared.startingPoint = {
-      _id: ObjectId().toString(),
-      subject: '',
-      description: '',
-      parentId: localProps.question?._id,
-    }
+export function deriveMyAnswerAndMyWhy(data) {
+  const local = useRef({}).current // Initialize pointByPart to null
+  if (data.pointById !== local.pointById) {
+    const myAnswer = Object.values(data.pointById).find(p => p.userId === data.userId)
+    local.myAnswer = myAnswer
+    local.pointById = data.pointById
   }
-  if (!shared.whyMosts) {
-    shared.whyMosts = []
+  if (local.myAnswer && data.myWhyByParentId !== local.myWhyByParentId) {
+    const myWhy = data.myWhyByParentId[local.myAnswer._id]
+    local.myWhy = myWhy
+    local.myWhyByParentId = data.myWhyByParentId
   }
-
-  const startingPoint = shared.startingPoint
-  let why = shared.whyMosts.find(p => p.parentId === startingPoint._id)
-
-  // If 'why' doesn't exist, create it but preserve its _id if it was previously created
-  if (!why) {
-    why = {
-      _id: startingPoint._id || ObjectId().toString(), // Ensure _id remains the same if already exists
-      subject: '',
-      description: '',
-      parentId: startingPoint._id,
-    }
-    shared.whyMosts.push(why)
-  }
-
-  const derivedPointByPart = {
-    answer: startingPoint,
-    why,
-  }
-
-  // Avoid re-rendering if no changes in references
-  if (_.isEqual(local.pointByPart, derivedPointByPart)) {
-    return local.pointByPart
-  }
-
-  // Ensure pointByPart is set before returning
-  local.pointByPart = derivedPointByPart
-  return { ...localProps, pointByPart: derivedPointByPart }
+  return { myAnswer: local.myAnswer, myWhy: local.myWhy }
 }
 
 // Styles

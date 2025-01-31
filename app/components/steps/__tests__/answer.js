@@ -1,5 +1,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/213
-import { deriver } from '../answer'
+import { test } from '@jest/globals'
+import { deriveMyAnswerAndMyWhy } from '../answer'
+import expect from 'expect'
 
 // Mock necessary functions
 jest.mock('react', () => {
@@ -30,85 +32,81 @@ jest.mock('react-accessible-headings', () => {
     Level: jest.fn(),
   }
 })
-describe('deriver function', () => {
-  let props = {}
+
+describe('test deriveMyAnswerAndMyWhy', () => {
+  // for deriver tests we keep building on the same data object, rather than a new one every time
+  // because an important part of testing is to make sure what's should change is changed, and what shouldn't change doesn't change between calls
   let data = {}
 
-  beforeEach(() => {
-    // Reset data and props before each test
-    props = { question: { _id: '12345' } }
-    data = {
-      shared: {
-        startingPoint: {
-          _id: '123',
-          subject: 'Test Subject',
-          description: 'Test Description',
-          parentId: '12345',
-        },
-        whyMosts: [],
-      },
-    }
-  })
-
-  test('input data undefined', () => {
-    const result = deriver(undefined, props)
-    expect(result).toBeNull()
-  })
-
   test('input data empty', () => {
-    const data = {}
-    const result = deriver(data, props)
-    expect(result).toBeNull()
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: undefined, myWhy: undefined })
   })
 
-  test('input data present - output data not there yet', () => {
-    data.shared.startingPoint = { ...data.shared.startingPoint, subject: '' } // Ensure starting point is defined
-    const result = deriver(data, props)
-    expect(result).toBeTruthy()
-    expect(result.pointByPart).toBeDefined()
-    expect(result.pointByPart.answer.subject).toBe('')
+  test('no answer from the user', () => {
+    data.userId = 'a'
+    data.pointById = { 0: { _id: 0, subject: 'Not the User', description: 'not the user description', userId: 'b' } }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: undefined, myWhy: undefined })
   })
 
-  test('input data unchanged', () => {
-    const data = {
-      shared: {
-        startingPoint: {
-          _id: '123',
-          subject: 'Test Subject',
-          description: 'Test Description',
-          parentId: '12345',
-        },
-        whyMosts: [
-          {
-            _id: '6784d6ac75dda8871cd6b3f2',
-            description: '',
-            parentId: '123',
-            subject: '',
-          },
-        ],
-      },
-    }
-    const props = {
-      question: { _id: '12345' },
-    }
-
-    const result = deriver(data, props) // Call deriver function and assign to result
-    const previousResult = result?.pointByPart // Ensure result has pointByPart
-
-    const newResult = deriver(data, props)
-    expect(newResult?.pointByPart).toBe(previousResult) // Should not change if input is the same
+  test('answer only', () => {
+    data.pointById['1'] = { _id: '1', subject: 'Answer', description: 'Answer Description', userId: 'a' }
+    data.pointById = { ...data.pointById }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: undefined })
+    const savedMyAnswer = result.myAnswer
+    const result2 = deriveMyAnswerAndMyWhy(data)
+    expect(result2.myAnswer).toBe(savedMyAnswer)
   })
 
-  test('subset(s) of input data changes testing that only the affected part of the output has changed', () => {
-    const result = deriver(data, props)
-    const previousAnswer = result.pointByPart.answer
+  test('user why is not there', () => {
+    data.myWhyByParentId = {}
+    data.myWhyByParentId['0'] = { _id: '2', subject: 'Why', description: 'Why Description', userId: 'b', parentId: '0' }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: undefined })
+  })
 
-    // Simulate a change in the answer
-    data.shared.startingPoint.subject = 'Updated Subject'
-    const updatedResult = deriver(data, props)
+  test('why only but answer not there', () => {
+    delete data.pointById['1']
+    data.pointById = { ...data.pointById }
+    data.myWhyByParentId['1'] = { _id: '3', subject: 'Why', description: 'Why Description', userId: 'a', parentId: '1' }
+    data.myWhyByParentId = { ...data.myWhyByParentId }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: undefined, myWhy: undefined })
+  })
 
-    expect(updatedResult.pointByPart.answer).not.toBe(previousAnswer) // answer should change
-    expect(updatedResult.pointByPart.answer.subject).toBe('Updated Subject')
-    expect(updatedResult.pointByPart.why).toEqual(result.pointByPart.why) // 'why' should stay the same
+  let savedMyAnswer
+  let savedMyWhy
+  test('answer and why', () => {
+    data.pointById['1'] = { _id: '1', subject: 'Answer', description: 'Answer Description', userId: 'a' }
+    data.pointById = { ...data.pointById }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByParentId['1'] })
+    savedMyAnswer = result.myAnswer
+    savedMyWhy = result.myWhy
+    const result2 = deriveMyAnswerAndMyWhy(data)
+    expect(result2.myAnswer).toBe(savedMyAnswer)
+    expect(result2.myWhy).toBe(savedMyWhy)
+  })
+
+  test('answer is changed', () => {
+    data.pointById['1'] = { _id: '1', subject: 'Answer Changed', description: 'Answer Changed Description', userId: 'a' }
+    data.pointById = { ...data.pointById }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByParentId['1'] })
+    expect(result.myAnswer).not.toBe(savedMyAnswer)
+    expect(result.myWhy).toBe(savedMyWhy)
+    savedMyAnswer = result.myAnswer
+    savedMyWhy = result.myWhy
+  })
+
+  test('why is changed', () => {
+    data.myWhyByParentId['1'] = { _id: '3', subject: 'Why Changed', description: 'Why Changed Description', userId: 'a', parentId: '1' }
+    data.myWhyByParentId = { ...data.myWhyByParentId }
+    const result = deriveMyAnswerAndMyWhy(data)
+    expect(result.myAnswer).toBe(savedMyAnswer)
+    expect(result.myWhy).not.toBe(savedMyWhy)
+    expect(result.myWhy).toEqual(data.myWhyByParentId['1'])
   })
 })
