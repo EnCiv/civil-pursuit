@@ -95,7 +95,7 @@ const PointGroup = props => {
                           <ModifierButton
                             className={cx(classes.selectSelectButton, pGD.point._id === selected && classes.selectedButton)}
                             title={`Select as Lead: ${pGD.point.subject}`}
-                            children="Select as Lead"
+                            children={`Select as Lead`}
                             disabled={false}
                             disableOnClick={false}
                             onDone={() => {
@@ -118,19 +118,19 @@ const PointGroup = props => {
                 children="Done"
                 onDone={() => {
                   const [p, g] = group.reduce(
-                    ([p, g], pD) => {
-                      if (pD._id === selected) {
-                        p = pD
+                    ([p, g], pGD) => {
+                      if (pGD.point._id === selected) {
+                        p = pGD.point
                         // need to flatten groupedPoints so children to not have children
-                        if (pD.group) {
-                          g.push(...pD.group)
+                        if (pGD.group) {
+                          g.push(...pGD.group)
                         }
                       } else {
-                        g.push(pD)
+                        g.push(pGD.point)
                         // need to flatten groupedPoints so children to not have children
-                        if (pD.group) {
-                          g.push(...pD.group)
-                          delete pD.group
+                        if (pGD.group) {
+                          g.push(...pGD.group)
+                          delete pGD.group
                         }
                       }
                       return [p, g]
@@ -209,7 +209,7 @@ const PointGroup = props => {
                               <ModifierButton
                                 className={classes.pointWidthButton}
                                 title={`Select as Lead: ${pD.subject}`}
-                                children="Select as Lead"
+                                children={`Select as Lead`}
                                 onDone={() => {
                                   const newPointDoc = {
                                     point: { ...pD },

@@ -110,6 +110,7 @@ export function GroupPoints(props) {
       // if the _id wasn't in there, push it
       if (selectedPoints.length === oldGs.selectedPoints.length) selectedPoints.push(_id)
       if (selectedPoints.length) onDone({ valid: false, value: {} })
+
       return { ...oldGs, selectedPoints }
     })
   }
@@ -132,17 +133,18 @@ export function GroupPoints(props) {
         if (oldGs.selectedPoints.some(_id => _id === point._id)) {
           groupedPoints.push(point)
           yourGroupsSelected.push(point)
-        } else yourGroups.push(point)
+        } else {
+          yourGroups.push(point)
+        }
       }
       onDone({ valid: false, value: {} })
-
       return {
         ...oldGs,
         pointsToGroup,
         yourGroups,
         yourGroupsSelected,
         selectedPoints: [],
-        selectLead: { point: groupedPoints[0].point, group: groupedPoints },
+        selectLead: { group: groupedPoints },
       }
     })
   }
@@ -152,17 +154,18 @@ export function GroupPoints(props) {
     setGs(oldGs => {
       let pointsToGroup = [...oldGs.pointsToGroup]
       let yourGroups = [...oldGs.yourGroups]
-      console.log('VAL', value)
+
       for (const point of value.removedPointDocs || []) {
         // leave it in the yourGroups
         if (oldGs.yourGroupsSelected.some(p => p._id === point._id)) {
           yourGroups.push(point)
         }
         // move it back to the ungrouped points
-        else pointsToGroup.push(point)
+        else pointsToGroup.push({ point, group: [] })
       }
-      if (value.pointDoc) {
-        yourGroups.push(value.pointDoc)
+
+      if (value.pointGroupDoc) {
+        yourGroups.push(value.pointGroupDoc)
         // we have to change it because the new one may have different children
       }
       shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
