@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/150
+//https://github.com/EnCiv/civil-pursuit/issues/257
 //https://github.com/EnCiv/civil-pursuit/issues/262
 
 import React, { useState, useEffect } from 'react'
@@ -216,25 +217,27 @@ const useStyles = createUseStyles(theme => ({
   },
   tabs: {
     width: '80%',
-    height: '3rem',
+    height: '2.8rem',
     margin: 'auto',
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.45rem 0.4rem 0 0.4rem ',
-    boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
+    padding: '0.28rem 0.4rem 0 0.4rem ',
   },
   tab: {
     display: 'inline-block',
     position: 'relative',
     width: '50%',
     color: theme.colors.colorPrimary,
+    alignIitems: 'center',
+    gap: '0.625rem',
   },
   tabSelected: {
     display: 'inline-block',
     position: 'relative',
     borderRadius: '5rem',
     background: theme.colors.tabSelected,
+    outline: `${theme.focusOutlineSignUp}`,
   },
   btnContainer: {
     width: '100%',
@@ -275,6 +278,7 @@ const useStyles = createUseStyles(theme => ({
     '&:focus': {
       border: `${theme.colors.focusOutline} solid 0.1rem`,
       borderRadius: '3rem',
+      outline: 'none',
     },
   },
   btnClickSelected: {
