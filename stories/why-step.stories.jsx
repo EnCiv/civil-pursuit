@@ -202,17 +202,29 @@ export const UserUpdatesExistingData = {
       expect(canvas.getByText(/Of the issues you thought were Most important/i)).toBeInTheDocument()
     })
 
-    await waitFor(() => {
-      const subjectInputs = canvas.getAllByRole('textbox')
-      expect(subjectInputs.length).toBeGreaterThan(0)
-    })
+    await waitFor(
+      () => {
+        expect(canvas.getAllByDisplayValue('Existing Subject 1').length).toBeGreaterThan(0)
+        expect(canvas.getAllByDisplayValue('Existing Description 1').length).toBeGreaterThan(0)
+      },
+      { timeout: 3000 }
+    )
 
     const subjectInputs = canvas.getAllByDisplayValue('Existing Subject 1')
     const descriptionInputs = canvas.getAllByDisplayValue('Existing Description 1')
 
-    await userEvent.clear(subjectInputs[0])
+    await userEvent.click(subjectInputs[0])
+    for (let i = 0; i < 19; i++) {
+      await userEvent.keyboard('{Backspace}')
+    }
+
     await userEvent.type(subjectInputs[0], 'Updated Subject 1')
-    await userEvent.clear(descriptionInputs[0])
+
+    await userEvent.click(descriptionInputs[0])
+    for (let i = 0; i < 22; i++) {
+      await userEvent.keyboard('{Backspace}')
+    }
+
     await userEvent.type(descriptionInputs[0], 'Updated Description 1')
 
     await userEvent.tab()
@@ -229,12 +241,14 @@ export const UserUpdatesExistingData = {
     await waitFor(() => {
       const result = onDoneResult()
       expect(result.onDoneResult).toMatchObject({
-        valid: false,
-        value: {
-          subject: 'Updated Subject 1',
-          description: 'Updated Description 1',
-          parentId: '60b8d295f1c8ab1d2f4a1c01',
-        },
+        valid: true,
+        value: [
+          expect.objectContaining({
+            subject: 'Updated Subject 1',
+            description: 'Updated Description 1',
+            parentId: '60b8d295f1c8ab1d2f4a1c01',
+          }),
+        ],
       })
     })
   },

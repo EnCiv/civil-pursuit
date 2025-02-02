@@ -74,51 +74,60 @@ export function Why(props) {
 
   const classes = useStylesFromThemeFunction()
 
-  if (!pointWhyList || pointWhyList.length === 0) {
-    return null // Return null if there is no data
-  }
+  const allWhysRef = useRef({})
+  const [dummy, setDummy] = useState(0)
 
-  // Initialize allWhys
-  const [allWhys, setAllWhys] = useState(() => {
-    const initialWhys = {}
-    pointWhyList.forEach(({ point, why }) => {
-      initialWhys[point._id] = why || {
-        subject: '',
-        description: '',
-        parentId: point._id,
-        category,
-      }
-    })
-
-    return initialWhys
-  })
-
-  // Sync changes in pointWhyList to allWhys
   useEffect(() => {
-    const updatedWhys = {}
+    const updatedWhys = allWhysRef.current
+    let changed = false
+
     pointWhyList.forEach(({ point, why }) => {
-      updatedWhys[point._id] = {
-        ...allWhys[point._id],
-        ...(why || {}),
-        parentId: point._id,
-        category,
+      if (why) {
+        if (!isEqual(updatedWhys[point._id], why)) {
+          updatedWhys[point._id] = { ...why }
+          changed = true
+        }
       }
     })
-    if (!isEqual(allWhys, updatedWhys)) {
-      setAllWhys(updatedWhys)
+
+    Object.keys(updatedWhys).forEach(id => {
+      if (!pointWhyList.find(({ point }) => point._id === id)) {
+        delete updatedWhys[id]
+        changed = true
+      }
+    })
+
+    if (changed) {
+      setDummy(d => d + 1)
     }
   }, [pointWhyList])
 
   const handleOnDone = ({ valid, value, delta }) => {
-    setAllWhys(prevWhys => {
-      const updatedWhys = {
-        ...prevWhys,
-        [delta.parentId]: { ...prevWhys[delta.parentId], ...delta },
-      }
-      const allValid = Object.values(updatedWhys).every(why => why.subject.trim() && why.description.trim())
-      onDone({ valid: allValid, value: allValid ? Object.values(updatedWhys) : value, delta })
-      return updatedWhys
-    })
+    if (!delta.category) {
+      delta.category = category
+    }
+
+    const updatedWhys = allWhysRef.current
+    if (!updatedWhys[delta.parentId]) {
+      updatedWhys[delta.parentId] = {}
+    }
+    Object.assign(updatedWhys[delta.parentId], delta)
+
+    setTimeout(() => {
+      const allValid = Object.values(updatedWhys).every(why => {
+        return why && typeof why.subject === 'string' && why.subject.trim() && typeof why.description === 'string' && why.description.trim()
+      })
+
+      onDone({
+        valid: allValid,
+        value: allValid ? Object.values(updatedWhys) : value,
+        delta,
+      })
+    }, 0)
+  }
+
+  if (!pointWhyList || !pointWhyList.length) {
+    return null
   }
 
   return (
@@ -129,25 +138,19 @@ export function Why(props) {
       </div>
       <Level>
         <div className={classes.pointsContainer}>
-          {pointWhyList.map(({ point }) => {
-            return (
-              <div key={point._id}>
-                <hr className={classes.pointsHr}></hr>
-                <WhyInput
-                  point={point}
-                  value={allWhys[point._id] || {}}
-                  onDone={({ valid, value }) => {
-                    const delta = {
-                      subject: value.subject || '',
-                      description: value.description || '',
-                      parentId: point._id,
-                    }
-                    handleOnDone({ valid, value: delta, delta })
-                  }}
-                />
-              </div>
-            )
-          })}
+          {pointWhyList.map(({ point }) => (
+            <div key={point._id}>
+              <hr className={classes.pointsHr}></hr>
+              <WhyInput
+                point={point}
+                value={allWhysRef.current[point._id] || {}}
+                onDone={({ valid, value }) => {
+                  const delta = { ...value, parentId: point._id }
+                  handleOnDone({ valid, value: delta, delta })
+                }}
+              />
+            </div>
+          ))}
         </div>
       </Level>
     </div>
