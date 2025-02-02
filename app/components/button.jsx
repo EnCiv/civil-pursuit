@@ -1,5 +1,4 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
-//https://github.com/EnCiv/civil-pursuit/issues/257
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
@@ -140,7 +139,7 @@ const buttonStyles = createUseStyles(theme => ({
     lineHeight: '1.5rem',
     textAlign: 'center',
     '&:focus': {
-    outline: `${theme.focusOutline}`,
+      outline: `${theme.focusOutline}`,
     },
     // Add any other common styles here
   },
