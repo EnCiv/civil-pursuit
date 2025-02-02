@@ -177,7 +177,7 @@ const rankStepTemplate = args => {
       window.socket._socketEmitHandlerResults['get-user-ranks'] = [discussionId, round, ids]
       setTimeout(() => {
         const ranks = Object.values(preRankByParentId) // back to array
-        cb([ranks])
+        cb(ranks)
       })
     }
     window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
