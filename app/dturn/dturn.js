@@ -95,6 +95,19 @@ function initUitems(discussionId, userId, round = 0) {
  */
 async function insertStatementId(discussionId, userId, statementId) {
   // this is where we would insert the statment into the DB
+
+  // Make sure that the discussion has been initialized
+  if (!Discussions[discussionId]) {
+    console.error(`Discussion: ${discussionId} not initialized`)
+    return undefined
+  }
+
+  // Make sure that userId is in the discussion
+  if (!Discussions[discussionId].Uitems[userId]) {
+    console.error(`User ${userId} is not part of discussion ${discussionId}`);
+    return undefined;
+  }
+
   const round = 0 // for now statement ids can only be inserted at round 0
 
   const shownItem = {
@@ -102,10 +115,7 @@ async function insertStatementId(discussionId, userId, statementId) {
     shownCount: 0,
     rank: 0,
   }
-  if (!Discussions[discussionId]) {
-    console.error(`Discussion: ${discussionId} not initialized`)
-    return undefined
-  }
+
   if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
   Discussions[discussionId].ShownStatements[round].push(shownItem)
   initUitems(discussionId, userId, round)
@@ -124,16 +134,17 @@ async function insertStatementId(discussionId, userId, statementId) {
   })
 
   // Only run updates if participants or round changes
-  const participants = Object.keys(Discussions[discussionId].Uitems).length
-  const lastRound =
-    Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
 
-  if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
-    Discussions[discussionId].updates({ participants: participants, lastRound: lastRound })
+  const participants = Object.keys(Discussions[discussionId].Uitems).length;
+  const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1;
+
+  if (lastRound !== Discussions[discussionId].lastRound || participants !== Discussions[discussionId].participants) {
+    Discussions[discussionId].updates({ participants: participants, lastRound: lastRound });
   }
 
   return statementId
 }
+
 
 module.exports.insertStatementId = insertStatementId
 
@@ -204,8 +215,15 @@ function sortLargestFirst(a, b) {
  */
 async function getStatementIds(discussionId, round, userId) {
   if (!Discussions[discussionId]) {
-    throw new Error(`Discussion ${discussionId} not initialized`)
+    console.warn(`Discussion ${discussionId} not initialized`);
+    return undefined;
   }
+  // Make sure that userId is part of the discussion
+  if (!Discussions[discussionId].Uitems[userId]) {
+    console.warn(`User ${userId} is not part of discussion ${discussionId}`);
+    return undefined;
+  }
+
   if (!Discussions[discussionId]?.ShownStatements?.length) {
     console.error(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
@@ -382,40 +400,49 @@ function incrementShownItems(discussionId, round, statementId) {
 // to move up to the next round, but subsiquently gets least votes that would disqualify it from the round.
 // if it has been shown in the next round, then it needs to remain - but if it has not be shown it should be removed.
 function deltaShownItemsRank(discussionId, round, statementId, delta) {
-  const dis = Discussions[discussionId]
-  const sitem = dis.ShownStatements[round].find(i => statementId === i.statementId)
-  if (!sitem) {
-    console.error("incrementShownItemsRank couldn't find", statementId, 'for round', round)
-    return
+  const dis = Discussions[discussionId];
+  if (!dis) {
+    console.error(`Discussion ${discussionId} not initialized`);
+    return;
   }
-  sitem.rank += delta
-  dis.ShownStatements[round].sort(sortShownItemsByLargestRankThenSmallestShownCount)
+
+  if (!dis.ShownStatements[round]) {
+    console.error(`No ShownStatements found for round ${round} in discussion ${discussionId}`);
+    return;
+  }
+
+  const sitem = dis.ShownStatements[round].find(i => statementId === i.statementId);
+  if (!sitem) {
+    console.error(`deltaShownItemsRank couldn't find statement ${statementId} in round ${round}`);
+    return;
+  }
+
+  sitem.rank += delta;
+  dis.ShownStatements[round].sort(sortShownItemsByLargestRankThenSmallestShownCount);
+
   if (dis.ShownStatements[round + 1]) {
-    // a round has started above this one, had this ranked high enough to move into the next round
-    const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size)
-    const minRank =
-      dis.ShownStatements[round][cutoff].rank > dis.min_rank ? dis.ShownStatements[round][cutoff].rank : dis.min_rank
+    const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size);
+    const minRank = Math.max(dis.ShownStatements[round][cutoff].rank, dis.min_rank);
+
     if (delta > 0) {
       if (sitem.rank >= minRank) {
         if (!dis.ShownStatements[round + 1].some(s => s.statementId === sitem.statementId)) {
-          // this statment is not already in that list
-          // list is sorted by rank, so put this at the end
           dis.ShownStatements[round + 1].push({
             statementId: sitem.statementId,
             shownCount: 0,
             rank: 0,
-          })
+          });
         }
       }
     } else {
-      if (sitem.rank < minRank) {
-        const index = dis.ShownStatements[round + 1].findIndex(s => s.statementId === sitem.statementId)
-        if (index >= 0 && dis.ShownStatements[round + 1][index].shownCount === 0)
-          dis.ShownStatements[round + 1].splice(index, 1)
+      const index = dis.ShownStatements[round + 1].findIndex(s => s.statementId === sitem.statementId);
+      if (index >= 0 && dis.ShownStatements[round + 1][index].shownCount === 0) {
+        dis.ShownStatements[round + 1].splice(index, 1);
       }
     }
   }
 }
+
 function promoteItemsFromShownStatementsToNextRoundObj(discussionId, round, shownStatementsObj) {
   const dis = Discussions[discussionId]
   const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size)
@@ -463,40 +490,83 @@ function iteratePairs(discussionId, round, statementIds, func) {
 }
 
 async function putGroupings(discussionId, round, userId, groupings) {
-  const dis = Discussions[discussionId]
-  if (!dis) return false
-  const uitem = Discussions[discussionId].Uitems[userId][round]
-  if (!uitem) return false
+  const dis = Discussions[discussionId];
+  if (!dis) return false;
+  const uitem = Discussions[discussionId].Uitems[userId]?.[round];
+  if (!uitem) return false;
 
-  //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
-  if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
-  uitem.groupings = groupings
-  const shownStatementIds = Object.keys(uitem.shownStatementIds)
-  if (shownStatementIds.length <= 1) console.error('putGroupings', round, userId, shownStatementIds)
-  for (const id of shownStatementIds) incrementShownItems(discussionId, round, id)
-  iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
-  groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+  // Make sure that the user has been displayed statementIds
+  const shownStatementIds = Object.keys(uitem.shownStatementIds);
+  for (const group of groupings) {
+    for (const statementId of group) {
+      if (!shownStatementIds.includes(statementId)) {
+        throw new Error(`Statement ${statementId} was not shown to user ${userId} in round ${round}`);
+      }
+    }
+  }
+
+  if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem);
+  uitem.groupings = groupings;
+
+  if (shownStatementIds.length <= 1) console.error('putGroupings', round, userId, shownStatementIds);
+  for (const id of shownStatementIds) incrementShownItems(discussionId, round, id);
+  iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++);
+  groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++));
+
   await Discussions[discussionId].updateUInfo({
     [userId]: {
       [discussionId]: { [round]: { groupings } },
     },
-  })
+  });
 
-  // Return true only if both are defined
-  return dis && uitem ? true : false
+  return dis && uitem ? true : false;
 }
 module.exports.putGroupings = putGroupings
 
 async function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
-  /* this is where we will write it to the database
-    Ranks.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
-    */
-  deltaShownItemsRank(discussionId, round, statementId, rank)
-  Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
-  await Discussions[discussionId].updateUInfo({
+  const dis = Discussions[discussionId];
+  if (!dis) {
+    console.error(`Discussion ${discussionId} not initialized`);
+    return undefined;
+  }
+
+  if (!dis.Uitems[userId]) {
+    console.error(`User ${userId} has not participated in any round of discussion ${discussionId}`);
+    return undefined;
+  }
+
+  if (!dis.Uitems[userId][round]) {
+    console.error(`User ${userId} has not participated in round ${round}`);
+    return undefined;
+  }
+
+  const uitem = dis.Uitems[userId][round];
+  if (!uitem.shownStatementIds[statementId]) {
+    console.error(`Statement ${statementId} was not shown to user ${userId} in round ${round}`);
+    return undefined;
+  }
+
+  if (![0, 1].includes(rank)) {
+    console.error(`Invalid rank value: ${rank}. Rank must be 0 or 1.`);
+    return undefined;
+  }
+
+  // 确保 `statementId` 存在于 `ShownStatements`
+  if (!dis.ShownStatements[round] || !dis.ShownStatements[round].some(s => s.statementId === statementId)) {
+    console.error(`Statement ${statementId} does not exist in round ${round} ShownStatements`);
+    return undefined;
+  }
+
+  deltaShownItemsRank(discussionId, round, statementId, rank);
+  dis.Uitems[userId][round].shownStatementIds[statementId].rank = rank;
+
+  await dis.updateUInfo({
     [userId]: { [discussionId]: { [round]: { shownStatementIds: { [statementId]: { rank } } } } },
-  })
+  });
+
+  return rank;
 }
+
 module.exports.rankMostImportant = rankMostImportant
 
 function findDeep(discussionId, sItem, id) {
