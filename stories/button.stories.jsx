@@ -3,6 +3,7 @@ import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } fr
 import expect from 'expect'
 import { userEvent, within } from '@storybook/test'
 import { onDoneDecorator, onDoneResult } from './common'
+import SvgPlusSign from '../app/svgr/plus-sign'
 
 export default {
   title: 'Button',
@@ -83,8 +84,8 @@ CreateHoverTest.args = {
   title: 'Press me',
   disabled: false,
   disableOnClick: false,
-  value:'create',
-  children: `Create, Hover`,
+  value: 'create',
+  children: (<> <SvgPlusSign width="2rem" height="1rem" />Create, Hover </>),
 }
 export const OnDoneClicked = {
   args: {

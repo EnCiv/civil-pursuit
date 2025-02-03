@@ -1,9 +1,10 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
+// https://github.com/EnCiv/civil-pursuit/issues/246
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
 import cx from 'classnames'
-import SvgPlusSign from '../svgr/plus-sign'
+
 
 /**
  * Button component(without stretch goal version) that is styled using react-jss.
@@ -97,11 +98,6 @@ function Button(props) {
         onKeyDown={handleKeyDown}
         {...otherProps}
       >
-        {value === 'create' && (
-          <span>
-            <SvgPlusSign width="2rem" height="1.1rem" />
-          </span>
-        )}
         {children}
       </button>
     </PositioningPortal>
