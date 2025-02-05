@@ -17,7 +17,7 @@ export default function WhyStep(props) {
   useEffect(() => {
     if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
       const ids = data.reducedPointList.map(point => point._id)
-      window.socket.emit('getUserWhys', ids, results => {
+      window.socket.emit('get-user-whys', ids, results => {
         const myWhyByParentId = results.reduce((acc, point) => {
           acc[point.parentId] = point
           return acc

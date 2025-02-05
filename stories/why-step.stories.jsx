@@ -53,8 +53,8 @@ const whyStepTemplate = args => {
 
   useEffect(() => {
     window.socket._socketEmitHandlers = window.socket._socketEmitHandlers || {}
-    window.socket._socketEmitHandlers['getUserWhys'] = (ids, cb) => {
-      window.socket._socketEmitHandlerResults['getUserWhys'] = ids
+    window.socket._socketEmitHandlers['get-user-whys'] = (ids, cb) => {
+      window.socket._socketEmitHandlerResults['get-user-whys'] = ids
       setTimeout(() => {
         const whys = Object.values(args.myWhyByParentId || {})
         cb(whys)

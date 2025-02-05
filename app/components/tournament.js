@@ -9,10 +9,10 @@ import RoundTracker from './round-tracker'
 import StepSlider from './step-slider'
 import AnswerStep from './answer-step'
 import GroupingStep from './grouping-step'
-import RankStep from './rank-step'
+import RankStep from './steps/rank'
 import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
-import CompareReasons from './compare-reasons'
+import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 
 const WebComponents = {
@@ -72,7 +72,7 @@ function Tournament(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <RoundTracker roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
+      <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
       <StepSlider
         key={state.currentRound}
         steps={stepInfo}
@@ -88,6 +88,9 @@ function Tournament(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
     width: '100%',
+  },
+  roundTracker: {
+    marginBottom: '3.6875rem',
   },
 }))
 
