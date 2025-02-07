@@ -17,8 +17,9 @@ const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke
 export default function Ranking(props) {
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
   let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
+
   useEffect(() => {
-    if (!defaultValue && !response) return // do not call onDone if initally empty, or if change to empty from above when it's already empty
+    if (!defaultValue && !response) return
     if (responseOptions.includes(defaultValue)) {
       setResponse(defaultValue)
       onDone && onDone({ valid: true, value: defaultValue })
@@ -31,29 +32,18 @@ export default function Ranking(props) {
   const styleClasses = rankingStyleClasses(props)
 
   const onSelectionChange = e => {
-    if (e.target.disabled) {
-      return
-    }
+    if (e.target.disabled) return
     setResponse(e.target.value)
-    if (!onDone) {
-      return console.warn(`Unhandled rank selection: ${e.target.value}. Please pass a handler function via the onDone prop.`)
-    } else onDone({ valid: true, value: e.target.value })
+    onDone && onDone({ valid: true, value: e.target.value })
   }
+
   return (
     <div data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
       {responseOptions.map(option => {
         return (
           <label key={option}>
-            <input
-              disabled={disabled || false} /**/
-              checked={response === option}
-              type="radio"
-              value={option}
-              name={`importance-${option}`}
-              className={cx(styleClasses.hideDefaultRadio, `ranking${option}`)}
-              onChange={onSelectionChange}
-            ></input>
-            <span className={cx(styleClasses.option)}>
+            <input disabled={disabled || false} checked={response === option} type="radio" value={option} name="ranking" className={styleClasses.hideDefaultRadio} onChange={onSelectionChange} />
+            <span className={styleClasses.option}>
               <svg className={cx(styleClasses.optionIcon)} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 {response === option ? selectedOption : unselectedOption}
               </svg>
@@ -67,9 +57,47 @@ export default function Ranking(props) {
 }
 
 const rankingStyleClasses = createUseStyles({
-  optionIcon: { height: 'inherit', color: 'inherit', marginRight: '0.5rem' },
-  option: { display: 'flex', height: '1.5rem', lineHeight: '1.5rem', fontWeight: '300', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' },
-  group: { display: 'flex', gap: '1.4375rem' },
-  disabled: { opacity: '30%' },
-  hideDefaultRadio: { display: 'none !important' },
+  optionIcon: {
+    height: 'inherit',
+    color: 'inherit',
+    marginRight: '0.5rem',
+  },
+  option: {
+    display: 'flex',
+    height: '1.5rem',
+    lineHeight: '1.5rem',
+    fontWeight: '300',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  group: {
+    display: 'flex',
+    gap: '1.4375rem',
+  },
+  disabled: {
+    opacity: '30%',
+  },
+  hideDefaultRadio: {
+    position: 'absolute',
+    opacity: 0, // Hide visually but keep keyboard-accessible
+    width: 0,
+    height: 0,
+
+    // Focus ring:
+    '&:focus-visible + span': {
+      position: 'absolute',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        width: '2rem', // replaced px with rem
+        height: '2rem', // replaced px with rem
+        top: '50%',
+        left: '17%',
+        transform: 'translate(-50%, -50%)', // center exactly
+        borderRadius: '50%',
+        backgroundColor: 'rgba(74, 144, 226, 0.2)',
+        pointerEvents: 'none',
+        zIndex: -1, // behind the text/icon
+      },
+    },
+  },
 })
