@@ -60,10 +60,12 @@ const rankingStyleClasses = createUseStyles({
   optionIcon: {
     height: 'inherit',
     color: 'inherit',
-    marginRight: '0.5rem',
+    marginRight: '0.25rem',
+    position: 'relative',
   },
   option: {
     display: 'flex',
+    alignItems: 'center',
     height: '1.5rem',
     lineHeight: '1.5rem',
     fontWeight: '300',
@@ -78,25 +80,25 @@ const rankingStyleClasses = createUseStyles({
   },
   hideDefaultRadio: {
     position: 'absolute',
-    opacity: 0, // Hide visually but keep keyboard-accessible
+    opacity: 0,
     width: 0,
     height: 0,
 
     // Focus ring:
     '&:focus-visible + span': {
-      position: 'absolute',
+      position: 'relative',
       '&::before': {
         content: '""',
         position: 'absolute',
-        width: '2rem', // replaced px with rem
-        height: '2rem', // replaced px with rem
+        width: '2.5rem',
+        height: '2.5rem',
         top: '50%',
         left: '17%',
-        transform: 'translate(-50%, -50%)', // center exactly
+        transform: 'translate(-50%, -50%)',
         borderRadius: '50%',
         backgroundColor: 'rgba(74, 144, 226, 0.2)',
         pointerEvents: 'none',
-        zIndex: -1, // behind the text/icon
+        zIndex: -1,
       },
     },
   },
