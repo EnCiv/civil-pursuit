@@ -6,7 +6,7 @@ import { createUseStyles } from 'react-jss'
 export default function DemInfo(props) {
   const { state, dob, party, className, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-  if (!(state || dob || party)) return null // if no data, render not
+  if (!(state && dob && party)) return null // if no data, render not
 
   const userState = state || ''
   const userAge = dob ? calculateAge(dob) : ''
