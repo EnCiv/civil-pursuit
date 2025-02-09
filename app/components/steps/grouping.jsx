@@ -91,10 +91,8 @@ export function GroupPoints(props) {
   const handleGrouping = grouping => {
     let groupings
 
-    const uniqueSet = new Set([grouping, ...gs.yourGroups].map(subArray => subArray.sort()))
-    const uniqueArrayOfArrays = Array.from(uniqueSet).map(str => JSON.parse(JSON.stringify(str)))
-
-    setGs({ ...gs, yourGroups: uniqueArrayOfArrays })
+    const uniqueSet = [...new Set(grouping, ...gs.yourGroups)]
+    setGs({ ...gs, yourGroups: uniqueSet })
 
     if (groupings) {
       setTimeout(() => onDone({ valid: false, delta: groupings }))
@@ -161,7 +159,9 @@ export function GroupPoints(props) {
           yourGroups.push(point)
         }
         // move it back to the ungrouped points
-        else pointsToGroup.push({ point, group: [] })
+        else {
+          pointsToGroup.push({ point, group: [] })
+        }
       }
 
       if (value.pointGroupDoc) {
@@ -170,7 +170,10 @@ export function GroupPoints(props) {
       }
       shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
       handleGrouping(yourGroups)
-      return { ...oldGs, pointsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null }
+
+      setGs({ ...oldGs, pointsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null })
+
+      return gs
     })
   }
 

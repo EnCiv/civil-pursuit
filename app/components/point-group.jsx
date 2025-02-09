@@ -307,6 +307,7 @@ const PointGroup = props => {
                       group: [],
                     } // This is a point object, not a component
                     setPointGroupDoc(newPointDoc)
+
                     onDone({
                       valid: true,
                       value: { pointGroupDoc: newPointDoc, removedPointDocs: group },
