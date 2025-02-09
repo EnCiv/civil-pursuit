@@ -41,6 +41,7 @@ const Theme = {
     statusBadgeCompletedTextColor: '#005621',
     statusBadgeInactiveBorder: '#EBEBEB',
     statusBadgeInactiveBackground: '#FFFFFF',
+    statusBadgeResponseColor: '#5D5D5C',
     statusBadgeErrorBorder: '#BF1300',
     statusBadgeErrorBackground: '#F9E7E5',
     statusBadgeErrorTextColor: '#BF1300',
