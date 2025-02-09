@@ -222,6 +222,17 @@ const PointGroup = props => {
                           point={pD}
                           vState={'default'}
                           className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                          onClick={() => {
+                            const newPointDoc = {
+                              ...pD,
+                              groupedPoints: [soloPoint, ...groupedPoints.filter((e, i) => i !== leadIndex)],
+                            }
+                            setPointDoc(newPointDoc)
+                            onDone({
+                              valid: true,
+                              value: { pointObj: newPointDoc },
+                            })
+                          }}
                         >
                           <div className={classes.pointBottomButtons}>
                             <div className={classes.pointWidthButton}>
