@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issue/255
+// https://github.com/EnCiv/civil-pursuit/issues/255
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -60,7 +60,7 @@ const rankingStyleClasses = createUseStyles({
   optionIcon: {
     height: 'inherit',
     color: 'inherit',
-    marginRight: '0.25rem',
+    marginRight: '0.5rem',
     position: 'relative',
   },
   option: {
@@ -84,7 +84,6 @@ const rankingStyleClasses = createUseStyles({
     width: 0,
     height: 0,
 
-    // Focus ring:
     '&:focus-visible + span': {
       position: 'relative',
       '&::before': {
@@ -92,10 +91,10 @@ const rankingStyleClasses = createUseStyles({
         position: 'absolute',
         width: '2.5rem',
         height: '2.5rem',
-        top: '50%',
-        left: '17%',
-        transform: 'translate(-50%, -50%)',
+        top: 0,
+        left: 0,
         borderRadius: '50%',
+        transform: 'translate(-20%, -20%)',
         backgroundColor: 'rgba(74, 144, 226, 0.2)',
         pointerEvents: 'none',
         zIndex: -1,
