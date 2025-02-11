@@ -31,8 +31,8 @@ describe('deriver function tests', () => {
 
   test('input data undefined', () => {
     const result = derivePointWhyListByCategory(undefined)
-    expect(result).toHaveProperty('pointWhyListByCategory')
-    expect(result.pointWhyListByCategory).toBe(undefined)
+    expect(result).toHaveProperty('pointWhyList')
+    expect(result.pointWhyList).toBe(undefined)
   })
 
   test('input data empty', () => {
@@ -87,28 +87,26 @@ describe('deriver function tests', () => {
       intro: 'This is the intro text.',
     }
 
-    const result1 = derivePointWhyListByCategory(data)
-    const result2 = derivePointWhyListByCategory(data)
+    const result1 = derivePointWhyListByCategory(data).pointWhyList
+    const result2 = derivePointWhyListByCategory(data).pointWhyList
 
     expect(result2).toBe(result1)
 
-    expect(result2).toMatchObject({
-      pointWhyList: [
-        {
-          point: {
-            _id: '64a81ca0cbad4414b3dc8d75',
-            subject: 'Subject 1',
-            description: 'Description 1',
-          },
-          why: {
-            _id: '641f9b3dfb8ce2f3a42ed816',
-            parentId: '64a81ca0cbad4414b3dc8d75',
-            subject: 'Why Subject 1',
-            description: 'Why Description 1',
-          },
+    expect(result2).toMatchObject([
+      {
+        point: {
+          _id: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Subject 1',
+          description: 'Description 1',
         },
-      ],
-    })
+        why: {
+          _id: '641f9b3dfb8ce2f3a42ed816',
+          parentId: '64a81ca0cbad4414b3dc8d75',
+          subject: 'Why Subject 1',
+          description: 'Why Description 1',
+        },
+      },
+    ])
   })
 
   test('subset of input data changes - only affected part of output changes', () => {

@@ -7,12 +7,11 @@ import WhyInput from '../why-input'
 import { H, Level } from 'react-accessible-headings'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { isEqual, cloneDeep } from 'lodash'
+import { isEqual } from 'lodash'
 
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
-  const { category, intro, ...otherProps } = props
-  const derivedPointWhyList = derivePointWhyListByCategory(data, category)
+  const { category, onDone, ...otherProps } = props
 
   useEffect(() => {
     if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
@@ -25,7 +24,7 @@ export default function WhyStep(props) {
         upsert({ myWhyByParentId })
       })
     }
-  }, [data, upsert])
+  }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (!delta.category) {
@@ -34,7 +33,7 @@ export default function WhyStep(props) {
 
     upsert({ myWhyByParentId: { [delta.parentId]: delta } })
 
-    window.socket.emit('upsertWhy', delta, updatedDoc => {
+    window.socket.emit('upsert-why', delta, updatedDoc => {
       if (updatedDoc) {
         if (!isEqual(updatedDoc, delta)) {
           upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
@@ -44,22 +43,14 @@ export default function WhyStep(props) {
       }
     })
 
-    props.onDone({ valid, value, delta })
+    onDone({ valid, value })
   }
 
-  if (!data || !data.reducedPointList || !data.myWhyByParentId) {
-    return null
-  }
+  const args = derivePointWhyListByCategory(data, category)
 
-  if (!derivedPointWhyList?.pointWhyList || !Array.isArray(derivedPointWhyList.pointWhyList)) {
-    return null
-  }
+  if (!data || !data.reducedPointList || !data.myWhyByParentId) return null
 
-  return (
-    <div>
-      <Why pointWhyList={derivedPointWhyList.pointWhyList} {...otherProps} category={category} intro={intro} onDone={handleOnDone} />
-    </div>
-  )
+  return <Why {...args} {...otherProps} category={category} onDone={handleOnDone} />
 }
 
 export function Why(props) {
@@ -74,59 +65,46 @@ export function Why(props) {
 
   const classes = useStylesFromThemeFunction()
 
-  const allWhysRef = useRef({})
-  const [dummy, setDummy] = useState(0)
+  // for every point, we need to keep track of whether the user has completed the why input, and the ref of the input so we can mark it as incomplete if it changes from above.
+  // we only know it's completed it valid is passed up by onDone
+  const [completedByPointId] = useState(() => {
+    return pointWhyList.reduce((completedByPointId, { point, why }) => {
+      completedByPointId[point._id] = { completed: false, why }
+      return completedByPointId
+    }, {})
+  })
 
-  useEffect(() => {
-    const updatedWhys = allWhysRef.current
-    let changed = false
-
-    pointWhyList.forEach(({ point, why }) => {
-      if (why) {
-        if (!isEqual(updatedWhys[point._id], why)) {
-          updatedWhys[point._id] = { ...why }
-          changed = true
-        }
-      }
-    })
-
-    Object.keys(updatedWhys).forEach(id => {
-      if (!pointWhyList.find(({ point }) => point._id === id)) {
-        delete updatedWhys[id]
-        changed = true
-      }
-    })
-
-    if (changed) {
-      setDummy(d => d + 1)
+  // not useEffect because we need to do this when the pointWhyList changes and before the chidlren are rendered and possibly make onDone calls
+  const [prev] = useState({ pointWhyList })
+  if (prev.pointWhyList !== pointWhyList) {
+    prev.pointWhyList = pointWhyList
+    const oldIds = new Set(Object.keys(completedByPointId))
+    for (const { point, why } of pointWhyList) {
+      if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) completedByPointId[point._id] = { completed: false, why }
+      oldIds.delete(point._id)
     }
-  }, [pointWhyList])
+    // if the point is no longer in pointWyList, delete it
+    for (const oldId of oldIds) delete completedByPointId[oldId]
+  }
 
-  const handleOnDone = ({ valid, value, delta }) => {
-    if (!delta.category) {
-      delta.category = category
+  const handleOnDone = ({ valid, value }) => {
+    if (!value.category) {
+      value.category = category
     }
-
-    const updatedWhys = allWhysRef.current
-    if (!updatedWhys[delta.parentId]) {
-      updatedWhys[delta.parentId] = {}
-    }
-    Object.assign(updatedWhys[delta.parentId], delta)
-
+    completedByPointId[delta.parentId].completed = { completed: valid, why: value }
+    const values = Object.values(completedByPointId)
+    const numValid = values.reduce((numValid, completed) => (completed.completed ? numValid + 1 : numValid), 0)
+    const total = values.length
     setTimeout(() => {
-      const allValid = Object.values(updatedWhys).every(why => {
-        return why && typeof why.subject === 'string' && why.subject.trim() && typeof why.description === 'string' && why.description.trim()
-      })
-
       onDone({
-        valid: allValid,
-        value: allValid ? Object.values(updatedWhys) : value,
-        delta,
+        valid: numValid === total,
+        value: numValid / total,
+        delta: value,
       })
     }, 0)
   }
 
-  if (!pointWhyList || !pointWhyList.length) {
+  if (!pointWhyList?.length) {
     return null
   }
 
@@ -138,17 +116,10 @@ export function Why(props) {
       </div>
       <Level>
         <div className={classes.pointsContainer}>
-          {pointWhyList.map(({ point }) => (
+          {pointWhyList.map(({ point, why }) => (
             <div key={point._id}>
               <hr className={classes.pointsHr}></hr>
-              <WhyInput
-                point={point}
-                value={allWhysRef.current[point._id] || {}}
-                onDone={({ valid, value }) => {
-                  const delta = { ...value, parentId: point._id }
-                  handleOnDone({ valid, value: delta, delta })
-                }}
-              />
+              <WhyInput point={point} value={why} onDone={handleOnDone} />
             </div>
           ))}
         </div>
@@ -159,33 +130,25 @@ export function Why(props) {
 
 export function derivePointWhyListByCategory(data, category) {
   const local = useRef({
-    pointWhyById: undefined,
+    pointWhyById: {},
     reducedPointList: undefined,
     myWhyByParentId: undefined,
-    result: { pointWhyListByCategory: undefined },
+    pointWhyList: undefined,
   }).current
 
-  if (!local.pointWhyById) {
-    local.pointWhyById = {}
-  }
-
-  if (!local.reducedPointList) {
-    local.reducedPointList = []
-  }
-
   const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
-  //filter
-  const filteredPoints = reducedPointList.filter(item => {
-    const pId = item.point?._id
-    return pId && preRankByParentId[pId]?.category === category
-  })
 
   let updated = false
 
-  if (local.reducedPointList !== filteredPoints) {
+  if (local.reducedPointList !== reducedPointList) {
+    const pointsInCategory = reducedPointList.filter(item => {
+      const pId = item.point?._id
+      return pId && preRankByParentId[pId]?.category === category
+    })
+
     const oldIds = new Set(Object.keys(local.pointWhyById))
 
-    for (const item of filteredPoints) {
+    for (const item of pointsInCategory) {
       const pId = item.point._id
       if (!local.pointWhyById[pId]) {
         local.pointWhyById[pId] = { point: item.point, why: myWhyByParentId[pId] }
@@ -204,7 +167,7 @@ export function derivePointWhyListByCategory(data, category) {
       updated = true
     }
 
-    local.reducedPointList = filteredPoints
+    local.reducedPointList = reducedPointList
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {
@@ -222,12 +185,10 @@ export function derivePointWhyListByCategory(data, category) {
   }
 
   if (updated) {
-    local.result = {
-      pointWhyList: Object.values(local.pointWhyById),
-    }
+    local.pointWhyList = Object.values(local.pointWhyById)
   }
 
-  return local.result
+  return { pointWhyList: local.pointWhyList }
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
