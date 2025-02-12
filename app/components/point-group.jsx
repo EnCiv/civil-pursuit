@@ -69,7 +69,7 @@ const PointGroup = props => {
                 setPointGroupDoc({})
                 onDone({
                   valid: true,
-                  value: { pointGroupDoc: undefined, removedPointDocs: group },
+                  value: { pointGroupDoc: undefined, removedPointDocs: group.map(pD => ({ point: pD, group: [] })) },
                 })
               }}
             >
@@ -235,10 +235,11 @@ const PointGroup = props => {
                                     point: { ...soloPoint },
                                     group: group.filter((e, i) => i !== leadIndex),
                                   }
+
                                   setPointGroupDoc(newPointDoc)
                                   onDone({
                                     valid: true,
-                                    value: { pointGroupDoc: newPointDoc, removedPointDocs: [pD] },
+                                    value: { pointGroupDoc: newPointDoc, removedPointDocs: [{ point: pD, group: [] }] },
                                   })
                                 }}
                               />
@@ -310,7 +311,7 @@ const PointGroup = props => {
 
                     onDone({
                       valid: true,
-                      value: { pointGroupDoc: newPointDoc, removedPointDocs: group },
+                      value: { pointGroupDoc: newPointDoc, removedPointDocs: group.map(pD => ({ point: pD, group: [] })) },
                     })
                   }}
                 />

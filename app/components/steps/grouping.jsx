@@ -179,6 +179,7 @@ export function GroupPoints(props) {
 
   const onYourPointEdited = ({ valid, value }) => {
     if (!valid) return
+
     setGs(oldGs => {
       let index
       let pointsToGroup = [...oldGs.pointsToGroup]
@@ -187,29 +188,29 @@ export function GroupPoints(props) {
       for (const point of value.removedPointDocs || []) {
         // move it back to the ungrouped points
         pointsToGroup.push(point)
-        yourGroups = yourGroups.filter(p => p._id !== point._id)
+        yourGroups = yourGroups.filter(pGD => pGD.point._id !== point._id)
         selectedPoints = selectedPoints.filter(id => id !== point._id)
       }
       // it doeosn't create a new pointObj, but it delete it, or change the existing one.
-      if (value.pointDoc) {
-        if (!value.pointDoc.groupedPoints?.length) {
+      if (value.pointGroupDoc) {
+        if (!value.pointGroupDoc.group.length) {
           // user has ungrouped this point
-          if ((index = yourGroups.findIndex(p => value.pointDoc._id === p._id)) >= 0) {
+          if ((index = yourGroups.findIndex(pGD => value.pointGroupDoc.point._id === pGD.point._id)) >= 0) {
             yourGroups.splice(index, 1)
-            pointsToGroup.push(value.pointDoc)
+            pointsToGroup.push(value.pointGroupDoc)
           }
-          selectedPoints = selectedPoints.filter(id => id !== value.pointDoc._id)
-        } else if (yourGroups.some(p => p._id === value.pointDoc._id)) {
+          selectedPoints = selectedPoints.filter(id => id !== value.pointGroupDoc.point._id)
+        } else if (yourGroups.some(pGD => pGD.point._id === value.pointGroupDoc.point._id)) {
           //do nothing
         } else {
           // lead point is changed - find the old one
-          index = yourGroups.findIndex(p => p.groupedPoints.some(p => p._id === value.pointObj._id))
+          index = yourGroups.findIndex(pGD => pGD.group.some(p => p._id === value.pointGroupDoc.point._id))
           if (index >= 0) {
             yourGroups.splice(index, 1)
-            yourGroups.push(value.pointDoc)
+            yourGroups.push(value.pointGroupDoc)
           } else {
             console.info("got new pointDoc don't know why")
-            yourGroups.push(value.pointDoc)
+            yourGroups.push(value.pointGroupDoc)
           }
         }
       }
