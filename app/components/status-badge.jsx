@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/47
 // https://github.com/EnCiv/civil-pursuit/issues/261
+//https://github.com/EnCiv/civil-pursuit/issues/249
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'
@@ -49,6 +50,10 @@ const useStyles = createUseStyles(theme => ({
   inactive: {
     borderColor: theme.colors.statusBadgeInactiveBorder,
     backgroundColor: theme.colors.statusBadgeInactiveBackground,
+  },
+  response: {
+    border: `none !important`,
+    color: theme.colors.statusBadgeResponseColor,
   },
   error: {
     borderColor: theme.colors.statusBadgeErrorBorder,
