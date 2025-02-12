@@ -1,7 +1,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/103
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/steps/why'
@@ -39,20 +39,7 @@ const myWhyByParentId = {
 }
 
 const whyStepTemplate = args => {
-  const { defaultValue } = args
-
-  const [data, setData] = useState({}) // Data is initially an empty object
-
-  useEffect(() => {
-    setData(prevData => ({ ...prevData, ...defaultValue }))
-  }, [defaultValue])
-
-  const handleUpsert = newData => {
-    setData(prevData => ({ ...prevData, ...newData }))
-  }
-
-  useEffect(() => {
-    window.socket._socketEmitHandlers = window.socket._socketEmitHandlers || {}
+  useState(() => {
     window.socket._socketEmitHandlers['get-user-whys'] = (ids, cb) => {
       window.socket._socketEmitHandlerResults['get-user-whys'] = ids
       setTimeout(() => {
@@ -61,27 +48,13 @@ const whyStepTemplate = args => {
       }, 1000)
     }
 
-    function generateObjectId() {
-      return Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+    window.socket._socketEmitHandlers['upsert-why'] = (why, cb) => {
+      window.socket._socketEmitHandlerResults['upsert-why'].push(why)
+      cb && cb(why)
     }
+  })
 
-    window.socket._socketEmitHandlers['upsertWhy'] = (delta, cb) => {
-      // Retrieve the existing _id
-      const existingWhy = args.myWhyByParentId[delta.parentId]
-      const updatedDoc = {
-        ...delta,
-        _id: existingWhy ? existingWhy._id : generateObjectId(), // Keep the _id if it exists; otherwise, generate a new one
-      }
-      window.socket._socketEmitHandlerResults['upsertWhy'] = updatedDoc
-      cb && cb(updatedDoc)
-    }
-  }, [args.myWhyByParentId])
-
-  return (
-    <DeliberationContext.Provider value={{ data, upsert: handleUpsert }}>
-      <WhyStep {...args} />
-    </DeliberationContext.Provider>
-  )
+  return <WhyStep {...args} />
 }
 
 const emptyTemplate = args => <WhyStep {...args} />
@@ -134,10 +107,9 @@ export const UserEntersInitialData = {
       myWhyByParentId: {},
     },
     category: 'most',
-    myWhyByParentId: {},
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    decorators: [DeliberationContextDecorator],
   },
+  decorators: [DeliberationContextDecorator],
   render: whyStepTemplate,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)

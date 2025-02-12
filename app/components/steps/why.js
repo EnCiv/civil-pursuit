@@ -48,7 +48,7 @@ export default function WhyStep(props) {
 
   const args = derivePointWhyListByCategory(data, category)
 
-  if (!data || !data.reducedPointList || !data.myWhyByParentId) return null
+  if (!data || !data.reducedPointList) return null
 
   return <Why {...args} {...otherProps} category={category} onDone={handleOnDone} />
 }
@@ -91,7 +91,7 @@ export function Why(props) {
     if (!value.category) {
       value.category = category
     }
-    completedByPointId[delta.parentId].completed = { completed: valid, why: value }
+    completedByPointId[value.parentId].completed = { completed: valid, why: value }
     const values = Object.values(completedByPointId)
     const numValid = values.reduce((numValid, completed) => (completed.completed ? numValid + 1 : numValid), 0)
     const total = values.length
