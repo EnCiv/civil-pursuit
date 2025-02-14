@@ -19,7 +19,7 @@ export default function Ranking(props) {
   let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   useEffect(() => {
-    if (!defaultValue && !response) return
+    if (!defaultValue && !response) return // do not call onDone if initally empty, or if change to empty from above when it's already empty
     if (responseOptions.includes(defaultValue)) {
       setResponse(defaultValue)
       onDone && onDone({ valid: true, value: defaultValue })
