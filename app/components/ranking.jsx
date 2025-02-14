@@ -56,7 +56,7 @@ export default function Ranking(props) {
   )
 }
 
-const rankingStyleClasses = createUseStyles({
+const rankingStyleClasses = createUseStyles(theme => ({
   optionIcon: {
     height: 'inherit',
     color: 'inherit',
@@ -95,10 +95,10 @@ const rankingStyleClasses = createUseStyles({
         left: 0,
         borderRadius: '50%',
         transform: 'translate(-20%, -20%)',
-        backgroundColor: 'rgba(74, 144, 226, 0.2)',
+        backgroundColor: theme.colors.focusRing,
         pointerEvents: 'none',
         zIndex: -1,
       },
     },
   },
-})
+}))
