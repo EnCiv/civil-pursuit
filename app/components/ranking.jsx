@@ -16,40 +16,55 @@ const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke
 
 export default function Ranking(props) {
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
-  let [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
+  const [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   useEffect(() => {
     if (!defaultValue && !response) return // do not call onDone if initally empty, or if change to empty from above when it's already empty
     if (responseOptions.includes(defaultValue)) {
       setResponse(defaultValue)
-      onDone && onDone({ valid: true, value: defaultValue })
+      onDone?.({ valid: true, value: defaultValue })
     } else {
       setResponse('')
-      onDone && onDone({ valid: false, value: '' })
+      onDone?.({ valid: false, value: '' })
     }
   }, [defaultValue])
 
   const styleClasses = rankingStyleClasses(props)
 
-  const onSelectionChange = e => {
-    if (e.target.disabled) return
-    setResponse(e.target.value)
-    onDone && onDone({ valid: true, value: e.target.value })
+  const handleSelect = value => {
+    if (disabled) return
+    setResponse(value)
+    onDone?.({ valid: true, value })
+  }
+
+  // handler for Space or Enter to select
+  const onKeyDown = (e, option) => {
+    if (disabled) return
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      handleSelect(option)
+    }
   }
 
   return (
-    <div data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
+    <div role="radiogroup" aria-disabled={disabled || undefined} data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
       {responseOptions.map(option => {
+        const isSelected = response === option
         return (
-          <label key={option}>
-            <input disabled={disabled || false} checked={response === option} type="radio" value={option} name="ranking" className={styleClasses.hideDefaultRadio} onChange={onSelectionChange} />
-            <span className={styleClasses.option}>
-              <svg className={cx(styleClasses.optionIcon)} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {response === option ? selectedOption : unselectedOption}
-              </svg>
-              {option}
-            </span>
-          </label>
+          <div
+            key={option}
+            role="radio"
+            aria-checked={isSelected}
+            tabIndex={disabled ? -1 : 0} // each one is tab‑focusable
+            onClick={() => handleSelect(option)}
+            onKeyDown={e => onKeyDown(e, option)}
+            className={cx(styleClasses.radioOption, isSelected && styleClasses.selected)}
+          >
+            <svg className={styleClasses.optionIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {isSelected ? selectedOption : unselectedOption}
+            </svg>
+            <span className={styleClasses.labelText}>{option}</span>
+          </div>
         )
       })}
     </div>
@@ -58,15 +73,12 @@ export default function Ranking(props) {
 
 const rankingStyleClasses = createUseStyles(theme => ({
   optionIcon: {
-    height: 'inherit',
-    color: 'inherit',
-    marginRight: '0.5rem',
-    position: 'relative',
-  },
-  option: {
-    display: 'flex',
-    alignItems: 'center',
     height: '1.5rem',
+    width: '1.5rem',
+    marginRight: '0.5rem',
+    flexShrink: 0,
+  },
+  labelText: {
     lineHeight: '1.5rem',
     fontWeight: '300',
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -78,13 +90,13 @@ const rankingStyleClasses = createUseStyles(theme => ({
   disabled: {
     opacity: '30%',
   },
-  hideDefaultRadio: {
-    position: 'absolute',
-    opacity: 0,
-    width: 0,
-    height: 0,
 
-    '&:focus-visible + span': {
+  radioOption: {
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    outline: 'none',
+    '&:focus-visible': {
       position: 'relative',
       '&::before': {
         content: '""',
