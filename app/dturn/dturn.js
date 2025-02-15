@@ -94,33 +94,25 @@ function initUitems(discussionId, userId, round = 0) {
  *
  */
 async function insertStatementId(discussionId, userId, statementId) {
-  // this is where we would insert the statment into the DB
-
-  // Make sure that the discussion has been initialized
   if (!Discussions[discussionId]) {
-    console.error(`Discussion: ${discussionId} not initialized`)
-    return undefined
-  }
-
-  // Make sure that userId is in the discussion
-  if (!Discussions[discussionId].Uitems[userId]) {
-    console.error(`User ${userId} is not part of discussion ${discussionId}`);
+    console.error(`Discussion: ${discussionId} not initialized`);
     return undefined;
   }
 
-  const round = 0 // for now statement ids can only be inserted at round 0
-
-  const shownItem = {
-    statementId,
-    shownCount: 0,
-    rank: 0,
+  if (!Discussions[discussionId].Uitems[userId]) {
+    console.log(`User ${userId} is new, adding to discussion ${discussionId}`);
+    initUitems(discussionId, userId, 0);
   }
 
-  if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
-  Discussions[discussionId].ShownStatements[round].push(shownItem)
-  initUitems(discussionId, userId, round)
+  const round = 0;
+  const shownItem = { statementId, shownCount: 0, rank: 0 };
 
-  Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0, author: true }
+  if (!Discussions[discussionId].ShownStatements[round]) {
+    Discussions[discussionId].ShownStatements[round] = [];
+  }
+  Discussions[discussionId].ShownStatements[round].push(shownItem);
+
+  Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0, author: true };
   await Discussions[discussionId].updateUInfo({
     [userId]: {
       [discussionId]: {
@@ -131,18 +123,16 @@ async function insertStatementId(discussionId, userId, statementId) {
         },
       },
     },
-  })
-
-  // Only run updates if participants or round changes
+  });
 
   const participants = Object.keys(Discussions[discussionId].Uitems).length;
   const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1;
 
   if (lastRound !== Discussions[discussionId].lastRound || participants !== Discussions[discussionId].participants) {
-    Discussions[discussionId].updates({ participants: participants, lastRound: lastRound });
+    Discussions[discussionId].updates({ participants, lastRound });
   }
 
-  return statementId
+  return statementId;
 }
 
 
@@ -218,6 +208,7 @@ async function getStatementIds(discussionId, round, userId) {
     console.warn(`Discussion ${discussionId} not initialized`);
     return undefined;
   }
+
   // Make sure that userId is part of the discussion
   if (!Discussions[discussionId].Uitems[userId]) {
     console.warn(`User ${userId} is not part of discussion ${discussionId}`);
