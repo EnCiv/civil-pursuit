@@ -20,10 +20,10 @@ const existentDiscussionId = '66a174b0c3f2051ad387d2a6'
 const userId = '6667d5a33da5d19ddc304a6b'
 const synuser = { synuser: { id: userId } }
 
-const pointObjNoId = { title: 'NoIdTitle', description: 'NoIdDesc' }
+const pointObjNoId = { subject: 'NoIdTitle', description: 'NoIdDesc' }
 const pointObjWithId = {
   _id: new ObjectId('6667d688b20d8e339ca50020'),
-  title: 'WithIdTitle',
+  subject: 'WithIdTitle',
   description: 'WithIdDesc',
 }
 
@@ -111,7 +111,7 @@ test('Success if discussion exists and pointObj ID not provided.', async () => {
   expect(cb).toHaveBeenCalledWith(true)
 
   // _id should've been set to a new ID.
-  const insertedDoc = await Points.findOne({ title: 'NoIdTitle', description: 'NoIdDesc' })
+  const insertedDoc = await Points.findOne({ subject: 'NoIdTitle', description: 'NoIdDesc' })
   expect(insertedDoc._id).not.toBeNaN
 
   const doctoredUInfoHistoryStr = JSON.stringify(UInfoHistory, null, 2).replace(insertedDoc._id.toString(), 'randomId1')
@@ -152,7 +152,7 @@ test('Success if discussion exists and pointObj ID not provided.', async () => {
 
 test('Fail if pointObj insert fails.', async () => {
   const cb = jest.fn()
-  const invalidPointObj = { title: 'NoIdTitle', title: 'NoIdDesc' }
+  const invalidPointObj = { subject: 'NoIdTitle', subject: 'NoIdDesc' }
 
   await insertDturnStatement.call(synuser, existentDiscussionId, invalidPointObj, cb)
 
