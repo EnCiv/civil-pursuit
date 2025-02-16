@@ -67,8 +67,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '3.125rem',
     padding: '0.5rem 1.25rem',
     borderRadius: '0.5rem',
-    border: `2px solid ${theme.colorPrimary}`,
-    textAlign: 'center',            
+    border: `2px solid ${theme.colors.primaryButtonBlue}`,
+    textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint}px)`]: {
+      maxWidth: '13.25rem',        // 212px → 13.25rem
+      height: '3.125rem',          // 50px → 3.125rem
+      padding: '0.5rem 1.25rem',   // 8px 20px → 0.5rem 1.25rem
+      margin: '1rem 0',
+    }            
   },
 }))
 export default StepFooter
