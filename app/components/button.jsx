@@ -1,8 +1,10 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
+// https://github.com/EnCiv/civil-pursuit/issues/246
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal'
 import cx from 'classnames'
+
 
 /**
  * Button component(without stretch goal version) that is styled using react-jss.
@@ -132,7 +134,7 @@ const buttonStyles = createUseStyles(theme => ({
     width: 'auto',
     height: 'auto',
     borderRadius: '0.5rem',
-    padding: '0.5rem 1.25rem',
+    padding: '0.75rem 1.25rem',
     fontFamily: 'Inter, sans-serif',
     fontWeight: 600,
     fontSize: '1rem',
@@ -160,6 +162,12 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
+      backgroundColor: theme.colors.white,
+      borderColor: theme.colors.primaryButtonBlue,
+    },
+
+    '&.createhover': {
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.primaryButtonBlue,
     },
@@ -180,6 +188,7 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.encivYellow,
     },
@@ -208,6 +217,7 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: theme.colors.primaryButtonBlue,
       borderColor: theme.colors.primaryButtonBlue,
     },
@@ -226,9 +236,11 @@ const buttonStyles = createUseStyles(theme => ({
     border: 'none',
     textAlign: 'left',
     textDecoration: 'underline',
+    textUnderlineOffset: '0.25rem',
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: 'transparent',
       borderColor: 'none',
     },
