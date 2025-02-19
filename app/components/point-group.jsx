@@ -490,7 +490,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectPointsContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
-    gap: '2rem',
+    gap: '3rem',
     width: '100%',
   },
 
@@ -523,12 +523,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'absolute',
     bottom: '1rem',
     left: 0,
-    width: '100%',
+    width: '88%',
+    padding: '0 1.875rem',
     textAlign: 'center',
   },
 
   selectSelectButton: {
-  width: '85%',
+  width: '100%',
 
     '&:focus': {
 
@@ -562,6 +563,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   noBoxShadow: {
     border: '1px solid rgba(217, 217, 217, 0.40)',
+    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.1rem rgba(217, 217, 217, 0.40) !important',
   },
   selectedSubject: {
     color: theme.colors.success,
