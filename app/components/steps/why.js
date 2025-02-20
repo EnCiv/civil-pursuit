@@ -27,22 +27,19 @@ export default function WhyStep(props) {
   }, [])
 
   function handleOnDone({ valid, value, delta }) {
-    if (!delta.category) {
-      delta.category = category
-    }
-
-    upsert({ myWhyByParentId: { [delta.parentId]: delta } })
-
-    window.socket.emit('upsert-why', delta, updatedDoc => {
-      if (updatedDoc) {
-        if (!isEqual(updatedDoc, delta)) {
-          upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
+    if (delta) {
+      const newData = upsert({ myWhyByParentId: { [delta.parentId]: delta } })
+      if (newData === data) return // if no change, don't send up
+      window.socket.emit('upsert-why', delta, updatedDoc => {
+        if (updatedDoc) {
+          if (!isEqual(updatedDoc, delta)) {
+            upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
+          }
+        } else {
+          console.error('Failed to upsert why')
         }
-      } else {
-        console.error('Failed to upsert why')
-      }
-    })
-
+      })
+    }
     onDone({ valid, value })
   }
 
@@ -80,7 +77,10 @@ export function Why(props) {
     prev.pointWhyList = pointWhyList
     const oldIds = new Set(Object.keys(completedByPointId))
     for (const { point, why } of pointWhyList) {
-      if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) completedByPointId[point._id] = { completed: false, why }
+      if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) {
+        const completed = completedByPointId[point._id].completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
+        completedByPointId[point._id] = { completed, why }
+      }
       oldIds.delete(point._id)
     }
     // if the point is no longer in pointWyList, delete it
@@ -88,12 +88,14 @@ export function Why(props) {
   }
 
   const handleOnDone = ({ valid, value }) => {
-    if (!value.category) {
-      value.category = category
+    if (value) {
+      if (!value.category) value.category = category
+
+      if (completedByPointId[value.parentId].why === value && completedByPointId[value.parentId].completed === valid) return // do not send up redundant data
+      else completedByPointId[value.parentId] = { completed: valid, why: value }
     }
-    completedByPointId[value.parentId].completed = { completed: valid, why: value }
     const values = Object.values(completedByPointId)
-    const numValid = values.reduce((numValid, completed) => (completed.completed ? numValid + 1 : numValid), 0)
+    const numValid = values.reduce((numValid, { completed }) => (completed ? numValid + 1 : numValid), 0)
     const total = values.length
     setTimeout(() => {
       onDone({

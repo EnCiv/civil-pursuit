@@ -5,8 +5,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/steps/why'
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, socketEmitDecorator } from './common'
-import DeliberationContext from '../app/components/deliberation-context'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 
 export default {
   component: WhyStep,
@@ -36,6 +35,13 @@ const myWhyByParentId = {
     description: 'Existing Description 1',
     category: 'most',
   },
+  '60b8d295f1c8ab1d2f4a1c02': {
+    _id: '60b8d295f1c8ab1d2f4a1c04',
+    parentId: '60b8d295f1c8ab1d2f4a1c02',
+    subject: 'Existing Subject 2',
+    description: 'Existing Description 2',
+    category: 'most',
+  },
 }
 
 const whyStepTemplate = args => {
@@ -52,6 +58,7 @@ const whyStepTemplate = args => {
       window.socket._socketEmitHandlerResults['upsert-why'].push(why)
       cb && cb(why)
     }
+    window.socket._socketEmitHandlerResults['upsert-why'] = []
   })
 
   return <WhyStep {...args} />
@@ -102,6 +109,7 @@ export const ReturningUser = {
 export const UserEntersInitialData = {
   args: {
     defaultValue: {
+      //_showUpsertDeltas: true, // use for debugging
       reducedPointList,
       preRankByParentId: preRankByParentId,
       myWhyByParentId: {},
@@ -125,10 +133,11 @@ export const UserEntersInitialData = {
     const descriptionInputs = canvas.getAllByPlaceholderText('Description')
 
     await userEvent.type(subjectInputs[0], 'User Subject 1')
+    await userEvent.tab()
     await userEvent.type(descriptionInputs[0], 'User Description 1')
     await userEvent.tab()
-
     await userEvent.type(subjectInputs[1], 'User Subject 2')
+    await userEvent.tab()
     await userEvent.type(descriptionInputs[1], 'User Description 2')
     await userEvent.tab()
 
@@ -137,19 +146,39 @@ export const UserEntersInitialData = {
       expect(result.count).toBe(4)
       expect(result.onDoneResult).toMatchObject({
         valid: true,
-        value: [
-          {
-            subject: 'User Subject 1',
-            description: 'User Description 1',
-            parentId: '60b8d295f1c8ab1d2f4a1c01',
-          },
-          {
+        value: 1,
+      })
+      expect(deliberationContextData(canvas)).toMatchObject({
+        myWhyByParentId: {
+          '60b8d295f1c8ab1d2f4a1c02': {
             subject: 'User Subject 2',
             description: 'User Description 2',
+            //_id: '67afd889de6a473c380615b1', ids are random
             parentId: '60b8d295f1c8ab1d2f4a1c02',
+            category: 'most',
           },
-        ],
+          '60b8d295f1c8ab1d2f4a1c01': {
+            subject: 'User Subject 1',
+            description: 'User Description 1',
+            //_id: '67afd888de6a473c380615b0', ids are random
+            parentId: '60b8d295f1c8ab1d2f4a1c01',
+            category: 'most',
+          },
+        },
       })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][0]).toMatchObject({
+        subject: 'User Subject 1',
+        description: '',
+        parentId: '60b8d295f1c8ab1d2f4a1c01',
+      })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][1]).toMatchObject({
+        subject: 'User Subject 1',
+        description: 'User Description 1',
+        parentId: '60b8d295f1c8ab1d2f4a1c01',
+      })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][2]).toMatchObject({ subject: 'User Subject 2', description: '', parentId: '60b8d295f1c8ab1d2f4a1c02' })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][3]).toMatchObject({ subject: 'User Subject 2', description: 'User Description 2', parentId: '60b8d295f1c8ab1d2f4a1c02' })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(4)
     })
   },
 }
@@ -158,10 +187,9 @@ export const UserUpdatesExistingData = {
   args: {
     defaultValue: {
       reducedPointList: reducedPointList,
-      myWhyByParentId: myWhyByParentId,
       preRankByParentId: preRankByParentId,
     },
-    myWhyByParentId: myWhyByParentId,
+    myWhyByParentId: myWhyByParentId, // will be used by get-user-whys
     category: 'most',
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
@@ -169,9 +197,18 @@ export const UserUpdatesExistingData = {
   decorators: [DeliberationContextDecorator],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-
+    await asyncSleep(1000)
     await waitFor(() => {
-      expect(canvas.getByText(/Of the issues you thought were Most important/i)).toBeInTheDocument()
+      const result = onDoneResult()
+      expect(result).toMatchObject({
+        count: 2,
+        onDoneResult: {
+          valid: true,
+          value: 1,
+        },
+      })
+      console.info(JSON.stringify(window.socket._socketEmitHandlerResults['upsert-why'], null, 2))
+      expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(0)
     })
 
     await waitFor(
