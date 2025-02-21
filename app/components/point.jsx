@@ -2,6 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
+// https://github.com/EnCiv/civil-pursuit/issues/256
 // https://github.com/EnCiv/civil-pursuit/issues/251
 
 'use strict'
