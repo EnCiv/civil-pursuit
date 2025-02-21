@@ -61,6 +61,7 @@ const Theme = {
     transparent: 'transparent',
     tabSelected: '#DCE8F2',
     focusRing: 'rgba(74, 144, 226, 0.2)',
+    darkBlue: '#08447B',
   },
   font: {
     fontFamily: 'Inter',
