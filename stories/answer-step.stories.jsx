@@ -90,7 +90,7 @@ export const onDoneTestDefault = {
     await userEvent.tab()
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 5,
+      count: 6,
       onDoneResult: {
         valid: true,
         value: {
@@ -137,7 +137,7 @@ export const onDoneTestSwap = {
     await userEvent.tab() // 2 tabs needed to update startingPoint
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 6,
+      count: 7,
       onDoneResult: {
         valid: true,
         value: {
@@ -195,7 +195,7 @@ export const asyncUpdate = {
     const canvas = within(canvasElement)
     await waitFor(() =>
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
+        count: 2,
         onDoneResult: {
           valid: true,
           value: {
@@ -217,7 +217,7 @@ export const asyncUpdate = {
     )
     await waitFor(() =>
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
+        count: 3,
         onDoneResult: {
           valid: true,
           value: {
