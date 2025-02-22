@@ -11,7 +11,7 @@ import AnswerStep from './answer-step'
 import GroupingStep from './grouping-step'
 import RankStep from './steps/rank'
 import ReviewPointList from './steps/rerank'
-import WhyStep from './why-step'
+import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 
