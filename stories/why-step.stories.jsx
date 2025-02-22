@@ -140,10 +140,9 @@ export const UserEntersInitialData = {
     await userEvent.tab()
     await userEvent.type(descriptionInputs[1], 'User Description 2')
     await userEvent.tab()
-
     await waitFor(() => {
       const result = onDoneResult()
-      expect(result.count).toBe(4)
+      expect(result.count).toBe(6)
       expect(result.onDoneResult).toMatchObject({
         valid: true,
         value: 1,
@@ -207,7 +206,6 @@ export const UserUpdatesExistingData = {
           value: 1,
         },
       })
-      console.info(JSON.stringify(window.socket._socketEmitHandlerResults['upsert-why'], null, 2))
       expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(0)
     })
 
@@ -222,42 +220,33 @@ export const UserUpdatesExistingData = {
     const subjectInputs = canvas.getAllByDisplayValue('Existing Subject 1')
     const descriptionInputs = canvas.getAllByDisplayValue('Existing Description 1')
 
-    await userEvent.click(subjectInputs[0])
-    for (let i = 0; i < 19; i++) {
-      await userEvent.keyboard('{Backspace}')
-    }
+    await userEvent.type(subjectInputs[0], ' Updated')
+    await userEvent.tab()
 
-    await userEvent.type(subjectInputs[0], 'Updated Subject 1')
-
-    await userEvent.click(descriptionInputs[0])
-    for (let i = 0; i < 22; i++) {
-      await userEvent.keyboard('{Backspace}')
-    }
-
-    await userEvent.type(descriptionInputs[0], 'Updated Description 1')
-
+    await userEvent.type(descriptionInputs[0], ' Updated')
     await userEvent.tab()
 
     await waitFor(() => {
-      expect(window.socket._socketEmitHandlerResults['upsertWhy']).toMatchObject({
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][0]).toMatchObject({
         _id: '60b8d295f1c8ab1d2f4a1c03',
-        subject: 'Updated Subject 1',
-        description: 'Updated Description 1',
+        subject: 'Existing Subject 1 Updated',
+        description: 'Existing Description 1',
         parentId: '60b8d295f1c8ab1d2f4a1c01',
       })
-    })
-
-    await waitFor(() => {
+      expect(window.socket._socketEmitHandlerResults['upsert-why'][1]).toMatchObject({
+        _id: '60b8d295f1c8ab1d2f4a1c03',
+        subject: 'Existing Subject 1 Updated',
+        description: 'Existing Description 1 Updated',
+        parentId: '60b8d295f1c8ab1d2f4a1c01',
+      })
+      expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(2)
       const result = onDoneResult()
-      expect(result.onDoneResult).toMatchObject({
-        valid: true,
-        value: [
-          expect.objectContaining({
-            subject: 'Updated Subject 1',
-            description: 'Updated Description 1',
-            parentId: '60b8d295f1c8ab1d2f4a1c01',
-          }),
-        ],
+      expect(result).toMatchObject({
+        count: 4,
+        onDoneResult: {
+          valid: true,
+          value: 1,
+        },
       })
     })
   },

@@ -88,11 +88,15 @@ export function Why(props) {
   }
 
   const handleOnDone = ({ valid, value }) => {
+    let delta = value
     if (value) {
       if (!value.category) value.category = category
-
-      if (completedByPointId[value.parentId].why === value && completedByPointId[value.parentId].completed === valid) return // do not send up redundant data
-      else completedByPointId[value.parentId] = { completed: valid, why: value }
+      // if the object coming up is the same as the one we have, and it's valid and completed, don't send up to be upserted
+      if (completedByPointId[value.parentId].why === value) {
+        if (completedByPointId[value.parentId].completed && valid) return // do not send up redundant data
+        else delta = undefined
+      }
+      completedByPointId[value.parentId] = { completed: valid, why: value }
     }
     const values = Object.values(completedByPointId)
     const numValid = values.reduce((numValid, { completed }) => (completed ? numValid + 1 : numValid), 0)
@@ -101,7 +105,7 @@ export function Why(props) {
       onDone({
         valid: numValid === total,
         value: numValid / total,
-        delta: value,
+        delta,
       })
     }, 0)
   }
