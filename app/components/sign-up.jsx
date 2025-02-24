@@ -217,27 +217,27 @@ const useStyles = createUseStyles(theme => ({
   },
   tabs: {
     width: '80%',
-    height: '2.8rem',
     margin: 'auto',
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.28rem 0.4rem 0 0.4rem ',
+    padding: '0.4rem 0.5rem 0.4rem 0.5rem ',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   tab: {
     display: 'inline-block',
     position: 'relative',
-    width: '50%',
+    width: '49%',
     color: theme.colors.colorPrimary,
     alignIitems: 'center',
-    gap: '0.625rem',
   },
   tabSelected: {
     display: 'inline-block',
     position: 'relative',
     borderRadius: '5rem',
     background: theme.colors.tabSelected,
-    outline: `${theme.focusOutlineSignUp}`,
+    alignItems: 'center',
   },
   btnContainer: {
     width: '100%',
@@ -278,11 +278,13 @@ const useStyles = createUseStyles(theme => ({
     '&:focus': {
       border: `${theme.colors.focusOutline} solid 0.1rem`,
       borderRadius: '3rem',
-      outline: 'none',
+      outline: `${theme.focusOutlineSignUp} !important`,
     },
   },
   btnClickSelected: {
     color: theme.colors.primaryButtonBlue,
+    outline: `${theme.focusOutline}`,
+    borderRadius: '3rem',
   },
   inputContainer: {
     margin: 0,
