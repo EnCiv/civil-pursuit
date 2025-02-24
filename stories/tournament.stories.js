@@ -125,25 +125,23 @@ const testSteps = [
   },
   {
     webComponent: 'WhyStep',
-    type: 'most',
+    category: 'most',
     stepName: 'Why Most',
     stepIntro: {
       subject: "Why it's Most Important",
       description: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
     },
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
   },
   {
     webComponent: 'WhyStep',
-    type: 'least',
+    category: 'least',
     stepName: 'Why Least',
     stepIntro: {
       subject: "Why it's Least Important",
       description: "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
     },
     intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
   },
   {
     webComponent: 'CompareReasons',
