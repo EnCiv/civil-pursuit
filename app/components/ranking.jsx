@@ -97,7 +97,8 @@ const rankingStyleClasses = createUseStyles(theme => ({
     alignItems: 'center',
     cursor: 'pointer',
     outline: 'none',
-    '&:focus-visible': {
+
+    '&:focus': {
       position: 'relative',
       '&::before': {
         content: '""',
@@ -110,7 +111,7 @@ const rankingStyleClasses = createUseStyles(theme => ({
         transform: 'translate(-20%, -20%)',
         backgroundColor: theme.colors.focusRing,
         pointerEvents: 'none',
-        zIndex: -1,
+        zIndex: 1,
       },
     },
   },
