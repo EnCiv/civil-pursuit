@@ -5,6 +5,7 @@ const Theme = {
     menu: 10,
   },
   focusOutline: 'solid .3rem #DCE8F2',
+  focusOutlineSignUp: 'solid .125rem #06335C',
   // ui colors
   colors: {
     success: '#005621',
