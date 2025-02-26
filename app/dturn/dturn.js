@@ -98,11 +98,11 @@ async function insertStatementId(discussionId, userId, statementId) {
     return undefined
   }
 
+  const round = 0
   if (!Discussions[discussionId].Uitems[userId]) {
-    initUitems(discussionId, userId, 0)
+    initUitems(discussionId, userId, round)
   }
 
-  const round = 0
   const shownItem = { statementId, shownCount: 0, rank: 0 }
 
   if (!Discussions[discussionId].ShownStatements[round]) {
@@ -123,6 +123,7 @@ async function insertStatementId(discussionId, userId, statementId) {
     },
   })
 
+  // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
   const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
 
@@ -202,13 +203,13 @@ function sortLargestFirst(a, b) {
  */
 async function getStatementIds(discussionId, round, userId) {
   if (!Discussions[discussionId]) {
-    console.warn(`Discussion ${discussionId} not initialized`)
+    console.error(`Discussion ${discussionId} not initialized`)
     return undefined
   }
 
   // Make sure that userId is part of the discussion
   if (!Discussions[discussionId].Uitems[userId]) {
-    console.warn(`User ${userId} is not part of discussion ${discussionId}`)
+    console.error(`User ${userId} is not part of discussion ${discussionId}`)
     return undefined
   }
 
@@ -232,7 +233,10 @@ async function getStatementIds(discussionId, round, userId) {
     } else if (sIds.length >= dis.group_size) {
       console.error('user has been here before', discussionId, userId, round)
       return sIds
-    } else throw new Error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
+    } else {
+      console.error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
+      return undefined
+    }
   }
   if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
     if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
@@ -242,8 +246,7 @@ async function getStatementIds(discussionId, round, userId) {
     // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
     const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
-    if (needToBeSeen.length < dis.group_size - 1)
-      return // don't create irregular size groups
+    if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
     else if (needToBeSeen.length == dis.group_size - 1) {
       // exactly enough
       for (const sItem of needToBeSeen) {
@@ -397,12 +400,15 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
   dis.ShownStatements[round].sort(sortShownItemsByLargestRankThenSmallestShownCount)
 
   if (dis.ShownStatements[round + 1]) {
+    // a round has started above this one, had this ranked high enough to move into the next round
     const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size)
     const minRank = Math.max(dis.ShownStatements[round][cutoff].rank, dis.min_rank)
 
     if (delta > 0) {
       if (sitem.rank >= minRank) {
         if (!dis.ShownStatements[round + 1].some(s => s.statementId === sitem.statementId)) {
+          // this statment is not already in that list
+          // list is sorted by rank, so put this at the end
           dis.ShownStatements[round + 1].push({
             statementId: sitem.statementId,
             shownCount: 0,
@@ -476,7 +482,7 @@ async function putGroupings(discussionId, round, userId, groupings) {
       }
     }
   }
-
+  //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
   if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
   uitem.groupings = groupings
 
