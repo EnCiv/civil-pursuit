@@ -92,6 +92,7 @@ export function GroupPoints(props) {
     const groupings = [...new Set(grouping, ...gs.yourGroups)]
     setGs({ ...gs, yourGroups: groupings })
 
+    console.log('HERE', groupings)
     if (groupings) {
       setTimeout(() => onDone({ valid: true, delta: groupings }))
     }
@@ -212,6 +213,7 @@ export function GroupPoints(props) {
           }
         }
       }
+
       shared.groupedPointList = pointsToGroup.concat(yourGroups) // shareing this data with other components
       onDone({ valid: true, value: shared.groupedPointList })
       return { ...oldGs, pointsToGroup, yourGroups, selectedPoints }

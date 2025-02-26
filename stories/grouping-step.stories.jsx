@@ -332,89 +332,19 @@ export const canCreateGroupWithAGroup = {
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
-        value: [
+        delta: [
           {
-            _id: 0,
-            subject: 'Point 0',
-            description: 'Point Description 0',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
+            point: {
+              _id: 1,
+              subject: 'Point 1',
+              description: 'Point Description 1',
+              user: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
             },
-          },
-          {
-            _id: 4,
-            subject: 'Point 4',
-            description: 'Point Description 4',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 5,
-            subject: 'Point 5',
-            description: 'Point Description 5',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 6,
-            subject: 'Point 6',
-            description: 'Point Description 6',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 7,
-            subject: 'Point 7',
-            description: 'Point Description 7',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 8,
-            subject: 'Point 8',
-            description: 'Point Description 8',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 9,
-            subject: 'Point 9',
-            description: 'Point Description 9',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 1,
-            subject: 'Point 1',
-            description: 'Point Description 1',
-            groupedPoints: [
+            group: [
               {
                 _id: 3,
                 subject: 'Point 3',
@@ -436,11 +366,6 @@ export const canCreateGroupWithAGroup = {
                 },
               },
             ],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
           },
         ],
       },
@@ -477,124 +402,20 @@ export const canRemoveOnePointFromAGroup = {
       onDoneResult: {
         valid: true,
         value: [
+          { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 4, subject: 'Point 4', description: 'Point Description 4', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 5, subject: 'Point 5', description: 'Point Description 5', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 6, subject: 'Point 6', description: 'Point Description 6', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 7, subject: 'Point 7', description: 'Point Description 7', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 8, subject: 'Point 8', description: 'Point Description 8', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 9, subject: 'Point 9', description: 'Point Description 9', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 2, subject: 'Point 2', description: 'Point Description 2', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           {
-            _id: 0,
-            subject: 'Point 0',
-            description: 'Point Description 0',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 4,
-            subject: 'Point 4',
-            description: 'Point Description 4',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 5,
-            subject: 'Point 5',
-            description: 'Point Description 5',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 6,
-            subject: 'Point 6',
-            description: 'Point Description 6',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 7,
-            subject: 'Point 7',
-            description: 'Point Description 7',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 8,
-            subject: 'Point 8',
-            description: 'Point Description 8',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 9,
-            subject: 'Point 9',
-            description: 'Point Description 9',
-            groupedPoints: [],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 2,
-            subject: 'Point 2',
-            description: 'Point Description 2',
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          {
-            _id: 1,
-            subject: 'Point 1',
-            description: 'Point Description 1',
-            groupedPoints: [
-              {
-                _id: 3,
-                subject: 'Point 3',
-                description: 'Point Description 3',
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
-              },
-              {
-                _id: 2,
-                subject: 'Point 2',
-                description: 'Point Description 2',
-                user: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
-              },
+            point: { _id: 1, subject: 'Point 1', description: 'Point Description 1', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+            group: [
+              { _id: 3, subject: 'Point 3', description: 'Point Description 3', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+              { _id: 2, subject: 'Point 2', description: 'Point Description 2', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
             ],
-            user: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
           },
         ],
       },
