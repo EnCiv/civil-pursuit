@@ -147,9 +147,7 @@ export const asyncUpdate = {
   },
   play: async ({ canvasElement, args }) => {
     const { onDone } = args
-    await waitFor(() =>
-      expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: false, value: 0.5 })
-    )
+    await waitFor(() => expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: true, value: 1 }))
     await waitFor(() => expect(onDone.mock.calls[1][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'Congress is too slow', parentId: '1', subject: 'Congress' } }, valid: true, value: 1 }))
     await waitFor(() => expect(onDone.mock.calls[2][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'This is the first description!', parentId: '1', subject: 'This is the first subject!' } }, valid: true, value: 1 }))
   },

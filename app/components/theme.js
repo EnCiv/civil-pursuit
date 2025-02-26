@@ -41,6 +41,7 @@ const Theme = {
     statusBadgeCompletedTextColor: '#005621',
     statusBadgeInactiveBorder: '#EBEBEB',
     statusBadgeInactiveBackground: '#FFFFFF',
+    statusBadgeResponseColor: '#5D5D5C',
     statusBadgeErrorBorder: '#BF1300',
     statusBadgeErrorBackground: '#F9E7E5',
     statusBadgeErrorTextColor: '#BF1300',
@@ -75,6 +76,7 @@ const Theme = {
   condensedWidthBreakPoint: '40rem',
   maxPanelWidth: '78rem',
   boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.5rem rgba(217, 217, 217, 0.40)',
+  boxShadowRightBottom: '0.1875rem 0.1875rem 0.3125rem rgba(0, 0, 0, 0.05)',
   enCivUnderline: {
     textDecorationLine: 'underline',
     textUnderlineOffset: '0.26rem',

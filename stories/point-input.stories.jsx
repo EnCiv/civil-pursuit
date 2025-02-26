@@ -51,11 +51,17 @@ export const onDoneTest = {
     const canvas = within(canvasElement)
     const subjectEle = canvas.getByPlaceholderText(/type some thing here/i)
     const descriptionEle = canvas.getByPlaceholderText(/description/i)
+    await waitFor(() =>
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: { valid: false, value: {} },
+      })
+    )
     await userEvent.type(subjectEle, 'This is the subject')
     await userEvent.tab() // moving out of the input field causes onDone to be called
     await waitFor(() =>
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
+        count: 2,
         onDoneResult: { valid: false, value: { subject: 'This is the subject' } },
       })
     )
@@ -63,7 +69,7 @@ export const onDoneTest = {
     await userEvent.tab() // moving out of the input field causes onDone to be called
     await waitFor(() =>
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
+        count: 3,
         onDoneResult: {
           valid: true,
           value: {
