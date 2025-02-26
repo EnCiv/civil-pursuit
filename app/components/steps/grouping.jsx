@@ -89,13 +89,11 @@ export function GroupPoints(props) {
   }
 
   const handleGrouping = grouping => {
-    let groupings
-
-    const uniqueSet = [...new Set(grouping, ...gs.yourGroups)]
-    setGs({ ...gs, yourGroups: uniqueSet })
+    const groupings = [...new Set(grouping, ...gs.yourGroups)]
+    setGs({ ...gs, yourGroups: groupings })
 
     if (groupings) {
-      setTimeout(() => onDone({ valid: false, delta: groupings }))
+      setTimeout(() => onDone({ valid: true, delta: groupings }))
     }
 
     return gs
@@ -127,12 +125,12 @@ export function GroupPoints(props) {
         else pointsToGroup.push(pointGroupDoc)
       }
       // do not add yourGroups to the notSelected if they are not selected
-      for (const point of oldGs.yourGroups) {
-        if (oldGs.selectedPoints.some(_id => _id === point._id)) {
-          groupedPoints.push(point)
-          yourGroupsSelected.push(point)
+      for (const pointGroupDoc of oldGs.yourGroups) {
+        if (oldGs.selectedPoints.some(_id => _id === pointGroupDoc.point._id)) {
+          groupedPoints.push(pointGroupDoc)
+          yourGroupsSelected.push(pointGroupDoc)
         } else {
-          yourGroups.push(point)
+          yourGroups.push(pointGroupDoc)
         }
       }
       onDone({ valid: false, value: {} })
