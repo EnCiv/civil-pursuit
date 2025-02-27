@@ -9,22 +9,29 @@ const createPointDoc = (
   subject,
   description = 'Point Description',
   groupedPoints = [],
-  user = {
+  demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
-  }
+  },
+  userId = '1000'
 ) => {
   return {
     _id,
     subject,
     description,
     groupedPoints,
-    user,
+    demInfo,
+    userId,
   }
 }
 
-const pointItems = Array.from({ length: 30 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
+const pointItems = Array.from({ length: 30 }, (_, index) => ({
+  _id: index + 'a', //
+  subject: 'Point ' + index,
+  description: 'Point Description ' + index,
+  userId: '1000' + index,
+}))
 
 const defaultSharedPointsWhyStep = {
   mosts: [pointItems[1], pointItems[2]],
@@ -99,7 +106,6 @@ const testSteps = [
     },
     question: startingQuestionAnswerStep,
     whyQuestion: whyQuestionAnswerStep,
-    shared: {},
   },
   {
     webComponent: 'GroupingStep',
@@ -198,7 +204,7 @@ export default {
 }
 
 function makePoints(n) {
-  return Array.from({ length: n }, (_, i) => ({ _id: i, subject: 'Point ' + i, description: 'Point Description ' + i, parentId: 'd' }))
+  return Array.from({ length: n }, (_, i) => ({ _id: i + 1 + '', subject: 'Point ' + i, description: 'Point Description ' + i, parentId: 'd' }))
 }
 const pointList = makePoints(9)
 
@@ -214,6 +220,8 @@ export const Default = {
     testSteps,
     defaultValue: {
       // this goes into the deliberation context
+      userId: '67bf9d6ae49200d1349ab34a',
+      discussionId: '5d0137260dacd06732a1d814',
       pointById: byId(pointList),
       groupIdsLists: [],
       randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
