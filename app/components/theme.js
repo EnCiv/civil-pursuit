@@ -61,7 +61,8 @@ const Theme = {
     transparent: 'transparent',
     tabSelected: '#DCE8F2',
     focusRing: 'rgba(74, 144, 226, 0.2)',
-    darkBlue: '#08447B',
+    radioButtonSelected: '#08447B',
+    radioButtonUnselected: '#5D5D5C',
   },
   font: {
     fontFamily: 'Inter',

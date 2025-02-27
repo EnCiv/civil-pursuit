@@ -8,12 +8,12 @@ const responseOptions = ['Most', 'Neutral', 'Least']
 
 const selectedOption = (
   <>
-    <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.darkBlue} strokeWidth="2" />
-    <rect x="6" y="6" width="12" height="12" rx="6" fill={theme.colors.darkBlue} />
+    <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonSelected} strokeWidth="2" />
+    <rect x="6" y="6" width="12" height="12" rx="6" fill={theme.colors.radioButtonSelected} />
   </>
 )
 
-const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.encivGray} strokeWidth="2" />
+const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonUnselected} strokeWidth="2" />
 
 export default function Ranking(props) {
   const { disabled, defaultValue, className, onDone, ...otherProps } = props
