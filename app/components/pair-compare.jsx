@@ -172,13 +172,9 @@ function PairCompare(props) {
           <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
         ) : (
           <div className={classes.buttonsContainer}>
-            <SecondaryButton className={classes.customButton} onDone={handleYes}>
-              Yes
-            </SecondaryButton>
+            <SecondaryButton onDone={handleYes}>Yes</SecondaryButton>
             <div style={{ width: '1rem', display: 'inline' }} />
-            <SecondaryButton className={classes.customButton} onDone={handleNo}>
-              No
-            </SecondaryButton>
+            <SecondaryButton onDone={handleNo}>No</SecondaryButton>
           </div>
         )}
       </div>
@@ -208,19 +204,17 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: '600',
     fontSize: '1.5rem',
     lineHeight: '2rem',
-    marginBottom: '1rem',
   },
   mainPointDescription: {
     fontWeight: '400',
-    marginBottom: '2rem',
   },
   hiddenPointContainer: {
     position: 'relative',
     display: 'flex',
-    justifyContent: 'center',
-    gap: '3rem',
+    justifyContent: 'space-evenly',
     overflow: 'visible',
-    paddingTop: '4rem',
+    paddingTop: '5rem',
+    marginBottom: '1rem',
     clipPath: 'xywh(0 0 100% 500%)',
   },
   hidden: {
@@ -236,8 +230,8 @@ const useStyles = createUseStyles(theme => ({
   },
   visiblePointsContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    gap: '3rem',
+    justifyContent: 'space-evenly',
+    gap: '1rem',
   },
   visiblePoint: {
     width: '30%',
@@ -249,7 +243,7 @@ const useStyles = createUseStyles(theme => ({
     ...sharedButtonStyle(),
   },
   lowerContainer: {
-    marginTop: '2rem',
+    marginTop: '1rem',
     backgroundColor: theme.colors.cardOutline,
     borderRadius: '1rem',
     border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
@@ -257,9 +251,7 @@ const useStyles = createUseStyles(theme => ({
   buttonsContainer: {
     display: 'flex',
     justifyContent: 'center',
-    maxWidth: '25rem',
     margin: '2rem auto',
-    gap: '3rem',
   },
   transitioningDown: {
     position: 'absolute',
@@ -275,13 +267,6 @@ const useStyles = createUseStyles(theme => ({
     position: 'relative',
     transform: 'translateX(200%)',
     transition: 'transform 0.5s linear',
-  },
-  customButton: {
-    width: '25rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '75%',
-      maxWidth: '17rem',
-    },
   },
 }))
 
