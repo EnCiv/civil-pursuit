@@ -1,6 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
 // https://github.com/EnCiv/civil-pursuit/issues/200
-// https://github.com/EnCiv/civil-pursuit/issues/247
 
 'use strict'
 import React, { useEffect, useState } from 'react'
@@ -147,6 +146,7 @@ function PairCompare(props) {
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
+
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
@@ -169,17 +169,7 @@ function PairCompare(props) {
           )}
         </div>
         {!isSelectionComplete || allRanked ? (
-          <div className={classes.buttonsContainer}>
-            {!isSelectionComplete ? (
-              <SecondaryButton className={classes.customButton} onDone={handleNeitherButton}>
-                Neither
-              </SecondaryButton>
-            ) : (
-              <SecondaryButton className={classes.customButton} onDone={handleStartOverButton}>
-                Start Over
-              </SecondaryButton>
-            )}
-          </div>
+          <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
         ) : (
           <div className={classes.buttonsContainer}>
             <SecondaryButton className={classes.customButton} onDone={handleYes}>
