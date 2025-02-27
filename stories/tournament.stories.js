@@ -1,32 +1,37 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React from 'react'
+import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
-import { onDoneDecorator } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } from './common'
 
 const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
   groupedPoints = [],
-  user = {
+  demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
-  }
+  },
+  userId = '1000'
 ) => {
   return {
     _id,
     subject,
     description,
     groupedPoints,
-    user,
+    demInfo,
+    userId,
   }
 }
 
-const pointItems = Array.from({ length: 30 }, (_, index) =>
-  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
-)
+const pointItems = Array.from({ length: 30 }, (_, index) => ({
+  _id: index + 'a', //
+  subject: 'Point ' + index,
+  description: 'Point Description ' + index,
+  userId: '1000' + index,
+}))
 
 const defaultSharedPointsWhyStep = {
   mosts: [pointItems[1], pointItems[2]],
@@ -101,18 +106,16 @@ const testSteps = [
     },
     question: startingQuestionAnswerStep,
     whyQuestion: whyQuestionAnswerStep,
-    shared: {},
   },
   {
     webComponent: 'GroupingStep',
     stepName: 'Group',
     stepIntro: {
       subject: 'Group Responses',
-      description:
-        'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
+      description: 'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
     },
     shared: {
-      pointList: pointItems,
+      pointList: makePoints(9),
       groupedPointList: [],
     },
   },
@@ -121,37 +124,30 @@ const testSteps = [
     stepName: 'Rank',
     stepIntro: {
       subject: 'Rank Responses',
-      description:
-        'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
+      description: 'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
     },
     pointList: pointItems,
     rankList: [],
   },
   {
     webComponent: 'WhyStep',
-    type: 'most',
+    category: 'most',
     stepName: 'Why Most',
     stepIntro: {
       subject: "Why it's Most Important",
-      description:
-        "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
   {
     webComponent: 'WhyStep',
-    type: 'least',
+    category: 'least',
     stepName: 'Why Least',
     stepIntro: {
       subject: "Why it's Least Important",
-      description:
-        "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
+    intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
   },
   {
     webComponent: 'CompareReasons',
@@ -162,7 +158,7 @@ const testSteps = [
       description: 'Compare two responses and select a response that is most important for the community to consider.',
     },
     pointList: compareReasonsPointList,
-    side: 'most',
+    category: 'most',
   },
   {
     webComponent: 'CompareReasons',
@@ -172,15 +168,14 @@ const testSteps = [
       description: 'Compare two responses and select a response that is most important for the community to consider.',
     },
     pointList: compareReasonsPointList,
-    side: 'least',
+    category: 'least',
   },
   {
     webComponent: 'ReviewPointList',
     stepName: 'Review',
     stepIntro: {
       subject: 'Review',
-      description:
-        'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
+      description: 'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
     },
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
@@ -205,11 +200,60 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator],
+  decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
 }
 
+function makePoints(n) {
+  return Array.from({ length: n }, (_, i) => ({ _id: i + 1 + '', subject: 'Point ' + i, description: 'Point Description ' + i, parentId: 'd' }))
+}
+const pointList = makePoints(9)
+
+let id = 100
+function make5Whys(points, category) {
+  return points.map(point => Array.from({ length: 5 }, (_, i) => ({ _id: id++, subject: `Why ${category} ` + point._id + i, description: `Why ${category} Description ` + point._id + i, parentId: point._id, category })))
+}
+function byId(docs) {
+  return docs.reduce((byId, doc) => ((byId[doc._id] = doc), byId), {})
+}
 export const Default = {
   args: {
     testSteps,
+    defaultValue: {
+      // this goes into the deliberation context
+      userId: '67bf9d6ae49200d1349ab34a',
+      discussionId: '5d0137260dacd06732a1d814',
+      pointById: byId(pointList),
+      groupIdsLists: [],
+      randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+      whyRankByParentId: {},
+      topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+      postRankByParentId: {},
+    },
+  },
+  render: args => {
+    useState(() => {
+      // execute this code once, before the component is initally rendered
+      // the api call will provide the new data for this step
+      window.socket._socketEmitHandlerResults['get-user-ranks'] = []
+      window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
+        window.socket._socketEmitHandlerResults['get-user-ranks'].push([discussionId, round, ids])
+        setTimeout(() => {
+          cb([]) // return empty ranks
+        })
+      }
+      window.socket._socketEmitHandlerResults['get-points-of-ids'] = []
+      window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
+        window.socket._socketEmitHandlerResults['upsert-rank'].push([rank])
+        cb && cb()
+      }
+      window.socket._socketEmitHandlerResults['upsert-rank'] = []
+      window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
+        cb({
+          ranks: [],
+          whys: [],
+        })
+      }
+    })
+    return <Tournament {...args} />
   },
 }

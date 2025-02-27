@@ -190,7 +190,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...theme.font,
     fontSize: '1.25rem',
     fontWeight: '400',
-    lineHeight: '1rem',
+    marginBlockStart: '.3925rem',
+    lineHeight: '1.5em',
+    marginBlockEnd: '.3925rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,

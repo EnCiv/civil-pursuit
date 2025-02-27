@@ -35,7 +35,7 @@ const DeliberationData = props => {
     <>
       {props.children}
       {Object.keys(data).length > 0 ? (
-        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem', boxSizing: 'border-box' }}>
           <div>
             {' '}
             DeliberationContext:{' '}
@@ -143,7 +143,7 @@ export function onDoneDecorator(Story, context) {
     <>
       <Story />
       {count ? (
-        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem', boxSizing: 'border-box' }}>
           <div>
             {' '}
             onDone:{' '}
@@ -171,7 +171,7 @@ export function onBackDecorator(Story, context) {
       <Story />
 
       {result.count ? (
-        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }}>
+        <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem', boxSizing: 'border-box' }}>
           <div>
             {' '}
             onBack:{' '}

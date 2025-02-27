@@ -54,7 +54,7 @@ export default function RankStep(props) {
 
       window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
         if (!result) return // there was an error
-        const [ranks] = result
+        const ranks = result
         const preRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
         upsert({ preRankByParentId })
       })
