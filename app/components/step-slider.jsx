@@ -80,7 +80,9 @@ export const StepSlider = props => {
     switch (action.type) {
       case 'increment':
         const currentStep = Math.min(state.currentStep + 1, children.length - 1)
-        const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
+        const stepStatuses = state.stepStatuses.map((stepStatus, i) =>
+          i === currentStep ? { ...stepStatus, seen: true } : stepStatus
+        )
         return {
           ...state,
           stepStatuses,
@@ -159,61 +161,64 @@ export const StepSlider = props => {
     }
   }, [state.sendDoneToParent])
   return (
-    <div style={{ height: outerRect.height + navBarRect.height, width: '100%' }}>
-      <div className={classes.outerWrapper} ref={outerRef}>
-        {steps && (
-          <div ref={navRef} className={classes.wrapper}>
-            {state.stepStatuses.length > 0 && (
-              <StepBar
-                steps={state.stepStatuses}
-                current={state.currentStep + 1}
-                className={classes.navBar}
-                onDone={onDoneResult => {
-                  if (onDoneResult.value) {
-                    // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-                    let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
-                    for (let reps = 0; reps < repetitions; reps++) {
-                      dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
-                    }
+    <div className={classes.outerWrapper} ref={outerRef}>
+      {steps && (
+        <div ref={navRef} className={classes.wrapper}>
+          {state.stepStatuses.length > 0 && (
+            <StepBar
+              steps={state.stepStatuses}
+              current={state.currentStep + 1}
+              className={classes.navBar}
+              onDone={onDoneResult => {
+                if (onDoneResult.value) {
+                  // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
+                  let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
+                  for (let reps = 0; reps < repetitions; reps++) {
+                    dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
                   }
-                }}
-              />
-            )}
-          </div>
-        )}
-        <div
-          style={{
-            left: -outerRect.width * state.currentStep + 'px',
-            width: outerRect.width * children.length + 'px',
-          }}
-          className={cx(classes.wrapper, transitions && classes.transitions)}
-        >
-          {outerRect.width &&
-            clonedChildren.map(child => (
-              <div
-                style={{
-                  width: outerRect.width + 'px',
-                  height: window.innerHeight - (footerRect.height ? footerRect.height : outerRect.top) - (navBarRect.height ? navBarRect.height : outerRect.top),
-                }}
-                className={classes.panel}
-              >
-                {(!steps || (steps && state.stepStatuses[child.key].seen)) && child && <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>}
-              </div>
-            ))}
-        </div>
-        {steps && (
-          <div ref={footerRef} className={classes.wrapper}>
-            <StepFooter
-              className={classes.stepFooter}
-              onDone={() => {
-                dispatch({ type: 'increment' })
+                }
               }}
-              onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
-              active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}
             />
-          </div>
-        )}
+          )}
+        </div>
+      )}
+      <div
+        style={{
+          left: -outerRect.width * state.currentStep + 'px',
+          width: outerRect.width * children.length + 'px',
+        }}
+        className={cx(classes.wrapper, transitions && classes.transitions)}
+      >
+        {outerRect.width &&
+          clonedChildren.map(child => (
+            <div
+              style={{
+                width: outerRect.width + 'px',
+                height:
+                  window.innerHeight -
+                  (footerRect.height ? footerRect.height : outerRect.top) -
+                  (navBarRect.height ? navBarRect.height : outerRect.top),
+              }}
+              className={classes.panel}
+            >
+              {(!steps || (steps && state.stepStatuses[child.key].seen)) && child && (
+                <PerfectScrollbar style={{ width: 'inherit', height: '100%' }}>{child}</PerfectScrollbar>
+              )}
+            </div>
+          ))}
       </div>
+      {steps && (
+        <div ref={footerRef} className={classes.wrapper}>
+          <StepFooter
+            className={classes.stepFooter}
+            onDone={() => {
+              dispatch({ type: 'increment' })
+            }}
+            onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
+            active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}
+          />
+        </div>
+      )}
     </div>
   )
 }

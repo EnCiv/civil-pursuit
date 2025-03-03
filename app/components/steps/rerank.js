@@ -190,7 +190,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 // to make is possible to test with jest, this is exported
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
-  const { reducedPointList, postRankByParentId, topWhyById, myWhyByParentId } = data
+  const { reducedPointList, postRankByParentId, topWhyById } = data
   let updated = false
 
   const { reviewPointsById } = local
@@ -206,10 +206,11 @@ export function derivePointMostsLeastsRankList(data) {
     }
     local.reducedPointList = reducedPointList
   }
-  function addWhysToReviewPointsById(whys) {
+  if (local.topWhyById !== topWhyById) {
+    local.topWhyById = topWhyById
     let index
     const categoiesToUpdateByParentId = {}
-    for (const whyPoint of whys) {
+    for (const whyPoint of Object.values(topWhyById)) {
       if (!reviewPointsById[whyPoint.parentId]) continue // parent not in pointList
       const category = whyPoint.category
       if ((index = reviewPointsById[whyPoint.parentId][category + 's']?.findIndex(w => w._id === whyPoint._id)) >= 0) {
@@ -228,14 +229,6 @@ export function derivePointMostsLeastsRankList(data) {
       }
     }
     Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) => categories.forEach(category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])))
-  }
-  if (local.myWhyByParentId !== myWhyByParentId) {
-    addWhysToReviewPointsById(Object.values(myWhyByParentId))
-    local.myWhyByParentId = myWhyByParentId
-  }
-  if (local.topWhyById !== topWhyById) {
-    local.topWhyById = topWhyById
-    addWhysToReviewPointsById(Object.values(topWhyById))
   }
   if (local.postRankByParentId !== postRankByParentId) {
     for (const rank of Object.values(postRankByParentId)) {

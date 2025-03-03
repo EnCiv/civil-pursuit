@@ -75,7 +75,7 @@ export function Why(props) {
   const [prev] = useState({ pointWhyList })
   if (prev.pointWhyList !== pointWhyList) {
     prev.pointWhyList = pointWhyList
-    const oldIds = new Set(Object.keys(completedByPointId).map(id => id + '')) // convert to string because some tests (incorrectly) pass a number but when used as a key to an object it's a string. But set doesn't convert numbers to strings
+    const oldIds = new Set(Object.keys(completedByPointId))
     for (const { point, why } of pointWhyList) {
       if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) {
         const completed = completedByPointId[point._id].completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
@@ -152,7 +152,7 @@ export function derivePointWhyListByCategory(data, category) {
       return pId && preRankByParentId[pId]?.category === category
     })
 
-    const oldIds = new Set(Object.keys(local.pointWhyById).map(id => id + '')) // convert to string because some tests (incorrectly) pass a number but when used as a key to an object it's a string. But set doesn't convert numbers to strings
+    const oldIds = new Set(Object.keys(local.pointWhyById))
 
     for (const item of pointsInCategory) {
       const pId = item.point._id
