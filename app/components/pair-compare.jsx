@@ -40,9 +40,6 @@ function PairCompare(props) {
       setIdxLeft(selectedIdx ?? whyRankList.length) // idx could be 0
       setIdxRight(whyRankList.length)
       setTimeout(() => onDone({ valid: true, value: undefined }))
-    } else if (!whyRankList.length) {
-      // if noting to compare then it's done
-      setTimeout(() => onDone({ valid: true, value: undefined }))
     }
   }, [whyRankList])
 

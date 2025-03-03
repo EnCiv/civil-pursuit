@@ -125,7 +125,7 @@ const useStyles = createUseStyles(theme => ({
 export function derivePointWithWhyRankListLisyByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
-  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByParentId } = data
+  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId } = data
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
   if (local.reducedPointList !== reducedPointList) {
@@ -139,8 +139,8 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
     }
     local.reducedPointList = reducedPointList
   }
-  function addWhysToPointWithWhyRankByWhyIdByPointId(whys) {
-    for (const why of Object.values(whys)) {
+  if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
+    for (const why of Object.values(randomWhyById)) {
       if (why.category !== category) continue
       if (!pointWithWhyRankByWhyIdByPointId[why.parentId]) continue // a why's parent not here
       if (pointWithWhyRankByWhyIdByPointId[why.parentId]?.whyRankByWhyId[why._id]?.why !== why) {
@@ -154,14 +154,6 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
         updatedPoints[why.parentId] = true
       }
     }
-  }
-  // get myWhys too
-  if (local.myWhyByParentId !== myWhyByParentId) {
-    addWhysToPointWithWhyRankByWhyIdByPointId(Object.values(myWhyByParentId))
-    local.myWhyByParentId = myWhyByParentId
-  }
-  if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
-    addWhysToPointWithWhyRankByWhyIdByPointId(Object.values(randomWhyById))
     local.randomWhyById = randomWhyById
     local.whyRankByParentId = whyRankByParentId
   }
