@@ -2,6 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
+// https://github.com/EnCiv/civil-pursuit/issues/251
 
 'use strict'
 import React, { forwardRef, useState } from 'react'
@@ -36,42 +37,14 @@ const Point = forwardRef((props, ref) => {
   })
 
   return (
-    <div
-      className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)}
-      {...otherProps}
-      onMouseEnter={onMouseIn}
-      onMouseLeave={onMouseOut}
-      ref={ref}
-    >
+    <div className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)} {...otherProps} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} ref={ref}>
       <div className={classes.contentContainer}>
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
-            <H
-              className={
-                isLoading
-                  ? cx(classes.loadingAnimation, classes.loadingAnimationSubject)
-                  : cx(
-                      classes.sharedSubjectStyle,
-                      classes[vState + 'Subject'],
-                      isInvalid ? classes.invalidText : undefined
-                    )
-              }
-            >
-              {isLoading ? '' : subject}
-            </H>
+            <H className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
           )}
           {(isLoading || description) && (
-            <p
-              className={
-                isLoading
-                  ? cx(classes.loadingAnimation, classes.loadingAnimationDescription)
-                  : cx(
-                      classes.sharedDescriptionStyle,
-                      classes[vState + 'Description'],
-                      isInvalid ? classes.invalidText : undefined
-                    )
-              }
-            >
+            <p className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'], isInvalid ? classes.invalidText : undefined)}>
               {isLoading ? '' : description}
             </p>
           )}
@@ -85,7 +58,8 @@ const Point = forwardRef((props, ref) => {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   contentContainer: {
-    padding: '2.1875rem 1.875rem',
+    padding: '1.5rem 1.875rem',
+    paddingBottom: '2rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -96,7 +70,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.9375rem',
+    gap: '0',
     alignSelf: 'stretch',
   },
 
@@ -140,11 +114,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.white,
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
+      color: theme.colors.success,
     },
     '&:hover $defaultSubject': {
       color: theme.colors.success,
     },
     '&:hover $defaultDescription': {
+      color: theme.colors.success,
+    },
+    '&:hover $informationGrid *': {
       color: theme.colors.success,
     },
   },
@@ -206,13 +184,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   // shared styling
   sharedBorderStyle: {
     borderRadius: '0.9375rem',
-    boxShadow: theme.boxShadow,
+    boxShadow: theme.boxShadowRightBottom,
   },
   sharedSubjectStyle: {
     ...theme.font,
     fontSize: '1.25rem',
     fontWeight: '400',
-    lineHeight: '1.875rem',
+    marginBlockStart: '.3925rem',
+    lineHeight: '1.5em',
+    marginBlockEnd: '.3925rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,

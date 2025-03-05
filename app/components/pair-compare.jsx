@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/53
 // https://github.com/EnCiv/civil-pursuit/issues/200
+// https://github.com/EnCiv/civil-pursuit/issues/247
 
 'use strict'
 import React, { useEffect, useState } from 'react'
@@ -38,6 +39,9 @@ function PairCompare(props) {
       // skip if an update from above after the user has completed ranking - likely this is the initial render
       setIdxLeft(selectedIdx ?? whyRankList.length) // idx could be 0
       setIdxRight(whyRankList.length)
+      setTimeout(() => onDone({ valid: true, value: undefined }))
+    } else if (!whyRankList.length) {
+      // if noting to compare then it's done
       setTimeout(() => onDone({ valid: true, value: undefined }))
     }
   }, [whyRankList])
@@ -146,7 +150,6 @@ function PairCompare(props) {
       </div>
 
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
-
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
@@ -169,12 +172,26 @@ function PairCompare(props) {
           )}
         </div>
         {!isSelectionComplete || allRanked ? (
-          <div className={classes.buttonsContainer}>{!isSelectionComplete ? <SecondaryButton onDone={handleNeitherButton}>Neither</SecondaryButton> : <SecondaryButton onDone={handleStartOverButton}>Start Over</SecondaryButton>}</div>
+          <div className={classes.buttonsContainer}>
+            {!isSelectionComplete ? (
+              <SecondaryButton className={classes.customButton} onDone={handleNeitherButton}>
+                Neither
+              </SecondaryButton>
+            ) : (
+              <SecondaryButton className={classes.customButton} onDone={handleStartOverButton}>
+                Start Over
+              </SecondaryButton>
+            )}
+          </div>
         ) : (
           <div className={classes.buttonsContainer}>
-            <SecondaryButton onDone={handleYes}>Yes</SecondaryButton>
+            <SecondaryButton className={classes.customButton} onDone={handleYes}>
+              Yes
+            </SecondaryButton>
             <div style={{ width: '1rem', display: 'inline' }} />
-            <SecondaryButton onDone={handleNo}>No</SecondaryButton>
+            <SecondaryButton className={classes.customButton} onDone={handleNo}>
+              No
+            </SecondaryButton>
           </div>
         )}
       </div>
@@ -204,17 +221,19 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: '600',
     fontSize: '1.5rem',
     lineHeight: '2rem',
+    marginBottom: '1rem',
   },
   mainPointDescription: {
     fontWeight: '400',
+    marginBottom: '2rem',
   },
   hiddenPointContainer: {
     position: 'relative',
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+    gap: '3rem',
     overflow: 'visible',
-    paddingTop: '5rem',
-    marginBottom: '1rem',
+    paddingTop: '4rem',
     clipPath: 'xywh(0 0 100% 500%)',
   },
   hidden: {
@@ -230,8 +249,8 @@ const useStyles = createUseStyles(theme => ({
   },
   visiblePointsContainer: {
     display: 'flex',
-    justifyContent: 'space-evenly',
-    gap: '1rem',
+    justifyContent: 'center',
+    gap: '3rem',
   },
   visiblePoint: {
     width: '30%',
@@ -243,7 +262,7 @@ const useStyles = createUseStyles(theme => ({
     ...sharedButtonStyle(),
   },
   lowerContainer: {
-    marginTop: '1rem',
+    marginTop: '2rem',
     backgroundColor: theme.colors.cardOutline,
     borderRadius: '1rem',
     border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
@@ -251,7 +270,9 @@ const useStyles = createUseStyles(theme => ({
   buttonsContainer: {
     display: 'flex',
     justifyContent: 'center',
+    maxWidth: '25rem',
     margin: '2rem auto',
+    gap: '3rem',
   },
   transitioningDown: {
     position: 'absolute',
@@ -267,6 +288,13 @@ const useStyles = createUseStyles(theme => ({
     position: 'relative',
     transform: 'translateX(200%)',
     transition: 'transform 0.5s linear',
+  },
+  customButton: {
+    width: '25rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '75%',
+      maxWidth: '17rem',
+    },
   },
 }))
 

@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/49
 // https://github.com/EnCiv/civil-pursuit/issues/198
+// https://github.com/EnCiv/civil-pursuit/issues/249
 
 // groupedPoints and pointList are both a list of pointObj
 // groupedPoints is shared across states (user may move back and forth between states)
@@ -15,6 +16,8 @@ import StatusBadge from '../status-badge'
 import { cloneDeep, isEqual } from 'lodash'
 
 const { putGroupings } = require('../../dturn/dturn')
+
+const MIN_GROUPS = 0
 
 export default function GroupingStep(props) {
   const { onDone, ...otherProps } = props
@@ -54,7 +57,6 @@ export default function GroupingStep(props) {
 
 export function GroupPoints(props) {
   const { reducedPointList, onDone = () => {}, shared = {}, className, ...otherProps } = props
-  const { pointList, groupedPointList } = shared
 
   const classes = useStylesFromThemeFunction(props)
 
@@ -224,12 +226,12 @@ export function GroupPoints(props) {
     <div className={cx(classes.groupingStep, className)} {...otherProps}>
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
-          <StatusBadge name="Groups Created" status={'progress'} number={gs.yourGroups.length} />
-          <StatusBadge name="Responses Selected" status={gs.selectedPoints.length === 0 ? '' : 'complete'} number={gs.selectedPoints.length} />
+          <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />
+          <StatusBadge name="Responses Selected" status={'response'} number={gs.selectedPoints.length} />
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedPoints.length < 2} className={classes.primaryButton} onClick={handleCreateGroupClick}>
+            <PrimaryButton disabled={gs.selectedPoints.length < MIN_GROUPS} className={`${classes.primaryButton} ${gs.selectedPoints.length < MIN_GROUPS ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
               Create Group
             </PrimaryButton>
           </div>
@@ -329,7 +331,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       marginTop: '0',
       gap: '0',
       gap: '0.875rem',
-      flexDirection: 'row', // Make sure this is 'row' to keep badges on left and right
+      flexDirection: 'column', // Make sure this is 'row' to keep badges on left and right
       width: '100%',
     },
   },
@@ -342,6 +344,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '100%',
     },
+  },
+  createGroupDisabled: {
+    backgroundColor: `${theme.colors.primaryButtonBlue} !important`,
+    color: `${theme.colors.white} !important`,
+    border: `0.125rem solid ${theme.colors.primaryButtonBlue} !important`,
+    opacity: 0.3,
   },
   selectLead: {
     marginTop: '3.125rem',
