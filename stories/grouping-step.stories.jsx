@@ -7,7 +7,7 @@ import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
 const discussionId = '1101'
-const round = 1
+const round = 0
 
 export default {
   component: GroupPoints,
@@ -16,13 +16,14 @@ export default {
       viewports: INITIAL_VIEWPORTS,
     },
   },
+  decorators: [onDoneDecorator],
 }
 
 const createPointDoc = (
   _id,
   subject,
   description = 'Point Description',
-  user = {
+  demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
     party: 'Independent',
@@ -33,23 +34,20 @@ const createPointDoc = (
       _id,
       subject,
       description,
-      user,
+      demInfo,
     },
     group: [],
   }
 }
 
-const pointItems = Array.from({ length: 10 }, (_, index) => ({
-  point: createPointDoc(index, 'Point ' + index, 'Point Description ' + index),
-  group: [],
-}))
+const pointItems = Array.from({ length: 10 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
 
 function groupingPointsToContext(groupingPoints) {
   const cn = {
     ...groupingPoints.reduce(
       (cn, gp) => {
         // context, reviewPoint
-        cn.pointById[gp._id] = gp
+        cn.pointById[gp.point._id] = gp.point
         return cn
       },
       { pointById: {}, groupIdsLists: [] }
@@ -62,25 +60,16 @@ export const Empty = {
   args: {},
 }
 
-export const SharedEmpty = {
-  args: { shared: {} },
-}
-
 export const Desktop = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
   },
 }
 
 export const Mobile = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
+
     onDone: () => {},
   },
   parameters: {
@@ -93,9 +82,6 @@ export const Mobile = {
 export const canCreateGroup = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
   },
   decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
@@ -124,7 +110,7 @@ export const canCreateGroup = {
               _id: 1,
               subject: 'Point 1',
               description: 'Point Description 1',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -135,7 +121,7 @@ export const canCreateGroup = {
                 _id: 2,
                 subject: 'Point 2',
                 description: 'Point Description 2',
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -153,9 +139,6 @@ export const canCreateGroup = {
 export const canUnGroup = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
   },
   decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
@@ -175,8 +158,7 @@ export const canUnGroup = {
               _id: 0,
               subject: 'Point 0',
               description: 'Point Description 0',
-
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -189,8 +171,7 @@ export const canUnGroup = {
               _id: 3,
               subject: 'Point 3',
               description: 'Point Description 3',
-
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -203,7 +184,7 @@ export const canUnGroup = {
               _id: 4,
               subject: 'Point 4',
               description: 'Point Description 4',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -216,7 +197,7 @@ export const canUnGroup = {
               _id: 5,
               subject: 'Point 5',
               description: 'Point Description 5',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -229,7 +210,7 @@ export const canUnGroup = {
               _id: 6,
               subject: 'Point 6',
               description: 'Point Description 6',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -242,7 +223,7 @@ export const canUnGroup = {
               _id: 7,
               subject: 'Point 7',
               description: 'Point Description 7',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -255,7 +236,7 @@ export const canUnGroup = {
               _id: 8,
               subject: 'Point 8',
               description: 'Point Description 8',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -268,7 +249,7 @@ export const canUnGroup = {
               _id: 9,
               subject: 'Point 9',
               description: 'Point Description 9',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -281,7 +262,7 @@ export const canUnGroup = {
               _id: 2,
               subject: 'Point 2',
               description: 'Point Description 2',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -294,7 +275,7 @@ export const canUnGroup = {
               _id: 1,
               subject: 'Point 1',
               description: 'Point Description 1',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -312,9 +293,6 @@ export const canUnGroup = {
 export const canCreateGroupWithAGroup = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
   },
   decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
@@ -338,7 +316,7 @@ export const canCreateGroupWithAGroup = {
               _id: 1,
               subject: 'Point 1',
               description: 'Point Description 1',
-              user: {
+              demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
@@ -349,7 +327,7 @@ export const canCreateGroupWithAGroup = {
                 _id: 3,
                 subject: 'Point 3',
                 description: 'Point Description 3',
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -359,7 +337,7 @@ export const canCreateGroupWithAGroup = {
                 _id: 2,
                 subject: 'Point 2',
                 description: 'Point Description 2',
-                user: {
+                demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
                   party: 'Independent',
@@ -379,9 +357,6 @@ export const canCreateGroupWithAGroup = {
 export const canRemoveOnePointFromAGroup = {
   args: {
     reducedPointList: pointItems,
-    shared: {
-      groupedPointList: [],
-    },
   },
   decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
@@ -402,19 +377,19 @@ export const canRemoveOnePointFromAGroup = {
       onDoneResult: {
         valid: true,
         value: [
-          { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 4, subject: 'Point 4', description: 'Point Description 4', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 5, subject: 'Point 5', description: 'Point Description 5', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 6, subject: 'Point 6', description: 'Point Description 6', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 7, subject: 'Point 7', description: 'Point Description 7', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 8, subject: 'Point 8', description: 'Point Description 8', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 9, subject: 'Point 9', description: 'Point Description 9', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 2, subject: 'Point 2', description: 'Point Description 2', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 4, subject: 'Point 4', description: 'Point Description 4', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 5, subject: 'Point 5', description: 'Point Description 5', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 6, subject: 'Point 6', description: 'Point Description 6', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 7, subject: 'Point 7', description: 'Point Description 7', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 8, subject: 'Point 8', description: 'Point Description 8', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 9, subject: 'Point 9', description: 'Point Description 9', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 2, subject: 'Point 2', description: 'Point Description 2', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           {
-            point: { _id: 1, subject: 'Point 1', description: 'Point Description 1', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+            point: { _id: 1, subject: 'Point 1', description: 'Point Description 1', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
             group: [
-              { _id: 3, subject: 'Point 3', description: 'Point Description 3', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
-              { _id: 2, subject: 'Point 2', description: 'Point Description 2', user: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+              { _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+              { _id: 2, subject: 'Point 2', description: 'Point Description 2', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
             ],
           },
         ],
@@ -428,7 +403,6 @@ export const canRemoveOnePointFromAGroup = {
 function getGroupingArgsFrom(groupingPoints) {
   const cn = groupingPointsToContext(groupingPoints)
   const { pointById, ...defaultValue } = { ...cn, round, discussionId }
-
   return { pointById, defaultValue }
 }
 
@@ -438,7 +412,7 @@ const groupingPoints = [
       _id: 0,
       subject: 'Point 0',
       description: 'Point Description 0',
-      user: {
+      demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
         state: 'NY',
         party: 'Independent',
@@ -451,7 +425,7 @@ const groupingPoints = [
       _id: 4,
       subject: 'Point 4',
       description: 'Point Description 4',
-      user: {
+      demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
         state: 'NY',
         party: 'Independent',
@@ -465,7 +439,7 @@ const groupingPoints = [
       subject: 'Point 5',
       description: 'Point Description 5',
 
-      user: {
+      demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
         state: 'NY',
         party: 'Independent',
@@ -474,6 +448,23 @@ const groupingPoints = [
     group: [],
   },
 ]
+
+export const canStartGroupingTheXOut = {
+  args: {
+    reducedPointList: pointItems,
+  },
+  decorators: [onDoneDecorator],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByText('Point 1'))
+    await userEvent.click(canvas.getByText('Point 2'))
+    await userEvent.click(canvas.getByText('Create Group'))
+    await userEvent.click(canvas.getByTitle('Ungroup and close'))
+    // make sure they are still there
+    canvas.getByText('Point 1')
+    canvas.getByText('Point 2')
+  },
+}
 
 const groupingStepTemplate = args => {
   const { pointById, ...otherArgs } = args
