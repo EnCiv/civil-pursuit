@@ -61,6 +61,7 @@ const Theme = {
     svgArrow: 'rgb(206, 206, 206)',
     transparent: 'transparent',
     tabSelected: '#DCE8F2',
+    pointDefault: '#FFFFFF',
   },
   font: {
     fontFamily: 'Inter',

@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/253
 
 'use strict'
 
@@ -213,12 +214,8 @@ const PointGroup = props => {
                   {groupedPoints.map((pD, leadIndex) => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point
-                          point={pD}
-                          vState={'default'}
-                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                        >
-                          <div className={classes.pointBottomButtons}>
+                        <Point point={pD} vState={'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
+                          <div className={cx(classes.pointWidthButton, classes.selectLeadButton)}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton
                                 className={classes.pointWidthButton}
@@ -384,6 +381,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   contentContainer: {
+    backgroundColor: `${theme.colors.pointDefault} !important`,
     padding: '2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
@@ -413,12 +411,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  ungroupButton: {},
+  ungroupButton: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '9rem',
+    },
+  },
 
   doneButton: {
     width: '17rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '7rem',
+      width: '12rem',
     },
   },
 
@@ -428,6 +430,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: '#5d5d5d',
     fontWeight: '600',
     lineHeight: '1.5rem',
+    marginTop: '5rem',
   },
 
   bottomButtonsTwo: {},
@@ -475,7 +478,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     flex: '1 1 41%',
     height: 'inherit',
-    // margin: '1rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
       margin: '1rem 0',
@@ -487,7 +489,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   pointWidthButton: {
-    margin: '.5rem',
+    width: '100%',
+    textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+    },
+  },
+
+  selectLeadButton: {
+    marginTop: '1rem',
   },
 
   invisibleElement: {
