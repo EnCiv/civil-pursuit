@@ -20,6 +20,7 @@ export default function RerankStep(props) {
     }
     onDone({ valid, value })
   }
+
   // fetch previous data
   if (typeof window !== 'undefined')
     useState(() => {
