@@ -9,7 +9,8 @@ function getInitOptions(options) {
     max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
     min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
     min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
-    updateUInfo: options.updateUInfo || (() => {}),
+    updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
+    updateUInfo: options.updateUInfo || (async () => {}),
     getAllUInfo: options.getAllUInfo || (async () => []),
   }
 }
@@ -92,7 +93,7 @@ function initUitems(discussionId, userId, round = 0) {
  * calls the discussion's updateUinfo function with the new data
  *
  */
-function insertStatementId(discussionId, userId, statementId) {
+async function insertStatementId(discussionId, userId, statementId) {
   // this is where we would insert the statment into the DB
   const round = 0 // for now statement ids can only be inserted at round 0
 
@@ -110,7 +111,7 @@ function insertStatementId(discussionId, userId, statementId) {
   initUitems(discussionId, userId, round)
 
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0, author: true }
-  Discussions[discussionId].updateUInfo({
+  await Discussions[discussionId].updateUInfo({
     [userId]: {
       [discussionId]: {
         [round]: {
@@ -121,6 +122,16 @@ function insertStatementId(discussionId, userId, statementId) {
       },
     },
   })
+
+  // Only run updates if participants or round changes
+  const participants = Object.keys(Discussions[discussionId].Uitems).length
+  const lastRound =
+    Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
+
+  if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
+    Discussions[discussionId].updates({ participants: participants, lastRound: lastRound })
+  }
+
   return statementId
 }
 
@@ -249,6 +260,10 @@ async function getStatementIds(discussionId, round, userId) {
   } else {
     if (!dis.ShownStatements[round]) {
       // first time for this round, need to setup
+      dis['lastRound'] = round
+      dis['participants'] = Object.keys(dis.Uitems).length
+
+      Discussions[discussionId].updates({ participants: dis['participants'], lastRound: dis['lastRound'] })
       // make sure there are enough ranked items in the previous round to start
       if (dis.ShownStatements[round - 1].length < dis.group_size * dis.group_size) return
       const cutoff = Math.ceil(dis.ShownStatements[round - 1].length / dis.group_size)
@@ -257,7 +272,7 @@ async function getStatementIds(discussionId, round, userId) {
       if (minRank < dis.min_rank) minRank = dis.min_rank
       console.info('starting round', round, 'minRank is', minRank)
       let highestRankedItems = []
-      for (sItem of dis.ShownStatements[round - 1]) {
+      for (const sItem of dis.ShownStatements[round - 1]) {
         if (sItem.rank < minRank) break // no need to go further
         highestRankedItems.push({
           statementId: sItem.statementId,
@@ -319,7 +334,7 @@ async function getStatementIds(discussionId, round, userId) {
     }
   }
 
-  dis.updateUInfo(delta)
+  await dis.updateUInfo(delta)
 
   return statementIds
 }
@@ -447,7 +462,7 @@ function iteratePairs(discussionId, round, statementIds, func) {
   }
 }
 
-function putGroupings(discussionId, round, userId, groupings) {
+async function putGroupings(discussionId, round, userId, groupings) {
   const dis = Discussions[discussionId]
   if (!dis) return false
   const uitem = Discussions[discussionId].Uitems[userId][round]
@@ -461,7 +476,7 @@ function putGroupings(discussionId, round, userId, groupings) {
   for (const id of shownStatementIds) incrementShownItems(discussionId, round, id)
   iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
   groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
-  Discussions[discussionId].updateUInfo({
+  await Discussions[discussionId].updateUInfo({
     [userId]: {
       [discussionId]: { [round]: { groupings } },
     },
@@ -472,13 +487,13 @@ function putGroupings(discussionId, round, userId, groupings) {
 }
 module.exports.putGroupings = putGroupings
 
-function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
+async function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
   /* this is where we will write it to the database
     Ranks.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
     */
   deltaShownItemsRank(discussionId, round, statementId, rank)
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
-  Discussions[discussionId].updateUInfo({
+  await Discussions[discussionId].updateUInfo({
     [userId]: { [discussionId]: { [round]: { shownStatementIds: { [statementId]: { rank } } } } },
   })
 }
@@ -632,4 +647,7 @@ async function reconstructDiscussionFromUInfo(discussionId) {
     if (shownGroupsArray.length > 0) Discussions[discussionId].ShownGroups[round] = shownGroupsArray
     round++
   }
+
+  // Set lastRound but don't send updates
+  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
 }

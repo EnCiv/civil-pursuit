@@ -42,7 +42,7 @@ describe('Test grouping scenarios', () => {
     const group1 = statements.slice(0, 2) // Group with 2 statements
     const group2 = statements.slice(2, 5) // Group with 3 statements
 
-    const result = putGroupings(DISCUSSION_ID, 0, USER_ID, [group1, group2])
+    const result = await putGroupings(DISCUSSION_ID, 0, USER_ID, [group1, group2])
 
     expect(result).toBe(true)
 

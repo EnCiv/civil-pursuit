@@ -1,4 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/150
+//https://github.com/EnCiv/civil-pursuit/issues/257
+//https://github.com/EnCiv/civil-pursuit/issues/262
 
 import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
@@ -8,20 +10,10 @@ import { Button } from './button'
 import StatusBox from '../components/status-box'
 
 function SignUp(props, ref) {
-  const {
-    className,
-    style,
-    onDone = () => {},
-    startTab = 'login',
-    submitted = false,
-    tabIndex = 0,
-    ...otherProps
-  } = props
+  const { className, style, onDone = () => {}, startTab = 'login', submitted = false, tabIndex = 0, ...otherProps } = props
 
   // checks if start tab requests login or sign up page
-  const [isLogIn, setIsLogIn] = useState(
-    startTab.toLowerCase().includes('up') ? false : startTab.toLowerCase().includes('in') ? true : false
-  )
+  const [isLogIn, setIsLogIn] = useState(startTab.toLowerCase().includes('up') ? false : startTab.toLowerCase().includes('in') ? true : false)
   // checks if user has pressed signed up or logged in button yet
   const [isSubmitted, setIsSubmitted] = useState(submitted)
 
@@ -100,113 +92,66 @@ function SignUp(props, ref) {
     <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
       <div className={classes.tabs}>
         <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
-          <Button
-            onDone={e => setIsLogIn(false)}
-            className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)}
-            tabIndex="1"
-          >
+          <Button onDone={e => setIsLogIn(false)} className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)} tabIndex="1">
             Sign Up
           </Button>
         </div>
         <div className={cx(classes.tab, isLogIn && classes.tabSelected)}>
-          <Button
-            onDone={e => setIsLogIn(true)}
-            className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}
-            tabIndex="1"
-          >
+          <Button onDone={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)} tabIndex="1">
             Log In
           </Button>
         </div>
       </div>
       <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
-        <div
-          className={cx(
-            classes.inputBoxes,
-            !firstName && (clickedOnFirst || isSubmitted) && classes.invalid,
-            isLogIn && classes.disabled
-          )}
-        >
+        <div className={cx(classes.inputBoxes, !firstName && (clickedOnFirst || isSubmitted) && classes.invalid, isLogIn && classes.disabled)}>
           <p id="text">First Name</p>
           <input
             name="first-name"
-            className={cx(
-              classes.input,
-              !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput,
-              isLogIn && classes.disabled
-            )}
+            placeholder="John"
+            className={cx(classes.input, !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput, isLogIn && classes.disabled)}
             onBlur={e => changeFirstName(e.target.value)}
             tabIndex={tabIndex}
           />
         </div>
-        <div
-          className={cx(
-            classes.inputBoxes,
-            isLogIn && classes.disabled,
-            !lastName && (clickedOnLast || isSubmitted) && classes.invalid
-          )}
-        >
+        <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalid)}>
           <p id="text">Last Name</p>
           <input
             name="last-name"
-            className={cx(
-              classes.input,
-              isLogIn && classes.disabled,
-              !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput
-            )}
+            placeholder="Doe"
+            className={cx(classes.input, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput)}
             onBlur={e => changeLastName(e.target.value)}
             tabIndex={tabIndex}
           />
         </div>
         <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
           <p id="text">E-mail</p>
-          <input
-            name="email"
-            className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)}
-            onBlur={e => changeEmail(e.target.value)}
-            tabIndex={tabIndex}
-          />
+          <input name="email" placeholder="Johndoe@gmail.com" className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)} onBlur={e => changeEmail(e.target.value)} tabIndex={tabIndex} />
         </div>
-        <div
-          className={cx(classes.inputBoxes, !state.password && (clickedOnPassword || isSubmitted) && classes.invalid)}
-        >
+        <div className={cx(classes.inputBoxes, !state.password && (clickedOnPassword || isSubmitted) && classes.invalid)}>
           <p id="text">Password</p>
           <input
             name="password"
             type="password"
+            placeholder="******"
             className={cx(classes.input, !state.password && (clickedOnPassword || isSubmitted) && classes.invalidInput)}
             onChange={e => changePassword(e.target.value)}
             tabIndex={tabIndex}
           />
         </div>
-        <div
-          className={cx(
-            classes.inputBoxes,
-            isLogIn && classes.disabled,
-            !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid
-          )}
-        >
+        <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid)}>
           <p id="text">Confirm Password</p>
           <input
             name="confirm"
             type="password"
-            className={cx(
-              classes.input,
-              !state.confirm && (clickedOnConfirm || isSubmitted) && classes.invalidInput,
-              isLogIn && classes.disabled
-            )}
+            placeholder="******"
+            className={cx(classes.input, !state.confirm && (clickedOnConfirm || isSubmitted) && classes.invalidInput, isLogIn && classes.disabled)}
             onChange={e => changeConfirm(e.target.value)}
             tabIndex={tabIndex}
           />
         </div>
         <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
           <div className={classes.checkTerm}>
-            <input
-              className={classes.checkTermBox}
-              type="checkbox"
-              name="agreed"
-              onClick={e => methods.onChangeAgree(e.target.checked)}
-              tabIndex={tabIndex}
-            />
+            <input className={classes.checkTermBox} type="checkbox" name="agreed" onClick={e => methods.onChangeAgree(e.target.checked)} tabIndex={tabIndex} />
             <label className={classes.agreeTermLabel}>
               Yes, I agree to the
               <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
@@ -219,38 +164,18 @@ function SignUp(props, ref) {
             </label>
           </div>
         </div>
-        <StatusBox
-          className={cx(classes.error, !state.error && classes.disabled)}
-          status="error"
-          subject={state.error}
-        />
+        <StatusBox className={cx(classes.error, !state.error && classes.disabled)} status="error" subject={state.error} />
         <StatusBox className={cx(classes.info, !state.info && classes.disabled)} status="notice" subject={state.info} />
-        <StatusBox
-          className={cx(classes.success, !state.success && classes.disabled)}
-          status="done"
-          subject={state.success}
-        />
+        <StatusBox className={cx(classes.success, !state.success && classes.disabled)} status="done" subject={state.success} />
 
         <div className={classes.btnContainer}>
-          <Button
-            className={cx(classes.btn, isLogIn && classes.disabled)}
-            onDone={e => handleSubmit('signup')}
-            tabIndex={tabIndex}
-          >
+          <Button className={cx(classes.btn, isLogIn && classes.disabled)} onDone={e => handleSubmit('signup')} tabIndex={tabIndex}>
             Sign Up
           </Button>
-          <Button
-            className={cx(classes.btn, !isLogIn && classes.disabled)}
-            onDone={e => handleSubmit('login')}
-            tabIndex={tabIndex}
-          >
+          <Button className={cx(classes.btn, !isLogIn && classes.disabled)} onDone={e => handleSubmit('login')} tabIndex={tabIndex}>
             Log In
           </Button>
-          <Button
-            className={cx(classes.btn, isLogIn && classes.disabled)}
-            onDone={e => methods.skip()}
-            tabIndex={tabIndex}
-          >
+          <Button className={cx(classes.btn, isLogIn && classes.disabled)} onDone={e => methods.skip()} tabIndex={tabIndex}>
             Skip
           </Button>
         </div>
@@ -292,25 +217,27 @@ const useStyles = createUseStyles(theme => ({
   },
   tabs: {
     width: '80%',
-    height: '3rem',
     margin: 'auto',
     borderRadius: '5rem',
     border: '0.1rem solid',
     borderColor: theme.colors.borderGray,
-    padding: '0.45rem 0.4rem 0 0.4rem ',
-    boxShadow: ' 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.1)',
+    padding: '0.4rem 0.5rem 0.4rem 0.5rem ',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   tab: {
     display: 'inline-block',
     position: 'relative',
-    width: '50%',
+    width: '49%',
     color: theme.colors.colorPrimary,
+    alignIitems: 'center',
   },
   tabSelected: {
     display: 'inline-block',
     position: 'relative',
     borderRadius: '5rem',
     background: theme.colors.tabSelected,
+    alignItems: 'center',
   },
   btnContainer: {
     width: '100%',
@@ -351,10 +278,13 @@ const useStyles = createUseStyles(theme => ({
     '&:focus': {
       border: `${theme.colors.focusOutline} solid 0.1rem`,
       borderRadius: '3rem',
+      outline: `${theme.focusOutlineSignUp} !important`,
     },
   },
   btnClickSelected: {
     color: theme.colors.primaryButtonBlue,
+    outline: `${theme.focusOutline}`,
+    borderRadius: '3rem',
   },
   inputContainer: {
     margin: 0,
@@ -384,6 +314,14 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '2rem',
     borderRadius: '0.5rem !important',
     boxSizing: 'border-box !important',
+    fontFamily: 'Inter',
+    fontSize: '1rem',
+    '&::placeholder': {
+      color: theme.colors.inputFieldPlaceholder,
+    },
+    '&[type="password"]::placeholder': {
+      color: theme.colors.passwordInputPlaceholder,
+    },
   },
   invalid: {
     color: theme.colors.inputErrorBorder,
