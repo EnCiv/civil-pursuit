@@ -143,7 +143,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxShadow: 'none !important',
     backgroundColor: 'rgba(235, 235, 235, 0.30)',
     '& $contentContainer': {
-      padding: '1.25rem',
+      padding: '0.25rem 1.25rem',
     },
   },
   secondaryBorder: {
@@ -179,6 +179,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   disabledDescription: {
     color: theme.colors.title,
+  },
+  collapsedDescription: {
+    display: 'none',
   },
 
   // shared styling
