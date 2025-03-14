@@ -158,19 +158,19 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
   const whys = []
   if (local.whyRankByParentId !== whyRankByParentId) {
     // if rank changes we have to go through them all
-    whys.push(...Object.values(myWhyByParentId))
-    whys.push(...Object.values(randomWhyById))
+    whys.push(...Object.values(myWhyByParentId ?? {}))
+    whys.push(...Object.values(randomWhyById ?? {}))
     local.whyRankByParentId = whyRankByParentId
     local.randomWhyById = randomWhyById
     local.myWhyByParentId = myWhyByParentId
   } else {
     // get myWhys too
     if (local.myWhyByParentId !== myWhyByParentId) {
-      whys.push(...Object.values(myWhyByParentId))
+      whys.push(...Object.values(myWhyByParentId ?? {}))
       local.myWhyByParentId = myWhyByParentId
     }
     if (local.randomWhyById !== randomWhyById) {
-      whys.push(...Object.values(randomWhyById))
+      whys.push(...Object.values(randomWhyById ?? {}))
       local.randomWhyById = randomWhyById
     }
   }
