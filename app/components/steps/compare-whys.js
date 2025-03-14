@@ -155,17 +155,26 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
       }
     }
   }
-  // get myWhys too
-  if (local.myWhyByParentId !== myWhyByParentId) {
-    addWhysToPointWithWhyRankByWhyIdByPointId(Object.values(myWhyByParentId))
-    local.myWhyByParentId = myWhyByParentId
-  }
-  if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
-    addWhysToPointWithWhyRankByWhyIdByPointId(Object.values(randomWhyById))
-    local.randomWhyById = randomWhyById
+  const whys = []
+  if (local.whyRankByParentId !== whyRankByParentId) {
+    // if rank changes we have to go through them all
+    whys.push(...Object.values(myWhyByParentId))
+    whys.push(...Object.values(randomWhyById))
     local.whyRankByParentId = whyRankByParentId
+    local.randomWhyById = randomWhyById
+    local.myWhyByParentId = myWhyByParentId
+  } else {
+    // get myWhys too
+    if (local.myWhyByParentId !== myWhyByParentId) {
+      whys.push(...Object.values(myWhyByParentId))
+      local.myWhyByParentId = myWhyByParentId
+    }
+    if (local.randomWhyById !== randomWhyById) {
+      whys.push(...Object.values(randomWhyById))
+      local.randomWhyById = randomWhyById
+    }
   }
-  //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRankList: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
+  if (whys.length) addWhysToPointWithWhyRankByWhyIdByPointId(whys)
   const newPointWithWhyRankListList = []
   let updated = false
   for (const pointWithWhyRankList of pointWithWhyRankListList ?? []) {
