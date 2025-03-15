@@ -71,7 +71,6 @@
     "@babel/preset-react": "^7.16.0",
     "@svgr/cli": "^8.1.0",
     "babel-loader": "^8.2.3",
-    "prettier": "3.5.2",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0"
@@ -103,7 +102,8 @@
     "mongodb-memory-server": "^10.1.2",
     "nodemon": "^2.0.15",
     "storybook": "^8.3.6",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.1",
+    "prettier": "^3.0.0"
   },
   "peerDependencies": {
     "civil-client": "github:EnCiv/civil-client",

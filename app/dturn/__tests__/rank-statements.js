@@ -24,9 +24,7 @@ describe('Test ranking scenarios', () => {
     }
     await Promise.all(insertPromises)
 
-    console.log(`Checking if ${USER_ID} exists in discussion...`)
     if (!Discussions[DISCUSSION_ID].Uitems[USER_ID]) {
-      console.log(`Inserting statement for ${USER_ID} to ensure it joins the discussion`)
       await insertStatementId(DISCUSSION_ID, USER_ID, `statement-${USER_ID}`)
     }
   })
@@ -36,8 +34,6 @@ describe('Test ranking scenarios', () => {
     expect(statements).toBeDefined()
     expect(statements.length).toBe(10)
 
-    console.log('Retrieved statements:', statements)
-
     const statement1 = statements[0]
     const statement2 = statements[1]
 
@@ -45,7 +41,6 @@ describe('Test ranking scenarios', () => {
     await rankMostImportant(DISCUSSION_ID, 0, USER_ID, statement2, 1)
 
     const userRecord = getUserRecord(DISCUSSION_ID, USER_ID)
-    console.log('User record after ranking:', JSON.stringify(userRecord, null, 2))
 
     expect(userRecord[0].shownStatementIds[statement1].rank).toBe(1)
     expect(userRecord[0].shownStatementIds[statement2].rank).toBe(1)
