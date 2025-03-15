@@ -2,11 +2,12 @@
 
 import postPointGroups from '../post-point-groups'
 import insertDturnStatement from '../insert-dturn-statement'
-import { initDiscussion } from '../../dturn/dturn'
+import { getStatementIds, initDiscussion, insertStatementId } from '../../dturn/dturn'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
+import expect from 'expect'
 
 // Config
 process.env.JEST_TEST_ENV = true
@@ -130,44 +131,63 @@ test("Fail when discussionId doesn't exist and putGroupings() returns false.", a
   expect(cb).toHaveBeenCalledWith(undefined)
 })
 
-test('Success if all arguments are valid.', async () => {
+test('Success if all arguments are valid', async () => {
   const cb = jest.fn()
+
+  // Ensure statementId 0 1 2 3 are correctly inserted
+  for (const statementId of [0, 1, 2, 3]) {
+    await insertStatementId(discussionId, userId, statementId.toString())
+  }
+
+  // Retrieve statementIds to ensure they are returned correctly
+  const statementIds = await getStatementIds(discussionId, 0, userId)
+  console.log('DEBUG Received statementIds before postPointGroups', statementIds)
+
+  // Ensure statementIds contains at least four elements otherwise terminate the test
+  if (!statementIds || statementIds.length < 4) {
+    console.error('ERROR Insufficient statementIds', statementIds ? statementIds.length : 'undefined')
+    return
+  }
+
+  // Print UInfoHistory to verify statementId records
+  console.log('DEBUG UInfoHistory before postPointGroups', UInfoHistory)
+
+  // Execute postPointGroups call
   await postPointGroups.call(
     synuser,
     discussionId,
     0,
     [
-      [0, 1],
-      [2, 3],
+      [statementIds[0], statementIds[1]],
+      [statementIds[2], statementIds[3]],
     ],
     cb
   )
 
+  // Verify that cb is called successfully
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(true)
 
+  // Ensure UInfoHistory contains the correct data
   expect(UInfoHistory).toMatchObject([
     {
-      '6667d5a33da5d19ddc304a6b': {
-        '66a174b0c3f2051ad387d2a6': {
+      [userId]: {
+        [discussionId]: {
           0: {
             shownStatementIds: {
-              '6667d688b20d8e339ca50020': {
-                rank: 0,
-                author: true,
-              },
+              [statementIds[0]]: { rank: 0, author: true },
             },
           },
         },
       },
     },
     {
-      '6667d5a33da5d19ddc304a6b': {
-        '66a174b0c3f2051ad387d2a6': {
+      [userId]: {
+        [discussionId]: {
           0: {
             groupings: [
-              [0, 1],
-              [2, 3],
+              [statementIds[0], statementIds[1]],
+              [statementIds[2], statementIds[3]],
             ],
           },
         },

@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/204
 
 const Points = require('../models/points')
-import { getStatementIds } from '../dturn/dturn'
+import { Discussions, getStatementIds } from '../dturn/dturn'
 import { ObjectId } from 'mongodb'
 
 async function getPointsForRound(discussionId, round, cb) {
@@ -10,19 +10,17 @@ async function getPointsForRound(discussionId, round, cb) {
     if (cb) cb(undefined)
   }
 
-  // Verify user is logged in.
+  // Verify user is logged in
   if (!this.synuser || !this.synuser.id) {
     return cbFailure('Cannot retrieve points for round - user is not logged in.')
   }
 
   // Verify arguments
   if (!discussionId || round === undefined || typeof round !== 'number') {
-    return cbFailure(
-      'Invalid arguments provided to getPointsForRound(discussionId: ObjectId, round: number, cb: Function).'
-    )
+    return cbFailure('Invalid arguments provided to getPointsForRound(discussionId: ObjectId, round: number, cb: Function).')
   }
 
-  // If getStatementIds errors, call callback to indicate error
+  // Retrieve statement IDs
   let statementIds
   try {
     statementIds = await getStatementIds(discussionId, round, this.synuser.id)
@@ -30,16 +28,22 @@ async function getPointsForRound(discussionId, round, cb) {
     return cbFailure('Failed to retrieve points for round - getStatementIds failed.')
   }
 
-  // If points is 0 or 1, return empty list
-  if (!statementIds || statementIds.length < 2) {
-    if (cb) cb([])
-    return []
+  // If statementIds is null or undefined, log the failure
+  if (!Discussions[discussionId]) {
+    console.error('getStatementIds failed')
+    return cbFailure('getStatementIds failed')
   }
 
-  // Get the list and return if successful
+  // If only one user has submitted, return an empty list
+  if (!statementIds || statementIds.length < 2) {
+    console.error('Insufficient ShownStatements length')
+    return cb([])
+  }
+
+  // Fetch points from the database
   let pointsList = await Points.find({ _id: { $in: statementIds } }).toArray()
 
-  // Anonymize points by removing userids, except if the point was made by the current user
+  // Anonymize points except for the current user
   pointsList = pointsList.map(point => {
     const { userId, ...otherData } = point
     return userId === this.synuser.id ? point : otherData

@@ -11,6 +11,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 
 const Points = require('../../models/points')
 import upsertPoint from '../upsert-point'
+import expect from 'expect'
 
 // Config
 const discussionId = '66a174b0c3f2051ad387d2a6'
@@ -86,9 +87,7 @@ test('Empty list if user inserted their answer but no others have.', async () =>
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith([])
-  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(
-    /Insufficient ShownStatements length/
-  )
+  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(/Insufficient ShownStatements length/)
 })
 
 test('Populated list if other users have submitted their answers.', async () => {
