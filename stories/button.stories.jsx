@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } from '../app/components/button'
 import expect from 'expect'
-import { userEvent, within } from '@storybook/testing-library'
+import { userEvent, within } from '@storybook/test'
 import { onDoneDecorator, onDoneResult } from './common'
+import SvgPlusSign from '../app/svgr/plus-sign'
 
 export default {
   title: 'Button',
@@ -76,7 +77,16 @@ LongPressTest.args = {
   disableOnClick: false,
   children: 'Hover State Button',
 }
-
+export const CreateHoverTest = Template(SecondaryButton).bind({})
+CreateHoverTest.args = {
+  className: 'createhover',
+  onDone: null,
+  title: 'Press me',
+  disabled: false,
+  disableOnClick: false,
+  value: 'create',
+  children: (<> <SvgPlusSign width="2rem" height="1rem" />Create, Hover </>),
+}
 export const OnDoneClicked = {
   args: {
     style: {},
@@ -121,7 +131,7 @@ export const SecondaryFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const ModifierFocus = {
   args: {
@@ -135,7 +145,7 @@ export const ModifierFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const PrimaryFocus = {
   args: {
@@ -149,7 +159,7 @@ export const PrimaryFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const TextFocus = {
   args: {
@@ -163,7 +173,7 @@ export const TextFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}
 
 export const HoverTestFocus = {
   args: {
@@ -178,4 +188,4 @@ export const HoverTestFocus = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button'))
   },
-};
+}

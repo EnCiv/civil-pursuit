@@ -8,17 +8,11 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 function WhyInput(props) {
-  const {
-    point = { subject: '', description: '', _id: '' },
-    value = { subject: '', description: '' },
-    onDone = () => {},
-    className,
-    ...otherProps
-  } = props
+  const { point = { subject: '', description: '', _id: '' }, value, onDone = () => {}, className, ...otherProps } = props
   const classes = useStyles()
 
   const handleOnDone = ({ valid, value }) => {
-    value.parentId = `${point._id}`
+    value && (value.parentId = point._id)
     onDone({ valid, value })
   }
   return (
