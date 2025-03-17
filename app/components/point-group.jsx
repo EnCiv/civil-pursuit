@@ -459,7 +459,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   bottomButtons: {
     boxSizing: 'border-box',
     width: '100%',
-    padding: '1.5rem 1rem 0 1rem',
+    padding: '1rem 1rem 0 1rem',
     display: 'flex',
     '&$bottomButtonsTwo': {
       '& span': {
@@ -490,7 +490,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectPointsContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
-    gap: '3rem',
+    gap: '2rem',
     width: '100%',
   },
 
@@ -507,7 +507,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   selectPointsPassDown: {
     height: '100%',
-    paddingBottom: '0.683rem',
   },
 
   pointWidthButton: {
@@ -520,12 +519,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectButtonRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
     bottom: '1rem',
-    left: 0,
-    width: '88%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 'calc(100% - 3.75rem)',
     padding: '0 1.875rem',
     textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+      padding: '1rem 0',
+      bottom: '0.5rem',
+    },
   },
 
   selectSelectButton: {
