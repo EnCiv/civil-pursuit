@@ -71,7 +71,7 @@ function Tournament(props) {
   })
 
   return (
-    <div className={cx(classes.wrapper, className)} {...otherProps}>
+    <div className={cx(classes.tournament, className)} {...otherProps}>
       <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
       <StepSlider
         key={state.currentRound}
@@ -86,7 +86,7 @@ function Tournament(props) {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  wrapper: {
+  tournament: {
     width: '100%',
   },
   roundTracker: {
