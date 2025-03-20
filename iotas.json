@@ -7,5 +7,135 @@
     "subject": "Join",
     "description": "Join the Civil Server",
     "webComponent": "Join"
+  },
+  {
+    "_id": {
+      "$oid": "67db9da4c6019fba8de3eafe"
+    },
+    "path": "/civilpursuit",
+    "subject": "Civil Pursuit",
+    "description": "Civil Pursuit",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "steps": [
+        { "webComponent": "SignUp" },
+        {
+          "webComponent": "Details",
+          "questions": [["What party are you with"]],
+          "schema": {
+            "type": "object",
+            "properties": {
+              "dateOfBirth": {
+                "title": "Date of Birth",
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/dateOfBirth"
+              }
+            ]
+          }
+        },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please provide a title and short description for your answer"
+              },
+              "question": "startingQuestionAnswerStep",
+              "whyQuestion": "whyQuestionAnswerStep"
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              },
+              "user": {
+                "email": "example@gmail.com",
+                "tempid": "123456"
+              },
+              "round": 1,
+              "lastRound": 2
+            }
+          ]
+        },
+        { "webComponent": "Conclusion" },
+        { "webComponent": "Feedback" }
+      ]
+    }
   }
 ]
