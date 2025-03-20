@@ -2,6 +2,21 @@
 // https://github.com/EnCiv/civil-pursuit/issues/221
 // https://github.com/EnCiv/civil-pursuit/issues/224
 
+/* 
+  Each element in the children array is a row,
+  while each item in each subarray is a component. 
+
+  Defaults to flex display and even spacing.
+  Grouping items together will disable that and justify the row's content.
+
+  Ex. children: [row1, row2] 
+
+  row1 = [[item1, item2]] (nested array, items are all justified left or right)
+  row2 = [item1, item2] (flat array, items are spaced evenly in parent's width)
+
+  See stories in question-box.stories.jsx for examples.
+*/
+
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -93,7 +108,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '1rem 0',
   },
   item: {
+    display: 'flex',
     flex: 1,
+    gap: '1rem',
   },
 }))
 

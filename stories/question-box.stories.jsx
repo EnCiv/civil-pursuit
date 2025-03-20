@@ -5,7 +5,7 @@ import React from 'react'
 import QuestionBox from '../app/components/question-box'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import StatusBadge from '../app/components/status-badge'
-import { PrimaryButton, SecondaryButton } from '../app/components/button.jsx'
+import { PrimaryButton, SecondaryButton, ModifierButton } from '../app/components/button.jsx'
 
 export default {
   component: QuestionBox,
@@ -70,7 +70,7 @@ WithChildren.args = {
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
   contentAlign: 'left',
   children: [
-    [<StatusBadge status="Progress" name="1009 participants" />, <StatusBadge status="Complete" name="Complete" />],
+    [[<StatusBadge name="509 participants" />, <StatusBadge status="Complete" name="Complete" />]],
     [
       <PrimaryButton title="View Summary" style={{ width: 100 + '%' }}>
         View Summary
@@ -78,6 +78,21 @@ WithChildren.args = {
       <SecondaryButton title="View My Activity" style={{ width: 100 + '%' }}>
         View My Activity
       </SecondaryButton>,
+    ],
+  ],
+}
+
+export const WithChildren2 = Template.bind({})
+WithChildren2.args = {
+  subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
+  description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
+  contentAlign: 'left',
+  children: [
+    [[<StatusBadge name="509 participants" />, <StatusBadge status="Progress" name="Round 3" />]],
+    [
+      <ModifierButton title="View Summary" style={{ width: 100 + '%' }}>
+        View Summary
+      </ModifierButton>,
     ],
   ],
 }
