@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/100
 // https://github.com/EnCiv/civil-pursuit/issues/221
+// https://github.com/EnCiv/civil-pursuit/issues/224
+
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -7,9 +9,8 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', participants = 0, contentAlign = 'center', tagline = '', ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', children = [], ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
-  const badgeName = `${participants} participants`
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
@@ -19,9 +20,11 @@ const QuestionBox = props => {
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
         </div>
-      </div>
-      <div className={classes.participants}>
-        <StatusBadge name={badgeName} status="" />
+        <div className={classes.children}>
+          {children?.map(row => (
+            <div className={classes.row}>{row.length ? row.map(item => <div className={classes.item}>{item}</div>) : row}</div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -83,11 +86,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
   },
-
-  participants: {
+  children: {},
+  row: {
     display: 'flex',
-    alignItems: 'center',
-    paddingTop: '1.6875rem',
+    gap: '1rem',
+    padding: '1rem 0',
+  },
+  item: {
+    flex: 1,
   },
 }))
 
