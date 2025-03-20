@@ -1,5 +1,22 @@
 // https://github.com/EnCiv/civil-pursuit/issues/100
 // https://github.com/EnCiv/civil-pursuit/issues/221
+// https://github.com/EnCiv/civil-pursuit/issues/224
+
+/* 
+  Each element in the children array is a row,
+  while each item in each subarray is a component. 
+
+  Defaults to flex display and even spacing.
+  Grouping items together will disable that and justify the row's content.
+
+  Ex. children: [row1, row2] 
+
+  row1 = [[item1, item2]] (nested array, items are all justified left or right)
+  row2 = [item1, item2] (flat array, items are spaced evenly in parent's width)
+
+  See stories in question-box.stories.jsx for examples.
+*/
+
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -7,9 +24,8 @@ import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', participants = 0, contentAlign = 'center', tagline = '', ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', children = [], ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
-  const badgeName = `${participants} participants`
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
@@ -19,9 +35,11 @@ const QuestionBox = props => {
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
         </div>
-      </div>
-      <div className={classes.participants}>
-        <StatusBadge name={badgeName} status="" />
+        <div className={classes.children}>
+          {children?.map(row => (
+            <div className={classes.row}>{row.length ? row.map(item => <div className={classes.item}>{item}</div>) : row}</div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -83,11 +101,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
   },
-
-  participants: {
+  children: {},
+  row: {
     display: 'flex',
-    alignItems: 'center',
-    paddingTop: '1.6875rem',
+    gap: '1rem',
+    padding: '1rem 0',
+  },
+  item: {
+    display: 'flex',
+    flex: 1,
+    gap: '1rem',
   },
 }))
 
