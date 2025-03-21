@@ -91,7 +91,11 @@ const PointGroup = props => {
                 {groupedPoints?.map(pD => {
                   return (
                     <div key={pD._id} className={classes.selectPoints}>
-                      <Point point={pD} vState={pD._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
+                      <Point
+                        point={pD}
+                        vState={pD._id === selected ? 'selected' : 'default'}
+                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                      >
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -210,7 +214,11 @@ const PointGroup = props => {
                   {groupedPoints.map((pD, leadIndex) => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point point={pD} vState={'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
+                        <Point
+                          point={pD}
+                          vState={'default'}
+                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                        >
                           <div className={cx(classes.pointWidthButton, classes.selectLeadButton)}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton
