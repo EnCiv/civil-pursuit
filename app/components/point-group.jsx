@@ -378,6 +378,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   contentContainer: {
     backgroundColor: `${theme.colors.pointDefault} !important`,
+    outline: `0.1875rem solid ${theme.colors.pointDefault} !important`,
     padding: '2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
