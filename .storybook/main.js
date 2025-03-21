@@ -5,14 +5,7 @@ const config = {
   stories: [
     '../stories/**/*.stories.@(js|jsx|ts|tsx)', // Correct path to the stories folder
   ],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    '@storybook/addon-a11y',
-    '@storybook/addon-viewport',
-    '@storybook/addon-webpack5-compiler-babel',
-  ],
+  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-interactions', '@storybook/addon-a11y', '@storybook/addon-viewport', '@storybook/addon-webpack5-compiler-babel'],
   framework: {
     name: '@storybook/react-webpack5',
     options: {},
@@ -20,7 +13,9 @@ const config = {
   docs: {},
   webpackFinal: async config => {
     const storyDevConfig = { ...webpackDevConfig, entry: undefined, output: undefined } // to be set by storybook
+    storyDevConfig.module.rules = storyDevConfig.module.rules.filter(rule => rule.use !== 'css-loader') // there is already a css loader rule in storybook and the on in dev cause a problem here
     const newConfig = merge(config, storyDevConfig)
+    console.log('newConfig', JSON.stringify(newConfig, null, 2))
     return newConfig
   },
 }
