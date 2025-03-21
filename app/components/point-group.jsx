@@ -91,11 +91,7 @@ const PointGroup = props => {
                 {groupedPoints?.map(pD => {
                   return (
                     <div key={pD._id} className={classes.selectPoints}>
-                      <Point
-                        point={pD}
-                        vState={pD._id === selected ? 'selected' : 'default'}
-                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                      >
+                      <Point point={pD} vState={pD._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the heigth calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -412,15 +408,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   ungroupButton: {
+    flex: '1 1 auto',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '9rem',
+      maxWidth: '9rem',
+      paddingLeft: '4rem',
     },
   },
 
   doneButton: {
     width: '17rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '12rem',
+      width: '16rem',
     },
   },
 
@@ -433,7 +431,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '5rem',
   },
 
-  bottomButtonsTwo: {},
+  bottomButtonsTwo: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    '& span': {
+      flex: '1 1 auto',
+      textAlign: 'center',
+      minWidth: '9rem',
+    },
+  },
   bottomButtonsOne: {},
 
   bottomButtons: {
@@ -470,22 +477,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   selectPointsContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
-    gap: '2rem',
-    width: '100%',
   },
 
   selectPoints: {
     position: 'relative',
-    flex: '1 1 41%',
-    height: 'inherit',
+    flex: '1 1 auto',
+    padding: '0rem 0.5rem !important',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
-      margin: '1rem 0',
+      margin: '0.5rem 0',
     },
   },
 
   selectPointsPassDown: {
-    height: '100%',
+    height: '95%',
   },
 
   pointWidthButton: {
