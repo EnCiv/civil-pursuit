@@ -9,7 +9,7 @@ import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { H, Level } from 'react-accessible-headings'
-import DemInfo from './dem-info.jsx'
+import DemInfo from './dem-info'
 
 const Point = forwardRef((props, ref) => {
   const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
