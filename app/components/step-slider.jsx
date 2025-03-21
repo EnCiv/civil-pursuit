@@ -16,7 +16,6 @@ if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/sty
 const delayedSideEffect = setTimeout // basically put the side effect on the process queue and do it later
 const allResizeHandlers = []
 const callAllResizeHandlers = () => {
-  console.info('callAllHandlers', allResizeHandlers.length)
   allResizeHandlers.forEach(handler => setTimeout(handler))
 }
 
@@ -35,7 +34,6 @@ export const StepSlider = props => {
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
   const resizeHandler = useCallback(() => {
-    console.info('resizeHandler', resizeHandlerIndex)
     if (outerRef.current) {
       let rect = outerRef.current.getBoundingClientRect()
       rect.innerHeight = window.innerHeight
