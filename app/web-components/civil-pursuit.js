@@ -4,6 +4,8 @@ import React, { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
+import { DeliberationContextProvider } from '../components/deliberation-context'
+
 import QuestionBox from '../components/question-box'
 import StepSlider from '../components/step-slider'
 import SignUp from '../components/sign-up'
@@ -45,19 +47,22 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
 
   return (
-    <div className={cx(classes.civilPursuit, className)} {...otherProps}>
-      <QuestionBox className={classes.question} subject={subject} description={description} />
-      <StepSlider
-        children={buildChildren(steps)}
-        onDone={valid => {
-          // We're done!
-        }}
-      />
-    </div>
+    <DeliberationContextProvider defaultValue={{}}>
+      <div className={cx(classes.civilPursuit, className)} {...otherProps}>
+        <QuestionBox className={classes.question} subject={subject} description={description} />
+        <StepSlider
+          children={buildChildren(steps)}
+          onDone={valid => {
+            // We're done!
+          }}
+          user={user}
+        />
+      </div>
+    </DeliberationContextProvider>
   )
 }
 
