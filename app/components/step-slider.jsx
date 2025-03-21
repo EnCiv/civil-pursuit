@@ -172,7 +172,7 @@ export const StepSlider = props => {
     }
   }, [state.sendDoneToParent])
   return (
-    <div className={className} style={{ height: outerRect.height + navBarRect.height, width: '100%' }}>
+    <div className={className} style={{ height: outerRect.height + navBarRect.height + footerRect.height, width: '100%' }}>
       <div className={classes.outerWrapper} ref={outerRef}>
         {steps && (
           <div ref={navRef} className={classes.wrapper}>
