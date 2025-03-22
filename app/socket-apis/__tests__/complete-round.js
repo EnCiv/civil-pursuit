@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/212
-const dturn = require('../../dturn/dturn')
-const completeRound = require('../complete-round')
+import dturn from '../../dturn/dturn'
+import completeRound from '../complete-round'
 const { insertStatementId, getStatementIds } = dturn
 
 const userId = '7b4c3a5e8d1f2b9c'

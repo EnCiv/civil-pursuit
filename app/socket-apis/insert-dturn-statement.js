@@ -7,7 +7,7 @@ import { insertStatementId } from '../dturn/dturn'
 import upsertPoint from './upsert-point'
 import { ObjectId } from 'mongodb'
 
-async function insertDturnStatement(dTurnId, pointObj, cb) {
+export default async function insertDturnStatement(dTurnId, pointObj, cb) {
   // Anonymous functions to handle success/fail
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
@@ -54,5 +54,3 @@ async function insertDturnStatement(dTurnId, pointObj, cb) {
 
   await upsertPoint.call({ synuser: this.synuser }, pointObj, pointInsertCb)
 }
-
-module.exports = insertDturnStatement

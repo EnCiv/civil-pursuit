@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/178
 
-const Joi = require('joi')
+import Joi from 'joi'
 import { putGroupings } from '../dturn/dturn'
 
 const schema = Joi.object({
@@ -8,7 +8,7 @@ const schema = Joi.object({
   groupings: Joi.array().max(99).items(Joi.array().max(99)).required(),
 })
 
-async function postPointGroups(discussionId, round, groupings, cb) {
+export default async function postPointGroups(discussionId, round, groupings, cb) {
   // Anonymous functions to handle success/fail
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
@@ -42,12 +42,10 @@ async function postPointGroups(discussionId, round, groupings, cb) {
 
   // Ensure no subarray has only 1 object
   for (let index = 0; index < groupings.length; index++) {
-    if (groupings[index].length == 1)
-      return cbFailure(`Groupings contains a subarr with only 1 object - ${groupings[index]}`)
+    if (groupings[index].length == 1) return cbFailure(`Groupings contains a subarr with only 1 object - ${groupings[index]}`)
   }
 
   // Call putGroupings() and check for success
   let putSuccess = await putGroupings(discussionId, round, this.synuser.id, groupings)
   return putSuccess ? cbSuccess() : cbFailure('The call to putGroupings() did not complete successfully.')
 }
-module.exports = postPointGroups

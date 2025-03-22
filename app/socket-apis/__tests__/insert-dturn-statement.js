@@ -8,9 +8,9 @@ import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 
-const { BSON } = require('bson')
+import { BSON } from 'bson'
 
-const Points = require('../../models/points')
+import Points from '../../models/points'
 
 // Config
 

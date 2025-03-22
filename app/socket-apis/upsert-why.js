@@ -1,14 +1,14 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
 // https://github.com/EnCiv/civil-pursuit/issues/210
 
-const Joi = require('joi')
-const Points = require('../models/points')
+import Joi from 'joi'
+import Points from '../models/points'
 
-const schema= Joi.object({
+const schema = Joi.object({
   category: Joi.string().valid('most', 'least', 'neutral').required(),
 })
 
-async function upsertWhy(pointObj, cb) {
+export default async function upsertWhy(pointObj, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('upsertWhy called but no user logged in')
     return cb && cb(null) // No user logged in
@@ -17,10 +17,10 @@ async function upsertWhy(pointObj, cb) {
   pointObj.userId = userId // Add userId to the document
 
   // Joi validation for the category
-  const { error } = schema.validate({ category: pointObj.category });
+  const { error } = schema.validate({ category: pointObj.category })
   if (error) {
-    console.error('Validation error in upsertWhy:', error.details[0].message);
-    return cb && cb(null); // Return validation error
+    console.error('Validation error in upsertWhy:', error.details[0].message)
+    return cb && cb(null) // Return validation error
   }
 
   const validation = Points.validate(pointObj)
@@ -30,13 +30,11 @@ async function upsertWhy(pointObj, cb) {
   }
 
   try {
-    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true });
-    const updatedDoc = await Points.findOne({ _id: pointObj._id });
-    cb(updatedDoc);
+    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true })
+    const updatedDoc = await Points.findOne({ _id: pointObj._id })
+    cb(updatedDoc)
   } catch (error) {
-    console.error(error);
-    cb(null); // Return null indicating an error
+    console.error(error)
+    cb(null) // Return null indicating an error
   }
 }
-
-module.exports = upsertWhy

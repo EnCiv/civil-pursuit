@@ -5,9 +5,9 @@ import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
 
 import { subscribeEventName } from './socket-api-subscribe'
-const Dturns = require('../models/dturns')
+import Dturns from '../models/dturns'
 
-async function subscribeDeliberation(deliberationId, requestHandler) {
+export default async function subscribeDeliberation(deliberationId, requestHandler) {
   const socket = this // making it clear this is a socket
   const server = this.server // don't reference "this" in the UInfoUpdate handler.
   const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
@@ -56,4 +56,3 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
   })*/
   requestHandler({ participants: Object.keys(Discussions[deliberationId].Uitems[this.synuser.id] || []).length })
 }
-module.exports = subscribeDeliberation
