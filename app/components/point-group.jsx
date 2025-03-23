@@ -530,7 +530,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0 1.875rem',
     textAlign: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '100%',
+      width: 'calc(100% - 3.75rem)',
       padding: '1rem 0',
       bottom: '0.5rem',
     },
