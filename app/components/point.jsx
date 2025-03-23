@@ -2,7 +2,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/76
 // https://github.com/EnCiv/civil-pursuit/issues/80
 // https://github.com/EnCiv/civil-pursuit/issues/140
-// https://github.com/EnCiv/civil-pursuit/issues/256
 // https://github.com/EnCiv/civil-pursuit/issues/251
 
 'use strict'
@@ -144,7 +143,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxShadow: 'none !important',
     backgroundColor: 'rgba(235, 235, 235, 0.30)',
     '& $contentContainer': {
-      padding: '1.25rem',
+      padding: '0.25rem 1.25rem',
     },
   },
   secondaryBorder: {
@@ -181,6 +180,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   disabledDescription: {
     color: theme.colors.title,
   },
+  collapsedDescription: {
+    display: 'none',
+  },
 
   // shared styling
   sharedBorderStyle: {
@@ -191,7 +193,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...theme.font,
     fontSize: '1.25rem',
     fontWeight: '400',
-    lineHeight: '1rem',
+    marginBlockStart: '.3925rem',
+    lineHeight: '1.5em',
+    marginBlockEnd: '.3925rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,
