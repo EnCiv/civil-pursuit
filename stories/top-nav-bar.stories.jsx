@@ -203,3 +203,52 @@ export const VariableParentDiv = () => {
     </div>
   )
 }
+
+export const VerticalEmpty = () => {
+  return <TopNavBar mode="vertical" />
+}
+
+export const Vertical3MenuOption = {
+  args: {
+    menu: [createMenuItem('Home'), createMenuItem('Discussion Portal'), createMenuItem('Blog')],
+    mode: 'vertical',
+  },
+}
+
+export const Vertical5MenuOption = {
+  args: {
+    menu: menuArray,
+    mode: 'vertical',
+  },
+}
+
+export const VerticalDefaultSelectedAbout = {
+  args: {
+    menu: menuArray,
+    defaultSelectedItem: 'About',
+    mode: 'vertical',
+  },
+}
+// Story to test TopNavBar in horizontal mode
+export const HorizontalMode = () => {
+  // Force the body width to 100% to override any existing styles
+  document.getElementsByTagName('body')[0].style.width = '100%'
+
+  return (
+    <div style={{ backgroundColor: 'lightblue', width: '100%' }}>
+      <TopNavBar menu={menuArray} mode="horizontal" />
+    </div>
+  )
+}
+
+// Story to test TopNavBar in vertical mode
+export const VerticalMode = () => {
+  // Force the body width to 100% to override any existing styles
+  document.getElementsByTagName('body')[0].style.width = '100%'
+
+  return (
+    <div style={{ backgroundColor: 'lightblue', width: '100%' }}>
+      <TopNavBar menu={menuArray} mode="vertical" />
+    </div>
+  )
+}

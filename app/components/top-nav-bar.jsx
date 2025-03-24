@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/52
 // https://github.com/EnCiv/civil-pursuit/issues/144
 // https://github.com/EnCiv/civil-pursuit/issues/182
+// https://github.com/EnCiv/civil-pursuit/issues/222
 
 'use strict'
 
@@ -57,14 +58,17 @@ const TopNavBar = props => {
       }
     }
   }
+
+  const isVerticalMode = mode === 'vertical'
+
   return (
-    <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
-      <div className={classes.columnAligner}>
-        <div className={`${classes.navBarContainer}`}>
+    <div className={cx(classes.topNavBar, classes.colors, className, { [classes.verticalNavBar]: isVerticalMode })} {...otherProps}>
+      <div className={cx(classes.columnAligner, { [classes.verticalColumnAligner]: isVerticalMode })}>
+        <div className={`${classes.navBarContainer} ${isVerticalMode ? classes.verticalNavBarContainer : ''}`}>
           {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
 
           {/* This is the computer menu */}
-          <menu className={classes.menuContainer}>
+          <menu className={cx(classes.menuContainer, { [classes.verticalMenuContainer]: isVerticalMode })}>
             {menu &&
               menu.map((item, index) =>
                 Array.isArray(item) ? (
@@ -78,7 +82,7 @@ const TopNavBar = props => {
                     >
                       {item[0].name} {'\u25BE'}
                       {openDropdown === index && (
-                        <div className={classes.dropdownMenu}>
+                        <div className={cx(classes.dropdownMenu, { [classes.verticalDropdownMenu]: isVerticalMode })}>
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
@@ -224,7 +228,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       }
     })(),
   }),
-
+  verticalNavBar: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
   columnAligner: props => ({
     width: '100%',
     display: 'flex',
@@ -233,6 +240,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     maxWidth: theme.maxPanelWidth,
   }),
+  verticalColumnAligner: {
+    alignItems: 'flex-start',
+  },
   donate: {
     padding: '0 0 0 1rem',
   },
@@ -246,6 +256,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     padding: '0.5rem',
     position: 'relative',
+  },
+  verticalNavBarContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   logo: {
     width: '8.5rem',
@@ -268,12 +282,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
   },
+  verticalMenuContainer: {
+    position: 'static',
+    transform: 'none',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
   mobileMenuContainer: props => ({
     padding: '1.25rem 1.25rem',
     display: 'flex',
     width: '80%',
-    background:
-      props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    background: props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
     flexDirection: 'column',
     justifyContent: 'left',
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -330,6 +349,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
   }),
+  verticalDropdownMenu: {
+    position: 'static',
+    marginTop: '0.5rem',
+  },
   mobileDropdownMenu: {
     display: 'flex',
     flexDirection: 'column',
