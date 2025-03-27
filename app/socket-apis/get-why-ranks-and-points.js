@@ -33,34 +33,30 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
 
     // If no ranks exist, fetch random whys directly
     if (ranks.length === 0) {
-      console.log('Ranks are empty. Fetching random whys directly.')
       const mostWhysPromises = mostIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'most', WHY_FETCH_COUNT, resolve)))
       const leastWhysPromises = leastIds.map(id => new Promise(resolve => getRandomWhys.call(this, id, 'least', WHY_FETCH_COUNT, resolve)))
 
-      const mostWhys = (await Promise.all(mostWhysPromises)).flat()
-      const leastWhys = (await Promise.all(leastWhysPromises)).flat()
+      const mostLeastWhys = await Promise.all(mostWhysPromises.concat(leastWhysPromises))
 
-      return cb({ ranks: [], whys: [...mostWhys, ...leastWhys] })
+      return cb({ ranks: [], whys: mostLeastWhys.flat() })
     }
 
     // Step 2: Extract parentIds from ranks
-    const parentIds = ranks.map(rank => rank.parentId.toString())
+    const parentIds = Array.from(new Set(ranks.map(rank => rank.parentId)).values()) // remove duplicates
 
     // Step 3: Fetch points based on parentIds
-    const points = await Points.find({ _id: { $in: parentIds } }).toArray()
+    const previousWhys = await Points.find({ _id: { $in: parentIds } }).toArray()
 
     // Step 4: Check if all mostIds and leastIds have corresponding why-points
-    const pointsWithWhys = new Set(points.map(point => point.parentId.toString()))
+    const pointsWithWhys = new Set(previousWhys.map(point => point.parentId))
 
-    const missingMostIds = mostIds.filter(id => !pointsWithWhys.has(id.toString()))
-    console.log('missingMostIds:', missingMostIds)
-    const missingLeastIds = leastIds.filter(id => !pointsWithWhys.has(id.toString()))
-    console.log('missingLeastIds:', missingLeastIds)
+    const missingMostIds = mostIds.filter(id => !pointsWithWhys.has(id))
+
+    const missingLeastIds = leastIds.filter(id => !pointsWithWhys.has(id))
 
     if (!missingMostIds.length && !missingLeastIds.length) {
-      console.log('All mostIds and leastIds have corresponding why-points.')
       // If all parentIds have corresponding why-points, return ranks and points
-      return cb({ ranks, whys: points })
+      return cb({ ranks, whys: previousWhys })
     }
 
     // Step 5: Fetch missing whys using getRandomWhys
@@ -70,7 +66,7 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
     const mostWhys = (await Promise.all(mostWhysPromises)).flat()
     const leastWhys = (await Promise.all(leastWhysPromises)).flat()
 
-    const allWhys = [...mostWhys, ...leastWhys]
+    const allWhys = [...previousWhys, ...mostWhys, ...leastWhys]
 
     // Combine existing and new points
     return cb({ ranks, whys: allWhys })
