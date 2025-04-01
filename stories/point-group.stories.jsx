@@ -184,43 +184,51 @@ export const selectLeadUngroupOnDone = {
         value: {
           removedPgs: [
             {
-              _id: '2',
-              subject: 'Point 2',
-              description: 'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
-              demInfo: {
-                dob: '1980-10-20T00:00:00.000Z',
-                state: 'GA',
-                party: 'Independent',
+              point: {
+                _id: '2',
+                subject: 'Point 2',
+                description: 'Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, Point 2 Description, ',
+                demInfo: {
+                  dob: '1980-10-20T00:00:00.000Z',
+                  state: 'GA',
+                  party: 'Independent',
+                },
               },
             },
             {
-              _id: '3',
-              subject: 'Point 3',
-              description: 'Point 3 Description',
-              demInfo: {
-                dob: '1995-10-20T00:00:00.000Z',
-                state: 'CA',
-                party: 'Independent',
+              point: {
+                _id: '3',
+                subject: 'Point 3',
+                description: 'Point 3 Description',
+                demInfo: {
+                  dob: '1995-10-20T00:00:00.000Z',
+                  state: 'CA',
+                  party: 'Independent',
+                },
               },
             },
             {
-              _id: '4',
-              subject: 'Point 4',
-              description: 'Point 4 Description',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
+              point: {
+                _id: '4',
+                subject: 'Point 4',
+                description: 'Point 4 Description',
+                demInfo: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
               },
             },
             {
-              _id: '6',
-              subject: 'Point 6',
-              description: 'Point 6 Description',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
+              point: {
+                _id: '6',
+                subject: 'Point 6',
+                description: 'Point 6 Description',
+                demInfo: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
               },
             },
           ],

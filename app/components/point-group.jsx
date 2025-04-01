@@ -69,7 +69,12 @@ const PointGroup = props => {
                 setPg({})
                 onDone({
                   valid: true,
-                  value: { pointGroup: undefined, removedPgs: group },
+                  value: {
+                    pointGroup: undefined,
+                    removedPgs: group.map(point => ({
+                      point,
+                    })),
+                  },
                 })
               }}
             >
@@ -81,15 +86,15 @@ const PointGroup = props => {
           {expanded && (
             <Level>
               <div className={classes.selectPointsContainer}>
-                {group?.map(pGD => {
+                {group?.map(pD => {
                   return (
-                    <div key={pGD.point._id} className={classes.selectPoints}>
+                    <div key={pD._id} className={classes.selectPoints}>
                       <Point
-                        point={pGD.point}
-                        vState={pGD.point._id === selected ? 'selected' : 'default'}
+                        point={pD}
+                        vState={pD._id === selected ? 'selected' : 'default'}
                         className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
                         onClick={() => {
-                          setSelected(pGD.point._id)
+                          setSelected(pD._id)
                         }}
                       >
                         <div className={classes.invisibleElement}>
@@ -100,13 +105,13 @@ const PointGroup = props => {
                           {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
-                            className={cx(classes.selectSelectButton, pGD.point._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${pGD.point.subject}`}
+                            className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${pD.subject}`}
                             children={`Select as Lead`}
                             disabled={false}
                             disableOnClick={false}
                             onDone={() => {
-                              setSelected(pGD.point._id)
+                              setSelected(pD._id)
                             }}
                           />
                         </div>
@@ -126,20 +131,11 @@ const PointGroup = props => {
                 children="Done"
                 onDone={() => {
                   const [p, g] = group.reduce(
-                    ([p, g], pGD) => {
-                      if (pGD.point._id === selected) {
-                        p = pGD.point
-                        // need to flatten groupedPoints so children to not have children
-                        if (pGD.group) {
-                          g.push(...pGD.group)
-                        }
+                    ([p, g], pD) => {
+                      if (pD._id === selected) {
+                        p = pD
                       } else {
-                        g.push(pGD.point)
-                        // need to flatten groupedPoints so children to not have children
-                        if (pGD.group) {
-                          g.push(...pGD.group)
-                          delete pGD.group
-                        }
+                        g.push(pD)
                       }
                       return [p, g]
                     },
