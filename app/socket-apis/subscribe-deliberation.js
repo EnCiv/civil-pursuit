@@ -37,7 +37,7 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
           await Dturns.upsert(synuserId, deliberationId, 0, round, shownStatementIds, groupings || [])
         },
         getAllUInfo: async () => {
-          return await Dturns.getAllFromDiscussion()
+          return await Dturns.getAllFromDiscussion(deliberationId)
         },
         updates: updateData => {
           server.to(deliberationId).emit(eventName, updateData)
@@ -49,7 +49,7 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
       return console.error(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
     }
   }
-  socket.join(deliberationId) // subsribe this user to the room for this deliberation
+  socket.join(deliberationId) // subscribe this user to the room for this deliberation
   /* if we need to do anything when the user disconnects
   socket.on('disconnecting',()=>{
     // remove the user 

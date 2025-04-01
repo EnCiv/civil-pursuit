@@ -18,8 +18,8 @@ export default async function insertDturnStatement(dTurnId, pointObj, cb) {
   }
 
   // Verify arguments
-  if (arguments.length != 3) {
-    return console.error(`Expected 3 arguments (dTurnId, pointObj, cb) but got ${arguments.length}.`)
+  if (arguments.length < 2 || arguments.length > 3) {
+    return console.error(`Expected 2 or 3 arguments (dTurnId, pointObj, cb) but got ${arguments.length}.`)
   }
 
   // Verify user is logged in.
@@ -48,7 +48,7 @@ export default async function insertDturnStatement(dTurnId, pointObj, cb) {
     if (success) {
       cbSuccess()
     } else {
-      cbFailure('An error occured inserting the pointObj.')
+      cbFailure('An error occurred inserting the pointObj.')
     }
   }
 

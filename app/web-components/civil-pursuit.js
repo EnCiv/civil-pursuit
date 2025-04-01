@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/152
 
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -47,7 +47,7 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
 
   return (
@@ -60,6 +60,7 @@ function CivilPursuit(props) {
             // We're done!
           }}
           user={user}
+          discussionId={_id}
         />
       </div>
     </DeliberationContextProvider>
