@@ -12,8 +12,10 @@ export function DeliberationContextProvider(props) {
   })
   const upsert = useCallback(
     obj => {
+      let messages = data._showUpsertDeltas ? [] : undefined
       setData(data => {
-        let newData = setOrDeleteByMutatePath(data, obj)
+        let newData = setOrDeleteByMutatePath(data, obj, messages)
+        if (messages) console.info('context update:', messages)
         newData = deriveReducedPointList(newData, local)
         return newData // is a new ref is there were changes above, or may be the original ref if no changes
       })

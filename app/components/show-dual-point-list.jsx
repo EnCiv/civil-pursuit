@@ -5,18 +5,11 @@ import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from './point-group'
+import Point from './point'
 import { ModifierButton } from './button'
 import { H, Level } from 'react-accessible-headings'
 
-export default function ShowDualPointList({
-  className,
-  leftPoints = [],
-  leftHeader,
-  rightPoints = [],
-  rightHeader,
-  vState,
-  ...otherProps
-}) {
+export default function ShowDualPointList({ className, leftPoints = [], leftHeader, rightPoints = [], rightHeader, vState, ...otherProps }) {
   const classes = useStylesFromThemeFunction()
   const [isExpanded, setIsExpanded] = useState(vState === 'expanded')
   const toggleExpandCollapse = () => setIsExpanded(!isExpanded)
@@ -39,16 +32,8 @@ export default function ShowDualPointList({
               const rightPoint = rightPoints[index]
               return (
                 <React.Fragment key={leftPoint?._id || rightPoint?._id}>
-                  <PointGroup
-                    pointDoc={leftPoint || {}}
-                    vState={isExpanded ? 'default' : 'collapsed'}
-                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                  />
-                  <PointGroup
-                    pointDoc={rightPoint || {}}
-                    vState={isExpanded ? 'default' : 'collapsed'}
-                    className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)}
-                  />
+                  <Point point={leftPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
+                  <Point point={rightPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
                 </React.Fragment>
               )
             })}
@@ -126,7 +111,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       backgroundColor: 'transparent',
       '& div': {
         padding: '0.1rem',
-        marginBottom: '1rem',
       },
       '&:hover': {
         outline: 'none !important',
