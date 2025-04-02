@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/253
 // https://github.com/EnCiv/civil-pursuit/issues/256
 
 'use strict'
@@ -227,7 +228,7 @@ const PointGroup = props => {
                             })
                           }}
                         >
-                          <div className={classes.pointBottomButtons}>
+                          <div className={cx(classes.pointWidthButton, classes.selectLeadButton)}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton className={classes.pointWidthButton} title={`Select as Lead: ${pD.subject}`} children={`Select as Lead`} onDone={doSelectLead} disabled={false} disableOnClick={false} />
                             </div>
@@ -375,6 +376,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   contentContainer: {
+    backgroundColor: `${theme.colors.pointDefault} !important`,
+    outline: `0.1875rem solid ${theme.colors.pointDefault} !important`,
     padding: '2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
@@ -383,6 +386,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '1.1875rem 0.875rem',
+    },
   },
 
   defaultWidth: {
@@ -404,12 +410,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  ungroupButton: {},
+  ungroupButton: {
+    flex: '1 1 auto',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      maxWidth: '9rem',
+      paddingLeft: '4rem',
+    },
+  },
 
   doneButton: {
     width: '17rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '7rem',
+      width: '16rem',
     },
   },
 
@@ -419,9 +431,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: '#5d5d5d',
     fontWeight: '600',
     lineHeight: '1.5rem',
+    marginTop: '5rem',
   },
 
-  bottomButtonsTwo: {},
+  bottomButtonsTwo: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    '& span': {
+      flex: '1 1 auto',
+      textAlign: 'center',
+      minWidth: '9rem',
+    },
+  },
   bottomButtonsOne: {},
   secondaryButton: {
     width: '40%',
@@ -433,8 +455,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   bottomButtons: {
     boxSizing: 'border-box',
     width: '100%',
-    padding: '1rem 1rem 0 1rem',
+    padding: '0rem 1rem 0 1rem',
     display: 'flex',
+    marginTop: '1rem',
     '&$bottomButtonsTwo': {
       '& span': {
         flex: '0 0 50%',
@@ -465,17 +488,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
     gap: '2rem',
-    width: '100%',
   },
 
   selectPoints: {
     position: 'relative',
-    flex: '1 1 41%',
-    height: 'inherit',
-    // margin: '1rem 1.5rem',
+    flex: '1 1 auto',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
-      margin: '1rem 0',
+      margin: '0.5rem 0',
     },
   },
 
@@ -484,7 +504,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   pointWidthButton: {
-    margin: '.5rem',
+    width: '100%',
+    textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+    },
+  },
+
+  selectLeadButton: {
+    marginTop: '1rem',
   },
 
   invisibleElement: {

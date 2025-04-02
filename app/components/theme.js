@@ -62,6 +62,7 @@ const Theme = {
     svgArrow: 'rgb(206, 206, 206)',
     transparent: 'transparent',
     tabSelected: '#DCE8F2',
+    pointDefault: '#FFFFFF',
     focusRing: 'rgba(74, 144, 226, 0.2)',
     radioButtonSelected: '#08447B',
     radioButtonUnselected: '#5D5D5C',
