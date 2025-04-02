@@ -1,12 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/207
 
-const Points = require('../models/points')
-const Ranks = require('../models/ranks')
-const getRandomWhys = require('./get-random-whys')
+import Points from '../models/points'
+import Ranks from '../models/ranks'
+import getRandomWhys from './get-random-whys'
 
 const WHY_FETCH_COUNT = 5 // Number of "whys" to fetch when an ID has none
 
-async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) {
+export default async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb({ ranks: [], whys: [] })
@@ -74,5 +74,3 @@ async function getWhyRanksAndPoints(discussionId, round, mostIds, leastIds, cb) 
     return cbFailure('Failed to retrieve ranks and points.')
   }
 }
-
-module.exports = getWhyRanksAndPoints
