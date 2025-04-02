@@ -125,7 +125,7 @@ const useStyles = createUseStyles(theme => ({
 export function derivePointWithWhyRankListLisyByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
-  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId } = data
+  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByParentId } = data
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
   if (local.reducedPointList !== reducedPointList) {
@@ -139,8 +139,8 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
     }
     local.reducedPointList = reducedPointList
   }
-  if (local.randomWhyById !== randomWhyById || local.whyRankByParentId !== whyRankByParentId) {
-    for (const why of Object.values(randomWhyById)) {
+  function addWhysToPointWithWhyRankByWhyIdByPointId(whys) {
+    for (const why of Object.values(whys)) {
       if (why.category !== category) continue
       if (!pointWithWhyRankByWhyIdByPointId[why.parentId]) continue // a why's parent not here
       if (pointWithWhyRankByWhyIdByPointId[why.parentId]?.whyRankByWhyId[why._id]?.why !== why) {
@@ -154,10 +154,27 @@ export function derivePointWithWhyRankListLisyByCategory(data, category) {
         updatedPoints[why.parentId] = true
       }
     }
-    local.randomWhyById = randomWhyById
-    local.whyRankByParentId = whyRankByParentId
   }
-  //const newPointWithWhyRankListList=Object.values(pointWithWhyRankByWhyIdByPointId).map(pointWithWhyRankByParentId=>({point: pointWithWhyRankByParentId.point, whyRankList: Object.values(pointWithWhyRankByParentId.whyRankByParentId)}))
+  const whys = []
+  if (local.whyRankByParentId !== whyRankByParentId) {
+    // if rank changes we have to go through them all
+    whys.push(...Object.values(myWhyByParentId ?? {}))
+    whys.push(...Object.values(randomWhyById ?? {}))
+    local.whyRankByParentId = whyRankByParentId
+    local.randomWhyById = randomWhyById
+    local.myWhyByParentId = myWhyByParentId
+  } else {
+    // get myWhys too
+    if (local.myWhyByParentId !== myWhyByParentId) {
+      whys.push(...Object.values(myWhyByParentId ?? {}))
+      local.myWhyByParentId = myWhyByParentId
+    }
+    if (local.randomWhyById !== randomWhyById) {
+      whys.push(...Object.values(randomWhyById ?? {}))
+      local.randomWhyById = randomWhyById
+    }
+  }
+  if (whys.length) addWhysToPointWithWhyRankByWhyIdByPointId(whys)
   const newPointWithWhyRankListList = []
   let updated = false
   for (const pointWithWhyRankList of pointWithWhyRankListList ?? []) {

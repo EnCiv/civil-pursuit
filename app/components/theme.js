@@ -5,6 +5,7 @@ const Theme = {
     menu: 10,
   },
   focusOutline: 'solid .3rem #DCE8F2',
+  focusOutlineSignUp: 'solid .125rem #06335C',
   // ui colors
   colors: {
     success: '#005621',
@@ -62,6 +63,9 @@ const Theme = {
     transparent: 'transparent',
     tabSelected: '#DCE8F2',
     pointDefault: '#FFFFFF',
+    focusRing: 'rgba(74, 144, 226, 0.2)',
+    radioButtonSelected: '#08447B',
+    radioButtonUnselected: '#5D5D5C',
   },
   font: {
     fontFamily: 'Inter',
