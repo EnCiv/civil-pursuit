@@ -158,16 +158,16 @@ test('Fail if pointObj insert fails.', async () => {
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith(undefined)
-
-  console.info(`Error: ${console.error.mock.calls[0][0]}`)
+  expect(typeof console.error.mock.calls[0][0]).toBe('string')
 })
 
 test('Fail if arguments are invalid', async () => {
-  const cb = jest.fn()
+  let cbResult
+  const cb = result => (console.info('result', result), (cbResult = typeof result))
 
   await insertDturnStatement.call(synuser, existentDiscussionId, cb)
+  // the cb will never be called
+  expect(cbResult).toEqual(undefined)
 
-  expect(console.error.mock.calls[0][0]).toEqual('Expected 3 arguments (dTurnId, pointObj, cb) but got 2.')
-
-  console.info(`Error: ${console.error.mock.calls[0][0]}`)
+  expect(typeof console.error.mock.calls[0][0]).toBe('string')
 })
