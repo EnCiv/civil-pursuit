@@ -123,7 +123,7 @@ export function GroupPoints(props) {
         yourGroups,
         yourGroupsSelected,
         selectedIds: [],
-        selectLead: { group: groupedPoints },
+        selectLead: { group: groupedPoints.map(({ point, group }) => point) }, // group is a list of points, not a list of pointGroups
       }
     })
   }
@@ -144,6 +144,14 @@ export function GroupPoints(props) {
         }
       }
       if (value.pointGroup) {
+        const subPoints = new Set(value.pointGroup.group || [])
+        // need to gather the points from the groups in the other selected groups
+        for (const { point, group } of oldGs.yourGroupsSelected) {
+          for (const sP of group) {
+            subPoints.add(sP)
+          }
+        }
+        value.pointGroup.group = [...subPoints]
         yourGroups.push(value.pointGroup)
         // we have to change it because the new one may have different children
       }
@@ -159,11 +167,11 @@ export function GroupPoints(props) {
       const pGsToGroup = [...oldGs.pGsToGroup]
       let yourGroups = [...oldGs.yourGroups]
       let selectedIds = [...oldGs.selectedIds]
-      for (const point of value.removedPgs || []) {
+      for (const pG of value.removedPgs || []) {
         // move it back to the ungrouped points
-        pGsToGroup.push(point)
-        yourGroups = yourGroups.filter(pGD => pGD.point._id !== point._id)
-        selectedIds = selectedIds.filter(id => id !== point._id)
+        pGsToGroup.push(pG)
+        yourGroups = yourGroups.filter(pGD => pGD.point._id !== pG._id)
+        selectedIds = selectedIds.filter(id => id !== pG._id)
       }
       // it doesn't create a new pointObj, but it delete it, or change the existing one.
       if (value.pointGroup) {

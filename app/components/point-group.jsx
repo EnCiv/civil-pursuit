@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/253
+// https://github.com/EnCiv/civil-pursuit/issues/256
 
 'use strict'
 
@@ -68,7 +70,12 @@ const PointGroup = props => {
                 setPg({})
                 onDone({
                   valid: true,
-                  value: { pointGroup: undefined, removedPgs: group },
+                  value: {
+                    pointGroup: undefined,
+                    removedPgs: group.map(point => ({
+                      point,
+                    })),
+                  },
                 })
               }}
             >
@@ -80,10 +87,17 @@ const PointGroup = props => {
           {expanded && (
             <Level>
               <div className={classes.selectPointsContainer}>
-                {group?.map(pGD => {
+                {group?.map(pD => {
                   return (
-                    <div key={pGD.point._id} className={classes.selectPoints}>
-                      <Point point={pGD.point} vState={pGD.point._id === selected ? 'selected' : 'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
+                    <div key={pD._id} className={classes.selectPoints}>
+                      <Point
+                        point={pD}
+                        vState={pD._id === selected ? 'selected' : 'default'}
+                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                        onClick={() => {
+                          setSelected(pD._id)
+                        }}
+                      >
                         <div className={classes.invisibleElement}>
                           {/* this is here to take up space for the height calculation of every grid cell, but not be visible */}
                           <ModifierButton children={'Select as Lead'} />
@@ -92,13 +106,13 @@ const PointGroup = props => {
                           {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
                           We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
                           <ModifierButton
-                            className={cx(classes.selectSelectButton, pGD.point._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${pGD.point.subject}`}
+                            className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
+                            title={`Select as Lead: ${pD.subject}`}
                             children={`Select as Lead`}
                             disabled={false}
                             disableOnClick={false}
                             onDone={() => {
-                              setSelected(pGD.point._id)
+                              setSelected(pD._id)
                             }}
                           />
                         </div>
@@ -112,25 +126,17 @@ const PointGroup = props => {
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <span>
               <SecondaryButton
+                className={classes.secondaryButton}
                 disabled={selected === ''}
                 title="Done"
                 children="Done"
                 onDone={() => {
                   const [p, g] = group.reduce(
-                    ([p, g], pGD) => {
-                      if (pGD.point._id === selected) {
-                        p = pGD.point
-                        // need to flatten groupedPoints so children to not have children
-                        if (pGD.group) {
-                          g.push(...pGD.group)
-                        }
+                    ([p, g], pD) => {
+                      if (pD._id === selected) {
+                        p = pD
                       } else {
-                        g.push(pGD.point)
-                        // need to flatten groupedPoints so children to not have children
-                        if (pGD.group) {
-                          g.push(...pGD.group)
-                          delete pGD.group
-                        }
+                        g.push(pD)
                       }
                       return [p, g]
                     },
@@ -200,25 +206,31 @@ const PointGroup = props => {
               <div className={classes.selectPointsContainer}>
                 <Level>
                   {group.map((pD, leadIndex) => {
+                    function doSelectLead() {
+                      const newPg = {
+                        point: pD,
+                        group: [point, ...group.filter((e, i) => i !== leadIndex)],
+                      }
+                      setPg(newPg)
+                      return newPg
+                    }
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point point={pD} vState={'default'} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}>
-                          <div className={classes.pointBottomButtons}>
+                        <Point
+                          point={pD}
+                          vState={'default'}
+                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
+                          onClick={() => {
+                            const pointGroup = doSelectLead()
+                            onDone({
+                              valid: true,
+                              value: { pointGroup },
+                            })
+                          }}
+                        >
+                          <div className={cx(classes.pointWidthButton, classes.selectLeadButton)}>
                             <div className={classes.pointWidthButton}>
-                              <ModifierButton
-                                className={classes.pointWidthButton}
-                                title={`Select as Lead: ${pD.subject}`}
-                                children={`Select as Lead`}
-                                onDone={() => {
-                                  const newPg = {
-                                    point: pD,
-                                    group: [point, ...group.filter((e, i) => i !== leadIndex)],
-                                  }
-                                  setPg(newPg)
-                                }}
-                                disabled={false}
-                                disableOnClick={false}
-                              />
+                              <ModifierButton className={classes.pointWidthButton} title={`Select as Lead: ${pD.subject}`} children={`Select as Lead`} onDone={doSelectLead} disabled={false} disableOnClick={false} />
                             </div>
                             <div className={classes.pointWidthButton}>
                               <TextButton
@@ -323,9 +335,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,
-    '&:hover': {
-      outline: `0.1875rem solid ${theme.colors.success}`,
-    },
     '&:hover $defaultSubject': {
       color: theme.colors.success,
     },
@@ -367,14 +376,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   contentContainer: {
+    backgroundColor: `${theme.colors.pointDefault} !important`,
+    outline: `0.1875rem solid ${theme.colors.pointDefault} !important`,
     padding: '2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.625rem',
+    gap: '1rem',
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '1.1875rem 0.875rem',
+    },
   },
 
   defaultWidth: {
@@ -396,12 +410,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  ungroupButton: {},
+  ungroupButton: {
+    flex: '1 1 auto',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      maxWidth: '9rem',
+      paddingLeft: '4rem',
+    },
+  },
 
   doneButton: {
     width: '17rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '7rem',
+      width: '16rem',
     },
   },
 
@@ -411,16 +431,33 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: '#5d5d5d',
     fontWeight: '600',
     lineHeight: '1.5rem',
+    marginTop: '5rem',
   },
 
-  bottomButtonsTwo: {},
+  bottomButtonsTwo: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    '& span': {
+      flex: '1 1 auto',
+      textAlign: 'center',
+      minWidth: '9rem',
+    },
+  },
   bottomButtonsOne: {},
+  secondaryButton: {
+    width: '40%',
 
+    '&:disabled': {
+      opacity: '30%',
+    },
+  },
   bottomButtons: {
     boxSizing: 'border-box',
     width: '100%',
-    padding: '1.5rem 1rem 0 1rem',
+    padding: '0rem 1rem 0 1rem',
     display: 'flex',
+    marginTop: '1rem',
     '&$bottomButtonsTwo': {
       '& span': {
         flex: '0 0 50%',
@@ -451,17 +488,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
     gap: '2rem',
-    width: '100%',
   },
 
   selectPoints: {
     position: 'relative',
-    flex: '1 1 41%',
-    height: 'inherit',
-    // margin: '1rem 1.5rem',
+    flex: '1 1 auto',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
-      margin: '1rem 0',
+      margin: '0.5rem 0',
     },
   },
 
@@ -470,7 +504,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   pointWidthButton: {
-    margin: '.5rem',
+    width: '100%',
+    textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+    },
+  },
+
+  selectLeadButton: {
+    marginTop: '1rem',
   },
 
   invisibleElement: {
@@ -479,21 +521,36 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectButtonRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
     bottom: '1rem',
-    left: 0,
-    width: '100%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 'calc(100% - 3.75rem)',
+    padding: '0 1.875rem',
     textAlign: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: 'calc(100% - 3.75rem)',
+      padding: '1rem 0',
+      bottom: '0.5rem',
+    },
   },
 
   selectSelectButton: {
-    width: '75%',
+    width: '100%',
+
+    '&:focus': {
+      outline: 'none',
+    },
   },
 
   selectedButton: {
     backgroundColor: theme.colors.encivYellow,
     '&:hover, &.hover': {
       backgroundColor: theme.colors.encivYellow,
+      outline: 'none',
     },
   },
 
@@ -513,8 +570,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   noBoxShadow: {
-    boxShadow: 'none',
     border: '1px solid rgba(217, 217, 217, 0.40)',
+    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.1rem rgba(217, 217, 217, 0.40) !important',
   },
   selectedSubject: {
     color: theme.colors.success,
