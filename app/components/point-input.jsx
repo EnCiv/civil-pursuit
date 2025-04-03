@@ -107,7 +107,7 @@ function PointInput(props) {
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
       ></input>
       <span className={subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount}>
-        {subjCharCount} / {maxCharCount}
+        Word count {subjCharCount} / {maxCharCount}
       </span>
 
       <textarea
@@ -119,7 +119,7 @@ function PointInput(props) {
         className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
       ></textarea>
       <span className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}>
-        {descWordCount} / {maxWordCount}
+        Character count {descWordCount} / {maxWordCount}
       </span>
     </div>
   )
