@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/44
+// https://github.com/EnCiv/civil-pursuit/issues/288
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
@@ -106,8 +107,15 @@ function PointInput(props) {
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
       ></input>
-      <span className={subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount}>
-        Word count {subjCharCount} / {maxCharCount}
+      <span className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
+        Word count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: subjCharCount >= maxCharCount, // make the text bold
+          })}
+        >
+          {subjCharCount} / {maxCharCount}
+        </span>
       </span>
 
       <textarea
@@ -118,8 +126,15 @@ function PointInput(props) {
         onBlur={handleOnBlur}
         className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
       ></textarea>
-      <span className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}>
-        Character count {descWordCount} / {maxWordCount}
+      <span className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
+        Character count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: descWordCount >= maxWordCount, // make the text bold
+          })}
+        >
+          {descWordCount} / {maxWordCount}
+        </span>
       </span>
     </div>
   )
@@ -187,6 +202,9 @@ const useStyles = createUseStyles(theme => ({
     color: theme.colors.inputErrorWordCount,
     ...sharedWordCountStyle(theme),
   },
+  wordCountLimitReached: {
+    fontWeight: 'bold',
+  },
 }))
 
 const sharedPlaceholderStyle = theme => ({
@@ -211,7 +229,7 @@ const sharedErrorStyle = theme => ({
 
 const sharedWordCountStyle = theme => ({
   textAlign: 'right',
-  fontFamily: theme.font.fontFamily,
+  fontFamily: 'Arial, sans-serif', 
   fontSize: '0.875rem',
   fontStyle: 'normal',
   fontWeight: '300',
