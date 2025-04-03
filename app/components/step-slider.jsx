@@ -21,7 +21,7 @@ const callAllResizeHandlers = () => {
 
 export const StepSlider = props => {
   const [resizeHandlerIndex] = useState(allResizeHandlers.length)
-  const { children, onDone, steps, className, ...otherProps } = props
+  const { children, onDone, steps, className, stepName, stepintro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
   const classes = useStyles(props)
   const navRef = useRef() // didn't work right with ref= so navRef
   const footerRef = useRef()
@@ -74,6 +74,13 @@ export const StepSlider = props => {
   if (!shallowEqual(_this.otherProps, otherProps)) _this.otherProps = otherProps
 
   // has to be useLayoutEffect not useEffect or transitions will get enabled before the first render of the children and it will be blurry
+
+  const stepNameToIndex = children.reduce((stepNameToIndex, child, index) => {
+    const stepName = child.props.stepName || `step${index}`
+    stepNameToIndex[stepName] = index
+    return stepNameToIndex
+  }, {})
+
   if (typeof window !== 'undefined') {
     useLayoutEffect(() => {
       if (navRef.current) {
@@ -89,6 +96,16 @@ export const StepSlider = props => {
   if (typeof window !== 'undefined') useLayoutEffect(resizeHandler, [outerRef.current])
   function reducer(state, action) {
     switch (action.type) {
+      case 'moveTo': {
+        const currentStep = action.to
+        const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
+        return {
+          ...state,
+          stepStatuses,
+          currentStep,
+          sendDoneToParent: state.currentStep >= children.length - 1,
+        }
+      }
       case 'increment':
         const currentStep = Math.min(state.currentStep + 1, children.length - 1)
         const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
@@ -150,8 +167,9 @@ export const StepSlider = props => {
           ...otherProps,
           ...child.props,
           key: [index],
-          onDone: valid => {
-            dispatch({ type: 'updateStatuses', payload: { result: valid, index: index } })
+          onDone: ({ valid, value }) => {
+            if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+            else dispatch({ type: 'updateStatuses', payload: { result: valid, index: index } })
           },
         })
       ),
