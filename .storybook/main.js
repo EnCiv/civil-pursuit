@@ -15,7 +15,6 @@ const config = {
     const storyDevConfig = { ...webpackDevConfig, entry: undefined, output: undefined } // to be set by storybook
     storyDevConfig.module.rules = storyDevConfig.module.rules.filter(rule => rule.use !== 'css-loader') // there is already a css loader rule in storybook and the on in dev cause a problem here
     const newConfig = merge(config, storyDevConfig)
-    console.log('newConfig', JSON.stringify(newConfig, null, 2))
     return newConfig
   },
 }
