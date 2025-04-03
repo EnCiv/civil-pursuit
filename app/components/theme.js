@@ -21,7 +21,7 @@ const Theme = {
     inputBorder: '#EBEBEB',
     inputErrorBorder: '#BF1300',
     inputErrorContainer: '#F9E7E5',
-    inputWordCount: '#5D5D5C',
+    inputWordCount: '#999999',
     inputErrorWordCount: '#BF1300',
     cardOutline: '#FBFBFB',
     disableSecBorderGray: '#5D5D5C',
@@ -66,6 +66,7 @@ const Theme = {
     focusRing: 'rgba(74, 144, 226, 0.2)',
     radioButtonSelected: '#08447B',
     radioButtonUnselected: '#5D5D5C',
+    wordCount: '#999999',
   },
   font: {
     fontFamily: 'Inter',
