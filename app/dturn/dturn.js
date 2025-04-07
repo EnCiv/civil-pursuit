@@ -202,16 +202,17 @@ function sortLargestFirst(a, b) {
  *
  */
 async function getStatementIds(discussionId, round, userId) {
+  // Check if the discussion exists
   if (!Discussions[discussionId]) {
     return undefined
   }
 
-  // Ensure userId is part of the discussion
+  // Ensure the user is part of the discussion
   if (!Discussions[discussionId].Uitems[userId]) {
     return undefined
   }
 
-  // Ensure ShownStatements exist
+  // Ensure ShownStatements exist and meet the required size
   if (!Discussions[discussionId]?.ShownStatements?.length) {
     return undefined
   }
@@ -223,19 +224,26 @@ async function getStatementIds(discussionId, round, userId) {
   let statementIds = []
   let authoredId
 
+  // Check if the user has statements assigned in the given round
   if (dis.Uitems?.[userId]?.[round]) {
     const sIds = Object.keys(dis.Uitems[userId][round].shownStatementIds)
 
-    if (sIds.length === 0) return [] // Empty list, but valid case
+    // If no statement IDs are available, return undefined as per design intent
+    if (sIds.length === 0) return undefined
 
+    // If it's round 0 and the user authored a single statement, return it
     if (round === 0 && sIds.length === 1 && dis.Uitems[userId][round].shownStatementIds[sIds[0]].author) {
       statementIds.push(sIds[0])
       authoredId = sIds[0]
-    } else if (sIds.length >= dis.group_size) {
-      return sIds.length > 0 ? sIds : []
-    } else {
+    }
+    // If the number of statements meets or exceeds the group size, return them
+    else if (sIds.length >= dis.group_size) {
+      return sIds
+    }
+    // If an unexpected number of statements is found, log an error and return undefined
+    else {
       console.error(`getStatements unexpected number of statements ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
-      return undefined // Creation failed
+      return undefined
     }
   }
 
@@ -345,7 +353,7 @@ async function getStatementIds(discussionId, round, userId) {
 
   await dis.updateUInfo(delta)
 
-  return statementIds.length > 0 ? statementIds : []
+  return statementIds
 }
 
 module.exports.getStatementIds = getStatementIds
@@ -451,7 +459,7 @@ const sortLowestIdFirst = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
 // for the list of statementIds, call a func() iterate the pairs, assuming that order doesn't matter, and putting the lowest valued id first
 // the function will be passed a gitem to work on. if the gitem did not exist it will be created.
 function iteratePairs(discussionId, round, statementIds, func) {
-  if (!statementIds || statementIds.length == 0) return
+  if (!statementIds || statementIds.length === 0) return
   const sortedStatementIds = statementIds.slice().sort(sortLowestIdFirst)
   let last = sortedStatementIds.length - 1
   if (!Discussions[discussionId].Gitems[round]) Discussions[discussionId].Gitems[round] = { byLowerId: {}, byUpperId: {} }
