@@ -10,64 +10,85 @@ import { PrimaryButton } from './button.jsx'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 
-const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
-  const options = schema.enum || []
-  const label = schema.title || uischema.label
+const shouldDisplayError = (data, schema, path) => {
+  // Placeholder logic, replace with actual validation logic
+  // If user choose some items which are illegal, should return true, then select box would be red
+  return false
+}
 
-  const id = `input-${path.replace(/\./g, '-')}`
+const CustomInputRenderer = withJsonFormsControlProps(
+  ({ data, handleChange, path, uischema, schema, classes }) => {
+    const options = schema.enum || []
+    const label = schema.title || uischema.label
+    const id = `input-${path.replace(/\./g, '-')}`
 
-  let type
-  if (schema.format === 'date') {
-    type = 'date'
-  } else if (schema.type === 'integer' || schema.type === 'number') {
-    type = 'number'
-  } else if (schema.type === 'boolean') {
-    type = 'checkbox'
-  } else if (options.length > 0) {
-    type = 'select'
-  } else {
-    type = 'text'
-  }
+    let type
+    if (schema.format === 'date') {
+      type = 'date'
+    } else if (schema.type === 'integer' || schema.type === 'number') {
+      type = 'number'
+    } else if (schema.type === 'boolean') {
+      type = 'checkbox'
+    } else if (options.length > 0) {
+      type = 'select'
+    } else {
+      type = 'text'
+    }
 
-  const handleInputChange = event => {
-    const value = type === 'checkbox' ? event.target.checked : event.target.value
-    handleChange(path, value)
-  }
+    const hasError = shouldDisplayError(data, schema, path)
 
-  return (
-    <div>
-      <label htmlFor={id}>{label}</label>
-      {type === 'select' ? (
-        <select id={id} value={data || ''} onChange={handleInputChange} className={classes.formInput}>
-          <option value="" disabled>
-            Choose one
-          </option>
-          {options.map(option => (
-            <option key={option} value={option}>
-              {option}
+    const handleInputChange = event => {
+      const value = type === 'checkbox' ? event.target.checked : event.target.value
+      handleChange(path, value)
+    }
+
+    return (
+      <div>
+        <label htmlFor={id} className={cx({ [classes.errorLabel]: hasError })}>
+          {label}
+        </label>
+
+        {type === 'select' ? (
+          <select
+            id={id}
+            value={data || ''}
+            onChange={handleInputChange}
+            className={cx(classes.formInput, { [classes.errorInput]: hasError })}
+          >
+            <option value="" disabled>
+              Choose one
             </option>
-          ))}
-        </select>
-      ) : (
-        <input
-          id={id}
-          type={type}
-          checked={type === 'checkbox' ? !!data : undefined}
-          value={type === 'checkbox' ? undefined : data || ''}
-          onChange={handleInputChange}
-          className={classes.formInput}
-        />
-      )}
-    </div>
-  )
-})
+            {options.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id={id}
+            type={type}
+            checked={type === 'checkbox' ? !!data : undefined}
+            value={type === 'checkbox' ? undefined : data || ''}
+            onChange={handleInputChange}
+            className={cx(classes.formInput, { [classes.errorInput]: hasError })}
+          />
+        )}
+      </div>
+    )
+  }
+)
 
-const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
+const customRenderers = [
+  ...vanillaRenderers,
+  { tester: rankWith(3, isControl), renderer: CustomInputRenderer },
+]
 
 const MoreDetails = props => {
   const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, title, ...otherProps } = props
   const [data, setData] = useState(details)
   const [isValid, setIsValid] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const classes = useStyles(props)
 
   const handleIsValid = () => {
@@ -78,17 +99,15 @@ const MoreDetails = props => {
     })
   }
 
-  // useMemo renders (React components) so they don't get rebuilt every time the user types a character
-  // This was really a problem with string input because focus went away from the input fields after each time the user typed a character
   const memoedRenderers = useMemo(() => {
     return customRenderers.map(renderer => ({
       ...renderer,
       renderer:
         renderer.renderer === CustomInputRenderer
-          ? props => <CustomInputRenderer {...props} classes={classes} />
+          ? props => <CustomInputRenderer {...props} classes={classes} submitted={submitted} />
           : renderer.renderer,
     }))
-  }, [schema, uischema])
+  }, [schema, uischema, classes, submitted])
 
   useEffect(() => {
     setIsValid(handleIsValid())
@@ -109,7 +128,12 @@ const MoreDetails = props => {
         <PrimaryButton
           title={'Submit'}
           className={classes.actionButton}
-          onDone={() => onDone({ valid: isValid, value: data })}
+          onDone={() => {
+            setSubmitted(true)
+            const valid = handleIsValid()
+            setIsValid(valid)
+            onDone({ valid, value: data })
+          }}
           disabled={!isValid}
         >
           Submit
@@ -148,6 +172,14 @@ const useStyles = createUseStyles(theme => ({
     color: props.mode === 'dark' ? theme.colors.cardOutline : theme.colors.title,
     boxSizing: 'border-box',
   }),
+  errorInput: {
+    borderColor: 'red !important',
+    outlineColor: 'red !important',
+    backgroundColor: '#ffe6e6 !important',
+  },
+  errorLabel: {
+    color: 'red',
+  },
   actionButton: {
     width: '100%',
     margin: '1.5rem 0',
