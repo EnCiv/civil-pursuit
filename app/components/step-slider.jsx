@@ -222,7 +222,7 @@ export const StepSlider = props => {
               <div
                 style={{
                   width: outerRect.width + 'px',
-                  height: outerRect.innerHeight - Math.max(0, outerRect.top) - footerRect.height - navBarRect.height + 'px',
+                  height: Math.max(outerRect.top + outerRect.height, outerRect.innerHeight) - Math.max(0, outerRect.top) - footerRect.height - navBarRect.height + 'px',
                 }}
                 className={classes.panel}
               >

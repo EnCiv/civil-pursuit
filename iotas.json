@@ -127,13 +127,7 @@
               "stepIntro": {
                 "subject": "Intermission",
                 "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
-              },
-              "user": {
-                "email": "example@gmail.com",
-                "tempid": "123456"
-              },
-              "round": 1,
-              "lastRound": 2
+              }
             }
           ]
         },

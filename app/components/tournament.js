@@ -66,11 +66,9 @@ function Tournament(props) {
 
   const [state, dispatch] = useReducer(reducer, { currentRound: 1, stepComponents: buildChildren(steps, 1) })
   function onSubscribeHandler(data) {
-    console.info('onSubscribeHandler', data)
     upsert(data)
   }
   function onUpdateHandler(data) {
-    console.info('onUpdateHandler', data)
     upsert(data)
   }
 

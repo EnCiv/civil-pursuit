@@ -5,11 +5,14 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
+import DeliberationContext from './deliberation-context'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', participants = 0, contentAlign = 'center', tagline = '', ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
-  const badgeName = `${participants} participants`
+  const { data } = React.useContext(DeliberationContext)
+  const participants = data?.participants ?? 0
+  const badgeName = `${participants} participant` + (participants > 1 ? 's' : '')
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>

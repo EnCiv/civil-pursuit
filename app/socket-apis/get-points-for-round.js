@@ -35,7 +35,7 @@ export default async function getPointsForRound(discussionId, round, cb) {
   }
 
   // Get the list and return if successful
-  let pointsList = await Points.find({ _id: { $in: statementIds } }).toArray()
+  let pointsList = await Points.find({ _id: { $in: statementIds.map(_id => new ObjectId(_id)) } }).toArray()
 
   // Anonymize points by removing userids, except if the point was made by the current user
   pointsList = pointsList.map(point => {

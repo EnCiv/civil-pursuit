@@ -70,8 +70,7 @@ test('Validation error when upserting a document', async () => {
   await upsertPoint.call({ synuser: user }, invalidPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(null)
-
+  expect(cb.mock.calls[0][0]).toBeUndefined()
   const point = await Points.findOne({ _id: POINT2 })
   expect(point).toBeNull()
 })
