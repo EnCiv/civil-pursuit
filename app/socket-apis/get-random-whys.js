@@ -2,7 +2,7 @@
 
 const Points = require('../models/points')
 
-async function getRandomWhys(pointId, category, qty, cb) {
+export default async function getRandomWhys(pointId, category, qty, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('getRandomWhys called but no user logged in')
     return cb && cb(undefined)
@@ -30,5 +30,3 @@ async function getRandomWhys(pointId, category, qty, cb) {
     cb(undefined)
   }
 }
-
-module.exports = getRandomWhys

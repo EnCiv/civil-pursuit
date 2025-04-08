@@ -1,8 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/208
-const Ranks = require('../models/ranks')
-const getTopRankedWhysForPoint = require('./get-top-ranked-whys-for-point')
+import Ranks from '../models/ranks'
+import getTopRankedWhysForPoint from './get-top-ranked-whys-for-point'
 
-async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
+export default async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('getUserPostRanksAndTopRankedWhys called but no user logged in')
     return cb && cb(undefined)
@@ -54,5 +54,3 @@ async function getUserPostRanksAndTopRankedWhys(discussionId, round, ids, cb) {
     cb(undefined)
   }
 }
-
-module.exports = getUserPostRanksAndTopRankedWhys

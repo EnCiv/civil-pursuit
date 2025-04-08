@@ -9,13 +9,13 @@ import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
 
 import DeliberationContext from '../deliberation-context.js'
-import Point from '../point.jsx'
-import PointGroup from '../point-group.jsx' // should be using PointGroup but it needs to support children
-import { ModifierButton } from '../button.jsx'
-import StatusBadge from '../status-badge.jsx'
+import Point from '../point'
+import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
+import { ModifierButton } from '../button'
+import StatusBadge from '../status-badge'
 import StatusBox from '../status-box.js'
 
-import Ranking from '../ranking.jsx'
+import Ranking from '../ranking'
 
 const minSelectionsTable = {
   0: { least: 0, most: 0 },

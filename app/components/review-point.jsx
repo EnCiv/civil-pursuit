@@ -5,9 +5,9 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { TextButton } from './button.jsx'
-import ShowDualPointList from './show-dual-point-list.jsx'
-import Ranking from './ranking.jsx'
+import { TextButton } from './button'
+import ShowDualPointList from './show-dual-point-list'
+import Ranking from './ranking'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import { H, Level } from 'react-accessible-headings'
@@ -41,19 +41,12 @@ function ReviewPoint(props) {
       <div className={cx(classes.contentContainer)}>
         <div className={classes.informationGrid}>
           <div className={classes.informationColumn}>
-            <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>
-              {vState !== 'disabled' ? 'Read' : 'Unread'}
-            </span>
+            <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>{vState !== 'disabled' ? 'Read' : 'Unread'}</span>
             {point.subject && <H className={cx(classes.subjectStyle)}>{point.subject}</H>}
             {point.description && <p className={cx(classes.descriptionStyle)}>{point.description}</p>}
           </div>
           <div className={classes.rankingColumn}>
-            <Ranking
-              className={classes.ranking}
-              disabled={vState === 'disabled'}
-              defaultValue={rank}
-              onDone={handleRankingDone}
-            />
+            <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
           </div>
         </div>
         <div className={classes.SvgContainer}>
@@ -75,13 +68,7 @@ function ReviewPoint(props) {
       {vState === 'open' && (leftPointList.length > 0 || rightPointList.length > 0) && (
         <div className={classes.showDualPointListContainer}>
           <Level>
-            <ShowDualPointList
-              className={classes.showDualPointList}
-              leftHeader="Why It's Most Important"
-              rightHeader="Why It's Least Important"
-              leftPoints={leftPointList}
-              rightPoints={rightPointList}
-            />
+            <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} />
           </Level>
         </div>
       )}

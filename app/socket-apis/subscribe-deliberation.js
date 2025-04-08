@@ -1,25 +1,29 @@
 // https://github.com/EnCiv/civil-pursuit/issues/196
 
-import { initDiscussion, Discussions } from '../dturn/dturn'
+import { initDiscussion, Discussions, initUitems } from '../dturn/dturn'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
 
 import { subscribeEventName } from './socket-api-subscribe'
-const Dturns = require('../models/dturns')
+import Dturns from '../models/dturns'
 
-async function subscribeDeliberation(deliberationId, requestHandler) {
+export default async function subscribeDeliberation(deliberationId, requestHandler) {
   const socket = this // making it clear this is a socket
   const server = this.server // don't reference "this" in the UInfoUpdate handler.
   const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
 
-  // Verify user is logged in.
-  if (!this.synuser || !this.synuser.id) {
-    return console.error('Cannot subscribe to deliberation - user is not logged in.')
-  }
-
   // Verify argument
   if (!deliberationId) {
     return console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
+  }
+
+  if (!this.synuser?.id) {
+    // use not logged in, let them know the number of participants
+    // TBD load the deliberation and figure out the number of participantsbut will have to set the updates function in the future because this has no server.to
+    requestHandler?.({
+      participants: Discussions[deliberationId]?.participants ?? 0, // it might not be loaded, but we can't load it if there's no server
+    })
+    return
   }
 
   // Check if discussion is loaded in memory
@@ -37,7 +41,7 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
           await Dturns.upsert(synuserId, deliberationId, 0, round, shownStatementIds, groupings || [])
         },
         getAllUInfo: async () => {
-          return await Dturns.getAllFromDiscussion()
+          return await Dturns.getAllFromDiscussion(deliberationId)
         },
         updates: updateData => {
           server.to(deliberationId).emit(eventName, updateData)
@@ -45,15 +49,22 @@ async function subscribeDeliberation(deliberationId, requestHandler) {
       }
       await initDiscussion(deliberationId, options)
     } else {
-      requestHandler() // let the client know there was an error
+      requestHandler?.() // let the client know there was an error
       return console.error(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
     }
   }
-  socket.join(deliberationId) // subsribe this user to the room for this deliberation
+
+  socket.join(deliberationId) // subscribe this user to the room for this deliberation
   /* if we need to do anything when the user disconnects
   socket.on('disconnecting',()=>{
     // remove the user 
   })*/
-  requestHandler({ participants: Object.keys(Discussions[deliberationId].Uitems[this.synuser.id] || []).length })
+
+  const uInfo = initUitems(deliberationId, this.synuser.id) // adds user if they are not yet there
+  const round = Math.min(uInfo.length - 1, Discussions[deliberationId].max_rounds)
+  requestHandler?.({
+    participants: Discussions[deliberationId].participants,
+    round,
+    uInfo,
+  })
 }
-module.exports = subscribeDeliberation

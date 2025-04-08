@@ -2,9 +2,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/246
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal'
+import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 import cx from 'classnames'
-
 
 /**
  * Button component(without stretch goal version) that is styled using react-jss.

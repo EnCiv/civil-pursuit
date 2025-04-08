@@ -1,9 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/205
 
-const Ranks = require('../models/ranks')
-import { ObjectId } from 'mongodb'
+import Ranks from '../models/ranks'
 
-async function getUserRanks(discussionId, round, stage, cb) {
+export default async function getUserRanks(discussionId, round, stage, cb) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
@@ -16,9 +15,7 @@ async function getUserRanks(discussionId, round, stage, cb) {
 
   // Verify arguments
   if (!discussionId || !stage || round === undefined || typeof round !== 'number') {
-    return cbFailure(
-      'Invalid arguments provided to getUserRanks(discussionId: string, round: number, stage: string, cb: Function).'
-    )
+    return cbFailure('Invalid arguments provided to getUserRanks(discussionId: string, round: number, stage: string, cb: Function).')
   }
 
   // Get ranks for user
@@ -32,4 +29,3 @@ async function getUserRanks(discussionId, round, stage, cb) {
   if (cb) cb(results)
   return results
 }
-module.exports = getUserRanks

@@ -5,7 +5,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal/lib'
+import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 
 const Step = forwardRef((props, ref) => {
   const { name, title = '', complete, active, unlocked, onDone = () => {}, index, className, ...otherProps } = props

@@ -1,9 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/136
-const Points = require('../models/points')
-const Ranks = require('../models/ranks')
-const { ObjectId } = require('mongodb')
+import Points from '../models/points'
 
-async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) {
+export default async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('getTopRankedWhysForPoint called but no user logged in')
     return cb && cb(undefined)
@@ -50,5 +48,3 @@ async function getTopRankedWhysForPoint(pointId, category, start, pageSize, cb) 
     cb(undefined)
   }
 }
-
-module.exports = getTopRankedWhysForPoint

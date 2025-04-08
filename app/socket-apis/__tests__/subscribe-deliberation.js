@@ -10,14 +10,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup from '../../jest-socket-api-setup'
 import socketApiSubscribe, { subscribeEventName } from '../socket-api-subscribe'
-import {
-  Discussions,
-  getStatementIds,
-  initDiscussion,
-  insertStatementId,
-  putGroupings,
-  rankMostImportant,
-} from '../../dturn/dturn'
+import { Discussions, getStatementIds, initDiscussion, insertStatementId, putGroupings, rankMostImportant } from '../../dturn/dturn'
 import upsertPoint from '../upsert-point'
 
 const handle = 'subscribe-deliberation'
@@ -31,6 +24,20 @@ const discussionId = '66a174b0c3f2051ad387d2a6'
 let MemoryServer
 
 import subscribeDeliberation from '../subscribe-deliberation'
+
+Iota.preload([
+  {
+    _id: { $oid: discussionId },
+    path: '/deliberation1',
+    subject: 'Deliberation',
+    description: 'A descriptive discussion.',
+    webComponent: {
+      dturn: {
+        max_rounds: 3,
+      },
+    },
+  },
+])
 
 beforeEach(async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
@@ -55,10 +62,11 @@ afterAll(async () => {
 })
 
 // Tests
-test('Fail if user is not logged in.', async () => {
-  await subscribeDeliberation.call({}, discussionId)
-
-  expect(console.error.mock.calls[0][0]).toMatch(/user is not logged in/)
+test('If user not logged in, let them know the number of participantss', done => {
+  subscribeDeliberation.call({}, discussionId, ({ participants }) => {
+    expect(participants).toBe(0)
+    done()
+  })
 })
 
 test('Fail if deliberation ID not provided.', async () => {
@@ -74,27 +82,10 @@ function updateHandler(data) {
 }
 
 test('Successful request if deliberation exists.', done => {
-  const anIota = {
-    _id: new ObjectId(discussionId),
-    path: '/deliberation1',
-    subject: 'Deliberation',
-    description: 'A descriptive discussion.',
-    webComponent: {
-      dturn: {
-        max_rounds: 3,
-      },
-    },
+  function requestHandler(data) {
+    done()
   }
-
-  Iota.create(anIota)
-    .then(() => {
-      function requestHandler(data) {
-        done()
-      }
-
-      socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
-    })
-    .catch(err => done(err))
+  socketApiSubscribe(handle, discussionId, requestHandler, updateHandler)
 })
 
 test('Check updateHandler is called.', done => {

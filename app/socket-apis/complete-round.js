@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/212
 const dturn = require('../dturn/dturn')
 
-async function completeRound(discussionId, round, idRanks, cb) {
+export default async function completeRound(discussionId, round, idRanks, cb) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
@@ -44,5 +44,3 @@ async function completeRound(discussionId, round, idRanks, cb) {
 
   if (cb) cb(true)
 }
-
-module.exports = completeRound

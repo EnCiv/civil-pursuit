@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import SignUp from '../app/components/sign-up.jsx'
+import SignUp from '../app/components/sign-up'
 
 export default {
   component: SignUp,

@@ -1,9 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/206
 
-const { MongoMemoryServer } = require('mongodb-memory-server')
-const { MongoClient } = require('mongodb')
-const getUserWhys = require('../get-user-whys')
-const Points = require('../../models/points')
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import { MongoClient } from 'mongodb'
+import getUserWhys from '../get-user-whys'
+import Points from '../../models/points'
 
 let memoryServer
 let connection

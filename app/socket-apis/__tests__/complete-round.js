@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/212
-const dturn = require('../../dturn/dturn')
-const completeRound = require('../complete-round')
-const { insertStatementId, getStatementIds } = dturn
+import { initDiscussion, insertStatementId, getStatementIds } from '../../dturn/dturn'
+import completeRound from '../complete-round'
 
 const userId = '7b4c3a5e8d1f2b9c'
 const discussionId = '5a2d9c3b6e1f8d4a'
@@ -21,7 +20,7 @@ afterEach(() => {
 
 // Test 1: User not logged in
 test('Return undefined if user is not logged in.', async () => {
-  await dturn.initDiscussion(discussionId, {
+  await initDiscussion(discussionId, {
     group_size: 10,
     updateUInfo: obj => {
       UInfoHistory.push(obj)
@@ -55,7 +54,7 @@ test('Return undefined if discussion is not loaded (getStatementIds fails).', as
 
 // Test 3: Success case
 test('Success: Insert statements and rank them.', async () => {
-  await dturn.initDiscussion(discussionId, {
+  await initDiscussion(discussionId, {
     group_size: 10,
     updateUInfo: obj => {
       UInfoHistory.push(obj)

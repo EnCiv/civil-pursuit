@@ -4,3 +4,7 @@ const cloneDeep = require('lodash').cloneDeep
 module.exports = cloneDeep(civilProdConfig)
 module.exports.context = path.resolve(__dirname, 'app')
 module.exports.output.path = path.join(__dirname, 'assets/webpack')
+module.exports.module.rules.push({
+  test: /\.css$/i,
+  use: 'css-loader',
+})

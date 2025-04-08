@@ -37,14 +37,14 @@ export default function GroupingStep(props) {
       const { discussionId, round } = data
 
       window.socket.emit('get-points-for-round', discussionId, round, result => {
-        if (!result) return // there was an error
+        if (!result) return onDone({ valid: true, value: 'Intermission' }) // there was an error
 
-        const [points] = result
+        const points = result
         const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
         upsert({ pointById })
 
         if (points.length <= 1) {
-          onDone({ valid: false, value: 'intermission' })
+          onDone({ valid: true, value: 'Intermission' })
         }
       })
     })

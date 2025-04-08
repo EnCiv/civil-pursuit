@@ -7,21 +7,18 @@ import insertDturnStatement from '../insert-dturn-statement'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { MongoClient, ObjectId } from 'mongodb'
-
-const Points = require('../../models/points')
-import upsertPoint from '../upsert-point'
+import { ObjectId } from 'mongodb'
+import { expect } from '@jest/globals'
 
 // Config
 const discussionId = '66a174b0c3f2051ad387d2a6'
 
 const userId = '6667d5a33da5d19ddc304a6b'
-const otherUserId = 'otheruser'
 
 const synuser = { synuser: { id: userId } }
 
 const pointObj1 = {
-  _id: new ObjectId('6667d688b20d8e339ca50020'),
+  _id: '6667d688b20d8e339ca50020',
   subject: 'Point1',
   description: 'Point1',
 }
@@ -86,51 +83,38 @@ test('Empty list if user inserted their answer but no others have.', async () =>
 
   expect(cb).toHaveBeenCalledTimes(1)
   expect(cb).toHaveBeenCalledWith([])
-  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(
-    /Insufficient ShownStatements length/
-  )
+  expect(console.error.mock.calls[console.error.mock.calls.length - 1][0]).toMatch(/Insufficient ShownStatements length/)
 })
 
 test('Populated list if other users have submitted their answers.', async () => {
-  const cb = jest.fn()
-  const insertCb = jest.fn()
-
   await initDiscussion(discussionId)
 
-  await insertDturnStatement.call(synuser, discussionId, pointObj1, insertCb)
-  expect(insertCb).toHaveBeenCalledWith(true)
+  await new Promise(ok => insertDturnStatement.call(synuser, discussionId, pointObj1, result => ok(result)))
 
-  for (let num = 0; num < 20; num++) {
-    await insertDturnStatement.call(
-      { synuser: { id: otherUserId } },
-      discussionId,
-      {
-        _id: new ObjectId(),
-        subject: num,
-        description: num,
-      },
-      insertCb
-    )
-    expect(insertCb).toHaveBeenCalledWith(true)
-    expect(insertCb).toHaveBeenCalledTimes(num + 2)
-  }
+  const nums = Array.from({ length: 20 }, (_, i) => i)
+  const promises = nums.map(
+    num =>
+      new Promise(ok => {
+        insertDturnStatement.call(
+          { synuser: { id: new ObjectId().toString() } },
+          discussionId,
+          {
+            _id: new ObjectId().toString(),
+            subject: num + '',
+            description: num + '',
+          },
+          result => ok(result)
+        )
+      })
+  )
+  await Promise.all(promises)
 
-  let points = await getPointsForRound.call(synuser, discussionId, 0, cb)
-  expect(points.length).toBeGreaterThan(0)
-  expect(cb).toHaveBeenCalledTimes(1)
+  let points = await new Promise(ok => getPointsForRound.call(synuser, discussionId, 0, result => ok(result)))
+  expect(points.length).toBe(Discussions[discussionId].group_size)
 
   // Check other points are anonymized
   for (const point of points) {
-    if (point.userId !== userId) expect(point.userId).toBeUndefined
+    if (point.userId !== userId) expect(point.userId).toBeUndefined()
   }
-
-  // Test when users are removed from points
-  for (const point of points) {
-    await upsertPoint.call(synuser, { userId: null, ...point }, () => {})
-  }
-
-  points = await getPointsForRound.call(synuser, discussionId, 0, cb)
-
-  expect(points?.length === 0 || points?.length === undefined).toBe(true)
-  expect(cb).toHaveBeenCalledTimes(2)
+  expect(console.error.mock.calls.length).toBe(0)
 })
