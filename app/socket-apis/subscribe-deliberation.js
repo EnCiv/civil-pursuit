@@ -33,12 +33,12 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
       const options = {
         ...(iota?.webComponent?.dturn ?? {}),
         updateUInfo: async UInfoData => {
-          const synuserId = Object.keys(UInfoData)[0]
+          const userId = Object.keys(UInfoData)[0]
 
           // First upsert the UInfo
-          const [round, { shownStatementIds, groupings }] = Object.entries(UInfoData[synuserId][deliberationId])[0]
+          const [round, { shownStatementIds, groupings }] = Object.entries(UInfoData[userId][deliberationId])[0]
 
-          await Dturns.upsert(synuserId, deliberationId, 0, round, shownStatementIds, groupings || [])
+          await Dturns.upsert(userId, deliberationId, round, shownStatementIds, groupings || [])
         },
         getAllUInfo: async () => {
           return await Dturns.getAllFromDiscussion(deliberationId)

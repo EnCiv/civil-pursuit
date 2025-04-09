@@ -46,7 +46,7 @@ function buildChildren(steps, round) {
 }
 
 function Tournament(props) {
-  const { className, steps = [], discussionId, ...otherProps } = props
+  const { className, steps = [], discussionId, user, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
 
@@ -76,6 +76,11 @@ function Tournament(props) {
     upsert({ discussionId })
     socketApiSubscribe('subscribe-deliberation', discussionId, onUpdateHandler, onSubscribeHandler)
   }, [])
+
+  // steps are looking for userId in the context, if the user is not logged in to start, context needs to be updated
+  useEffect(() => {
+    upsert({ userId: user?.id })
+  }, [user?.id])
 
   const stepInfo = steps.map(step => {
     return {
