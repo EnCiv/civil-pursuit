@@ -229,7 +229,7 @@ const sharedErrorStyle = theme => ({
 
 const sharedWordCountStyle = theme => ({
   textAlign: 'right',
-  fontFamily: theme.fontFamily,
+  fontFamily: theme.font.fontFamily,
   fontSize: '0.875rem',
   fontStyle: 'normal',
   fontWeight: '300',
