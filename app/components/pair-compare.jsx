@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react'
 import Point from './point'
 import { createUseStyles } from 'react-jss'
-import { SecondaryButton } from './button.jsx'
+import { SecondaryButton } from './button'
 import ObjectId from 'bson-objectid'
 import cx from 'classnames'
 

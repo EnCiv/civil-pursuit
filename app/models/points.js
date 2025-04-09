@@ -10,8 +10,8 @@ class Points extends Collection {
 
   // Optional: Validation function
   static validate(doc) {
-    if (!doc.subject || !doc.description) {
-      return { error: 'subject and description are required' }
+    if (typeof doc.subject !== 'string' || typeof doc.description !== 'string') {
+      return { error: 'subject and description are required strings' }
     }
     return { result: doc }
   }

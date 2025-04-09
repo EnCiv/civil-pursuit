@@ -21,6 +21,7 @@ function getInitOptions(options) {
     putGroupings(discussionId,round,userId,statementIds) nothing returned
     rankMostImportant(discussionId,round,userId,statementId) returns nothing
     getUserRecord(discussionId,userId) returns [round: Number]{shownStatementIds: [statementIds], groupings: [[statementIds],...]} or undefined
+    initUitems(discussionId,userId,round) returns the Uitems object for that user
 
 
     report,
@@ -82,10 +83,10 @@ async function initDiscussion(discussionId, options = {}) {
 }
 module.exports.initDiscussion = initDiscussion
 
-function initUitems(discussionId, userId, round = 0) {
+export function initUitems(discussionId, userId, round = 0) {
   if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
-  if (!Discussions[discussionId].Uitems[userId][round])
-    Discussions[discussionId].Uitems[userId][round] = { userId, shownStatementIds: {}, groupings: [] }
+  if (!Discussions[discussionId].Uitems[userId][round]) Discussions[discussionId].Uitems[userId][round] = { userId, shownStatementIds: {}, groupings: [] }
+  return Discussions[discussionId].Uitems[userId]
 }
 /**
  * returns statementId or undefined if the discussion Id does not exist - is not initialized
@@ -125,8 +126,7 @@ async function insertStatementId(discussionId, userId, statementId) {
 
   // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
-  const lastRound =
-    Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
+  const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
 
   if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
     Discussions[discussionId].updates({ participants: participants, lastRound: lastRound })
@@ -226,10 +226,7 @@ async function getStatementIds(discussionId, round, userId) {
     } else if (sIds.length >= dis.group_size) {
       console.error('user has been here before', discussionId, userId, round)
       return sIds
-    } else
-      throw new Error(
-        `getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`
-      )
+    } else throw new Error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
   }
   if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
     if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
@@ -237,9 +234,7 @@ async function getStatementIds(discussionId, round, userId) {
     dis.ShownGroups[round].at(-1).shownCount++
   } else if (round === 0) {
     // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
-    const needToBeSeen = dis.ShownStatements[round].filter(
-      sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)
-    ) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
+    const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
     if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
     else if (needToBeSeen.length == dis.group_size - 1) {
@@ -282,14 +277,7 @@ async function getStatementIds(discussionId, round, userId) {
       }
       if (highestRankedItems.length < dis.group_size) return // don't add and empty or small array so that it compares with rehydrated version
       dis.ShownStatements[round] = highestRankedItems
-      console.info(
-        'Items that made it to round',
-        round,
-        ':',
-        highestRankedItems.length,
-        'of',
-        dis.ShownStatements[round - 1].length
-      )
+      console.info('Items that made it to round', round, ':', highestRankedItems.length, 'of', dis.ShownStatements[round - 1].length)
     }
     if (dis.ShownStatements[round].length < dis.group_size) return
     const shownGroup = { statementIds: [], shownCount: 1 }
@@ -312,8 +300,7 @@ async function getStatementIds(discussionId, round, userId) {
     needToBeRemoved.sort(sortLargestFirst)
     needToBeRemoved.forEach(index => needToBeSeen.splice(index, 1))
     shownItemsToRemove.sort(sortLargestFirst)
-    if (shownItemsToRemove.length)
-      console.info('shownItems to be removed - count', shownItemsToRemove.length, 'round', round)
+    if (shownItemsToRemove.length) console.info('shownItems to be removed - count', shownItemsToRemove.length, 'round', round)
     shownItemsToRemove.forEach(index => dis.ShownStatements[round].splice(index, 1))
     if (needToBeSeen.length < dis.group_size) return
     getRandomUniqueList(needToBeSeen.length, dis.group_size).forEach(index => {
@@ -393,8 +380,7 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
   if (dis.ShownStatements[round + 1]) {
     // a round has started above this one, had this ranked high enough to move into the next round
     const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size)
-    const minRank =
-      dis.ShownStatements[round][cutoff].rank > dis.min_rank ? dis.ShownStatements[round][cutoff].rank : dis.min_rank
+    const minRank = dis.ShownStatements[round][cutoff].rank > dis.min_rank ? dis.ShownStatements[round][cutoff].rank : dis.min_rank
     if (delta > 0) {
       if (sitem.rank >= minRank) {
         if (!dis.ShownStatements[round + 1].some(s => s.statementId === sitem.statementId)) {
@@ -410,8 +396,7 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
     } else {
       if (sitem.rank < minRank) {
         const index = dis.ShownStatements[round + 1].findIndex(s => s.statementId === sitem.statementId)
-        if (index >= 0 && dis.ShownStatements[round + 1][index].shownCount === 0)
-          dis.ShownStatements[round + 1].splice(index, 1)
+        if (index >= 0 && dis.ShownStatements[round + 1][index].shownCount === 0) dis.ShownStatements[round + 1].splice(index, 1)
       }
     }
   }
@@ -419,13 +404,9 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
 function promoteItemsFromShownStatementsToNextRoundObj(discussionId, round, shownStatementsObj) {
   const dis = Discussions[discussionId]
   const cutoff = Math.ceil(dis.ShownStatements[round].length / dis.group_size)
-  const minRank =
-    dis.ShownStatements[round][cutoff].rank > dis.min_rank ? dis.ShownStatements[round][cutoff].rank : dis.min_rank
-  const StatementsToPromote = dis.ShownStatements[round]
-    .filter(item => item.rank >= minRank)
-    .filter(item => !shownStatementsObj[item.statementId])
-  for (const item of StatementsToPromote)
-    shownStatementsObj[item.statementId] = { statementId: item.statementId, shownCount: 0, rank: 0 }
+  const minRank = dis.ShownStatements[round][cutoff].rank > dis.min_rank ? dis.ShownStatements[round][cutoff].rank : dis.min_rank
+  const StatementsToPromote = dis.ShownStatements[round].filter(item => item.rank >= minRank).filter(item => !shownStatementsObj[item.statementId])
+  for (const item of StatementsToPromote) shownStatementsObj[item.statementId] = { statementId: item.statementId, shownCount: 0, rank: 0 }
 }
 
 const sortLowestIdFirst = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
@@ -436,8 +417,7 @@ function iteratePairs(discussionId, round, statementIds, func) {
   if (!statementIds || statementIds.length == 0) return
   const sortedStatementIds = statementIds.slice().sort(sortLowestIdFirst)
   let last = sortedStatementIds.length - 1
-  if (!Discussions[discussionId].Gitems[round])
-    Discussions[discussionId].Gitems[round] = { byLowerId: {}, byUpperId: {} }
+  if (!Discussions[discussionId].Gitems[round]) Discussions[discussionId].Gitems[round] = { byLowerId: {}, byUpperId: {} }
   const g = Discussions[discussionId].Gitems[round] // shorten to speed it up
   for (let i = 0; i <= last - 1; i++) {
     const lowerStatementId = sortedStatementIds[i]
@@ -501,8 +481,7 @@ module.exports.rankMostImportant = rankMostImportant
 
 function findDeep(discussionId, sItem, id) {
   if (sItem.statmentId === id) return true
-  const childIds =
-    gatherChildIds(discussionId, Discussions[discussionId].ShownStatements.length - 1, sItem.statementId) || []
+  const childIds = gatherChildIds(discussionId, Discussions[discussionId].ShownStatements.length - 1, sItem.statementId) || []
   if (childIds.some(child => child._id === id)) return true
   else return false
 }
@@ -510,18 +489,11 @@ function findDeep(discussionId, sItem, id) {
 function report(discussionId, Statements) {
   //console.info(JSON.stringify({ShownItems},null,2))
   console.info('the highest ranked is', Statements[Discussions[discussionId].ShownStatements.at(-1)[0]?.statementId])
-  const lowest = Object.values(Statements).reduce(
-    (min, s, i) => (Number(s.description) < Number(min.description) ? { ...s, index: i } : min),
-    { description: Infinity }
-  )
+  const lowest = Object.values(Statements).reduce((min, s, i) => (Number(s.description) < Number(min.description) ? { ...s, index: i } : min), { description: Infinity })
   console.info('the loweset statement is', lowest)
   console.info(
     'the children are',
-    gatherChildIds(
-      discussionId,
-      Discussions[discussionId].ShownStatements.length - 1,
-      Discussions[discussionId]?.ShownStatements.at(-1)[0]?.statementId
-    ).map(id => Statements[id].description)
+    gatherChildIds(discussionId, Discussions[discussionId].ShownStatements.length - 1, Discussions[discussionId]?.ShownStatements.at(-1)[0]?.statementId).map(id => Statements[id].description)
   )
   console.info('the number in the last round is', Discussions[discussionId].ShownStatements.at(-1).length)
   console.info(
@@ -533,27 +505,19 @@ function report(discussionId, Statements) {
     'the last round:',
     Discussions[discussionId].ShownStatements.at(-1).map(sItem => Statements[sItem.statementId])
   )
-  if (Discussions[discussionId].ShownStatements.at(-1).some(sItem => sItem.statementId === lowest._id))
-    console.info('the lowest is in the final round')
+  if (Discussions[discussionId].ShownStatements.at(-1).some(sItem => sItem.statementId === lowest._id)) console.info('the lowest is in the final round')
   else {
-    if (Discussions[discussionId].ShownStatements.at(-1).some(sItem => findDeep(discussionId, sItem, lowest._id)))
-      console.info('the lowest is in a child of the final round')
+    if (Discussions[discussionId].ShownStatements.at(-1).some(sItem => findDeep(discussionId, sItem, lowest._id))) console.info('the lowest is in a child of the final round')
     else {
       console.error('the lowest is not in the final round')
       for (const round in Discussions[discussionId].ShownStatements) {
-        const shownItem = Discussions[discussionId].ShownStatements[round].find(
-          sItem => sItem.statementId === lowest._id
-        )
+        const shownItem = Discussions[discussionId].ShownStatements[round].find(sItem => sItem.statementId === lowest._id)
         if (!shownItem) console.info("it wansn't found in round", round)
         else {
           console.info('round:', round, shownItem)
           const gitems = (Discussions[discussionId].Gitems[round].byLowerId[shownItem.statementId] || [])
             .filter(gitem => gitem.upperStatementId === shownItem.statementId)
-            .concat(
-              (Discussions[discussionId].Gitems[round].byUpperId[shownItem.statementId] || []).filter(
-                gitem => gitem.lowerStatementId === shownItem.statementId
-              )
-            )
+            .concat((Discussions[discussionId].Gitems[round].byUpperId[shownItem.statementId] || []).filter(gitem => gitem.lowerStatementId === shownItem.statementId))
           console.info('groupings:', gitems)
         }
       }
@@ -591,15 +555,11 @@ async function reconstructDiscussionFromUInfo(discussionId) {
       // shownGroups are identified by the first id in the list, that is not authored by the user
       const shownGroupIds = shownStatementIds.filter(id => !uitem.shownStatementIds[id].author)
       if (shownGroupIds.length > 0) {
-        if (
-          (round === 0 && shownGroupIds.length !== Discussions[discussionId].group_size - 1) ||
-          (round > 0 && shownGroupIds.length !== Discussions[discussionId].group_size)
-        ) {
+        if ((round === 0 && shownGroupIds.length !== Discussions[discussionId].group_size - 1) || (round > 0 && shownGroupIds.length !== Discussions[discussionId].group_size)) {
           console.error('groupsize mismatch', round, shownGroupIds.length, uitem)
         }
         // shown groups are identified by the first one in the group
-        if (!shownGroups[shownGroupIds[0]])
-          shownGroups[shownGroupIds[0]] = { statementIds: shownGroupIds, shownCount: 1 }
+        if (!shownGroups[shownGroupIds[0]]) shownGroups[shownGroupIds[0]] = { statementIds: shownGroupIds, shownCount: 1 }
         else {
           shownGroups[shownGroupIds[0]].shownCount += 1
           if (process.env.NODE_ENV !== 'production')
@@ -636,13 +596,10 @@ async function reconstructDiscussionFromUInfo(discussionId) {
       if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
       Discussions[discussionId].Uitems[userId][round] = { userId, ...uitem }
       // empty groupings is not sent to the db, but should be initiallized in memory
-      if (!Discussions[discussionId].Uitems[userId][round].groupings)
-        Discussions[discussionId].Uitems[userId][round].groupings = []
+      if (!Discussions[discussionId].Uitems[userId][round].groupings) Discussions[discussionId].Uitems[userId][round].groupings = []
     }
     if (round > 0) promoteItemsFromShownStatementsToNextRoundObj(discussionId, round - 1, shownStatements)
-    Discussions[discussionId].ShownStatements[round] = Object.values(shownStatements).sort(
-      sortShownItemsByLargestRankThenSmallestShownCount
-    )
+    Discussions[discussionId].ShownStatements[round] = Object.values(shownStatements).sort(sortShownItemsByLargestRankThenSmallestShownCount)
     const shownGroupsArray = Object.values(shownGroups).sort(sortShownGroupItemsByLowestLast)
     if (shownGroupsArray.length > 0) Discussions[discussionId].ShownGroups[round] = shownGroupsArray
     round++

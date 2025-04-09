@@ -8,12 +8,12 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import Point from './point.jsx'
+import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
-import { ModifierButton, TextButton, SecondaryButton } from './button.jsx'
-import DemInfo from './dem-info.jsx'
+import { ModifierButton, TextButton, SecondaryButton } from './button'
+import DemInfo from './dem-info'
 import { H, Level } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed

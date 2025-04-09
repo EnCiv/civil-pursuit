@@ -4,9 +4,8 @@ import getUserRanks from '../get-user-ranks'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { MongoClient, ObjectId } from 'mongodb'
 
-const Ranks = require('../../models/ranks')
+import Ranks from '../../models/ranks'
 
 // Config
 const discussionId = '66a174b0c3f2051ad387d2a6'

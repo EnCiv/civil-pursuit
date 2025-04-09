@@ -27,9 +27,10 @@ function SignUp(props, ref) {
   const [clickedOnPassword, setClickedOnPassword] = useState(false)
   const [clickedOnConfirm, setClickedOnConfirm] = useState(false)
 
-  const { destination, userInfo = {} } = props
+  const { destination, user = {} } = props
   const classes = useStyles()
-  const [state, methods] = useAuth(destination, userInfo)
+  const [state, methods] = useAuth(destination, user)
+  const [_this] = useState({ done: false }) // to prevent multiple calls to onDone
 
   // taken from button.jsx
   const handleKeyDown = (e, type, index) => {
@@ -79,13 +80,14 @@ function SignUp(props, ref) {
     methods.onChangeConfirm(value)
   }
 
-  // if user has filled out required fields, automatically log them in
-  if (userInfo.email && userInfo.password) {
-    useEffect(() => {
-      onDone({ valid: true, value: userInfo })
-      return
-    })
-  }
+  // if user has already logged in, continue
+  useEffect(() => {
+    if (user?.id && !_this.done) {
+      _this.done = true
+      onDone({ valid: true, value: user })
+    }
+    return
+  }, [user])
 
   // otherwise, continue showing login/sign up page
   return (

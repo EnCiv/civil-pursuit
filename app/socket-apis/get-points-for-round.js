@@ -4,7 +4,7 @@ const Points = require('../models/points')
 import { getStatementIds } from '../dturn/dturn'
 import { ObjectId } from 'mongodb'
 
-async function getPointsForRound(discussionId, round, cb) {
+export default async function getPointsForRound(discussionId, round, cb) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
@@ -17,9 +17,7 @@ async function getPointsForRound(discussionId, round, cb) {
 
   // Verify arguments
   if (!discussionId || round === undefined || typeof round !== 'number') {
-    return cbFailure(
-      'Invalid arguments provided to getPointsForRound(discussionId: ObjectId, round: number, cb: Function).'
-    )
+    return cbFailure('Invalid arguments provided to getPointsForRound(discussionId: ObjectId, round: number, cb: Function).')
   }
 
   // If getStatementIds errors, call callback to indicate error
@@ -37,7 +35,7 @@ async function getPointsForRound(discussionId, round, cb) {
   }
 
   // Get the list and return if successful
-  let pointsList = await Points.find({ _id: { $in: statementIds } }).toArray()
+  let pointsList = await Points.find({ _id: { $in: statementIds.map(_id => new ObjectId(_id)) } }).toArray()
 
   // Anonymize points by removing userids, except if the point was made by the current user
   pointsList = pointsList.map(point => {
@@ -48,5 +46,3 @@ async function getPointsForRound(discussionId, round, cb) {
   if (cb) cb(pointsList)
   return pointsList
 }
-
-module.exports = getPointsForRound

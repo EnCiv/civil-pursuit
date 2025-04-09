@@ -201,6 +201,34 @@ export default {
     layout: 'fullscreen',
   },
   decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
+  excludeStories: /useSetup.+/,
+}
+
+export function useSetupTournament() {
+  return useState(() => {
+    if (!window.logger) window.logger = console
+    // execute this code once, before the component is initially rendered
+    // the api call will provide the new data for this step
+    window.socket._socketEmitHandlerResults['get-user-ranks'] = []
+    window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
+      window.socket._socketEmitHandlerResults['get-user-ranks'].push([discussionId, round, ids])
+      setTimeout(() => {
+        cb([]) // return empty ranks
+      })
+    }
+    window.socket._socketEmitHandlerResults['get-points-of-ids'] = []
+    window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
+      window.socket._socketEmitHandlerResults['upsert-rank'].push([rank])
+      cb && cb()
+    }
+    window.socket._socketEmitHandlerResults['upsert-rank'] = []
+    window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
+      cb({
+        ranks: [],
+        whys: [],
+      })
+    }
+  })
 }
 
 function makePoints(n) {
@@ -231,29 +259,7 @@ export const Default = {
     },
   },
   render: args => {
-    useState(() => {
-      // execute this code once, before the component is initally rendered
-      // the api call will provide the new data for this step
-      window.socket._socketEmitHandlerResults['get-user-ranks'] = []
-      window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
-        window.socket._socketEmitHandlerResults['get-user-ranks'].push([discussionId, round, ids])
-        setTimeout(() => {
-          cb([]) // return empty ranks
-        })
-      }
-      window.socket._socketEmitHandlerResults['get-points-of-ids'] = []
-      window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
-        window.socket._socketEmitHandlerResults['upsert-rank'].push([rank])
-        cb && cb()
-      }
-      window.socket._socketEmitHandlerResults['upsert-rank'] = []
-      window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
-        cb({
-          ranks: [],
-          whys: [],
-        })
-      }
-    })
+    useSetupTournament()
     return <Tournament {...args} />
   },
 }

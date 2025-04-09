@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/178
 
-const Joi = require('joi')
+import Joi from 'joi'
 import { putGroupings } from '../dturn/dturn'
 
 const schema = Joi.object({
@@ -8,7 +8,7 @@ const schema = Joi.object({
   groupings: Joi.array().max(99).items(Joi.array().max(99)).required(),
 })
 
-async function postPointGroups(discussionId, round, groupings, cb) {
+export default async function postPointGroups(discussionId, round, groupings, cb) {
   // Anonymous functions to handle success/fail
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
@@ -22,11 +22,13 @@ async function postPointGroups(discussionId, round, groupings, cb) {
   if (!this.synuser || !this.synuser.id) {
     return cbFailure('Cannot post point group - user is not logged in.')
   }
-
-  // Verify argument number
-  if (arguments.length != 4) {
-    return console.error(`Expected 4 arguments (discussionId, round, groupings, cb) but got ${arguments.length}.`)
-  }
+  if (typeof discussionId !== 'string' || discussionId.length !== 24) return cbFailure('discussionId is not a valid ObjectId')
+  if (typeof round !== 'number') return cbFailure('round is not a number')
+  if (!Array.isArray(groupings)) return cbFailure('groupings is not an array')
+  if (groupings.length > 99) return cbFailure('groupings is too long')
+  if (groupings.some(g => !Array.isArray(g))) return cbFailure('groupings contains a non-array element')
+  if (groupings.some(g => g.length > 99)) return cbFailure('groupings contains a subarray that is too long')
+  if (cb && typeof cb !== 'function') return cbFailure('callback is not a function')
 
   // Validate inputs
   try {
@@ -42,12 +44,10 @@ async function postPointGroups(discussionId, round, groupings, cb) {
 
   // Ensure no subarray has only 1 object
   for (let index = 0; index < groupings.length; index++) {
-    if (groupings[index].length == 1)
-      return cbFailure(`Groupings contains a subarr with only 1 object - ${groupings[index]}`)
+    if (groupings[index].length == 1) return cbFailure(`Groupings contains a subarr with only 1 object - ${groupings[index]}`)
   }
 
   // Call putGroupings() and check for success
   let putSuccess = await putGroupings(discussionId, round, this.synuser.id, groupings)
   return putSuccess ? cbSuccess() : cbFailure('The call to putGroupings() did not complete successfully.')
 }
-module.exports = postPointGroups

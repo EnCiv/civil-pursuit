@@ -43,16 +43,16 @@ export default function AnswerStep(props) {
 
 // Presentation component: only renders UI and handles local user interactions
 export function Answer(props) {
-  const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, userId, ...otherProps } = props
+  const { className = '', intro = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, discussionId, userId, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [validByType, setValidByType] = useState({ myAnswer: false, myWhy: false })
-  // myAnswer could be undefined initally, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
-  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: question._id, userId })
+  // myAnswer could be undefined initially, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
+  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId })
   useEffect(() => {
     if (myAnswer && !isEqual(myAnswer, _myAnswer)) setMyAnswer(myAnswer)
   }, [myAnswer])
 
-  // myWhy could be undefined initally if so it needs to be initialized with an _id and parentId
+  // myWhy could be undefined initially if so it needs to be initialized with an _id and parentId
   const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId })
   useEffect(() => {
     if (myWhy && !isEqual(myWhy, _myWhy)) setMyWhy(myWhy)
@@ -65,6 +65,7 @@ export function Answer(props) {
   const updateResponse =
     type =>
     ({ valid, value }) => {
+      if (type === 'myWhy' && value.category !== 'most') value.category = 'most'
       const delta = { [type]: value }
       setValidByType(validByType => {
         validByType[type] = valid
@@ -80,7 +81,7 @@ export function Answer(props) {
       <StepIntro subject="Answer" description="Please provide a title and short description of your answer." />
       <div className={classes.answersContainer}>
         <div key="question">
-          <WhyInput point={question} value={_myAnswer} onDone={updateResponse('myAnswer')} />
+          <WhyInput point={{ ...question, _id: discussionId }} value={_myAnswer} onDone={updateResponse('myAnswer')} />
         </div>
         <div key="why">
           <hr className={classes.pointsHr} />

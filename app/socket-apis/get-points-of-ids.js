@@ -2,7 +2,7 @@
 const Points = require('../models/points')
 const { ObjectId } = require('mongodb')
 
-async function getPointsOfIds(ids, callback) {
+export default async function getPointsOfIds(ids, callback) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (callback) callback(undefined) // Pass undefined to callback on error
@@ -41,19 +41,17 @@ async function getPointsOfIds(ids, callback) {
       {
         $match: {
           parentId: { $in: ids.map(id => id.toString()) },
-          userId: this.synuser.id
-        }
-      }
+          userId: this.synuser.id,
+        },
+      },
     ]).toArray()
 
     // console.log('Fetched whypoints:', whypoints)
 
     // Return points and whypoints directly as arrays
-    callback({points: filteredPoints, myWhys: whypoints})
+    callback({ points: filteredPoints, myWhys: whypoints })
   } catch (error) {
     console.error('Error fetching points or whypoints:', error)
     cbFailure('Error fetching points or whypoints.')
   }
 }
-
-module.exports = getPointsOfIds

@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -14,6 +14,8 @@ import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
+import socketApiSubscribe from '../socket-apis/socket-api-subscribe'
+import DeliberationContext from './deliberation-context'
 
 const WebComponents = {
   StepBar: StepBar,
@@ -44,8 +46,9 @@ function buildChildren(steps, round) {
 }
 
 function Tournament(props) {
-  const { className, steps = [], ...otherProps } = props
+  const { className, steps = [], discussionId, user, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
+  const { data, upsert } = useContext(DeliberationContext)
 
   function reducer(state, action) {
     switch (action.type) {
@@ -62,6 +65,22 @@ function Tournament(props) {
   }
 
   const [state, dispatch] = useReducer(reducer, { currentRound: 1, stepComponents: buildChildren(steps, 1) })
+  function onSubscribeHandler(data) {
+    upsert(data)
+  }
+  function onUpdateHandler(data) {
+    upsert(data)
+  }
+
+  useEffect(() => {
+    upsert({ discussionId })
+    socketApiSubscribe('subscribe-deliberation', discussionId, onUpdateHandler, onSubscribeHandler)
+  }, [])
+
+  // steps are looking for userId in the context, if the user is not logged in to start, context needs to be updated
+  useEffect(() => {
+    upsert({ userId: user?.id })
+  }, [user?.id])
 
   const stepInfo = steps.map(step => {
     return {
@@ -71,7 +90,7 @@ function Tournament(props) {
   })
 
   return (
-    <div className={cx(classes.wrapper, className)} {...otherProps}>
+    <div className={cx(classes.tournament, className)} {...otherProps}>
       <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
       <StepSlider
         key={state.currentRound}
@@ -86,7 +105,7 @@ function Tournament(props) {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  wrapper: {
+  tournament: {
     width: '100%',
   },
   roundTracker: {

@@ -6,7 +6,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
-import { PrimaryButton } from './button.jsx'
+import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 
@@ -49,14 +49,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
           ))}
         </select>
       ) : (
-        <input
-          id={id}
-          type={type}
-          checked={type === 'checkbox' ? !!data : undefined}
-          value={type === 'checkbox' ? undefined : data || ''}
-          onChange={handleInputChange}
-          className={classes.formInput}
-        />
+        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={classes.formInput} />
       )}
     </div>
   )
@@ -83,10 +76,7 @@ const MoreDetails = props => {
   const memoedRenderers = useMemo(() => {
     return customRenderers.map(renderer => ({
       ...renderer,
-      renderer:
-        renderer.renderer === CustomInputRenderer
-          ? props => <CustomInputRenderer {...props} classes={classes} />
-          : renderer.renderer,
+      renderer: renderer.renderer === CustomInputRenderer ? props => <CustomInputRenderer {...props} classes={classes} /> : renderer.renderer,
     }))
   }, [schema, uischema])
 
@@ -98,20 +88,8 @@ const MoreDetails = props => {
     <div className={cx(classes.formContainer, className)} {...otherProps}>
       {title && <p className={classes.formTitle}>{title}</p>}
       <div className={classes.jsonFormContainer}>
-        <JsonForms
-          schema={schema}
-          uischema={uischema}
-          data={data}
-          renderers={memoedRenderers}
-          cells={vanillaCells}
-          onChange={({ data }) => setData(data)}
-        />
-        <PrimaryButton
-          title={'Submit'}
-          className={classes.actionButton}
-          onDone={() => onDone({ valid: isValid, value: data })}
-          disabled={!isValid}
-        >
+        <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
+        <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={() => onDone({ valid: isValid, value: data })} disabled={!isValid}>
           Submit
         </PrimaryButton>
       </div>
