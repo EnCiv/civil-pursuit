@@ -108,7 +108,7 @@ function PointInput(props) {
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
       ></input>
       <span className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
-        Word count{' '}
+        Character count{' '}
         <span
           className={cx({
             [classes.wordCountLimitReached]: subjCharCount >= maxCharCount, // make the text bold
@@ -127,7 +127,7 @@ function PointInput(props) {
         className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
       ></textarea>
       <span className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
-        Character count{' '}
+        Word count{' '}
         <span
           className={cx({
             [classes.wordCountLimitReached]: descWordCount >= maxWordCount, // make the text bold
@@ -229,7 +229,7 @@ const sharedErrorStyle = theme => ({
 
 const sharedWordCountStyle = theme => ({
   textAlign: 'right',
-  fontFamily: 'Arial, sans-serif', 
+  fontFamily: theme.fontFamily,
   fontSize: '0.875rem',
   fontStyle: 'normal',
   fontWeight: '300',
