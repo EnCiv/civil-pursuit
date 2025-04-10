@@ -69,19 +69,14 @@ const Template = args => {
 const Panel = props => (
   <div style={{ width: 'inherit', height: '150vh', backgroundColor: props.backGroundColor }}>
     <div style={{ position: 'relative', width: 'inherit', height: 'inherit' }}>
-      <button onClick={props.onDone} style={{ position: 'absolute', top: '20vh' }}>
+      <button onClick={() => props.onDone({ valid: true, value: props.backGroundColor })} style={{ position: 'absolute', top: '20vh' }}>
         Done
       </button>
     </div>
   </div>
 )
 
-const list = [
-  <Panel backGroundColor="green" />,
-  <Panel backGroundColor="blue" />,
-  <Panel backGroundColor="red" />,
-  <Panel backGroundColor="purple" />,
-]
+const list = [<Panel backGroundColor="green" />, <Panel backGroundColor="blue" />, <Panel backGroundColor="red" />, <Panel backGroundColor="purple" />]
 
 function createPanels(panels = 4) {
   const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
