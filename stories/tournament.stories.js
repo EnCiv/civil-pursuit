@@ -228,6 +228,10 @@ export function useSetupTournament() {
         whys: [],
       })
     }
+    window.socket._socketOnHandlers = {}
+    window.socket.on = (event, cb) => {
+      window.socket._socketOnHandlers[event] = cb
+    }
   })
 }
 
