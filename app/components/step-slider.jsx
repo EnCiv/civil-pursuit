@@ -11,7 +11,11 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
-if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/styles.css')
+// added this line to build.js to make this work
+// jss convert node_modules/react-perfect-scrollbar/dist/css/styles.css -f js -e cjs > node_modules/react-perfect-scrollbar/dist/css/styles.js
+// don't forget to call useScrollBarCss() in the react component below to get the styles pulled in
+import scrollBarCss from 'react-perfect-scrollbar/dist/css/styles'
+const useScrollBarCss = createUseStyles(scrollBarCss)
 
 const delayedSideEffect = setTimeout // basically put the side effect on the process queue and do it later
 const allResizeHandlers = []
@@ -23,6 +27,7 @@ export const StepSlider = props => {
   const [resizeHandlerIndex] = useState(allResizeHandlers.length)
   const { children, onDone, steps, className, stepName, stepintro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
   const classes = useStyles(props)
+  useScrollBarCss(props) // so the styles are pulled in
   const navRef = useRef() // didn't work right with ref= so navRef
   const footerRef = useRef()
   const outerRef = useRef()

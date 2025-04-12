@@ -16,6 +16,9 @@ cp ./node_modules/socket.io-stream/socket.io-stream.js ./assets/js/
 mkdir -p ./assets/images
 cp -r node_modules/civil-server/assets/images ./assets
 
+# so the styles can work on server side render
+jss convert node_modules/react-perfect-scrollbar/dist/css/styles.css -f js -e cjs > node_modules/react-perfect-scrollbar/dist/css/styles.js
+
 npm run svgr || {
   echo Could not svgr
   exit 1
