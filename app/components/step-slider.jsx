@@ -72,13 +72,6 @@ export const StepSlider = props => {
     }
   }, [])
 
-  // if the other props have changed, we need to rerender the children
-  // _this.otherProps is only changed if it's shallow - different
-  // _this is written directly because we don't want to cause another rerender - we just want to save the value for next time
-  if (!shallowEqual(_this.otherProps, otherProps)) _this.otherProps = otherProps
-
-  // has to be useLayoutEffect not useEffect or transitions will get enabled before the first render of the children and it will be blurry
-
   const stepNameToIndex = children.reduce((stepNameToIndex, child, index) => {
     const stepName = child.props.stepName || `step${index}`
     stepNameToIndex[stepName] = index
@@ -106,6 +99,7 @@ export const StepSlider = props => {
       case 'transitionsOn':
         return { ...state, transitions: true }
       case 'moveTo': {
+        if (!cachedChildren[action.to]) return { ...state, transitions: false, nextStep: action.to }
         const currentStep = action.to
         const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
         return {
@@ -124,14 +118,19 @@ export const StepSlider = props => {
             nextStep,
           }
         }
-      // else flow through to finishIncrement
-      case 'finishIncrement':
-        const currentStep = Math.min(state.currentStep + 1, children.length - 1)
-        const stepStatuses = state.stepStatuses?.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
         return {
           ...state,
           transitions: true,
-          stepStatuses,
+          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === nextStep ? { ...stepStatus, seen: true } : stepStatus)),
+          currentStep: nextStep,
+          sendDoneToParent: state.currentStep >= children.length - 1,
+        }
+      case 'finishIncrement':
+        const currentStep = state.nextStep
+        return {
+          ...state,
+          transitions: true,
+          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus)),
           currentStep,
           sendDoneToParent: state.currentStep >= children.length - 1,
         }
@@ -168,6 +167,18 @@ export const StepSlider = props => {
         }
     }
   }
+  // if the other props have changed, we need to rerender the children
+  // _this.otherProps is only changed if it's shallow - different
+  // _this is written directly because we don't want to cause another rerender - we just want to save the value for next time
+  if (!shallowEqual(_this.otherProps, otherProps)) {
+    _this.otherProps = otherProps
+    // if otherProps changes, clone children again with new props
+    for (let i = 0; i < children.length; i++) {
+      if (cachedChildren[i]) {
+        cachedChildren[i] = cloneChild(i)
+      }
+    }
+  }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
   if (steps) {
@@ -191,7 +202,14 @@ export const StepSlider = props => {
   }
 
   // in the initial case, nextStep and currentStep will be 0 and the first child will be rendered
-  if (!cachedChildren[state.nextStep]) cachedChildren[state.nextStep] = cloneChild(state.nextStep)
+  if (!cachedChildren[state.nextStep]) {
+    // if the next step, or any previous steps, are not present, we need to clone them before the render
+    // moveTo can cause steps to be skipped, but the will need to be rendered to keep the panels in the right place
+    for (let i = 0; i <= state.nextStep; i++) {
+      if (!cachedChildren[i]) cachedChildren[i] = cloneChild(i)
+    }
+    // if the next step is not the current step, we need to clone it so it will be rendered
+  }
   if (typeof window !== 'undefined')
     useLayoutEffect(() => {
       if (state.nextStep > state.currentStep) dispatch({ type: 'finishIncrement' })

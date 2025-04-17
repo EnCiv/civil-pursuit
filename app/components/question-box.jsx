@@ -18,7 +18,7 @@ const QuestionBox = props => {
     <div className={cx(classes.container, className)} {...otherProps}>
       <div className={classes.topic}>
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
-        <div className={classes.subject}>{subject}</div>
+        <h1 className={classes.subject}>{subject}</h1>
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
         </div>
@@ -65,6 +65,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   subject: {
+    marginBlockStart: '0',
+    marginBlockEnd: '0',
     fontFamily: 'Inter',
     fontWeight: 700,
     fontSize: '3.75rem',

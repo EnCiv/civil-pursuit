@@ -78,10 +78,7 @@ function StepBar(props) {
         // Otherwise, then menu closes. Note that only complete steps will call onDone.
         for (let i = 0; i < stepRefs.length; i++) {
           if (stepRefs[i]?.current) {
-            if (
-              !stepRefs[i]?.current?.contains(event?.target) &&
-              optionsContainerRef?.current?.contains(event?.target)
-            ) {
+            if (!stepRefs[i]?.current?.contains(event?.target) && optionsContainerRef?.current?.contains(event?.target)) {
               continue
             } else {
               setIsOpen(false)
@@ -210,33 +207,19 @@ function StepBar(props) {
   */
   return !isMobile ? (
     <div className={cx(classes.container, className)} style={style}>
-      <button
-        onClick={leftClick}
-        className={cx(classes.resetButtonStyling, classes.svgContainer)}
-        data-testid="leftclick"
-        tabIndex={currentPage !== 1 ? 0 : -1}
-      >
-        <SvgStepBarArrowDesktop
-          className={cx({ [classes.svgColor]: currentPage === 1 })}
-          width="1rem"
-          height="1.2rem"
-          style={{ transform: 'rotate(180deg)' }}
-        />
+      <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" tabIndex={currentPage !== 1 ? 0 : -1}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === 1 })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
       </button>
       <div className={classes.stepsContainer} ref={stepContainerRef}>
         {visibleSteps.map((step, index) => {
           return (
-            <div
-              ref={stepRefs[index]}
-              className={cx(classes.stepDiv, { [classes.lastStep]: index === visibleSteps.length - 1 })}
-              key={index}
-            >
+            <div ref={stepRefs[index]} className={cx(classes.stepDiv, { [classes.lastStep]: index === visibleSteps.length - 1 })} key={index}>
               <Step
                 name={step.name}
                 title={step.title}
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
-                unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : false}
+                unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : step?.seen}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
@@ -245,35 +228,17 @@ function StepBar(props) {
           )
         })}
       </div>
-      <button
-        onClick={rightClick}
-        className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)}
-        data-testid="rightclick"
-        tabIndex={currentPage !== pages.size ? 0 : -1}
-      >
-        <SvgStepBarArrowDesktop
-          className={cx({ [classes.svgColor]: currentPage === pages.size })}
-          width="1rem"
-          height="1.2rem"
-        />
+      <button onClick={rightClick} className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)} data-testid="rightclick" tabIndex={currentPage !== pages.size ? 0 : -1}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === pages.size })} width="1rem" height="1.2rem" />
       </button>
     </div>
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div
-        className={cx(classes.resetButtonStyling, classes.selectInput)}
-        ref={selectRef}
-        tabIndex={0}
-        data-testid="mobile-select-bar"
-      >
+      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0} data-testid="mobile-select-bar">
         <div className={classes.selectItemsContainer}>
           <div className={classes.selectText}>{steps[current - 1].name}</div>
-          {isOpen ? (
-            <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" />
-          ) : (
-            <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />
-          )}
+          {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />}
         </div>
       </div>
 
