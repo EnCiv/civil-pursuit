@@ -17,6 +17,7 @@
     "description": "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.",
     "webComponent": {
       "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5 },
       "steps": [
         { "webComponent": "SignUp" },
         {
