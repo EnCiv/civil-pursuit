@@ -13,7 +13,7 @@ export default async function getJsform(parentId, cb) {
     return cb && cb()
   }
 
-  let result = await Jsforms.find({ parentId: parentId }).toArray()
+  let result = await Jsforms.findOne({ parentId: parentId })
 
-  return cb && cb(result.length > 0 ? result[0] : {})
+  return cb && cb(result ?? {})
 }
