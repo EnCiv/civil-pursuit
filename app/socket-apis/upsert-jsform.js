@@ -27,9 +27,13 @@ export default async function upsertJsform(parentId, name, obj, cb) {
     const formQuery = { parentId: parentId, userId: this.synuser.id }
 
     await Jsforms.updateOne(formQuery, { $set: { [name]: obj } }, { upsert: true })
-    const updatedDoc = await Jsforms.findOne(formQuery)
-    updatedDoc._id = updatedDoc._id.toString() // Convert ObjectId to string
-    cb && cb(updatedDoc)
+
+    if (!cb) {
+      return
+    } else {
+      const updatedDoc = await Jsforms.findOne(formQuery)
+      cb(updatedDoc)
+    }
   } catch (error) {
     console.error(error)
     cb && cb(false)
