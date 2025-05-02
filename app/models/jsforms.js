@@ -15,10 +15,10 @@ class Jsforms extends Collection {
             description: "'_id' must be an ObjectId and is required",
           },
           parentId: {
-            description: "'parentId' must be an ObjectId and is required",
+            description: "'parentId' must be a string and is required",
           },
           userId: {
-            description: "'userId' must be an ObjectId",
+            description: "'userId' must be a string",
           },
         },
         additionalProperties: { type: 'object' },
