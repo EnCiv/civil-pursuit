@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/152
 
-import React, { useEffect, useReducer } from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -49,13 +49,14 @@ function buildChildren(steps) {
 function CivilPursuit(props) {
   const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
+  const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
     <DeliberationContextProvider defaultValue={{}}>
       <div className={cx(classes.civilPursuit, className)} {...otherProps}>
         <QuestionBox className={classes.question} subject={subject} description={description} />
         <StepSlider
-          children={buildChildren(steps)}
+          children={children}
           onDone={valid => {
             // We're done!
           }}

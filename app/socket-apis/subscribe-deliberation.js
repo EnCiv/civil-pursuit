@@ -41,7 +41,18 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
           await Dturns.upsert(userId, deliberationId, round, shownStatementIds, groupings || [])
         },
         getAllUInfo: async () => {
-          return await Dturns.getAllFromDiscussion(deliberationId)
+          const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
+          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds, groupings }) => ({
+            [userId]: {
+              [discussionId]: {
+                [round]: {
+                  shownStatementIds,
+                  groupings,
+                },
+              },
+            },
+          }))
+          return all
         },
         updates: updateData => {
           server.to(deliberationId).emit(eventName, updateData)
