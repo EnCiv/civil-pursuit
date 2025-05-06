@@ -26,7 +26,7 @@ export default async function upsertJsform(parentId, name, obj, cb) {
   try {
     const formQuery = { parentId: parentId, userId: this.synuser.id }
 
-    await Jsforms.updateOne(formQuery, { $set: { [name]: obj } }, { upsert: true })
+    await Jsforms.updateOne(formQuery, { $set: { [name]: obj, userId: this.synuser.id } }, { upsert: true })
 
     if (!cb) {
       return
