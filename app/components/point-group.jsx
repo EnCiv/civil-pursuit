@@ -281,6 +281,8 @@ const PointGroup = props => {
                     className={classes.doneButton}
                     onDone={() => {
                       setExpanded(false)
+                      // the pointGroup has changed, notify the parent
+                      onDone({ valid: true, value: { pointGroup: pG } })
                     }}
                     title="Done"
                     children="Done"
