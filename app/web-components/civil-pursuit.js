@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { Level } from 'react-accessible-headings'
 
 import { DeliberationContextProvider } from '../components/deliberation-context'
 
@@ -55,14 +56,16 @@ function CivilPursuit(props) {
     <DeliberationContextProvider defaultValue={{}}>
       <div className={cx(classes.civilPursuit, className)} {...otherProps}>
         <QuestionBox className={classes.question} subject={subject} description={description} />
-        <StepSlider
-          children={children}
-          onDone={valid => {
-            // We're done!
-          }}
-          user={user}
-          discussionId={_id}
-        />
+        <Level>
+          <StepSlider
+            children={children}
+            onDone={valid => {
+              // We're done!
+            }}
+            user={user}
+            discussionId={_id}
+          />
+        </Level>
       </div>
     </DeliberationContextProvider>
   )
