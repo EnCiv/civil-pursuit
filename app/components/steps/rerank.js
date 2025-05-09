@@ -33,7 +33,7 @@ export default function RerankStep(props) {
         reducedPointList.map(point_group => point_group.point._id),
         result => {
           if (!result) return // there was an error
-          const [ranks, whys] = result
+          const { ranks, whys } = result
           //if (!ranks.length && !whys.length) return // nothing to do
           const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
           const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
