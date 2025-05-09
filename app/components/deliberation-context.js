@@ -44,11 +44,15 @@ function aEqual(a = [], b = []) {
 // export to test by jest -- this shouldn't be called directly
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
-  if (!pointById || !groupIdsLists) return data
+  if (!pointById) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
   const reducedPointTable = Object.entries(pointById).reduce((reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable), {})
   let updated = false
-  for (const [firstId, ...groupIds] of groupIdsLists) {
+  for (const [firstId, ...groupIds] of groupIdsLists || []) {
+    if (!reducedPointTable[firstId]) {
+      console.error('firstId not in reducedPointTable', firstId, reducedPointTable)
+      continue
+    }
     reducedPointTable[firstId].group = groupIds.map(id => reducedPointTable[id].point)
     groupIds.forEach(id => delete reducedPointTable[id])
   }
