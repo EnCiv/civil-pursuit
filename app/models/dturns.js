@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/196
 
 import { Collection } from '@enciv/mongo-collections'
-import docToSetUnset from '../lib/doc-to-set-unset'
 
 class Dturns extends Collection {
   static collectionName = 'dturns'
@@ -37,7 +36,6 @@ class Dturns extends Collection {
     return await this.find({ discussionId: discussionId }).toArray()
   }
 
-  // upsert's are deltas, the changes that should be made to the doc, for example shownStatementIds is a table, and new statements can be added to the table without overwriting the old ones
   static async upsert(userId, discussionId, round, info) {
     const dturnObj = {
       discussionId,
@@ -45,9 +43,8 @@ class Dturns extends Collection {
       userId,
       ...info,
     }
-    const [$set, $unset] = docToSetUnset(dturnObj)
 
-    await this.updateOne({ discussionId, userId, round }, { $set, $unset }, { upsert: true })
+    await this.updateOne({ discussionId, userId, round }, { $set: dturnObj }, { upsert: true })
   }
 }
 
