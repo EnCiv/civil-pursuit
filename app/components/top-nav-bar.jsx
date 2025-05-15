@@ -13,7 +13,7 @@ import SvgEncivWhite from '../svgr/enciv-white'
 import Donate from './donate'
 
 const TopNavBar = props => {
-  const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
+  const { className, menu, mode, layout, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedItem, setSelectedItem] = useState(defaultSelectedItem)
   const [openDropdown, setOpenDropdown] = useState(null)
@@ -58,17 +58,14 @@ const TopNavBar = props => {
       }
     }
   }
-
-  const isVerticalMode = mode === 'vertical'
-
   return (
-    <div className={cx(classes.topNavBar, classes.colors, className, { [classes.verticalNavBar]: isVerticalMode })} {...otherProps}>
-      <div className={cx(classes.columnAligner, { [classes.verticalColumnAligner]: isVerticalMode })}>
-        <div className={`${classes.navBarContainer} ${isVerticalMode ? classes.verticalNavBarContainer : ''}`}>
+    <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
+      <div className={classes.columnAligner}>
+        <div className={`${classes.navBarContainer}`}>
           {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
 
           {/* This is the computer menu */}
-          <menu className={cx(classes.menuContainer, { [classes.verticalMenuContainer]: isVerticalMode })}>
+          <menu className={cx(classes.menuContainer, { [classes.verticalMenu]: layout === 'vertical' })}>
             {menu &&
               menu.map((item, index) =>
                 Array.isArray(item) ? (
@@ -82,7 +79,7 @@ const TopNavBar = props => {
                     >
                       {item[0].name} {'\u25BE'}
                       {openDropdown === index && (
-                        <div className={cx(classes.dropdownMenu, { [classes.verticalDropdownMenu]: isVerticalMode })}>
+                        <div className={cx(classes.dropdownMenu, { [classes.verticalDropdown]: layout === 'vertical' })}>
                           {item.slice(1).map((subItem, subIndex) => (
                             <button
                               key={subIndex}
@@ -217,7 +214,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     fontSize: '1rem',
     backgroundColor: (() => {
-      if (props.mode === 'dark') {
+      if (props.layout === 'vertical') {
+        return '#f5f5f5' // light gray background for vertical layout
+      } else if (props.mode === 'dark') {
         return theme.colors.darkModeGray
       } else if (props.mode === 'light') {
         return theme.colors.lightModeColor
@@ -228,10 +227,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       }
     })(),
   }),
-  verticalNavBar: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
+
   columnAligner: props => ({
     width: '100%',
     display: 'flex',
@@ -240,9 +236,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     maxWidth: theme.maxPanelWidth,
   }),
-  verticalColumnAligner: {
-    alignItems: 'flex-start',
-  },
   donate: {
     padding: '0 0 0 1rem',
   },
@@ -257,18 +250,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.5rem',
     position: 'relative',
   },
-  verticalNavBarContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  logo: {
+  logo: props => ({
     width: '8.5rem',
     height: 'auto',
-    paddingBottom: '1.5rem',
+    paddingBottom: props.layout === 'vertical' ? '0' : '1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '4rem',
     },
-  },
+  }),
   menuContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -282,9 +271,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
   },
-  verticalMenuContainer: {
-    position: 'static',
+  verticalMenu: {
+    position: 'relative',
+    left: 'auto',
+    bottom: 'auto',
     transform: 'none',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginTop: '1rem',
+    gap: '0.5rem',
+  },
+  verticalNavBarContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
@@ -314,7 +312,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      background: theme.colors.encivYellow,
+      background: props.layout === 'vertical' ? '#e6f2ff' : theme.colors.encivYellow, // light blue hover for vertical
       color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
@@ -345,13 +343,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   }),
   dropdownMenu: props => ({
     position: 'absolute',
-    background: theme.colors.encivYellow,
+    background: props.layout === 'vertical' ? '#f5f5f5' : theme.colors.encivYellow, // light gray for vertical, yellow for horizontal
     display: 'flex',
     flexDirection: 'column',
+    border: props.layout === 'vertical' ? '1px solid #ddd' : 'none', // subtle border for vertical
   }),
-  verticalDropdownMenu: {
-    position: 'static',
-    marginTop: '0.5rem',
+  verticalDropdown: {
+    position: 'relative',
+    marginLeft: '1rem',
   },
   mobileDropdownMenu: {
     display: 'flex',
@@ -371,7 +370,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     whiteSpace: 'nowrap',
     textAlign: 'left',
     '&:hover': {
-      background: theme.colors.encivYellow,
+      background: props.layout === 'vertical' ? '#e6f2ff' : theme.colors.encivYellow, // light blue hover for vertical
       color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
     '&:focus': {
@@ -399,6 +398,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   }),
   selectedItem: props => ({
+    backgroundColor: props.layout === 'vertical' ? '#e6f2ff' : 'transparent', // light blue background for selected
     borderBottom: '0.125rem solid' + (props.mode === 'dark' ? theme.colors.white : theme.colors.black),
   }),
   userOrSignupContainer: {
@@ -433,7 +433,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'none',
     },
     '&:hover': {
-      background: theme.colors.encivYellow,
+      bbackground: props.layout === 'vertical' ? '#e6f2ff' : theme.colors.encivYellow, // light blue hover for vertical
       color: props.mode === 'dark' || props.mode === 'transparent' ? 'black' : 'white',
     },
   }),

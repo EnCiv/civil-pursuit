@@ -205,20 +205,20 @@ export const VariableParentDiv = () => {
 }
 
 export const VerticalEmpty = () => {
-  return <TopNavBar mode="vertical" />
+  return <TopNavBar layout="vertical" />
 }
 
 export const Vertical3MenuOption = {
   args: {
     menu: [createMenuItem('Home'), createMenuItem('Discussion Portal'), createMenuItem('Blog')],
-    mode: 'vertical',
+    layout: 'vertical',
   },
 }
 
 export const Vertical5MenuOption = {
   args: {
     menu: menuArray,
-    mode: 'vertical',
+    layout: 'vertical',
   },
 }
 
@@ -226,7 +226,7 @@ export const VerticalDefaultSelectedAbout = {
   args: {
     menu: menuArray,
     defaultSelectedItem: 'About',
-    mode: 'vertical',
+    layout: 'vertical',
   },
 }
 // Story to test TopNavBar in horizontal mode
@@ -248,7 +248,7 @@ export const VerticalMode = () => {
 
   return (
     <div style={{ backgroundColor: 'lightblue', width: '100%' }}>
-      <TopNavBar menu={menuArray} mode="vertical" />
+      <TopNavBar menu={menuArray} layout="vertical" />
     </div>
   )
 }
