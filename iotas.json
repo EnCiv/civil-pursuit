@@ -18,6 +18,7 @@
     "webComponent": {
       "webComponent": "CivilPursuit",
       "dturn": { "group_size": 5 },
+      "participants": 12,
       "steps": [
         { "webComponent": "SignUp" },
         {
@@ -26,6 +27,62 @@
           "schema": {
             "type": "object",
             "properties": {
+              "stateOfResidence": {
+                "title": "State of Residence",
+                "type": "string",
+                "enum": [
+                  "Alabama",
+                  "Alaska",
+                  "Arizona",
+                  "Arkansas",
+                  "California",
+                  "Colorado",
+                  "Connecticut",
+                  "Delaware",
+                  "Florida",
+                  "Georgia",
+                  "Hawaii",
+                  "Idaho",
+                  "Illinois",
+                  "Indiana",
+                  "Iowa",
+                  "Kansas",
+                  "Kentucky",
+                  "Louisiana",
+                  "Maine",
+                  "Maryland",
+                  "Massachusetts",
+                  "Michigan",
+                  "Minnesota",
+                  "Mississippi",
+                  "Missouri",
+                  "Montana",
+                  "Nebraska",
+                  "Nevada",
+                  "New Hampshire",
+                  "New Jersey",
+                  "New Mexico",
+                  "New York",
+                  "North Carolina",
+                  "North Dakota",
+                  "Ohio",
+                  "Oklahoma",
+                  "Oregon",
+                  "Pennsylvania",
+                  "Rhode Island",
+                  "South Carolina",
+                  "South Dakota",
+                  "Tennessee",
+                  "Texas",
+                  "Utah",
+                  "Vermont",
+                  "Virginia",
+                  "Washington",
+                  "West Virginia",
+                  "Wisconsin",
+                  "Wyoming"
+                ]
+              },
               "dateOfBirth": {
                 "title": "Date of Birth",
                 "type": "string",
@@ -36,6 +93,10 @@
           "uischema": {
             "type": "VerticalLayout",
             "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/stateOfResidence"
+              },
               {
                 "type": "Control",
                 "scope": "#/properties/dateOfBirth"

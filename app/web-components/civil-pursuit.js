@@ -48,13 +48,13 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants = 0, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
-    <DeliberationContextProvider defaultValue={{}}>
-      <div className={cx(classes.civilPursuit, className)} {...otherProps}>
+    <DeliberationContextProvider defaultValue={{ discussionId: _id, userId: user?.id, participants }}>
+      <div className={cx(classes.civilPursuit, className)}>
         <QuestionBox className={classes.question} subject={subject} description={description} />
         <Level>
           <StepSlider
@@ -82,6 +82,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     maxWidth: theme.maxPanelWidth,
     marginLeft: 'auto',
     marginRight: 'auto',
+    paddingTop: '3rem',
   },
   question: {
     paddingBottom: '6rem',

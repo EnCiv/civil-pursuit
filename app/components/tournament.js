@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import { cloneDeep } from 'lodash'
 
 import StepBar from './step-bar'
 import RoundTracker from './round-tracker'
@@ -15,7 +14,6 @@ import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
-import socketApiSubscribe from '../socket-apis/socket-api-subscribe'
 import DeliberationContext from './deliberation-context'
 
 const WebComponents = {
@@ -57,32 +55,6 @@ function Tournament(props) {
     state.stepComponentsByRound[round] = buildChildren(steps, round)
   }
 
-  function onSubscribeHandler(data) {
-    if (data.uInfo) {
-      let round = data.uInfo.length - 1
-      /*let shown=Object.values(data.uInfo[round].shownStatementIds ?? {})
-      if(shown.length > 1 && shown.some(sObj=>sObj.author) && shown.some(sObj=>sObj.rank>0 ))
-        round++*/
-      data.round = round
-      if (data.uInfo[round].groupings?.length > 0) data.groupIdsLists = cloneDeep(data.uInfo[round].groupings)
-    }
-    upsert(data)
-  }
-
-  function onUpdateHandler(data) {
-    upsert(data)
-  }
-
-  useEffect(() => {
-    upsert({ discussionId })
-    socketApiSubscribe('subscribe-deliberation', discussionId, onSubscribeHandler, onUpdateHandler)
-  }, [])
-
-  // steps are looking for userId in the context, if the user is not logged in to start, context needs to be updated
-  useEffect(() => {
-    upsert({ userId: user?.id })
-  }, [user?.id])
-
   const stepInfo = steps.map(step => {
     return {
       name: step.stepName,
@@ -91,7 +63,7 @@ function Tournament(props) {
   })
 
   return (
-    <div className={cx(classes.tournament, className)} {...otherProps}>
+    <div className={cx(classes.tournament, className)}>
       <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
       {state.stepComponentsByRound[round] && (
         <StepSlider
@@ -99,7 +71,7 @@ function Tournament(props) {
           steps={stepInfo}
           children={state.stepComponentsByRound[round]}
           onDone={valid => {
-            if (valid) upsert({ round: data.round })
+            if (valid) upsert({ round: data.round + 1 })
           }}
         />
       )}

@@ -22,6 +22,7 @@ export default async function getUserPostRanksAndTopRankedWhys(discussionId, rou
           round,
           stage: 'post',
           parentId: { $in: ids },
+          userId: this.synuser.id,
         },
       },
     ]).toArray()

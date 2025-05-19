@@ -21,15 +21,13 @@ const Footer = props => {
               </a>
             </div>
           </div>
-          <div className={`${classes.column} ${classes.item1}`}>
-            {mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}
-          </div>
+          <div className={`${classes.column} ${classes.item1}`}>{mode === 'dark' ? <SvgEncivWhite className={classes.logo} /> : <SvgEncivBlack className={classes.logo} />}</div>
         </div>
         <div className={classes.row}>
           <div className={`${classes.column} ${classes.item3}`}>
             <div className={classes.secondaryText}>
               Copyright © {new Date().getFullYear()}{' '}
-              <a href="http://www.enciv.org" className={`${classes.copyright} ${classes.links}`}>
+              <a href="https://www.enciv.org" className={`${classes.copyright} ${classes.links}`}>
                 EnCiv
               </a>
             </div>

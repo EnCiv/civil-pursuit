@@ -10,7 +10,9 @@ import Ranks from '../../models/ranks'
 let memoryServer
 let db
 
-const synuser = { synuser: { id: new ObjectId().toString() } }
+const USERID = '682b642bda43fdcd11975f45'
+
+const synuser = { synuser: { id: USERID } }
 
 beforeAll(async () => {
   memoryServer = await MongoMemoryServer.create()
@@ -113,7 +115,7 @@ function makeWhy(id, pId, category) {
     parentId: pIds[pId],
     category,
     subject: `Why ${category} for ${pId} for ${id}`,
-    userId: '123456',
+    userId: USERID,
   }
 }
 
@@ -309,7 +311,7 @@ function makeRank(id, pId, category) {
     stage: 'post',
     discussionId: 'discussion1',
     round: 1,
-    userId: '123456',
+    userId: USERID,
   }
 }
 test('Above scenario with 5 ranked, nothing for other 5', async () => {
@@ -329,6 +331,7 @@ test('Above scenario with 5 ranked, nothing for other 5', async () => {
         stage: 'post',
         discussionId: 'discussion1',
         round: 1,
+        userId: USERID,
       },
       {
         _id: '67805d35c2ccc21607202c48',
@@ -337,6 +340,7 @@ test('Above scenario with 5 ranked, nothing for other 5', async () => {
         stage: 'post',
         discussionId: 'discussion1',
         round: 1,
+        userId: USERID,
       },
       {
         _id: '67805d3612b2857b9e7e3a51',
@@ -345,6 +349,7 @@ test('Above scenario with 5 ranked, nothing for other 5', async () => {
         stage: 'post',
         discussionId: 'discussion1',
         round: 1,
+        userId: USERID,
       },
       {
         _id: '67805d3739be2093e67850fa',
@@ -353,6 +358,7 @@ test('Above scenario with 5 ranked, nothing for other 5', async () => {
         stage: 'post',
         discussionId: 'discussion1',
         round: 1,
+        userId: USERID,
       },
       {
         _id: '67805d39d08c0ade5a89a69c',
@@ -361,6 +367,7 @@ test('Above scenario with 5 ranked, nothing for other 5', async () => {
         stage: 'post',
         discussionId: 'discussion1',
         round: 1,
+        userId: USERID,
       },
     ],
     whys: [
