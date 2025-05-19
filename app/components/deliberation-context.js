@@ -33,7 +33,7 @@ export function DeliberationContextProvider(props) {
       if (data.uInfo) {
         let round = data.uInfo.length - 1
         data.round = round
-        if (data.uInfo[round].groupings?.length > 0) data.groupIdsLists = cloneDeep(data.uInfo[round].groupings)
+        if (data.uInfo[round].groupings?.length > 0) data.groupIdsLists = structuredClone(data.uInfo[round].groupings)
       }
       upsert(data)
     }
