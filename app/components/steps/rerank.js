@@ -18,6 +18,14 @@ export default function RerankStep(props) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
       window.socket.emit('upsert-rank', delta)
     }
+    if (valid) {
+      const rankByIds = data.reducedPointList.map(point_group => {
+        const pointId = point_group.point._id
+        const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        return { [pointId]: rank }
+      })
+      window.socket.emit('complete-round', data.discussionId, data.round, rankByIds, () => {})
+    }
     onDone({ valid, value })
   }
 
