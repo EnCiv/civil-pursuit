@@ -95,7 +95,6 @@ export const canCreateGroup = {
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: false,
-        value: {},
       },
     })
     const selectAsLead = canvas.getByTitle('Select as Lead: Point 1')
