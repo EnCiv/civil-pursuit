@@ -15,6 +15,12 @@ export const socketEmitDecorator = Story => {
       if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
       else console.error('socketEmitDecorator: no handle found', handle, ...args)
     }
+    window.socket.on = (handle, fn) => {
+      if (!window.socket._onHandlers) window.socket._onHandlers = {}
+      if (!window.socket._onHandlers[handle]) console.info('socketEmitDecorator window.socket.on adding handler', handle)
+      else console.info('socketEmitDecorator window.socket.on replacing handler', handle)
+      window.socket._onHandlers[handle] = fn
+    }
   })
   return <Story />
 }
