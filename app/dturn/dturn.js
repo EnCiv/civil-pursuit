@@ -608,3 +608,16 @@ async function reconstructDiscussionFromUInfo(discussionId) {
   // Set lastRound but don't send updates
   Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
 }
+
+export async function getConclusionIds(discussionId) {
+  if (!Discussions[discussionId]) {
+    throw new Error(`Discussion ${discussionId} not initialized`)
+  }
+  if (!Discussions[discussionId]?.ShownStatements?.length) {
+    console.error(`No ShownStatements found for discussion ${discussionId}`)
+    return undefined
+  }
+
+  let dis = Discussions[discussionId]
+  return dis.ShownStatements.at(-1).map(item => item.statementId)
+}
