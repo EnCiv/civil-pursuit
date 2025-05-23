@@ -12,7 +12,7 @@
     "_id": {
       "$oid": "67db9da4c6019fba8de3eafe"
     },
-    "path": "/civilpursuit",
+    "path": "/",
     "subject": "What one issue should ‘We the People’ unite and solve first to make our country even better?",
     "description": "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.",
     "webComponent": {
@@ -20,7 +20,7 @@
       "dturn": { "group_size": 5 },
       "participants": 12,
       "steps": [
-        { "webComponent": "SignUp" },
+        { "webComponent": "SignUp", "startTab": "SignUp" },
         {
           "webComponent": "Details",
           "questions": [["What party are you with"]],
