@@ -213,15 +213,15 @@ const buttonStyles = createUseStyles(theme => ({
       textDecoration: 'none',
       transition: 'none',
     },
-
-    '&:hover, &.hover': {
-      textDecoration: 'underline',
-      textUnderlineOffset: '0.25rem',
-      backgroundColor: theme.colors.primaryButtonBlue,
-      borderColor: theme.colors.primaryButtonBlue,
+    '&:not(:disabled)': {
+      '&:hover, &.hover': {
+        textDecoration: 'underline',
+        textUnderlineOffset: '0.25rem',
+        backgroundColor: theme.colors.primaryButtonBlue,
+        borderColor: theme.colors.primaryButtonBlue,
+      },
     },
-
-    '&:active': {
+    '&:active:not(:disabled)': {
       backgroundColor: theme.colors.mouseDownPrimeBlue,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',

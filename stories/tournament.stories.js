@@ -254,6 +254,7 @@ export const Default = {
       // this goes into the deliberation context
       userId: '67bf9d6ae49200d1349ab34a',
       discussionId: '5d0137260dacd06732a1d814',
+      round: 0,
       pointById: byId(pointList),
       groupIdsLists: [],
       randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
