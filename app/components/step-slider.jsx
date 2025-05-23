@@ -143,17 +143,17 @@ export const StepSlider = props => {
       case 'clearSendDoneToParent':
         return { ...state, sendDoneToParent: false }
       case 'updateStatuses':
-        let { result, index } = action.payload
+        let { valid, index } = action.payload
         if (steps) {
           const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
-            if (result.valid || result.valid === undefined) {
+            if (valid || valid === undefined) {
               return i === index ? { ...stepStatus, complete: true } : stepStatus
             }
             // Disable navigation to all steps after if invalid
             else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
           })
           return { ...state, stepStatuses: stepStatuses }
-        } else if (result) {
+        } else if (valid) {
           // Just increment if no steps
           const nextStep = Math.min(state.currentStep + 1, children.length - 1)
           return {
@@ -196,7 +196,7 @@ export const StepSlider = props => {
       key: currentStep,
       onDone: ({ valid, value }) => {
         if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-        else dispatch({ type: 'updateStatuses', payload: { result: valid, index: currentStep } })
+        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
       },
     })
   }
