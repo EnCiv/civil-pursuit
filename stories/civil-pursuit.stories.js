@@ -6,7 +6,7 @@ import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } fr
 import { Default, useSetupTournament } from './tournament.stories'
 
 const testSteps = [
-  { webComponent: 'SignUp' },
+  { webComponent: 'SignUp', startTab: 'SignUp' },
   {
     webComponent: 'Details',
     questions: [['What party are you with']],
