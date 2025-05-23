@@ -54,7 +54,7 @@ export function Why(props) {
   const {
     className = '',
     intro = '',
-    pointWhyList = [],
+    pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
     ...otherProps
@@ -65,18 +65,18 @@ export function Why(props) {
   // for every point, we need to keep track of whether the user has completed the why input, and the ref of the input so we can mark it as incomplete if it changes from above.
   // we only know it's completed it valid is passed up by onDone
   const [completedByPointId] = useState(() => {
-    return pointWhyList.reduce((completedByPointId, { point, why }) => {
+    return (pointWhyList || []).reduce((completedByPointId, { point, why }) => {
       completedByPointId[point._id] = { completed: false, why }
       return completedByPointId
     }, {})
   })
 
-  // not useEffect because we need to do this when the pointWhyList changes and before the chidlren are rendered and possibly make onDone calls
+  // not useEffect because we need to do this when the pointWhyList changes and before the children are rendered and possibly make onDone calls
   const [prev] = useState({ pointWhyList })
   if (prev.pointWhyList !== pointWhyList) {
     prev.pointWhyList = pointWhyList
     const oldIds = new Set(Object.keys(completedByPointId).map(id => id + '')) // convert to string because some tests (incorrectly) pass a number but when used as a key to an object it's a string. But set doesn't convert numbers to strings
-    for (const { point, why } of pointWhyList) {
+    for (const { point, why } of pointWhyList || []) {
       if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) {
         const completed = completedByPointId[point._id]?.completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
         completedByPointId[point._id] = { completed, why }
@@ -111,7 +111,12 @@ export function Why(props) {
   }
 
   if (!pointWhyList?.length) {
-    return null
+    setTimeout(() => onDone({ valid: true, value: 1 }), 0) // if there are no points, mark as done
+    return (
+      <div className={cx(classes.wrapper, className)} {...otherProps}>
+        Nothing to do here. Hit Next to continue.
+      </div>
+    )
   }
 
   return (
