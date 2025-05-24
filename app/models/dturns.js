@@ -33,23 +33,18 @@ class Dturns extends Collection {
   }
 
   static async getAllFromDiscussion(discussionId) {
-    return await this.find({ discussionId: discussionId })
+    return await this.find({ discussionId: discussionId }).toArray()
   }
 
-  static async upsert(userId, discussionId, round, shownStatementIds, groupings) {
+  static async upsert(userId, discussionId, round, info) {
     const dturnObj = {
-      discussionId: discussionId,
-      round: round,
-      userId: userId,
-      shownStatementIds: shownStatementIds,
-      groupings: groupings,
+      discussionId,
+      round,
+      userId,
+      ...info,
     }
 
-    await this.updateOne(
-      { discussionId: discussionId, userId: userId, round: round },
-      { $set: dturnObj },
-      { upsert: true }
-    )
+    await this.updateOne({ discussionId, userId, round }, { $set: dturnObj }, { upsert: true })
   }
 }
 

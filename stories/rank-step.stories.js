@@ -351,8 +351,8 @@ export const rankStepWithClearRanks = {
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', category: '', parentId: '1', discussionId: '1001', round: 0 },
-          2: { _id: '211', stage: 'pre', category: '', parentId: '2', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 0 },
+          2: { _id: '211', stage: 'pre', parentId: '2', discussionId: '1001', round: 0 },
         },
       })
     })

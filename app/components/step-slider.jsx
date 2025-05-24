@@ -11,7 +11,11 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
-if (typeof window !== 'undefined') require('react-perfect-scrollbar/dist/css/styles.css')
+// added this line to build.js to make this work
+// jss convert node_modules/react-perfect-scrollbar/dist/css/styles.css -f js -e cjs > node_modules/react-perfect-scrollbar/dist/css/styles.js
+// don't forget to call useScrollBarCss() in the react component below to get the styles pulled in
+import scrollBarCss from 'react-perfect-scrollbar/dist/css/styles'
+const useScrollBarCss = createUseStyles(scrollBarCss)
 
 const delayedSideEffect = setTimeout // basically put the side effect on the process queue and do it later
 const allResizeHandlers = []
@@ -23,13 +27,13 @@ export const StepSlider = props => {
   const [resizeHandlerIndex] = useState(allResizeHandlers.length)
   const { children, onDone, steps, className, stepName, stepintro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
   const classes = useStyles(props)
+  useScrollBarCss(props) // so the styles are pulled in
   const navRef = useRef() // didn't work right with ref= so navRef
   const footerRef = useRef()
   const outerRef = useRef()
   const [navBarRect, setNavBarRect] = useState({ height: 0, width: 0, top: 0 })
   const [footerRect, setFooterRect] = useState({ height: 0, width: 0, bottom: 0 })
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
-  const [transitions, setTransitions] = useState(false)
   const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
@@ -41,7 +45,7 @@ export const StepSlider = props => {
         // there is an issue on smartphones when rotating from landscape to portrait where the screen ends up shows a split between two components
         // to work around this we are turning off transitions and then turning them back on after the viewport size stableizes
         if (_this.timeout) clearTimeout(_this.timeout)
-        else setTransitions(false) // careful - the value of transitions will never be changed inside this memorized callback
+        else dispatch({ type: 'transitionsOff' }) // careful - the value of transitions will never be changed inside this memorized callback
         _this.timeout = setTimeout(() => {
           if (outerRef.current) {
             // just to make sure
@@ -49,7 +53,7 @@ export const StepSlider = props => {
             rect.innerHeight = window.innerHeight
             if (rect.height && rect.width) setOuterRect(rect)
           }
-          setTransitions(true)
+          dispatch({ type: 'transitionsOn' })
           _this.timeout = 0
         }, 100)
         setOuterRect(rect)
@@ -67,13 +71,6 @@ export const StepSlider = props => {
       window.removeEventListener('scroll', callAllResizeHandlers)
     }
   }, [])
-
-  // if the other props have changed, we need to rerender the children
-  // _this.otherProps is only changed if it's shallow - different
-  // _this is written directly because we don't want to cause another rerender - we just want to save the value for next time
-  if (!shallowEqual(_this.otherProps, otherProps)) _this.otherProps = otherProps
-
-  // has to be useLayoutEffect not useEffect or transitions will get enabled before the first render of the children and it will be blurry
 
   const stepNameToIndex = children.reduce((stepNameToIndex, child, index) => {
     const stepName = child.props.stepName || `step${index}`
@@ -94,9 +91,15 @@ export const StepSlider = props => {
     }, [navRef.current, footerRef.current])
   }
   if (typeof window !== 'undefined') useLayoutEffect(resizeHandler, [outerRef.current])
+  const [cachedChildren] = useState([])
   function reducer(state, action) {
     switch (action.type) {
+      case 'transitionsOff':
+        return { ...state, transitions: false }
+      case 'transitionsOn':
+        return { ...state, transitions: true }
       case 'moveTo': {
+        if (!cachedChildren[action.to]) return { ...state, transitions: false, nextStep: action.to }
         const currentStep = action.to
         const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
         return {
@@ -107,11 +110,27 @@ export const StepSlider = props => {
         }
       }
       case 'increment':
-        const currentStep = Math.min(state.currentStep + 1, children.length - 1)
-        const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
+        const nextStep = Math.min(state.currentStep + 1, children.length - 1)
+        if (!cachedChildren[nextStep]) {
+          return {
+            ...state,
+            transitions: false, // turn off transitions so the next step can render before the transition
+            nextStep,
+          }
+        }
         return {
           ...state,
-          stepStatuses,
+          transitions: true,
+          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === nextStep ? { ...stepStatus, seen: true } : stepStatus)),
+          currentStep: nextStep,
+          sendDoneToParent: state.currentStep >= children.length - 1,
+        }
+      case 'finishIncrement':
+        const currentStep = state.nextStep
+        return {
+          ...state,
+          transitions: true,
+          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus)),
           currentStep,
           sendDoneToParent: state.currentStep >= children.length - 1,
         }
@@ -124,27 +143,40 @@ export const StepSlider = props => {
       case 'clearSendDoneToParent':
         return { ...state, sendDoneToParent: false }
       case 'updateStatuses':
-        let { result, index } = action.payload
+        let { valid, index } = action.payload
         if (steps) {
           const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
-            if (result.valid || result.valid === undefined) {
+            if (valid || valid === undefined) {
               return i === index ? { ...stepStatus, complete: true } : stepStatus
             }
             // Disable navigation to all steps after if invalid
             else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
           })
           return { ...state, stepStatuses: stepStatuses }
-        } else if (result) {
+        } else if (valid) {
           // Just increment if no steps
-          const currentStep = Math.min(state.currentStep + 1, children.length - 1)
+          const nextStep = Math.min(state.currentStep + 1, children.length - 1)
           return {
             ...state,
-            currentStep,
+            transitions: false,
+            nextStep,
             sendDoneToParent: state.currentStep >= children.length - 1,
           }
         } else {
           return state
         }
+    }
+  }
+  // if the other props have changed, we need to rerender the children
+  // _this.otherProps is only changed if it's shallow - different
+  // _this is written directly because we don't want to cause another rerender - we just want to save the value for next time
+  if (!shallowEqual(_this.otherProps, otherProps)) {
+    _this.otherProps = otherProps
+    // if otherProps changes, clone children again with new props
+    for (let i = 0; i < children.length; i++) {
+      if (cachedChildren[i]) {
+        cachedChildren[i] = cloneChild(i)
+      }
     }
   }
   // Keep track of each step's seen/completion status
@@ -155,36 +187,44 @@ export const StepSlider = props => {
       steps[index].complete = false
     })
   }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, sendDoneToParent: false, stepStatuses: steps })
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, sendDoneToParent: false, stepStatuses: steps })
 
-  // the children need to be cloned to have the onDone function applied, but we don't want to redo this every time we re-render
-  // so it's done in a memo
-  const clonedChildren = useMemo(
-    () =>
-      // Only render if component has been seen
-      children.map((child, index) =>
-        React.cloneElement(child, {
-          ...otherProps,
-          ...child.props,
-          key: [index],
-          onDone: ({ valid, value }) => {
-            if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-            else dispatch({ type: 'updateStatuses', payload: { result: valid, index: index } })
-          },
-        })
-      ),
-    [children, _this.otherProps]
-  )
+  function cloneChild(currentStep) {
+    return React.cloneElement(children[currentStep], {
+      ...otherProps,
+      ...children[currentStep].props,
+      key: currentStep,
+      onDone: ({ valid, value }) => {
+        if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+      },
+    })
+  }
+
+  // in the initial case, nextStep and currentStep will be 0 and the first child will be rendered
+  if (!cachedChildren[state.nextStep]) {
+    // if the next step, or any previous steps, are not present, we need to clone them before the render
+    // moveTo can cause steps to be skipped, but the will need to be rendered to keep the panels in the right place
+    for (let i = 0; i <= state.nextStep; i++) {
+      if (!cachedChildren[i]) cachedChildren[i] = cloneChild(i)
+    }
+    // if the next step is not the current step, we need to clone it so it will be rendered
+  }
+  if (typeof window !== 'undefined')
+    useLayoutEffect(() => {
+      if (state.nextStep > state.currentStep) dispatch({ type: 'finishIncrement' })
+    }, [state.nextStep])
+
   // don't enable transitions until after the children have been rendered or the initial render will be blurry
   // the delayedSideEffect is necessary to delay the transitions until after the initial render
   if (typeof window !== 'undefined')
     useLayoutEffect(() => {
-      if (clonedChildren) delayedSideEffect(() => setTransitions(true))
-    }, [clonedChildren])
+      if (cachedChildren) delayedSideEffect(() => dispatch({ type: 'transitionsOn' }), 0)
+    }, [cachedChildren])
   useEffect(() => {
     if (state.sendDoneToParent) {
-      dispatch({ type: 'clearSendDoneToParent' })
-      onDone(state.currentStep === children.length - 1)
+      setTimeout(() => dispatch({ type: 'clearSendDoneToParent' }), 10000)
+      onDone({ valid: state.currentStep === children.length - 1 })
     }
   }, [state.sendDoneToParent])
   return (
@@ -213,12 +253,12 @@ export const StepSlider = props => {
         <div
           style={{
             left: -outerRect.width * state.currentStep + 'px',
-            width: outerRect.width * children.length + 'px',
+            width: outerRect.width * cachedChildren.length + 'px',
           }}
-          className={cx(classes.stepChildWrapper, transitions && classes.transitions)}
+          className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
         >
           {outerRect.width &&
-            clonedChildren.map(child => (
+            cachedChildren.map(child => (
               <div
                 style={{
                   width: outerRect.width + 'px',
@@ -264,7 +304,7 @@ const useStyles = createUseStyles({
     position: 'relative',
   },
   outerWrapper: {
-    position: 'relative', // was absolutoe: so that clip will work
+    position: 'relative', // was absolute: so that clip will work
     width: 'inherit',
     overflow: 'hidden',
     height: 'auto',

@@ -1,8 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/152
 
-import React, { useEffect, useReducer } from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { Level } from 'react-accessible-headings'
 
 import { DeliberationContextProvider } from '../components/deliberation-context'
 
@@ -47,21 +48,24 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants = 0, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
+  const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
-    <DeliberationContextProvider defaultValue={{}}>
-      <div className={cx(classes.civilPursuit, className)} {...otherProps}>
+    <DeliberationContextProvider defaultValue={{ discussionId: _id, userId: user?.id, participants }}>
+      <div className={cx(classes.civilPursuit, className)}>
         <QuestionBox className={classes.question} subject={subject} description={description} />
-        <StepSlider
-          children={buildChildren(steps)}
-          onDone={valid => {
-            // We're done!
-          }}
-          user={user}
-          discussionId={_id}
-        />
+        <Level>
+          <StepSlider
+            children={children}
+            onDone={valid => {
+              // We're done!
+            }}
+            user={user}
+            discussionId={_id}
+          />
+        </Level>
       </div>
     </DeliberationContextProvider>
   )
@@ -78,6 +82,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     maxWidth: theme.maxPanelWidth,
     marginLeft: 'auto',
     marginRight: 'auto',
+    paddingTop: '3rem',
   },
   question: {
     paddingBottom: '6rem',

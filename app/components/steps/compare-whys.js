@@ -12,7 +12,7 @@ import DeliberationContext from '../deliberation-context'
 export default function CompareWhysStep(props) {
   const { onDone, category } = props
   const { data, upsert } = useContext(DeliberationContext)
-  const args = { ...derivePointWithWhyRankListLisyByCategory(data, category) }
+  const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
       upsert({ whyRankByParentId: { [delta.parentId]: delta } })
@@ -47,11 +47,11 @@ export default function CompareWhysStep(props) {
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList = [], side = '', onDone = () => {}, className, discussionId, round, ...otherProps } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, ...otherProps } = props
   const classes = useStyles()
   // completedByPointId does not effect rendering, so no need to set state, just mutate.
   const [completedByPointId] = useState(
-    pointWithWhyRankListList.reduce((completedByPointId, pointWithWhyRankList) => {
+    (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
       completedByPointId[pointWithWhyRankList.point._id] = false
       return completedByPointId
     }, {})
@@ -59,6 +59,10 @@ export function CompareWhys(props) {
 
   useEffect(() => {
     // if new points get added, mark them as incomplete
+    if (!pointWithWhyRankListList) {
+      onDone({ valid: true, value: 1 })
+      return
+    }
     for (const pointWithWhyRankList of pointWithWhyRankListList) {
       if (typeof completedByPointId[pointWithWhyRankList.point._id] === 'undefined') completedByPointId[pointWithWhyRankList.point._id] = false
     }
@@ -80,15 +84,19 @@ export function CompareWhys(props) {
   }
   return (
     <div className={classes.container} {...otherProps}>
-      {pointWithWhyRankListList.map(({ point, whyRankList }) => (
-        <div key={point._id} className={classes.headlinePoint}>
-          <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
-          <H className={classes.headlineSubject}>{point.subject}</H>
-          <Level>
-            <PairCompare round={round} discussionId={discussionId} className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
-          </Level>
-        </div>
-      ))}
+      {!pointWithWhyRankListList ? (
+        <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
+      ) : (
+        pointWithWhyRankListList.map(({ point, whyRankList }) => (
+          <div key={point._id} className={classes.headlinePoint}>
+            <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
+            <H className={classes.headlineSubject}>{point.subject}</H>
+            <Level>
+              <PairCompare round={round} discussionId={discussionId} className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
+            </Level>
+          </div>
+        ))
+      )}
     </div>
   )
 }
@@ -122,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
 
 // pointWithWhyRankByWhyIdByPointId={id: {point, whyRankByWhyId: {id: {why, rank}}}}
 
-export function derivePointWithWhyRankListLisyByCategory(data, category) {
+export function derivePointWithWhyRankListListByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
   const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByParentId } = data

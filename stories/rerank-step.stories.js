@@ -245,7 +245,7 @@ const rerankStepTemplate = args => {
       setTimeout(() => {
         const whys = Object.values(topWhyById) // back to array
         const ranks = Object.values(postRankByParentId) // back to array
-        cb([ranks, whys])
+        cb({ ranks, whys })
       })
     }
     window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {

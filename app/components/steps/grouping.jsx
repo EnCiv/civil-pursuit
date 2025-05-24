@@ -5,7 +5,7 @@
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useRef, useState, useContext } from 'react'
+import React, { useRef, useState, useContext, useEffect } from 'react'
 import DeliberationContext, { deriveReducedPointList } from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -24,9 +24,9 @@ export default function GroupingStep(props) {
 
   const handleOnDone = ({ valid, delta }) => {
     if (delta) {
-      const groupings = delta.map(pG => [pG.point._id, ...pG.group.map(gp => gp._id)])
+      const groupings = delta.map(pG => [pG.point._id, ...(pG.group || []).map(gp => gp._id)]).filter(g => g.length > 1)
       upsert({ groupIdsLists: groupings })
-      window.socket.emit('put-groupings', discussionId, round, groupings)
+      window.socket.emit('post-point-groups', discussionId, round, groupings)
     }
     onDone({ valid })
   }
@@ -71,6 +71,11 @@ export function GroupPoints(props) {
     selectLead: null, // the new point group, with no point but with a group for selecting the Lead
   })
 
+  // on original render, notify parent this is done (if it is)
+  useEffect(() => {
+    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) onDone({ valid: true, value: {} })
+  }, [])
+
   const [prev] = useState({ reducedPointList })
   if (prev.reducedPointList !== reducedPointList) {
     // if changes from above, clear selected points and groups.  Maybe there is a way not to reset the users state, but this doesn't seem to be a common use case
@@ -88,7 +93,7 @@ export function GroupPoints(props) {
       const selectedIds = oldGs.selectedIds.filter(id => id !== _id)
       // if the _id wasn't in there, push it
       if (selectedIds.length === oldGs.selectedIds.length) selectedIds.push(_id)
-      if (selectedIds.length) onDone({ valid: false, value: {} })
+      if (selectedIds.length) onDone({ valid: false })
 
       return { ...oldGs, selectedIds }
     })
@@ -116,7 +121,7 @@ export function GroupPoints(props) {
           yourGroups.push(pG)
         }
       }
-      onDone({ valid: false, value: {} })
+      onDone({ valid: false })
       return {
         ...oldGs,
         pGsToGroup,
@@ -182,21 +187,21 @@ export function GroupPoints(props) {
             pGsToGroup.push(value.pointGroup)
           }
           selectedIds = selectedIds.filter(id => id !== value.pointGroup.point._id)
-        } else if (yourGroups.some(pGD => pGD.point._id === value.pointGroup.point._id)) {
-          //do nothing
+        } else if ((index = yourGroups.findIndex(pGD => pGD.point._id === value.pointGroup.point._id)) >= 0) {
+          // group has changed in the pointGroup, replace it
+          yourGroups.splice(index, 1, value.pointGroup)
         } else {
           // lead point is changed - find the old one
           index = yourGroups.findIndex(pGD => pGD.group.some(p => p._id === value.pointGroup.point._id))
           if (index >= 0) {
-            yourGroups.splice(index, 1)
-            yourGroups.push(value.pointGroup)
+            yourGroups.splice(index, 1, pointGroup)
           } else {
             console.info("got new pointDoc don't know why")
             yourGroups.push(value.pointGroup)
           }
         }
       }
-      onDone({ valid: true, value: pGsToGroup.concat(yourGroups) })
+      onDone({ valid: true, delta: pGsToGroup.concat(yourGroups) })
       return { ...oldGs, pGsToGroup, yourGroups, selectedIds }
     })
   }

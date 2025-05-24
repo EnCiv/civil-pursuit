@@ -58,12 +58,28 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
-  const { className = '', schema = {}, uischema = {}, details = {}, onDone = () => {}, title, ...otherProps } = props
-  const [data, setData] = useState(details)
-  const [isValid, setIsValid] = useState(false)
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId, ...otherProps } = props
+  const [data, setData] = useState({})
   const classes = useStyles(props)
 
-  const handleIsValid = () => {
+  useEffect(() => {
+    window.socket.emit('get-jsform', discussionId, data => {
+      if (data) {
+        const moreDetails = data.moreDetails || {}
+        setData(moreDetails)
+        if (handleIsValid(moreDetails)) {
+          onDone({ valid: true, value: moreDetails })
+        }
+      }
+    })
+  }, [])
+
+  const handleSubmit = () => {
+    window.socket.emit('upsert-jsform', discussionId, 'moreDetails', data)
+    onDone({ valid: handleIsValid(data), value: data })
+  }
+
+  const handleIsValid = data => {
     const requiredData = schema.properties || {}
     return Object.keys(requiredData).every(key => {
       if (!requiredData[key].properties) return !!data[key]
@@ -80,16 +96,14 @@ const MoreDetails = props => {
     }))
   }, [schema, uischema])
 
-  useEffect(() => {
-    setIsValid(handleIsValid())
-  }, [data, schema])
+  const isValid = handleIsValid(data)
 
   return (
     <div className={cx(classes.formContainer, className)} {...otherProps}>
       {title && <p className={classes.formTitle}>{title}</p>}
       <div className={classes.jsonFormContainer}>
         <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
-        <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={() => onDone({ valid: isValid, value: data })} disabled={!isValid}>
+        <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
           Submit
         </PrimaryButton>
       </div>

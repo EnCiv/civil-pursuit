@@ -115,11 +115,7 @@ async function insertStatementId(discussionId, userId, statementId) {
   await Discussions[discussionId].updateUInfo({
     [userId]: {
       [discussionId]: {
-        [round]: {
-          shownStatementIds: {
-            [statementId]: { rank: 0, author: true },
-          },
-        },
+        [round]: structuredClone(Discussions[discussionId].Uitems[userId][round]),
       },
     },
   })
@@ -191,14 +187,14 @@ function sortLargestFirst(a, b) {
  *
  * the list will have group_size entries, if round 0 the list will have the users statement id, plus others that total group_size
  * if user hasn't inserted a statement id yet, will return undefined
- * once a group of statement ids has been returned, that same group will be returned to other users until it has been shown enought times to advance to the next group
+ * once a group of statement ids has been returned, that same group will be returned to other users until it has been shown enough times to advance to the next group
  * if the user calls this function again for the same round, they will get the same group of statement ids
  * the number of times a group is shown increases by a factor of group_size with ever round
- * **TBD** and enhancement could be to, instead of returning the same group every time, return a new group if poissible, or randomly select one of the groups that hasn't been shounn enough times yet.
- * returnes undefined if unable to provide the right number of staement ids
- * ensurs the user does not get a group of statement ids that also containes their statement id (statementId not repeated in list)
+ * **TBD** and enhancement could be to, instead of returning the same group every time, return a new group if possible, or randomly select one of the groups that hasn't been shounn enough times yet.
+ * returns undefined if unable to provide the right number of statement ids
+ * ensures the user does not get a group of statement ids that also contains their statement id (statementId not repeated in list)
  *
- * generates a call to the discussion's updateUInfo function with an object representing the incremental data change
+ * generates a call to the discussion's updateUInfo function with a new object that has all the user's UInfo for that round
  *
  *
  */
@@ -233,7 +229,7 @@ async function getStatementIds(discussionId, round, userId) {
     for (const sId of dis.ShownGroups[round].at(-1).statementIds) statementIds.push(sId)
     dis.ShownGroups[round].at(-1).shownCount++
   } else if (round === 0) {
-    // find all the statments that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
+    // find all the statements that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
     const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
     if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
@@ -312,16 +308,19 @@ async function getStatementIds(discussionId, round, userId) {
   }
   // the Uitem may already exist in the case that user inseted a statment but didn't get any statements to group in the previous call
   initUitems(discussionId, userId, round)
-  const delta = { [userId]: { [discussionId]: { [round]: { shownStatementIds: {} } } } }
   // the user's own statement may be there, so check before writing
   for (const sId of statementIds) {
     if (!dis.Uitems[userId][round].shownStatementIds[sId]) {
       dis.Uitems[userId][round].shownStatementIds[sId] = { rank: 0 }
-      delta[userId][discussionId][round].shownStatementIds[sId] = { rank: 0 }
     }
   }
-
-  await dis.updateUInfo(delta)
+  await dis.updateUInfo({
+    [userId]: {
+      [discussionId]: {
+        [round]: structuredClone(dis.Uitems[userId][round]),
+      },
+    },
+  })
 
   return statementIds
 }
@@ -458,7 +457,9 @@ async function putGroupings(discussionId, round, userId, groupings) {
   groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
   await Discussions[discussionId].updateUInfo({
     [userId]: {
-      [discussionId]: { [round]: { groupings } },
+      [discussionId]: {
+        [round]: structuredClone(Discussions[discussionId].Uitems[userId][round]),
+      },
     },
   })
 
@@ -474,7 +475,11 @@ async function rankMostImportant(discussionId, round, userId, statementId, rank 
   deltaShownItemsRank(discussionId, round, statementId, rank)
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
   await Discussions[discussionId].updateUInfo({
-    [userId]: { [discussionId]: { [round]: { shownStatementIds: { [statementId]: { rank } } } } },
+    [userId]: {
+      [discussionId]: {
+        [round]: structuredClone(Discussions[discussionId].Uitems[userId][round]),
+      },
+    },
   })
 }
 module.exports.rankMostImportant = rankMostImportant

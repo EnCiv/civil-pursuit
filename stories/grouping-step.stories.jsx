@@ -95,7 +95,6 @@ export const canCreateGroup = {
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: false,
-        value: {},
       },
     })
     const selectAsLead = canvas.getByTitle('Select as Lead: Point 1')
@@ -479,8 +478,8 @@ const groupingStepTemplate = args => {
         cb([points])
       })
     }
-    window.socket._socketEmitHandlers['put-groupings'] = (rank, cb) => {
-      window.socket._socketEmitHandlerResults['put-groupings'] = rank
+    window.socket._socketEmitHandlers['post-point-groups'] = (rank, cb) => {
+      window.socket._socketEmitHandlerResults['post-point-groups'] = rank
       cb && cb()
     }
   })

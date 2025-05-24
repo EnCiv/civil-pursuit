@@ -17,12 +17,12 @@ export default function AnswerStep(props) {
 
   // Fetch initial data and update context
   useEffect(() => {
-    if (data?.uInfo?.[data?.round]?.statementIds?.length > 0) {
-      window.socket.emit('get-points-of-ids', data.uInfo[data.round].statementIds, ({ points, myWhys }) => {
-        upsert({ ['pointById']: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}), ['myWhyByParentId']: myWhys.reduce((wById, why) => ((wById[why.parentId] = why), wById), {}) })
-      })
-    }
-  }, [])
+    const shownStatementIds = Object.keys(data?.uInfo?.[data?.round]?.shownStatementIds || {})
+    if (shownStatementIds.length <= 0) return
+    window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
+      upsert({ ['pointById']: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}), ['myWhyByParentId']: myWhys.reduce((wById, why) => ((wById[why.parentId] = why), wById), {}) })
+    })
+  }, [data.uInfo, data.round])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {

@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
-// https://github.com/EnCiv/civil-pursuit/issues/253
-// https://github.com/EnCiv/civil-pursuit/issues/256
 
 'use strict'
 
@@ -126,7 +124,6 @@ const PointGroup = props => {
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
             <span>
               <SecondaryButton
-                className={classes.secondaryButton}
                 disabled={selected === ''}
                 title="Done"
                 children="Done"
@@ -228,7 +225,7 @@ const PointGroup = props => {
                             })
                           }}
                         >
-                          <div className={cx(classes.pointWidthButton, classes.selectLeadButton)}>
+                          <div className={classes.pointBottomButtons}>
                             <div className={classes.pointWidthButton}>
                               <ModifierButton className={classes.pointWidthButton} title={`Select as Lead: ${pD.subject}`} children={`Select as Lead`} onDone={doSelectLead} disabled={false} disableOnClick={false} />
                             </div>
@@ -284,6 +281,8 @@ const PointGroup = props => {
                     className={classes.doneButton}
                     onDone={() => {
                       setExpanded(false)
+                      // the pointGroup has changed, notify the parent
+                      onDone({ valid: true, value: { pointGroup: pG } })
                     }}
                     title="Done"
                     children="Done"
@@ -335,6 +334,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,
+    '&:hover': {
+      outline: `0.1875rem solid ${theme.colors.success}`,
+    },
     '&:hover $defaultSubject': {
       color: theme.colors.success,
     },
@@ -376,19 +378,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   contentContainer: {
-    backgroundColor: `${theme.colors.pointDefault} !important`,
-    outline: `0.1875rem solid ${theme.colors.pointDefault} !important`,
     padding: '2.1875rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '1rem',
+    gap: '0.625rem',
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: '1.1875rem 0.875rem',
-    },
   },
 
   defaultWidth: {
@@ -410,18 +407,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
 
-  ungroupButton: {
-    flex: '1 1 auto',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      maxWidth: '9rem',
-      paddingLeft: '4rem',
-    },
-  },
+  ungroupButton: {},
 
   doneButton: {
     width: '17rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '16rem',
+      width: '7rem',
     },
   },
 
@@ -431,33 +422,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: '#5d5d5d',
     fontWeight: '600',
     lineHeight: '1.5rem',
-    marginTop: '5rem',
   },
 
-  bottomButtonsTwo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    '& span': {
-      flex: '1 1 auto',
-      textAlign: 'center',
-      minWidth: '9rem',
-    },
-  },
+  bottomButtonsTwo: {},
   bottomButtonsOne: {},
-  secondaryButton: {
-    width: '40%',
 
-    '&:disabled': {
-      opacity: '30%',
-    },
-  },
   bottomButtons: {
     boxSizing: 'border-box',
     width: '100%',
-    padding: '0rem 1rem 0 1rem',
+    padding: '1.5rem 1rem 0 1rem',
     display: 'flex',
-    marginTop: '1rem',
     '&$bottomButtonsTwo': {
       '& span': {
         flex: '0 0 50%',
@@ -488,14 +462,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
     gap: '2rem',
+    width: '100%',
   },
 
   selectPoints: {
     position: 'relative',
-    flex: '1 1 auto',
+    flex: '1 1 41%',
+    height: 'inherit',
+    // margin: '1rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flex: '0 0 100%',
-      margin: '0.5rem 0',
+      margin: '1rem 0',
     },
   },
 
@@ -504,15 +481,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   pointWidthButton: {
-    width: '100%',
-    textAlign: 'center',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '100%',
-    },
-  },
-
-  selectLeadButton: {
-    marginTop: '1rem',
+    margin: '.5rem',
   },
 
   invisibleElement: {
@@ -521,36 +490,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   selectButtonRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'absolute',
     bottom: '1rem',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: 'calc(100% - 3.75rem)',
-    padding: '0 1.875rem',
+    left: 0,
+    width: '100%',
     textAlign: 'center',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: 'calc(100% - 3.75rem)',
-      padding: '1rem 0',
-      bottom: '0.5rem',
-    },
   },
 
   selectSelectButton: {
-    width: '100%',
-
-    '&:focus': {
-      outline: 'none',
-    },
+    width: '75%',
   },
 
   selectedButton: {
     backgroundColor: theme.colors.encivYellow,
     '&:hover, &.hover': {
       backgroundColor: theme.colors.encivYellow,
-      outline: 'none',
     },
   },
 
@@ -570,8 +524,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   noBoxShadow: {
+    boxShadow: 'none',
     border: '1px solid rgba(217, 217, 217, 0.40)',
-    boxShadow: '0.1875rem 0.1875rem 0.4375rem 0.1rem rgba(217, 217, 217, 0.40) !important',
   },
   selectedSubject: {
     color: theme.colors.success,

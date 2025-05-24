@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React, { useReducer, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -14,7 +14,6 @@ import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
-import socketApiSubscribe from '../socket-apis/socket-api-subscribe'
 import DeliberationContext from './deliberation-context'
 
 const WebComponents = {
@@ -31,13 +30,14 @@ const WebComponents = {
 }
 
 function buildChildren(steps, round) {
-  return steps.map(step => {
+  // don't do the Answer step after the first round
+  const filteredSteps = steps.filter(step => !(step === 'Answer' && round > 0))
+  return filteredSteps.map(step => {
     const { webComponent, ...props } = step
-
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
       // Pass all props from step obj except WebComponent
-      return <LookupResult {...props} round={round} />
+      return <LookupResult {...props} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
       return <div>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
@@ -49,38 +49,11 @@ function Tournament(props) {
   const { className, steps = [], discussionId, user, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'incrementRound':
-        // Rebuild steps when going to next round
-        const newRound = state.currentRound + 1
-
-        return {
-          ...state,
-          currentRound: newRound,
-          stepComponents: buildChildren(steps, newRound),
-        }
-    }
+  const { round } = data
+  const [state] = useState({ stepComponentsByRound: [] })
+  if (typeof data.round === 'number' && !state.stepComponentsByRound[round]) {
+    state.stepComponentsByRound[round] = buildChildren(steps, round)
   }
-
-  const [state, dispatch] = useReducer(reducer, { currentRound: 1, stepComponents: buildChildren(steps, 1) })
-  function onSubscribeHandler(data) {
-    upsert(data)
-  }
-  function onUpdateHandler(data) {
-    upsert(data)
-  }
-
-  useEffect(() => {
-    upsert({ discussionId })
-    socketApiSubscribe('subscribe-deliberation', discussionId, onUpdateHandler, onSubscribeHandler)
-  }, [])
-
-  // steps are looking for userId in the context, if the user is not logged in to start, context needs to be updated
-  useEffect(() => {
-    upsert({ userId: user?.id })
-  }, [user?.id])
 
   const stepInfo = steps.map(step => {
     return {
@@ -90,16 +63,18 @@ function Tournament(props) {
   })
 
   return (
-    <div className={cx(classes.tournament, className)} {...otherProps}>
+    <div className={cx(classes.tournament, className)}>
       <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
-      <StepSlider
-        key={state.currentRound}
-        steps={stepInfo}
-        children={state.stepComponents}
-        onDone={valid => {
-          if (valid) dispatch({ type: 'incrementRound' })
-        }}
-      />
+      {state.stepComponentsByRound[round] && (
+        <StepSlider
+          key={round}
+          steps={stepInfo}
+          children={state.stepComponentsByRound[round]}
+          onDone={valid => {
+            if (valid) upsert({ round: data.round + 1 })
+          }}
+        />
+      )}
     </div>
   )
 }

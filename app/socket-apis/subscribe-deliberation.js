@@ -35,13 +35,25 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
         updateUInfo: async UInfoData => {
           const userId = Object.keys(UInfoData)[0]
 
-          // First upsert the UInfo
-          const [round, { shownStatementIds, groupings }] = Object.entries(UInfoData[userId][deliberationId])[0]
+          // extract the round and info note round is a string because this was an object
+          // info is an object which may have shownStatementIds and/or groupings but is a delta not the whole object
+          const [roundStr, info] = Object.entries(UInfoData[userId][deliberationId])[0]
 
-          await Dturns.upsert(userId, deliberationId, round, shownStatementIds, groupings || [])
+          await Dturns.upsert(userId, deliberationId, +roundStr, info)
         },
         getAllUInfo: async () => {
-          return await Dturns.getAllFromDiscussion(deliberationId)
+          const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
+          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [] }) => ({
+            [userId]: {
+              [discussionId]: {
+                [round]: {
+                  shownStatementIds,
+                  groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
+                },
+              },
+            },
+          }))
+          return all
         },
         updates: updateData => {
           server.to(deliberationId).emit(eventName, updateData)

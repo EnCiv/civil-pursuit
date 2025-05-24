@@ -13,18 +13,39 @@ import cx from 'classnames'
 function PairCompare(props) {
   const { whyRankList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, discussionId, round, ...otherProps } = props
 
-  // idxLeft and idxRight can swap places at any point - they are simply pointers to the current two <Point/> elements
-  const [idxLeft, setIdxLeft] = useState(0)
-  const [idxRight, setIdxRight] = useState(1)
   const [nextLeftPoint, setNextLeftPoint] = useState(null)
   const [nextRightPoint, setNextRightPoint] = useState(null)
   const [isRightTransitioning, setIsRightTransitioning] = useState(false)
   const [isLeftTransitioning, setIsLeftTransitioning] = useState(false)
   const classes = useStyles()
-  const [ranksByParentId, neverSetRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
+  // keep track of ranks locally, because this component needs to create/update them and this component needs to be independently unit testable
+  const [ranksByParentId, setRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
+  // allRanked is a state, so we can clear it if the user chooses to "Start Over"
+  function isAllRanked(ranksByParentId) {
+    const ranks = Object.values(ranksByParentId)
+    return ranks.length > 0 && ranks.length === whyRankList.length && ranks.every(rank => rank.category)
+  }
+  const allRanked = isAllRanked(ranksByParentId)
+  // idxLeft and idxRight can swap places at any point - they are simply pointers to the current two <Point/> elements
+  const [idxLeft, setIdxLeft] = useState(
+    allRanked
+      ? Math.max(
+          whyRankList.findIndex(whyRank => whyRank.rank?.category === 'most'),
+          0
+        )
+      : 0
+  ) // if nothing is ranked most, when all are ranked, thats an error, but start at 0
+  const [idxRight, setIdxRight] = useState(allRanked ? whyRankList.length : 1)
+  const [_this] = useState({ firstRender: true })
   // if all points are ranked, show the (first) one ranked most important, go to start over state
   // otherwise compare the list
   useEffect(() => {
+    if (_this.firstRender) {
+      _this.firstRender = false
+      // if initially all are ranked, we need to send notice back to parent
+      if (isAllRanked(ranksByParentId)) setTimeout(() => onDone({ valid: true, value: undefined }))
+      return
+    }
     let selectedIdx
     let updated = 0
     whyRankList.forEach((whyRank, i) => {
@@ -34,11 +55,12 @@ function PairCompare(props) {
         if (whyRank.rank.category === 'most') selectedIdx = i
       }
     })
-    const ranks = Object.values(ranksByParentId)
-    if (updated && ranks.length === whyRankList.length && ranks.length > 0 && ranks.every(rank => rank.category)) {
+    const allRanked = isAllRanked(ranksByParentId)
+    if (updated && allRanked) {
       // skip if an update from above after the user has completed ranking - likely this is the initial render
       setIdxLeft(selectedIdx ?? whyRankList.length) // idx could be 0
       setIdxRight(whyRankList.length)
+      setRanksByParentId({ ...ranksByParentId }) // force a rerender
       setTimeout(() => onDone({ valid: true, value: undefined }))
     } else if (!whyRankList.length) {
       // if noting to compare then it's done
@@ -49,20 +71,23 @@ function PairCompare(props) {
   // send up the rank, and track it locally
   function rankIdxCategory(idx, category) {
     if (idx >= whyRankList.length) return // if only one to rank, this could be out of bounds
-    const value = ranksByParentId[whyRankList[idx]._id]
-      ? { ...ranksByParentId[whyRankList[idx]._id], category }
-      : {
-          _id: ObjectId().toString(),
-          category,
-          parentId: whyRankList[idx].why._id,
-          stage: 'why',
-          discussionId,
-          round,
-        }
-    ranksByParentId[value.parentId] = value
-    const ranks = Object.values(ranksByParentId)
-    const valid = ranks.length === whyRankList.length && ranks.every(rank => rank.category)
-    setTimeout(() => onDone({ valid, value }))
+    setRanksByParentId(ranksByParentId => {
+      const value = ranksByParentId[whyRankList[idx].why._id]
+        ? { ...ranksByParentId[whyRankList[idx].why._id], category }
+        : {
+            _id: ObjectId().toString(),
+            category,
+            parentId: whyRankList[idx].why._id,
+            stage: 'why',
+            discussionId,
+            round,
+          }
+      ranksByParentId[value.parentId] = value
+      const valid = isAllRanked(ranksByParentId)
+      setTimeout(() => onDone({ valid, value }))
+      if (valid) return { ...ranksByParentId } // new obj to force a rerender
+      else return ranksByParentId // no need for a rerender
+    })
   }
 
   const handleLeftPointClick = () => {
@@ -117,10 +142,14 @@ function PairCompare(props) {
   }
 
   const handleStartOverButton = () => {
-    Object.values(ranksByParentId).forEach(rank => (rank.category = undefined)) // reset the categories so we can start again
-    onDone({ valid: false, value: null })
-    setIdxRight(1)
-    setIdxLeft(0)
+    setRanksByParentId(ranksByParentId => {
+      const newRanksByParentId = structuredClone(ranksByParentId)
+      Object.values(newRanksByParentId).forEach(rank => (rank.category = undefined)) // reset the categories so we can start again
+      setIdxRight(1)
+      setIdxLeft(0)
+      onDone({ valid: false, value: null })
+      return newRanksByParentId // force the rerender
+    })
   }
 
   const handleYes = () => {
@@ -140,8 +169,6 @@ function PairCompare(props) {
 
   const pointsIdxCounter = Math.max(idxLeft, idxRight)
   const isSelectionComplete = pointsIdxCounter >= whyRankList.length
-  const ranks = isSelectionComplete && Object.values(ranksByParentId) // isSelectionComple here so we don't do work if not needed
-  const allRanked = isSelectionComplete && ranks.length === whyRankList.length && ranks.every(rank => rank.category) // isSelectionComple here so we don't do work if not needed
   return (
     <div className={classes.container} {...otherProps}>
       <div className={classes.mainPointContainer}>
@@ -171,29 +198,27 @@ function PairCompare(props) {
             </button>
           )}
         </div>
-        {!isSelectionComplete || allRanked ? (
-          <div className={classes.buttonsContainer}>
-            {!isSelectionComplete ? (
-              <SecondaryButton className={classes.customButton} onDone={handleNeitherButton}>
-                Neither
+        <div className={classes.buttonsContainer}>
+          {isSelectionComplete && !allRanked ? (
+            <>
+              <SecondaryButton className={classes.customButton} onDone={handleYes}>
+                Yes
               </SecondaryButton>
-            ) : (
-              <SecondaryButton className={classes.customButton} onDone={handleStartOverButton}>
-                Start Over
+              <div style={{ width: '1rem', display: 'inline' }} />
+              <SecondaryButton className={classes.customButton} onDone={handleNo}>
+                No
               </SecondaryButton>
-            )}
-          </div>
-        ) : (
-          <div className={classes.buttonsContainer}>
-            <SecondaryButton className={classes.customButton} onDone={handleYes}>
-              Yes
+            </>
+          ) : isSelectionComplete || allRanked ? (
+            <SecondaryButton className={classes.customButton} onDone={handleStartOverButton}>
+              Start Over
             </SecondaryButton>
-            <div style={{ width: '1rem', display: 'inline' }} />
-            <SecondaryButton className={classes.customButton} onDone={handleNo}>
-              No
+          ) : (
+            <SecondaryButton className={classes.customButton} onDone={handleNeitherButton}>
+              Neither
             </SecondaryButton>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
