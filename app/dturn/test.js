@@ -9,10 +9,9 @@
  */
 const merge = require('lodash').merge
 const showDeepDiff = require('show-deep-diff')
-import getConclusion from '../socket-apis/get-conclusion'
 
 const ObjectID = require('bson-objectid')
-const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions } = require('./dturn')
+const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions, getConclusionIds } = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
@@ -195,10 +194,7 @@ async function main() {
     }
   }
 
-  // Call conclusion
-  await getConclusion.call({ synuser: { id: UserIds[0] } }, DISCUSSION_ID, result => {
-    console.log('CONCLUSION RESULT: ', result)
-  })
+  console.info('Conclusion Ids: ', await getConclusionIds(DISCUSSION_ID))
 
   process.stdout.write('\n')
   showDeepDiff(Discussions[1], Discussions[2])
