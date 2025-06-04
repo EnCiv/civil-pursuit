@@ -60,6 +60,9 @@ export const StepSlider = props => {
 
   if (typeof window !== 'undefined') useLayoutEffect(resizeHandler, [outerRef.current])
   const [cachedChildren] = useState([])
+  const sendDoneToParent = currentStep => {
+    if (currentStep >= children.length - 1) setTimeout(() => onDone({ valid: currentStep === children.length - 1 }))
+  }
   function reducer(state, action) {
     switch (action.type) {
       case 'transitionsOff':
@@ -71,11 +74,11 @@ export const StepSlider = props => {
         if (!cachedChildren[action.to]) return { ...state, transitions: false, nextStep: action.to }
         const currentStep = action.to
         const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
+        sendDoneToParent(state.currentStep)
         return {
           ...state,
           stepStatuses,
           currentStep,
-          sendDoneToParent: state.currentStep >= children.length - 1,
         }
       }
       case 'increment':
@@ -88,34 +91,32 @@ export const StepSlider = props => {
             nextStep,
           }
         }
+        sendDoneToParent(state.currentStep)
         return {
           ...state,
           transitions: true,
           stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === nextStep ? { ...stepStatus, seen: true } : stepStatus)),
           currentStep: nextStep,
-          sendDoneToParent: state.currentStep >= children.length - 1,
         }
       case 'finishIncrement': {
         const currentStep = state.nextStep
+        sendDoneToParent(state.currentStep)
         return {
           ...state,
           transitions: true,
           stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus)),
           currentStep,
-          sendDoneToParent: state.currentStep >= children.length - 1,
         }
       }
       case 'decrement': {
         stepChildRapper.current.style.transition = ''
         const step = Math.max(0, state.currentStep - 1)
+        sendDoneToParent(state.currentStep)
         return {
           ...state,
           currentStep: step,
-          sendDoneToParent: state.currentStep === children.length - 1,
         }
       }
-      case 'clearSendDoneToParent':
-        return { ...state, sendDoneToParent: false }
       case 'updateStatuses':
         let { valid, index } = action.payload
         if (steps) {
@@ -131,11 +132,11 @@ export const StepSlider = props => {
           // Just increment if no steps
           stepChildRapper.current.style.transition = ''
           const nextStep = Math.min(state.currentStep + 1, children.length - 1)
+          sendDoneToParent(state.currentStep)
           return {
             ...state,
             transitions: false,
             nextStep,
-            sendDoneToParent: state.currentStep >= children.length - 1,
           }
         } else {
           return { state, transitions: false }
@@ -162,7 +163,7 @@ export const StepSlider = props => {
       steps[index].complete = false
     })
   }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, sendDoneToParent: false, stepStatuses: steps })
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, stepStatuses: steps })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -189,13 +190,6 @@ export const StepSlider = props => {
     useLayoutEffect(() => {
       if (state.nextStep > state.currentStep) dispatch({ type: 'finishIncrement' })
     }, [state.nextStep])
-
-  useEffect(() => {
-    if (state.sendDoneToParent) {
-      setTimeout(() => dispatch({ type: 'clearSendDoneToParent' }), 10000)
-      onDone({ valid: state.currentStep === children.length - 1 })
-    }
-  }, [state.sendDoneToParent])
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
